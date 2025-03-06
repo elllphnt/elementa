@@ -143,9 +143,17 @@ export class FragmentHandle
   handleLayoutUpdate({
     propagation,
   }: { propagation?: ILayoutUpdatePropagation } = {}): void {
-    this.content.forEach((instance) => {
-      instance.handleLayoutUpdate({ propagation });
-    });
+    console.log("FragmentHandle.handleLayoutUpdate", { propagation });
+    super.handleLayoutUpdate({ propagation });
+
+    if (propagation) {
+      this.content.forEach((instance) => {
+        instance.handleLayoutUpdate({ propagation });
+      });
+      this.slots.forEach((slot) => {
+        slot.handleLayoutUpdate({ propagation });
+      });
+    }
   }
 
   handleEntityDrop(entities: Entity[], options?: DropOptions): IHandle[] {

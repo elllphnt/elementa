@@ -168,6 +168,15 @@ export class ElementaEditorState extends ElementaBaseEditorState<ComponentEditor
     return this._elementaStager$.asObservable();
   }
 
+  get ready() {
+    return this.elementaStager?.ready ?? false;
+  }
+  get ready$() {
+    return this.elementaStager$.pipe(
+      switchMap((stager) => stager?.ready$ ?? of(false)),
+    );
+  }
+
   get elementaRenderer() {
     return this.elementaStager;
   }

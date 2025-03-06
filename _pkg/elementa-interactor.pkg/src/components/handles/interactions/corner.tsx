@@ -98,9 +98,11 @@ export function CornerHandle({ handle }: { handle: CornerHandleType }) {
         const deltaSubscription = combineLatestOrEmpty([
           mouseInteraction.endPosition$,
           mouseInteraction.ctrlKey$,
-        ]).subscribe(([viewportEndPosition, individual]) => {
+        ]).subscribe(([interfaceEndPosition, individual]) => {
+          const stagerEndPosition =
+            editor.interface.interactorToStager(interfaceEndPosition);
           const contentEndPosition =
-            editor.stager.viewport.viewportToContent(viewportEndPosition);
+            editor.stager.viewport.windowToContent(stagerEndPosition);
           let delta: VectorData;
           switch (corner) {
             case "top-left":

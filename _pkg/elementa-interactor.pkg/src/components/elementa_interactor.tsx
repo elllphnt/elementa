@@ -12,13 +12,13 @@ const stylesheet = elementaStyleSheet({
   light: {
     background: "#fff",
     text: "#000",
-    grid: "#8888",
+    grid: "#88888815",
     selection: "#08f",
   },
   dark: {
     background: "#202020",
     text: "#fff",
-    grid: "#8888",
+    grid: "#88888815",
     selection: "#08f",
   },
 });

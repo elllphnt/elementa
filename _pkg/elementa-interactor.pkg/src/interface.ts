@@ -437,8 +437,8 @@ export class Interface extends Disposable implements IInterface {
 
   // event
   handleWheel(e: WheelEvent) {
-    const deltaX = e.deltaX * 1.5;
-    const deltaY = e.deltaY * 1.5;
+    const deltaX = e.deltaX;
+    const deltaY = e.deltaY;
     const viewport = this.interactor.stager.viewport;
     const currentScale = viewport.scale;
     const scaleFactor = -deltaY * 0.015 * Math.min(currentScale, 1);

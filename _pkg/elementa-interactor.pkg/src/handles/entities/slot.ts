@@ -13,7 +13,7 @@ import { RectData } from "@repo/utils";
 import { BehaviorSubject, map, Observable } from "rxjs";
 import { makeEntityDropType } from "~/src/_lib/droptypes";
 import { makeElementHandle, updateEntityHandleList } from "~/src/_lib/handles";
-import { IElementHandle } from "~/src/_types/_";
+import { IElementHandle, ILayoutUpdatePropagation } from "~/src/_types/_";
 import { IFragmentHandle } from "~/src/_types/handles/entity/fragment";
 import { IHandle } from "~/src/_types/handles/handle";
 import {
@@ -238,5 +238,14 @@ export class SlotHandle extends EntityHandle<SlotRenderable> {
     }
 
     return candidate;
+  }
+
+  handleLayoutUpdate({
+    propagation,
+  }: {
+    propagation?: ILayoutUpdatePropagation;
+  } = {}): void {
+    console.log("SlotHandle.handleLayoutUpdate", { propagation });
+    super.handleLayoutUpdate({ propagation });
   }
 }

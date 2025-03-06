@@ -16,6 +16,8 @@ import ElementaStage from "./components/stage";
 import { Viewport } from "./viewport";
 
 export class ElementaStager extends ElementaRenderer {
+  static key = 0;
+  key = ElementaStager.key++;
   readonly viewport = new Viewport();
 
   private domRoot: HTMLElement | undefined;

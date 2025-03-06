@@ -3,7 +3,7 @@
 import { ElllComponentElementRenderable } from "@repo/elementa-renderer";
 import { updateMapList } from "@repo/utils";
 import { BehaviorSubject } from "rxjs";
-import { IHandle } from "~/src/_types/_";
+import { IHandle, ILayoutUpdatePropagation } from "~/src/_types/_";
 import { IFragmentHandle } from "~/src/_types/handles/entity/fragment";
 import { LayoutUpdatePropagation } from "../../../handle_rect";
 import { FragmentHandle } from "../../fragment";
@@ -70,5 +70,15 @@ export class ElllComponentElementHandle extends ComponentElementHandle<ElllCompo
       templateSubscription.unsubscribe();
       this._template$.complete();
     });
+  }
+
+  handleLayoutUpdate({
+    propagation,
+  }: {
+    propagation?: ILayoutUpdatePropagation | undefined;
+  }): void {
+    super.handleLayoutUpdate({ propagation });
+
+    this.template?.handleLayoutUpdate({ propagation });
   }
 }

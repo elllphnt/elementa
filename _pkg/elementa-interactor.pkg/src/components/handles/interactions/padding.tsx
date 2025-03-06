@@ -75,24 +75,26 @@ export function PaddingHandle({ handle }: { handle: ElementHandle }) {
           mouseInteraction.endPosition$,
           mouseInteraction.ctrlKey$,
           mouseInteraction.altKey$,
-        ]).subscribe(([viewportPosition, individual, symetrical]) => {
+        ]).subscribe(([interfacePosition, individual, symetrical]) => {
           let paddingValue = 0;
 
-          const position =
-            editor.stager.viewport.viewportToContent(viewportPosition);
+          const stagerEndPosition =
+            editor.interface.interactorToStager(interfacePosition);
+          const contentPosition =
+            editor.stager.viewport.windowToContent(stagerEndPosition);
 
           switch (edge) {
             case "top":
-              paddingValue = position.y - rect.y;
+              paddingValue = contentPosition.y - rect.y;
               break;
             case "right":
-              paddingValue = rect.x + rect.width - position.x;
+              paddingValue = rect.x + rect.width - contentPosition.x;
               break;
             case "bottom":
-              paddingValue = rect.y + rect.height - position.y;
+              paddingValue = rect.y + rect.height - contentPosition.y;
               break;
             case "left":
-              paddingValue = position.x - rect.x;
+              paddingValue = contentPosition.x - rect.x;
               break;
           }
 

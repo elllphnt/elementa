@@ -18,13 +18,13 @@ export const defaultTheme: Theme = {
     // selection: "#08f",
     background: "#0a0a0a",
     text: "#fff",
-    grid: "#8888",
+    grid: "#88888815",
     selection: "#08f",
   },
   dark: {
     background: "#0a0a0a",
     text: "#fff",
-    grid: "#8888",
+    grid: "#88888815",
     selection: "#08f",
   },
 };

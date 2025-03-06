@@ -26,11 +26,11 @@ export function viewportRectOf$(viewport: Viewport, contentRect: Rect) {
         ? viewport.rectContentToViewport$(contentRect)
         : of(undefined),
     ),
-    switchMap((viewportRect) =>
-      viewportRect
+    switchMap((viewportRect) => {
+      return viewportRect
         ? viewport.rectNearestHalfPixel$(viewportRect)
-        : of(undefined),
-    ),
+        : of(undefined);
+    }),
   );
 }
 

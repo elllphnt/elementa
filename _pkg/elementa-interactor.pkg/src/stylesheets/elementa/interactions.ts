@@ -3,7 +3,7 @@ import { Theme } from "../../theme/theme";
 export const interactionsStyleSheet = (theme: Theme) => /* css */ `
     /* focus */
 
-    .elementa-interface.focused .elementa-layer-handle {
+    .elementa-interface.focused .elementa-layer-content {
         display: none;
     }
     .elementa-interface.focused .elementa-layer-selection {
@@ -87,7 +87,7 @@ export const interactionsStyleSheet = (theme: Theme) => /* css */ `
 
     /* corning */
 
-    .elementa-interface.flag-corning .elementa-layer-handle {
+    .elementa-interface.flag-corning .elementa-layer-content {
         display: none;
     }
     .elementa-interface.flag-corning .elementa-selection {
@@ -154,7 +154,7 @@ export const interactionsStyleSheet = (theme: Theme) => /* css */ `
     .elementa-interface.space-panning {
         cursor: grab;
     }
-    .elementa-interface.space-panning .elementa-layer-handle, .elementa-interface.space-panning .elementa-layer-content {
+    .elementa-interface.space-panning .elementa-layer-content, .elementa-interface.space-panning .elementa-layer-content {
         display: none;
     }
 `;

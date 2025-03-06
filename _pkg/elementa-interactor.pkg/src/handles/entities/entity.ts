@@ -5,7 +5,7 @@ import { Observable } from "rxjs";
 import { IElementaInteractor, IEntityHandle, IHandle } from "~/src/_types/_";
 import { handleProperties } from "../_";
 import { Handle } from "../handle";
-import { HandleRect } from "../handle_rect";
+import { HandleRect, LayoutUpdatePropagation } from "../handle_rect";
 
 export abstract class EntityHandle<
     R extends InstanceRenderable = InstanceRenderable,
@@ -123,12 +123,16 @@ export abstract class EntityHandle<
 
   private _makeResizeObserver() {
     return new ResizeObserver(() => {
-      this.handleLayoutUpdate();
+      this.handleLayoutUpdate({
+        propagation: new LayoutUpdatePropagation(),
+      });
     });
   }
   private _makeChildListObserver() {
     return new MutationObserver(() => {
-      this.handleLayoutUpdate();
+      this.handleLayoutUpdate({
+        propagation: new LayoutUpdatePropagation(),
+      });
     });
   }
   private _handleHtmlElementUnmount(key: string) {

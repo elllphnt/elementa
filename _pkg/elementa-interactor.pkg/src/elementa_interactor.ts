@@ -15,7 +15,11 @@ import {
 } from "./_lib/handles";
 import { IElementaInteractor, IEntityHandle, IHandle } from "./_types/_";
 import { IHost } from "./_types/host";
-import { FallbackHandle, FrameWidgetHandle } from "./handles/_";
+import {
+  FallbackHandle,
+  FrameWidgetHandle,
+  LayoutUpdatePropagation,
+} from "./handles/_";
 import { Interface } from "./interface";
 import { CommandManager } from "./managers/command_manager";
 import { InteractionManager } from "./managers/interaction";
@@ -252,6 +256,16 @@ export class ElementaInteractor
       }
     });
 
+    // handle layout update when viewport origin changes
+    const widgetHandlesSubscription =
+      this.stager.viewport.initialContentOrigin$.subscribe(() => {
+        this.handles.forEach((handle) =>
+          handle.handleLayoutUpdate({
+            propagation: new LayoutUpdatePropagation(),
+          }),
+        );
+      });
+
     // const fallbackHandleSubscription = this.stager.component$.subscribe(
     //   (component) => {
     //     if (component) {
@@ -278,6 +292,7 @@ export class ElementaInteractor
       this._flags$.complete();
       framesSubscription.unsubscribe();
       entityToolSubscription.unsubscribe();
+      widgetHandlesSubscription.unsubscribe();
       // widgetHandlesSubscription.unsubscribe();
       // handlesSubscription.unsubscribe();
       // fallbackHandleSubscription.unsubscribe();
