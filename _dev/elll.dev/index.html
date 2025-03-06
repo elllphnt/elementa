@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" class="el-bg-bg dark:el-bg-bg dark el-overflow-x-hidden">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React + TS</title>
+    <style>
+      #root {
+        height: 100vh;
+        width: 100vw;
+      }
+    </style>
+    <script>
+      if (typeof Symbol === "function" && !Symbol.observable) {
+        Symbol.observable = "@@observable";
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      var process = { env: { NODE_ENV: "development" } };
+    </script>
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.2.0",
+          "react-dom": "https://esm.sh/react-dom@18.2.0",
+          "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime"
+        }
+      }
+    </script>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

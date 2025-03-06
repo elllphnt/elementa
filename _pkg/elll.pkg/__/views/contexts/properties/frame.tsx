@@ -1,0 +1,38 @@
+import { FrameWidgetHandle } from "@repo/elementa";
+import SheetContainer from "~/src/components/sheet/sheet_container";
+import { SheetView } from "../../../components/sheet/types";
+import { elementaSheetViews } from "../../sheets/elementa/_";
+
+const sheets = [
+  elementaSheetViews.alignment,
+  elementaSheetViews.frame,
+  elementaSheetViews.frameViewport,
+  elementaSheetViews.frameProps,
+  elementaSheetViews.frameData,
+  elementaSheetViews.frameStyle,
+] as SheetView[];
+
+export function FramePropertiesPanel({
+  selection,
+  stateKey,
+}: {
+  selection: FrameWidgetHandle[];
+  stateKey: string[];
+}): JSX.Element {
+  return (
+    <SheetContainer
+      key={selection.map((s) => s.key).join(",")}
+      sheets={sheets.map((sheet) => ({
+        key: sheet.id,
+        viewId: sheet.id,
+        title: sheet.title,
+      }))}
+      stateKey={[...stateKey, "sheets"]}
+      props={{
+        selection,
+        renderables: selection.map((handle) => handle.renderable),
+        instances: selection.map((handle) => handle.renderable.instance),
+      }}
+    />
+  );
+}

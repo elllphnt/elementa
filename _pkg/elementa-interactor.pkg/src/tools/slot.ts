@@ -1,0 +1,44 @@
+import { ElementData, entityTypes } from "@elllphnt/elll-element";
+import { Component, Element, SlotElement } from "@repo/elementa-models";
+import { ElementTool } from "./element";
+
+export class SlotTool extends ElementTool {
+  constructor() {
+    super({
+      name: "slot",
+      entityType: entityTypes.elements.slot,
+    });
+  }
+
+  createElement({
+    component,
+    punctual,
+  }: {
+    component: Component;
+    punctual?: boolean;
+  }): Element<ElementData> {
+    const element = new SlotElement({
+      component,
+    });
+
+    const style = element.stylesheet.baseStyle(true);
+    style.setProperty("display", "flex");
+    style.setProperty("align-items", "center");
+    style.setProperty("justify-content", "center");
+    style.setProperty("gap-x", 8);
+    style.setProperty("gap-y", 8);
+
+    if (punctual) {
+      style.setProperty("height", {
+        value: 100,
+        unit: "px",
+      });
+      style.setProperty("width", {
+        value: 100,
+        unit: "px",
+      });
+    }
+
+    return element;
+  }
+}

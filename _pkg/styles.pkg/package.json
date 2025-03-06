@@ -1,0 +1,17 @@
+{
+    "name": "@repo/styles",
+    "version": "0.1.0",
+    "description": "CSS styles for Elllephant",
+    "scripts": {
+        "build:editor": "tailwindcss build -c tailwind.config.editor.js -i src/main.css -o dist/elll.css --minify",
+        "watch:editor": "tailwindcss build -c tailwind.config.editor.js -i src/main.css -o dist/elll.css --watch",
+        "build:app": "tailwindcss build -c tailwind.config.app.js -i src/main.css -o dist/elll-app.css --minify",
+        "watch:app": "tailwindcss build -c tailwind.config.app.js -i src/main.css -o dist/elll-app.css --watch",
+        "build": "npm run build:editor && npm run build:app",
+        "watch": "concurrently \"npm run watch:editor\" \"npm run watch:app\""
+    },
+    "devDependencies": {
+        "tailwindcss": "^3.4.1",
+        "concurrently": "^9.0.1"
+    }
+}

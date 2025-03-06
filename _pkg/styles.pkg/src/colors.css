@@ -1,0 +1,51 @@
+:root {
+  --color-primary-500: 44 85 200;
+  --color-primary-400: 46 98 231;
+  --color-primary-300: 61 118 250;
+  --color-primary-200: 82 137 255;
+  --color-primary-100: 112 160 255;
+
+  --color-foreground-500: 47 47 47; /* Average of 40, 43, 59 */
+  --color-foreground-400: 92 92 92; /* Average of 81, 86, 111 */
+  --color-foreground-300: 133 133 133; /* Average of 130, 130, 140 */
+  --color-foreground-200: 196 196 196; /* Average of 190, 190, 210 */
+  --color-foreground-100: 237 237 237; /* Average of 230, 234, 247 */
+
+  --color-background-400: 224 224 224; /* Average of 220, 223, 230 */
+  --color-background-300: 231 231 231; /* Average of 228, 230, 235 */
+  --color-background-200: 238 238 238; /* Average of 236, 238, 242 */
+  --color-background-100: 248 248 248; /* Average of 247, 247, 250 */
+  --color-background-000: 255 255 255; /* Average of 255, 255, 255 */
+
+  --color-primary: var(--color-primary-300);
+  --color-foreground: var(--color-foreground-500);
+  --color-background: var(--color-background-000);
+
+  --color-red: 220 0 0;
+  --color-purple: 163 78 255;
+  --color-blue: 61 118 250;
+  --color-green: 2 219 177;
+  --color-yellow: 250 183 60;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary-500: 112 160 255;
+    --color-primary-400: 82 137 255;
+    --color-primary-300: 61 118 250;
+    --color-primary-200: 46 98 231;
+    --color-primary-100: 44 85 200;
+
+    --color-foreground-500: 249 249 249; /* Average of 245, 248, 255 */
+    --color-foreground-400: 175 175 175; /* Average of 166, 171, 189 */
+    --color-foreground-300: 119 119 119; /* Average of 110, 113, 134 */
+    --color-foreground-200: 77 77 77; /* Average of 70, 71, 90 */
+    --color-foreground-100: 48 48 48; /* Average of 44, 44, 56 */
+
+    --color-background-400: 74 74 74; /* Average of 60, 69, 92 */
+    --color-background-300: 65 65 65; /* Average of 53, 61, 82 */
+    --color-background-200: 49 49 49; /* Average of 40, 46, 60 */
+    --color-background-100: 32 32 32; /* Average of 28, 31, 38 */
+    --color-background-000: 27 27 27; /* Average of 24, 26, 32 */
+  }
+}

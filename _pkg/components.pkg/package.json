@@ -1,0 +1,34 @@
+{
+    "name": "@repo/components",
+    "version": "0.1.0",
+    "description": "A collection of components",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "babel src -d dist -x .ts,.tsx && tsc",
+        "watch:babel": "babel src -d dist -x .ts,.tsx --watch",
+        "watch:tsc": "tsc -w",
+        "watch": "yarn watch:babel & yarn watch:tsc"
+    },
+    "dependencies": {
+        "@elllphnt/elll-element": "^0.24.15",
+        "@radix-ui/react-scroll-area": "^1.2.2",
+        "@radix-ui/react-tooltip": "^1.1.2",
+        "@repo/utils": "*",
+        "@types/color": "^3.0.6",
+        "classnames": "^2.5.1",
+        "color": "^4.2.3",
+        "rc-slider": "^11.1.5",
+        "react-colorful": "^5.6.1",
+        "react-error-boundary": "^5.0.0"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.23.0",
+        "@babel/core": "^7.23.2",
+        "@babel/plugin-transform-react-jsx": "^7.22.15",
+        "@babel/plugin-transform-typescript": "^7.22.15",
+        "babel-plugin-module-resolver": "^5.0.0",
+        "concurrently": "8.2.2",
+        "xml2js": "^0.6.2"
+    }
+}

@@ -1,0 +1,27 @@
+{
+    "name": "@repo/backend",
+    "version": "0.1.0",
+    "description": "Backend for the application",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc -w",
+        "dev": "parcel dev/src/index.html --dist-dir dev/dist --no-cache"
+    },
+    "dependencies": {
+        "@elllphnt/configuration-service-client": "^0.1.2",
+        "@elllphnt/elll-client": "^0.1.4",
+        "@elllphnt/identity-service-client": "^0.1.7",
+        "@elllphnt/intelligence-service-client": "^0.1.10",
+        "@elllphnt/pubsub-service-client": "^0.1.4",
+        "@elllphnt/repository-service-client": "^1.0.10",
+        "@elllphnt/utils": "^0.6.16",
+        "@elllphnt/workspace-service-client": "^0.1.9",
+        "@repo/utils": "*",
+        "bson": "^6.8.0",
+        "rxjs": "^7.8.1",
+        "sift": "^17.1.3"
+    },
+    "devDependencies": {}
+}
