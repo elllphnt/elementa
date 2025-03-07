@@ -1,6 +1,6 @@
 import {
   CssSelector,
-  StyleModifierData,
+  StyleModifierDefinitionData,
   StyleModifierType,
 } from "@elllphnt/elll-element";
 import { Datafiable, Disposable } from "@repo/utils";
@@ -8,19 +8,20 @@ import { BehaviorSubject, combineLatest, map } from "rxjs";
 import { genId } from "~/src/libs/id";
 import { IStyleModifierSheet } from "./_types";
 
-export class StyleModifier
+export class StyleModifierDefinition
   extends Disposable
-  implements Datafiable<StyleModifierData>
+  implements Datafiable<StyleModifierDefinitionData>
 {
   readonly id: string;
   readonly sheet: IStyleModifierSheet;
 
   private _type$ = new BehaviorSubject<StyleModifierType>(
-    StyleModifierType.Static,
+    StyleModifierType.Element,
   );
-  private _class$ = new BehaviorSubject<string>("");
+  private _name$ = new BehaviorSubject<string>("");
   private _selector$ = new BehaviorSubject<CssSelector>([]);
-  private _mode$ = new BehaviorSubject<boolean>(false);
+  private _signature$ = new BehaviorSubject<string[]>([]);
+  private _predecence$ = new BehaviorSubject<number | undefined>(undefined);
 
   get type() {
     return this._type$.value;
@@ -29,11 +30,11 @@ export class StyleModifier
     return this._type$.asObservable();
   }
 
-  get class() {
-    return this._class$.value;
+  get name() {
+    return this._name$.value;
   }
-  get class$() {
-    return this._class$.asObservable();
+  get name$() {
+    return this._name$.asObservable();
   }
 
   get selector() {
@@ -43,36 +44,46 @@ export class StyleModifier
     return this._selector$.asObservable();
   }
 
-  get mode() {
-    return this._mode$.value;
+  get signature() {
+    return this._signature$.value;
   }
-  get mode$() {
-    return this._mode$.asObservable();
+  get signature$() {
+    return this._signature$.asObservable();
   }
 
-  get data(): StyleModifierData {
+  get predecence() {
+    return this._predecence$.value;
+  }
+  get predecence$() {
+    return this._predecence$.asObservable();
+  }
+
+  get data(): StyleModifierDefinitionData {
     return {
       id: this.id,
       type: this.type,
-      class: this.class,
+      name: this.name,
+      signature: this.signature,
       selector: this.selector,
-      mode: this.mode,
+      predecence: this.predecence,
     };
   }
 
   get data$() {
     return combineLatest([
       this.type$,
-      this.class$,
+      this.name$,
       this.selector$,
-      this.mode$,
+      this.signature$,
+      this.predecence$,
     ]).pipe(
-      map(([type, class_, selector, mode]) => ({
+      map(([type, name, selector, signature, predecence]) => ({
         id: this.id,
         type,
-        class: class_,
+        name,
         selector,
-        mode,
+        signature,
+        predecence,
       })),
     );
   }
@@ -83,10 +94,11 @@ export class StyleModifier
     this.sheet = sheet;
   }
 
-  restore(data: StyleModifierData): void {
+  restore(data: StyleModifierDefinitionData): void {
     this._type$.next(data.type);
-    this._class$.next(data.class);
+    this._name$.next(data.name);
     this._selector$.next(data.selector);
-    this._mode$.next(data.mode ?? false);
+    this._signature$.next(data.signature ?? []);
+    this._predecence$.next(data.predecence);
   }
 }

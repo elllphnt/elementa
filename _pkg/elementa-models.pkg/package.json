@@ -28,7 +28,7 @@
     },
     "peerDependencies": {},
     "dependencies": {
-        "@elllphnt/elll-element": "^0.24.15",
+        "@elllphnt/elll-element": "^0.24.19",
         "@elllphnt/utils": "^0.6.16",
         "@jsep-plugin/new": "^1.0.3",
         "@jsep-plugin/numbers": "^1.0.1",

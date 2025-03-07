@@ -28,6 +28,7 @@ export const handleLayerStyleSheet = (theme: Theme) => /* css */ `
     }
     .elementa-handle-label {
         font-size: 11px;
+        line-height: 1;
     }
     .elementa-handle-label-placeholder {
         font-style: italic;
@@ -62,6 +63,7 @@ export const handleLayerStyleSheet = (theme: Theme) => /* css */ `
 
     .elementa-handle-frame {
         outline: 1px solid #5554;
+        container-type: size;
     }
     .elementa-handle-slot {
         outline: 1px dashed #5554;
@@ -105,14 +107,29 @@ export const handleLayerStyleSheet = (theme: Theme) => /* css */ `
         outline: solid 1px;
         outline-color: ${theme.light.selection};
         outline-offset: 0px !important;
-    }
-    .element-port:hover {
-        transform: scale(1.2);
-    }
-    @container (max-width: 16px) or (max-height: 16px){
-        .element-port {
+
+        &:hover {
+            transform: scale(1.2);
+        }
+
+        @container (max-width: 16px) or (max-height: 16px){
             display: none;
         }
     }
 
+    .elementa-style-modifiers-indicator {
+        font-size: 10px;
+        background-color: #8888;
+        color: #fff;
+        padding: 1px 3px;
+        border-radius: 2px;
+
+        &.active {
+            background-color: #08f;
+        }
+
+        @container (max-width: 100px){
+            display: none;
+        }
+    }
 `;

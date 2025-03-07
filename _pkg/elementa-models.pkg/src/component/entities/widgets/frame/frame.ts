@@ -5,12 +5,14 @@ import {
   Expression,
   FrameWidgetData,
   OverflowValue,
+  StyleModifierData,
   entityTypes,
 } from "@elllphnt/elll-element";
 import { combineLatestOrEmpty } from "@repo/utils";
 import {
   BehaviorSubject,
   Observable,
+  combineLatest,
   distinctUntilChanged,
   map,
   of,
@@ -200,11 +202,56 @@ export class FrameWidget extends Widget<FrameWidgetData> {
     );
   }
 
-  get styleModifiers(): string[] {
-    return [];
+  get colorSchemeModifiers() {
+    return this.colorScheme
+      ? this.component.project.styleManager.colorSchemeModifiers({
+          colorScheme: this.colorScheme,
+        })
+      : [];
   }
-  get styleModifers$(): Observable<string[]> {
-    return of([]);
+  get colorSchemeModifiers$() {
+    return this.colorScheme$.pipe(
+      switchMap((colorScheme) =>
+        colorScheme
+          ? this.component.project.styleManager.colorSchemeModifiers$({
+              colorScheme,
+            })
+          : of([]),
+      ),
+    );
+  }
+
+  get viewportModifiers() {
+    return this.viewport
+      ? this.component.project.styleManager.viewportModifiers({
+          height: this.viewport.height,
+          width: this.viewport.width,
+        })
+      : [];
+  }
+  get viewportModifiers$() {
+    return combineLatest([this.viewportHeight$, this.viewportWidth$]).pipe(
+      switchMap(([height, width]) => {
+        return this.component.project.styleManager.viewportModifiers$({
+          height,
+          width,
+        });
+      }),
+    );
+  }
+
+  get styleModifiers(): StyleModifierData[] {
+    return [...this.viewportModifiers, ...this.colorSchemeModifiers];
+  }
+  get styleModifers$(): Observable<StyleModifierData[]> {
+    return combineLatest([
+      this.colorSchemeModifiers$,
+      this.viewportModifiers$,
+    ]).pipe(
+      map(([colorSchemeModifiers, viewportModifiers]) => {
+        return [...viewportModifiers, ...colorSchemeModifiers];
+      }),
+    );
   }
 
   get data(): FrameWidgetData {

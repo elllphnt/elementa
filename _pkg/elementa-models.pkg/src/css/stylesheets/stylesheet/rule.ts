@@ -26,12 +26,15 @@ export class StylesheetCssStyleRule extends CssStyleRule {
   }
 
   get intrinsicSelector(): CssSelector {
-    return [this.layer, this.style.className].filter(Boolean) as CssSelector;
+    return [this.layer, `.${this.style.className}`].filter(
+      Boolean,
+    ) as CssSelector;
   }
   get intrinsicSelector$(): Observable<CssSelector> {
     return this.style$.pipe(
       map(
-        (style) => [this.layer, style.className].filter(Boolean) as CssSelector,
+        (style) =>
+          [this.layer, `.${style.className}`].filter(Boolean) as CssSelector,
       ),
     );
   }
@@ -43,24 +46,39 @@ export class StylesheetCssStyleRule extends CssStyleRule {
     return this.style$.pipe(switchMap((style) => style.css$));
   }
 
+  get modifiers() {
+    return this.stylesheet.project.styleManager.modifiersFromElllSelector(
+      this.selector,
+    );
+  }
+  get modifiers$() {
+    return this.stylesheet.project.styleManager.modifiersFromElllSelector$(
+      this.selector,
+    );
+  }
+
   get selectors() {
     return [
       this.intrinsicSelector,
       this.stylesheet.project.styleManager.cssSelectorOf({
         layer: this.layer,
         baseSelector: `.${this.stylesheet.className}`,
-        modifier: this.selector,
+        modifiers: this.modifiers,
       }),
     ];
   }
   get selectors$() {
     return combineLatestOrEmpty([
       this.intrinsicSelector$,
-      this.stylesheet.project.styleManager.cssSelectorOf$({
-        layer: this.layer,
-        baseSelector: `.${this.stylesheet.className}`,
-        modifier: this.selector,
-      }),
+      this.modifiers$.pipe(
+        switchMap((modifiers) =>
+          this.stylesheet.project.styleManager.cssSelectorOf$({
+            layer: this.layer,
+            baseSelector: `.${this.stylesheet.className}`,
+            modifiers,
+          }),
+        ),
+      ),
     ]).pipe(map(([intrinsic, selector]) => [intrinsic, selector]));
   }
 

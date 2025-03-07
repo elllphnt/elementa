@@ -157,7 +157,7 @@ export class SlotFill
     );
   }
 
-  constructor({ component }: { id?: string; component: Component }) {
+  constructor({ component }: { component: Component }) {
     super();
     this.component = component;
     this.styleOverridesMap = new StyleOverridesMap();
@@ -495,8 +495,7 @@ export abstract class ComponentElement extends ElementElementContainer<Component
     restoreReactiveMap({
       datafiable$: this._slotFills$,
       data: data.slots,
-      create: (data) =>
-        new SlotFill({ id: data._id, component: this.component }),
+      create: () => new SlotFill({ component: this.component }),
       restore: (element, data) => element.restore(data),
       dispose: (element) => element.dispose(),
     });

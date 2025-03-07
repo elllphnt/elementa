@@ -1,3 +1,4 @@
+import { StyleModifierData } from "@elllphnt/elll-element";
 import {
   Fragment,
   FragmentParam,
@@ -26,8 +27,8 @@ export abstract class FragmentEnvironment extends Disposable {
   abstract get paged(): boolean;
   abstract get paged$(): Observable<boolean>;
 
-  abstract get styleModifiers(): string[];
-  abstract get styleModifiers$(): Observable<string[]>;
+  abstract get styleModifiers(): StyleModifierData[];
+  abstract get styleModifiers$(): Observable<StyleModifierData[]>;
 
   abstract get states(): StateInstance[];
   abstract get states$(): Observable<StateInstance[]>;
@@ -99,10 +100,10 @@ export class ChildFragmentEnvironment extends FragmentEnvironment {
   get paged$(): Observable<boolean> {
     return of(false);
   }
-  get styleModifiers(): string[] {
+  get styleModifiers(): StyleModifierData[] {
     return this.parent.styleModifiers;
   }
-  get styleModifiers$(): Observable<string[]> {
+  get styleModifiers$(): Observable<StyleModifierData[]> {
     return this.parent.styleModifiers$;
   }
   get states(): StateInstance[] {

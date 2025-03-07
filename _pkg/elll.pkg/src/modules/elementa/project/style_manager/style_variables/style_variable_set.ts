@@ -2,7 +2,7 @@ import { StyleVariableSetData } from "@elllphnt/elll-element";
 import { Datafiable, Disposable } from "@repo/utils";
 import { BehaviorSubject, combineLatest, map, switchMap } from "rxjs";
 import { genId } from "~/src/libs/id";
-import { StyleModifier } from "../style_modifiers/style_modifier";
+import { StyleModifierDefinition } from "../style_modifiers/style_modifier";
 import { IStyleVariableSheet } from "./_types";
 
 export class StyleVariableSet
@@ -49,7 +49,7 @@ export class StyleVariableSet
   get modes() {
     return this.modeIds
       .map((id) => this.sheet.styleManager.modifierSheet.modifier(id))
-      .filter(Boolean) as StyleModifier[];
+      .filter(Boolean) as StyleModifierDefinition[];
   }
   get modes$() {
     return this.modeIds$.pipe(
@@ -58,7 +58,7 @@ export class StyleVariableSet
           ids.map((id) => this.sheet.styleManager.modifierSheet.modifier$(id)),
         ),
       ),
-      map((modes) => modes.filter(Boolean) as StyleModifier[]),
+      map((modes) => modes.filter(Boolean) as StyleModifierDefinition[]),
     );
   }
 

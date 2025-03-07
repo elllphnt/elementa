@@ -10,7 +10,7 @@
         "build:elll-app": "npm run build --workspace elll-app",
         "build:elllephant": "npm run build:styles && npm run build:utils && npm run build:components && npm run build:backend && npm run build:app",
         "build:elll": "npm run build:styles && npm run build:utils && npm run build:components && npm run build:backend && npm run build:elll-app",
-        "dev:elll": "npm run dev --workspace elll-dev",
+        "dev:elll": "npm run token --workspace elll-dev && npm run dev --workspace elll-dev",
         "dev:elementa-editor": "npm run dev --workspace elementa-editor",
         "dev:elementa-viewer": "npm run dev --workspace elementa-viewer",
         "dev": "concurrently \"npm run dev:elll\" \"npm run dev:elementa-editor\" \"npm run dev:elementa-viewer\""

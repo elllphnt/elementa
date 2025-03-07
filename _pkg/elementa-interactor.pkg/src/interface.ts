@@ -9,6 +9,8 @@ import {
 import { BehaviorSubject, distinctUntilChanged, map, of } from "rxjs";
 import { IElementaInteractor, IInterface } from "./_types/_";
 
+const MAX_WHEEL_DELTA = 20;
+
 export class Interface extends Disposable implements IInterface {
   readonly interactor: IElementaInteractor;
 
@@ -32,6 +34,9 @@ export class Interface extends Disposable implements IInterface {
   // New private properties for smooth panning
   private panAnimationFrameId: number | null = null;
   private remainingPanDelta: { x: number; y: number } = { x: 0, y: 0 };
+
+  // New properties for mouse wheel event detection
+  private lastDeltaY: number = 0;
 
   get x() {
     return this._position$.value.x;
@@ -437,8 +442,17 @@ export class Interface extends Disposable implements IInterface {
 
   // event
   handleWheel(e: WheelEvent) {
-    const deltaX = e.deltaX;
-    const deltaY = e.deltaY;
+    let deltaX = e.deltaX;
+    let deltaY = e.deltaY;
+
+    // Mouse wheel event detection logic
+    if (Math.abs(e.deltaY) === Math.abs(this.lastDeltaY) || e.deltaMode === 1) {
+      // Likely a mouse wheel
+      deltaX = Math.sign(deltaX) * Math.min(Math.abs(deltaX), MAX_WHEEL_DELTA);
+      deltaY = Math.sign(deltaY) * Math.min(Math.abs(deltaY), MAX_WHEEL_DELTA);
+    }
+    this.lastDeltaY = e.deltaY;
+
     const viewport = this.interactor.stager.viewport;
     const currentScale = viewport.scale;
     const scaleFactor = -deltaY * 0.015 * Math.min(currentScale, 1);

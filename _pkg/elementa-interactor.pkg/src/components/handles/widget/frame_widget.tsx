@@ -82,7 +82,6 @@ function Label({ widget }: { widget: FrameWidgetHandle }) {
         alignItems: "center",
         overflow: "hidden",
       }}
-      className="elementa-handle-label"
       onDoubleClick={handleDoubleClick}
     >
       <div style={{ height: 12, width: 12 }}>{icon}</div>
@@ -168,6 +167,32 @@ function ViewportIndicator({
     />
   );
 }
+function StyleModifiersIndicator({ frame }: { frame: FrameWidgetHandle }) {
+  const fragment = useObservable(frame.fragment$, frame.fragment);
+  const modifiers = useObservable(
+    fragment?.instance.environment.styleModifiers$,
+    fragment?.instance.environment.styleModifiers,
+  );
+
+  if (!modifiers?.length)
+    return (
+      <div
+        className="elementa-style-modifiers-indicator"
+        style={{
+          opacity: 0.5,
+          fontStyle: "italic",
+        }}
+      >
+        base
+      </div>
+    );
+
+  return (
+    <div className="elementa-style-modifiers-indicator active">
+      {modifiers.join(":")}
+    </div>
+  );
+}
 
 export function FrameWidgetHandleComponent({
   widget,
@@ -211,6 +236,7 @@ export function FrameWidgetHandleComponent({
         }}
       >
         <div
+          className="elementa-handle-label"
           style={{
             position: "absolute",
             top: -4,
@@ -225,6 +251,7 @@ export function FrameWidgetHandleComponent({
           }}
         >
           <Label widget={widget} />
+          <StyleModifiersIndicator frame={widget} />
         </div>
         <ViewportIndicator frame={widget} isHeight={true} />
         <ViewportIndicator frame={widget} isHeight={false} />

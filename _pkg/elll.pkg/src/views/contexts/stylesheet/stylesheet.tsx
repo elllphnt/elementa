@@ -227,21 +227,41 @@ function StyleSelectorPanel({
   }
 }
 function StyleSelectorControl({
+  styleModifiers,
   stylesheets,
   activeSelector,
 }: {
+  styleModifiers: string[];
   stylesheets: Stylesheet[];
   activeSelector: string;
 }): JSX.Element {
   const ref = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
 
+  const modifiersDisplay = styleModifiers.join(":");
+  const activeSelectorDisplay =
+    activeSelector === baseSelector ? (
+      <span className="el-opacity-50">Default Style</span>
+    ) : (
+      activeSelector
+    );
+
   return (
     <div
       ref={ref}
-      className="el-relative el-w-full el-py-1 el-px-3 el-text-fg-400"
+      className="el-relative el-w-full el-py-2 el-px-3 el-text-fg-400 el-space-y-1"
     >
-      <div className="el-text-sm">dark:sm</div>
+      <div className="el-text-sm">
+        {modifiersDisplay ? (
+          <span className="el-bg-pm el-text-pm-ctr el-px-1 el-rounded-sm">
+            {modifiersDisplay}
+          </span>
+        ) : (
+          <span className="el-bg-fg/10 el-px-1 el-rounded-sm el-italic">
+            base
+          </span>
+        )}
+      </div>
       <div
         className={cx(
           "el-flex el-cursor-pointer el-transition-colors hover:el-text-fg el-items-center",
@@ -251,7 +271,7 @@ function StyleSelectorControl({
         )}
         onClick={() => setOpen(!open)}
       >
-        <div className="el-grow">{activeSelector}</div>
+        <div className="el-grow">{activeSelectorDisplay}</div>
         <Icon
           name={elllIcons16.chevron}
           className={cx("el-transition-transform", {
@@ -286,12 +306,18 @@ function ElementStylesheetPanel({
   elements: ElementHandle[];
 }): JSX.Element {
   const stylesheets = elements.map((handle) => handle.entity.stylesheet);
+  const styleModifierSets = useManyObservables(
+    elements.map((e) => e.instance.environment.styleModifiers$),
+    elements.map((e) => e.instance.environment.styleModifiers),
+    elements.map((e) => e.key).join(","),
+  );
   const activeSelectors = useManyObservables(
     stylesheets.map((a) => a.activeSelector$),
     stylesheets.map((a) => a.activeSelector),
     stylesheets.map((a) => a.key).join(","),
   );
   const activeSelector = resolveCommon(activeSelectors) ?? baseSelector;
+  const styleModifiers = resolveArrayIntersection(styleModifierSets);
 
   const styles = useManyObservables(
     stylesheets.map((a) => a.style$(activeSelector, true)),
@@ -303,6 +329,7 @@ function ElementStylesheetPanel({
     <div className="el-h-full el-w-full el-flex el-flex-col">
       <div className="el-bg-bg-100 el-border-b">
         <StyleSelectorControl
+          styleModifiers={styleModifiers}
           stylesheets={stylesheets}
           activeSelector={activeSelector}
         />

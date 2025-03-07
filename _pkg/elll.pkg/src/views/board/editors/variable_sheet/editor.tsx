@@ -1,7 +1,7 @@
 import { baseSelector } from "@elllphnt/elll-element";
 import { elllIcons16, Icon, ScrollArea } from "@repo/components";
 import { useObservable } from "@repo/utils";
-import { StyleModifier } from "~/src/modules/elementa/project/style_manager/style_modifiers/style_modifier";
+import { StyleModifierDefinition } from "~/src/modules/elementa/project/style_manager/style_modifiers/style_modifier";
 import { StyleVariable } from "~/src/modules/elementa/project/style_manager/style_variables/style_variable";
 import { StyleVariableSet } from "~/src/modules/elementa/project/style_manager/style_variables/style_variable_set";
 import { StyleVariableSheet } from "~/src/modules/elementa/project/style_manager/style_variables/variable_sheet";
@@ -31,7 +31,7 @@ function VariableTableRow({
   modes,
 }: {
   variable: StyleVariable;
-  modes: StyleModifier[];
+  modes: StyleModifierDefinition[];
 }) {
   const name = useObservable(variable.name$, variable.name);
   const values = useObservable(variable.values$, variable.values);
@@ -53,8 +53,8 @@ function VariableTableRow({
   );
 }
 
-function ModeHeader({ mode }: { mode: StyleModifier }) {
-  const name = useObservable(mode.class$, mode.class);
+function ModeHeader({ mode }: { mode: StyleModifierDefinition }) {
+  const name = useObservable(mode.name$, mode.name);
   return <td className="el-border-r el-px-2 el-py-1 el-text-fg-300">{name}</td>;
 }
 

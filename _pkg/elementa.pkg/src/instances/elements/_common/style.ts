@@ -6,15 +6,18 @@ import {
   isVarRef,
   RawStyleData,
   StyleData,
+  StyleModifierData,
   stylePropertyConfigMap,
   StylePropertyName,
 } from "@elllphnt/elll-element";
-import { map, Observable, of, switchMap } from "rxjs";
+import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
 import { InstanceStyle } from "../../../style/style";
 import { ElementInstance } from "../element";
 
 export class ElementInstanceStyle extends InstanceStyle {
   readonly element: ElementInstance;
+
+  readonly _selectorString$ = new BehaviorSubject<string>(baseSelector);
 
   get parentStyle(): ElementInstanceStyle | undefined {
     return this.element.elementParent?.style;
@@ -37,30 +40,18 @@ export class ElementInstanceStyle extends InstanceStyle {
     return this.environment.namespace$;
   }
 
-  get selector(): string[] {
+  get modifiers(): StyleModifierData[] {
     return this.environment.styleModifiers;
   }
-  get selector$(): Observable<string[]> {
+  get modifiers$(): Observable<StyleModifierData[]> {
     return this.environment.styleModifiers$;
   }
 
   get selectorString() {
-    if (this.selector.length) {
-      return this.selector.sort().join(":");
-    } else {
-      return baseSelector;
-    }
+    return this._selectorString$.value;
   }
   get selectorString$() {
-    return this.selector$.pipe(
-      map((selector) => {
-        if (selector.length) {
-          return selector.sort().join(":");
-        } else {
-          return baseSelector;
-        }
-      }),
-    );
+    return this._selectorString$.asObservable();
   }
 
   override<N extends StylePropertyName>(
@@ -221,6 +212,25 @@ export class ElementInstanceStyle extends InstanceStyle {
   constructor({ element }: { element: ElementInstance }) {
     super();
     this.element = element;
+
+    const selectorStringSubscription = this.modifiers$
+      .pipe(
+        switchMap((modifiers) => {
+          if (modifiers.length) {
+            return this.element.entity.component.project.styleManager.modifiersToElllSelector$(
+              modifiers,
+            );
+          } else {
+            return of(baseSelector);
+          }
+        }),
+      )
+      .subscribe(this._selectorString$);
+
+    this.addDisposer(() => {
+      selectorStringSubscription.unsubscribe();
+      this._selectorString$.complete();
+    });
   }
 
   setProperty<N extends StylePropertyName>(

@@ -1,4 +1,4 @@
-import { StyleModifierData } from "@elllphnt/elll-element";
+import { StyleModifierDefinitionData } from "@elllphnt/elll-element";
 import { combineLatestOrEmpty, restoreReactiveMap } from "@repo/utils";
 import {
   BehaviorSubject,
@@ -11,33 +11,44 @@ import { jsonModelConstructor } from "~/src/models/json";
 import { SynchronizedModelFile } from "../../file";
 import { IElllStyleManager } from "../_types";
 import { IStyleModifierSheet } from "./_types";
-import { StyleModifier } from "./style_modifier";
+import { StyleModifierDefinition } from "./style_modifier";
 
 export type StyleModifierSheetData = {
-  modifiers: StyleModifierData[];
+  modifiers: StyleModifierDefinitionData[];
 };
 
 export class StyleModifierSheet
   extends SynchronizedModelFile<StyleModifierSheetData>
   implements IStyleModifierSheet
 {
-  private _modifiers$: BehaviorSubject<Record<string, StyleModifier>> =
-    new BehaviorSubject({});
+  private _modifiersById$ = new BehaviorSubject<
+    Record<string, StyleModifierDefinition>
+  >({});
+  private _modifiersByName$ = new BehaviorSubject<
+    Record<string, StyleModifierDefinition>
+  >({});
 
   get modifiers() {
-    return Object.values(this._modifiers$.value);
+    return Object.values(this._modifiersById$.value);
   }
   get modifiers$() {
-    return this._modifiers$
+    return this._modifiersById$
       .asObservable()
       .pipe(map((modifiers) => Object.values(modifiers)));
   }
 
+  get modifiersByName() {
+    return this._modifiersByName$.value;
+  }
+  get modifiersByName$() {
+    return this._modifiersByName$.asObservable();
+  }
+
   modifier(id: string) {
-    return this._modifiers$.value[id];
+    return this._modifiersById$.value[id];
   }
   modifier$(id: string) {
-    return this._modifiers$.pipe(map((modifiers) => modifiers[id]));
+    return this._modifiersById$.pipe(map((modifiers) => modifiers[id]));
   }
 
   get data(): StyleModifierSheetData {
@@ -77,15 +88,31 @@ export class StyleModifierSheet
     });
     this.watchData();
     this.addDisposer(() => {
-      this._modifiers$.complete();
+      this._modifiersById$.complete();
+    });
+
+    const modifiersByNameSubscription = this._modifiersById$.subscribe(
+      (modifiers) => {
+        const byName: Record<string, StyleModifierDefinition> = {};
+        for (const modifier of Object.values(modifiers)) {
+          byName[modifier.name] = modifier;
+        }
+        this._modifiersByName$.next(byName);
+      },
+    );
+
+    this.addDisposer(() => {
+      this._modifiersById$.complete();
+      this._modifiersByName$.complete();
+      modifiersByNameSubscription.unsubscribe();
     });
   }
 
   restore(data: StyleModifierSheetData) {
     restoreReactiveMap({
-      datafiable$: this._modifiers$,
+      datafiable$: this._modifiersById$,
       data: Object.fromEntries(data.modifiers?.map((s) => [s.id, s]) ?? []),
-      create: (d) => new StyleModifier({ id: d.id, sheet: this }),
+      create: (d) => new StyleModifierDefinition({ id: d.id, sheet: this }),
       restore: (set, d) => set.restore(d),
       dispose: (set) => set.dispose(),
     });
