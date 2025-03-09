@@ -1,6 +1,7 @@
 import { TokenManager } from "@elllphnt/elll-client";
 import {
   configurationServiceClientFactory,
+  driveServiceClientFactory,
   identityServiceClientFactory,
   intelligenceServiceClientFactory,
   repositoryServiceClientFactory,
@@ -10,6 +11,8 @@ import { Backend } from "./lib/backend";
 import { Commit } from "./resources/commit";
 import { CommitFile } from "./resources/commit_file";
 import { Configuration } from "./resources/configuration";
+import { Drive } from "./resources/drive";
+import { DriveFile } from "./resources/drive_file";
 import { IntelligenceThread } from "./resources/intelligence_thread";
 import { IntelligenceMessage } from "./resources/intelligence_thread_message";
 import { Repository } from "./resources/repository";
@@ -19,6 +22,7 @@ import { User } from "./resources/user";
 import { Workspace } from "./resources/workspace";
 import { WorkspaceFile } from "./resources/workspace_file";
 import { configurationServiceFactory } from "./services/configuration_service";
+import { driveServiceFactory } from "./services/drive_service";
 import { identityServiceFactory } from "./services/identity_service";
 import { intelligenceServiceFactory } from "./services/intelligence_service";
 import { repositoryServiceFactory } from "./services/repository_service";
@@ -50,6 +54,7 @@ export class ElllBackend extends Backend {
     this.addClient(intelligenceServiceClientFactory);
     this.addClient(configurationServiceClientFactory);
     this.addClient(repositoryServiceClientFactory);
+    this.addClient(driveServiceClientFactory);
 
     // services
 
@@ -58,6 +63,7 @@ export class ElllBackend extends Backend {
     this.addService(intelligenceServiceFactory);
     this.addService(configurationServiceFactory);
     this.addService(repositoryServiceFactory);
+    this.addService(driveServiceFactory);
 
     // stores
 
@@ -72,6 +78,8 @@ export class ElllBackend extends Backend {
     this.addStore(Commit);
     this.addStore(CommitFile);
     this.addStore(RepositoryTag);
+    this.addStore(Drive);
+    this.addStore(DriveFile);
 
     // sync
     this.syncer.init();

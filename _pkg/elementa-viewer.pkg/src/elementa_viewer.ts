@@ -269,25 +269,13 @@ export class ElementaViewer extends ElementaRenderer {
     });
   }
 
-  renderContent(container: HTMLElement) {
-    // styles
-    const elementaResetStylesheet = document.createElement("style");
-    elementaResetStylesheet.innerHTML = resetCss();
-    document.head.appendChild(elementaResetStylesheet);
-
-    const root = createRoot(container);
-    root.render(createElement(ElementaViewerComponent, { viewer: this }));
-
-    return root;
-  }
-  removeContent() {}
-
   mount(container: HTMLElement) {
     const elementaResetStylesheet = document.createElement("style");
     elementaResetStylesheet.innerHTML = resetCss();
     document.head.appendChild(elementaResetStylesheet);
 
     this.reactRoot = createRoot(container);
+    container.classList.add("elementa-preview");
     this.reactRoot.render(
       createElement(ElementaViewerComponent, { viewer: this }),
     );

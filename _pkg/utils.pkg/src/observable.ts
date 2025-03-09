@@ -48,7 +48,7 @@ export function useObservable<T, O extends Observable<T> | undefined>(
     return () => {
       subscriptionRef.current?.unsubscribe();
     };
-  }, [observable]);
+  }, [key ?? observable]);
 
   return valueRef.current;
 }

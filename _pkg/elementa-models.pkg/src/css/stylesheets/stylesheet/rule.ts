@@ -1,6 +1,6 @@
 import { CssSelector } from "@elllphnt/elll-element";
 import { combineLatestOrEmpty } from "@repo/utils";
-import { map, Observable, switchMap } from "rxjs";
+import { combineLatest, map, Observable, switchMap } from "rxjs";
 import { Style } from "~/src/style/style";
 import { Stylesheet } from "~/src/style/stylesheet";
 import { CssStyleRule } from "../../lib/rule/stylerule";
@@ -26,7 +26,7 @@ export class StylesheetCssStyleRule extends CssStyleRule {
   }
 
   get intrinsicSelector(): CssSelector {
-    return [this.layer, `.${this.style.className}`].filter(
+    return [`@layer editor`, `.${this.style.className}.flag-selected`].filter(
       Boolean,
     ) as CssSelector;
   }
@@ -34,7 +34,9 @@ export class StylesheetCssStyleRule extends CssStyleRule {
     return this.style$.pipe(
       map(
         (style) =>
-          [this.layer, `.${style.className}`].filter(Boolean) as CssSelector,
+          [`@layer editor`, `.${style.className}.flag-selected`].filter(
+            Boolean,
+          ) as CssSelector,
       ),
     );
   }
@@ -59,27 +61,75 @@ export class StylesheetCssStyleRule extends CssStyleRule {
 
   get selectors() {
     return [
+      // Use for direct style application
       this.intrinsicSelector,
-      this.stylesheet.project.styleManager.cssSelectorOf({
-        layer: this.layer,
-        baseSelector: `.${this.stylesheet.className}`,
-        modifiers: this.modifiers,
-      }),
+      // Applied in stage
+      [
+        "@layer content",
+        this.modifiers
+          .map((modifier) =>
+            this.stylesheet.project.styleManager.modifierToClassName(modifier),
+          )
+          .map((c) => `.${c}`)
+          .join(" "),
+        `.${this.stylesheet.className}`,
+      ].filter(Boolean),
+      // Applied in preview/production
+      [
+        "@layer content",
+        ".elementa-preview",
+        ...this.stylesheet.project.styleManager.cssSelectorOf({
+          layer: this.layer,
+          baseSelector: `.${this.stylesheet.className}`,
+          modifiers: this.modifiers,
+        }),
+      ],
     ];
   }
   get selectors$() {
     return combineLatestOrEmpty([
+      // Use for direct style application
       this.intrinsicSelector$,
+      // Applied in stage
       this.modifiers$.pipe(
         switchMap((modifiers) =>
-          this.stylesheet.project.styleManager.cssSelectorOf$({
-            layer: this.layer,
-            baseSelector: `.${this.stylesheet.className}`,
-            modifiers,
-          }),
+          combineLatest(
+            modifiers.map((modifier) =>
+              this.stylesheet.project.styleManager.modifierToClassName$(
+                modifier,
+              ),
+            ),
+          ),
+        ),
+        map((classNames) =>
+          [
+            "@layer content",
+            classNames.map((c) => `.${c}`).join(" "),
+            `.${this.stylesheet.className}`,
+          ].filter(Boolean),
         ),
       ),
-    ]).pipe(map(([intrinsic, selector]) => [intrinsic, selector]));
+      // Applied in preview/production
+      this.modifiers$.pipe(
+        switchMap((modifiers) =>
+          this.stylesheet.project.styleManager
+            .cssSelectorOf$({
+              layer: this.layer,
+              baseSelector: `.${this.stylesheet.className}`,
+              modifiers,
+            })
+            .pipe(
+              map((selector) => [
+                "@layer content",
+                ".elementa-preview",
+                ...selector,
+              ]),
+            ),
+        ),
+      ),
+    ]).pipe(
+      map(([intrinsic, stage, selector]) => [intrinsic, stage, selector]),
+    );
   }
 
   constructor({

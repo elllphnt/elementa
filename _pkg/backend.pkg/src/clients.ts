@@ -4,6 +4,7 @@ import { createIdentityServiceClient } from "@elllphnt/identity-service-client";
 import { createIntelligenceServiceClient } from "@elllphnt/intelligence-service-client";
 import { createRepositoryServiceClient } from "@elllphnt/repository-service-client";
 import { createWorkspaceServiceClient } from "@elllphnt/workspace-service-client";
+import { createDriveServiceClient } from "@elllphnt/drive-service-client";
 import { ClientFactory } from "./lib/client";
 import { createFactory } from "./lib/factory";
 
@@ -41,6 +42,13 @@ export const workspaceServiceClientFactory = createElllephantApiClientFactory(
   createWorkspaceServiceClient,
   {
     name: "workspace-service-client",
+  },
+);
+
+export const driveServiceClientFactory = createElllephantApiClientFactory(
+  createDriveServiceClient,
+  {
+    name: "drive-service-client",
   },
 );
 

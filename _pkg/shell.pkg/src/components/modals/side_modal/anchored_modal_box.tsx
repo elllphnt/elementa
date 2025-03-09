@@ -165,9 +165,12 @@ export function AnchoredModalBox({
       }
 
       setTimeout(() => {
-        document.addEventListener("mousedown", handleClick);
+        document.addEventListener("mousedown", handleClick, { capture: true });
       }, 0);
-      return () => document.removeEventListener("mousedown", handleClick);
+      return () =>
+        document.removeEventListener("mousedown", handleClick, {
+          capture: true,
+        });
     }
   }, [modal]);
 

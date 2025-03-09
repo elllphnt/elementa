@@ -47,6 +47,14 @@ export abstract class StyleManager {
     width?: number;
   }): Observable<StyleModifierData[]>;
 
+  abstract modifierToString(modifier: StyleModifierData): string;
+  abstract modifierToString$(modifier: StyleModifierData): Observable<string>;
+
+  abstract modifierToClassName(modifier: StyleModifierData): string;
+  abstract modifierToClassName$(
+    modifier: StyleModifierData,
+  ): Observable<string>;
+
   abstract modifiersToElllSelector(modifiers: StyleModifierData[]): string;
   abstract modifiersToElllSelector$(
     modifiers: StyleModifierData[],

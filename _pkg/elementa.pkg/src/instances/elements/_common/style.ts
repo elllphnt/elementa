@@ -1,5 +1,4 @@
 import {
-  baseSelector,
   Evaluable,
   Expression,
   isExpression,
@@ -10,17 +9,16 @@ import {
   stylePropertyConfigMap,
   StylePropertyName,
 } from "@elllphnt/elll-element";
-import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
+import { map, Observable, of, switchMap } from "rxjs";
 import { InstanceStyle } from "../../../style/style";
 import { ElementInstance } from "../element";
 
 export class ElementInstanceStyle extends InstanceStyle {
   readonly element: ElementInstance;
-
-  readonly _selectorString$ = new BehaviorSubject<string>(baseSelector);
+  readonly selector: string;
 
   get parentStyle(): ElementInstanceStyle | undefined {
-    return this.element.elementParent?.style;
+    return this.element.elementParent?.style(this.selector);
   }
 
   get stylesheet() {
@@ -47,13 +45,6 @@ export class ElementInstanceStyle extends InstanceStyle {
     return this.environment.styleModifiers$;
   }
 
-  get selectorString() {
-    return this._selectorString$.value;
-  }
-  get selectorString$() {
-    return this._selectorString$.asObservable();
-  }
-
   override<N extends StylePropertyName>(
     property: N,
   ): Expression<StyleData[N]> | undefined {
@@ -73,7 +64,7 @@ export class ElementInstanceStyle extends InstanceStyle {
       return override as any;
     } else {
       return this.stylesheet
-        .style(this.selectorString, undefined)
+        .style(this.selector, undefined)
         ?.propertyValue(property) as Evaluable<StyleData[N]>;
     }
   }
@@ -85,14 +76,13 @@ export class ElementInstanceStyle extends InstanceStyle {
         if (override) {
           return of(override);
         } else {
-          return this.selectorString$.pipe(
-            switchMap((selector) =>
-              this.stylesheet.style$(selector, undefined),
-            ),
-            switchMap(
-              (style) => style?.propertyValue$(property) ?? of(undefined),
-            ),
-          ) as Observable<Evaluable<StyleData[N]>>;
+          return this.stylesheet
+            .style$(this.selector, undefined)
+            .pipe(
+              switchMap(
+                (style) => style?.propertyValue$(property) ?? of(undefined),
+              ),
+            ) as Observable<Evaluable<StyleData[N]>>;
         }
       }),
     );
@@ -127,7 +117,7 @@ export class ElementInstanceStyle extends InstanceStyle {
   resolvedCascadePropertyValue<N extends StylePropertyName>(
     property: N,
   ): Evaluable<StyleData[N]> {
-    const style = this.stylesheet.style(this.selectorString, undefined);
+    const style = this.stylesheet.style(this.selector, undefined);
     if (style) {
       const value = style.propertyValue(property);
       if (value !== undefined) {
@@ -139,8 +129,7 @@ export class ElementInstanceStyle extends InstanceStyle {
   resolvedCascadePropertyValue$<N extends StylePropertyName>(
     property: N,
   ): Observable<Evaluable<StyleData[N]>> {
-    return this.selectorString$.pipe(
-      switchMap((selector) => this.stylesheet.style$(selector, undefined)),
+    return this.stylesheet.style$(this.selector, undefined).pipe(
       switchMap((style) => style?.propertyValue$(property) ?? of(undefined)),
       switchMap((value) =>
         value !== undefined
@@ -209,36 +198,34 @@ export class ElementInstanceStyle extends InstanceStyle {
     );
   }
 
-  constructor({ element }: { element: ElementInstance }) {
+  constructor({
+    element,
+    selector,
+  }: {
+    element: ElementInstance;
+    selector: string;
+  }) {
     super();
     this.element = element;
-
-    const selectorStringSubscription = this.modifiers$
-      .pipe(
-        switchMap((modifiers) => {
-          if (modifiers.length) {
-            return this.element.entity.component.project.styleManager.modifiersToElllSelector$(
-              modifiers,
-            );
-          } else {
-            return of(baseSelector);
-          }
-        }),
-      )
-      .subscribe(this._selectorString$);
-
-    this.addDisposer(() => {
-      selectorStringSubscription.unsubscribe();
-      this._selectorString$.complete();
-    });
+    this.selector = selector;
   }
 
   setProperty<N extends StylePropertyName>(
     property: N,
     value: StyleData[N],
   ): void {
+    console.log(
+      "setProperty",
+      property,
+      value,
+      this.selector,
+      this.modifiers,
+      this.element.entity.component.project.styleManager.modifiersToElllSelector(
+        this.modifiers,
+      ),
+    );
     this.stylesheet
-      .style(this.selectorString, true)
+      .style(this.selector, true)
       .setProperty(property as any, value as any);
   }
 

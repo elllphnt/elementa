@@ -6,11 +6,11 @@ import {
   IconStoreContext,
   ViewStoreContext,
 } from "@repo/components";
+import { useObservable } from "@repo/utils";
 import { useMemo } from "react";
 import ShellContext from "~/src/contexts/shell";
 import WorkspaceContext from "~/src/contexts/workspace";
 import { Shell } from "~/src/models/shell";
-import { useObservable } from "@repo/utils";
 import { useDragDropObserver } from "../drag_drop/_hooks";
 import WorkspaceView from "../workspace/workspace";
 
@@ -18,7 +18,7 @@ export function ShellView({ shell }: { shell: Shell }): JSX.Element {
   const workspace = useObservable(shell.workspace$, shell.workspace);
 
   // drag drop
-  useDragDropObserver(shell.dragDropManager);
+  useDragDropObserver();
 
   // load internal views
   useMemo(() => {

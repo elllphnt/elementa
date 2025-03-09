@@ -35,6 +35,13 @@ export class PageElementHandle
     return this.content$;
   }
 
+  get selected(): boolean {
+    return this.parent?.selected ?? false;
+  }
+  get selected$(): Observable<boolean> {
+    return this.parent?.selected$ ?? new BehaviorSubject(false);
+  }
+
   constructor({
     renderable,
     fragment,

@@ -23,7 +23,6 @@ export class Stylesheet
   readonly project: Project;
 
   private _styles$ = new BehaviorSubject<Record<string, Style>>({});
-  private _activeSelector$ = new BehaviorSubject<string | undefined>(undefined);
 
   get className() {
     return `elll-stylesheet-${this.key}`;
@@ -77,43 +76,6 @@ export class Stylesheet
     create?: C,
   ): C extends true ? Observable<Style> : Observable<Style | undefined> {
     return this.style$(baseSelector, create) as any;
-  }
-
-  get activeSelector() {
-    return this._activeSelector$.value;
-  }
-  get activeSelector$() {
-    return this._activeSelector$.asObservable();
-  }
-
-  get derivedActiveSelectors() {
-    return this.activeSelector
-      ? this.selectors.filter((selector) =>
-          this.activeSelector?.includes(selector),
-        )
-      : [];
-  }
-  get derivedActiveSelectors$() {
-    return combineLatestOrEmpty([this.activeSelector$, this.selectors$]).pipe(
-      map(([active, selectors]) =>
-        active
-          ? selectors.filter((selector) => active?.includes(selector))
-          : [],
-      ),
-    );
-  }
-
-  get derivedActiveStyles() {
-    return this.derivedActiveSelectors.map((selector) =>
-      this.style(selector, true),
-    );
-  }
-  get derivedActiveStyles$(){
-    return this.derivedActiveSelectors$.pipe(
-      switchMap(selectors=> combineLatestOrEmpty(
-        selectors.map(selector => this.style$(selector, true))
-      ))
-    )
   }
 
   get data() {
@@ -188,9 +150,5 @@ export class Stylesheet
     delete styles[selector];
     this._styles$.next(styles);
     existing.dispose();
-  }
-
-  setActiveSelector(selector: string | undefined) {
-    this._activeSelector$.next(selector);
   }
 }

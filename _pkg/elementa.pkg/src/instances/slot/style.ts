@@ -6,14 +6,17 @@ import {
   isVarRef,
   RawStyleData,
   StyleData,
+  StyleModifierData,
   StylePropertyName,
 } from "@elllphnt/elll-element";
-import { map, Observable, of, switchMap } from "rxjs";
+import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
 import { InstanceStyle } from "~/src/style/style";
 import { SlotInstance } from "./slot";
 
 export class SlotInstanceStyle extends InstanceStyle {
   readonly slot: SlotInstance;
+
+  readonly _selectorString$ = new BehaviorSubject<string>(baseSelector);
 
   get stylesheet() {
     return this.slot.fill?.stylesheet;
@@ -36,30 +39,18 @@ export class SlotInstanceStyle extends InstanceStyle {
     return this.environment.namespace$;
   }
 
-  get selector(): string[] {
+  get modifiers(): StyleModifierData[] {
     return this.environment.styleModifiers;
   }
-  get selector$(): Observable<string[]> {
+  get modifiers$(): Observable<StyleModifierData[]> {
     return this.environment.styleModifiers$;
   }
 
   get selectorString() {
-    if (this.selector.length) {
-      return this.selector.sort().join(":");
-    } else {
-      return baseSelector;
-    }
+    return this._selectorString$.value;
   }
   get selectorString$() {
-    return this.selector$.pipe(
-      map((selector) => {
-        if (selector.length) {
-          return selector.sort().join(":");
-        } else {
-          return baseSelector;
-        }
-      }),
-    );
+    return this._selectorString$.asObservable();
   }
 
   override<N extends StylePropertyName>(
@@ -221,6 +212,25 @@ export class SlotInstanceStyle extends InstanceStyle {
   constructor({ slot }: { slot: SlotInstance }) {
     super();
     this.slot = slot;
+
+    const selectorStringSubscription = this.modifiers$
+      .pipe(
+        switchMap((modifiers) => {
+          if (modifiers.length) {
+            return this.slot.entity.component.project.styleManager.modifiersToElllSelector$(
+              modifiers,
+            );
+          } else {
+            return of(baseSelector);
+          }
+        }),
+      )
+      .subscribe(this._selectorString$);
+
+    this.addDisposer(() => {
+      selectorStringSubscription.unsubscribe();
+      this._selectorString$.complete();
+    });
   }
 
   setProperty<N extends StylePropertyName>(

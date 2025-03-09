@@ -1,5 +1,5 @@
 import { Disposable } from "@repo/utils";
-import { BehaviorSubject, map, Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, map, Observable } from "rxjs";
 import { ElementaRenderer } from "../elementa_renderer";
 
 export abstract class Renderable extends Disposable {
@@ -16,6 +16,7 @@ export abstract class Renderable extends Disposable {
   private _htmlElements$ = new BehaviorSubject<
     Record<string, HTMLElement | undefined>
   >({});
+  private _flags$ = new BehaviorSubject<Record<string, boolean>>({});
 
   get htmlElements$() {
     return this._htmlElements$.asObservable();
@@ -44,14 +45,42 @@ export abstract class Renderable extends Disposable {
     );
   }
 
+  get flags$() {
+    return this._flags$.asObservable();
+  }
+  get flags() {
+    return this._flags$.value;
+  }
+
   constructor({ renderer }: { renderer: ElementaRenderer }) {
     super();
     this.renderer = renderer;
+
+    const flagSubscription = combineLatest([
+      this.flags$,
+      this.htmlElements$,
+    ]).subscribe(([flags, htmlElements]) => {
+      // update html elements flag classes
+      Object.values(htmlElements).forEach((element) => {
+        Object.entries(flags).forEach(([key, value]) => {
+          const classname = `flag-${key}`;
+          if (value) {
+            element?.classList.add(classname);
+          } else {
+            element?.classList.remove(classname);
+          }
+        });
+      });
+    });
 
     this.addDisposer(() => {
       this.renderables.forEach((renderable) => renderable.dispose());
       this._htmlElements$.next({});
       this._htmlElements$.complete();
+
+      flagSubscription.unsubscribe();
+      this._flags$.next({});
+      this._flags$.complete();
     });
   }
 
@@ -76,6 +105,13 @@ export abstract class Renderable extends Disposable {
     this._htmlElements$.next({
       ...this.htmlElements,
       [key]: element ?? undefined,
+    });
+  }
+
+  setFlag(key: string, value: boolean) {
+    this._flags$.next({
+      ...this._flags$.value,
+      [key]: value,
     });
   }
 }

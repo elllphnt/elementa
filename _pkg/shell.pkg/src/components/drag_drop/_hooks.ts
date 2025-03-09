@@ -1,14 +1,19 @@
-import { useEffect, useMemo, useRef } from "react";
-import { map } from "rxjs";
-import { useShell } from "~/src/hooks/shell";
-import { DragDropManager } from "~/src/models/drag_drop_manager";
 import { useObservable } from "@repo/utils";
+import { useEffect, useRef } from "react";
+import { BehaviorSubject } from "rxjs";
+
+const dropTarget$ = new BehaviorSubject<HTMLElement | undefined>(undefined);
+const dragData$ = new BehaviorSubject<Record<string, any> | undefined>(
+  undefined,
+);
 
 export function useDrag(
-  { getData }: { getData: () => Record<string, any> },
+  {
+    getData,
+    getLabel,
+  }: { getData: () => Record<string, any>; getLabel?: () => string },
   dependencies: any[] = [],
 ) {
-  const shell = useShell();
   const ref = useRef<HTMLElement | undefined>(undefined);
 
   useEffect(() => {
@@ -29,12 +34,35 @@ export function useDrag(
       if (!dataTransfer) return;
 
       const data = getData();
+      dragData$.next(data);
+
       for (const key in data) {
         dataTransfer.setData(key, data[key]);
         dataTransfer.effectAllowed = "all";
       }
 
-      shell.dragDropManager.setDragData(data);
+      const label = getLabel?.();
+      if (label) {
+        // create a label for the drag image
+        const dragImage = document.createElement("div");
+        dragImage.style.position = "absolute";
+        dragImage.style.top = "-1000px";
+        dragImage.style.left = "-1000px";
+        dragImage.style.fontSize = "11px";
+        dragImage.style.height = "16px";
+        dragImage.style.padding = "2px 8px";
+        dragImage.style.borderRadius = "16px";
+        dragImage.style.display = "flex";
+        dragImage.style.alignItems = "center";
+        dragImage.style.justifyContent = "center";
+        dragImage.className = "el-bg-pm el-text-pm-ctr";
+        dragImage.innerText = label;
+        document.body.appendChild(dragImage);
+        dataTransfer.setDragImage(dragImage, 0, 16);
+        setTimeout(() => {
+          document.body.removeChild(dragImage);
+        });
+      }
     };
 
     element.addEventListener("dragstart", handleDragStart);
@@ -53,117 +81,76 @@ export function useDrag(
 
 export function useDrop(
   {
-    onDrop,
-    canDrop = () => true,
-    accept,
+    acceptDrop = () => true,
+    handleDrop: _handleDrop,
   }: {
-    accept?: string[];
-    canDrop?: (data: Record<string, any>) => boolean;
-    onDrop?: (data: Record<string, any>, files?: FileList) => void;
+    acceptDrop?: (
+      event: DragEvent,
+      data?: Record<string, any>,
+    ) => boolean | "copy" | "link" | "move";
+    handleDrop?: (event: DragEvent, data?: Record<string, any>) => void;
   },
   dependencies: any[] = [],
 ) {
   const ref = useRef<HTMLElement | undefined>(undefined);
-  const shell = useShell();
-  const dragDropManager = shell.dragDropManager;
+  const dropTarget = useObservable(dropTarget$, dropTarget$.value);
 
-  const [_isDropTarget$, _isDropTarget] = useMemo(() => {
-    const isDropTarget$ = dragDropManager.dropTarget$.pipe(
-      map((target) => ref.current && target === ref.current),
-    );
-    const isDropTarget =
-      ref.current && dragDropManager.dropTarget === ref.current;
-
-    return [isDropTarget$, isDropTarget];
-  }, [dragDropManager]);
-
-  const [_containsDropTarget$, _containsDropTarget] = useMemo(() => {
-    const containsDropTarget$ = dragDropManager.dropTarget$.pipe(
-      map((target) => target && ref.current?.contains(target)),
-    );
-    const containsDropTarget =
-      dragDropManager.dropTarget &&
-      ref.current?.contains(dragDropManager.dropTarget);
-
-    return [containsDropTarget$, containsDropTarget];
-  }, [dragDropManager]);
-
-  const isDropTarget = useObservable(_isDropTarget$, _isDropTarget);
-  const containsDropTarget = useObservable(
-    _containsDropTarget$,
-    _containsDropTarget,
-  );
+  const isDropTarget = ref.current && dropTarget === ref.current;
+  const containsDropTarget = dropTarget && ref.current?.contains(dropTarget);
 
   useEffect(() => {
     const element = ref.current;
     if (!element) return;
 
     const handleDragEnter = (event: DragEvent) => {
-      const types = event.dataTransfer?.types ?? [];
-      const acceptedTypes = accept ?? [];
-      const data = dragDropManager.dragData ?? {};
+      if (!event.dataTransfer) return;
 
-      if (
-        event.dataTransfer &&
-        acceptedTypes.some((type) => types.includes(type)) &&
-        canDrop(data)
-      ) {
+      const accept = acceptDrop?.(event, dragData$.value);
+      if (accept) {
         event.preventDefault();
         event.stopPropagation();
-        dragDropManager.setDropTarget(event.currentTarget as HTMLElement);
-        event.dataTransfer.dropEffect = "move";
+        dropTarget$.next(element);
+
+        if (typeof accept === "string") {
+          event.dataTransfer.dropEffect = accept;
+        } else {
+          event.dataTransfer.dropEffect = "move";
+        }
       }
     };
     const handleDragOver = (event: DragEvent) => {
-      const types = event.dataTransfer?.types ?? [];
-      const acceptedTypes = accept ?? [];
-      const data = dragDropManager.dragData ?? {};
+      if (!event.dataTransfer) return;
 
-      if (
-        event.dataTransfer &&
-        acceptedTypes.some((type) => types.includes(type)) &&
-        canDrop(data)
-      ) {
+      const accept = acceptDrop?.(event, dragData$.value);
+      if (accept) {
         event.preventDefault();
         event.stopPropagation();
-        event.dataTransfer.dropEffect = "move";
+
+        if (typeof accept === "string") {
+          event.dataTransfer.dropEffect = accept;
+        } else {
+          event.dataTransfer.dropEffect = "move";
+        }
       }
     };
 
     const handleDrop = (event: DragEvent) => {
-      const types = event.dataTransfer?.types ?? [];
-      const acceptedTypes = accept ?? [];
+      if (!event.dataTransfer) return;
 
-      const data: Record<string, any> = dragDropManager.dragData ?? {};
-      for (const key of event.dataTransfer?.types ?? []) {
-        data[key] = event.dataTransfer?.getData(key);
-      }
-      const files = event.dataTransfer?.files;
-
-      if (acceptedTypes.some((type) => types.includes(type)) && canDrop(data)) {
-        event.preventDefault();
-        event.stopPropagation();
-        onDrop?.(data, files);
-      }
-
-      dragDropManager.setDropTarget(undefined);
-      dragDropManager.setDragData(undefined);
-    };
-
-    const handleDragLeave = (event: DragEvent) => {
       event.preventDefault();
       event.stopPropagation();
+      dropTarget$.next(undefined);
+
+      _handleDrop?.(event, dragData$.value);
     };
 
     element.addEventListener("dragenter", handleDragEnter);
     element.addEventListener("drop", handleDrop);
-    element.addEventListener("dragleave", handleDragLeave);
     element.addEventListener("dragover", handleDragOver);
 
     return () => {
       element.removeEventListener("dragenter", handleDragEnter);
       element.removeEventListener("drop", handleDrop);
-      element.removeEventListener("dragleave", handleDragLeave);
       element.removeEventListener("dragover", handleDragOver);
     };
   }, dependencies);
@@ -181,14 +168,15 @@ export function useDrop(
   ] as const;
 }
 
-export function useDragDropObserver(dragDropManager: DragDropManager) {
+export function useDragDropObserver() {
   useEffect(() => {
     const handleDragEnter = () => {
-      dragDropManager.setDropTarget(undefined);
+      dropTarget$.next(undefined);
+      dragData$.next(undefined);
     };
     const handleDragEnd = () => {
-      dragDropManager.setDropTarget(undefined);
-      dragDropManager.setDragData(undefined);
+      dropTarget$.next(undefined);
+      dragData$.next(undefined);
     };
 
     document.addEventListener("dragenter", handleDragEnter);

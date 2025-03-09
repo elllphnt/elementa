@@ -106,6 +106,11 @@ export abstract class EntityHandle<
         }
       });
 
+    // set renderable selected flag when handle is selected
+    this.selected$.subscribe((selected) => {
+      this.renderable.setFlag("selected", selected);
+    });
+
     // register entity handle
     this.interactor.registerEntityHandle(this);
 

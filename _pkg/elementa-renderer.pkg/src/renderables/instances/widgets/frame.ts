@@ -1,6 +1,16 @@
 import { FrameWidgetInstance } from "@repo/elementa";
-import { combineLatestOrEmpty } from "@repo/utils";
-import { animationFrameScheduler, BehaviorSubject, map, observeOn } from "rxjs";
+import { combineLatestOrEmpty, pairwiseOrEmpty } from "@repo/utils";
+import _ from "lodash";
+import {
+  animationFrameScheduler,
+  BehaviorSubject,
+  combineLatest,
+  distinctUntilChanged,
+  map,
+  observeOn,
+  of,
+  switchMap,
+} from "rxjs";
 import tinycolor from "tinycolor2";
 import { updateInstanceRenderableList } from "../../../_lib/renderables";
 import { ElementaRenderer } from "../../../elementa_renderer";
@@ -25,6 +35,28 @@ export class FrameWidgetRenderable extends WidgetRenderable<FrameWidgetInstance>
   }
   get renderables$() {
     return this.fragment$.pipe(map((fragment) => (fragment ? [fragment] : [])));
+  }
+
+  get classNames() {
+    return (
+      this.fragment?.instance.environment.styleModifiers.map((modifier) =>
+        this.entity.project.styleManager.modifierToClassName(modifier),
+      ) ?? []
+    );
+  }
+  get classNames$() {
+    return this.fragment$.pipe(
+      switchMap(
+        (fragment) => fragment?.instance.environment.styleModifiers$ ?? of([]),
+      ),
+      switchMap((modifiers) => {
+        return combineLatestOrEmpty(
+          modifiers.map((modifier) =>
+            this.entity.project.styleManager.modifierToClassName$(modifier),
+          ),
+        );
+      }),
+    );
   }
 
   constructor({
@@ -124,12 +156,35 @@ export class FrameWidgetRenderable extends WidgetRenderable<FrameWidgetInstance>
       },
     );
 
+    // sync classname
+    const classNameSubscription = combineLatest([
+      this.classNames$.pipe(distinctUntilChanged(_.isEqual), pairwiseOrEmpty()),
+      this.htmlElements$,
+    ]).subscribe(([classNames, htmlElements]) => {
+      const [prev, next] = classNames as [string[], string[]];
+      const toRemove = new Set(prev);
+      for (const className of next) {
+        toRemove.delete(className);
+        Object.values(htmlElements).forEach((element) => {
+          element?.classList.add(className);
+        });
+      }
+      console.log("sync classname", [next, toRemove]);
+      for (const className of toRemove) {
+        Object.values(htmlElements).forEach((element) => {
+          element?.classList.remove(className);
+        });
+      }
+    });
+
     this.addDisposer(() => {
       styleSubscription.unsubscribe();
       fragmentSubscription.unsubscribe();
+      classNameSubscription.unsubscribe;
 
       this._fragment$.next(undefined);
       this._fragment$.complete();
+      this._fragment$.unsubscribe();
     });
   }
 }

@@ -7,6 +7,11 @@ export function ResourcesActivityView(): JSX.Element {
       stateKey={["elll", "activities", "resources", "drawers"]}
       drawers={[
         {
+          key: "elll.drawer.developmentActivity.storage",
+          viewId: drawerViews.storage.id,
+          title: "Storage",
+        },
+        {
           key: "elll.drawer.developmentActivity.packages",
           viewId: drawerViews.packages.id,
           title: "Packages",

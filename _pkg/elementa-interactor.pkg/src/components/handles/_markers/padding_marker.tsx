@@ -1,7 +1,7 @@
 import { extractEvaluable, LengthData } from "@elllphnt/elll-element";
 import { combineLatestOrEmpty } from "@repo/utils";
 import { useEffect, useRef } from "react";
-import { map } from "rxjs";
+import { map, switchMap } from "rxjs";
 import { ElementaEditorMode } from "~/src/_lib/mode";
 import { ElementHandle } from "~/src/handles/_";
 import { useElementaInteractor } from "~/src/hooks/elementa_interactor";
@@ -15,10 +15,18 @@ export function PaddingMarker({ handle }: { handle: ElementHandle }) {
   useEffect(() => {
     const subscription = combineLatestOrEmpty([
       combineLatestOrEmpty([
-        handle.instance.style.resolvedPropertyValue$("padding-top"),
-        handle.instance.style.resolvedPropertyValue$("padding-right"),
-        handle.instance.style.resolvedPropertyValue$("padding-bottom"),
-        handle.instance.style.resolvedPropertyValue$("padding-left"),
+        handle.style$.pipe(
+          switchMap((style) => style.resolvedPropertyValue$("padding-top")),
+        ),
+        handle.style$.pipe(
+          switchMap((style) => style.resolvedPropertyValue$("padding-right")),
+        ),
+        handle.style$.pipe(
+          switchMap((style) => style.resolvedPropertyValue$("padding-bottom")),
+        ),
+        handle.style$.pipe(
+          switchMap((style) => style.resolvedPropertyValue$("padding-left")),
+        ),
       ]).pipe(
         map(([top, right, bottom, left]) => ({
           top: extractEvaluable<LengthData | undefined>(top as any)[1] ?? 0,

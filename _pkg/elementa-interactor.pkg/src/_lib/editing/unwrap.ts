@@ -20,7 +20,7 @@ function unwrapContainer(containerInstance: ContainerElementHandle) {
   }
   // resolve positioning strategy
   const containerPosition =
-    containerInstance.instance.style.resolvedPropertyValue("position");
+    containerInstance.style.resolvedPropertyValue("position");
   // release children
   if (["absolute", "relative", "fixed"].includes(containerPosition as any)) {
     for (const element of children) {

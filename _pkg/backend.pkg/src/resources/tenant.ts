@@ -6,11 +6,14 @@ import { SavableResource } from "../lib/resource";
 import { identityServiceFactory } from "../services/identity_service";
 import { repositoryServiceFactory } from "../services/repository_service";
 import { Repository } from "./repository";
+import { combineLatestOrEmpty } from "@repo/utils";
+import { Drive } from "./drive";
 
 export class Tenant extends SavableResource<TenantData> {
   static readonly entity = elllEntities.tenant.name;
 
   private _name$ = new BehaviorSubject<string | undefined>(undefined);
+  private _driveId$ = new BehaviorSubject<string | undefined>(undefined);
 
   get identityService() {
     return this.backend.service(identityServiceFactory);
@@ -28,6 +31,25 @@ export class Tenant extends SavableResource<TenantData> {
   }
   get name$() {
     return this._name$.asObservable().pipe(distinctUntilChanged());
+  }
+
+  get driveId() {
+    return this._driveId$.value;
+  }
+  get driveId$() {
+    return this._driveId$.asObservable().pipe(distinctUntilChanged());
+  }
+  get drive() {
+    return this.driveId
+      ? this.backend.store(Drive).instance(this.driveId, true)
+      : undefined;
+  }
+  get drive$() {
+    return combineLatestOrEmpty([this.driveId$]).pipe(
+      map(([driveId]) =>
+        driveId ? this.backend.store(Drive).instance(driveId, true) : undefined,
+      ),
+    );
   }
 
   repositories({ autoFetch }: { autoFetch?: boolean } = {}) {
@@ -59,6 +81,7 @@ export class Tenant extends SavableResource<TenantData> {
 
     this.addDisposer(() => {
       this._name$.complete();
+      this._driveId$.complete();
     });
   }
 
@@ -67,6 +90,7 @@ export class Tenant extends SavableResource<TenantData> {
   }
   loadData(data: TenantData) {
     this._name$.next(data.name);
+    this._driveId$.next(data.drive_id);
   }
 
   createRepository({ name, type }: { name: string; type: string }) {

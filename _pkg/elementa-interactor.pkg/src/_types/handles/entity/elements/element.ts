@@ -1,11 +1,4 @@
-import {
-  CornerName,
-  EdgeName,
-  FractionData,
-  LengthData,
-  PercentData,
-  PositionValue,
-} from "@elllphnt/elll-element";
+import { CornerName, EdgeName, PositionValue } from "@elllphnt/elll-element";
 import { ElementRenderable } from "@repo/elementa-renderer";
 import { PointData, RectData } from "@repo/utils";
 import { Observable } from "rxjs";
@@ -23,9 +16,6 @@ export interface IElementHandle<R extends ElementRenderable = ElementRenderable>
     ICornerHandle,
     IMovableHandle {
   readonly fragment: IFragmentHandle;
-
-  readonly focusedStyleClassName$: Observable<string | undefined>;
-  readonly focusedStyleClassName: string | undefined;
 
   readonly allowedPortPlacements: EdgeName[];
   readonly allowedPortPlacements$: Observable<EdgeName[]>;
@@ -62,16 +52,6 @@ export interface IElementHandle<R extends ElementRenderable = ElementRenderable>
   setPadding(name: EdgeName, value: number | undefined): void;
   setPosition(position: PointData): void;
   setPositionStrategy(position: PositionValue | undefined): void;
-  setFocusedStyleClassName(key: string | undefined): void;
-  lengthToPixels(
-    length: LengthData | PercentData | FractionData | "unset" | undefined,
-    axis?: "x" | "y",
-  ): number;
-  lengthToUnit(
-    length: LengthData | PercentData | FractionData,
-    unit: string,
-    axis?: "x" | "y",
-  ): LengthData | PercentData | FractionData;
   ensurePositioned(): void;
   resolveContainingHandle(withPosition?: PositionValue): IHandle | undefined;
   getConnectionOptions(position: PointData): ContextMenuOption[][];

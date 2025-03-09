@@ -20,16 +20,21 @@ import { StyleModifierSheet } from "./style_modifiers/style_modifier_sheet";
 import { StyleVariableSheet } from "./style_variables/variable_sheet";
 
 export const elllModifiers = {
-  invalid: {
-    name: "__elll_invalid__",
-  },
+  invalid: (name?: string) => ({
+    name: "__elll_invalid",
+    args: name ? [name] : [],
+  }),
+} satisfies Record<string, StyleModifierData>;
+export const elllModifierStrings = {
+  invalid: (name?: string) =>
+    name ? `__elll_invalid-[${name}]` : "__elll_invalid",
 } satisfies Record<string, StyleModifierData>;
 export const elllCssSelectors = {
   invalid: ({ layer, baseSelector }) => {
     if (layer) {
-      return [baseSelector, `@layer ${layer}`, "&.__elll_invalid__"];
+      return [baseSelector, `@layer ${layer}`, "&.__elll_invalid"];
     } else {
-      return [baseSelector, "&.__elll_invalid__"];
+      return [baseSelector, "&.__elll_invalid"];
     }
   },
 } satisfies Record<
@@ -43,7 +48,7 @@ export const elllCssSelectors = {
   }) => CssSelector
 >;
 
-function modifiersToCssSelector({
+export function modifiersToCssSelector({
   layer,
   modifiers = [],
   baseSelector,
@@ -72,7 +77,7 @@ function modifiersToCssSelector({
 
   return [selector, undefined];
 }
-function modifiersToElllSelector({
+export function modifiersToElllSelector({
   modifiers = [],
   modifierDefinitions,
 }: {
@@ -84,16 +89,23 @@ function modifiersToElllSelector({
     modifiers,
     getModifierDefinition: (name) => modifierDefinitions[name],
   })
-    .map((modifier) =>
-      stringifyModifer({
+    .map((modifier) => {
+      const [selector, error] = stringifyModifer({
         modifier,
         getModifierDefinition: (name) => modifierDefinitions[name],
         stringifyData: (type, value) => `${value}`,
-      }),
-    )
+      });
+
+      if (error) {
+        console.error(error);
+        return elllModifierStrings.invalid(modifier.name);
+      } else {
+        return selector;
+      }
+    })
     .join(":");
 }
-function modifiersFromElllSelector({
+export function modifiersFromElllSelector({
   selector,
   modifierDefinitions,
 }: {
@@ -117,6 +129,41 @@ function modifiersFromElllSelector({
   }
 
   return [modifiers, undefined];
+}
+export function modifierToString({
+  modifier,
+  modifierDefinitions,
+}: {
+  modifier: StyleModifierData;
+  modifierDefinitions: Record<string, StyleModifierDefinitionData>;
+}) {
+  const [str, error] = stringifyModifer({
+    modifier,
+    getModifierDefinition: (name) => modifierDefinitions[name],
+    stringifyData: (type, data) => `${data}`,
+  });
+
+  if (error) {
+    return elllModifierStrings.invalid();
+  } else {
+    return str;
+  }
+}
+
+export function modifierToClassName({
+  modifier,
+  modifierDefinitions,
+}: {
+  modifier: StyleModifierData;
+  modifierDefinitions: Record<string, StyleModifierDefinitionData>;
+}) {
+  return (
+    "elll-mod-" +
+    modifierToString({
+      modifier,
+      modifierDefinitions,
+    })
+  );
 }
 
 export type ColorSchemeData = {
@@ -277,7 +324,8 @@ export class ElllStyleManager
     height: number;
     viewports: ViewportData[];
   }) {
-    for (const viewport of viewports) {
+    // reversed because latest definitions have higher predecence
+    for (const viewport of [...viewports].reverse()) {
       if (matchViewport({ height, width, viewport })) {
         return viewport.modifiers;
       }
@@ -332,7 +380,7 @@ export class ElllStyleManager
     });
     if (error) {
       console.error(error);
-      return [elllModifiers.invalid];
+      return [elllModifiers.invalid()];
     }
     return modifiers;
   }
@@ -347,10 +395,38 @@ export class ElllStyleManager
         });
         if (error) {
           console.error(error);
-          return [elllModifiers.invalid];
+          return [elllModifiers.invalid()];
         }
         return modifiers;
       }),
+    );
+  }
+
+  modifierToString(modifier: StyleModifierData): string {
+    return modifierToString({
+      modifier,
+      modifierDefinitions: this.modifierSheet.modifiersByName,
+    });
+  }
+  modifierToString$(modifier: StyleModifierData): Observable<string> {
+    return this.modifierSheet.modifiersByName$.pipe(
+      map((modifierDefinitions) =>
+        modifierToString({ modifier, modifierDefinitions }),
+      ),
+    );
+  }
+
+  modifierToClassName(modifier: StyleModifierData): string {
+    return modifierToClassName({
+      modifier,
+      modifierDefinitions: this.modifierSheet.modifiersByName,
+    });
+  }
+  modifierToClassName$(modifier: StyleModifierData): Observable<string> {
+    return this.modifierSheet.modifiersByName$.pipe(
+      map((modifierDefinitions) =>
+        modifierToClassName({ modifier, modifierDefinitions }),
+      ),
     );
   }
 
@@ -382,6 +458,18 @@ export class ElllStyleManager
     });
     this.variableSheet = new StyleVariableSheet({ styleManager: this });
     this.modifierSheet = new StyleModifierSheet({ styleManager: this });
+
+    const colorSchemeSubscription = this.colorSchemes$.subscribe((schemes) => {
+      this._colorSchemeByName$.next(
+        Object.fromEntries(schemes.map((scheme) => [scheme.name, scheme])),
+      );
+    });
+
+    this.watchData();
+
+    this.addDisposer(() => {
+      colorSchemeSubscription.unsubscribe();
+    });
   }
 
   restore(data: StyleSystemData): void {

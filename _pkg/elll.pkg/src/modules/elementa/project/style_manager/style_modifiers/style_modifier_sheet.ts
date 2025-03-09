@@ -7,6 +7,7 @@ import {
   Observable,
   switchMap,
 } from "rxjs";
+import { genId } from "~/src/libs/id";
 import { jsonModelConstructor } from "~/src/models/json";
 import { SynchronizedModelFile } from "../../file";
 import { IElllStyleManager } from "../_types";
@@ -111,7 +112,9 @@ export class StyleModifierSheet
   restore(data: StyleModifierSheetData) {
     restoreReactiveMap({
       datafiable$: this._modifiersById$,
-      data: Object.fromEntries(data.modifiers?.map((s) => [s.id, s]) ?? []),
+      data: Object.fromEntries(
+        data.modifiers?.map((s) => [s.id ?? genId(), s]) ?? [],
+      ),
       create: (d) => new StyleModifierDefinition({ id: d.id, sheet: this }),
       restore: (set, d) => set.restore(d),
       dispose: (set) => set.dispose(),

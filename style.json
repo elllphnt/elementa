@@ -1,0 +1,167 @@
+{
+    "modifiers": {
+        "modifiers": [
+            {
+                "name": "sm",
+                "type": "context",
+                "selector": [
+                    "@media (min-width: 640px)"
+                ]
+            },
+            {
+                "name": "md",
+                "type": "context",
+                "selector": [
+                    "@media (min-width: 768px)"
+                ]
+            },
+            {
+                "name": "lg",
+                "type": "context",
+                "selector": [
+                    "@media (min-width: 1024px)"
+                ]
+            },
+            {
+                "name": "xl",
+                "type": "context",
+                "selector": [
+                    "@media (min-width: 1280px)"
+                ]
+            },
+            {
+                "name": "2xl",
+                "type": "context",
+                "selector": [
+                    "@media (min-width: 1536px)"
+                ]
+            },
+            {
+                "name": "dark",
+                "type": "context",
+                "selector": [
+                    "@media (prefers-color-scheme: dark)"
+                ]
+            },
+            {
+                "name": "light",
+                "type": "context",
+                "selector": [
+                    "@media (prefers-color-scheme: light)"
+                ]
+            },
+            {
+                "name": "active",
+                "type": "element",
+                "selector": [
+                    "&:active"
+                ]
+            },
+            {
+                "name": "focus",
+                "type": "element",
+                "selector": [
+                    "&:focus"
+                ]
+            },
+            {
+                "name": "hover",
+                "type": "element",
+                "selector": [
+                    "&:hover"
+                ]
+            },
+            {
+                "name": "disabled",
+                "type": "element",
+                "selector": [
+                    "&:disabled"
+                ]
+            },
+            {
+                "name": "visited",
+                "type": "element",
+                "selector": [
+                    "&:visited"
+                ]
+            }
+        ]
+    },
+    "style": {
+        "colorSchemes": [
+            {
+                "name": "light",
+                "modifiers": [
+                    {
+                        "name": "light"
+                    }
+                ]
+            },
+            {
+                "name": "dark",
+                "modifiers": [
+                    {
+                        "name": "dark"
+                    }
+                ]
+            }
+        ],
+        "viewports": [
+            {
+                "width": [
+                    640,
+                    "+"
+                ],
+                "modifiers": [
+                    {
+                        "name": "sm"
+                    }
+                ]
+            },
+            {
+                "width": [
+                    768,
+                    "+"
+                ],
+                "modifiers": [
+                    {
+                        "name": "md"
+                    }
+                ]
+            },
+            {
+                "width": [
+                    1024,
+                    "+"
+                ],
+                "modifiers": [
+                    {
+                        "name": "lg"
+                    }
+                ]
+            },
+            {
+                "width": [
+                    1280,
+                    "+"
+                ],
+                "modifiers": [
+                    {
+                        "name": "xl"
+                    }
+                ]
+            },
+            {
+                "width": [
+                    1536,
+                    "+"
+                ],
+                "modifiers": [
+                    {
+                        "name": "2xl"
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -58,11 +58,10 @@ textarea::placeholder {
 
 /* Input */
 
-@layer base {
+@layer content {
   input {
     background: none;
     outline: none;
     font: inherit;
   }
-
 }

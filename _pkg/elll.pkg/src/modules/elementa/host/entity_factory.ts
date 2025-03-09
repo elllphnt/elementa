@@ -1,4 +1,8 @@
 import {
+  ImageMediaContentData,
+  VideoMediaContentData,
+} from "@elllphnt/elll-element";
+import {
   elllEntities,
   elllFileTypes,
   getUrlScheme,
@@ -7,6 +11,7 @@ import {
 } from "@elllphnt/utils";
 import {
   CommitFile,
+  DriveFile,
   File as ElllFile,
   Resource,
   WorkspaceFile,
@@ -16,6 +21,7 @@ import {
   Component,
   ElllComponentElement,
   Entity,
+  MediaElement,
   parseElementaEntityResourceId,
   parseElementaUrl,
   TextElement,
@@ -41,21 +47,27 @@ export class EntityFactory {
   }): Entity | undefined {
     switch (resource.entity) {
       case elllEntities.workspaceFile.name: {
-        return this.createEntityFromElllFile({
+        return this.createEntityFromRepoFile({
           file: resource as WorkspaceFile,
           component,
         });
       }
       case elllEntities.commitFile.name: {
-        return this.createEntityFromElllFile({
+        return this.createEntityFromRepoFile({
           file: resource as CommitFile,
+          component,
+        });
+      }
+      case elllEntities.driveFile.name: {
+        return this.createEntityFromDriveFile({
+          file: resource as DriveFile,
           component,
         });
       }
     }
   }
 
-  private createEntityFromElllFile({
+  private createEntityFromRepoFile({
     file,
     component,
   }: {
@@ -97,6 +109,40 @@ export class EntityFactory {
       },
       () => undefined,
     );
+  }
+
+  private createEntityFromDriveFile({
+    file,
+    component,
+  }: {
+    file: ElllFile;
+    component: Component;
+  }): Entity | undefined {
+    if (!file.type) {
+      this.elll.shell.toast("File not loaded");
+      return;
+    }
+
+    // handle by type
+    if (file.type.startsWith("image/")) {
+      const element = new MediaElement({ component });
+      element.setContent({
+        type: "image",
+        src: "https://cdn.pixabay.com/photo/2024/05/26/10/15/bird-8788491_1280.jpg",
+      } as ImageMediaContentData);
+      element.setFit("cover");
+
+      return element;
+    } else if (file.type.startsWith("video/")) {
+      const element = new MediaElement({ component });
+      element.setContent({
+        type: "video",
+        src: "https://cdn.pixabay.com/photo/2024/05/26/10/15/bird-8788491_1280.jpg",
+      } as VideoMediaContentData);
+      element.setFit("cover");
+
+      return element;
+    }
   }
 
   createEntityFromElllUrl(

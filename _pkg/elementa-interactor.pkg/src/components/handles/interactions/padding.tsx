@@ -2,7 +2,7 @@ import { extractEvaluable, LengthData } from "@elllphnt/elll-element";
 import { combineLatestOrEmpty } from "@repo/utils";
 import _ from "lodash";
 import { useCallback, useEffect, useRef } from "react";
-import { map } from "rxjs";
+import { map, switchMap } from "rxjs";
 import { ElementHandle, FrameWidgetHandle } from "~/src/handles/_";
 import { useElementaInteractor } from "../../../hooks/elementa_interactor";
 import { MouseInteraction } from "../../../tools/interactions/mouse";
@@ -21,10 +21,18 @@ export function PaddingHandle({ handle }: { handle: ElementHandle }) {
   useEffect(() => {
     const subscription = combineLatestOrEmpty([
       combineLatestOrEmpty([
-        handle.style.resolvedPropertyValue$("padding-top"),
-        handle.style.resolvedPropertyValue$("padding-right"),
-        handle.style.resolvedPropertyValue$("padding-bottom"),
-        handle.style.resolvedPropertyValue$("padding-left"),
+        handle.style$.pipe(
+          switchMap((style) => style.resolvedPropertyValue$("padding-top")),
+        ),
+        handle.style$.pipe(
+          switchMap((style) => style.resolvedPropertyValue$("padding-right")),
+        ),
+        handle.style$.pipe(
+          switchMap((style) => style.resolvedPropertyValue$("padding-bottom")),
+        ),
+        handle.style$.pipe(
+          switchMap((style) => style.resolvedPropertyValue$("padding-left")),
+        ),
       ]).pipe(
         map(([top, right, bottom, left]) => ({
           top: extractEvaluable<LengthData | undefined>(top as any)[1] ?? 0,

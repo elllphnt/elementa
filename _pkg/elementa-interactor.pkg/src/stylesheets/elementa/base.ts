@@ -2,7 +2,7 @@ import tinycolor from "tinycolor2";
 import { Theme } from "../../theme/theme";
 
 export const baseStyleSheet = (theme: Theme) => /* css */ `
-    @layer base, component;
+    @layer content, component, editor;
     
     html, body {
         height: 100vh;

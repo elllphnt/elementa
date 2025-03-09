@@ -23,15 +23,14 @@ export function PageElementComponent({
     viewport?.overflow,
   );
 
-  const style: React.CSSProperties = {
-    minHeight: "calc(100 * var(--vh-unit))",
-    minWidth: "calc(100 * var(--vw-unit))",
-  };
+  const style: React.CSSProperties = {};
 
   if (viewportOverflow === "scroll-x") {
     style.height = "calc(100 * var(--vh-unit))";
+    style.minWidth = "calc(100 * var(--vw-unit))";
   } else if (viewportOverflow === "scroll-y") {
     style.width = "calc(100 * var(--vw-unit))";
+    style.minHeight = "calc(100 * var(--vh-unit))";
   }
 
   return (

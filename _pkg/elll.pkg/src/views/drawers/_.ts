@@ -9,6 +9,7 @@ import { OutlineView } from "./outline/outline";
 import { PackagesView } from "./packages/packages";
 import { ProjectView } from "./project/project";
 import { ServicesView } from "./services/services";
+import { StorageView } from "./storage/storage";
 import { StyleAssetsView } from "./style_assets/style_assets";
 import { StyleSystemView } from "./style_system/style_system";
 import { StyleUtilitiesView } from "./style_utilities/style_utilities";
@@ -55,6 +56,10 @@ export const drawerViews = {
   libraries: {
     id: "elll.views.drawers.libraries",
     render: LibrariesView,
+  },
+  storage: {
+    id: "elll.views.drawers.storage",
+    render: StorageView,
   },
   themes: {
     id: "elll.views.drawers.themes",

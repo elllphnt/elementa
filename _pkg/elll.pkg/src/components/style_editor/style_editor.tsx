@@ -1,6 +1,10 @@
 import { ControlMenuAffinityProvider } from "@repo/components";
 import { Style } from "@repo/elementa-models";
 import React from "react";
+import { StyleAnimationsControlSheet } from "~/src/views/sheets/style/animations";
+import { StyleEffectsControlSheet } from "~/src/views/sheets/style/effects";
+import { StylePropertiesControlSheet } from "~/src/views/sheets/style/style_properties";
+import { StyleTransitionsControlSheet } from "~/src/views/sheets/style/transitions";
 import {
   appearancesStylePropertyControls,
   boxStylePropertyControls,
@@ -11,7 +15,6 @@ import {
   transformStylePropertyControls,
 } from "../controls/styles/properties";
 import { Sheet } from "../sheet/sheet";
-import { StylePropertiesControlSheet } from "~/src/views/sheets/style/style_properties";
 
 const styleEditorSections = {
   position: "position",
@@ -78,6 +81,39 @@ export function StyleEditor({
 
   let additionalSectionsWithSideMenu: React.ReactNode[] = [];
   const additionalSectionsWithDefaultMenu: React.ReactNode[] = [];
+
+  if (enabledSections.effect) {
+    additionalSectionsWithSideMenu.push(
+      <React.Fragment key="effects">
+        <hr />
+        <Sheet title="Effects">
+          <StyleEffectsControlSheet styles={styles} />
+        </Sheet>
+      </React.Fragment>,
+    );
+  }
+
+  if (enabledSections.transition) {
+    additionalSectionsWithSideMenu.push(
+      <React.Fragment key="transitions">
+        <hr />
+        <Sheet title="Transitions">
+          <StyleTransitionsControlSheet styles={styles} />
+        </Sheet>
+      </React.Fragment>,
+    );
+  }
+
+  if (enabledSections.animation) {
+    additionalSectionsWithDefaultMenu.push(
+      <React.Fragment key="animations">
+        <hr />
+        <Sheet title="Animations">
+          <StyleAnimationsControlSheet styles={styles} />
+        </Sheet>
+      </React.Fragment>,
+    );
+  }
 
   return (
     <div style={{ width: "100%", height: "fit-content" }}>

@@ -2,21 +2,25 @@ import {
   baseSelector,
   entityTypeMatch,
   entityTypes,
+  parseModifier,
+  StyleModifierDefinitionData,
+  StyleModifierType,
 } from "@elllphnt/elll-element";
 import {
   elllIcons16,
+  ExclusiveBox,
   Icon,
   IconButton,
   ScrollArea,
   TreeEntry,
 } from "@repo/components";
-import { Stylesheet } from "@repo/elementa-models";
 import { useManyObservables, useObservable } from "@repo/utils";
 import cx from "classnames";
 import _ from "lodash";
 import { useRef, useState } from "react";
 import { StyleEditor } from "~/src/components/style_editor/style_editor";
 import { ElementaEditorState } from "~/src/editors/elementa/editor";
+import { useElllProject } from "~/src/hooks/project/project";
 import { resolveArrayIntersection, resolveCommon } from "~/src/libs/utils";
 import {
   ElementHandle,
@@ -25,15 +29,59 @@ import {
   PageElementHandle,
 } from "../../../../../elementa-interactor.pkg/dist";
 
+function splitedSelector({
+  selector,
+  modifierDefinitions,
+}: {
+  selector: string;
+  modifierDefinitions: Record<string, StyleModifierDefinitionData>;
+}): [string, string] {
+  if (!selector || selector === baseSelector) {
+    return ["", ""];
+  }
+  const parts = selector.split(":");
+  const contextParts: string[] = [];
+  const elementParts: string[] = [];
+
+  for (const part of parts) {
+    const [modifier] = parseModifier({
+      modifier: part,
+      getModifierDefinition: (name) => modifierDefinitions[name],
+      parseData: (_, data) => data,
+    });
+    if (!modifier) {
+      elementParts.push(part);
+      continue;
+    }
+
+    const definition = modifierDefinitions[modifier.name];
+    if (definition?.type === StyleModifierType.Context) {
+      contextParts.push(part);
+    } else {
+      elementParts.push(part);
+    }
+  }
+
+  return [contextParts.join(":"), elementParts.join(":")];
+}
+
 function AddStylePanel({
-  stylesheets,
+  elements,
+  contextSelector,
   setPanel,
 }: {
-  stylesheets: Stylesheet[];
+  elements: ElementHandle[];
+  contextSelector: string;
   setPanel: (panel: string) => void;
 }): JSX.Element {
+  const project = useElllProject();
+  const modifierDefinitions = useObservable(
+    project.styleManager.modifierSheet.modifiers$,
+    project.styleManager.modifierSheet.modifiers,
+  ).filter((m) => m.type === StyleModifierType.Element && !m.signature.length);
+
   const [modifiers, setModifiers] = useState<string[]>([]);
-  const selector = modifiers.sort().join(":");
+  const elementSelector = modifiers.sort().join(":");
 
   const addModifier = (modifier: string) => {
     setModifiers((prev) => {
@@ -53,18 +101,18 @@ function AddStylePanel({
           type="text"
           className="el-w-full el-h-7 el-px-2 el-border el-rounded"
           placeholder="No modifier selected"
-          value={selector}
+          value={elementSelector}
           readOnly
         />
       </div>
 
       <div className="el-grow el-overflow-hidden">
         <ScrollArea scrollY>
-          {Object.entries({}).map(([key, config]) => {
-            const isSelected = modifiers.includes(key);
+          {modifierDefinitions.map((modifier) => {
+            const isSelected = modifiers.includes(modifier.name);
             return (
               <button
-                key={key}
+                key={modifier.id}
                 className={cx(
                   "el-h-5 el-px-1.5 el-rounded el-mr-2 el-mb-2 el-cursor-pointer el-transition-colors",
                   {
@@ -74,13 +122,13 @@ function AddStylePanel({
                 )}
                 onClick={() => {
                   if (isSelected) {
-                    removeModifier(key);
+                    removeModifier(modifier.name);
                   } else {
-                    addModifier(key);
+                    addModifier(modifier.name);
                   }
                 }}
               >
-                {key}
+                {modifier.name}
               </button>
             );
           })}
@@ -97,9 +145,12 @@ function AddStylePanel({
         <button
           className="el-w-1/2 el-h-6 el-rounded el-bg-fg/5 hover:el-bg-fg/10"
           onClick={() => {
-            stylesheets.forEach((stylesheet) => {
-              stylesheet.addStyle(selector);
-              stylesheet.setActiveSelector(selector);
+            const selector = [contextSelector, elementSelector]
+              .filter(Boolean)
+              .join(":");
+            elements.forEach((element) => {
+              element.entity.stylesheet.addStyle(selector);
+              element.setActiveSelector(selector);
             });
             setPanel("select");
           }}
@@ -111,37 +162,45 @@ function AddStylePanel({
   );
 }
 function SelectStylePanel({
-  stylesheets,
+  contextSelector,
+  elements,
   setPanel,
 }: {
-  stylesheets: Stylesheet[];
+  contextSelector: string;
+  elements: ElementHandle[];
   setPanel: (panel: string) => void;
 }): JSX.Element {
+  const project = useElllProject();
+  const modifierDefinitions = useObservable(
+    project.styleManager.modifierSheet.modifiersByName$,
+    project.styleManager.modifierSheet.modifiersByName,
+  );
+
   const [search, setSearch] = useState("");
   const activeSelectors = useManyObservables(
-    stylesheets.map((a) => a.activeSelector$),
-    stylesheets.map((a) => a.activeSelector),
-    stylesheets.map((a) => a.key).join(","),
+    elements.map((a) => a.activeSelector$),
+    elements.map((a) => a.activeSelector),
+    elements.map((a) => a.key).join(","),
   );
   const activeSelector = resolveCommon(activeSelectors);
   const setOfSelectors = useManyObservables(
-    stylesheets.map((a) => a.selectors$),
-    stylesheets.map((a) => a.selectors),
-    stylesheets.map((a) => a.key).join(","),
+    elements.map((a) => a.entity.stylesheet.selectors$),
+    elements.map((a) => a.entity.stylesheet.selectors),
+    elements.map((a) => a.key).join(","),
   );
-  const selectors = resolveArrayIntersection(setOfSelectors);
+  const selectors = resolveArrayIntersection(setOfSelectors).filter(
+    (selector) => selector.startsWith(contextSelector),
+  );
   const searchSelectors = selectors
+    .sort()
+    .map((selector) => splitedSelector({ selector, modifierDefinitions }))
     .filter((selector) => {
-      return (
-        selector !== baseSelector &&
-        selector.toLowerCase().includes(search.toLowerCase())
-      );
-    })
-    .sort();
+      return selector[0] === contextSelector && selector[1].includes(search);
+    });
 
   return (
-    <div className="el-p-3 el-space-y-3">
-      <div className="el-flex el-gap-2">
+    <div className="el-h-full el-w-full el-flex el-flex-col">
+      <div className="el-flex el-gap-2 el-p-3">
         <input
           type="text"
           className="el-w-full el-h-7 el-px-2 el-border el-rounded"
@@ -155,106 +214,130 @@ function SelectStylePanel({
           onClick={() => setPanel("add")}
         />
       </div>
-
-      <div className="el-space-y-1">
-        <TreeEntry
-          noIcon
-          active={activeSelector === baseSelector}
-          onClick={() => {
-            stylesheets.forEach((stylesheet) => {
-              stylesheet.setActiveSelector(baseSelector);
-            });
-          }}
+      <div className="el-grow el-overflow-hidden">
+        <ScrollArea
+          scrollY
+          containerClassName="el-space-y-1 el-pl-3 el-pb-3 el-pr-4"
         >
-          <span className="el-font-bold">Default Style</span>
-        </TreeEntry>
-        {searchSelectors.length ? (
-          searchSelectors.map((selector) => {
-            const isBase = selector === baseSelector;
-            const isActive = activeSelector === selector;
-            return (
-              <TreeEntry
-                key={selector}
-                noIcon
-                active={isActive}
-                actions={[
-                  {
-                    icon: <Icon name={elllIcons16.cross} />,
-                    handler: () => {
-                      stylesheets.forEach((stylesheet) => {
-                        stylesheet.removeStyle(selector);
-                      });
+          {searchSelectors.length ? (
+            searchSelectors.map(([contextSelector, elementSelector]) => {
+              const selector = [contextSelector, elementSelector]
+                .filter(Boolean)
+                .join(":");
+              const isBase = elementSelector === "";
+              const isActive = activeSelector === selector;
+              return (
+                <TreeEntry
+                  key={selector}
+                  noIcon
+                  active={isActive}
+                  actions={[
+                    {
+                      icon: <Icon name={elllIcons16.cross} />,
+                      handler: () => {
+                        elements.forEach((element) => {
+                          element.entity.stylesheet.removeStyle(selector);
+                        });
+                      },
                     },
-                  },
-                ]}
-                onClick={() => {
-                  stylesheets.forEach((stylesheet) => {
-                    stylesheet.setActiveSelector(selector);
-                  });
-                }}
-              >
-                {isBase ? (
-                  <span className="el-font-bold">Default Style</span>
-                ) : (
-                  selector
-                )}
-              </TreeEntry>
-            );
-          })
-        ) : (
-          <div className="el-px-2 el-text-sm el-text-fg-300">
-            Click on the plus icon to add new styles.
-          </div>
-        )}
+                  ]}
+                  onClick={() => {
+                    elements.forEach((stylesheet) => {
+                      stylesheet.setActiveSelector(selector);
+                    });
+                  }}
+                >
+                  {isBase ? (
+                    <>
+                      {contextSelector ? (
+                        <span>{contextSelector}:</span>
+                      ) : (
+                        <></>
+                      )}{" "}
+                      <span className="el-italic el-opacity-50">default</span>
+                    </>
+                  ) : (
+                    <>
+                      {contextSelector ? (
+                        <span>{contextSelector}:</span>
+                      ) : (
+                        <></>
+                      )}
+                      <span className="el-font-bold">{elementSelector}</span>
+                    </>
+                  )}
+                </TreeEntry>
+              );
+            })
+          ) : (
+            <div className="el-px-2 el-text-sm el-text-fg-300">
+              Click on the plus icon to add new styles.
+            </div>
+          )}
+        </ScrollArea>
       </div>
     </div>
   );
 }
 function StyleSelectorPanel({
-  stylesheets,
+  contextSelector,
+  elements,
 }: {
-  stylesheets: Stylesheet[];
+  contextSelector: string;
+  elements: ElementHandle[];
 }): JSX.Element {
   const [panel, setPanel] = useState("select");
 
   switch (panel) {
     case "add":
-      return <AddStylePanel stylesheets={stylesheets} setPanel={setPanel} />;
+      return (
+        <AddStylePanel
+          elements={elements}
+          setPanel={setPanel}
+          contextSelector={contextSelector}
+        />
+      );
     case "select":
-      return <SelectStylePanel stylesheets={stylesheets} setPanel={setPanel} />;
+      return (
+        <SelectStylePanel
+          elements={elements}
+          setPanel={setPanel}
+          contextSelector={contextSelector}
+        />
+      );
     default:
       return <></>;
   }
 }
-function StyleSelectorControl({
-  styleModifiers,
-  stylesheets,
+function ElementStyleSelectorControl({
+  elements,
   activeSelector,
 }: {
-  styleModifiers: string[];
-  stylesheets: Stylesheet[];
+  elements: ElementHandle[];
   activeSelector: string;
 }): JSX.Element {
+  const project = useElllProject();
+  const modifierDefinitions = useObservable(
+    project.styleManager.modifierSheet.modifiersByName$,
+    project.styleManager.modifierSheet.modifiersByName,
+  );
+  const [contextSelector, elementSelector] = splitedSelector({
+    selector: activeSelector,
+    modifierDefinitions,
+  });
   const ref = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
 
-  const modifiersDisplay = styleModifiers.join(":");
-  const activeSelectorDisplay =
-    activeSelector === baseSelector ? (
-      <span className="el-opacity-50">Default Style</span>
-    ) : (
-      activeSelector
-    );
-
   return (
-    <div
+    <ExclusiveBox
       ref={ref}
       className="el-relative el-w-full el-py-2 el-px-3 el-text-fg-400 el-space-y-1"
+      onClose={() => setOpen(false)}
     >
       <div className="el-text-sm">
-        {modifiersDisplay ? (
+        {contextSelector ? (
           <span className="el-bg-pm el-text-pm-ctr el-px-1 el-rounded-sm">
-            {modifiersDisplay}
+            {contextSelector}
           </span>
         ) : (
           <span className="el-bg-fg/10 el-px-1 el-rounded-sm el-italic">
@@ -271,7 +354,13 @@ function StyleSelectorControl({
         )}
         onClick={() => setOpen(!open)}
       >
-        <div className="el-grow">{activeSelectorDisplay}</div>
+        <div className="el-grow">
+          {elementSelector ? (
+            elementSelector
+          ) : (
+            <span className="el-opacity-50 el-italic">default</span>
+          )}
+        </div>
         <Icon
           name={elllIcons16.chevron}
           className={cx("el-transition-transform", {
@@ -280,7 +369,6 @@ function StyleSelectorControl({
           })}
         />
       </div>
-
       <div
         className="el-bg-bg el-border-b el-transition-all el-shadow-md"
         style={{
@@ -294,9 +382,16 @@ function StyleSelectorControl({
           zIndex: 1,
         }}
       >
-        {open ? <StyleSelectorPanel stylesheets={stylesheets} /> : <></>}
+        {open ? (
+          <StyleSelectorPanel
+            elements={elements}
+            contextSelector={contextSelector}
+          />
+        ) : (
+          <></>
+        )}
       </div>
-    </div>
+    </ExclusiveBox>
   );
 }
 
@@ -305,20 +400,14 @@ function ElementStylesheetPanel({
 }: {
   elements: ElementHandle[];
 }): JSX.Element {
-  const stylesheets = elements.map((handle) => handle.entity.stylesheet);
-  const styleModifierSets = useManyObservables(
-    elements.map((e) => e.instance.environment.styleModifiers$),
-    elements.map((e) => e.instance.environment.styleModifiers),
-    elements.map((e) => e.key).join(","),
-  );
   const activeSelectors = useManyObservables(
-    stylesheets.map((a) => a.activeSelector$),
-    stylesheets.map((a) => a.activeSelector),
-    stylesheets.map((a) => a.key).join(","),
+    elements.map((a) => a.activeSelector$),
+    elements.map((a) => a.activeSelector),
+    elements.map((a) => a.key).join(","),
   );
-  const activeSelector = resolveCommon(activeSelectors) ?? baseSelector;
-  const styleModifiers = resolveArrayIntersection(styleModifierSets);
+  const activeSelector = resolveCommon(activeSelectors) || baseSelector;
 
+  const stylesheets = elements.map((handle) => handle.entity.stylesheet);
   const styles = useManyObservables(
     stylesheets.map((a) => a.style$(activeSelector, true)),
     stylesheets.map((a) => a.style(activeSelector, true)),
@@ -328,9 +417,8 @@ function ElementStylesheetPanel({
   return (
     <div className="el-h-full el-w-full el-flex el-flex-col">
       <div className="el-bg-bg-100 el-border-b">
-        <StyleSelectorControl
-          styleModifiers={styleModifiers}
-          stylesheets={stylesheets}
+        <ElementStyleSelectorControl
+          elements={elements}
           activeSelector={activeSelector}
         />
       </div>

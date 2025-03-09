@@ -371,6 +371,14 @@
     "@elllphnt/elll-client" "^0.1.4"
     openapi-fetch "^0.9.7"
 
+"@elllphnt/drive-service-client@^0.2.0":
+  version "0.2.0"
+  resolved "https://npm.pkg.github.com/download/@elllphnt/drive-service-client/0.2.0/434aeaf6e7d7de7b128cda247266d964324d3892#434aeaf6e7d7de7b128cda247266d964324d3892"
+  integrity sha512-IQEQKm4E7FDqmK5uzzTrSnkEmx8AAE+QjaRxADb6XDtVe4XaNcWCL+rrmN2pU1RP7b83txvclDE5ESMvF2vARw==
+  dependencies:
+    "@elllphnt/elll-client" "^0.1.4"
+    openapi-fetch "^0.9.7"
+
 "@elllphnt/elll-client@*", "@elllphnt/elll-client@^0.1.4":
   version "0.1.4"
   resolved "https://npm.pkg.github.com/download/@elllphnt/elll-client/0.1.4/c70f1b67c3656688c5904582a52de938565bdd15"
@@ -404,10 +412,10 @@
     xml2js "^0.6.2"
     yup "^1.4.0"
 
-"@elllphnt/elll-element@^0.24.19":
-  version "0.24.19"
-  resolved "https://npm.pkg.github.com/download/@elllphnt/elll-element/0.24.19/ec05f25108f3f220fcc858ea4a99f05734929b04#ec05f25108f3f220fcc858ea4a99f05734929b04"
-  integrity sha512-jMH2Whxs0h6hZoRdExg205xXhSY2QgJGCeMhIwd0sUbQt26jSSTv+UaVKAdXnns1TWFYNu7eAmjNSs/PHeRVIg==
+"@elllphnt/elll-element@^0.24.22":
+  version "0.24.22"
+  resolved "https://npm.pkg.github.com/download/@elllphnt/elll-element/0.24.22/3d98183cdc5fb8e9de715c9cfd45347dfa8abd83#3d98183cdc5fb8e9de715c9cfd45347dfa8abd83"
+  integrity sha512-tGaPt853Z//gxXjVXWPFTKf5qfSeq2/1fuZad7FvqYirdSAmEqPCRp7bcwULLcUOPgZx8Hk1RO3vgfDVZksHLg==
   dependencies:
     "@elllphnt/utils" "^0.2.1"
     "@jsep-plugin/new" "^1.0.3"
@@ -489,6 +497,14 @@
     "@elllphnt/elll-client" "^0.1.4"
     openapi-fetch "^0.9.7"
 
+"@elllphnt/identity-service-client@^0.1.8":
+  version "0.1.8"
+  resolved "https://npm.pkg.github.com/download/@elllphnt/identity-service-client/0.1.8/59c23b09d1d3627f7a8a174e416839b349078d2b#59c23b09d1d3627f7a8a174e416839b349078d2b"
+  integrity sha512-50bYq0lM7sWpd9coTTie+D5jr1iWSF5uL3uBE7N6C7AWaAbbE5V6WK4qUFiI6ryHn57iiIKDlev4v+d+9mTNpA==
+  dependencies:
+    "@elllphnt/elll-client" "^0.1.4"
+    openapi-fetch "^0.9.7"
+
 "@elllphnt/intelligence-service-client@^0.1.10":
   version "0.1.10"
   resolved "https://npm.pkg.github.com/download/@elllphnt/intelligence-service-client/0.1.10/888997f328339e19cb81dfeb5d8ae350e1d3f66c"
@@ -527,10 +543,10 @@
   resolved "https://npm.pkg.github.com/download/@elllphnt/utils/0.2.2/e0386561b0b8822d606abdfd9f04d0720a0ea0e0"
   integrity sha512-MY5mWXxd5XP/BwbCbi44qnidzNqN8tPgDB3dLcO++1zxRepkva9S32tn0wy0Y+Yt1l7p6kXGQhegP6p2gq3HTg==
 
-"@elllphnt/utils@^0.6.16":
-  version "0.6.16"
-  resolved "https://npm.pkg.github.com/download/@elllphnt/utils/0.6.16/d5ed99460105afb3828982413127c9550e3ac83d"
-  integrity sha512-hFFCCAYyvUc2gbPx9ieKENCJlrVDLvNP1V6OKtcTnVdxIZ6yvlbOtHrNgHzcLum+NReNfGPJ3+VUoVaPa3D97g==
+"@elllphnt/utils@^0.6.17":
+  version "0.6.17"
+  resolved "https://npm.pkg.github.com/download/@elllphnt/utils/0.6.17/1370121dfe75c2b07474caddf19a951cde3742b3#1370121dfe75c2b07474caddf19a951cde3742b3"
+  integrity sha512-SB5eWsENuRoKeLGMshFotrKfbKWV6iWmqGI2XBzAuqLhHsT7SgtwIC0v5DFb2Pd9HE+KvhM9Hhtd7Z9VcPSxSA==
   dependencies:
     "@paralleldrive/cuid2" "^2.2.2"
     diff "^7.0.0"

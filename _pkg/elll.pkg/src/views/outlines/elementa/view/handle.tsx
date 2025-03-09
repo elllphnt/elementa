@@ -5,7 +5,7 @@ import {
   TreeContext,
   TreeEntry,
 } from "@repo/components";
-import { EntityHandle } from "@repo/elementa-interactor";
+import { EntityHandle, Handle } from "@repo/elementa-interactor";
 import { useDrag, useDrop, useShell } from "@repo/shell";
 import { useObservable } from "@repo/utils";
 import cx from "classnames";
@@ -80,9 +80,13 @@ export function EntityHandleOutlineEntry({
 
   const [dropRef, dropProps] = useDrop(
     {
-      accept: [mimeTypes.uriList],
-      onDrop: (data) => {
-        handle.handleDrop(data);
+      acceptDrop: (event) => {
+        return handle.acceptDrop({
+          datatypes: [...(event.dataTransfer?.types ?? [])],
+        });
+      },
+      handleDrop: (event) => {
+        handle.handleDrop(Handle.dropDataFromDragEvent(event));
       },
     },
     [],
@@ -92,6 +96,7 @@ export function EntityHandleOutlineEntry({
       getData: () => ({
         [mimeTypes.uriList]: handle.entity.url,
       }),
+      getLabel: () => name || fallbackName || "Elementa Entity",
     },
     [handle.entity.url],
   );

@@ -1,4 +1,6 @@
-import { fragmentVariants } from "@repo/elementa-models";
+import { StyleModifierData } from "@elllphnt/elll-element";
+import { fragmentVariants, StyleManager } from "@repo/elementa-models";
+
 import { combineLatestOrEmpty, useObservable } from "@repo/utils";
 import cx from "classnames";
 import { useEffect, useRef, useState } from "react";
@@ -167,11 +169,37 @@ function ViewportIndicator({
     />
   );
 }
+
+function SelectorText({
+  modifiers,
+  styleManager,
+}: {
+  modifiers: StyleModifierData[];
+  styleManager: StyleManager;
+}) {
+  const selector = useObservable(
+    styleManager.modifiersToElllSelector$(modifiers),
+    styleManager.modifiersToElllSelector(modifiers),
+  );
+
+  return (
+    <span
+      style={{
+        overflow: "hidden",
+        whiteSpace: "nowrap",
+        textOverflow: "ellipsis",
+      }}
+    >
+      {selector}
+    </span>
+  );
+}
 function StyleModifiersIndicator({ frame }: { frame: FrameWidgetHandle }) {
   const fragment = useObservable(frame.fragment$, frame.fragment);
   const modifiers = useObservable(
     fragment?.instance.environment.styleModifiers$,
     fragment?.instance.environment.styleModifiers,
+    fragment?.key,
   );
 
   if (!modifiers?.length)
@@ -189,7 +217,10 @@ function StyleModifiersIndicator({ frame }: { frame: FrameWidgetHandle }) {
 
   return (
     <div className="elementa-style-modifiers-indicator active">
-      {modifiers.join(":")}
+      <SelectorText
+        modifiers={modifiers}
+        styleManager={frame.entity.component.project.styleManager}
+      />
     </div>
   );
 }

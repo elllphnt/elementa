@@ -68,17 +68,33 @@ export function useFileDrag(file: File) {
         [mimeTypes.text]: file.url,
         name: file.name,
       }),
+      getLabel: () => file.name ?? "",
     },
     [file],
   );
 }
 
-export function useFileDrop(file: File) {
+export function useFileDrop(
+  file: File,
+  {
+    acceptDrop,
+    handleDrop,
+  }: {
+    acceptDrop?: (event: DragEvent) => boolean | "copy" | "link" | "move";
+    handleDrop?: (event: DragEvent) => boolean;
+  } = {},
+) {
   return useDrop(
     {
-      accept: [mimeTypes.uriList],
-      canDrop: (data) => {
-        const uris = data[mimeTypes.uriList] as string | undefined;
+      acceptDrop: (event, data) => {
+        const accept = acceptDrop?.(event);
+        if (accept) {
+          return accept;
+        }
+
+        const uris =
+          event.dataTransfer?.getData(mimeTypes.uriList) ||
+          (data?.[mimeTypes.uriList] as string | undefined);
         if (!uris) {
           return false;
         }
@@ -118,13 +134,19 @@ export function useFileDrop(file: File) {
         });
         return allowedList.some((allowed) => allowed);
       },
-      onDrop: (data) => {
-        const uris = data[mimeTypes.uriList] as string | undefined;
+      handleDrop: (event, data) => {
+        if (handleDrop?.(event)) {
+          return;
+        }
+
+        const uris =
+          event.dataTransfer?.getData(mimeTypes.uriList) ||
+          (data?.[mimeTypes.uriList] as string | undefined);
         if (!uris) {
           return;
         }
         uris.split("\n").forEach((uri) => {
-          if (!uri) {
+          if (!uri || !isElllResourceUrl(uri)) {
             return;
           }
           const { id } = parseElllResourceUrl(uri);

@@ -327,7 +327,6 @@ export abstract class Handle extends Disposable implements IHandle {
         });
       }
     });
-    this.addEventListener("dragleave", (event) => {});
     this.addEventListener("drop", (event) => {
       const stagerPosition = this.interactor.interface.interactorToStager({
         x: event.clientX,
@@ -340,13 +339,9 @@ export abstract class Handle extends Disposable implements IHandle {
         datatypes: [...(event.dataTransfer?.types ?? [])],
       });
 
-      const data = Object.fromEntries(
-        [...(event.dataTransfer?.types ?? [])].map((type) => [
-          type,
-          event.dataTransfer?.getData(type),
-        ]),
-      );
+      const data = Handle.dropDataFromDragEvent(event);
       if (target) {
+        event.preventDefault();
         const handles = target.handleDrop(data, {
           position: contentPosition,
         });
@@ -367,6 +362,17 @@ export abstract class Handle extends Disposable implements IHandle {
       // unregister handle
       this.interactor.unregisterHandle(this);
     });
+  }
+
+  static dropDataFromDragEvent(event: DragEvent): Record<string, any> {
+    const data: Record<string, any> = {};
+    for (const type of event.dataTransfer?.types ?? []) {
+      data[type] = event.dataTransfer?.getData(type);
+    }
+    if (event.dataTransfer?.files) {
+      data.__files = event.dataTransfer.files;
+    }
+    return data;
   }
 
   setProperty(name: string, value: any) {

@@ -63,7 +63,7 @@ export class FrameWidgetHandle
       this.entity.viewport?.overflow === "scroll-y" ||
       this.entity.viewport?.overflow === "scroll-area"
     ) {
-      this.instance.fragment?.page?.style.resolvedPropertyValue("height");
+      this.fragment?.page?.style.resolvedPropertyValue("height");
     } else if (this.entity.viewport?.overflow === "scroll-x") {
       return this.entity.viewport.height;
     } else {
@@ -75,7 +75,7 @@ export class FrameWidgetHandle
       switchMap((viewport) => viewport?.overflow$ ?? of(undefined)),
       switchMap((overflow) => {
         if (overflow === "scroll-y" || overflow === "scroll-area") {
-          return this.instance.fragment$.pipe(
+          return this.fragment$.pipe(
             switchMap(
               (fragment) =>
                 fragment?.page$.pipe(
@@ -100,7 +100,7 @@ export class FrameWidgetHandle
       this.entity.viewport?.overflow === "scroll-x" ||
       this.entity.viewport?.overflow === "scroll-area"
     ) {
-      this.instance.fragment?.page?.style.resolvedPropertyValue("width");
+      this.fragment?.page?.style.resolvedPropertyValue("width");
     } else if (this.entity.viewport?.overflow === "scroll-y") {
       return this.entity.viewport.width;
     } else {
@@ -112,7 +112,7 @@ export class FrameWidgetHandle
       switchMap((viewport) => viewport?.overflow$ ?? of(undefined)),
       switchMap((overflow) => {
         if (overflow === "scroll-x" || overflow === "scroll-area") {
-          return this.instance.fragment$.pipe(
+          return this.fragment$.pipe(
             switchMap(
               (fragment) =>
                 fragment?.page$.pipe(
@@ -210,7 +210,7 @@ export class FrameWidgetHandle
         this.entity.overflow === "scroll-x" ||
         this.entity.overflow === "scroll-area"
       ) {
-        this.instance.fragment?.page?.style?.setProperty("width", rect.width);
+        this.fragment?.page?.style?.setProperty("width", rect.width);
       } else if (this.entity.overflow === "scroll-y") {
         this.entity.setViewportWidth(rect.width);
       } else {
@@ -223,7 +223,7 @@ export class FrameWidgetHandle
         this.entity.overflow === "scroll-y" ||
         this.entity.overflow === "scroll-area"
       ) {
-        this.instance.fragment?.page?.style?.setProperty("height", rect.height);
+        this.fragment?.page?.style?.setProperty("height", rect.height);
       } else if (this.entity.overflow === "scroll-x") {
         this.entity.setViewportHeight(rect.height);
       } else {
@@ -242,7 +242,7 @@ export class FrameWidgetHandle
       this.entity.overflow === "scroll-y" ||
       this.entity.overflow === "scroll-area"
     ) {
-      this.instance.fragment?.page?.style.setProperty("height", height);
+      this.fragment?.page?.style.setProperty("height", height);
     } else if (!this.entity.viewport) {
       if (typeof height === "number" || typeof height === "undefined") {
         this.entity.setHeight(height);
@@ -260,7 +260,7 @@ export class FrameWidgetHandle
       this.entity.overflow === "scroll-x" ||
       this.entity.overflow === "scroll-area"
     ) {
-      this.instance.fragment?.page?.style.setProperty("width", width);
+      this.fragment?.page?.style.setProperty("width", width);
     } else if (!this.entity.viewport) {
       if (typeof width === "number" || typeof width === "undefined") {
         this.entity.setWidth(width);

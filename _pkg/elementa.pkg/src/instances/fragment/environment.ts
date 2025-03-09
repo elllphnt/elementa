@@ -6,8 +6,8 @@ import {
   SlotFill,
   Transformer,
 } from "@repo/elementa-models";
-import { Disposable } from "@repo/utils";
-import { BehaviorSubject, Observable, of } from "rxjs";
+import { combineLatestOrEmpty, Disposable } from "@repo/utils";
+import { BehaviorSubject, Observable, of, switchMap } from "rxjs";
 import { Namespace } from "~/src/namespace/_";
 import { Elementa } from "../../elementa";
 import { SlotInstance } from "../_";
@@ -29,6 +29,24 @@ export abstract class FragmentEnvironment extends Disposable {
 
   abstract get styleModifiers(): StyleModifierData[];
   abstract get styleModifiers$(): Observable<StyleModifierData[]>;
+
+  get selector(): string {
+    return this.styleModifiers
+      .map((m) => this.entity.project.styleManager.modifierToString(m))
+      .join(":");
+  }
+  get selector$(): Observable<string> {
+    return this.styleModifiers$.pipe(
+      switchMap((modifiers) =>
+        combineLatestOrEmpty(
+          modifiers.map((m) =>
+            this.entity.project.styleManager.modifierToString$(m),
+          ),
+        ),
+      ),
+      switchMap((modifiers) => of(modifiers.join(":"))),
+    );
+  }
 
   abstract get states(): StateInstance[];
   abstract get states$(): Observable<StateInstance[]>;

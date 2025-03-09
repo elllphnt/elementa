@@ -5,13 +5,13 @@ import {
   MiniControlEntry,
   RowControlContainer,
 } from "@repo/components";
+import { FrameWidgetHandle } from "@repo/elementa-interactor";
 import _ from "lodash";
 import { of, switchMap } from "rxjs";
 import { InstanceStyleControlEntry } from "~/src/components/controls/infrastructure/style/instance_style";
 import { useFramePageStyles } from "~/src/hooks/elementa/frame";
 import { InstanceControl } from "../../../components/controls/infrastructure/instance/instance";
 import { useInstancesCommonReactiveValue } from "../../../hooks/utils/reactivity";
-import { FrameWidgetHandle } from "@repo/elementa-interactor";
 
 function PageSizeEntry({
   frames,
@@ -24,9 +24,7 @@ function PageSizeEntry({
 }) {
   const Dimension = _.capitalize(dimension) as Capitalize<typeof dimension>;
 
-  const pageStyles = useFramePageStyles(
-    frames.map((handle) => handle.renderable.instance),
-  );
+  const pageStyles = useFramePageStyles(frames);
 
   return (
     <InstanceStyleControlEntry

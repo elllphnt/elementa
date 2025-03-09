@@ -12,6 +12,8 @@ export * from "./resources/repository_tag";
 export * from "./resources/tenant";
 export * from "./resources/workspace";
 export * from "./resources/workspace_file";
+export * from "./resources/drive";
+export * from "./resources/drive_file";
 
 // libs
 export * from "./lib/resource";

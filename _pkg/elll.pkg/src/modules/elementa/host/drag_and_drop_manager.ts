@@ -10,7 +10,12 @@ import { mimeTypes } from "~/src/libs/mimetypes";
 import { IElll } from "~/src/types/elll";
 import { EntityFactory } from "./entity_factory";
 
-const commonAcceptDropTypes = ["file", "text/plain", "application/json"];
+const commonAcceptDropTypes = [
+  "file",
+  "text/plain",
+  "application/json",
+  "Files",
+];
 
 const entityAcceptDropTypesMap = {
   [entityTypes.widgets.frame]: [...commonAcceptDropTypes],
@@ -20,7 +25,6 @@ const entityAcceptDropTypesMap = {
   [entityTypes.elements.components.elll]: [...commonAcceptDropTypes],
   [entityTypes.elements.media]: [...commonAcceptDropTypes],
   [entityTypes.elements.vector]: [...commonAcceptDropTypes],
-  [entityTypes.canvas]: [...commonAcceptDropTypes],
 };
 
 export class DragAndDropManager {
@@ -82,6 +86,7 @@ export class DragAndDropManager {
     data: Record<string, any>,
     options?: DropOptions,
   ): IHandle[] {
+    console.log("handleDrop", data);
     let handles: IHandle[] | undefined;
     if (!handles && "__files" in data) {
       handles = this.handleFileDrop(target, data.__files, options);
@@ -115,6 +120,7 @@ export class DragAndDropManager {
     const entityType = handle.entity.type;
     const acceptedTypes = entityAcceptDropTypesMap[entityType];
     if (!acceptedTypes) return false;
+    console.log("acceptedTypes", acceptedTypes, datatypes);
     return datatypes.some((type) => acceptedTypes.includes(type));
   }
   acceptDrop(

@@ -2,6 +2,7 @@ import { constantOf } from "@elllphnt/elll-element";
 import { combineLatestOrEmpty, useObservable } from "@repo/utils";
 import _ from "lodash";
 import React, { useCallback, useEffect, useRef } from "react";
+import { switchMap } from "rxjs";
 import { ContainerElementHandle, ElementHandle } from "~/src/handles/_";
 import { useElementaInteractor } from "../../../hooks/elementa_interactor";
 import { MouseInteraction } from "../../../tools/interactions/mouse";
@@ -61,18 +62,34 @@ function GapHandleHandle({
   useEffect(() => {
     const shapeSubscription = combineLatestOrEmpty([
       handle.interfaceRect$,
-      handle.style.resolvedPropertyValue$("display"),
-      handle.style.resolvedPropertyValue$("flex-direction"),
+      handle.style$.pipe(
+        switchMap((style) => style.resolvedPropertyValue$("display")),
+      ),
+      handle.style$.pipe(
+        switchMap((style) => style.resolvedPropertyValue$("flex-direction")),
+      ),
       before.interfaceRect$,
       after.interfaceRect$,
-      before.style.resolvedPropertyValue$("position"),
-      after.style.resolvedPropertyValue$("position"),
+      before.style$.pipe(
+        switchMap((style) => style.resolvedPropertyValue$("position")),
+      ),
+      after.style$.pipe(
+        switchMap((style) => style.resolvedPropertyValue$("position")),
+      ),
       editor.stager.viewport.scale$,
       combineLatestOrEmpty([
-        handle.style.resolvedPropertyValue$("padding-top"),
-        handle.style.resolvedPropertyValue$("padding-right"),
-        handle.style.resolvedPropertyValue$("padding-bottom"),
-        handle.style.resolvedPropertyValue$("padding-left"),
+        handle.style$.pipe(
+          switchMap((style) => style.resolvedPropertyValue$("padding-left")),
+        ),
+        handle.style$.pipe(
+          switchMap((style) => style.resolvedPropertyValue$("padding-right")),
+        ),
+        handle.style$.pipe(
+          switchMap((style) => style.resolvedPropertyValue$("padding-bottom")),
+        ),
+        handle.style$.pipe(
+          switchMap((style) => style.resolvedPropertyValue$("padding-left")),
+        ),
       ]),
     ]).subscribe(
       ([

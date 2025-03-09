@@ -9,7 +9,7 @@ export abstract class ElementInstance<
   E extends Element = Element,
 > extends Instance<E> {
   readonly environment: FragmentEnvironment;
-  readonly style: ElementInstanceStyle;
+  private _styles: Map<string, ElementInstanceStyle> = new Map();
 
   get elementParent(): ElementInstance | null {
     if (this.parent instanceof ElementInstance) {
@@ -17,6 +17,18 @@ export abstract class ElementInstance<
     } else {
       return null;
     }
+  }
+
+  style(selector: string): ElementInstanceStyle {
+    let style = this._styles.get(selector);
+    if (!style) {
+      style = new ElementInstanceStyle({
+        element: this,
+        selector,
+      });
+      this._styles.set(selector, style);
+    }
+    return style;
   }
 
   get selector() {
@@ -52,12 +64,9 @@ export abstract class ElementInstance<
       parent,
     });
     this.environment = environment;
-    this.style = new ElementInstanceStyle({
-      element: this,
-    });
 
     this.addDisposer(() => {
-      this.style.dispose();
+      this._styles.forEach((style) => style.dispose());
     });
   }
 }
