@@ -9,7 +9,10 @@ import {
 import { combineLatestOrEmpty } from "@repo/utils";
 import { Observable, map, of } from "rxjs";
 import { keys } from "../libs/keys";
-import { ElllElementaProject } from "../modules/elementa/project/project";
+import {
+  getElllWorkspaceElementaProject,
+  getElllWorkspaceElementaProject$,
+} from "../modules/elementa/project/_lib";
 import { IElll } from "../types/elll";
 import { boardViews } from "../views/board/_";
 
@@ -25,10 +28,10 @@ export class VariableSheetEditorState extends EditorState<VariableSheetEditorSta
   }
 
   get project() {
-    return ElllElementaProject.workspaceProjectOf(this.elll);
+    return getElllWorkspaceElementaProject(this.elll);
   }
   get project$() {
-    return ElllElementaProject.workspaceProjectOf$(this.elll);
+    return getElllWorkspaceElementaProject$(this.elll);
   }
 
   get variableSheet() {

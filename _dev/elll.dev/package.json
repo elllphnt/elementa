@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@elllphnt/identity-service-client": "^0.1.7",
-    "@elllphnt/utils": "^0.6.17",
+    "@elllphnt/utils": "^0.8.1",
     "@elllphnt/workspace-service-client": "^0.1.5",
     "@repo/elllbuild": "*",
     "@repo/styles": "*",

@@ -1,6 +1,6 @@
 import {
   CssStyleData,
-  getDataType,
+  getStylePropertyDataType,
   isVarRef,
   StyleData,
   StylePropertyConfig,
@@ -131,7 +131,7 @@ export class Style extends Disposable implements Datafiable<StyleData> {
       return value;
     }
     const [dataType, dataTypeConfig] =
-      getDataType(this.getPropertyConfig(property), value) ?? [];
+      getStylePropertyDataType(this.getPropertyConfig(property), value) ?? [];
     if (!dataType || !dataTypeConfig) {
       throw Error(`Invalid value for property ${property}: ${value}`);
     }

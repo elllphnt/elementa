@@ -1,17 +1,19 @@
+// ----------------- IMPORTS -----------------
 import {
-  baseSelector,
   CssSelector,
-  ErrorTupple,
-  parseModifier,
-  sortModifiers,
+  ElllSelectorData,
+  elllSelectorToCssSelector,
+  parseElllSelector,
+  stringifyElllSelector,
   stringifyModifer,
   StyleModifierData,
   StyleModifierDefinitionData,
-  styleModifiersToCssSelector,
+  StyleModifierType,
 } from "@elllphnt/elll-element";
 import { IFileDrive } from "@repo/backend";
+import { CssStyleSheet } from "@repo/elementa-models";
 import { combineLatestOrEmpty } from "@repo/utils";
-import { BehaviorSubject, map, Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, map, Observable } from "rxjs";
 import { jsonModelConstructor } from "~/src/models/json";
 import { IElll } from "~/src/types/elll";
 import { SynchronizedModelFile } from "../file";
@@ -19,117 +21,18 @@ import { IElllStyleManager } from "./_types";
 import { StyleModifierSheet } from "./style_modifiers/style_modifier_sheet";
 import { StyleVariableSheet } from "./style_variables/variable_sheet";
 
-export const elllModifiers = {
-  invalid: (name?: string) => ({
-    name: "__elll_invalid",
-    args: name ? [name] : [],
-  }),
-} satisfies Record<string, StyleModifierData>;
-export const elllModifierStrings = {
-  invalid: (name?: string) =>
-    name ? `__elll_invalid-[${name}]` : "__elll_invalid",
-} satisfies Record<string, StyleModifierData>;
+// ----------------- CONSTANTS -----------------
+export const elllSelectors = {
+  invalid: "__elll_invalid_selector__",
+} satisfies Record<string, string>;
+export const elllSelectorData = {
+  invalid: [{ name: "__elll_invalid_selector__" }],
+} satisfies Record<string, ElllSelectorData>;
 export const elllCssSelectors = {
-  invalid: ({ layer, baseSelector }) => {
-    if (layer) {
-      return [baseSelector, `@layer ${layer}`, "&.__elll_invalid"];
-    } else {
-      return [baseSelector, "&.__elll_invalid"];
-    }
-  },
-} satisfies Record<
-  string,
-  ({
-    layer,
-    baseSelector,
-  }: {
-    layer?: string;
-    baseSelector: string;
-  }) => CssSelector
->;
+  invalid: ["&.__elll_invalid_selector__"],
+} satisfies Record<string, CssSelector>;
 
-export function modifiersToCssSelector({
-  layer,
-  modifiers = [],
-  baseSelector,
-  modifierDefinitions,
-}: {
-  layer?: string;
-  modifiers?: StyleModifierData[];
-  modifierDefinitions: Record<string, StyleModifierDefinitionData>;
-  baseSelector: string;
-}): ErrorTupple<CssSelector> {
-  let selector = [baseSelector];
-
-  if (layer) {
-    selector = selector.concat(`@layer ${layer}`);
-  }
-
-  for (const modifier of modifiers) {
-    const [modifierSelector, error] = styleModifiersToCssSelector({
-      modifier,
-      getModifierDefinition: (name) => modifierDefinitions[name],
-      stringifyData: (type, value) => `${value}`,
-    });
-    if (error) return [undefined, error];
-    selector = selector.concat(modifierSelector);
-  }
-
-  return [selector, undefined];
-}
-export function modifiersToElllSelector({
-  modifiers = [],
-  modifierDefinitions,
-}: {
-  modifiers?: StyleModifierData[];
-  modifierDefinitions: Record<string, StyleModifierDefinitionData>;
-}): string {
-  if (!modifiers.length) return baseSelector;
-  return sortModifiers({
-    modifiers,
-    getModifierDefinition: (name) => modifierDefinitions[name],
-  })
-    .map((modifier) => {
-      const [selector, error] = stringifyModifer({
-        modifier,
-        getModifierDefinition: (name) => modifierDefinitions[name],
-        stringifyData: (type, value) => `${value}`,
-      });
-
-      if (error) {
-        console.error(error);
-        return elllModifierStrings.invalid(modifier.name);
-      } else {
-        return selector;
-      }
-    })
-    .join(":");
-}
-export function modifiersFromElllSelector({
-  selector,
-  modifierDefinitions,
-}: {
-  selector: string;
-  modifierDefinitions: Record<string, StyleModifierDefinitionData>;
-}): ErrorTupple<StyleModifierData[]> {
-  if (selector === baseSelector) return [[], undefined];
-  const parts = selector.split(":");
-  const modifiers: StyleModifierData[] = [];
-
-  for (const part of parts) {
-    const [modifier, error] = parseModifier({
-      modifier: part,
-      getModifierDefinition: (name) => modifierDefinitions[name],
-      parseData: (type, data) => data,
-    });
-    if (error) {
-      return [undefined, error];
-    }
-    modifiers.push(modifier);
-  }
-
-  return [modifiers, undefined];
-}
+// ----------------- HELPER FUNCTIONS -----------------
 export function modifierToString({
   modifier,
   modifierDefinitions,
@@ -142,12 +45,7 @@ export function modifierToString({
     getModifierDefinition: (name) => modifierDefinitions[name],
     stringifyData: (type, data) => `${data}`,
   });
-
-  if (error) {
-    return elllModifierStrings.invalid();
-  } else {
-    return str;
-  }
+  return error ? elllSelectors.invalid : str;
 }
 
 export function modifierToClassName({
@@ -157,15 +55,41 @@ export function modifierToClassName({
   modifier: StyleModifierData;
   modifierDefinitions: Record<string, StyleModifierDefinitionData>;
 }) {
-  return (
-    "elll-mod-" +
-    modifierToString({
-      modifier,
-      modifierDefinitions,
-    })
-  );
+  return "elll-mod-" + modifierToString({ modifier, modifierDefinitions });
 }
 
+export function modifierFromBreakpoint({
+  id,
+  name,
+  value,
+}: {
+  id: string;
+  name: string;
+  value: number;
+}): StyleModifierDefinitionData {
+  return {
+    id,
+    name,
+    type: StyleModifierType.Context,
+    selector: [`@media (min-width: ${value}px)`],
+  };
+}
+
+export function viewportFromBreakpoint({
+  name,
+  value,
+}: {
+  name: string;
+  value: number;
+}): ViewportData {
+  return {
+    name,
+    width: [value, null],
+    modifiers: [{ name }],
+  };
+}
+
+// ----------------- TYPE DEFINITIONS -----------------
 export type ColorSchemeData = {
   name: string;
   modifiers: StyleModifierData[];
@@ -177,12 +101,13 @@ export type ViewportData = {
   ratio?: [number | null, number | null];
   modifiers: StyleModifierData[];
 };
-
 export type StyleSystemData = {
+  breakpoints?: Record<string, number>;
   colorSchemes?: ColorSchemeData[];
   viewports?: ViewportData[];
 };
 
+// ----------------- VIEWPORT MATCHING FUNCTION -----------------
 export function matchViewport({
   height,
   width,
@@ -192,19 +117,19 @@ export function matchViewport({
   width?: number;
   viewport: ViewportData;
 }): boolean {
-  // Check width boundaries if provided
+  // Check width boundaries
   if (width !== undefined && viewport.width) {
     const [minWidth, maxWidth] = viewport.width;
     if (minWidth !== null && width < minWidth) return false;
     if (maxWidth !== null && width > maxWidth) return false;
   }
-  // Check height boundaries if provided
+  // Check height boundaries
   if (height !== undefined && viewport.height) {
     const [minHeight, maxHeight] = viewport.height;
     if (minHeight !== null && height < minHeight) return false;
     if (maxHeight !== null && height > maxHeight) return false;
   }
-  // Optionally, check ratio boundaries if provided and both dimensions are available
+  // Check ratio boundaries if both dimensions are available
   if (width !== undefined && height !== undefined && viewport.ratio) {
     const [minRatio, maxRatio] = viewport.ratio;
     const actualRatio = width / height;
@@ -214,89 +139,211 @@ export function matchViewport({
   return true;
 }
 
+// ----------------- ELLL STYLE MANAGER CLASS -----------------
 export class ElllStyleManager
   extends SynchronizedModelFile<StyleSystemData>
   implements IElllStyleManager
 {
+  // --- Instance Fields ---
   readonly variableSheet: StyleVariableSheet;
   readonly modifierSheet: StyleModifierSheet;
 
   private _colorSchemes$ = new BehaviorSubject<ColorSchemeData[]>([]);
+  private _breakpoints$ = new BehaviorSubject<Record<string, number>>({});
   private _viewports$ = new BehaviorSubject<ViewportData[]>([]);
+  private _breakointBasedViewports$ = new BehaviorSubject<ViewportData[]>([]);
+  private _breakpointBasedModifiers$ = new BehaviorSubject<
+    StyleModifierDefinitionData[]
+  >([]);
+
   private _colorSchemeByName$ = new BehaviorSubject<
     Record<string, ColorSchemeData>
   >({});
+  private _modifiersByName$ = new BehaviorSubject<
+    Record<string, StyleModifierDefinitionData>
+  >({});
 
-  cssSelectorOf({
-    layer,
-    modifiers,
-    baseSelector,
-  }: {
-    layer?: string;
-    modifiers?: StyleModifierData[];
-    baseSelector: string;
-  }): CssSelector {
-    const [selectors, error] = modifiersToCssSelector({
-      layer,
-      modifiers,
-      baseSelector,
-      modifierDefinitions: this.modifierSheet.modifiersByName,
-    });
-    if (error) {
-      console.error(error);
-      return elllCssSelectors.invalid({ layer, baseSelector });
-    } else {
-      return selectors;
-    }
+  // --- Getters for Stylesheets and Data Streams ---
+  get stylesheets(): CssStyleSheet[] {
+    // ...existing code...
+    return this.variableSheet.sets.map((set) => set.styleSheet);
   }
-  cssSelectorOf$({
-    layer,
-    modifiers,
-    baseSelector,
-  }: {
-    layer?: string;
-    modifiers?: StyleModifierData[];
-    baseSelector: string;
-  }): Observable<CssSelector> {
-    return this.modifierSheet.modifiersByName$.pipe(
-      map((modifierDefinitions) => {
-        const [selectors, error] = modifiersToCssSelector({
-          layer,
-          modifiers,
-          baseSelector,
-          modifierDefinitions,
-        });
-        if (error) {
-          console.error(error);
-          return elllCssSelectors.invalid({ layer, baseSelector });
-        } else {
-          return selectors;
-        }
-      }),
+  get stylesheets$(): Observable<CssStyleSheet[]> {
+    // ...existing code...
+    return this.variableSheet.sets$.pipe(
+      map((sets) => sets.map((set) => set.styleSheet)),
     );
   }
-
   get colorSchemes() {
     return this._colorSchemes$.value;
   }
   get colorSchemes$() {
     return this._colorSchemes$.asObservable();
   }
-
+  get breakpoints() {
+    // ...existing code...
+    return this._breakpoints$.value;
+  }
+  get breakpoints$() {
+    // ...existing code...
+    return this._breakpoints$.asObservable();
+  }
   get viewports() {
-    return this._viewports$.value;
+    return [...this._viewports$.value, ...this._breakointBasedViewports$.value];
   }
   get viewports$() {
-    return this._viewports$.asObservable();
+    return combineLatest([
+      this._viewports$,
+      this._breakointBasedViewports$,
+    ]).pipe(
+      map(([viewports, breakpointBased]) => [...viewports, ...breakpointBased]),
+    );
+  }
+  get modifiers() {
+    return [
+      ...this.modifierSheet.modifiers,
+      ...this._breakpointBasedModifiers$.value,
+    ];
+  }
+  get modifiers$() {
+    return combineLatest([
+      this.modifierSheet.modifiers$,
+      this._breakpointBasedModifiers$,
+    ]).pipe(
+      map(([modifiers, breakpointBased]) => [...modifiers, ...breakpointBased]),
+    );
+  }
+  get modifiersByName() {
+    return this._modifiersByName$.value;
+  }
+  get modifiersByName$() {
+    return this._modifiersByName$.asObservable();
   }
 
+  // --- Selector Methods ---
+  cssSelectorOf(selector: ElllSelectorData): CssSelector {
+    const modifiers = this.modifiersByName;
+    const [cssSelector, error] = elllSelectorToCssSelector({
+      selector,
+      getModifierDefinition: (name) => modifiers[name],
+      stringifyData: (type, value) => `${value}`,
+    });
+    if (error) {
+      console.error(error);
+      return elllCssSelectors.invalid;
+    }
+    return cssSelector;
+  }
+  cssSelectorOf$(selector: ElllSelectorData): Observable<CssSelector> {
+    return this.modifiersByName$.pipe(
+      map((modifierDefinitions) => {
+        const [selectors, error] = elllSelectorToCssSelector({
+          selector,
+          getModifierDefinition: (name) => modifierDefinitions[name],
+          stringifyData: (type, value) => `${value}`,
+        });
+        if (error) {
+          console.error(error);
+          return elllCssSelectors.invalid;
+        }
+        return selectors;
+      }),
+    );
+  }
+  stringifyElllSelector(selector: ElllSelectorData): string {
+    const modifiers = this.modifiersByName;
+    const [elllSelector, error] = stringifyElllSelector({
+      selector,
+      getModifierDefinition: (name) => modifiers[name],
+      stringifyData: (type, value) => `${value}`,
+    });
+    if (error) {
+      console.error(error);
+      return elllSelectors.invalid;
+    }
+    return elllSelector;
+  }
+  stringifyElllSelector$(modifiers: StyleModifierData[]): Observable<string> {
+    return this.modifiersByName$.pipe(
+      map((modifierDefinitions) => {
+        const [elllSelector, error] = stringifyElllSelector({
+          selector: modifiers,
+          getModifierDefinition: (name) => modifierDefinitions[name],
+          stringifyData: (type, value) => `${value}`,
+        });
+        if (error) {
+          console.error(error);
+          return elllSelectors.invalid;
+        }
+        return elllSelector;
+      }),
+    );
+  }
+  parseElllSelector(selector: string): ElllSelectorData {
+    const modifiers = this.modifiersByName;
+    const [parsedSelector, error] = parseElllSelector({
+      selector,
+      getModifierDefinition: (name) => modifiers[name],
+      parseData: (type, data) => data,
+    });
+    if (error) {
+      console.error(error);
+      return elllSelectorData.invalid;
+    }
+    return parsedSelector;
+  }
+  parseElllSelector$(selector: string): Observable<ElllSelectorData> {
+    return this.modifiersByName$.pipe(
+      map((modifierDefinitions) => {
+        const [parsedSelector, error] = parseElllSelector({
+          selector,
+          getModifierDefinition: (name) => modifierDefinitions[name],
+          parseData: (type, data) => data,
+        });
+        if (error) {
+          console.error(error);
+          return elllSelectorData.invalid;
+        }
+        return parsedSelector;
+      }),
+    );
+  }
+
+  // --- Modifier Conversion Methods ---
+  modifierToString(modifier: StyleModifierData): string {
+    return modifierToString({
+      modifier,
+      modifierDefinitions: this.modifiersByName,
+    });
+  }
+  modifierToString$(modifier: StyleModifierData): Observable<string> {
+    return this.modifiersByName$.pipe(
+      map((modifierDefinitions) =>
+        modifierToString({ modifier, modifierDefinitions }),
+      ),
+    );
+  }
+  modifierToClassName(modifier: StyleModifierData): string {
+    return modifierToClassName({
+      modifier,
+      modifierDefinitions: this.modifiersByName,
+    });
+  }
+  modifierToClassName$(modifier: StyleModifierData): Observable<string> {
+    return this.modifiersByName$.pipe(
+      map((modifierDefinitions) =>
+        modifierToClassName({ modifier, modifierDefinitions }),
+      ),
+    );
+  }
+
+  // --- Color Scheme Methods ---
   private colorScheme(name: string): ColorSchemeData {
     return this._colorSchemeByName$.value[name];
   }
   private colorScheme$(name: string): Observable<ColorSchemeData | undefined> {
     return this._colorSchemeByName$.pipe(map((schemes) => schemes[name]));
   }
-
   colorSchemeModifiers({
     colorScheme,
   }: {
@@ -315,6 +362,7 @@ export class ElllStyleManager
     );
   }
 
+  // --- Viewport Modifier Methods ---
   private _getViewportModifiers({
     width,
     height,
@@ -324,7 +372,6 @@ export class ElllStyleManager
     height: number;
     viewports: ViewportData[];
   }) {
-    // reversed because latest definitions have higher predecence
     for (const viewport of [...viewports].reverse()) {
       if (matchViewport({ height, width, viewport })) {
         return viewport.modifiers;
@@ -359,77 +406,7 @@ export class ElllStyleManager
     });
   }
 
-  modifiersToElllSelector(modifiers: StyleModifierData[]): string {
-    return modifiersToElllSelector({
-      modifiers,
-      modifierDefinitions: this.modifierSheet.modifiersByName,
-    });
-  }
-  modifiersToElllSelector$(modifiers: StyleModifierData[]): Observable<string> {
-    return this.modifierSheet.modifiersByName$.pipe(
-      map((modifierDefinitions) =>
-        modifiersToElllSelector({ modifiers, modifierDefinitions }),
-      ),
-    );
-  }
-
-  modifiersFromElllSelector(selector: string): StyleModifierData[] {
-    const [modifiers, error] = modifiersFromElllSelector({
-      selector,
-      modifierDefinitions: this.modifierSheet.modifiersByName,
-    });
-    if (error) {
-      console.error(error);
-      return [elllModifiers.invalid()];
-    }
-    return modifiers;
-  }
-  modifiersFromElllSelector$(
-    selector: string,
-  ): Observable<StyleModifierData[]> {
-    return this.modifierSheet.modifiersByName$.pipe(
-      map((modifierDefinitions) => {
-        const [modifiers, error] = modifiersFromElllSelector({
-          selector,
-          modifierDefinitions,
-        });
-        if (error) {
-          console.error(error);
-          return [elllModifiers.invalid()];
-        }
-        return modifiers;
-      }),
-    );
-  }
-
-  modifierToString(modifier: StyleModifierData): string {
-    return modifierToString({
-      modifier,
-      modifierDefinitions: this.modifierSheet.modifiersByName,
-    });
-  }
-  modifierToString$(modifier: StyleModifierData): Observable<string> {
-    return this.modifierSheet.modifiersByName$.pipe(
-      map((modifierDefinitions) =>
-        modifierToString({ modifier, modifierDefinitions }),
-      ),
-    );
-  }
-
-  modifierToClassName(modifier: StyleModifierData): string {
-    return modifierToClassName({
-      modifier,
-      modifierDefinitions: this.modifierSheet.modifiersByName,
-    });
-  }
-  modifierToClassName$(modifier: StyleModifierData): Observable<string> {
-    return this.modifierSheet.modifiersByName$.pipe(
-      map((modifierDefinitions) =>
-        modifierToClassName({ modifier, modifierDefinitions }),
-      ),
-    );
-  }
-
+  // --- Data Getters ---
   get data(): StyleSystemData {
     return {
       colorSchemes: this.colorSchemes,
@@ -444,11 +421,12 @@ export class ElllStyleManager
       })),
     );
   }
-
   get sourceData$(): Observable<StyleSystemData> {
+    // ...existing code...
     return this._modelSourceData$.pipe(map((data) => data ?? {}));
   }
 
+  // --- Constructor & Cleanup ---
   constructor({ elll, drive }: { elll: IElll; drive: IFileDrive }) {
     super({
       elll,
@@ -464,16 +442,47 @@ export class ElllStyleManager
         Object.fromEntries(schemes.map((scheme) => [scheme.name, scheme])),
       );
     });
+    const breakpointSubscription = this.breakpoints$.subscribe(
+      (breakpoints) => {
+        this._breakpointBasedModifiers$.next(
+          Object.entries(breakpoints).map(([name, value]) =>
+            modifierFromBreakpoint({ id: name, name, value }),
+          ),
+        );
+        this._breakointBasedViewports$.next(
+          Object.entries(breakpoints).map(([name, value]) =>
+            viewportFromBreakpoint({ name, value }),
+          ),
+        );
+      },
+    );
+    const modifiersByNameSubscription = this.modifiers$.subscribe(
+      (modifiers) => {
+        const byName: Record<string, StyleModifierDefinitionData> = {};
+        for (const modifier of modifiers) {
+          byName[modifier.name] = modifier;
+        }
+        this._modifiersByName$.next(byName);
+      },
+    );
 
     this.watchData();
-
     this.addDisposer(() => {
       colorSchemeSubscription.unsubscribe();
+      breakpointSubscription.unsubscribe();
+      modifiersByNameSubscription.unsubscribe();
+
+      this._breakpointBasedModifiers$.complete();
+      this._breakointBasedViewports$.complete();
+      this._modifiersByName$.complete();
+      this._colorSchemeByName$.complete();
     });
   }
 
+  // --- Restore Method ---
   restore(data: StyleSystemData): void {
     this._colorSchemes$.next(data.colorSchemes ?? []);
     this._viewports$.next(data.viewports ?? []);
+    this._breakpoints$.next(data.breakpoints ?? {});
   }
 }

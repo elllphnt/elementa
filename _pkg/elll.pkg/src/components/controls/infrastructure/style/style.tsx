@@ -5,6 +5,7 @@ import {
   ControlEntryVariant,
   elllIcons16,
   ResolvedControlProps,
+  useControlMenu,
 } from "@repo/components";
 import { Style } from "@repo/elementa-models";
 import { useObservable } from "@repo/utils";
@@ -17,8 +18,9 @@ import {
   EditorControlType,
 } from "../../control_map";
 import { VariableControl } from "../../datatypes/variable/variable";
+import { styleControlViews } from "./_views";
 
-function useStyleControlEntry(
+export function useStyleControlEntry(
   styles: Style[],
   properties: StylePropertyName[],
   key: string,
@@ -36,7 +38,7 @@ function useStyleControlEntry(
   ) as [Observable<any>, any];
 }
 
-function handlePropertyChange(
+export function handlePropertyChange(
   properties: StylePropertyName[],
   styles: Style[],
   value: any,
@@ -83,6 +85,7 @@ export function StyleControlEntry<
     active?: boolean;
   };
 }) {
+  const { openMenu } = useControlMenu();
   const ref = useRef<HTMLDivElement>(null);
   const _properties = [property, ...(properties ?? [])].filter(Boolean) as P[];
   const key = [_properties, styles.map((style) => "st-" + style.key)].join(":");
@@ -123,7 +126,7 @@ export function StyleControlEntry<
       active={value !== "unset" && value !== undefined}
       menu={{
         title: name,
-        viewId: "styleControlViews.menu.id",
+        viewId: styleControlViews.menu.id,
         props: { styles, properties: _properties, menus },
       }}
       onRemove={() => handlePropertyChange(_properties, styles, undefined)}
@@ -132,13 +135,19 @@ export function StyleControlEntry<
         !isVar
           ? {
               icon: elllIcons16.variable,
-              label: "Switch to Variable",
+              label: "Variable",
               handler: () => {
-                const nextValue = isVar
-                  ? value
-                  : { __var: "", fallback: value };
-                handlePropertyChange(_properties, styles, nextValue);
-                console.log("Switch to Variable", nextValue);
+                openMenu({
+                  viewId: styleControlViews.menu.id,
+                  anchor: ref.current ?? undefined,
+                  title: name,
+                  props: {
+                    styles,
+                    properties: _properties,
+                    menus,
+                    initialPath: "variable",
+                  },
+                });
               },
             }
           : undefined

@@ -412,10 +412,10 @@
     xml2js "^0.6.2"
     yup "^1.4.0"
 
-"@elllphnt/elll-element@^0.24.22":
-  version "0.24.22"
-  resolved "https://npm.pkg.github.com/download/@elllphnt/elll-element/0.24.22/3d98183cdc5fb8e9de715c9cfd45347dfa8abd83#3d98183cdc5fb8e9de715c9cfd45347dfa8abd83"
-  integrity sha512-tGaPt853Z//gxXjVXWPFTKf5qfSeq2/1fuZad7FvqYirdSAmEqPCRp7bcwULLcUOPgZx8Hk1RO3vgfDVZksHLg==
+"@elllphnt/elll-element@^0.24.32":
+  version "0.24.32"
+  resolved "https://npm.pkg.github.com/download/@elllphnt/elll-element/0.24.32/095f3b4f703f77101353b1b57bb5ad0cfd63add4#095f3b4f703f77101353b1b57bb5ad0cfd63add4"
+  integrity sha512-XoQa0hxQTRgATEKqIlFY2NWsiZFNlXTMitHwipf2qPpOwQ1So4tnodSNwgRBSmo3x5uGO9j+BrY9JWiAO216PA==
   dependencies:
     "@elllphnt/utils" "^0.2.1"
     "@jsep-plugin/new" "^1.0.3"
@@ -543,10 +543,10 @@
   resolved "https://npm.pkg.github.com/download/@elllphnt/utils/0.2.2/e0386561b0b8822d606abdfd9f04d0720a0ea0e0"
   integrity sha512-MY5mWXxd5XP/BwbCbi44qnidzNqN8tPgDB3dLcO++1zxRepkva9S32tn0wy0Y+Yt1l7p6kXGQhegP6p2gq3HTg==
 
-"@elllphnt/utils@^0.6.17":
-  version "0.6.17"
-  resolved "https://npm.pkg.github.com/download/@elllphnt/utils/0.6.17/1370121dfe75c2b07474caddf19a951cde3742b3#1370121dfe75c2b07474caddf19a951cde3742b3"
-  integrity sha512-SB5eWsENuRoKeLGMshFotrKfbKWV6iWmqGI2XBzAuqLhHsT7SgtwIC0v5DFb2Pd9HE+KvhM9Hhtd7Z9VcPSxSA==
+"@elllphnt/utils@^0.8.1":
+  version "0.8.1"
+  resolved "https://npm.pkg.github.com/download/@elllphnt/utils/0.8.1/2baad00a17ce901009d11c7decd690085f61b996#2baad00a17ce901009d11c7decd690085f61b996"
+  integrity sha512-z7iTayyun6reHX+/ppxa9zTN2ntxmhYH2gzqSq4qW8aC76URYaRZAjbYwYPYYZmwKvQfErsLmA2nZqLSYG/nPA==
   dependencies:
     "@paralleldrive/cuid2" "^2.2.2"
     diff "^7.0.0"

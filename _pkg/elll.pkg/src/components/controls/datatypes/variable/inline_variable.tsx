@@ -1,179 +1,63 @@
-import { ControlProps } from "@repo/components";
+import { ScrollArea, TreeEntry } from "@repo/components";
+import { ColorIcon } from "../../properties/fill/color_icon";
 
-export function InlineVariableControl({
-  value$,
-  value,
-  onChange,
-  settings,
-}: ControlProps<
-  any,
-  {
-    allowedTypes?: string[];
-    newEntry?: boolean;
-    // onNewEntryComplete?: (variable?: StyleVariableSetData) => void;
-    // theme?: Theme;
-  }
->) {
-  // const { openMenu } = useControlMenu();
-  // const currentValue = useControlValue(value$, value);
-  // const [search, setSearch] = useState("");
+const colors = [
+  // name, r,g,b,a
+  ["blue-100", 173, 216, 230, 1],
+  ["blue-200", 135, 206, 235, 1],
+  ["blue-300", 70, 130, 180, 1],
+  ["blue-400", 0, 0, 255, 1],
+  ["blue-500", 0, 0, 139, 1],
+  ["green-100", 144, 238, 144, 1],
+  ["green-200", 0, 255, 0, 1],
+  ["green-300", 0, 128, 0, 1],
+  ["green-400", 34, 139, 34, 1],
+  ["green-500", 0, 100, 0, 1],
+  ["red-100", 255, 182, 193, 1],
+  ["red-200", 255, 99, 71, 1],
+  ["red-300", 255, 0, 0, 1],
+  ["red-400", 139, 0, 0, 1],
+  ["red-500", 128, 0, 0, 1],
+  ["yellow-100", 255, 255, 224, 1],
+  ["yellow-200", 255, 255, 0, 1],
+  ["yellow-300", 255, 215, 0, 1],
+  ["yellow-400", 255, 165, 0, 1],
+  ["yellow-500", 255, 140, 0, 1],
+  ["purple-100", 230, 230, 250, 1],
+  ["purple-200", 216, 191, 216, 1],
+  ["purple-300", 221, 160, 221, 1],
+  ["purple-400", 238, 130, 238, 1],
+  ["purple-500", 128, 0, 128, 1],
+] as const;
 
-  // let currentVariable: VariableData | undefined;
-
-  // if (isVarRef(currentValue)) {
-  //   currentVariable = variables.find(
-  //     (variable) => variable.id === currentValue.__var,
-  //   );
-  // }
-
-  // const datatype = useObservable(
-  //   currentVariable?.datatype$,
-  //   currentVariable?.datatype,
-  // );
-  // const format = datatype
-  //   ? datatypeVarRefFormatMap[datatype as Datatype]
-  //   : undefined;
-
-  // let head: JSX.Element | null = null;
-
-  // if (settings?.newEntry) {
-  //   head = (
-  //     <NewVariableEntry
-  //       onCompleted={(name) => {
-  //         const trimmedName = name.trim();
-  //         if (!trimmedName) {
-  //           settings?.onNewEntryComplete?.();
-  //           return;
-  //         }
-
-  //         const variable = new Variable({ project });
-  //         variable.setName(name);
-  //         variable.setDatatype(settings?.allowedTypes?.[0]);
-  //         project.variableStore.addVariable(variable);
-  //         settings?.onNewEntryComplete?.(variable);
-  //       }}
-  //     />
-  //   );
-  // } else if (currentVariable) {
-  //   head = (
-  //     <>
-  //       <div className="el-flex el-gap-1">
-  //         <div className="el-grow">
-  //           <VariableEntry
-  //             active
-  //             variable={currentVariable}
-  //             actions={[
-  //               {
-  //                 icon: <Icon name={elllIcons16.cross} />,
-  //                 handler: () => {
-  //                   if (isVarRef(currentValue)) {
-  //                     onChange?.(currentValue.fallback);
-  //                   } else {
-  //                     onChange?.(undefined);
-  //                   }
-  //                 },
-  //               },
-  //             ]}
-  //             onClick={(e) => {
-  //               openMenu({
-  //                 anchor: e.currentTarget,
-  //                 viewId: variableControlViews.editor.id,
-  //                 title: "Variable",
-  //                 props: {
-  //                   variable: currentVariable,
-  //                   theme: settings?.theme,
-  //                 },
-  //               });
-  //             }}
-  //           />
-  //         </div>
-  //       </div>
-  //       {format?.options?.map((option) => {
-  //         const control =
-  //           option.control || datatypeControlMap[option.datatype as Datatype];
-  //         if (!control) {
-  //           return null;
-  //         }
-  //         return (
-  //           <FullControlEntry key={option.key} label={option.name}>
-  //             <Control
-  //               value={currentValue?.format?.options?.[option.key]}
-  //               onChange={(value) => {
-  //                 if (isVarRef(currentValue)) {
-  //                   onChange?.({
-  //                     ...currentValue,
-  //                     format: {
-  //                       ...currentValue.format,
-  //                       type: format.type,
-  //                       options: {
-  //                         ...currentValue.format?.options,
-  //                         [option.key]: value,
-  //                       },
-  //                     },
-  //                   });
-  //                 }
-  //               }}
-  //               settings={option.controlSettings}
-  //               type={control}
-  //             />
-  //           </FullControlEntry>
-  //         );
-  //       })}
-  //     </>
-  //   );
-  // }
-
+export function VariableControlMenu() {
   return (
-    <div className="el-space-y-2">
-      Inline Variable Control
-      {/* {head ? (
-        <>
-          {head} <hr />
-        </>
-      ) : (
-        <></>
-      )}
-      <input
-        type="text"
-        className="el-h-7 el-rounded-md el-border el-px-2 el-w-full"
-        placeholder="Search variables..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        style={{
-          outline: "none",
-        }}
-      />
-      <div
-        className="el-w-full el-overflow-hidden"
-        style={{
-          height: 200,
-        }}
-      >
-        <ScrollArea scrollY>
-          {variables.map((variable) => (
-            <VariableEntry
-              key={variable.key}
-              variable={variable}
-              onClick={() => {
-                let nextValue: VarRef;
-                if (isVarRef(currentValue)) {
-                  nextValue = {
-                    ...currentValue,
-                    __var: variable.id,
-                  };
-                } else {
-                  nextValue = {
-                    __var: variable.id,
-                    fallback: currentValue,
-                  };
-                }
-                onChange?.(nextValue);
-              }}
-              filter={search}
-            />
+    <div
+      style={{
+        height: 400,
+        width: 240,
+      }}
+      className="el-space-y-2 el-flex el-flex-col"
+    >
+      <div>
+        <input
+          className="el-h-7 el-border el-rounded el-w-full el-px-2"
+          placeholder="Variable name"
+        />
+      </div>
+      <div className="el-grow el-overflow-hidden">
+        <ScrollArea scrollY containerClassName="el-space-y-1">
+          {colors.map(([name, r, g, b, a]) => (
+            <TreeEntry
+              key={name}
+              title={name}
+              icon={<ColorIcon color={{ r, g, b, a }} />}
+            >
+              {name}
+            </TreeEntry>
           ))}
         </ScrollArea>
-      </div> */}
+      </div>
     </div>
   );
 }

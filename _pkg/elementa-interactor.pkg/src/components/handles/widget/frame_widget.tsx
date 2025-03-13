@@ -178,8 +178,8 @@ function SelectorText({
   styleManager: StyleManager;
 }) {
   const selector = useObservable(
-    styleManager.modifiersToElllSelector$(modifiers),
-    styleManager.modifiersToElllSelector(modifiers),
+    styleManager.stringifyElllSelector$(modifiers),
+    styleManager.stringifyElllSelector(modifiers),
   );
 
   return (

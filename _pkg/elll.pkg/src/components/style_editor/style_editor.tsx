@@ -3,7 +3,7 @@ import { Style } from "@repo/elementa-models";
 import React from "react";
 import { StyleAnimationsControlSheet } from "~/src/views/sheets/style/animations";
 import { StyleEffectsControlSheet } from "~/src/views/sheets/style/effects";
-import { StylePropertiesControlSheet } from "~/src/views/sheets/style/style_properties";
+import { StylePropertiesControlSheet } from "~/src/views/sheets/style/style_properties/style_properties";
 import { StyleTransitionsControlSheet } from "~/src/views/sheets/style/transitions";
 import {
   appearancesStylePropertyControls,

@@ -1,15 +1,20 @@
 import { File as DriveFileData } from "@elllphnt/drive-service-client";
-import { elllEntities } from "@elllphnt/utils";
+import {
+  elllEntities,
+  makeElllDriveFileUrl,
+  parseFileId,
+} from "@elllphnt/utils";
 import { BehaviorSubject, map } from "rxjs";
 import { Backend } from "../lib/backend";
 import { Store } from "../lib/store";
 import { driveServiceFactory } from "../services/drive_service";
-import { File as ElllFile } from "./file";
 import { Drive } from "./drive";
+import { File as ElllFile } from "./file";
 
 export class DriveFile extends ElllFile<DriveFileData> {
   static readonly entity = elllEntities.driveFile.name;
 
+  readonly edfUrl: string;
   private _driveId$ = new BehaviorSubject<string | undefined>(undefined);
 
   get driveService() {
@@ -45,6 +50,15 @@ export class DriveFile extends ElllFile<DriveFileData> {
 
   constructor({ id, backend }: { id: string; backend: Backend }) {
     super({ id, backend, entity: DriveFile.entity });
+
+    const idStruct = parseFileId(this.id);
+    if (!idStruct) {
+      console.error(`Invalid drive file id: ${this.id}`);
+      this.edfUrl = "";
+    } else {
+      const { bare_drive_id, bare_file_id } = idStruct;
+      this.edfUrl = makeElllDriveFileUrl(bare_drive_id, bare_file_id);
+    }
 
     this.addDisposer(() => {
       this._driveId$.complete();

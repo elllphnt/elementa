@@ -4,6 +4,7 @@ import { Observable } from "rxjs";
 import tinycolor from "tinycolor2";
 import { useControlValue } from "../../_hooks/value";
 import { FullControlEntry } from "../../entries/full_control_entry";
+import { SaturationValuePicker } from "./pickers/saturation_value";
 
 export function ColorControlMenu({
   value,
@@ -19,6 +20,16 @@ export function ColorControlMenu({
 
   return (
     <div className="color_picker el-space-y-4">
+      <SaturationValuePicker
+        hue={120}
+        value={0}
+        saturation={1}
+        onChange={() => {}}
+        style={{
+          height: "200px",
+          width: "100%",
+        }}
+      />
       <HexAlphaColorPicker
         color={color.toHex8String()}
         onChange={(value) => {

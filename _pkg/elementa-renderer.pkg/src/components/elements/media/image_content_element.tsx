@@ -1,5 +1,6 @@
 import { ImageMediaContentData } from "@elllphnt/elll-element";
 import { useObservable } from "@repo/utils";
+import { useEffect, useState } from "react";
 import { useNamespace } from "~/src/hooks/namespace";
 import { MediaElementRenderable } from "~/src/renderables/instances/_";
 import { BaseElementComponent } from "../_/_base_element";
@@ -12,6 +13,7 @@ export function ImageMediaElementComponent({
   element: MediaElementRenderable;
   content: ImageMediaContentData;
 }): JSX.Element {
+  const [resolvedUrl, setResolvedUrl] = useState<string | undefined>(undefined);
   const namespace = useNamespace();
   const srcValue = namespace.resolveValue(contentData.src);
 
@@ -23,6 +25,19 @@ export function ImageMediaElementComponent({
 
   const fitValue = namespace.resolveValue(fit);
   const positionValue = namespace.resolveValue(position);
+
+  // resolve the src value
+  useEffect(() => {
+    if (srcValue) {
+      element.entity.project.infrastructure.fileSystem
+        .resolveContentUrl(srcValue)
+        .then((resolved) => {
+          setResolvedUrl(resolved.url);
+        });
+    } else {
+      setResolvedUrl(undefined);
+    }
+  });
 
   if (!srcValue) {
     return <MediaElementFallback element={element} />;
@@ -36,7 +51,9 @@ export function ImageMediaElementComponent({
         objectPosition: positionValue,
       }}
       component="img"
-      src={srcValue}
+      {...{
+        src: resolvedUrl,
+      }}
     />
   );
 }

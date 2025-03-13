@@ -1,4 +1,10 @@
-import { File, parseElllResourceUrl } from "@repo/backend";
+import {
+  elllEntities,
+  getUrlScheme,
+  makeFileId,
+  parseElllDriveFileUrl,
+} from "@elllphnt/utils";
+import { DriveFile, File, parseElllResourceUrl } from "@repo/backend";
 import { FileSystem, Project } from "@repo/elementa-models";
 import { of } from "rxjs";
 import { getFileDriveId, makeAbsoluteFileUrl } from "~/src/libs/url";
@@ -50,5 +56,40 @@ export class ElllElementaFileSystem extends FileSystem {
           driveId,
         })
       : undefined;
+  }
+
+  async resolveContentUrl(url: string): Promise<{
+    url: string;
+    expiresAt?: number;
+  }> {
+    const scheme = getUrlScheme(url);
+    switch (scheme) {
+      case "edf": {
+        const urlStruct = parseElllDriveFileUrl(url);
+        if (!urlStruct) {
+          console.error(`Invalid elll drive file url: ${url}`);
+          return Promise.resolve({ url });
+        }
+        const { drive_id, file_id } = urlStruct;
+        const resourceId = makeFileId({
+          entity: elllEntities.driveFile.name,
+          bare_drive_id: drive_id,
+          bare_file_id: file_id,
+        });
+        if (!resourceId) {
+          console.error(`Invalid elll drive file url: ${url}`);
+          return Promise.resolve({ url });
+        }
+        const driveFile = this.infrastructure.elll.backend.instance<DriveFile>(
+          resourceId,
+          true,
+        );
+        const contentUrl = await driveFile.getSignedFileUrl("read");
+        return { url: contentUrl.url, expiresAt: contentUrl.expires };
+      }
+      default: {
+        return Promise.resolve({ url });
+      }
+    }
   }
 }

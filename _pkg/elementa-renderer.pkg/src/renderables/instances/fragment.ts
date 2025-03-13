@@ -1,4 +1,5 @@
 import { FragmentInstance } from "@repo/elementa";
+import { fragmentVariants } from "@repo/elementa-models";
 import { updateMapList } from "@repo/utils";
 import { BehaviorSubject, map, Observable } from "rxjs";
 import { updateInstanceRenderableList } from "../../_lib/renderables";
@@ -105,9 +106,18 @@ export class FragmentRenderable extends InstanceRenderable<FragmentInstance> {
       },
     );
 
+    // register component if the fragment entity is of variant template
+    if (this.entity.variant === fragmentVariants.template) {
+      this.renderer.registerComponent(this.entity.component);
+      this.addDisposer(() => {
+        this.renderer.unregisterComponent(this.entity.component);
+      });
+    }
+
     this.addDisposer(() => {
       contentSubscription.unsubscribe();
       fragmentSubscription.unsubscribe();
+      slotSubscription.unsubscribe();
 
       this.content.forEach((instance) => instance.dispose());
       this._content$.next([]);

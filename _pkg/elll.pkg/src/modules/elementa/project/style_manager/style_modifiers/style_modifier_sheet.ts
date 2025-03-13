@@ -1,18 +1,11 @@
 import { StyleModifierDefinitionData } from "@elllphnt/elll-element";
-import { combineLatestOrEmpty, restoreReactiveMap } from "@repo/utils";
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  Observable,
-  switchMap,
-} from "rxjs";
+import { combineLatestOrEmpty } from "@repo/utils";
+import { BehaviorSubject, map, Observable } from "rxjs";
 import { genId } from "~/src/libs/id";
 import { jsonModelConstructor } from "~/src/models/json";
 import { SynchronizedModelFile } from "../../file";
 import { IElllStyleManager } from "../_types";
 import { IStyleModifierSheet } from "./_types";
-import { StyleModifierDefinition } from "./style_modifier";
 
 export type StyleModifierSheetData = {
   modifiers: StyleModifierDefinitionData[];
@@ -23,10 +16,7 @@ export class StyleModifierSheet
   implements IStyleModifierSheet
 {
   private _modifiersById$ = new BehaviorSubject<
-    Record<string, StyleModifierDefinition>
-  >({});
-  private _modifiersByName$ = new BehaviorSubject<
-    Record<string, StyleModifierDefinition>
+    Record<string, StyleModifierDefinitionData>
   >({});
 
   get modifiers() {
@@ -38,13 +28,6 @@ export class StyleModifierSheet
       .pipe(map((modifiers) => Object.values(modifiers)));
   }
 
-  get modifiersByName() {
-    return this._modifiersByName$.value;
-  }
-  get modifiersByName$() {
-    return this._modifiersByName$.asObservable();
-  }
-
   modifier(id: string) {
     return this._modifiersById$.value[id];
   }
@@ -54,15 +37,11 @@ export class StyleModifierSheet
 
   get data(): StyleModifierSheetData {
     return {
-      modifiers: this.modifiers.map((m) => m.data),
+      modifiers: this.modifiers,
     };
   }
   get data$(): Observable<StyleModifierSheetData> {
-    return combineLatestOrEmpty([
-      this.modifiers$.pipe(
-        switchMap((modifiers) => combineLatest(modifiers.map((m) => m.data$))),
-      ),
-    ]).pipe(
+    return combineLatestOrEmpty([this.modifiers$]).pipe(
       map(([modifiers]) => ({
         modifiers,
       })),
@@ -92,32 +71,19 @@ export class StyleModifierSheet
       this._modifiersById$.complete();
     });
 
-    const modifiersByNameSubscription = this._modifiersById$.subscribe(
-      (modifiers) => {
-        const byName: Record<string, StyleModifierDefinition> = {};
-        for (const modifier of Object.values(modifiers)) {
-          byName[modifier.name] = modifier;
-        }
-        this._modifiersByName$.next(byName);
-      },
-    );
-
     this.addDisposer(() => {
       this._modifiersById$.complete();
-      this._modifiersByName$.complete();
-      modifiersByNameSubscription.unsubscribe();
     });
   }
 
   restore(data: StyleModifierSheetData) {
-    restoreReactiveMap({
-      datafiable$: this._modifiersById$,
-      data: Object.fromEntries(
-        data.modifiers?.map((s) => [s.id ?? genId(), s]) ?? [],
+    this._modifiersById$.next(
+      Object.fromEntries(
+        data.modifiers.map((modifier) => {
+          const id = modifier.id || genId();
+          return [id, { ...modifier, id }];
+        }),
       ),
-      create: (d) => new StyleModifierDefinition({ id: d.id, sheet: this }),
-      restore: (set, d) => set.restore(d),
-      dispose: (set) => set.dispose(),
-    });
+    );
   }
 }

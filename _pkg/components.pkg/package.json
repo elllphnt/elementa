@@ -11,7 +11,7 @@
         "watch": "yarn watch:babel & yarn watch:tsc"
     },
     "dependencies": {
-        "@elllphnt/elll-element": "^0.24.22",
+        "@elllphnt/elll-element": "^0.24.32",
         "@radix-ui/react-scroll-area": "^1.2.2",
         "@radix-ui/react-tooltip": "^1.1.2",
         "@repo/utils": "*",

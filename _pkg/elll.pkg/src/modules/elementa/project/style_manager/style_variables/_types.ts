@@ -11,9 +11,6 @@ export interface IStyleVariableSet {
 export interface IStyleVariableSheet {
   styleManager: IElllStyleManager;
 
-  variables: IStyleVariable[];
-  variables$: Observable<IStyleVariable[]>;
-
   sets: IStyleVariableSet[];
   sets$: Observable<IStyleVariableSet[]>;
 }

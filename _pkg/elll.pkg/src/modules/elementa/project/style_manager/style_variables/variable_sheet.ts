@@ -10,16 +10,15 @@ import {
   Observable,
   switchMap,
 } from "rxjs";
+import { genId } from "~/src/libs/id";
 import { jsonModelConstructor } from "~/src/models/json";
 import { SynchronizedModelFile } from "../../file";
 import { IElllStyleManager } from "../_types";
 import { IStyleVariableSheet } from "./_types";
-import { StyleVariable } from "./style_variable";
 import { StyleVariableSet } from "./style_variable_set";
 
 export type StyleVariableSheetData = {
   sets?: StyleVariableSetData[];
-  variables?: StyleVariableData[];
 };
 
 export class StyleVariableSheet
@@ -28,9 +27,10 @@ export class StyleVariableSheet
 {
   styleManager: IElllStyleManager;
 
+  private _variablesByName$ = new BehaviorSubject<
+    Record<string, StyleVariableData & { setId: string }>
+  >({});
   private _sets$: BehaviorSubject<Record<string, StyleVariableSet>> =
-    new BehaviorSubject({});
-  private _variables$: BehaviorSubject<Record<string, StyleVariable>> =
     new BehaviorSubject({});
 
   get sets() {
@@ -40,13 +40,11 @@ export class StyleVariableSheet
     return this._sets$.asObservable().pipe(map((sets) => Object.values(sets)));
   }
 
-  get variables() {
-    return Object.values(this._variables$.value);
+  variable(name: string) {
+    return this._variablesByName$.value[name];
   }
-  get variables$() {
-    return this._variables$
-      .asObservable()
-      .pipe(map((variables) => Object.values(variables)));
+  variable$(name: string) {
+    return this._variablesByName$.pipe(map((v) => v[name]));
   }
 
   get sourceData$(): Observable<StyleVariableSheetData> {
@@ -64,7 +62,6 @@ export class StyleVariableSheet
   get data(): StyleVariableSheetData {
     return {
       sets: Object.values(this.sets).map((s) => s.data),
-      variables: Object.values(this.variables).map((v) => v.data),
     };
   }
   get data$(): Observable<StyleVariableSheetData> {
@@ -74,15 +71,9 @@ export class StyleVariableSheet
           combineLatest(Object.values(sets).map((s) => s.data$)),
         ),
       ),
-      this.variables$.pipe(
-        switchMap((variables) =>
-          combineLatest(Object.values(variables).map((v) => v.data$)),
-        ),
-      ),
     ]).pipe(
-      map(([sets, variables]) => ({
+      map(([sets]) => ({
         sets,
-        variables,
       })),
     );
   }
@@ -97,10 +88,40 @@ export class StyleVariableSheet
 
     this.styleManager = styleManager;
 
+    const variablesSubscription = this.sets$
+      .pipe(
+        switchMap((sets) =>
+          combineLatestOrEmpty(
+            sets.map((s) =>
+              s.variables$.pipe(map((variables) => [s.id, variables] as const)),
+            ),
+          ),
+        ),
+      )
+      .subscribe((sets) => {
+        const variablesByName: Record<
+          string,
+          StyleVariableData & { setId: string }
+        > = {};
+        for (const [setId, variables] of sets) {
+          for (const variable of variables) {
+            if (variable.name) {
+              variablesByName[variable.name] = {
+                ...variable,
+                setId,
+              };
+            }
+          }
+        }
+        this._variablesByName$.next(variablesByName);
+      });
+
     this.watchData();
     this.addDisposer(() => {
       this._sets$.complete();
-      this._variables$.complete;
+      this._variablesByName$.complete();
+
+      variablesSubscription.unsubscribe();
     });
   }
 
@@ -108,19 +129,15 @@ export class StyleVariableSheet
     console.log("restoring", data);
     restoreReactiveMap({
       datafiable$: this._sets$,
-      data: Object.fromEntries(data.sets?.map((s) => [s.id, s]) ?? []),
+      data: Object.fromEntries(
+        data.sets?.map((s) => {
+          const id = s.id || genId();
+          return [id, { ...s, id, sheet: this }];
+        }) ?? [],
+      ),
       create: (d) => new StyleVariableSet({ id: d.id, sheet: this }),
       restore: (set, d) => set.restore(d),
       dispose: (set) => set.dispose(),
-    });
-
-    restoreReactiveMap({
-      datafiable$: this._variables$,
-      data: Object.fromEntries(data.variables?.map((v) => [v.id, v]) ?? []),
-      create: (d) =>
-        new StyleVariable({ id: d.id, setId: d.setId, sheet: this }),
-      restore: (variable, d) => variable.restore(d),
-      dispose: (variable) => variable.dispose(),
     });
   }
 }

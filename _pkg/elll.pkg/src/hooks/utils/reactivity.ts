@@ -1,6 +1,7 @@
 import { resolveCommonValue } from "@repo/components";
 import { Instance } from "@repo/elementa";
 import { combineLatestOrEmpty, useObservable } from "@repo/utils";
+import _ from "lodash";
 import { useCallback, useMemo } from "react";
 import { Observable, distinctUntilChanged, map } from "rxjs";
 
@@ -9,10 +10,10 @@ export function useCommonReactivePair<T>(
   values: T[],
   key: string,
 ) {
-  const value = resolveCommonValue(values);
+  const value = resolveCommonValue(values, _.isEqual);
   const value$ = useMemo(() => {
     return combineLatestOrEmpty(value$s).pipe(
-      map((values) => resolveCommonValue(values)),
+      map((values) => resolveCommonValue(values, _.isEqual)),
       distinctUntilChanged(),
     );
   }, [key]);

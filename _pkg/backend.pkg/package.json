@@ -17,7 +17,7 @@
         "@elllphnt/intelligence-service-client": "^0.1.10",
         "@elllphnt/pubsub-service-client": "^0.1.4",
         "@elllphnt/repository-service-client": "^1.0.10",
-        "@elllphnt/utils": "^0.6.17",
+        "@elllphnt/utils": "^0.8.1",
         "@elllphnt/workspace-service-client": "^0.1.9",
         "@repo/utils": "*",
         "bson": "^6.8.0",

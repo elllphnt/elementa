@@ -78,7 +78,7 @@ function AddStylePanel({
   const modifierDefinitions = useObservable(
     project.styleManager.modifierSheet.modifiers$,
     project.styleManager.modifierSheet.modifiers,
-  ).filter((m) => m.type === StyleModifierType.Element && !m.signature.length);
+  ).filter((m) => m.type === StyleModifierType.Element && !m.signature?.length);
 
   const [modifiers, setModifiers] = useState<string[]>([]);
   const elementSelector = modifiers.sort().join(":");
@@ -172,8 +172,8 @@ function SelectStylePanel({
 }): JSX.Element {
   const project = useElllProject();
   const modifierDefinitions = useObservable(
-    project.styleManager.modifierSheet.modifiersByName$,
-    project.styleManager.modifierSheet.modifiersByName,
+    project.styleManager.modifiersByName$,
+    project.styleManager.modifiersByName,
   );
 
   const [search, setSearch] = useState("");
@@ -318,8 +318,8 @@ function ElementStyleSelectorControl({
 }): JSX.Element {
   const project = useElllProject();
   const modifierDefinitions = useObservable(
-    project.styleManager.modifierSheet.modifiersByName$,
-    project.styleManager.modifierSheet.modifiersByName,
+    project.styleManager.modifiersByName$,
+    project.styleManager.modifiersByName,
   );
   const [contextSelector, elementSelector] = splitedSelector({
     selector: activeSelector,

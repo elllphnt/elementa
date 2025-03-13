@@ -115,7 +115,7 @@ export class EntityFactory {
     file,
     component,
   }: {
-    file: ElllFile;
+    file: DriveFile;
     component: Component;
   }): Entity | undefined {
     if (!file.type) {
@@ -128,7 +128,7 @@ export class EntityFactory {
       const element = new MediaElement({ component });
       element.setContent({
         type: "image",
-        src: "https://cdn.pixabay.com/photo/2024/05/26/10/15/bird-8788491_1280.jpg",
+        src: file.edfUrl,
       } as ImageMediaContentData);
       element.setFit("cover");
 
@@ -137,7 +137,7 @@ export class EntityFactory {
       const element = new MediaElement({ component });
       element.setContent({
         type: "video",
-        src: "https://cdn.pixabay.com/photo/2024/05/26/10/15/bird-8788491_1280.jpg",
+        src: file.edfUrl,
       } as VideoMediaContentData);
       element.setFit("cover");
 

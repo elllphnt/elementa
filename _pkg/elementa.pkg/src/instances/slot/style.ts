@@ -217,7 +217,7 @@ export class SlotInstanceStyle extends InstanceStyle {
       .pipe(
         switchMap((modifiers) => {
           if (modifiers.length) {
-            return this.slot.entity.component.project.styleManager.modifiersToElllSelector$(
+            return this.slot.entity.component.project.styleManager.stringifyElllSelector$(
               modifiers,
             );
           } else {

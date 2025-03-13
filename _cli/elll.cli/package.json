@@ -17,7 +17,7 @@
     "@elllphnt/elll-react-transpiler": "^0.1.2",
     "@elllphnt/identity-service-client": "^0.1.7",
     "@elllphnt/repository-service-client": "^1.0.10",
-    "@elllphnt/utils": "^0.6.17",
+    "@elllphnt/utils": "^0.8.1",
     "@elllphnt/workspace-service-client": "^0.1.9",
     "@radix-ui/react-accordion": "^1.2.3",
     "axios": "^1.7.7",

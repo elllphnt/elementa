@@ -49,12 +49,12 @@ export class StylesheetCssStyleRule extends CssStyleRule {
   }
 
   get modifiers() {
-    return this.stylesheet.project.styleManager.modifiersFromElllSelector(
+    return this.stylesheet.project.styleManager.parseElllSelector(
       this.selector,
     );
   }
   get modifiers$() {
-    return this.stylesheet.project.styleManager.modifiersFromElllSelector$(
+    return this.stylesheet.project.styleManager.parseElllSelector$(
       this.selector,
     );
   }
@@ -78,11 +78,8 @@ export class StylesheetCssStyleRule extends CssStyleRule {
       [
         "@layer content",
         ".elementa-preview",
-        ...this.stylesheet.project.styleManager.cssSelectorOf({
-          layer: this.layer,
-          baseSelector: `.${this.stylesheet.className}`,
-          modifiers: this.modifiers,
-        }),
+        `.${this.stylesheet.className}`,
+        ...this.stylesheet.project.styleManager.cssSelectorOf(this.modifiers),
       ],
     ];
   }
@@ -113,15 +110,12 @@ export class StylesheetCssStyleRule extends CssStyleRule {
       this.modifiers$.pipe(
         switchMap((modifiers) =>
           this.stylesheet.project.styleManager
-            .cssSelectorOf$({
-              layer: this.layer,
-              baseSelector: `.${this.stylesheet.className}`,
-              modifiers,
-            })
+            .cssSelectorOf$(modifiers)
             .pipe(
               map((selector) => [
                 "@layer content",
                 ".elementa-preview",
+                `.${this.stylesheet.className}`,
                 ...selector,
               ]),
             ),

@@ -220,7 +220,7 @@ export class ElementInstanceStyle extends InstanceStyle {
       value,
       this.selector,
       this.modifiers,
-      this.element.entity.component.project.styleManager.modifiersToElllSelector(
+      this.element.entity.component.project.styleManager.stringifyElllSelector(
         this.modifiers,
       ),
     );

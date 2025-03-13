@@ -1,25 +1,17 @@
-import { CssSelector, StyleModifierData } from "@elllphnt/elll-element";
+import {
+  CssSelector,
+  ElllSelectorData,
+  StyleModifierData,
+} from "@elllphnt/elll-element";
 import { Observable } from "rxjs";
+import { CssStyleSheet } from "../css/_";
 
 export abstract class StyleManager {
-  abstract cssSelectorOf({
-    layer,
-    modifiers,
-    baseSelector,
-  }: {
-    layer?: string;
-    modifiers?: StyleModifierData[];
-    baseSelector: string;
-  }): CssSelector;
-  abstract cssSelectorOf$({
-    layer,
-    modifiers,
-    baseSelector,
-  }: {
-    layer?: string;
-    modifiers?: StyleModifierData[];
-    baseSelector: string;
-  }): Observable<CssSelector>;
+  abstract get stylesheets(): CssStyleSheet[];
+  abstract get stylesheets$(): Observable<CssStyleSheet[]>;
+
+  abstract cssSelectorOf(selector: ElllSelectorData): CssSelector;
+  abstract cssSelectorOf$(selector: ElllSelectorData): Observable<CssSelector>;
 
   abstract colorSchemeModifiers({
     colorScheme,
@@ -55,13 +47,13 @@ export abstract class StyleManager {
     modifier: StyleModifierData,
   ): Observable<string>;
 
-  abstract modifiersToElllSelector(modifiers: StyleModifierData[]): string;
-  abstract modifiersToElllSelector$(
+  abstract stringifyElllSelector(modifiers: StyleModifierData[]): string;
+  abstract stringifyElllSelector$(
     modifiers: StyleModifierData[],
   ): Observable<string>;
 
-  abstract modifiersFromElllSelector(selector: string): StyleModifierData[];
-  abstract modifiersFromElllSelector$(
+  abstract parseElllSelector(selector: string): StyleModifierData[];
+  abstract parseElllSelector$(
     selector: string,
   ): Observable<StyleModifierData[]>;
 }
