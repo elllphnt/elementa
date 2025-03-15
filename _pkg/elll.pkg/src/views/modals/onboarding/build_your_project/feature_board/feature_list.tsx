@@ -1,7 +1,7 @@
 import { Draggable } from "@hello-pangea/dnd";
 import { FeatureItem } from "./feature_item";
 
-export function FeatureList({ features }: { features: Feature[] }) {
+export function FeatureList({ features }: { features: any[] }) {
   return (
     <>
       {features.map((feature, index) => (

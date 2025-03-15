@@ -4,7 +4,6 @@ import React from "react";
 import { StyleAnimationsControlSheet } from "~/src/views/sheets/style/animations";
 import { StyleEffectsControlSheet } from "~/src/views/sheets/style/effects";
 import { StylePropertiesControlSheet } from "~/src/views/sheets/style/style_properties/style_properties";
-import { StyleTransitionsControlSheet } from "~/src/views/sheets/style/transitions";
 import {
   appearancesStylePropertyControls,
   boxStylePropertyControls,
@@ -13,6 +12,7 @@ import {
   StylePropertyGroupConfig,
   textStylePropertyControls,
   transformStylePropertyControls,
+  transitionStylePropertyControls,
 } from "../controls/styles/properties";
 import { Sheet } from "../sheet/sheet";
 
@@ -63,6 +63,11 @@ const sections: Array<{
     title: "Transform",
     properties: transformStylePropertyControls,
   },
+  {
+    key: styleEditorSections.transition,
+    title: "Transition",
+    properties: transitionStylePropertyControls,
+  },
 ];
 
 export type StyleEdtitorSection = keyof typeof styleEditorSections;
@@ -87,18 +92,7 @@ export function StyleEditor({
       <React.Fragment key="effects">
         <hr />
         <Sheet title="Effects">
-          <StyleEffectsControlSheet styles={styles} />
-        </Sheet>
-      </React.Fragment>,
-    );
-  }
-
-  if (enabledSections.transition) {
-    additionalSectionsWithSideMenu.push(
-      <React.Fragment key="transitions">
-        <hr />
-        <Sheet title="Transitions">
-          <StyleTransitionsControlSheet styles={styles} />
+          <StyleEffectsControlSheet />
         </Sheet>
       </React.Fragment>,
     );
@@ -109,7 +103,7 @@ export function StyleEditor({
       <React.Fragment key="animations">
         <hr />
         <Sheet title="Animations">
-          <StyleAnimationsControlSheet styles={styles} />
+          <StyleAnimationsControlSheet />
         </Sheet>
       </React.Fragment>,
     );

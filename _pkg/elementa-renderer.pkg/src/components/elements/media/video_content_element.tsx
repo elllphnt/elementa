@@ -1,4 +1,4 @@
-import { VideoMediaContentData } from "@elllphnt/elll-element";
+import { VideoMediaData } from "@elllphnt/elll-element";
 import { useNamespace } from "~/src/hooks/namespace";
 import { MediaElementRenderable } from "~/src/renderables/instances/_";
 import { BaseElementComponent } from "../_/_base_element";
@@ -6,13 +6,13 @@ import MediaElementFallback from "./fallback";
 
 export function VideoMediaElementComponent({
   element,
-  content: contentData,
+  media,
 }: {
   element: MediaElementRenderable;
-  content: VideoMediaContentData;
+  media: VideoMediaData;
 }): JSX.Element {
   const namespace = useNamespace();
-  const srcValue = namespace.resolveValue(contentData.src);
+  const srcValue = namespace.resolveValue(media.src);
 
   if (!srcValue) {
     return <MediaElementFallback element={element} />;
@@ -30,8 +30,9 @@ export function VideoMediaElementComponent({
     >
       <video
         src={srcValue}
-        autoPlay
-        loop
+        autoPlay={media.autoplay}
+        loop={media.loop}
+        muted={media.muted}
         style={{
           width: "100%",
         }}

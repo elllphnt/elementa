@@ -5,7 +5,6 @@ import {
   MixedType,
   useControlValue,
 } from "@repo/components";
-import { FillData } from "@elllphnt/elll-element";
 import { Observable } from "rxjs";
 import { ColorIcon } from "./color_icon";
 import { GradientIcon } from "./gradient_icon";
@@ -14,8 +13,8 @@ export function FillIcon({
   value,
   value$,
 }: {
-  value?: FillData | MixedType | undefined;
-  value$?: Observable<FillData | MixedType | undefined>;
+  value?: any | MixedType | undefined;
+  value$?: Observable<any | MixedType | undefined>;
 }) {
   const fill = useControlValue(value$, value);
 

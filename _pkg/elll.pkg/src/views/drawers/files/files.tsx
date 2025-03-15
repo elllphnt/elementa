@@ -52,14 +52,12 @@ function WorkspaceFiles(): JSX.Element {
     <WorkspaceDirectoryTree
       directory={directory}
       fileTypes={[
-        { type: elllFileTypes.components.elll, name: "Elll Component" },
-        {
-          type: elllFileTypes.components.react,
-          name: "Code Component",
-        },
+        { type: elllFileTypes.component, name: "Component" },
+        { type: elllFileTypes.primitive, name: "Primitive" },
         { type: elllFileTypes.state, name: "State" },
+        { type: elllFileTypes.context, name: "Context" },
       ]}
-      defaultFileType={elllFileTypes.components.elll}
+      defaultFileType={elllFileTypes.component}
       defaultFileTypeName="component"
       contextMenuOptions={(file) => {
         const options = [] as ContextMenuOption[][];
@@ -123,14 +121,12 @@ function LibraryFiles({ tagId }: { tagId: string }): JSX.Element {
     <WorkspaceDirectoryTree
       directory={directory}
       fileTypes={[
-        { type: elllFileTypes.components.elll, name: "Elll Component" },
-        {
-          type: elllFileTypes.components.react,
-          name: "Code Component",
-        },
+        { type: elllFileTypes.component, name: "Component" },
+        { type: elllFileTypes.primitive, name: "Primitive" },
         { type: elllFileTypes.state, name: "State" },
+        { type: elllFileTypes.context, name: "Context" },
       ]}
-      defaultFileType={elllFileTypes.components.elll}
+      defaultFileType={elllFileTypes.component}
       defaultFileTypeName="component"
       contextMenuOptions={(file) => {
         const options = [] as ContextMenuOption[][];

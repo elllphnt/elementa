@@ -1,6 +1,5 @@
 import { View } from "@repo/shell";
 import { BlueprintBoardView } from "./editors/blueprint/blueprint_board";
-import { CodeMirrorBoardView } from "./editors/codemirror/codemirror_board";
 import { ComponentBoardView } from "./editors/elementa/editor/component_board";
 import { ComponentViewerBoardView } from "./editors/elementa/viewer/component_board";
 import { ComponentViewerBar } from "./editors/elementa/viewer/component_viewer_bar";
@@ -18,10 +17,6 @@ export const boardViews = {
   },
 
   // editors
-  codeMirrorEditor: {
-    id: "elll.view.board.editor.codemirror",
-    render: CodeMirrorBoardView,
-  },
   monacoEditor: {
     id: "elll.view.board.editor.monaco",
     render: MonacoBoardView,

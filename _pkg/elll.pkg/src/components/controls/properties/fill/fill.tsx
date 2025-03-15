@@ -1,5 +1,4 @@
 import { ControlProps, MenuButtonControl, MixedType } from "@repo/components";
-import { FillData } from "@elllphnt/elll-element";
 import { fillControlViews } from "./_views/_";
 import { FillIcon } from "./fill_icon";
 import { FillLabel } from "./fill_label";
@@ -10,7 +9,7 @@ export function FillControl({
   onChange,
   settings,
 }: ControlProps<
-  FillData | MixedType | undefined,
+  any | MixedType | undefined,
   {
     title?: string;
   }

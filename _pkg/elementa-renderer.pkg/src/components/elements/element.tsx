@@ -11,7 +11,7 @@ import { SlotElementRenderable } from "../../renderables/instances/element/slot"
 import { TextElementRenderable } from "../../renderables/instances/element/text";
 import { VectorElementRenderable } from "../../renderables/instances/element/vector";
 import { ElementErrorBoundary } from "./_/_error_boundary";
-import ComponentElementComponent from "./components/component";
+import ComponentElementComponent from "./components/component_element";
 import { ContainerElementComponent } from "./container_element";
 import { MediaElementComponent } from "./media/media_element";
 import { PageElementComponent } from "./page_element";

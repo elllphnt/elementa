@@ -30,8 +30,8 @@
     },
     "peerDependencies": {},
     "dependencies": {
-        "@elllphnt/elll-element": "^0.24.32",
-        "@elllphnt/utils": "^0.8.1",
+        "@elllphnt/elll-element": "^0.25.9",
+        "@elllphnt/utils": "^0.9.0",
         "@jsep-plugin/new": "^1.0.3",
         "@jsep-plugin/numbers": "^1.0.1",
         "@jsep-plugin/object": "^1.2.1",

@@ -1,13 +1,13 @@
 import { entityTypes, switchEntityType } from "@elllphnt/elll-element";
 import {
-  CodeComponentElementInstance,
+  ComponentElementInstance,
   ContainerElementInstance,
-  ElllComponentElementInstance,
   FragmentInstance,
   FrameWidgetInstance,
   Instance,
   MediaElementInstance,
   PageElementInstance,
+  PrimitiveElementInstance,
   SlotElementInstance,
   TextElementInstance,
   VectorElementInstance,
@@ -15,13 +15,13 @@ import {
 import { updateMapList } from "@repo/utils";
 import { ElementaRenderer } from "../elementa_renderer";
 import {
+  ComponentElementRenderable,
   FragmentRenderable,
   MediaElementRenderable,
 } from "../renderables/instances/_";
-import { CodeComponentElementRenderable } from "../renderables/instances/element/components/code_component";
-import { ElllComponentElementRenderable } from "../renderables/instances/element/components/elll_component";
 import { ContainerElementRenderable } from "../renderables/instances/element/container";
 import { PageElementRenderable } from "../renderables/instances/element/page";
+import { PrimitiveElementRenderable } from "../renderables/instances/element/primitive";
 import { SlotElementRenderable } from "../renderables/instances/element/slot";
 import { TextElementRenderable } from "../renderables/instances/element/text";
 import { VectorElementRenderable } from "../renderables/instances/element/vector";
@@ -45,16 +45,16 @@ export function makeInstanceRenderable<I extends Instance>({
     },
 
     // element
-    [entityTypes.elements.components.elll]: () => {
-      return new ElllComponentElementRenderable({
+    [entityTypes.elements.component]: () => {
+      return new ComponentElementRenderable({
         renderer,
-        instance: instance as unknown as ElllComponentElementInstance,
+        instance: instance as unknown as ComponentElementInstance,
       }) as any;
     },
-    [entityTypes.elements.components.code]: () => {
-      return new CodeComponentElementRenderable({
+    [entityTypes.elements.primitive]: () => {
+      return new PrimitiveElementRenderable({
         renderer,
-        instance: instance as unknown as CodeComponentElementInstance,
+        instance: instance as unknown as PrimitiveElementInstance,
       }) as any;
     },
     [entityTypes.elements.page]: () => {

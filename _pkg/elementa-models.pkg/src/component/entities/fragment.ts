@@ -23,7 +23,7 @@ import { Schema } from "~/src/schema/_";
 import { Component } from "../component";
 import { fragmentVariants } from "./_libs/fragment";
 import { Element, PageElement } from "./elements/_";
-import { ElementContainer } from "./elements/_common/element_container";
+import { ElementContainer } from "./elements/_common/container";
 import { Entity } from "./entity";
 
 export class FragmentParam

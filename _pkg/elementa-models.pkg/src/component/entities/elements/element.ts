@@ -10,14 +10,12 @@ import {
 } from "@elllphnt/elll-element";
 import { combineLatestOrEmpty } from "@repo/utils";
 import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
-import { restoreReactiveArray } from "~/src/_lib/restore";
 import { CssStyleSheet } from "~/src/css/_";
 import { StylesheetCssStyleSheet } from "~/src/css/stylesheets/stylesheet/stylesheet";
 import { StyleOverridesMap, Stylesheet } from "~/src/style/_";
 import { Component } from "../../component";
 import { Entity } from "../entity";
-import { ElementConnection } from "./_common/connection";
-import { ElementContainer } from "./_common/element_container";
+import { ElementContainer } from "./_common/container";
 
 export abstract class Element<
   D extends ElementData = ElementData,
@@ -30,7 +28,6 @@ export abstract class Element<
   );
   private _hidden$ = new BehaviorSubject<Record<string, boolean>>({});
   private _interactions$ = new BehaviorSubject<Record<string, Expression>>({});
-  private _connections$ = new BehaviorSubject<ElementConnection[]>([]);
 
   private _container$ = new BehaviorSubject<ElementContainer | undefined>(
     undefined,
@@ -82,15 +79,6 @@ export abstract class Element<
   }
   interaction$(event: string) {
     return this.interactions$.pipe(map((interactions) => interactions[event]));
-  }
-
-  // connections
-
-  get connections() {
-    return this._connections$.value;
-  }
-  get connections$() {
-    return this._connections$.asObservable();
   }
 
   // container
@@ -158,7 +146,6 @@ export abstract class Element<
       styleOverrides: this.styleOverridesMap.data as any,
       interactions: this.interactions,
       hidden: this.hidden,
-      connections: this.connections.map((connection) => connection.data),
       repeat: this.repeat,
     };
   }
@@ -179,13 +166,6 @@ export abstract class Element<
       this.styleOverridesMap.data$,
       this.interactions$,
       this.hidden$,
-      this.connections$.pipe(
-        switchMap((connections) =>
-          combineLatestOrEmpty(
-            connections.map((connection) => connection.data$),
-          ),
-        ),
-      ),
       this.repeat$,
     ]).pipe(
       map(
@@ -196,7 +176,6 @@ export abstract class Element<
           styleOverrides,
           interactions,
           hidden,
-          connections,
           repeat,
         ]) => ({
           ...data,
@@ -205,7 +184,6 @@ export abstract class Element<
           styleOverrides: styleOverrides as any,
           interactions,
           hidden,
-          connections,
           repeat,
         }),
       ),
@@ -257,14 +235,6 @@ export abstract class Element<
     const interactions = { ...this.interactions };
     delete interactions[event];
     this._interactions$.next(interactions);
-  }
-
-  addConnection(connection: ElementConnection) {
-    this._connections$.next([...this.connections, connection]);
-  }
-  removeConnection(connection: ElementConnection) {
-    connection.setSource(undefined);
-    this._connections$.next(this.connections.filter((c) => c !== connection));
   }
 
   isChildOf(element: Entity) {
@@ -319,20 +289,6 @@ export abstract class Element<
 
     // interactions
     this._interactions$.next(data.interactions ?? {});
-
-    // connections
-    restoreReactiveArray({
-      datafiables$: this._connections$,
-      data: data.connections,
-      create: ({ key }) => new ElementConnection({ element: this, key }),
-      restore: (connection, data) => {
-        connection.restore(data);
-        return connection;
-      },
-      identifyData: (connection) => connection.key,
-      identifyDatafiable: (connection) => connection.key,
-      dispose: (connection) => connection.dispose(),
-    });
 
     // repeat
     this._repeat$.next(data.repeat);

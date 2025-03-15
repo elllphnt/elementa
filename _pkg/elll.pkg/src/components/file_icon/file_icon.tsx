@@ -12,8 +12,11 @@ export function fileIcon(type?: string) {
       [elllFileTypes.component]: () => {
         return elllIcons16.component;
       },
-      [elllFileTypes.components.react]: () => {
-        return elllIcons16.component;
+      [elllFileTypes.primitive]: () => {
+        return elllIcons16.properties;
+      },
+      [elllFileTypes.context]: () => {
+        return elllIcons16.column;
       },
       [elllFileTypes.state]: () => {
         return elllIcons16.state;
@@ -46,14 +49,17 @@ export function fileColor(type?: string) {
   return switchFileType(
     type,
     {
-      [elllFileTypes.components.elll]: () => {
+      [elllFileTypes.component]: () => {
         return "#ff8800";
       },
-      [elllFileTypes.components.react]: () => {
+      [elllFileTypes.primitive]: () => {
         return "#0088ff";
       },
       [elllFileTypes.state]: () => {
         return "#8888ff";
+      },
+      [elllFileTypes.context]: () => {
+        return "#00ff88";
       },
     },
     () => {

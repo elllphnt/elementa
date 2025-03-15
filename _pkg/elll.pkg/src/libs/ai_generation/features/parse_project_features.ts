@@ -1,5 +1,4 @@
 import { AxiosInstance } from "axios";
-import { FeatureData } from "~/src/modules/elementa/spec/_types";
 import { queryIntelligence } from "../utils";
 
 const instructions = ({
@@ -9,7 +8,7 @@ const instructions = ({
 }: {
   type: string;
   description: string;
-  features: FeatureData[];
+  features: any[];
 }) => `
 The following is the description of a ${type} project, followed by a list of features of the project.
 
@@ -32,7 +31,7 @@ export async function parseProjectFeature({
   query: string;
   type: string;
   description: string;
-  features: FeatureData[];
+  features: any[];
   client: AxiosInstance;
 }) {
   const response = await queryIntelligence({
@@ -72,5 +71,5 @@ export async function parseProjectFeature({
     client,
   });
 
-  return JSON.parse(response) as FeatureData;
+  return JSON.parse(response);
 }

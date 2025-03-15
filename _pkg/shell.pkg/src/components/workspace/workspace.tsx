@@ -1,7 +1,8 @@
 import { ContextMenuView } from "@repo/components";
-import { useEffect, useMemo, useRef } from "react";
-import { Workspace } from "~/src/models/workspace";
 import { useObservable } from "@repo/utils";
+import { useEffect, useMemo, useRef } from "react";
+import { useFocusNode } from "~/src/hooks/focus";
+import { Workspace } from "~/src/models/workspace";
 import FocusedBoard from "../boards/focused_board";
 import WorkspaceModalContainer from "../modals/center_modal/center_modal_container";
 import ActivityBar from "./activity_bar";
@@ -13,6 +14,7 @@ export function WorkspaceView({
 }: {
   workspace: Workspace;
 }): JSX.Element {
+  const { setRef } = useFocusNode("workspace");
   const ref = useRef<HTMLElement | null>(null);
 
   const appBarVisible =
@@ -80,6 +82,7 @@ export function WorkspaceView({
     <div
       ref={(el) => {
         ref.current = el;
+        setRef(el);
       }}
       style={{
         userSelect: "none",

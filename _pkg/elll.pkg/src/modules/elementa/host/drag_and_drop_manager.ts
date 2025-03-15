@@ -21,8 +21,8 @@ const entityAcceptDropTypesMap = {
   [entityTypes.widgets.frame]: [...commonAcceptDropTypes],
   [entityTypes.elements.container]: [...commonAcceptDropTypes],
   [entityTypes.elements.text]: [...commonAcceptDropTypes],
-  [entityTypes.elements.components.code]: [...commonAcceptDropTypes],
-  [entityTypes.elements.components.elll]: [...commonAcceptDropTypes],
+  [entityTypes.elements.primitive]: [...commonAcceptDropTypes],
+  [entityTypes.elements.component]: [...commonAcceptDropTypes],
   [entityTypes.elements.media]: [...commonAcceptDropTypes],
   [entityTypes.elements.vector]: [...commonAcceptDropTypes],
 };

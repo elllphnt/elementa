@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 
-export const SpecContext = createContext<Spec | undefined>(undefined);
+export const SpecContext = createContext<any | undefined>(undefined);
 
 export function useEditorSpec() {
   const spec = useContext(SpecContext);

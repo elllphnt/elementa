@@ -1,30 +1,25 @@
-import {
-  Evaluable,
-  MediaContentData,
-  MediaElementData,
-  entityTypes,
-} from "@elllphnt/elll-element";
+import { MediaElementData, entityTypes } from "@elllphnt/elll-element";
 import { combineLatestOrEmpty } from "@repo/utils";
 import { BehaviorSubject, Observable, map } from "rxjs";
 import { Component } from "../../component";
 import { Element } from "./element";
 
 export class MediaElement extends Element<MediaElementData> {
-  private _content$ = new BehaviorSubject<
-    Evaluable<MediaContentData | undefined>
-  >(undefined);
-  private _fit$ = new BehaviorSubject<
-    Evaluable<MediaElementData["fit"] | undefined>
-  >(undefined);
+  private _media$ = new BehaviorSubject<MediaElementData["media"] | undefined>(
+    undefined,
+  );
+  private _fit$ = new BehaviorSubject<MediaElementData["fit"] | undefined>(
+    undefined,
+  );
   private _position$ = new BehaviorSubject<
-    Evaluable<MediaElementData["position"] | undefined>
+    MediaElementData["position"] | undefined
   >(undefined);
 
-  get content() {
-    return this._content$.value;
+  get media() {
+    return this._media$.value;
   }
-  get content$() {
-    return this._content$.asObservable();
+  get media$() {
+    return this._media$.asObservable();
   }
 
   get fit() {
@@ -44,23 +39,23 @@ export class MediaElement extends Element<MediaElementData> {
   get data(): MediaElementData {
     return {
       ...super._data,
-      content: this.content as any,
-      fit: this.fit as any,
-      position: this.position as any,
+      media: this.media,
+      fit: this.fit,
+      position: this.position,
     };
   }
   get data$(): Observable<MediaElementData> {
     return combineLatestOrEmpty([
       super._data$,
-      this.content$,
+      this.media$,
       this.fit$,
       this.position$,
     ]).pipe(
-      map(([data, content, fit, position]) => ({
+      map(([data, media, fit, position]) => ({
         ...data,
-        content: content as any,
-        fit: fit as any,
-        position: position as any,
+        media,
+        fit,
+        position,
       })),
     );
   }
@@ -73,20 +68,21 @@ export class MediaElement extends Element<MediaElementData> {
     });
   }
 
-  setContent(content: Evaluable<MediaContentData | undefined>) {
-    this._content$.next(content);
+  setMedia(media: MediaElementData["media"] | undefined) {
+    this._media$.next(media);
   }
-  setFit(fit: Evaluable<MediaElementData["fit"] | undefined>) {
+  setFit(fit: MediaElementData["fit"] | undefined) {
     this._fit$.next(fit);
   }
-  setPosition(position: Evaluable<MediaElementData["position"] | undefined>) {
+  setPosition(position: MediaElementData["position"] | undefined) {
     this._position$.next(position);
   }
 
   restore(data: MediaElementData) {
     super.restore(data);
 
-    this._content$.next(data.content);
+    this._media$.next(data.media);
     this._fit$.next(data.fit);
+    this._position$.next(data.position);
   }
 }

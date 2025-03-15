@@ -1,8 +1,6 @@
 import { baseSelector } from "@elllphnt/elll-element";
 import { elllIcons16, Icon, ScrollArea } from "@repo/components";
 import { useObservable } from "@repo/utils";
-import { StyleModifierDefinition } from "~/src/modules/elementa/project/style_manager/style_modifiers/style_modifier";
-import { StyleVariable } from "~/src/modules/elementa/project/style_manager/style_variables/style_variable";
 import { StyleVariableSet } from "~/src/modules/elementa/project/style_manager/style_variables/style_variable_set";
 import { StyleVariableSheet } from "~/src/modules/elementa/project/style_manager/style_variables/variable_sheet";
 
@@ -30,8 +28,8 @@ function VariableTableRow({
   variable,
   modes,
 }: {
-  variable: StyleVariable;
-  modes: StyleModifierDefinition[];
+  variable: any;
+  modes: any[];
 }) {
   const name = useObservable(variable.name$, variable.name);
   const values = useObservable(variable.values$, variable.values);
@@ -53,7 +51,7 @@ function VariableTableRow({
   );
 }
 
-function ModeHeader({ mode }: { mode: StyleModifierDefinition }) {
+function ModeHeader({ mode }: { mode: any }) {
   const name = useObservable(mode.name$, mode.name);
   return <td className="el-border-r el-px-2 el-py-1 el-text-fg-300">{name}</td>;
 }
@@ -64,7 +62,7 @@ function VariableTable({ set }: { set: StyleVariableSet }) {
 
   return (
     <table className="el-w-full el-table-fixed el-border-t">
-      <tr className="el-border-b">
+      {/* <tr className="el-border-b">
         <td className="el-text-left el-border-r el-px-2 el-py-1 el-text-fg-300">
           Name
         </td>
@@ -77,7 +75,7 @@ function VariableTable({ set }: { set: StyleVariableSet }) {
       </tr>
       {variables.map((variable) => (
         <VariableTableRow key={variable.id} variable={variable} modes={modes} />
-      ))}
+      ))} */}
     </table>
   );
 }

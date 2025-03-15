@@ -2,7 +2,7 @@ import { ContainerElementData, entityTypes } from "@elllphnt/elll-element";
 import { combineLatestOrEmpty } from "@repo/utils";
 import { map, Observable } from "rxjs";
 import { Component } from "../../component";
-import { ElementElementContainer } from "./_common/element_container";
+import { ElementElementContainer } from "./_common/container";
 
 export class ContainerElement extends ElementElementContainer<ContainerElementData> {
   get data(): ContainerElementData {

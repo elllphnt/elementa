@@ -1,7 +1,6 @@
-import { ColorData } from "@elllphnt/elll-element";
 import tinycolor from "tinycolor2";
 
-export function ColorIcon({ color }: { color?: ColorData }) {
+export function ColorIcon({ color }: { color?: any }) {
   return (
     <div
       className="el-w-4 el-h-4 el-rounded"

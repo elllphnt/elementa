@@ -1,5 +1,5 @@
 import { mixed, MixedType, useControlValue } from "@repo/components";
-import { FillData, isVarRef } from "@elllphnt/elll-element";
+import { isVarRef } from "@elllphnt/elll-element";
 import { Observable } from "rxjs";
 import tinycolor from "tinycolor2";
 
@@ -7,8 +7,8 @@ export function FillLabel({
   value,
   value$,
 }: {
-  value$?: Observable<FillData | MixedType | undefined>;
-  value?: FillData | MixedType | undefined;
+  value$?: Observable<any | MixedType | undefined>;
+  value?: any | MixedType | undefined;
 }) {
   const fill = useControlValue(value$, value);
 

@@ -39,6 +39,13 @@ export abstract class InstanceStyle extends Disposable {
     property: N,
   ): Observable<RawStyleData[N]>;
 
+  abstract resolvedPropertyWithoutUnset<N extends StylePropertyName>(
+    property: N,
+  ): Exclude<RawStyleData[N], "unset">;
+  abstract resolvedPropertyWithoutUnset$<N extends StylePropertyName>(
+    property: N,
+  ): Observable<Exclude<RawStyleData[N], "unset">>;
+
   abstract override(property: StylePropertyName): Expression | undefined;
   abstract override$(
     property: StylePropertyName,

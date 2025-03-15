@@ -4,6 +4,7 @@ import {
   tools,
   useElementaInteractor,
 } from "@repo/elementa-interactor";
+import { useFocusNode } from "@repo/shell";
 import { useObservable } from "@repo/utils";
 import cx from "classnames";
 import { useEffect, useMemo } from "react";
@@ -11,6 +12,7 @@ import { map } from "rxjs";
 import { useElementaRenderer } from "~/src/components/elementa_viewer/elementa_viewer";
 import { ElementaEditorState } from "~/src/editors/elementa/editor";
 import { stagerTheme } from "~/src/editors/elementa/libs/theme";
+import { useElll } from "~/src/hooks/elll/elll";
 import { useColorScheme } from "~/src/hooks/utils/color_scheme";
 import { ElementaInteractorComponent } from "../../../../../../../elementa-interactor.pkg/dist";
 
@@ -118,6 +120,8 @@ export function ComponentBoardView({
 }: {
   editor: ElementaEditorState;
 }): JSX.Element {
+  const elll = useElll();
+  const { focused, setRef } = useFocusNode(`elementa-editor-${editor.id}`);
   const ref = useElementaRenderer({ editor });
   const interactor = useObservable(
     editor.elementaInteractor$,
@@ -139,6 +143,8 @@ export function ComponentBoardView({
 
   // keyboard event
   useEffect(() => {
+    if (!focused) return;
+
     const onKeyDown = (e: KeyboardEvent) => {
       if (editor.active) {
         editor.elementaInteractor?.keyboardManager.handleKeyDown(e);
@@ -155,12 +161,15 @@ export function ComponentBoardView({
       window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("keyup", onKeyUp);
     };
-  }, [editor]);
+  }, [editor, focused]);
 
   return (
     <div
       key={editor.id}
-      ref={ref}
+      ref={(e) => {
+        ref.current = e;
+        setRef(e);
+      }}
       style={{
         position: "relative",
         height: "100%",

@@ -8,18 +8,19 @@ import {
   stringifyModifer,
   StyleModifierData,
   StyleModifierDefinitionData,
-  StyleModifierType,
 } from "@elllphnt/elll-element";
 import { IFileDrive } from "@repo/backend";
 import { CssStyleSheet } from "@repo/elementa-models";
-import { combineLatestOrEmpty } from "@repo/utils";
 import { BehaviorSubject, combineLatest, map, Observable } from "rxjs";
 import { jsonModelConstructor } from "~/src/models/json";
 import { IElll } from "~/src/types/elll";
 import { SynchronizedModelFile } from "../file";
 import { IElllStyleManager } from "./_types";
+import { ColorSchemeData, ColorSchemeManager } from "./color_schemes";
 import { StyleModifierSheet } from "./style_modifiers/style_modifier_sheet";
 import { StyleVariableSheet } from "./style_variables/variable_sheet";
+import { TypefaceSheet } from "./typefaces/typeface_sheet";
+import { ViewportData, ViewportManager } from "./viewports";
 
 // ----------------- CONSTANTS -----------------
 export const elllSelectors = {
@@ -58,49 +59,7 @@ export function modifierToClassName({
   return "elll-mod-" + modifierToString({ modifier, modifierDefinitions });
 }
 
-export function modifierFromBreakpoint({
-  id,
-  name,
-  value,
-}: {
-  id: string;
-  name: string;
-  value: number;
-}): StyleModifierDefinitionData {
-  return {
-    id,
-    name,
-    type: StyleModifierType.Context,
-    selector: [`@media (min-width: ${value}px)`],
-  };
-}
-
-export function viewportFromBreakpoint({
-  name,
-  value,
-}: {
-  name: string;
-  value: number;
-}): ViewportData {
-  return {
-    name,
-    width: [value, null],
-    modifiers: [{ name }],
-  };
-}
-
 // ----------------- TYPE DEFINITIONS -----------------
-export type ColorSchemeData = {
-  name: string;
-  modifiers: StyleModifierData[];
-};
-export type ViewportData = {
-  name: string;
-  width?: [number | null, number | null];
-  height?: [number | null, number | null];
-  ratio?: [number | null, number | null];
-  modifiers: StyleModifierData[];
-};
 export type StyleSystemData = {
   breakpoints?: Record<string, number>;
   colorSchemes?: ColorSchemeData[];
@@ -147,70 +106,44 @@ export class ElllStyleManager
   // --- Instance Fields ---
   readonly variableSheet: StyleVariableSheet;
   readonly modifierSheet: StyleModifierSheet;
+  readonly typefaceSheet: TypefaceSheet;
+  readonly colorSchemeManager: ColorSchemeManager;
+  readonly viewportManager: ViewportManager;
 
-  private _colorSchemes$ = new BehaviorSubject<ColorSchemeData[]>([]);
-  private _breakpoints$ = new BehaviorSubject<Record<string, number>>({});
-  private _viewports$ = new BehaviorSubject<ViewportData[]>([]);
-  private _breakointBasedViewports$ = new BehaviorSubject<ViewportData[]>([]);
-  private _breakpointBasedModifiers$ = new BehaviorSubject<
-    StyleModifierDefinitionData[]
-  >([]);
-
-  private _colorSchemeByName$ = new BehaviorSubject<
-    Record<string, ColorSchemeData>
-  >({});
   private _modifiersByName$ = new BehaviorSubject<
     Record<string, StyleModifierDefinitionData>
   >({});
 
-  // --- Getters for Stylesheets and Data Streams ---
   get stylesheets(): CssStyleSheet[] {
-    // ...existing code...
-    return this.variableSheet.sets.map((set) => set.styleSheet);
+    return [
+      ...this.variableSheet.sets.map((set) => set.styleSheet),
+      this.typefaceSheet.stylesheet,
+    ];
   }
   get stylesheets$(): Observable<CssStyleSheet[]> {
-    // ...existing code...
-    return this.variableSheet.sets$.pipe(
-      map((sets) => sets.map((set) => set.styleSheet)),
-    );
-  }
-  get colorSchemes() {
-    return this._colorSchemes$.value;
-  }
-  get colorSchemes$() {
-    return this._colorSchemes$.asObservable();
-  }
-  get breakpoints() {
-    // ...existing code...
-    return this._breakpoints$.value;
-  }
-  get breakpoints$() {
-    // ...existing code...
-    return this._breakpoints$.asObservable();
-  }
-  get viewports() {
-    return [...this._viewports$.value, ...this._breakointBasedViewports$.value];
-  }
-  get viewports$() {
     return combineLatest([
-      this._viewports$,
-      this._breakointBasedViewports$,
+      this.variableSheet.sets$.pipe(
+        map((sets) => sets.map((set) => set.styleSheet)),
+      ),
     ]).pipe(
-      map(([viewports, breakpointBased]) => [...viewports, ...breakpointBased]),
+      map(([variableStylesheets]) => [
+        ...variableStylesheets,
+        this.typefaceSheet.stylesheet,
+      ]),
     );
   }
   get modifiers() {
-    return [
-      ...this.modifierSheet.modifiers,
-      ...this._breakpointBasedModifiers$.value,
-    ];
+    return [...this.modifierSheet.modifiers, ...this.viewportManager.modifiers];
   }
   get modifiers$() {
     return combineLatest([
       this.modifierSheet.modifiers$,
-      this._breakpointBasedModifiers$,
+      this.viewportManager.modifiers$,
     ]).pipe(
-      map(([modifiers, breakpointBased]) => [...modifiers, ...breakpointBased]),
+      map(([modifiers, viewportModifiers]) => [
+        ...modifiers,
+        ...viewportModifiers,
+      ]),
     );
   }
   get modifiersByName() {
@@ -337,95 +270,6 @@ export class ElllStyleManager
     );
   }
 
-  // --- Color Scheme Methods ---
-  private colorScheme(name: string): ColorSchemeData {
-    return this._colorSchemeByName$.value[name];
-  }
-  private colorScheme$(name: string): Observable<ColorSchemeData | undefined> {
-    return this._colorSchemeByName$.pipe(map((schemes) => schemes[name]));
-  }
-  colorSchemeModifiers({
-    colorScheme,
-  }: {
-    colorScheme: string;
-  }): StyleModifierData[] {
-    const scheme = this.colorScheme(colorScheme);
-    return scheme ? scheme.modifiers : [];
-  }
-  colorSchemeModifiers$({
-    colorScheme,
-  }: {
-    colorScheme: string;
-  }): Observable<StyleModifierData[]> {
-    return this.colorScheme$(colorScheme).pipe(
-      map((scheme) => (scheme ? scheme.modifiers : [])),
-    );
-  }
-
-  // --- Viewport Modifier Methods ---
-  private _getViewportModifiers({
-    width,
-    height,
-    viewports,
-  }: {
-    width: number;
-    height: number;
-    viewports: ViewportData[];
-  }) {
-    for (const viewport of [...viewports].reverse()) {
-      if (matchViewport({ height, width, viewport })) {
-        return viewport.modifiers;
-      }
-    }
-    return [];
-  }
-  viewportModifiers$({
-    width,
-    height,
-  }: {
-    width: number;
-    height: number;
-  }): Observable<StyleModifierData[]> {
-    return this.viewports$.pipe(
-      map((viewports) =>
-        this._getViewportModifiers({ width, height, viewports }),
-      ),
-    );
-  }
-  viewportModifiers({
-    width,
-    height,
-  }: {
-    width: number;
-    height: number;
-  }): StyleModifierData[] {
-    return this._getViewportModifiers({
-      width,
-      height,
-      viewports: this.viewports,
-    });
-  }
-
-  // --- Data Getters ---
-  get data(): StyleSystemData {
-    return {
-      colorSchemes: this.colorSchemes,
-      viewports: this.viewports,
-    };
-  }
-  get data$(): Observable<StyleSystemData> {
-    return combineLatestOrEmpty([this.colorSchemes$, this.viewports$]).pipe(
-      map(([colorSchemes, viewports]) => ({
-        colorSchemes,
-        viewports,
-      })),
-    );
-  }
-  get sourceData$(): Observable<StyleSystemData> {
-    // ...existing code...
-    return this._modelSourceData$.pipe(map((data) => data ?? {}));
-  }
-
   // --- Constructor & Cleanup ---
   constructor({ elll, drive }: { elll: IElll; drive: IFileDrive }) {
     super({
@@ -436,31 +280,19 @@ export class ElllStyleManager
     });
     this.variableSheet = new StyleVariableSheet({ styleManager: this });
     this.modifierSheet = new StyleModifierSheet({ styleManager: this });
+    this.typefaceSheet = new TypefaceSheet({ styleManager: this });
 
-    const colorSchemeSubscription = this.colorSchemes$.subscribe((schemes) => {
-      this._colorSchemeByName$.next(
-        Object.fromEntries(schemes.map((scheme) => [scheme.name, scheme])),
-      );
-    });
-    const breakpointSubscription = this.breakpoints$.subscribe(
-      (breakpoints) => {
-        this._breakpointBasedModifiers$.next(
-          Object.entries(breakpoints).map(([name, value]) =>
-            modifierFromBreakpoint({ id: name, name, value }),
-          ),
-        );
-        this._breakointBasedViewports$.next(
-          Object.entries(breakpoints).map(([name, value]) =>
-            viewportFromBreakpoint({ name, value }),
-          ),
-        );
-      },
-    );
+    // Instantiate managers.
+    this.colorSchemeManager = new ColorSchemeManager();
+    this.viewportManager = new ViewportManager();
+
     const modifiersByNameSubscription = this.modifiers$.subscribe(
       (modifiers) => {
         const byName: Record<string, StyleModifierDefinitionData> = {};
         for (const modifier of modifiers) {
-          byName[modifier.name] = modifier;
+          if (modifier.name) {
+            byName[modifier.name] = modifier;
+          }
         }
         this._modifiersByName$.next(byName);
       },
@@ -468,21 +300,68 @@ export class ElllStyleManager
 
     this.watchData();
     this.addDisposer(() => {
-      colorSchemeSubscription.unsubscribe();
-      breakpointSubscription.unsubscribe();
       modifiersByNameSubscription.unsubscribe();
-
-      this._breakpointBasedModifiers$.complete();
-      this._breakointBasedViewports$.complete();
       this._modifiersByName$.complete();
-      this._colorSchemeByName$.complete();
     });
+  }
+  colorSchemeModifiers({
+    colorScheme,
+  }: {
+    colorScheme: string;
+  }): StyleModifierData[] {
+    return this.colorSchemeManager.modifiers({ colorScheme });
+  }
+  colorSchemeModifiers$({
+    colorScheme,
+  }: {
+    colorScheme: string;
+  }): Observable<StyleModifierData[]> {
+    return this.colorSchemeManager.modifiers$({ colorScheme });
+  }
+  viewportModifiers({
+    height,
+    width,
+  }: {
+    height?: number;
+    width?: number;
+  }): StyleModifierData[] {
+    return this.viewportManager.viewportModifiers({ height, width });
+  }
+  viewportModifiers$({
+    height,
+    width,
+  }: {
+    height?: number;
+    width?: number;
+  }): Observable<StyleModifierData[]> {
+    return this.viewportManager.viewportModifiers$({ height, width });
+  }
+
+  // --- Data Getters ---
+  get data(): StyleSystemData {
+    return {
+      colorSchemes: this.colorSchemeManager.colorSchemes,
+      viewports: this.viewportManager.viewports,
+    };
+  }
+  get data$(): Observable<StyleSystemData> {
+    return combineLatest([
+      this.colorSchemeManager.colorSchemes$,
+      this.viewportManager.viewports$,
+    ]).pipe(
+      map(([colorSchemes, viewports]) => ({
+        colorSchemes,
+        viewports,
+      })),
+    );
+  }
+  get sourceData$(): Observable<StyleSystemData> {
+    return this._modelSourceData$.pipe(map((data) => data ?? {}));
   }
 
   // --- Restore Method ---
   restore(data: StyleSystemData): void {
-    this._colorSchemes$.next(data.colorSchemes ?? []);
-    this._viewports$.next(data.viewports ?? []);
-    this._breakpoints$.next(data.breakpoints ?? {});
+    this.colorSchemeManager.restore(data.colorSchemes ?? []);
+    this.viewportManager.restore(data.viewports ?? []);
   }
 }

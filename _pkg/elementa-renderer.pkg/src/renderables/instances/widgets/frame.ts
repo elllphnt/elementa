@@ -11,7 +11,6 @@ import {
   of,
   switchMap,
 } from "rxjs";
-import tinycolor from "tinycolor2";
 import { updateInstanceRenderableList } from "../../../_lib/renderables";
 import { ElementaRenderer } from "../../../elementa_renderer";
 import { Renderable } from "../_";
@@ -131,13 +130,12 @@ export class FrameWidgetRenderable extends WidgetRenderable<FrameWidgetInstance>
           }
 
           if (foregroundColor) {
-            element.style.color = tinycolor(foregroundColor).toHex8String();
+            // Todo: element.style.color = tinycolor(foregroundColor).toHex8String();
           } else {
             element.style.removeProperty("color");
           }
           if (backgroundColor) {
-            element.style.backgroundColor =
-              tinycolor(backgroundColor).toHex8String();
+            // Todo: element.style.backgroundColor = tinycolor(backgroundColor).toHex8String();
           } else {
             element.style.removeProperty("background-color");
           }

@@ -1,4 +1,4 @@
-import { File } from "@repo/backend";
+import { DriveFile, File } from "@repo/backend";
 import { FileTreeContextProvider } from "~/src/components/file_tree/file_tree_context_provider";
 import { DriveDirectoryTreeContent } from "./drive_directory_tree_content";
 
@@ -35,6 +35,12 @@ export function DriveDirectoryTree({
   }) => {
     const options = [
       [
+        {
+          label: "Copy Drive URL",
+          action: () => {
+            navigator.clipboard.writeText((file as DriveFile).edfUrl);
+          },
+        },
         {
           label: "Open",
           action: () => {},

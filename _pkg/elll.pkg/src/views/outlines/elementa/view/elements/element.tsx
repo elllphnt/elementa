@@ -1,7 +1,6 @@
 import { entityTypes, switchEntityType } from "@elllphnt/elll-element";
 import { elllIcons16 } from "@repo/components";
 import {
-  ArrayElementHandle,
   ComponentElementHandle,
   ContainerElementHandle,
   ElementHandle,
@@ -14,36 +13,6 @@ import {
 import { useObservable } from "@repo/utils";
 import { EntityHandleOutlineEntry, useEntityHandleOpenState } from "../handle";
 
-export function ArrayElementOutline({
-  element,
-  stateKey = [],
-}: {
-  element: ArrayElementHandle;
-  stateKey?: string[];
-}) {
-  const items = useObservable(element.items$, element.items) as any[];
-  const [open, setOpen] = useEntityHandleOpenState(element);
-
-  return (
-    <EntityHandleOutlineEntry
-      handle={element}
-      container={!!items.length}
-      icon={elllIcons16.wrap}
-      fallbackName="Array"
-      content={() => (
-        <>
-          {items.map((item) => (
-            <ElementOutline
-              key={item.key}
-              element={item}
-              stateKey={[...stateKey, "item", `${item.key}`]}
-            />
-          ))}
-        </>
-      )}
-    />
-  );
-}
 export function VectorElementOutline({
   element,
 }: {
@@ -291,12 +260,6 @@ export function ElementOutline({
     [entityTypes.elements.vector]: () => (
       <VectorElementOutline
         element={element as VectorElementHandle}
-        stateKey={stateKey}
-      />
-    ),
-    [entityTypes.elements.array]: () => (
-      <ArrayElementOutline
-        element={element as ArrayElementHandle}
         stateKey={stateKey}
       />
     ),

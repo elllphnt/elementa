@@ -4,7 +4,7 @@ import _ from "lodash";
 import { BehaviorSubject, map, Observable, switchMap } from "rxjs";
 import { Component } from "../../component";
 import { Entity } from "../entity";
-import { ElementContainer } from "./_common/element_container";
+import { ElementContainer } from "./_common/container";
 import { Element } from "./element";
 
 export class SlotElement

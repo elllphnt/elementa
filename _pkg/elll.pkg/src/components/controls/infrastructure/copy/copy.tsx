@@ -26,7 +26,7 @@ export function CopyControl({
       className={cx("el-text-fg-500 el-border", className)}
       actions={[
         {
-          icon: <Icon name={elllIcons16.copy} />,
+          icon: <Icon name={(elllIcons16 as any).copy} />,
           handler: handleCopy,
         },
       ]}

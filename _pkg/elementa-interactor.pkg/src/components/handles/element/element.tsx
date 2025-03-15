@@ -1,22 +1,21 @@
 import { entityTypes, switchEntityType } from "@elllphnt/elll-element";
 import { memo } from "react";
 import {
-  ArrayElementHandle,
   ComponentElementHandle,
   ContainerElementHandle,
   ElementHandle,
   MediaElementHandle,
   PageElementHandle,
+  PrimitiveElementHandle,
   SlotElementHandle,
   TextElementHandle,
   VectorElementHandle,
 } from "~/src/handles/_";
-import { HandleConnectionSet } from "../connection_set";
-import { ArrayElementHandleComponent } from "./array_element";
-import { ComponentElementHandleComponent } from "./component/component_element";
+import { ComponentElementHandleComponent } from "./component_element";
 import { ContainerElementHandleComponent } from "./container_element";
 import { MediaElementHandleComponent } from "./content_element";
 import { PageElementHandleComponent } from "./page_element";
+import { PrimitiveElementHandleComponent } from "./primitive_element";
 import { SlotElementHandleComponent } from "./slot_element";
 import { TextElementHandleComponent } from "./text_element";
 import { VectorElementHandleComponent } from "./vector_element";
@@ -38,6 +37,10 @@ export const ElementHandleComponent = memo(function ElementHandleComponent({
       const componentElement = element as ComponentElementHandle;
       return <ComponentElementHandleComponent element={componentElement} />;
     },
+    [entityTypes.elements.primitive]: () => {
+      const componentElement = element as PrimitiveElementHandle;
+      return <PrimitiveElementHandleComponent element={componentElement} />;
+    },
     [entityTypes.elements.container]: () => {
       const containerElement = element as ContainerElementHandle;
       return <ContainerElementHandleComponent element={containerElement} />;
@@ -58,20 +61,11 @@ export const ElementHandleComponent = memo(function ElementHandleComponent({
       const vectorElement = element as VectorElementHandle;
       return <VectorElementHandleComponent element={vectorElement} />;
     },
-    [entityTypes.elements.array]: () => {
-      const arrayElement = element as ArrayElementHandle;
-      return <ArrayElementHandleComponent element={arrayElement} />;
-    },
     [entityTypes.elements.page]: () => {
       const pageElement = element as PageElementHandle;
       return <PageElementHandleComponent element={pageElement} />;
     },
   });
 
-  return (
-    <>
-      {handle}
-      <HandleConnectionSet handle={element} />
-    </>
-  );
+  return <>{handle}</>;
 });

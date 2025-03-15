@@ -1,8 +1,4 @@
 import {
-  ImageMediaContentData,
-  VideoMediaContentData,
-} from "@elllphnt/elll-element";
-import {
   elllEntities,
   elllFileTypes,
   getUrlScheme,
@@ -17,13 +13,13 @@ import {
   WorkspaceFile,
 } from "@repo/backend";
 import {
-  CodeComponentElement,
   Component,
-  ElllComponentElement,
+  ComponentElement,
   Entity,
   MediaElement,
   parseElementaEntityResourceId,
   parseElementaUrl,
+  PrimitiveElement,
   TextElement,
 } from "@repo/elementa-models";
 import { makeRelativeFileUrl } from "~/src/libs/url";
@@ -82,8 +78,8 @@ export class EntityFactory {
     return switchFileType<Entity | undefined>(
       file.type,
       {
-        [elllFileTypes.components.elll]: () => {
-          const componentElement = new ElllComponentElement({
+        [elllFileTypes.component]: () => {
+          const componentElement = new ComponentElement({
             component,
           });
           componentElement.setComponentUrl(
@@ -91,14 +87,14 @@ export class EntityFactory {
           );
           return componentElement;
         },
-        [elllFileTypes.components.react]: () => {
-          const componentElement = new CodeComponentElement({
+        [elllFileTypes.primitive]: () => {
+          const primitiveElement = new PrimitiveElement({
             component,
           });
-          componentElement.setComponentUrl(
+          primitiveElement.setModuleUrl(
             makeRelativeFileUrl(component.url, file.url),
           );
-          return componentElement;
+          return primitiveElement;
         },
         // [elllFileTypes.state]: () => {
         //   const state = new State({ component });
@@ -126,19 +122,19 @@ export class EntityFactory {
     // handle by type
     if (file.type.startsWith("image/")) {
       const element = new MediaElement({ component });
-      element.setContent({
+      element.setMedia({
         type: "image",
         src: file.edfUrl,
-      } as ImageMediaContentData);
+      });
       element.setFit("cover");
 
       return element;
     } else if (file.type.startsWith("video/")) {
       const element = new MediaElement({ component });
-      element.setContent({
+      element.setMedia({
         type: "video",
         src: file.edfUrl,
-      } as VideoMediaContentData);
+      });
       element.setFit("cover");
 
       return element;
@@ -237,7 +233,7 @@ export class EntityFactory {
     const textElement = new TextElement({
       component,
     });
-    textElement.setContent(text);
+    // textElement.setContent(text);
     return [textElement];
   }
 }

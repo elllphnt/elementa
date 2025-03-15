@@ -124,7 +124,7 @@ export class StyleVariableSet
   }
 
   get css() {
-    const modifiers = this.sheet.styleManager.modifierSheet.modifiersByName;
+    const modifiers = this.sheet.styleManager.modifiersByName;
     const [css, error] = variableSetToCss({
       set: this.data,
       getModifierDefinition: (name) => modifiers[name],
@@ -140,7 +140,7 @@ export class StyleVariableSet
   get css$() {
     return combineLatest([
       this.data$,
-      this.sheet.styleManager.modifierSheet.modifiersByName$,
+      this.sheet.styleManager.modifiersByName$,
     ]).pipe(
       map(([data, modifiers]) => {
         const [css, error] = variableSetToCss({

@@ -34,6 +34,7 @@ export const keys = {
       npmPackageViewer: "elll.views.modals.package-browser.npm.viewer",
       styleSystem: "elll.views.modals.style_system",
       state: "elll.views.modals.state",
+      typefaces: "elll.views.modals.typefaces",
     },
   },
   editors: {

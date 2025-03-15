@@ -1,23 +1,23 @@
 import { entityTypes, switchEntityType } from "@elllphnt/elll-element";
 import {
-  CodeComponentElement,
+  ComponentElement,
   ContainerElement,
   Element,
-  ElllComponentElement,
   MediaElement,
   PageElement,
+  PrimitiveElement,
   SlotElement,
   TextElement,
   VectorElement,
 } from "@repo/elementa-models";
 import {
-  CodeComponentElementInstance,
+  ComponentElementInstance,
   ContainerElementInstance,
   ElementInstance,
-  ElllComponentElementInstance,
   Instance,
   MediaElementInstance,
   PageElementInstance,
+  PrimitiveElementInstance,
   SlotElementInstance,
   TextElementInstance,
   VectorElementInstance,
@@ -34,15 +34,15 @@ export function makeElementInstance({
   parent: Instance | null;
 }): ElementInstance {
   return switchEntityType(element.type, {
-    [entityTypes.elements.components.elll]: () =>
-      new ElllComponentElementInstance({
-        element: element as ElllComponentElement,
+    [entityTypes.elements.component]: () =>
+      new ComponentElementInstance({
+        element: element as ComponentElement,
         environment,
         parent,
       }) as ElementInstance,
-    [entityTypes.elements.components.code]: () =>
-      new CodeComponentElementInstance({
-        element: element as CodeComponentElement,
+    [entityTypes.elements.primitive]: () =>
+      new PrimitiveElementInstance({
+        element: element as PrimitiveElement,
         environment,
         parent,
       }) as ElementInstance,

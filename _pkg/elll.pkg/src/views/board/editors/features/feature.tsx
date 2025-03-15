@@ -1,7 +1,7 @@
 import { ProgressBar } from "@repo/components";
 import { useObservable } from "@repo/utils";
 
-export function FeatureCard({ feature }: { feature: Feature }): JSX.Element {
+export function FeatureCard({ feature }: { feature: any }): JSX.Element {
   const data = useObservable(feature.data$, feature.data);
   const planning = useObservable(feature.planning$, feature.planning);
   return (

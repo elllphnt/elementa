@@ -6,6 +6,7 @@ import { map, switchMap } from "rxjs";
 import { ElementHandle, FrameWidgetHandle } from "~/src/handles/_";
 import { useElementaInteractor } from "../../../hooks/elementa_interactor";
 import { MouseInteraction } from "../../../tools/interactions/mouse";
+import { lengthToPixels } from "~/src/_lib/utils";
 
 const edges = ["top", "right", "bottom", "left"] as const;
 
@@ -46,7 +47,7 @@ export function PaddingHandle({ handle }: { handle: ElementHandle }) {
     ]).subscribe(([padding, scale]) => {
       const refs = handleHtmlElementRefs.current;
       const toCss = (padding: LengthData) =>
-        `${Math.max(0, handle.lengthToPixels(padding) * scale * 0.5)}px`;
+        `${Math.max(0, lengthToPixels(padding) * scale * 0.5)}px`;
 
       refs["top"]?.style.setProperty("top", toCss(padding.top));
       refs["left"]?.style.setProperty("left", toCss(padding.left));

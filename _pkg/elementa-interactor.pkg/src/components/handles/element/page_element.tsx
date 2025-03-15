@@ -1,5 +1,5 @@
 import { useObservable } from "@repo/utils";
-import { PageElementHandle } from "~/src/handles/_";
+import { ElementHandle, PageElementHandle } from "~/src/handles/_";
 import { ElementHandleComponent } from "./element";
 
 export function PageElementHandleComponent({
@@ -12,7 +12,10 @@ export function PageElementHandleComponent({
   return (
     <>
       {content.map((child) => (
-        <ElementHandleComponent key={child.key} element={child} />
+        <ElementHandleComponent
+          key={child.key}
+          element={child as ElementHandle}
+        />
       ))}
     </>
   );

@@ -1,12 +1,12 @@
 import { entityTypes, switchEntityType } from "@elllphnt/elll-element";
 import {
-  CodeComponentElementRenderable,
+  ComponentElementRenderable,
   ContainerElementRenderable,
-  ElllComponentElementRenderable,
   FragmentRenderable,
   FrameWidgetRenderable,
   MediaElementRenderable,
   PageElementRenderable,
+  PrimitiveElementRenderable,
   SlotElementRenderable,
   TextElementRenderable,
   VectorElementRenderable,
@@ -14,12 +14,12 @@ import {
 import { updateMapList } from "@repo/utils";
 import { IElementaInteractor } from "../_types/_";
 import {
-  CodeComponentElementHandle,
+  ComponentElementHandle,
   ElementHandle,
   FragmentHandle,
   MediaElementHandle,
+  PrimitiveElementHandle,
 } from "../handles/_";
-import { ElllComponentElementHandle } from "../handles/entities/elements/components/elll_component";
 import { ContainerElementHandle } from "../handles/entities/elements/container";
 import { PageElementHandle } from "../handles/entities/elements/page";
 import { SlotElementHandle } from "../handles/entities/elements/slot";
@@ -33,17 +33,17 @@ export const makeElementHandle: IElementaInteractor["makeElementHandle"] =
     return switchEntityType<ElementHandle<any>>(
       renderable.instance.entity.type,
       {
-        [entityTypes.elements.components.elll]: () => {
-          return new ElllComponentElementHandle({
+        [entityTypes.elements.component]: () => {
+          return new ComponentElementHandle({
             fragment,
-            renderable: renderable as unknown as ElllComponentElementRenderable,
+            renderable: renderable as unknown as ComponentElementRenderable,
             parent,
           }) as any;
         },
-        [entityTypes.elements.components.code]: () => {
-          return new CodeComponentElementHandle({
+        [entityTypes.elements.primitive]: () => {
+          return new PrimitiveElementHandle({
             fragment,
-            renderable: renderable as unknown as CodeComponentElementRenderable,
+            renderable: renderable as unknown as PrimitiveElementRenderable,
             parent,
           }) as any;
         },

@@ -1,12 +1,10 @@
+import { StyleModifierDefinitionData } from "@elllphnt/elll-element";
 import { Observable } from "rxjs";
 
-export interface IStyleModifier {
-  id: string;
-}
 export interface IStyleModifierSheet {
-  modifiers: IStyleModifier[];
-  modifiers$: Observable<IStyleModifier[]>;
+  modifiers: StyleModifierDefinitionData[];
+  modifiers$: Observable<StyleModifierDefinitionData[]>;
 
-  modifier(id: string): IStyleModifier | undefined;
-  modifier$(id: string): Observable<IStyleModifier | undefined>;
+  modifier(id: string): StyleModifierDefinitionData | undefined;
+  modifier$(id: string): Observable<StyleModifierDefinitionData | undefined>;
 }

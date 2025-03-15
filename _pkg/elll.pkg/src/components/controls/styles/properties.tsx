@@ -15,7 +15,7 @@ import {
   EditorOwnControlType,
 } from "../control_map";
 
-const icons = elllIcons16;
+const icons = elllIcons16 as Record<string, string>;
 
 export type StylePropertyConfig<
   T extends EditorControlType = EditorControlType,
@@ -580,6 +580,18 @@ export const layoutStylePropertyControls: StylePropertyGroupConfig[] = [
 ];
 export const textStylePropertyControls: StylePropertyGroupConfig[] = [
   {
+    name: "Color",
+    icon: icons.fileVector,
+    properties: [
+      {
+        name: "color",
+        displayName: "Color",
+        icon: icons.fileVector,
+        control: BaseControlType.Color,
+      },
+    ],
+  },
+  {
     name: "Font",
     icon: icons.font,
     properties: [
@@ -715,31 +727,21 @@ export const textStylePropertyControls: StylePropertyGroupConfig[] = [
     ],
   },
 ];
-export const appearancesStylePropertyControls: StylePropertyGroupConfig[] = [
+export const backgroundStylePropertyControls: StylePropertyGroupConfig[] = [
   {
-    name: "Foreground",
-    icon: icons.fileVector,
-    properties: [
-      {
-        name: "color",
-        displayName: "Color",
-        icon: icons.fileVector,
-        control: BaseControlType.Color,
-      },
-    ],
-  },
-  {
-    name: "Background",
+    name: "Color",
     icon: icons.background,
     properties: [
       {
-        name: "background",
-        displayName: "Background",
+        name: "background-color",
+        displayName: "Color",
         icon: icons.containerFilled,
         control: EditorOwnControlType.Fill,
       },
     ],
   },
+];
+export const appearancesStylePropertyControls: StylePropertyGroupConfig[] = [
   {
     name: "Border",
     icon: icons.border,
@@ -891,6 +893,56 @@ export const transformStylePropertyControls: StylePropertyGroupConfig[] = [
         icon: icons.skewY,
         control: BaseControlType.Spinner,
         variant: ControlEntryVariant.Mini,
+      },
+    ],
+  },
+];
+export const transitionStylePropertyControls: StylePropertyGroupConfig[] = [
+  {
+    name: "Properties",
+    icon: icons.transition,
+    properties: [
+      {
+        name: "transition-property",
+        displayName: "Translate Property",
+        icon: icons.transition,
+        control: BaseControlType.String,
+      },
+    ],
+  },
+  {
+    name: "Duration",
+    icon: icons.time,
+    properties: [
+      {
+        name: "transition-duration",
+        displayName: "Duration",
+        icon: icons.time,
+        control: BaseControlType.Duration,
+      },
+    ],
+  },
+  {
+    name: "Timing",
+    icon: icons.timing,
+    properties: [
+      {
+        name: "transition-timing-function",
+        displayName: "Timing",
+        icon: icons.timing,
+        control: BaseControlType.String,
+      },
+    ],
+  },
+  {
+    name: "Delay",
+    icon: icons.time,
+    properties: [
+      {
+        name: "transition-delay",
+        displayName: "Delay",
+        icon: icons.time,
+        control: BaseControlType.Duration,
       },
     ],
   },

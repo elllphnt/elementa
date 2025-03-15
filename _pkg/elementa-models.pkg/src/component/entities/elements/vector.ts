@@ -10,8 +10,11 @@ import { Component } from "../../component";
 import { Element } from "./element";
 
 export class VectorElement extends Element<VectorElementData> {
-  private _content$ = new BehaviorSubject<
-    Evaluable<VectorDocumentData | undefined>
+  private _content$ = new BehaviorSubject<VectorDocumentData | undefined>(
+    undefined,
+  );
+  private _contentExpression$ = new BehaviorSubject<
+    Evaluable<VectorDocumentData> | undefined
   >(undefined);
 
   get content() {
@@ -21,17 +24,30 @@ export class VectorElement extends Element<VectorElementData> {
     return this._content$.asObservable();
   }
 
+  get contentExpression() {
+    return this._contentExpression$.value;
+  }
+  get contentExpression$() {
+    return this._contentExpression$.asObservable();
+  }
+
   get data(): VectorElementData {
     return {
       ...super._data,
-      content: this.content as any,
+      content: this.content,
+      contentExpression: this.contentExpression,
     };
   }
   get data$(): Observable<VectorElementData> {
-    return combineLatestOrEmpty([super._data$, this.content$]).pipe(
-      map(([data, content]) => ({
+    return combineLatestOrEmpty([
+      super._data$,
+      this.content$,
+      this.contentExpression$,
+    ]).pipe(
+      map(([data, content, contentExpression]) => ({
         ...data,
         content,
+        contentExpression,
       })),
     );
   }
@@ -44,13 +60,19 @@ export class VectorElement extends Element<VectorElementData> {
     });
   }
 
-  setContent(content: Evaluable<VectorDocumentData | undefined>) {
+  setContent(content: VectorDocumentData | undefined) {
     this._content$.next(content);
+  }
+  setContentExpression(
+    contentExpression: Evaluable<VectorDocumentData> | undefined,
+  ) {
+    this._contentExpression$.next(contentExpression);
   }
 
   restore(data: VectorElementData) {
     super.restore(data);
 
     this.setContent(data.content);
+    this.setContentExpression(data.contentExpression);
   }
 }

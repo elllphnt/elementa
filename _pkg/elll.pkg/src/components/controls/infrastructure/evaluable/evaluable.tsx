@@ -98,7 +98,7 @@ export function EvaluableControlEntry<C extends EditorControlType, T>({
                 const nextValue = isExpr
                   ? value
                   : { __expression: "", fallback: value };
-                onChange?.(nextValue);
+                // onChange?.(nextValue);
                 console.log("Switch to Variable", nextValue);
               },
             }

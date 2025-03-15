@@ -1,4 +1,3 @@
-import { MediaContentData } from "@elllphnt/elll-element";
 import { useObservable } from "@repo/utils";
 import { useNamespace } from "~/src/hooks/namespace";
 import { MediaElementRenderable } from "~/src/renderables/instances/_";
@@ -13,20 +12,16 @@ export function MediaElementComponent({
   partKey?: string;
 }): JSX.Element {
   const namespace = useNamespace();
-  const content = useObservable(
-    element.entity.content$,
-    element.entity.content,
-  );
-  const resolvedContent = namespace.resolveValue(content) as MediaContentData;
-  if (!resolvedContent) return <MediaElementFallback element={element} />;
+  const media = useObservable(element.entity.media$, element.entity.media);
+  if (!media) return <MediaElementFallback element={element} />;
 
-  switch (resolvedContent.type) {
+  switch (media.type) {
     case "image":
       return (
         <ImageMediaElementComponent
           key="image"
           element={element}
-          content={resolvedContent}
+          media={media}
         />
       );
     case "video":
@@ -34,7 +29,7 @@ export function MediaElementComponent({
         <VideoMediaElementComponent
           key="video"
           element={element}
-          content={resolvedContent}
+          media={media}
         />
       );
     default:

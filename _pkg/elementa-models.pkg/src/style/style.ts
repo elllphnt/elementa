@@ -72,7 +72,7 @@ export class Style extends Disposable implements Datafiable<StyleData> {
     property: N,
   ): StyleData[N] {
     const value = this.propertyValue(property) as any;
-    return value === "unset" ? undefined : value;
+    return (value === "unset" ? undefined : value) as any;
   }
   propertyValueWithoutUnset$<N extends StylePropertyName>(
     property: N,
@@ -87,7 +87,7 @@ export class Style extends Disposable implements Datafiable<StyleData> {
     this.project = project;
 
     const cssSubscription = this.data$.subscribe((data) => {
-      const css = styleToCss(data, { variables: {} });
+      const css = styleToCss(data);
       this._css$.next(css);
     });
 

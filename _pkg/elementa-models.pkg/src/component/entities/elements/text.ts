@@ -36,8 +36,11 @@ function textContentToString(document: TextDocumentData | Evaluable<string>) {
 }
 
 export class TextElement extends Element<TextElementData> {
-  private _content$ = new BehaviorSubject<
-    TextDocumentData | Evaluable<string> | undefined
+  private _content$ = new BehaviorSubject<TextDocumentData | undefined>(
+    undefined,
+  );
+  private _contentExpression$ = new BehaviorSubject<
+    Evaluable<TextDocumentData> | undefined
   >(undefined);
 
   get content() {
@@ -45,6 +48,13 @@ export class TextElement extends Element<TextElementData> {
   }
   get content$() {
     return this._content$.asObservable();
+  }
+
+  get contentExpression() {
+    return this._contentExpression$.value;
+  }
+  get contentExpression$() {
+    return this._contentExpression$.asObservable();
   }
 
   get text() {
@@ -60,10 +70,15 @@ export class TextElement extends Element<TextElementData> {
     return {
       ...super._data,
       content: this.content,
+      contentExpression: this.contentExpression,
     };
   }
   get data$(): Observable<TextElementData> {
-    return combineLatestOrEmpty([super._data$, this.content$]).pipe(
+    return combineLatestOrEmpty([
+      super._data$,
+      this.content$,
+      this.contentExpression$,
+    ]).pipe(
       map(([data, content]) => ({
         ...data,
         content,
@@ -79,7 +94,7 @@ export class TextElement extends Element<TextElementData> {
     });
   }
 
-  setContent(content: TextDocumentData | Evaluable<string> | undefined) {
+  setContent(content: TextDocumentData | undefined) {
     this._content$.next(content);
   }
   setTextContent(text: string) {
@@ -98,10 +113,13 @@ export class TextElement extends Element<TextElementData> {
       ],
     });
   }
+  setContentExpression(content: Evaluable<TextDocumentData> | undefined) {
+    this._contentExpression$.next(content);
+  }
 
   restore(data: TextElementData) {
     super.restore(data);
-
-    this.setContent(data.content);
+    this._content$.next(data.content);
+    this._contentExpression$.next(data.contentExpression);
   }
 }

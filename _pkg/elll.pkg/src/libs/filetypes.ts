@@ -6,9 +6,9 @@ import { reactEditor } from "../editors/monaco/react";
 
 export function getEditorForFileType(type: string): string | undefined {
   switch (type) {
-    case elllFileTypes.components.elll:
+    case elllFileTypes.component:
       return componentEditor.id;
-    case elllFileTypes.components.react:
+    case elllFileTypes.primitive:
       return reactEditor.id;
     case mimeTypes.json:
       return jsonEditor.id;

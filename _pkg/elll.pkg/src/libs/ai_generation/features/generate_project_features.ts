@@ -1,5 +1,4 @@
 import { AxiosInstance } from "axios";
-import { FeatureData } from "~/src/modules/elementa/spec/_types";
 import { queryIntelligence } from "../utils";
 
 const instructions = ({ type }: { type: string }) => `
@@ -71,5 +70,5 @@ export async function generateProjectFeatures({
     client,
   });
 
-  return JSON.parse(response).features as Omit<FeatureData, "id">[];
+  return JSON.parse(response).features as Omit<any, "id">[];
 }

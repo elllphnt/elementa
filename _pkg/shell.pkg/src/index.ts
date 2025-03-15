@@ -4,6 +4,7 @@ export * from "./components/modals/_";
 export * from "./components/shell/shell";
 export * from "./hooks/editor";
 export { useActiveEditor, useActiveEditorView } from "./hooks/editor";
+export * from "./hooks/focus";
 export { useShell } from "./hooks/shell";
 export { useWorkspace } from "./hooks/workspace";
 export * from "./models/activity";

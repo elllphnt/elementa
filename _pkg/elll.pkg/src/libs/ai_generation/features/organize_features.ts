@@ -1,6 +1,4 @@
 import { AxiosInstance } from "axios";
-import { DomainData } from "~/src/modules/elementa/programming_interface/_types";
-import { FeatureData } from "~/src/modules/elementa/spec/_types";
 import { queryIntelligence } from "../utils";
 
 const instructions = ({
@@ -10,7 +8,7 @@ const instructions = ({
 }: {
   type: string;
   description: string;
-  domains: DomainData[];
+  domains: any[];
 }) => `
 You will be given a list of features that need to be organized into domains for a ${type} project.
 
@@ -38,8 +36,8 @@ export async function organizeFeatures({
 }: {
   type: string;
   description: string;
-  domains: DomainData[];
-  features: FeatureData[];
+  domains: any[];
+  features: any[];
   client: AxiosInstance;
 }) {
   type Result = {

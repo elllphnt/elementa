@@ -2,9 +2,7 @@ import { elllFileTypes } from "@elllphnt/utils";
 import { filter, firstValueFrom, timeout } from "rxjs";
 import { ComponentModel, componentModelConstructor } from "../models/component";
 import { elllFileAtPath$ } from "../modules/elementa/_utils";
-import { View } from "../modules/elementa/blueprint/view";
 import { ElllElementaProject } from "../modules/elementa/project/project";
-
 const viewPath = (id: string) => `views/${id}`;
 
 export async function buildView({
@@ -12,10 +10,10 @@ export async function buildView({
   view,
 }: {
   project: ElllElementaProject;
-  view: View;
+  view: any;
 }) {
   const file$ = elllFileAtPath$(project.elll, viewPath(view.id), {
-    type: elllFileTypes.components.elll,
+    type: elllFileTypes.component,
   });
 
   const file = await firstValueFrom(file$.pipe(filter(Boolean), timeout(5000)));

@@ -23,6 +23,7 @@ export class Shell {
 
   private _workspace$ = new BehaviorSubject<Workspace | undefined>(undefined);
   private _editors$ = new BehaviorSubject<Record<string, Editor>>({});
+  private _focusedNode$ = new BehaviorSubject<string | undefined>(undefined);
 
   get workspace$() {
     return this._workspace$;
@@ -38,6 +39,13 @@ export class Shell {
     return this._editors$.pipe(map((editors) => editors[id])) as Observable<
       Editor | undefined
     >;
+  }
+
+  get focusedNode$() {
+    return this._focusedNode$;
+  }
+  get focusedNode() {
+    return this._focusedNode$.value;
   }
 
   loadWorkspace(workspace: Workspace) {
@@ -67,6 +75,10 @@ export class Shell {
       return;
     }
     return editor.createState(this, id);
+  }
+
+  setFocusedNode(nodeId: string | undefined) {
+    this._focusedNode$.next(nodeId);
   }
 
   // toasts

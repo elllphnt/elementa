@@ -35,7 +35,7 @@ export function distributeHandles(renderables: Handle[], axis: "x" | "y") {
     if (!handle.property(handleProperties.isMovable)) {
       continue;
     }
-    const movable = handle as IMovableHandle;
+    const movable = handle as unknown as IMovableHandle;
 
     if (axis === "x") {
       movable.setPosition({

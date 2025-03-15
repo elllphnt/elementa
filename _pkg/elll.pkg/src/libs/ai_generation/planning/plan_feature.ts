@@ -1,5 +1,4 @@
 import { AxiosInstance } from "axios";
-import { FeatureData } from "~/src/modules/elementa/spec/_types";
 import { queryIntelligence } from "../utils";
 
 export type DisplayData = {
@@ -138,7 +137,7 @@ export async function planFeature({
 }: {
   type: string;
   description: string;
-  feature: FeatureData;
+  feature: any;
   tools: {
     getView(id: string): ViewData | undefined;
   };

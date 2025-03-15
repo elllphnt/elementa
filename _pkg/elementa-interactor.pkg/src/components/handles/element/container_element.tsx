@@ -3,7 +3,7 @@ import cx from "classnames";
 import { useHandleDom } from "../_hooks/interaction_target";
 import { PaddingMarker } from "../_markers/padding_marker";
 import { ElementHandleComponent } from "./element";
-import { ContainerElementHandle } from "~/src/handles/_";
+import { ContainerElementHandle, ElementHandle } from "~/src/handles/_";
 
 export function ContainerElementHandleComponent({
   element,
@@ -27,7 +27,10 @@ export function ContainerElementHandleComponent({
         <PaddingMarker handle={element} />
       </div>
       {children.map((child) => (
-        <ElementHandleComponent key={child.key} element={child} />
+        <ElementHandleComponent
+          key={child.key}
+          element={child as ElementHandle}
+        />
       ))}
     </>
   );

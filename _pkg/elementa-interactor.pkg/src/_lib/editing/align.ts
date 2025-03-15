@@ -12,8 +12,8 @@ export function alignHandles(
 
   for (const handle of handles) {
     if (!handle.property(handleProperties.isMovable)) continue;
-    const movable = handle as IMovableHandle;
-    const thisrect = movable.contentRect;
+    const movable = handle as unknown as IMovableHandle;
+    const thisrect = movable.contentRect || Rect.nullRect();
 
     switch (align) {
       case "left":

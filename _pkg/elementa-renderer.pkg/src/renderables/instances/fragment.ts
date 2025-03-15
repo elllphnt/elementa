@@ -4,12 +4,9 @@ import { updateMapList } from "@repo/utils";
 import { BehaviorSubject, map, Observable } from "rxjs";
 import { updateInstanceRenderableList } from "../../_lib/renderables";
 import { ElementaRenderer } from "../../elementa_renderer";
-import {
-  ElementRenderable,
-  PageElementRenderable,
-  SlotRenderable,
-} from "./element/_";
+import { ElementRenderable, PageElementRenderable } from "./element/_";
 import { InstanceRenderable } from "./instance";
+import { SlotRenderable } from "./slot";
 
 export class FragmentRenderable extends InstanceRenderable<FragmentInstance> {
   private _content$ = new BehaviorSubject<ElementRenderable[]>([]);

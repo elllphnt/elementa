@@ -25,7 +25,7 @@ export const SlotHandleComponent = memo(function SlotHandleComponent({
         )}
       />
       {children.map((child) => (
-        <ElementHandleComponent key={child.key} element={child} />
+        <ElementHandleComponent key={child.key} element={child as any} />
       ))}
     </>
   );

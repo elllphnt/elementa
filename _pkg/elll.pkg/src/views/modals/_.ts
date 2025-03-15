@@ -13,6 +13,7 @@ import { StyleSystemModal } from "./style_system/style_system";
 import { CreateVersionModal } from "./tag/create_tag";
 import { AccountModal } from "./user/account";
 import { ExportMenu } from "./workspace/export";
+import { TypefaceManager } from "./typefaces/typefaces";
 
 export const modalViews = {
   project: {
@@ -85,5 +86,11 @@ export const modalViews = {
   state: {
     id: keys.views.modals.state,
     render: StateView,
+  },
+
+  // Typefaces
+  typefaces: {
+    id: keys.views.modals.typefaces,
+    render: TypefaceManager,
   },
 } satisfies Record<string, View>;

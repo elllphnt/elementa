@@ -1,4 +1,5 @@
 import { useObservable } from "@repo/utils";
+import { ElementHandle } from "~/src/handles/_";
 import { FragmentHandle } from "~/src/handles/entities/fragment";
 import { ElementHandleComponent } from "./element/element";
 import { SlotHandleComponent } from "./slot";
@@ -20,7 +21,10 @@ export function FragmentHandleComponent({
   return (
     <>
       {content.map((element) => (
-        <ElementHandleComponent key={element.key} element={element} />
+        <ElementHandleComponent
+          key={element.key}
+          element={element as ElementHandle}
+        />
       ))}
       {slots.map((slot) => (
         <SlotHandleComponent key={slot.key} slot={slot} />

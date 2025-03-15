@@ -14,7 +14,6 @@ import { StyleAssetsView } from "./style_assets/style_assets";
 import { StyleSystemView } from "./style_system/style_system";
 import { StyleUtilitiesView } from "./style_utilities/style_utilities";
 import { TagsView } from "./tags/tags";
-import { ThemesView } from "./themes/themes";
 
 export const drawerViews = {
   files: {
@@ -60,10 +59,6 @@ export const drawerViews = {
   storage: {
     id: "elll.views.drawers.storage",
     render: StorageView,
-  },
-  themes: {
-    id: "elll.views.drawers.themes",
-    render: ThemesView,
   },
   style_system: {
     id: keys.views.drawers.style_system,

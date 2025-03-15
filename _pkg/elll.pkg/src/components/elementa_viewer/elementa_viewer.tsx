@@ -6,7 +6,7 @@ export function useElementaRenderer({
 }: {
   editor: ElementaBaseEditorState<any>;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const container = ref.current;
     if (!container) return;

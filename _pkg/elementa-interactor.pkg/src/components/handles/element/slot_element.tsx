@@ -1,9 +1,9 @@
 import { useObservable } from "@repo/utils";
 import cx from "classnames";
+import { ElementHandle, SlotElementHandle } from "~/src/handles/_";
 import { useHandleDom } from "../_hooks/interaction_target";
 import { PaddingMarker } from "../_markers/padding_marker";
 import { ElementHandleComponent } from "./element";
-import { SlotElementHandle } from "~/src/handles/_";
 
 export function SlotElementHandleComponent({
   element,
@@ -27,7 +27,10 @@ export function SlotElementHandleComponent({
         <PaddingMarker handle={element} />
       </div>
       {children.map((child) => (
-        <ElementHandleComponent key={child.key} element={child} />
+        <ElementHandleComponent
+          key={child.key}
+          element={child as ElementHandle}
+        />
       ))}
     </>
   );

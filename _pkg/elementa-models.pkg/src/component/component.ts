@@ -18,9 +18,9 @@ import { genId } from "../_lib/id";
 import { CssStyleSheet } from "../css/_";
 import { Project } from "../project/_";
 import {
+  ComponentElement,
   ConditionalTransformer,
   ContainerElement,
-  ElllComponentElement,
   MapTransformer,
   MediaElement,
   RepeatTransformer,
@@ -29,9 +29,9 @@ import {
   TextElement,
   VectorElement,
 } from "./entities/_";
-import { CodeComponentElement } from "./entities/elements/components/code_component";
 import { Element } from "./entities/elements/element";
 import { PageElement } from "./entities/elements/page";
+import { PrimitiveElement } from "./entities/elements/primitive";
 import { Entity } from "./entities/entity";
 import { Fragment } from "./entities/fragment";
 import { Prop } from "./entities/prop";
@@ -367,12 +367,10 @@ export abstract class Component extends Disposable {
         new SlotElement({ id, component: this }),
       [entityTypes.elements.media]: () =>
         new MediaElement({ id, component: this }),
-      [entityTypes.elements.components.code]: () =>
-        new CodeComponentElement({ id, component: this }),
-      [entityTypes.elements.components.elll]: () =>
-        new ElllComponentElement({ id, component: this }),
       [entityTypes.elements.component]: () =>
-        new ElllComponentElement({ id, component: this }),
+        new ComponentElement({ id, component: this }),
+      [entityTypes.elements.primitive]: () =>
+        new PrimitiveElement({ id, component: this }),
       [entityTypes.elements.text]: () =>
         new TextElement({ id, component: this }),
       [entityTypes.elements.vector]: () =>

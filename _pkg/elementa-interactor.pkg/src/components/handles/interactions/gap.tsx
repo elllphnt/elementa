@@ -3,6 +3,7 @@ import { combineLatestOrEmpty, useObservable } from "@repo/utils";
 import _ from "lodash";
 import React, { useCallback, useEffect, useRef } from "react";
 import { switchMap } from "rxjs";
+import { lengthToPixels } from "~/src/_lib/utils";
 import { ContainerElementHandle, ElementHandle } from "~/src/handles/_";
 import { useElementaInteractor } from "../../../hooks/elementa_interactor";
 import { MouseInteraction } from "../../../tools/interactions/mouse";
@@ -10,7 +11,9 @@ import { MouseInteraction } from "../../../tools/interactions/mouse";
 export function GapHandle({ handle }: { handle: ContainerElementHandle }) {
   const children = useObservable(handle.children$, handle.children);
 
-  return <GapHandleContent handle={handle} children={children} />;
+  return (
+    <GapHandleContent handle={handle} children={children as ElementHandle[]} />
+  );
 }
 // export function FrameGapHandle({ handle }: { handle: FrameWidgetHandle }) {
 //   const page = useObservable(handle.$, handle.page);
@@ -139,15 +142,15 @@ function GapHandleHandle({
         let rotate = "rotate(0deg)";
 
         if (!direction || direction === "row") {
-          top = handle.lengthToPixels(padding.top, "y") * scale;
-          bottom = handle.lengthToPixels(padding.bottom, "y") * scale;
+          top = lengthToPixels(padding.top, "y") * scale;
+          bottom = lengthToPixels(padding.bottom, "y") * scale;
           left = beforeRect.x + beforeRect.width - instanceRect.x;
           right = instanceRect.x + instanceRect.width - afterRect.x;
           cursor = "ew-resize";
           rotate = "rotate(90deg)";
         } else {
-          left = handle.lengthToPixels(padding.left, "x") * scale;
-          right = handle.lengthToPixels(padding.right, "x") * scale;
+          left = lengthToPixels(padding.left, "x") * scale;
+          right = lengthToPixels(padding.right, "x") * scale;
           top = beforeRect.y + beforeRect.height - instanceRect.y;
           bottom = instanceRect.y + instanceRect.height - afterRect.y;
           cursor = "ns-resize";
@@ -206,12 +209,12 @@ function GapHandleHandle({
 
         let newGap = {
           x: _.clamp(
-            handle.lengthToPixels(initialGap.x, "x") + deltaGapValue,
+            lengthToPixels(initialGap.x, "x") + deltaGapValue,
             0,
             Number.MAX_SAFE_INTEGER,
           ),
           y: _.clamp(
-            handle.lengthToPixels(initialGap.y, "y") + deltaGapValue,
+            lengthToPixels(initialGap.y, "y") + deltaGapValue,
             0,
             Number.MAX_SAFE_INTEGER,
           ),

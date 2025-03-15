@@ -1,5 +1,9 @@
 import { elllIcons20, Icon } from "@repo/components";
-import { Handle } from "@repo/elementa-interactor";
+import {
+  alignHandles,
+  distributeHandles,
+  Handle,
+} from "@repo/elementa-interactor";
 import { PropsWithChildren } from "react";
 
 function IconButton({

@@ -1,5 +1,7 @@
-import { entityTypes } from "@elllphnt/elll-element";
+import { entityTypes, switchEntityType } from "@elllphnt/elll-element";
 import {
+  Element,
+  Entity,
   FragmentInstance,
   SlotRenderable,
   Stylesheet,
@@ -9,7 +11,7 @@ import { makeEntityDropType } from "~/src/_lib/droptypes";
 import { makeElementHandle, updateEntityHandleList } from "~/src/_lib/handles";
 import { IElementHandle, ILayoutUpdatePropagation } from "~/src/_types/_";
 import { IFragmentHandle } from "~/src/_types/handles/entity/fragment";
-import { IHandle } from "~/src/_types/handles/handle";
+import { DropOptions, IHandle } from "~/src/_types/handles/handle";
 import { handleProperties, handleTypes } from "~/src/handles/_";
 import { StylableHandle } from "./stylable";
 
@@ -93,7 +95,34 @@ export class SlotHandle extends StylableHandle<SlotRenderable> {
   }: {
     propagation?: ILayoutUpdatePropagation;
   } = {}): void {
-    console.log("SlotHandle.handleLayoutUpdate", { propagation });
     super.handleLayoutUpdate({ propagation });
+
+    this.children.forEach((child) => child.handleLayoutUpdate({ propagation }));
+  }
+
+  handleEntityDrop(entities: Entity[], options?: DropOptions): IHandle[] {
+    let elements: Element[] = [];
+    entities.forEach((entity) => {
+      if (entity === this.entity) {
+        return;
+      }
+      switchEntityType(entity.type, {
+        [entityTypes.element]: () => {
+          elements.push(entity as Element);
+        },
+      });
+    });
+
+    if (options?.index !== undefined) {
+      this.instance.fill?.insertElements(options.index, ...elements);
+    } else {
+      this.instance.fill?.appendElements(...elements);
+    }
+
+    const handles = elements
+      .map((element) => this.entityHandle(element))
+      .filter(Boolean) as IElementHandle[];
+
+    return handles;
   }
 }

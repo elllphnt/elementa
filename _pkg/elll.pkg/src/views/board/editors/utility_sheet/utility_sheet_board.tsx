@@ -7,10 +7,10 @@ export function UtilitySheetBoardView({
 }: {
   editor: UtilitySheetEditorState;
 }) {
-  const sets = useObservable(
-    editor.utilityManager.sets$,
-    editor.utilityManager.sets,
-  );
+  // const sets = useObservable(
+  //   editor.utilityManager.sets$,
+  //   editor.utilityManager.sets,
+  // );
   return (
     <div
       style={{
@@ -19,10 +19,10 @@ export function UtilitySheetBoardView({
         pointerEvents: "auto",
       }}
     >
-      <UtilitySheetEditor
+      {/* <UtilitySheetEditor
         sets={Object.values(sets)}
         onUpdate={function (): void {}}
-      />
+      /> */}
     </div>
   );
 }
