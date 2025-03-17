@@ -3,10 +3,10 @@ import { combineLatestOrEmpty } from "@repo/utils";
 import _ from "lodash";
 import { useCallback, useEffect, useRef } from "react";
 import { map, switchMap } from "rxjs";
+import { lengthToPixels } from "~/src/_lib/utils";
 import { ElementHandle, FrameWidgetHandle } from "~/src/handles/_";
 import { useElementaInteractor } from "../../../hooks/elementa_interactor";
 import { MouseInteraction } from "../../../tools/interactions/mouse";
-import { lengthToPixels } from "~/src/_lib/utils";
 
 const edges = ["top", "right", "bottom", "left"] as const;
 
@@ -36,11 +36,24 @@ export function PaddingHandle({ handle }: { handle: ElementHandle }) {
         ),
       ]).pipe(
         map(([top, right, bottom, left]) => ({
-          top: extractEvaluable<LengthData | undefined>(top as any)[1] ?? 0,
-          right: extractEvaluable<LengthData | undefined>(right as any)[1] ?? 0,
-          bottom:
-            extractEvaluable<LengthData | undefined>(bottom as any)[1] ?? 0,
-          left: extractEvaluable<LengthData | undefined>(left as any)[1] ?? 0,
+          top: extractEvaluable<LengthData | undefined>(top as any)[1] ?? {
+            value: 0,
+            unit: "px",
+          },
+          right: extractEvaluable<LengthData | undefined>(right as any)[1] ?? {
+            value: 0,
+            unit: "px",
+          },
+          bottom: extractEvaluable<LengthData | undefined>(
+            bottom as any,
+          )[1] ?? {
+            value: 0,
+            unit: "px",
+          },
+          left: extractEvaluable<LengthData | undefined>(left as any)[1] ?? {
+            value: 0,
+            unit: "px",
+          },
         })),
       ),
       editor.stager.viewport.scale$,

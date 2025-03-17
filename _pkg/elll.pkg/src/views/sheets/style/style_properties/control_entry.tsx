@@ -1,9 +1,9 @@
 import { Icon } from "@repo/components";
 import { Style } from "@repo/elementa-models";
 import { map } from "rxjs";
-import { StyleControlEntry } from "~/src/components/controls/infrastructure/style/style";
-import { StylePropertyConfig } from "~/src/components/controls/styles/properties";
+import { StylePropertyControlEntry } from "~/src/components/ui/controls/style_property";
 import { useCommonReactivePair } from "~/src/hooks/utils/reactivity";
+import { StylePropertyConfig } from "~/src/modules/elementa/style/properties";
 import { Conditional } from "./conditional";
 import { StylePropertyGroupControlEntry } from "./group_control_entry";
 import { addDigitToLowestRank } from "./utils";
@@ -24,7 +24,7 @@ export function StylePropertiesControlEntry({
   );
   return (
     <>
-      <StyleControlEntry
+      <StylePropertyControlEntry
         styles={styles}
         property={property.name}
         name={property.displayName ?? property.name}

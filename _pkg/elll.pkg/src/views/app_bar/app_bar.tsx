@@ -1,6 +1,6 @@
 import { Icon, elllIcons16, useControlMenu } from "@repo/components";
 import { useObservable } from "@repo/utils";
-import Logo from "~/src/components/logo/logo";
+import Logo from "~/src/components/modules/elll/logo";
 import { useRepository } from "~/src/hooks/backend/repository";
 import { useWorkspace } from "~/src/hooks/backend/workspace";
 import { useElll } from "~/src/hooks/elll/elll";

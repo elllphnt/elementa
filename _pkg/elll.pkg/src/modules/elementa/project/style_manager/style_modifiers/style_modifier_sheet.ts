@@ -8,7 +8,7 @@ import { IElllStyleManager } from "../_types";
 import { IStyleModifierSheet } from "./_types";
 
 export type StyleModifierSheetData = {
-  modifiers: StyleModifierDefinitionData[];
+  modifiers?: StyleModifierDefinitionData[];
 };
 
 export class StyleModifierSheet
@@ -79,10 +79,10 @@ export class StyleModifierSheet
   restore(data: StyleModifierSheetData) {
     this._modifiersById$.next(
       Object.fromEntries(
-        data.modifiers.map((modifier) => {
+        data.modifiers?.map((modifier) => {
           const id = modifier.id || genId();
           return [id, { ...modifier, id }];
-        }),
+        }) ?? [],
       ),
     );
   }

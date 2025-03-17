@@ -1,7 +1,7 @@
-import { BaseControlType, FullControlEntry } from "@repo/components";
+import { FullControlEntry } from "@repo/components";
 import { FrameWidgetHandle } from "@repo/elementa-interactor";
-import { ValueSetControlEntry } from "~/src/components/controls/infrastructure/value_set/value_set";
-import { InstanceControl } from "../../../components/controls/infrastructure/instance/instance";
+import { elllControlTypes } from "~/src/components/ui/controls/_types";
+import { ValueSetControlEntry } from "~/src/components/ui/controls/_uncertain/value_set/value_set";
 
 export function FrameStyleControlSheet({
   selection,
@@ -11,7 +11,7 @@ export function FrameStyleControlSheet({
   return (
     <>
       <ValueSetControlEntry
-        control={BaseControlType.Color}
+        control={elllControlTypes.Color}
         label="Foreground"
         onRemove={() => {
           selection.forEach((handle) =>
@@ -27,7 +27,7 @@ export function FrameStyleControlSheet({
         vKey={selection.map((h) => h.key).join(",")}
       />
       <ValueSetControlEntry
-        control={BaseControlType.Color}
+        control={elllControlTypes.Color}
         label="Background"
         onRemove={() => {
           selection.forEach((handle) =>
@@ -43,7 +43,7 @@ export function FrameStyleControlSheet({
         vKey={selection.map((h) => h.key).join(",")}
       />
       <FullControlEntry label="Color scheme">
-        <InstanceControl
+        {/* <InstanceControl
           control={BaseControlType.Switch}
           instances={selection.map((handle) => handle.renderable.instance)}
           value$={(instance) => instance.entity.colorScheme$}
@@ -61,7 +61,7 @@ export function FrameStyleControlSheet({
               },
             ],
           }}
-        />
+        /> */}
       </FullControlEntry>
     </>
   );

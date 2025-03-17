@@ -4,7 +4,7 @@ import { ProgressBar } from "@repo/components";
 import cx from "classnames";
 import { useCallback, useEffect, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
-import { generateProject } from "~/src/commands/generate_project";
+import { generateProject } from "~/src/modules/onboarding/generate_project";
 import { useElll } from "~/src/hooks/elll/elll";
 import { buildPrompt } from "~/src/libs/ai_generation/prompt";
 import { getElllephantApiClient } from "~/src/libs/ai_generation/utils";

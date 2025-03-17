@@ -44,7 +44,6 @@ export function modifierToString({
   const [str, error] = stringifyModifer({
     modifier,
     getModifierDefinition: (name) => modifierDefinitions[name],
-    stringifyData: (type, data) => `${data}`,
   });
   return error ? elllSelectors.invalid : str;
 }
@@ -159,7 +158,6 @@ export class ElllStyleManager
     const [cssSelector, error] = elllSelectorToCssSelector({
       selector,
       getModifierDefinition: (name) => modifiers[name],
-      stringifyData: (type, value) => `${value}`,
     });
     if (error) {
       console.error(error);
@@ -173,7 +171,6 @@ export class ElllStyleManager
         const [selectors, error] = elllSelectorToCssSelector({
           selector,
           getModifierDefinition: (name) => modifierDefinitions[name],
-          stringifyData: (type, value) => `${value}`,
         });
         if (error) {
           console.error(error);
@@ -188,7 +185,6 @@ export class ElllStyleManager
     const [elllSelector, error] = stringifyElllSelector({
       selector,
       getModifierDefinition: (name) => modifiers[name],
-      stringifyData: (type, value) => `${value}`,
     });
     if (error) {
       console.error(error);
@@ -202,7 +198,6 @@ export class ElllStyleManager
         const [elllSelector, error] = stringifyElllSelector({
           selector: modifiers,
           getModifierDefinition: (name) => modifierDefinitions[name],
-          stringifyData: (type, value) => `${value}`,
         });
         if (error) {
           console.error(error);
@@ -217,7 +212,6 @@ export class ElllStyleManager
     const [parsedSelector, error] = parseElllSelector({
       selector,
       getModifierDefinition: (name) => modifiers[name],
-      parseData: (type, data) => data,
     });
     if (error) {
       console.error(error);
@@ -231,7 +225,6 @@ export class ElllStyleManager
         const [parsedSelector, error] = parseElllSelector({
           selector,
           getModifierDefinition: (name) => modifierDefinitions[name],
-          parseData: (type, data) => data,
         });
         if (error) {
           console.error(error);

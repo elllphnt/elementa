@@ -309,7 +309,7 @@
     "@codemirror/view" "^6.17.0"
     "@lezer/common" "^1.0.0"
 
-"@codemirror/commands@^6.3.3":
+"@codemirror/commands@^6.0.0", "@codemirror/commands@^6.3.3":
   version "6.8.0"
   resolved "https://registry.npmjs.org/@codemirror/commands/-/commands-6.8.0.tgz"
   integrity sha512-q8VPEFaEP4ikSlt6ZxjB3zW72+7osfAYW9i8Zu943uqbKuz6utc1+F170hyLUCUltXORjQXRyYQNfkckzA/bPQ==
@@ -351,6 +351,15 @@
   dependencies:
     "@codemirror/state" "^6.0.0"
     "@codemirror/view" "^6.35.0"
+    crelt "^1.0.5"
+
+"@codemirror/search@^6.0.0":
+  version "6.5.10"
+  resolved "https://registry.yarnpkg.com/@codemirror/search/-/search-6.5.10.tgz#7367bfc88094d078b91c752bc74140fb565b55ee"
+  integrity sha512-RMdPdmsrUf53pb2VwflKGHEe1XVM07hI7vV2ntgw1dmqhimpatSJKva4VA9h4TLUDOD4EIF02201oZurpnEFsg==
+  dependencies:
+    "@codemirror/state" "^6.0.0"
+    "@codemirror/view" "^6.0.0"
     crelt "^1.0.5"
 
 "@codemirror/search@^6.5.6":
@@ -427,10 +436,10 @@
     xml2js "^0.6.2"
     yup "^1.4.0"
 
-"@elllphnt/elll-element@^0.25.9":
-  version "0.25.9"
-  resolved "https://npm.pkg.github.com/download/@elllphnt/elll-element/0.25.9/a7b6389530889d17316e32b3417218694c5279b1#a7b6389530889d17316e32b3417218694c5279b1"
-  integrity sha512-eC07G6nR1V8hicmwJOBZLOzTfvtUv+XBl/nbqu3rrr8b0NPDaZ9jAHVaX/CLsqsJDiMNNO2LEU0jDm87h+uy6w==
+"@elllphnt/elll-element@^0.26.7":
+  version "0.26.7"
+  resolved "https://npm.pkg.github.com/download/@elllphnt/elll-element/0.26.7/c9ab6b7c00dc415fe881c88d34b32cc52dbf26c9#c9ab6b7c00dc415fe881c88d34b32cc52dbf26c9"
+  integrity sha512-a/g/5FFVZpfu+do15LGUAn19NGTcFXS0clNJ2wFSC4R1WKrb7W0zABZo3/o/qTUbi87621xL1OrdO4HCMdSQmQ==
   dependencies:
     "@elllphnt/utils" "^0.2.1"
     "@jsep-plugin/new" "^1.0.3"
@@ -3878,6 +3887,19 @@ clone@^2.1.1:
   resolved "https://registry.npmjs.org/clone/-/clone-2.1.2.tgz"
   integrity sha512-3Pe/CF1Nn94hyhIYpjtiLhdCoEoz0DqQ+988E9gmeEdQZlojxnOb74wctFyuwWQHzqyf9X7C7MG8juUpqBJT8w==
 
+codemirror@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-6.0.1.tgz#62b91142d45904547ee3e0e0e4c1a79158035a29"
+  integrity sha512-J8j+nZ+CdWmIeFIGXEFbFPtpiYacFMDR8GlHK3IyHQJMCaVRfGx9NT+Hxivv1ckLWPvNdZqndbr/7lVhrf/Svg==
+  dependencies:
+    "@codemirror/autocomplete" "^6.0.0"
+    "@codemirror/commands" "^6.0.0"
+    "@codemirror/language" "^6.0.0"
+    "@codemirror/lint" "^6.0.0"
+    "@codemirror/search" "^6.0.0"
+    "@codemirror/state" "^6.0.0"
+    "@codemirror/view" "^6.0.0"
+
 collection-visit@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/collection-visit/-/collection-visit-1.0.0.tgz"
@@ -7169,6 +7191,11 @@ react-beautiful-dnd@^13.1.1:
     react-redux "^7.2.0"
     redux "^4.0.4"
     use-memo-one "^1.1.1"
+
+react-codemirror2@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/react-codemirror2/-/react-codemirror2-8.0.1.tgz#a229c9dda2a6ee9ea18bdb8a4c33a1b2df823613"
+  integrity sha512-ZALowE5sGK1t66i0Fm1hoJLWT/iZHNjaAmcjwgYl9gyl2v1sqWwxzWHLmgq6K9KCk7p5+I+U3jMF1vsLaIkrmA==
 
 react-colorful@^5.6.1:
   version "5.6.1"

@@ -1,6 +1,6 @@
 import { ElementHandle } from "@repo/elementa-interactor";
-import SheetContainer from "~/src/components/sheet/sheet_container";
-import { SheetView } from "~/src/components/sheet/types";
+import SheetContainer from "~/src/components/ui/sheets/sheet_container";
+import { SheetView } from "~/src/components/ui/sheets/types";
 import { elementaSheetViews } from "../../sheets/_";
 
 const sheets = [

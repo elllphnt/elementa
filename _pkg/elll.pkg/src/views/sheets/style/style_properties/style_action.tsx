@@ -1,6 +1,6 @@
 import { Icon, useAction } from "@repo/components";
 import { Style } from "@repo/elementa-models";
-import { StylePropertyConfig } from "~/src/components/controls/styles/properties";
+import { StylePropertyConfig } from "~/src/modules/elementa/style/properties";
 import { initializeProperties } from "./utils";
 
 export function StyleAction({

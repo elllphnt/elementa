@@ -1,4 +1,4 @@
-import TabContainer from "~/src/components/tab_container/tab_container";
+import TabContainer from "~/src/components/ui/tabs/tab_container";
 import { modalViews } from "../_";
 
 export function PackageBrowser(): JSX.Element {

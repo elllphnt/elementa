@@ -5,7 +5,7 @@ import {
   TextControl,
   TreeEntry,
 } from "@repo/components";
-import { CopyControl } from "~/src/components/controls/infrastructure/copy/copy";
+import { CopyControl } from "~/src/components/ui/controls/_uncertain/copy/copy";
 import { blueprintEditor } from "~/src/editors/blueprint";
 import { programmingInterfaceEditor } from "~/src/editors/programming_interface";
 import { useRepository } from "~/src/hooks/backend/repository";

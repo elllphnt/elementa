@@ -9,7 +9,7 @@ import {
   StateInstance,
   ValueStateInstance,
 } from "@repo/elementa";
-import { SchemaControl } from "~/src/components/controls/schema/schema";
+import { SchemaControl } from "~/src/views/modals/state/schema";
 
 export function ValueStateView({ state }: { state: ValueStateInstance }) {
   return (

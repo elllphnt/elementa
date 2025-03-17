@@ -1,5 +1,4 @@
 import {
-  BaseControlType,
   elllIcons16,
   FullControlEntry,
   RowControlContainer,
@@ -8,8 +7,7 @@ import {
 import { FrameWidgetHandle } from "@repo/elementa-interactor";
 import { FrameViewport } from "@repo/elementa-models";
 import { map } from "rxjs";
-import { InstanceControl } from "../../../components/controls/infrastructure/instance/instance";
-import { FramePresetControl } from "../../../components/controls/properties/frame_preset/frame_preset";
+import { FramePresetControl } from "../../../components/ui/controls/_uncertain/frame_preset/frame_preset";
 import { useInstancesCommonReactiveValue } from "../../../hooks/utils/reactivity";
 
 export function FrameViewportSheet({
@@ -57,7 +55,7 @@ export function FrameViewportSheet({
         />
       </FullControlEntry>
       <FullControlEntry label="Width">
-        <InstanceControl
+        {/* <InstanceControl
           instances={selection.map((handle) => handle.renderable.instance)}
           value$={(instance) => instance.entity.viewportWidth$}
           value={(instance) => instance.entity.viewportWidth}
@@ -65,10 +63,10 @@ export function FrameViewportSheet({
             instance.entity.setViewportWidth(value)
           }
           control={BaseControlType.Number}
-        />
+        /> */}
       </FullControlEntry>
       <FullControlEntry label="Height">
-        <InstanceControl
+        {/* <InstanceControl
           instances={selection.map((handle) => handle.renderable.instance)}
           value$={(instance) => instance.entity.viewportHeight$}
           value={(instance) => instance.entity.viewportHeight}
@@ -76,11 +74,11 @@ export function FrameViewportSheet({
             instance.entity.setViewportHeight(value)
           }
           control={BaseControlType.Number}
-        />
+        /> */}
       </FullControlEntry>
       <RowControlContainer>
         <FullControlEntry label="Scroll">
-          <InstanceControl
+          {/* <InstanceControl
             instances={selection.map((handle) => handle.renderable.instance)}
             value$={(instance) => instance.entity.overflow$}
             value={(instance) => instance.entity.overflow}
@@ -95,7 +93,7 @@ export function FrameViewportSheet({
               ],
             }}
             control={BaseControlType.Select}
-          />
+          /> */}
         </FullControlEntry>
       </RowControlContainer>
     </>

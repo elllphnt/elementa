@@ -29,7 +29,9 @@ export abstract class WidgetHandle<
     super({ renderable, interactor, type, allowedDropTypes, parent });
 
     this.setProperty(handleProperties.isMovable, true);
+  }
 
+  watchPosition() {
     const positionSubscription = combineLatestOrEmpty([
       this.entity.x$,
       this.entity.y$,

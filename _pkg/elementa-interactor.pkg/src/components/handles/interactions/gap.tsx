@@ -107,10 +107,22 @@ function GapHandleHandle({
         paddings,
       ]) => {
         const padding = {
-          top: paddings[0] ?? 0,
-          right: paddings[1] ?? 0,
-          bottom: paddings[2] ?? 0,
-          left: paddings[3] ?? 0,
+          top: paddings[0] ?? {
+            value: 0,
+            unit: "px",
+          },
+          right: paddings[1] ?? {
+            value: 0,
+            unit: "px",
+          },
+          bottom: paddings[2] ?? {
+            value: 0,
+            unit: "px",
+          },
+          left: paddings[3] ?? {
+            value: 0,
+            unit: "px",
+          },
         };
 
         if (!instanceRect) {
@@ -187,8 +199,14 @@ function GapHandleHandle({
 
       const style = handle.style;
       const initialGap = {
-        x: handle.style.resolvedPropertyValue("gap-x") ?? 0,
-        y: handle.style.resolvedPropertyValue("gap-x") ?? 0,
+        x: handle.style.resolvedPropertyValue("gap-x") ?? {
+          value: 0,
+          unit: "px",
+        },
+        y: handle.style.resolvedPropertyValue("gap-x") ?? {
+          value: 0,
+          unit: "px",
+        },
       };
       const direction =
         constantOf(style.resolvedPropertyValue("flex-direction") as any) ??
@@ -221,8 +239,14 @@ function GapHandleHandle({
         };
 
         // rounded
-        style.setProperty("gap-x", Math.round(newGap.x ?? 0));
-        style.setProperty("gap-y", Math.round(newGap.y ?? 0));
+        style.setProperty("gap-x", {
+          value: Math.round(newGap.x ?? 0),
+          unit: "px",
+        });
+        style.setProperty("gap-y", {
+          value: Math.round(newGap.y ?? 0),
+          unit: "px",
+        });
       });
 
       mouseInteraction.on("stop", () => {

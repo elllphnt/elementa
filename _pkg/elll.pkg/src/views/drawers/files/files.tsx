@@ -12,7 +12,7 @@ import {
 } from "@repo/components";
 import { useObservable } from "@repo/utils";
 import { ReactNode, useMemo } from "react";
-import { WorkspaceDirectoryTree } from "~/src/components/workspace_directory/workspace_directory_tree";
+import { WorkspaceDirectoryTree } from "~/src/components/ui/trees/workspace_directory/workspace_directory_tree";
 import { useBackend } from "~/src/hooks/backend/backend";
 import { useWorkspaceFileAtPath } from "~/src/hooks/backend/file";
 import { useProjectLibraries } from "~/src/hooks/project/libraries";

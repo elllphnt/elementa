@@ -1,6 +1,6 @@
 import {
   DimensionData,
-  FractionData,
+  FlexData,
   LengthData,
   PercentData,
 } from "@elllphnt/elll-element";
@@ -22,7 +22,7 @@ export function SizeInput({
   ) => Observable<number | DimensionData<string> | string | undefined>;
   setValue: (
     handle: IResizableHandle,
-    value: LengthData | PercentData | FractionData | "fit" | undefined,
+    value: LengthData | PercentData | FlexData | "fit" | undefined,
   ) => void;
   handles: IResizableHandle[];
 }) {

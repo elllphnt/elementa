@@ -9,7 +9,7 @@ import {
 import { useShell } from "@repo/shell";
 import { useObservable } from "@repo/utils";
 import React from "react";
-import { DrawerLoader } from "~/src/components/drawer_loader";
+import { DrawerLoader } from "~/src/components/ui/drawers/drawer_loader";
 import { useRepository } from "../../../hooks/backend/repository";
 import { modalViews } from "../../modals/_";
 

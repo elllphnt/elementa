@@ -1,4 +1,8 @@
-import { extractEvaluable, LengthData } from "@elllphnt/elll-element";
+import {
+  extractEvaluable,
+  LengthData,
+  stringifyLength,
+} from "@elllphnt/elll-element";
 import { combineLatestOrEmpty } from "@repo/utils";
 import { useEffect, useRef } from "react";
 import { map, switchMap } from "rxjs";
@@ -29,11 +33,24 @@ export function PaddingMarker({ handle }: { handle: ElementHandle }) {
         ),
       ]).pipe(
         map(([top, right, bottom, left]) => ({
-          top: extractEvaluable<LengthData | undefined>(top as any)[1] ?? 0,
-          right: extractEvaluable<LengthData | undefined>(right as any)[1] ?? 0,
-          bottom:
-            extractEvaluable<LengthData | undefined>(bottom as any)[1] ?? 0,
-          left: extractEvaluable<LengthData | undefined>(left as any)[1] ?? 0,
+          top: extractEvaluable<LengthData | undefined>(top as any)[1] ?? {
+            value: 0,
+            unit: "px",
+          },
+          right: extractEvaluable<LengthData | undefined>(right as any)[1] ?? {
+            value: 0,
+            unit: "px",
+          },
+          bottom: extractEvaluable<LengthData | undefined>(
+            bottom as any,
+          )[1] ?? {
+            value: 0,
+            unit: "px",
+          },
+          left: extractEvaluable<LengthData | undefined>(left as any)[1] ?? {
+            value: 0,
+            unit: "px",
+          },
         })),
       ),
       editor.stager.viewport.scale$,
@@ -42,9 +59,7 @@ export function PaddingMarker({ handle }: { handle: ElementHandle }) {
       if (!el) return;
 
       const toCss = (padding: LengthData) =>
-        typeof padding === "number"
-          ? `${padding * scale}px`
-          : `calc(${padding.value}${padding.unit} * ${scale})`;
+        `calc(${stringifyLength(padding)} * ${scale})`;
 
       el.style.setProperty("top", toCss(padding.top));
       el.style.setProperty("left", toCss(padding.left));

@@ -184,6 +184,8 @@ export class FrameWidgetHandle
       },
     );
 
+    this.watchPosition();
+
     this.addDisposer(() => {
       this._fragment$.complete();
 
@@ -210,7 +212,10 @@ export class FrameWidgetHandle
         this.entity.overflow === "scroll-x" ||
         this.entity.overflow === "scroll-area"
       ) {
-        this.fragment?.page?.style?.setProperty("width", rect.width);
+        this.fragment?.page?.style?.setProperty("width", {
+          value: rect.width,
+          unit: "px",
+        });
       } else if (this.entity.overflow === "scroll-y") {
         this.entity.setViewportWidth(rect.width);
       } else {
@@ -223,7 +228,10 @@ export class FrameWidgetHandle
         this.entity.overflow === "scroll-y" ||
         this.entity.overflow === "scroll-area"
       ) {
-        this.fragment?.page?.style?.setProperty("height", rect.height);
+        this.fragment?.page?.style?.setProperty("height", {
+          value: rect.height,
+          unit: "px",
+        });
       } else if (this.entity.overflow === "scroll-x") {
         this.entity.setViewportHeight(rect.height);
       } else {
@@ -233,7 +241,6 @@ export class FrameWidgetHandle
   }
   setHeight(
     height:
-      | number
       | DimensionData<"px" | "em" | "rem" | "vh" | "vw" | "%" | "fr">
       | "fit"
       | undefined,
@@ -251,7 +258,6 @@ export class FrameWidgetHandle
   }
   setWidth(
     width:
-      | number
       | DimensionData<"px" | "em" | "rem" | "vh" | "vw" | "%" | "fr">
       | "fit"
       | undefined,

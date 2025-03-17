@@ -1,6 +1,7 @@
 import { View } from "@repo/shell";
 import { keys } from "~/src/libs/keys";
 import { CommitView } from "./commit/commit";
+import { DynamicControlMenuView } from "./dynamics/dynamics";
 import { ProjectSpec } from "./onboarding/build_your_project/build_your_project";
 import { NpmPackageBrowser } from "./packages/npm_package_browser";
 import { NpmPackageViewer } from "./packages/npm_package_viewer";
@@ -11,9 +12,9 @@ import { ProjectList } from "./project/project_list";
 import { StateView } from "./state/state";
 import { StyleSystemModal } from "./style_system/style_system";
 import { CreateVersionModal } from "./tag/create_tag";
+import { TypefaceManager } from "./typefaces/typefaces";
 import { AccountModal } from "./user/account";
 import { ExportMenu } from "./workspace/export";
-import { TypefaceManager } from "./typefaces/typefaces";
 
 export const modalViews = {
   project: {
@@ -92,5 +93,11 @@ export const modalViews = {
   typefaces: {
     id: keys.views.modals.typefaces,
     render: TypefaceManager,
+  },
+
+  // Dynamic
+  dynamic: {
+    id: keys.views.modals.dynamic,
+    render: DynamicControlMenuView,
   },
 } satisfies Record<string, View>;

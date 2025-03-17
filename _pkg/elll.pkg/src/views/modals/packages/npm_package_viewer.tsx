@@ -1,6 +1,6 @@
 import { ProgressBar } from "@repo/components";
 import { useEffect, useState } from "react";
-import { MarkdownViewer } from "~/src/components/markdown/markdown_viewer";
+import { MarkdownViewer } from "~/src/components/libs/markdown/markdown_viewer";
 import { useProjectPackages } from "~/src/hooks/project/packages";
 import { useElllProject } from "~/src/hooks/project/project";
 import { getNpmPackage, NpmGetPackageResult } from "~/src/libs/npm";

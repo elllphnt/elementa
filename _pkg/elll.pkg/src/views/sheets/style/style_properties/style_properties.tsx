@@ -1,5 +1,5 @@
 import { Style } from "@repo/elementa-models";
-import { StylePropertyGroupConfig } from "~/src/components/controls/styles/properties";
+import { StylePropertyGroupConfig } from "~/src/modules/elementa/style/properties";
 import { StylePropertyGroupControlEntry } from "./group_control_entry";
 
 export function StylePropertiesControlSheet({

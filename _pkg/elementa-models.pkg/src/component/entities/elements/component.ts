@@ -3,6 +3,8 @@ import {
   entityTypes,
   Evaluable,
   Expression,
+  isReference,
+  Resolvable,
   SlotFillData,
   StyleData,
   StylePropertyName,
@@ -11,8 +13,10 @@ import {
   combineLatestOrEmpty,
   Datafiable,
   Disposable,
+  pairwiseOrEmpty,
   restoreReactiveMap,
 } from "@repo/utils";
+import _ from "lodash";
 import { BehaviorSubject, map, Observable, switchMap } from "rxjs";
 import { StylesheetCssStyleSheet } from "~/src/css/_";
 import { StyleOverridesMap } from "~/src/style/overrides";
@@ -247,7 +251,12 @@ export class SlotFill
 
 export class ComponentElement extends ElementElementContainer<ComponentElementData> {
   private _componentUrl$ = new BehaviorSubject<string | undefined>(undefined);
-  private _props$ = new BehaviorSubject<Record<string, Evaluable<any>>>({});
+  private _props$ = new BehaviorSubject<
+    Record<string, Resolvable<Evaluable<any>>>
+  >({});
+  private _resolvedProps$ = new BehaviorSubject<Record<string, Evaluable<any>>>(
+    {},
+  );
   private _unwrapped$ = new BehaviorSubject<boolean | undefined>(undefined);
   private _initialized$ = new BehaviorSubject<boolean | undefined>(undefined);
   private _slotFills$ = new BehaviorSubject<Record<string, SlotFill>>({});
@@ -365,12 +374,24 @@ export class ComponentElement extends ElementElementContainer<ComponentElementDa
   get props$() {
     return this._props$.asObservable();
   }
+  get resolvedProps() {
+    return this._resolvedProps$.value;
+  }
+  get resolvedProps$() {
+    return this._resolvedProps$.asObservable();
+  }
 
   prop(key: string) {
     return this._props$.value[key];
   }
   prop$(key: string) {
     return this._props$.asObservable().pipe(map((props) => props[key]));
+  }
+  resolvedProp(key: string) {
+    return this._resolvedProps$.value[key];
+  }
+  resolvedProp$(key: string) {
+    return this._resolvedProps$.asObservable().pipe(map((props) => props[key]));
   }
 
   get slotFills() {
@@ -466,6 +487,49 @@ export class ComponentElement extends ElementElementContainer<ComponentElementDa
 
   constructor({ id, component }: { id?: string; component: Component }) {
     super({ id, type: entityTypes.elements.component, component });
+
+    let resolutionNumber = 0; // used to prevent race conditions
+    const resolutions: Record<string, Promise<any>> = {};
+    const propsSubscription = this.props$
+      .pipe(pairwiseOrEmpty())
+      .subscribe(async ([prev, next]) => {
+        console.log("props changed", [prev, next]);
+        const currentResolutionNumber = ++resolutionNumber;
+        const resolvedProps = Object.fromEntries(
+          await Promise.all(
+            Object.entries(next).map(async ([key, value]) => {
+              if (isReference(value)) {
+                const prevValue = prev?.[key];
+                if (_.isEqual(value, prevValue)) {
+                  if (key in resolutions) {
+                    return [key, await resolutions[key]];
+                  } else {
+                    const promise =
+                      this.project.infrastructure.resolveReference(value);
+                    resolutions[key] = promise;
+                    return [key, await promise];
+                  }
+                } else {
+                  const promise =
+                    this.project.infrastructure.resolveReference(value);
+                  resolutions[key] = promise;
+                  return [key, await promise];
+                }
+              } else {
+                return [key, value];
+              }
+            }),
+          ),
+        );
+
+        if (currentResolutionNumber === resolutionNumber) {
+          this._resolvedProps$.next(resolvedProps);
+        }
+      });
+
+    this.addDisposer(() => {
+      propsSubscription.unsubscribe();
+    });
   }
 
   setComponentUrl(componentUrl: string | undefined) {

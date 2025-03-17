@@ -54,7 +54,10 @@ export const PrimitiveElementComponentContent = forwardRef(
       element.instance.localComponent$,
       element.instance.localComponent,
     );
-    const props = useObservable(element.entity.props$, element.entity.props);
+    const props = useObservable(
+      element.entity.resolvedProps$,
+      element.entity.resolvedProps,
+    );
     const content = useContent({ element });
 
     if (!Component) {

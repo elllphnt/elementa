@@ -1,7 +1,8 @@
 import {
   CssStyleData,
-  getStylePropertyDataType,
+  getStyleDataType,
   isVarRef,
+  normalizeStyleData,
   StyleData,
   StylePropertyConfig,
   stylePropertyConfigMap,
@@ -12,6 +13,7 @@ import {
 import { Datafiable, Disposable } from "@repo/utils";
 import { BehaviorSubject, map, Observable } from "rxjs";
 import { Project } from "~/src/project/_";
+import { StyleFragmentRegistry } from "./style_fragment_set";
 
 /**
  * A standalone modelization of an Elll StyleData object.
@@ -22,6 +24,7 @@ export class Style extends Disposable implements Datafiable<StyleData> {
   static keySeed = Math.floor(Math.random() * 1000);
   key = `${Style.keySeed}-${Style.key++}`;
 
+  readonly fragmentRegistry: StyleFragmentRegistry;
   readonly project: Project;
 
   private _data$ = new BehaviorSubject<StyleData>({});
@@ -82,12 +85,22 @@ export class Style extends Disposable implements Datafiable<StyleData> {
     ) as any;
   }
 
-  constructor({ project }: { project: Project }) {
+  constructor({
+    project,
+    fragmentRegistry,
+  }: {
+    project: Project;
+    fragmentRegistry: StyleFragmentRegistry;
+  }) {
     super();
     this.project = project;
+    this.fragmentRegistry = fragmentRegistry;
 
     const cssSubscription = this.data$.subscribe((data) => {
-      const css = styleToCss(data);
+      const css = styleToCss(data, {
+        getFragment: (type, id) => this.fragmentRegistry.fragment(type, id),
+      });
+      console.log("style data changed", data, css);
       this._css$.next(css);
     });
 
@@ -130,18 +143,12 @@ export class Style extends Disposable implements Datafiable<StyleData> {
     if (value === undefined || value === "unset") {
       return value;
     }
-    const [dataType, dataTypeConfig] =
-      getStylePropertyDataType(this.getPropertyConfig(property), value) ?? [];
-    if (!dataType || !dataTypeConfig) {
+    const dataType = getStyleDataType(value);
+    if (!dataType) {
       throw Error(`Invalid value for property ${property}: ${value}`);
     }
 
-    const normalize = dataTypeConfig.normalize;
-    if (normalize) {
-      return normalize(value);
-    } else {
-      return value;
-    }
+    return normalizeStyleData(dataType, value);
   }
 
   restore(data: StyleData): void {

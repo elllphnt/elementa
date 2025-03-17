@@ -4,6 +4,7 @@ import { BehaviorSubject, map, Observable, switchMap } from "rxjs";
 import { Datafiable, restoreReactiveMap } from "~/src/_lib/restore";
 import { Project } from "~/src/project/_";
 import { Style } from "./style";
+import { StyleFragmentRegistry } from "./style_fragment_set";
 
 export type StylesheetData = {
   styles?: Record<string, StyleData>;
@@ -21,6 +22,7 @@ export class Stylesheet
   static keySeed = Math.floor(Math.random() * 1000);
   readonly key = `${Stylesheet.keySeed}-${Stylesheet.key++}`;
   readonly project: Project;
+  readonly fragmentRegistry = new StyleFragmentRegistry();
 
   private _styles$ = new BehaviorSubject<Record<string, Style>>({});
 
@@ -121,7 +123,11 @@ export class Stylesheet
     restoreReactiveMap({
       datafiable$: this._styles$,
       data: data.styles,
-      create: () => new Style({ project: this.project }),
+      create: () =>
+        new Style({
+          project: this.project,
+          fragmentRegistry: this.fragmentRegistry,
+        }),
       restore: (style, styleData) => {
         style.restore(styleData);
       },
@@ -137,7 +143,10 @@ export class Stylesheet
       return existing;
     }
 
-    const style = new Style({ project: this.project });
+    const style = new Style({
+      project: this.project,
+      fragmentRegistry: this.fragmentRegistry,
+    });
     this._styles$.next({ ...this.styles, [selector]: style });
 
     return style;

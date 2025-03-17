@@ -47,8 +47,14 @@ function wrapElementsWithStrategy(
   }
   if (stategy === "absolute") {
     baseWrapperStyle.setProperty("position", "absolute");
-    baseWrapperStyle.setProperty("top", totalRect.y - containerRect.y);
-    baseWrapperStyle.setProperty("left", totalRect.x - containerRect.x);
+    baseWrapperStyle.setProperty("top", {
+      value: totalRect.y - containerRect.y,
+      unit: "px",
+    });
+    baseWrapperStyle.setProperty("left", {
+      value: totalRect.x - containerRect.x,
+      unit: "px",
+    });
   } else {
     baseWrapperStyle.setProperty("position", "relative");
   }

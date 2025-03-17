@@ -1,5 +1,4 @@
 import {
-  BaseControlType,
   ControlEntry,
   ControlEntryVariant,
   MiniControlEntry,
@@ -8,9 +7,7 @@ import {
 import { FrameWidgetHandle } from "@repo/elementa-interactor";
 import _ from "lodash";
 import { of, switchMap } from "rxjs";
-import { InstanceStyleControlEntry } from "~/src/components/controls/infrastructure/style/instance_style";
 import { useFramePageStyles } from "~/src/hooks/elementa/frame";
-import { InstanceControl } from "../../../components/controls/infrastructure/instance/instance";
 import { useInstancesCommonReactiveValue } from "../../../hooks/utils/reactivity";
 
 function PageSizeEntry({
@@ -26,24 +23,26 @@ function PageSizeEntry({
 
   const pageStyles = useFramePageStyles(frames);
 
-  return (
-    <InstanceStyleControlEntry
-      variant={variant}
-      property={dimension}
-      name={Dimension}
-      styles={pageStyles}
-      control={BaseControlType.Dimension}
-      controlSettings={{
-        defaultUnit: "px",
-        units: [
-          {
-            unit: "px",
-            label: "Pixel",
-          },
-        ],
-      }}
-    />
-  );
+  // return (
+  //   <InstanceStyleControlEntry
+  //     variant={variant}
+  //     property={dimension}
+  //     name={Dimension}
+  //     styles={pageStyles}
+  //     control={BaseControlType.Dimension}
+  //     controlSettings={{
+  //       defaultUnit: "px",
+  //       units: [
+  //         {
+  //           unit: "px",
+  //           label: "Pixel",
+  //         },
+  //       ],
+  //     }}
+  //   />
+  // );
+
+  return <>Page Size</>;
 }
 
 function FrameSizeEntry({
@@ -61,7 +60,7 @@ function FrameSizeEntry({
   if (source === "frame") {
     return (
       <ControlEntry key="frame" label={Dimension} variant={variant}>
-        <InstanceControl
+        {/* <InstanceControl
           key="frame"
           instances={frames.map((handle) => handle.renderable.instance)}
           value$={(instance) => instance.entity[`${dimension}$`]}
@@ -70,13 +69,13 @@ function FrameSizeEntry({
             instance.entity[`set${Dimension}`](value)
           }
           control={BaseControlType.Number}
-        />
+        /> */}
       </ControlEntry>
     );
   } else if (source === "viewport") {
     return (
       <ControlEntry key="viewport" label={Dimension} variant={variant}>
-        <InstanceControl
+        {/* <InstanceControl
           key="viewport"
           variant={variant}
           instances={frames.map((handle) => handle.renderable.instance)}
@@ -88,7 +87,7 @@ function FrameSizeEntry({
             instance.entity.viewport?.update({ [dimension]: value })
           }
           control={BaseControlType.Number}
-        />
+        /> */}
       </ControlEntry>
     );
   } else {
@@ -139,22 +138,22 @@ export function FrameControl({
     <>
       <RowControlContainer>
         <MiniControlEntry label="X">
-          <InstanceControl
+          {/* <InstanceControl
             instances={selection.map((handle) => handle.renderable.instance)}
             value$={(instance) => instance.entity.x$}
             value={(instance) => instance.entity.x}
             onChange={(instance, value) => instance.entity.setX(value)}
             control={BaseControlType.Number}
-          />
+          /> */}
         </MiniControlEntry>
         <MiniControlEntry label="Y">
-          <InstanceControl
+          {/* <InstanceControl
             instances={selection.map((handle) => handle.renderable.instance)}
             value$={(instance) => instance.entity.y$}
             value={(instance) => instance.entity.y}
             onChange={(instance, value) => instance.entity.setY(value)}
             control={BaseControlType.Number}
-          />
+          /> */}
         </MiniControlEntry>
       </RowControlContainer>
       <RowControlContainer>

@@ -2,7 +2,7 @@ import { makeFileId, parseEntityId } from "@elllphnt/utils";
 import { Icon, TreeEntry, elllIcons16 } from "@repo/components";
 import { useShell } from "@repo/shell";
 import { useObservable } from "@repo/utils";
-import FileIcon from "~/src/components/file_icon/file_icon";
+import FileIcon from "~/src/components/ui/icons/file_icon";
 import { useRepository } from "~/src/hooks/backend/repository";
 import { nameFromPath } from "~/src/modules/elementa/_utils";
 import { useWorkspace } from "../../../hooks/backend/workspace";

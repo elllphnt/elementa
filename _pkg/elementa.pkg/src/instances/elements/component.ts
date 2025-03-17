@@ -105,10 +105,10 @@ export class ComponentElementFragmentEnvironment extends FragmentEnvironment {
   }
 
   propValue(prop: Prop) {
-    return this.element.entity.prop(prop.id) ?? prop.default;
+    return this.element.entity.resolvedProp(prop.id) ?? prop.default;
   }
   propValue$(prop: Prop): Observable<any> {
-    return this.element.entity.prop$(prop.id).pipe(
+    return this.element.entity.resolvedProp$(prop.id).pipe(
       switchMap((value) => {
         if (value) {
           return of(value);

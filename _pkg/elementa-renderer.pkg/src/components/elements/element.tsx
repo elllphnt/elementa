@@ -4,6 +4,7 @@ import {
   ComponentElementRenderable,
   MediaElementRenderable,
   PageElementRenderable,
+  PrimitiveElementRenderable,
 } from "~/src/renderables/instances/_";
 import { ContainerElementRenderable } from "../../renderables/instances/element/container";
 import { ElementRenderable } from "../../renderables/instances/element/element";
@@ -15,6 +16,7 @@ import ComponentElementComponent from "./components/component_element";
 import { ContainerElementComponent } from "./container_element";
 import { MediaElementComponent } from "./media/media_element";
 import { PageElementComponent } from "./page_element";
+import PrimitiveElementComponent from "./primitive_element";
 import { SlotElementComponent } from "./slot_element";
 import TextElementComponent from "./text/text_element";
 import VectorElementComponent from "./vector/vector_element";
@@ -35,6 +37,15 @@ export const ElementComponent = memo(function ({
         <ComponentElementComponent
           partKey={partKey}
           element={componentElement}
+        />
+      );
+    },
+    [entityTypes.elements.primitive]: () => {
+      const primitiveElement = element as PrimitiveElementRenderable;
+      return (
+        <PrimitiveElementComponent
+          partKey={partKey}
+          element={primitiveElement}
         />
       );
     },

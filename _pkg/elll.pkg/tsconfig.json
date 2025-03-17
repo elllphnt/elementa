@@ -17,6 +17,9 @@
       "~/*": ["./*"]
     }
   },
-  "include": ["src/**/*"],
+  "include": [
+    "src/**/*",
+    "../components.pkg/src/controls/datatypes/schema/schema.tsx"
+  ],
   "exclude": ["node_modules", "dist", "parcel/dist"]
 }

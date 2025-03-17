@@ -1,8 +1,11 @@
 import {
   entityTypes,
   Evaluable,
+  isReference,
   PrimitiveElementData,
 } from "@elllphnt/elll-element";
+import { pairwiseOrEmpty } from "@repo/utils";
+import _ from "lodash";
 import {
   BehaviorSubject,
   combineLatest,
@@ -18,6 +21,9 @@ export class PrimitiveElement extends ElementElementContainer<PrimitiveElementDa
   private _initialized$ = new BehaviorSubject<boolean | undefined>(undefined);
   private _moduleUrl$ = new BehaviorSubject<string | undefined>(undefined);
   private _props$ = new BehaviorSubject<Record<string, Evaluable<any>>>({});
+  private _resolvedProps$ = new BehaviorSubject<Record<string, Evaluable<any>>>(
+    {},
+  );
 
   get initialized() {
     return this._initialized$.value;
@@ -95,12 +101,24 @@ export class PrimitiveElement extends ElementElementContainer<PrimitiveElementDa
   get props$() {
     return this._props$.asObservable();
   }
+  get resolvedProps() {
+    return this._resolvedProps$.value;
+  }
+  get resolvedProps$() {
+    return this._resolvedProps$.asObservable();
+  }
 
   prop(key: string) {
     return this._props$.value[key];
   }
   prop$(key: string) {
     return this._props$.asObservable().pipe(map((props) => props[key]));
+  }
+  resolvedProp(key: string) {
+    return this._resolvedProps$.value[key];
+  }
+  resolvedProp$(key: string) {
+    return this._resolvedProps$.asObservable().pipe(map((props) => props[key]));
   }
 
   get data(): PrimitiveElementData {
@@ -129,6 +147,48 @@ export class PrimitiveElement extends ElementElementContainer<PrimitiveElementDa
 
   constructor({ id, component }: { id?: string; component: Component }) {
     super({ id, type: entityTypes.elements.primitive, component });
+
+    let resolutionNumber = 0; // used to prevent race conditions
+    const resolutions: Record<string, Promise<any>> = {};
+    const propsSubscription = this.props$
+      .pipe(pairwiseOrEmpty())
+      .subscribe(async ([prev, next]) => {
+        const currentResolutionNumber = ++resolutionNumber;
+        const resolvedProps = Object.fromEntries(
+          await Promise.all(
+            Object.entries(next).map(async ([key, value]) => {
+              if (isReference(value)) {
+                const prevValue = prev?.[key];
+                if (_.isEqual(value, prevValue)) {
+                  if (key in resolutions) {
+                    return [key, await resolutions[key]];
+                  } else {
+                    const promise =
+                      this.project.infrastructure.resolveReference(value);
+                    resolutions[key] = promise;
+                    return [key, await promise];
+                  }
+                } else {
+                  const promise =
+                    this.project.infrastructure.resolveReference(value);
+                  resolutions[key] = promise;
+                  return [key, await promise];
+                }
+              } else {
+                return [key, value];
+              }
+            }),
+          ),
+        );
+
+        if (currentResolutionNumber === resolutionNumber) {
+          this._resolvedProps$.next(resolvedProps);
+        }
+      });
+
+    this.addDisposer(() => {
+      propsSubscription.unsubscribe();
+    });
   }
 
   setModuleUrl(moduleUrl: string | undefined) {

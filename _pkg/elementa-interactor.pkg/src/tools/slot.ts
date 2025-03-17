@@ -25,8 +25,14 @@ export class SlotTool extends ElementTool {
     style.setProperty("display", "flex");
     style.setProperty("align-items", "center");
     style.setProperty("justify-content", "center");
-    style.setProperty("gap-x", 8);
-    style.setProperty("gap-y", 8);
+    style.setProperty("gap-x", {
+      value: 8,
+      unit: "px",
+    });
+    style.setProperty("gap-y", {
+      value: 8,
+      unit: "px",
+    });
 
     if (punctual) {
       style.setProperty("height", {

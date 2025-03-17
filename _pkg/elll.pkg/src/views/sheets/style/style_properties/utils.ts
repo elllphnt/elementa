@@ -1,5 +1,5 @@
 import { Style } from "@repo/elementa-models";
-import { StylePropertyConfig } from "~/src/components/controls/styles/properties";
+import { StylePropertyConfig } from "~/src/modules/elementa/style/properties";
 
 export function initializeProperties(
   properties: StylePropertyConfig[],

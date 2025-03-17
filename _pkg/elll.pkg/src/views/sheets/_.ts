@@ -5,13 +5,13 @@ import {
   Handle,
   handleProperties,
 } from "@repo/elementa-interactor";
-import { SheetView } from "~/src/components/sheet/types";
+import { SheetView } from "~/src/components/ui/sheets/types";
 import { RenderableAlignControlSheet } from "./alignment";
 import { PropsSheet } from "./element/props";
+import { RepeatControlSheet } from "./element/repeat";
 import { FrameControl } from "./frame/frame";
 import { FrameStyleControlSheet } from "./frame/style";
 import { FrameViewportSheet } from "./frame/viewport";
-import { RepeatControlSheet } from "./element/repeat";
 
 export const elementaSheetViews = {
   // renderable
@@ -74,9 +74,12 @@ export const elementaSheetViews = {
     render: PropsSheet,
     enabled: ({ instances }) => {
       return instances.every((instance) => {
-        return entityTypeMatch(
-          instance.entity.type,
-          entityTypes.elements.component,
+        return (
+          entityTypeMatch(
+            instance.entity.type,
+            entityTypes.elements.component,
+          ) ||
+          entityTypeMatch(instance.entity.type, entityTypes.elements.primitive)
         );
       });
     },

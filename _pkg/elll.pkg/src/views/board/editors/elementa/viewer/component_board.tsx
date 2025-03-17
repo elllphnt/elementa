@@ -1,4 +1,4 @@
-import { ElementaRenderer } from "~/src/components/elementa_viewer/elementa_viewer";
+import { ElementaRenderer } from "~/src/components/modules/elementa/elementa_viewer";
 import { ElementaEditorState } from "~/src/editors/elementa/editor";
 
 export function ComponentViewerBoardView({

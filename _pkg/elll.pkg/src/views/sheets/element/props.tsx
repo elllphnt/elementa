@@ -1,11 +1,22 @@
-import { BaseControlType, mixed } from "@repo/components";
-import { ComponentElementHandle } from "@repo/elementa-interactor";
+import {
+  DataInputConfig,
+  entityTypeMatch,
+  entityTypes,
+} from "@elllphnt/elll-element";
+import { mixed } from "@repo/components";
+import {
+  ComponentElementHandle,
+  PrimitiveElementHandle,
+} from "@repo/elementa-interactor";
 import { Prop } from "@repo/elementa-models";
 import { useObservable } from "@repo/utils";
-import { EvaluableControlEntry } from "~/src/components/controls/infrastructure/evaluable/evaluable";
+import { elllControlTypes } from "~/src/components/ui/controls/_types";
+import { EvaluableControlEntry } from "~/src/components/ui/controls/_uncertain/evaluable/evaluable";
+import { DynamicControlEntry } from "~/src/components/ui/controls/dynamic";
 import { useInstancesCommonReactivePair } from "~/src/hooks/utils/reactivity";
+import { DynamicType } from "../../modals/dynamics/_dynamics";
 
-function PropControlEntry({
+function ElllPropControlEntry({
   elements,
   prop,
 }: {
@@ -18,12 +29,16 @@ function PropControlEntry({
     value$: (i) => i.entity.prop$(prop.id),
     value: (i) => i.entity.prop(prop.id),
   });
-  const type = useObservable(prop.schema$, prop.schema);
+  const schema = useObservable(prop.schema$, prop.schema);
+  const schemaData = useObservable(schema?.data$, schema?.data);
 
   return (
     <EvaluableControlEntry
       label={name ?? prop.id}
-      control={BaseControlType.Expression}
+      control={elllControlTypes.Schema}
+      controlSettings={{
+        schema: schemaData,
+      }}
       value={_value}
       value$={_value$}
       onChange={(value) => {
@@ -34,85 +49,50 @@ function PropControlEntry({
     />
   );
 }
+function PrimitivePropControlEntry({
+  elements,
+  name,
+  config,
+}: {
+  elements: PrimitiveElementHandle[];
+  name: string;
+  config: DataInputConfig;
+}) {
+  const [_value$, _value] = useInstancesCommonReactivePair({
+    instances: elements.map((h) => h.instance),
+    value$: (i) => i.entity.prop$(name),
+    value: (i) => i.entity.prop(name),
+  });
+  const schema = config.schema;
 
-// function CodePropControlEntry({
-//   elements,
-//   name,
-//   config,
-// }: {
-//   elements: ComponentElementHandle[];
-//   name: string;
-//   config: PropConfig;
-// }) {
-//   const [_value$, _value] = useInstancesCommonReactivePair({
-//     instances: elements.map((h) => h.instance),
-//     value$: (i) => i.entity.prop$(name),
-//     value: (i) => i.entity.prop(name),
-//   });
-//   const type = config.type;
+  return (
+    <DynamicControlEntry
+      label={config.name ?? name}
+      control={elllControlTypes.Schema}
+      controlSettings={{
+        schema,
+      }}
+      value={_value}
+      value$={_value$}
+      onChange={(value) => {
+        elements.forEach((element) => {
+          element.entity.setProp(name, value);
+        });
+      }}
+      onRemove={() => {
+        elements.forEach((element) => {
+          element.entity.setProp(name, undefined);
+        });
+      }}
+      dynamics={{
+        [DynamicType.Expression]: true,
+        [DynamicType.DriveFile]: true,
+      }}
+    />
+  );
+}
 
-//   return (
-//     <EvaluableControlEntry
-//       label={config.displayName ?? name}
-//       control={
-//         datatypeControlMap[type as Datatype] ?? BaseControlType.Expression
-//       }
-//       value={_value}
-//       value$={_value$}
-//       onChange={(value) => {
-//         elements.forEach((element) => {
-//           element.entity.setProp(name, value);
-//         });
-//       }}
-//     />
-//   );
-// }
-
-// export function CodeComponentPropsSheet({
-//   selection,
-// }: {
-//   selection: CodeComponentElementHandle[];
-// }): JSX.Element {
-//   const [_config$, _config] = useInstancesCommonReactivePair({
-//     instances: selection.map((h) => h.instance),
-//     value$: (i) => i.config$,
-//     value: (i) => i.config,
-//   });
-//   const configOrMixed = useObservable(_config$, _config);
-//   const isMixed = configOrMixed === mixed;
-//   const config = isMixed ? undefined : configOrMixed;
-//   const props = Object.entries(config?.props ?? {});
-
-//   let content = <></>;
-
-//   if (props.length) {
-//     content = (
-//       <>
-//         {props.map(([name, config]) => (
-//           <CodePropControlEntry
-//             elements={selection}
-//             key={name}
-//             name={name}
-//             config={config}
-//           />
-//         ))}
-//       </>
-//     );
-//   } else if (isMixed) {
-//     content = (
-//       <div className="el-p-4 el-text-fg-500 el-text-center">
-//         Mixed components selected.
-//         <br /> Please select only one component to view its properties.
-//       </div>
-//     );
-//   } else {
-//     content = <></>;
-//   }
-
-//   return <>{content}</>;
-// }
-
-export function PropsSheet({
+export function ComponentPropsSheet({
   selection,
 }: {
   selection: ComponentElementHandle[];
@@ -133,7 +113,11 @@ export function PropsSheet({
     content = (
       <>
         {props.map((prop) => (
-          <PropControlEntry elements={selection} key={prop.key} prop={prop} />
+          <ElllPropControlEntry
+            elements={selection}
+            key={prop.key}
+            prop={prop}
+          />
         ))}
       </>
     );
@@ -160,4 +144,73 @@ export function PropsSheet({
   }
 
   return <>{content}</>;
+}
+export function PrimitivePropsSheet({
+  selection,
+}: {
+  selection: PrimitiveElementHandle[];
+}): JSX.Element {
+  const [_config$, _config] = useInstancesCommonReactivePair({
+    instances: selection.map((h) => h.instance),
+    value$: (i) => i.config$,
+    value: (i) => i.config,
+  });
+  const configOrMixed = useObservable(_config$, _config);
+  const isMixed = configOrMixed === mixed;
+  const config = isMixed ? undefined : configOrMixed;
+  const props = Object.entries(config?.props ?? {});
+
+  let content = <></>;
+
+  if (props.length) {
+    content = (
+      <>
+        {props.map(([name, config]) => (
+          <PrimitivePropControlEntry
+            elements={selection}
+            key={name}
+            name={name}
+            config={config}
+          />
+        ))}
+      </>
+    );
+  } else if (isMixed) {
+    content = (
+      <div className="el-p-4 el-text-fg-500 el-text-center">
+        Mixed components selected.
+        <br /> Please select only one component to view its properties.
+      </div>
+    );
+  } else {
+    content = <></>;
+  }
+
+  return <>{content}</>;
+}
+
+export function PropsSheet({
+  selection,
+}: {
+  selection: (ComponentElementHandle | PrimitiveElementHandle)[];
+}): JSX.Element {
+  if (
+    selection.every((h) =>
+      entityTypeMatch(h.entity.type, entityTypes.elements.component),
+    )
+  ) {
+    return (
+      <ComponentPropsSheet selection={selection as ComponentElementHandle[]} />
+    );
+  } else if (
+    selection.every((h) =>
+      entityTypeMatch(h.entity.type, entityTypes.elements.primitive),
+    )
+  ) {
+    return (
+      <PrimitivePropsSheet selection={selection as PrimitiveElementHandle[]} />
+    );
+  } else {
+    return <></>;
+  }
 }

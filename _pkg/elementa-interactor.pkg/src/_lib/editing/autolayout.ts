@@ -35,8 +35,26 @@ export function generateFlexAutoLayout<I extends Handle>(
     "flex-direction": mainAxis === "x" ? "row" : "column",
     "align-items": crossAxisAlignment,
     "justify-content": "center",
-    "gap-x": mainAxis === "x" ? gap : 0,
-    "gap-y": mainAxis === "y" ? gap : 0,
+    "gap-x":
+      mainAxis === "x"
+        ? {
+            value: gap,
+            unit: "px",
+          }
+        : {
+            value: 0,
+            unit: "px",
+          },
+    "gap-y":
+      mainAxis === "y"
+        ? {
+            value: gap,
+            unit: "px",
+          }
+        : {
+            value: 0,
+            unit: "px",
+          },
   };
 
   return [style, sortedRenderables];

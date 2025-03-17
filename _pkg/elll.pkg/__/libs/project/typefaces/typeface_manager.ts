@@ -16,7 +16,7 @@ import { ElllProject } from "../project";
 const typefaceFilePath = ".elll/typefaces.json";
 
 export type TypefaceStoreData = {
-  typefaces: TypefaceData[];
+  typefaces?: TypefaceData[];
 };
 
 export class ElllTypefaceManager extends Disposable implements TypefaceManager {

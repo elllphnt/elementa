@@ -18,7 +18,7 @@ import { useManyObservables, useObservable } from "@repo/utils";
 import cx from "classnames";
 import _ from "lodash";
 import { useRef, useState } from "react";
-import { StyleEditor } from "~/src/components/style_editor/style_editor";
+import { StyleEditor } from "~/src/components/modules/elementa/style_editor";
 import { ElementaEditorState } from "~/src/editors/elementa/editor";
 import { useElllProject } from "~/src/hooks/project/project";
 import { resolveArrayIntersection, resolveCommon } from "~/src/libs/utils";
@@ -47,7 +47,6 @@ function splitedSelector({
     const [modifier] = parseModifier({
       modifier: part,
       getModifierDefinition: (name) => modifierDefinitions[name],
-      parseData: (_, data) => data,
     });
     if (!modifier) {
       elementParts.push(part);

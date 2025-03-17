@@ -9,7 +9,7 @@ import { useObservable } from "@repo/utils";
 import cx from "classnames";
 import { useEffect, useMemo } from "react";
 import { map } from "rxjs";
-import { useElementaRenderer } from "~/src/components/elementa_viewer/elementa_viewer";
+import { useElementaRenderer } from "~/src/components/modules/elementa/elementa_viewer";
 import { ElementaEditorState } from "~/src/editors/elementa/editor";
 import { stagerTheme } from "~/src/editors/elementa/libs/theme";
 import { useElll } from "~/src/hooks/elll/elll";

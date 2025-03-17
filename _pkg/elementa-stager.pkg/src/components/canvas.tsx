@@ -8,7 +8,7 @@ export function Canvas({ renderer }: { renderer: ElementaStager }) {
   return (
     <>
       {widgets.map((widget) => {
-        return <WidgetComponent widget={widget} />;
+        return <WidgetComponent key={widget.key} widget={widget} />;
       })}
     </>
   );

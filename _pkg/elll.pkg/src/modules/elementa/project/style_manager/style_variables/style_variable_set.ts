@@ -2,6 +2,7 @@ import {
   CssSelector,
   CssStyleData,
   ElllSelectorData,
+  StyleDataType,
   StyleVariableData,
   StyleVariableSetData,
   variableSetToCss,
@@ -64,8 +65,10 @@ export class StyleVariableSet
   readonly sheet: IStyleVariableSheet;
   readonly styleSheet: StyleVariableSetStylesheet;
 
-  private _name$ = new BehaviorSubject<string | undefined>(undefined);
-  private _datatype$ = new BehaviorSubject<string | undefined>(undefined);
+  private _name$ = new BehaviorSubject<string>("");
+  private _datatype$ = new BehaviorSubject<StyleDataType | undefined>(
+    undefined,
+  );
   private _variables$ = new BehaviorSubject<StyleVariableData[]>([]);
   private _modes$ = new BehaviorSubject<ElllSelectorData[]>([]);
 
@@ -128,7 +131,6 @@ export class StyleVariableSet
     const [css, error] = variableSetToCss({
       set: this.data,
       getModifierDefinition: (name) => modifiers[name],
-      stringifyData: (type, data) => `${data}`,
     });
     if (error) {
       console.error(error);
@@ -146,7 +148,6 @@ export class StyleVariableSet
         const [css, error] = variableSetToCss({
           set: data,
           getModifierDefinition: (name) => modifiers[name],
-          stringifyData: (type, data) => `${data}`,
         });
         if (error) {
           console.error(error);
@@ -168,7 +169,7 @@ export class StyleVariableSet
   setName(name: string) {
     this._name$.next(name);
   }
-  setDatatype(datatype: string) {
+  setDatatype(datatype: StyleDataType) {
     this._datatype$.next(datatype);
   }
   setModes(modes: ElllSelectorData[]) {

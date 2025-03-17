@@ -25,7 +25,7 @@ export function ControlMenuContent({
       }}
     >
       <div
-        className="el-flex el-items-center el-p-3"
+        className="el-flex el-items-center el-px-3 el-py-2 el-pr-2"
         style={{
           gap: 8,
           width: "100%",
@@ -68,14 +68,7 @@ export function ControlMenuContent({
 
       <hr />
 
-      <div
-        style={{
-          flexGrow: 1,
-        }}
-        className="el-space-y-2 el-p-3"
-      >
-        {content}
-      </div>
+      <div>{content}</div>
     </div>
   );
 }

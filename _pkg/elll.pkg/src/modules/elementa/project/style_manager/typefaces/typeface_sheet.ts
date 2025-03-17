@@ -10,7 +10,7 @@ import { IElllStyleManager } from "../_types";
 import { ITypefaceSheet } from "./_types";
 
 export type StyleTypefaceSheetData = {
-  typefaces: TypefaceData[];
+  typefaces?: TypefaceData[];
 };
 
 export class TypefaceSheet
@@ -158,10 +158,10 @@ export class TypefaceSheet
   restore(data: StyleTypefaceSheetData) {
     this._setTypefaces(
       Object.fromEntries(
-        data.typefaces.map((typeface) => {
+        data.typefaces?.map((typeface) => {
           const id = typeface.id || genId();
           return [id, { ...typeface, id }];
-        }),
+        }) ?? [],
       ),
     );
   }

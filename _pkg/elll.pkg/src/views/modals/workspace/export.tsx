@@ -1,5 +1,5 @@
 import { Repository } from "@repo/backend";
-import { CopyControl } from "~/src/components/controls/infrastructure/copy/copy";
+import { CopyControl } from "~/src/components/ui/controls/_uncertain/copy/copy";
 import { useRepository } from "~/src/hooks/backend/repository";
 
 export function InstallMenu({ repository }: { repository: Repository }) {

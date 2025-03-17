@@ -3,11 +3,11 @@ import { Style } from "@repo/elementa-models";
 import { combineLatestOrEmpty, useManyObservables } from "@repo/utils";
 import { useMemo } from "react";
 import { map } from "rxjs";
-import { StyleControlEntry } from "~/src/components/controls/infrastructure/style/style";
+import { StylePropertyControlEntry } from "~/src/components/ui/controls/style_property";
 import {
   StylePropertyConfig,
   StylePropertyGroupConfig,
-} from "~/src/components/controls/styles/properties";
+} from "~/src/modules/elementa/style/properties";
 import { StylePropertiesControlEntry } from "./control_entry";
 import { StyleAction } from "./style_action";
 import { addDigitToLowestRank } from "./utils";
@@ -109,7 +109,7 @@ function CompoundStylePropertyGroupControlEntry({
   return (
     <>
       {action}
-      <StyleControlEntry
+      <StylePropertyControlEntry
         styles={styles}
         properties={group.properties?.map((p) => p.name) ?? []}
         name={group.name}

@@ -11,9 +11,4 @@ export abstract class FileSystem {
   abstract getAbsoluteFileUrl(base: string, url: string): string;
   abstract getStandardFileUrl(url: string): string;
   abstract getFileProject(url: string): Project | undefined;
-
-  abstract resolveContentUrl(url: string): Promise<{
-    url: string;
-    expiresAt?: number;
-  }>;
 }

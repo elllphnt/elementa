@@ -10,7 +10,8 @@ import {
 } from "@repo/components";
 import { ElementHandle } from "@repo/elementa-interactor";
 import { useManyObservables } from "@repo/utils";
-import { EvaluableControlEntry } from "~/src/components/controls/infrastructure/evaluable/evaluable";
+import { elllControlTypes } from "~/src/components/ui/controls/_types";
+import { EvaluableControlEntry } from "~/src/components/ui/controls/_uncertain/evaluable/evaluable";
 
 function FixedRepeatedControls({
   count,
@@ -23,7 +24,7 @@ function FixedRepeatedControls({
     <>
       <EvaluableControlEntry
         label="Count"
-        control={BaseControlType.Number}
+        control={elllControlTypes.Number}
         value={count}
         onChange={(v) => onChange({ count: v })}
       />

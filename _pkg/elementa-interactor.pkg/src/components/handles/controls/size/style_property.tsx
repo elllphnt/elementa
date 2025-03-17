@@ -1,22 +1,23 @@
 import {
   DimensionData,
-  FractionData,
+  FlexData,
   LengthData,
   PercentData,
-  dimensionStringRegex,
-  dimensionToString,
   isExpression,
   isVarRef,
+  parseDimension,
+  parseNumber,
+  stringifyDimension,
 } from "@elllphnt/elll-element";
 import { useManyObservables } from "@repo/utils";
 import { useMemo } from "react";
 import { Observable } from "rxjs";
-import { RawSizeInput } from "./raw_input";
 import { mixed, resolveCommonValue } from "~/src/_lib/utils";
+import { RawSizeInput } from "./raw_input";
 
 function parseSize(
   text: string,
-): LengthData | PercentData | FractionData | "fit" | undefined {
+): LengthData | PercentData | FlexData | "fit" | undefined {
   switch (text) {
     case "": {
       return undefined;
@@ -33,16 +34,22 @@ function parseSize(
       return undefined;
   }
 
-  const _value = text.match(dimensionStringRegex)?.[0] ?? "";
-  const _unit = text.slice(_value.length).trim();
+  // number
+  const [parsedNumber] = parseNumber(text);
+  if (parsedNumber !== undefined) {
+    return {
+      value: parsedNumber ?? 0,
+      unit: "px",
+    };
+  }
 
-  const value = parseFloat(_value);
-  if (isNaN(value)) return undefined;
+  const [parsedDimension] = parseDimension(text);
+  if (parsedDimension !== undefined) {
+    const { unit, value } = parsedDimension;
+    if (!["px", "%", "vh", "vw", "fr", "fit"].includes(unit)) return undefined;
 
-  if (!_unit) return { value, unit: "px" };
-  if (!["px", "%", "vh", "vw", "fr", "fit"].includes(_unit)) return undefined;
-
-  return { value, unit: _unit } as LengthData | PercentData | FractionData;
+    return { value, unit } as LengthData | PercentData | FlexData;
+  }
 }
 export function StylePropertySizeInput({
   values,
@@ -56,7 +63,7 @@ export function StylePropertySizeInput({
   >;
   vKey?: string;
   onChange?: (
-    value: LengthData | PercentData | FractionData | "fit" | undefined,
+    value: LengthData | PercentData | FlexData | "fit" | undefined,
   ) => void;
 }) {
   const _values = useManyObservables(values$, values, vKey);
@@ -83,7 +90,7 @@ export function StylePropertySizeInput({
       } else if (typeof commonValue === "string") {
         return commonValue;
       } else {
-        return dimensionToString(commonValue);
+        return stringifyDimension(commonValue);
       }
     }
   }, [commonValue]);

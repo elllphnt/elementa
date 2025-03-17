@@ -241,11 +241,17 @@ export abstract class StylableHandle<
 
         if (x) {
           let left = rect.x - containerRect.x;
-          this.style.setProperty("left", left);
+          this.style.setProperty("left", {
+            value: left,
+            unit: "px",
+          });
         }
         if (y) {
           let top = rect.y - containerRect.y;
-          this.style.setProperty("top", top);
+          this.style.setProperty("top", {
+            value: top,
+            unit: "px",
+          });
         }
       }
     }
@@ -264,16 +270,48 @@ export abstract class StylableHandle<
     }
   }
   setWidth(width: number | undefined): void {
-    this.style.setProperty("width", width);
+    this.style.setProperty(
+      "width",
+      width !== undefined
+        ? {
+            value: width,
+            unit: "px",
+          }
+        : undefined,
+    );
   }
   setHeight(height: number | undefined): void {
-    this.style.setProperty("height", height);
+    this.style.setProperty(
+      "height",
+      height !== undefined
+        ? {
+            value: height,
+            unit: "px",
+          }
+        : undefined,
+    );
   }
   setCorner(name: CornerName, value: number | undefined): void {
-    this.style.setProperty(`border-${name}-radius`, value);
+    this.style.setProperty(
+      `border-${name}-radius`,
+      value !== undefined
+        ? {
+            value,
+            unit: "px",
+          }
+        : undefined,
+    );
   }
   setPadding(name: EdgeName, value: number | undefined): void {
-    this.style.setProperty(`padding-${name}`, value);
+    this.style.setProperty(
+      `padding-${name}`,
+      value !== undefined
+        ? {
+            value,
+            unit: "px",
+          }
+        : undefined,
+    );
   }
   setPosition(position: PointData): void {
     const containingHandle = this.resolveContainingHandle();
@@ -285,8 +323,14 @@ export abstract class StylableHandle<
     if (positionType === "absolute" || positionType === "fixed") {
       let top = position.y - containerRect.y;
       let left = position.x - containerRect.x;
-      style.setProperty("top", top);
-      style.setProperty("left", left);
+      style.setProperty("top", {
+        value: top,
+        unit: "px",
+      });
+      style.setProperty("left", {
+        value: left,
+        unit: "px",
+      });
     }
   }
   setPositionStrategy(position: PositionValue | undefined): void {
@@ -306,8 +350,14 @@ export abstract class StylableHandle<
       const top = rect.y - containerRect.y;
       const left = rect.x - containerRect.x;
 
-      this.style.setProperty("top", top);
-      this.style.setProperty("left", left);
+      this.style.setProperty("top", {
+        value: top,
+        unit: "px",
+      });
+      this.style.setProperty("left", {
+        value: left,
+        unit: "px",
+      });
       this.style.setProperty("position", position);
     }
   }

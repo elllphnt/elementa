@@ -1,7 +1,7 @@
 import { DrawerContext } from "@repo/shell";
 import { useContext, useEffect } from "react";
 import { of, switchMap } from "rxjs";
-import { DriveDirectoryView } from "~/src/components/drive_directory/drive_directory_view";
+import { DriveDirectoryView } from "~/src/components/ui/trees/drive_directory/drive_directory_view";
 import { useElll } from "~/src/hooks/elll/elll";
 
 export function StorageView(): JSX.Element {

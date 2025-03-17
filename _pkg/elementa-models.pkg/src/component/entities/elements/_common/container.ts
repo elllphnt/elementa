@@ -145,15 +145,15 @@ export abstract class ElementElementContainer<
     return combineLatestOrEmpty([
       super._data$,
       this._content$.pipe(
-        switchMap((children) =>
-          combineLatestOrEmpty(children.map((child) => child.data$)),
+        switchMap((content) =>
+          combineLatestOrEmpty(content.map((content) => content.data$)),
         ),
       ),
       this.contentExpression$,
     ]).pipe(
-      map(([data, children, contentExpression]) => ({
+      map(([data, content, contentExpression]) => ({
         ...data,
-        children,
+        content,
         contentExpression,
       })),
     );

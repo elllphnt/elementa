@@ -4,8 +4,7 @@ import {
   elllIcons16Data,
   elllIcons20Data,
 } from "@repo/components";
-import { controlViews } from "~/src/components/controls/_views";
-import { ElllView } from "~/src/components/elll/elll";
+import { ElllView } from "~/src/components/modules/elll/elll";
 import { blueprintEditor } from "~/src/editors/blueprint";
 import { componentEditor } from "~/src/editors/elementa/editor";
 import { componentViewer } from "~/src/editors/elementa/viewer";
@@ -77,7 +76,6 @@ export function createElllInstance(config: ElllConfig) {
   shell.viewStore.loadViews(...Object.values(drawerViews));
   shell.viewStore.loadViews(...Object.values(contextViews));
   shell.viewStore.loadViews(...Object.values(outlineViews));
-  shell.viewStore.loadViews(...Object.values(controlViews));
   shell.viewStore.loadViews(...Object.values(elementaSheetViews));
   shell.viewStore.loadViews(...Object.values(baseControlViews));
 

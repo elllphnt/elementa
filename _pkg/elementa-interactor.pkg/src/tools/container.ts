@@ -1,6 +1,6 @@
-import { ElementData, entityTypes } from "@elllphnt/elll-element";
-import { ElementTool } from "./element";
+import { entityTypes } from "@elllphnt/elll-element";
 import { Component, ContainerElement, Element } from "@repo/elementa-models";
+import { ElementTool } from "./element";
 
 export class ContainerTool extends ElementTool {
   readonly fill: boolean;
@@ -28,8 +28,14 @@ export class ContainerTool extends ElementTool {
     style.setProperty("display", "flex");
     style.setProperty("align-items", "center");
     style.setProperty("justify-content", "center");
-    style.setProperty("gap-x", 8);
-    style.setProperty("gap-y", 8);
+    style.setProperty("gap-x", {
+      value: 8,
+      unit: "px",
+    });
+    style.setProperty("gap-y", {
+      value: 8,
+      unit: "px",
+    });
 
     if (punctual) {
       style.setProperty("height", {
@@ -42,11 +48,10 @@ export class ContainerTool extends ElementTool {
       });
     }
     if (this.fill) {
-      style.setProperty("background", {
-        r: 250,
-        g: 250,
-        b: 250,
-        a: 1,
+      style.setProperty("background-color", {
+        model: "rgb",
+        value: [255, 255, 255],
+        alpha: 1,
       });
     }
 

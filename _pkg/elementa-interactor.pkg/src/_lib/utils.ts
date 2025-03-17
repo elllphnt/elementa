@@ -1,4 +1,4 @@
-import { FractionData, LengthData, PercentData } from "@elllphnt/elll-element";
+import { FlexData, LengthData, PercentData } from "@elllphnt/elll-element";
 import _ from "lodash";
 
 export function resolveCommonValue<T>(
@@ -16,7 +16,7 @@ export const mixed = Symbol("mixed");
 export type MixedType = typeof mixed;
 
 export function lengthToPixels(
-  length: LengthData | PercentData | FractionData | "unset" | undefined,
+  length: LengthData | PercentData | FlexData | "unset" | undefined,
   axis: "x" | "y" = "x",
 ): number {
   if (!length || length === "unset") {
@@ -49,10 +49,10 @@ export function lengthToPixels(
 }
 
 export function lengthToUnit(
-  length: LengthData | PercentData | FractionData,
+  length: LengthData | PercentData | FlexData,
   unit: string,
   axis: "x" | "y" = "x",
-): LengthData | PercentData | FractionData {
+): LengthData | PercentData | FlexData {
   const pixelValue = lengthToPixels(length, "x");
   switch (unit) {
     case "px":
