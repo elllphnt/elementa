@@ -52,6 +52,12 @@ export type FileTreeContextType = {
   handleNewEntry?: HandleNewEntry;
   handleClick?: HandleClick;
   handleDoubleClick?: HandleDoubleClick;
+  // dragdrop
+  acceptDrop?: (
+    event: DragEvent,
+    directory: File,
+  ) => boolean | "copy" | "link" | "move";
+  handleDrop?: (event: DragEvent, directory: File) => boolean;
 };
 
 export const FileTreeContext = createContext<FileTreeContextType | undefined>(

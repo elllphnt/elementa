@@ -458,6 +458,41 @@ function FrameStylesheetPanel({
   return <FramePageStylesheetPanel frames={frames} />;
 }
 
+function RootStylesheetPanel() {
+  const activeSelector = baseSelector;
+  const project = useElllProject();
+  const stylesheet = project.styleManager.rootStylesheet;
+  const style = useObservable(
+    stylesheet.style$(activeSelector, true),
+    stylesheet.style(activeSelector, true),
+  );
+
+  return (
+    <div className="el-h-full el-w-full el-flex el-flex-col">
+      <div className="el-bg-bg-100 el-border-b el-relative el-w-full el-py-2 el-px-3 el-text-fg-400">
+        Global Style
+      </div>
+      <div className="el-grow el-overflow-hidden">
+        <ScrollArea scrollY noHandle>
+          <StyleEditor
+            key={style.key}
+            styles={[style]}
+            disabled={[
+              "animation",
+              "box",
+              "effect",
+              "layout",
+              "transform",
+              "transition",
+              "position",
+            ]}
+          />
+        </ScrollArea>
+      </div>
+    </div>
+  );
+}
+
 function StylesheetPanelContent({
   editor,
 }: {
@@ -473,24 +508,28 @@ function StylesheetPanelContent({
       interactor?.interactionManager.selection,
     ) ?? [];
 
-  if (
-    selection.every(
-      (handle) =>
-        handle instanceof EntityHandle &&
-        entityTypeMatch(handle.entity.type, entityTypes.element),
-    )
-  ) {
-    return <ElementStylesheetPanel elements={selection as ElementHandle[]} />;
-  } else if (
-    selection.every(
-      (handle) =>
-        handle instanceof EntityHandle &&
-        entityTypeMatch(handle.entity.type, entityTypes.widgets.frame),
-    )
-  ) {
-    return <FrameStylesheetPanel frames={selection as FrameWidgetHandle[]} />;
+  if (selection.length) {
+    if (
+      selection.every(
+        (handle) =>
+          handle instanceof EntityHandle &&
+          entityTypeMatch(handle.entity.type, entityTypes.element),
+      )
+    ) {
+      return <ElementStylesheetPanel elements={selection as ElementHandle[]} />;
+    } else if (
+      selection.every(
+        (handle) =>
+          handle instanceof EntityHandle &&
+          entityTypeMatch(handle.entity.type, entityTypes.widgets.frame),
+      )
+    ) {
+      return <FrameStylesheetPanel frames={selection as FrameWidgetHandle[]} />;
+    } else {
+      return <></>;
+    }
   } else {
-    return <></>;
+    return <RootStylesheetPanel />;
   }
 }
 

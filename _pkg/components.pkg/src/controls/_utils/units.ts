@@ -8,31 +8,26 @@ export const lengthUnits = [
     label: "Pixel",
     unit: "px",
     step: 1,
-    min: 0,
   },
   {
     label: "Font size",
     unit: "em",
     step: 0.05,
-    min: 0,
   },
   {
     label: "Root font size",
     unit: "rem",
     step: 0.05,
-    min: 0,
   },
   {
     label: "Viewport height",
     unit: "vh",
     step: 1,
-    min: 0,
   },
   {
     label: "Viewport width",
     unit: "vw",
     step: 1,
-    min: 0,
   },
 ] as const;
 

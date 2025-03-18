@@ -1,10 +1,10 @@
-import { elllFileTypes, makeElllUrl } from "@elllphnt/utils";
+import { makeElllUrl } from "@elllphnt/utils";
 import { fsUtils } from "../../lib/fs.js";
 import { paths } from "../../lib/paths.js";
 import { SyncContext } from "../sync/context.js";
-import { registerSyncer, Syncer } from "../sync/syncer.js";
+import { Syncer } from "../sync/syncer.js";
 
-export const reactComponentSyncer: Syncer = {
+export const primitveSyncer: Syncer = {
   updatePath: async function ({
     id,
     path,
@@ -50,5 +50,3 @@ export const reactComponentSyncer: Syncer = {
     await fsUtils.write(outPath, content);
   },
 };
-
-registerSyncer(elllFileTypes.components.react, reactComponentSyncer);

@@ -8,8 +8,11 @@ export function FrameWidgetComponent({
 }: {
   widget: FrameWidgetRenderable;
 }): JSX.Element {
+  const stylesheet = widget.entity.project.styleManager.rootStylesheet;
+
   return (
     <div
+      className={stylesheet.className}
       data-entity={`${widget.entity.type}:${widget.entity.id}`}
       ref={(element) => {
         widget.setHtmlElement(element);

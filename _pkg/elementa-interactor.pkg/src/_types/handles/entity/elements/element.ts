@@ -46,8 +46,6 @@ export interface IElementHandle<R extends ElementRenderable = ElementRenderable>
       y?: boolean;
     },
   ): void;
-  setWidth(width: number | undefined): void;
-  setHeight(height: number | undefined): void;
   setCorner(name: CornerName, value: number | undefined): void;
   setPadding(name: EdgeName, value: number | undefined): void;
   setPosition(position: PointData): void;

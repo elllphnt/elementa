@@ -6,6 +6,7 @@ import {
   ElementHandle,
   MediaElementHandle,
   PageElementHandle,
+  PrimitiveElementHandle,
   SlotElementHandle,
   TextElementHandle,
   VectorElementHandle,
@@ -62,6 +63,40 @@ export function ComponentElementOutline({
       handle={element}
       icon={elllIcons16.component}
       fallbackName={componentName || "Component"}
+      container={children.length > 0}
+      content={() => (
+        <>
+          {children.map((child) => (
+            <ElementOutline
+              key={child.key}
+              element={child as ElementHandle}
+              stateKey={[...stateKey, "children", `${child.id}`]}
+            />
+          ))}
+        </>
+      )}
+    />
+  );
+}
+export function PrimitiveElementOutline({
+  element,
+  stateKey = [],
+}: {
+  element: PrimitiveElementHandle;
+  stateKey?: string[];
+}) {
+  const children = useObservable(element.children$, element.children);
+  const [open, setOpen] = useEntityHandleOpenState(element);
+  const componentName = useObservable(
+    element.entity.moduleName$,
+    element.entity.moduleName,
+  );
+
+  return (
+    <EntityHandleOutlineEntry
+      handle={element}
+      icon={elllIcons16.component}
+      fallbackName={componentName || "Primitive"}
       container={children.length > 0}
       content={() => (
         <>
@@ -230,6 +265,12 @@ export function ElementOutline({
     [entityTypes.elements.component]: () => (
       <ComponentElementOutline
         element={element as ComponentElementHandle}
+        stateKey={stateKey}
+      />
+    ),
+    [entityTypes.elements.primitive]: () => (
+      <PrimitiveElementOutline
+        element={element as PrimitiveElementHandle}
         stateKey={stateKey}
       />
     ),

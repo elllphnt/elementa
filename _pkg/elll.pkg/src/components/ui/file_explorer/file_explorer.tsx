@@ -74,7 +74,18 @@ export function FileExplorer({
     content = <div>Loading...</div>;
   } else if (file) {
     if (file.type === "directory") {
-      content = <Directory directory={file} onFileClicked={onFileClicked} />;
+      content = (
+        <Directory
+          directory={file}
+          onFileClicked={(file) => {
+            if (file.type === "directory" && file.path !== undefined) {
+              setPath(file.path);
+            } else {
+              onFileClicked?.(file);
+            }
+          }}
+        />
+      );
     } else {
       content = <div>File: {file.name}</div>;
     }

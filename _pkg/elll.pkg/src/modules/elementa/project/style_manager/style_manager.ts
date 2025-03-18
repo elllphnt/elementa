@@ -10,10 +10,15 @@ import {
   StyleModifierDefinitionData,
 } from "@elllphnt/elll-element";
 import { IFileDrive } from "@repo/backend";
-import { CssStyleSheet } from "@repo/elementa-models";
+import {
+  CssStyleSheet,
+  Stylesheet,
+  StylesheetCssStyleSheet,
+  StylesheetData,
+} from "@repo/elementa-models";
 import { BehaviorSubject, combineLatest, map, Observable } from "rxjs";
 import { jsonModelConstructor } from "~/src/models/json";
-import { IElll } from "~/src/types/elll";
+import { IElllElementaProject } from "../_types";
 import { SynchronizedModelFile } from "../file";
 import { IElllStyleManager } from "./_types";
 import { ColorSchemeData, ColorSchemeManager } from "./color_schemes";
@@ -63,6 +68,7 @@ export type StyleSystemData = {
   breakpoints?: Record<string, number>;
   colorSchemes?: ColorSchemeData[];
   viewports?: ViewportData[];
+  stylesheets?: Record<string, StylesheetData>;
 };
 
 // ----------------- VIEWPORT MATCHING FUNCTION -----------------
@@ -103,6 +109,9 @@ export class ElllStyleManager
   implements IElllStyleManager
 {
   // --- Instance Fields ---
+  readonly rootStylesheet: Stylesheet;
+  readonly rootCssStylesheet: CssStyleSheet;
+
   readonly variableSheet: StyleVariableSheet;
   readonly modifierSheet: StyleModifierSheet;
   readonly typefaceSheet: TypefaceSheet;
@@ -117,6 +126,7 @@ export class ElllStyleManager
     return [
       ...this.variableSheet.sets.map((set) => set.styleSheet),
       this.typefaceSheet.stylesheet,
+      this.rootCssStylesheet,
     ];
   }
   get stylesheets$(): Observable<CssStyleSheet[]> {
@@ -128,6 +138,7 @@ export class ElllStyleManager
       map(([variableStylesheets]) => [
         ...variableStylesheets,
         this.typefaceSheet.stylesheet,
+        this.rootCssStylesheet,
       ]),
     );
   }
@@ -264,12 +275,24 @@ export class ElllStyleManager
   }
 
   // --- Constructor & Cleanup ---
-  constructor({ elll, drive }: { elll: IElll; drive: IFileDrive }) {
+  constructor({
+    project,
+    drive,
+  }: {
+    project: IElllElementaProject;
+    drive: IFileDrive;
+  }) {
     super({
-      elll,
+      elll: project.elll,
       drive,
       path: ".elll/style",
       model: jsonModelConstructor.name,
+    });
+
+    this.rootStylesheet = new Stylesheet({ project });
+    this.rootCssStylesheet = new StylesheetCssStyleSheet({
+      target: "root",
+      stylesheet: this.rootStylesheet,
     });
     this.variableSheet = new StyleVariableSheet({ styleManager: this });
     this.modifierSheet = new StyleModifierSheet({ styleManager: this });
@@ -335,16 +358,23 @@ export class ElllStyleManager
     return {
       colorSchemes: this.colorSchemeManager.colorSchemes,
       viewports: this.viewportManager.viewports,
+      stylesheets: {
+        root: this.rootStylesheet.data,
+      },
     };
   }
   get data$(): Observable<StyleSystemData> {
     return combineLatest([
       this.colorSchemeManager.colorSchemes$,
       this.viewportManager.viewports$,
+      this.rootStylesheet.data$,
     ]).pipe(
-      map(([colorSchemes, viewports]) => ({
+      map(([colorSchemes, viewports, root]) => ({
         colorSchemes,
         viewports,
+        stylesheets: {
+          root,
+        },
       })),
     );
   }
@@ -356,5 +386,6 @@ export class ElllStyleManager
   restore(data: StyleSystemData): void {
     this.colorSchemeManager.restore(data.colorSchemes ?? []);
     this.viewportManager.restore(data.viewports ?? []);
+    this.rootStylesheet.restore(data.stylesheets?.root ?? {});
   }
 }

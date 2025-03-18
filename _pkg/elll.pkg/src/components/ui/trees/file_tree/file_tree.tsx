@@ -13,10 +13,10 @@ import { map, of, switchMap } from "rxjs";
 import { ModelEditorState } from "~/src/editors/model";
 import { useWorkspaceState } from "~/src/hooks/shell/workspace";
 import { Model } from "~/src/modules/elll/model/model";
+import FileIcon from "../../icons/file_icon";
 import { FileTreeContext } from "./_contexts";
 import { useFileDrag, useFileDrop } from "./_hooks";
 import { FileTreeEntries } from "./file_tree_entries";
-import FileIcon from "../../icons/file_icon";
 
 export const FileTree = memo(function FileTree({
   file,

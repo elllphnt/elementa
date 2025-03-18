@@ -1,4 +1,5 @@
 import { File } from "@repo/backend";
+import { ScrollArea } from "@repo/components";
 import { useShell } from "@repo/shell";
 import cx from "classnames";
 import { ReactNode, useContext } from "react";
@@ -60,14 +61,18 @@ export function HeadlessFileTree({
         })}
         onContextMenu={handleContextMenu}
       >
-        {hasDirectoryNewEntry && <FileTreeNewEntry />}
-        {directoryEntries?.map((entry) => (
-          <FileTree key={entry.id} file={entry} />
-        ))}
-        {hasFileNewEntry && <FileTreeNewEntry />}
-        {fileEntries?.map((entry) => <FileTree key={entry.id} file={entry} />)}
-        {extraEntries}
-        <div className="el-h-7" /> {/* bottom padding */}
+        <ScrollArea scrollY>
+          {hasDirectoryNewEntry && <FileTreeNewEntry />}
+          {directoryEntries?.map((entry) => (
+            <FileTree key={entry.id} file={entry} />
+          ))}
+          {hasFileNewEntry && <FileTreeNewEntry />}
+          {fileEntries?.map((entry) => (
+            <FileTree key={entry.id} file={entry} />
+          ))}
+          {extraEntries}
+          <div className="el-h-7" /> {/* bottom padding */}
+        </ScrollArea>
       </div>
     );
   } else {

@@ -1,5 +1,5 @@
 import { EdgeName } from "@elllphnt/elll-element";
-import { ElementRenderable } from "@repo/elementa-renderer";
+import { ElementRenderable, Renderable } from "@repo/elementa-renderer";
 import { FragmentInstance, Stylesheet } from "@repo/elementa-stager";
 import { PointData } from "@repo/utils";
 import { map, Observable, of, switchMap } from "rxjs";
@@ -62,6 +62,10 @@ export abstract class ElementHandle<
   }
   get draggable$() {
     return this.movable$.pipe(map((movable) => !movable));
+  }
+
+  getStyledHtmlElement(): HTMLElement | undefined {
+    return this.renderable.htmlElement(Renderable.defaultHtmlElementKey);
   }
 
   constructor({

@@ -1,9 +1,10 @@
 import { File, isElllResourceUrl, parseElllResourceUrl } from "@repo/backend";
 import { useDrag, useDrop } from "@repo/shell";
 import { combineLatestOrEmpty, useObservable } from "@repo/utils";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import { map, switchMap } from "rxjs";
 import { mimeTypes } from "~/src/libs/mimetypes";
+import { FileTreeContext } from "./_contexts";
 
 export function useSortedFileTreeEntries(
   directory: File,
@@ -74,20 +75,12 @@ export function useFileDrag(file: File) {
   );
 }
 
-export function useFileDrop(
-  file: File,
-  {
-    acceptDrop,
-    handleDrop,
-  }: {
-    acceptDrop?: (event: DragEvent) => boolean | "copy" | "link" | "move";
-    handleDrop?: (event: DragEvent) => boolean;
-  } = {},
-) {
+export function useFileDrop(file: File) {
+  const context = useContext(FileTreeContext);
   return useDrop(
     {
       acceptDrop: (event, data) => {
-        const accept = acceptDrop?.(event);
+        const accept = context?.acceptDrop?.(event, file);
         if (accept) {
           return accept;
         }
@@ -135,7 +128,7 @@ export function useFileDrop(
         return allowedList.some((allowed) => allowed);
       },
       handleDrop: (event, data) => {
-        if (handleDrop?.(event)) {
+        if (context?.handleDrop?.(event, file)) {
           return;
         }
 

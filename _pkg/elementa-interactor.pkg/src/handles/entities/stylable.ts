@@ -1,8 +1,13 @@
 import {
   baseSelector,
   CornerName,
+  DimensionData,
   EdgeName,
+  LengthOrFlexOrPercentData,
+  parseDimension,
   PositionValue,
+  StyleData,
+  StylePropertyName,
 } from "@elllphnt/elll-element";
 import { PageElement, Stylesheet } from "@repo/elementa-models";
 import { InstanceRenderable } from "@repo/elementa-renderer";
@@ -220,6 +225,185 @@ export abstract class StylableHandle<
     });
   }
 
+  getPropertyUnit(property: StylePropertyName): string | undefined {
+    const value = this.style.resolvedPropertyValue(property);
+    if (typeof value === "object" && "unit" in value) {
+      return value.unit;
+    } else {
+      return undefined;
+    }
+  }
+
+  abstract getStyledHtmlElement(): HTMLElement | undefined;
+  getLengthUnitPixelValue(
+    property: StylePropertyName,
+    unit: LengthOrFlexOrPercentData["unit"],
+  ): number | undefined {
+    switch (unit) {
+      case "px": {
+        return 1;
+      }
+      case "vh": {
+        const element = this.getStyledHtmlElement();
+        if (!element) return;
+        const vhunit = window
+          .getComputedStyle(element)
+          .getPropertyValue("--vh-unit");
+        const [parsed] = parseDimension(vhunit);
+        if (!parsed) return;
+        if (parsed.unit === "px") return parsed.value;
+        if (parsed.unit === "vh") {
+          const windowHeight = element.ownerDocument.defaultView?.innerHeight;
+          if (windowHeight) return windowHeight / 100;
+        }
+      }
+      case "vw": {
+        const element = this.getStyledHtmlElement();
+        if (!element) return;
+        const vwunit = window
+          .getComputedStyle(element)
+          .getPropertyValue("--vw-unit");
+        const [parsed] = parseDimension(vwunit);
+        if (!parsed) return;
+        if (parsed.unit === "px") return parsed.value;
+        if (parsed.unit === "vw") {
+          const windowWidth = element.ownerDocument.defaultView?.innerWidth;
+          if (windowWidth) return windowWidth / 100;
+        }
+      }
+      case "em": {
+        const element = this.getStyledHtmlElement();
+        if (!element) return;
+        const fontSize = window
+          .getComputedStyle(element)
+          .getPropertyValue("font-size");
+        const [parsed] = parseDimension(fontSize);
+        if (!parsed) return;
+        if (parsed.unit === "px") return parsed.value;
+      }
+      case "rem": {
+        const element = this.getStyledHtmlElement();
+        if (!element) return;
+        const rootFontSize = window
+          .getComputedStyle(element.ownerDocument.documentElement)
+          .getPropertyValue("font-size");
+        const [parsed] = parseDimension(rootFontSize);
+        if (!parsed) return;
+        if (parsed.unit === "px") return parsed.value;
+      }
+      case "%": {
+        if (
+          [
+            "height",
+            "top",
+            "bottom",
+            "margin-top",
+            "margin-bottom",
+            "padding-top",
+            "padding-bottom",
+            "border-top-width",
+            "border-bottom-width",
+          ].includes(property)
+        ) {
+          const element = this.getStyledHtmlElement();
+          if (!element) return;
+          const parentHeight = element.parentElement?.clientHeight;
+          if (parentHeight) return parentHeight / 100;
+        } else if (
+          [
+            "width",
+            "left",
+            "right",
+            "margin-left",
+            "margin-right",
+            "padding-left",
+            "padding-right",
+            "border-left-width",
+            "border-right-width",
+            "border-top-left-radius",
+            "border-top-right-radius",
+            "border-bottom-left-radius",
+            "border-bottom-right-radius",
+          ].includes(property)
+        ) {
+          console.log("FGH5");
+
+          const element = this.getStyledHtmlElement();
+          if (!element) return;
+          const parentWidth = element.parentElement?.clientWidth;
+          if (parentWidth) return parentWidth / 100;
+        }
+      }
+    }
+  }
+
+  convertLengthUnit({
+    unit,
+    value,
+    property,
+  }: {
+    unit: LengthOrFlexOrPercentData["unit"];
+    value: LengthOrFlexOrPercentData;
+    property: StylePropertyName;
+  }) {
+    console.log("FGH4");
+
+    const fromValue = value.value;
+    const fromUnitPixelValue = this.getLengthUnitPixelValue(
+      property,
+      value.unit,
+    );
+    const toUnitPixelValue = this.getLengthUnitPixelValue(property, unit);
+    if (!fromUnitPixelValue || !toUnitPixelValue) return;
+
+    console.log("FGH", { fromUnitPixelValue, toUnitPixelValue });
+    const toValue = (fromValue * fromUnitPixelValue) / toUnitPixelValue;
+
+    return {
+      value: toValue,
+      unit,
+    };
+  }
+
+  convertDimensionUnit({
+    unit,
+    value,
+    property,
+  }: {
+    unit: string;
+    value: DimensionData<string>;
+    property: StylePropertyName;
+  }) {
+    console.log("FGH3.5");
+    if (["px", "%", "em", "rem", "vh", "vw", "fr"].includes(unit)) {
+      return this.convertLengthUnit({
+        unit: unit as LengthOrFlexOrPercentData["unit"],
+        value: value as LengthOrFlexOrPercentData,
+        property,
+      });
+    }
+  }
+
+  setPropertyPreserveUnit<N extends StylePropertyName>(
+    property: N,
+    value: StyleData[N],
+  ) {
+    console.log("FGH3");
+    const unit = this.getPropertyUnit(property);
+    if (unit && typeof value === "object" && "unit" in value) {
+      this.style.setProperty(
+        property as any,
+        this.convertDimensionUnit({
+          property,
+          value,
+          unit,
+        }) || value,
+      );
+    } else {
+      this.style.setProperty(property, value);
+    }
+  }
+
   resize(
     rect: RectData,
     {
@@ -241,58 +425,98 @@ export abstract class StylableHandle<
 
         if (x) {
           let left = rect.x - containerRect.x;
-          this.style.setProperty("left", {
-            value: left,
-            unit: "px",
-          });
+          let right =
+            containerRect.x + containerRect.width - (rect.x + rect.width);
+          const xSingle =
+            !this.style.resolvedPropertyValue("left") ||
+            !this.style.resolvedPropertyValue("right");
+
+          if (Math.abs(left) <= Math.abs(right)) {
+            this.setPropertyPreserveUnit("left", {
+              value: left,
+              unit: "px",
+            });
+            if (xSingle) this.setPropertyPreserveUnit("right", undefined);
+          } else {
+            this.setPropertyPreserveUnit("right", {
+              value: right,
+              unit: "px",
+            });
+            if (xSingle) this.setPropertyPreserveUnit("left", undefined);
+          }
         }
         if (y) {
           let top = rect.y - containerRect.y;
-          this.style.setProperty("top", {
-            value: top,
-            unit: "px",
-          });
+          let bottom =
+            containerRect.y + containerRect.height - (rect.y + rect.height);
+          const ySingle =
+            !this.style.resolvedPropertyValue("top") ||
+            !this.style.resolvedPropertyValue("bottom");
+
+          if (Math.abs(top) <= Math.abs(bottom)) {
+            this.setPropertyPreserveUnit("top", {
+              value: top,
+              unit: "px",
+            });
+            if (ySingle) this.setPropertyPreserveUnit("bottom", undefined);
+          } else {
+            this.setPropertyPreserveUnit("bottom", {
+              value: bottom,
+              unit: "px",
+            });
+            if (ySingle) this.setPropertyPreserveUnit("top", undefined);
+          }
         }
       }
     }
 
     if (x) {
-      this.style.setProperty("width", {
+      this.setPropertyPreserveUnit("width", {
         value: width,
         unit: "px",
       });
     }
     if (y) {
-      this.style.setProperty("height", {
+      this.setPropertyPreserveUnit("height", {
         value: height,
         unit: "px",
       });
     }
   }
-  setWidth(width: number | undefined): void {
-    this.style.setProperty(
-      "width",
-      width !== undefined
-        ? {
-            value: width,
-            unit: "px",
-          }
-        : undefined,
-    );
+  setWidth(
+    width:
+      | number
+      | DimensionData<"px" | "em" | "rem" | "vh" | "vw" | "%" | "fr">
+      | "fit"
+      | undefined,
+  ): void {
+    if (typeof width === "number") {
+      this.style.setProperty("width", {
+        value: width,
+        unit: "px",
+      });
+    } else {
+      this.style.setProperty("width", width);
+    }
   }
-  setHeight(height: number | undefined): void {
-    this.style.setProperty(
-      "height",
-      height !== undefined
-        ? {
-            value: height,
-            unit: "px",
-          }
-        : undefined,
-    );
+  setHeight(
+    width:
+      | number
+      | DimensionData<"px" | "em" | "rem" | "vh" | "vw" | "%" | "fr">
+      | "fit"
+      | undefined,
+  ): void {
+    if (typeof width === "number") {
+      this.style.setProperty("height", {
+        value: width,
+        unit: "px",
+      });
+    } else {
+      this.style.setProperty("height", width);
+    }
   }
   setCorner(name: CornerName, value: number | undefined): void {
-    this.style.setProperty(
+    this.setPropertyPreserveUnit(
       `border-${name}-radius`,
       value !== undefined
         ? {
@@ -303,7 +527,7 @@ export abstract class StylableHandle<
     );
   }
   setPadding(name: EdgeName, value: number | undefined): void {
-    this.style.setProperty(
+    this.setPropertyPreserveUnit(
       `padding-${name}`,
       value !== undefined
         ? {
@@ -315,6 +539,7 @@ export abstract class StylableHandle<
   }
   setPosition(position: PointData): void {
     const containingHandle = this.resolveContainingHandle();
+    const rect = this.contentRect;
     const containerRect = containingHandle.contentRect;
 
     const style = this.style;
@@ -323,14 +548,45 @@ export abstract class StylableHandle<
     if (positionType === "absolute" || positionType === "fixed") {
       let top = position.y - containerRect.y;
       let left = position.x - containerRect.x;
-      style.setProperty("top", {
-        value: top,
-        unit: "px",
-      });
-      style.setProperty("left", {
-        value: left,
-        unit: "px",
-      });
+      let bottom =
+        containerRect.y + containerRect.height - (position.y + rect.height);
+      let right =
+        containerRect.x + containerRect.width - (position.x + rect.width);
+
+      const xSingle =
+        !this.style.resolvedPropertyValue("left") ||
+        !this.style.resolvedPropertyValue("right");
+      const ySingle =
+        !this.style.resolvedPropertyValue("top") ||
+        !this.style.resolvedPropertyValue("bottom");
+
+      if (Math.abs(top) <= Math.abs(bottom)) {
+        this.setPropertyPreserveUnit("top", {
+          value: top,
+          unit: "px",
+        });
+        if (ySingle) this.setPropertyPreserveUnit("bottom", undefined);
+      } else {
+        this.setPropertyPreserveUnit("bottom", {
+          value: bottom,
+          unit: "px",
+        });
+        if (ySingle) this.setPropertyPreserveUnit("top", undefined);
+      }
+
+      if (Math.abs(left) <= Math.abs(right)) {
+        this.setPropertyPreserveUnit("left", {
+          value: left,
+          unit: "px",
+        });
+        if (xSingle) this.setPropertyPreserveUnit("right", undefined);
+      } else {
+        this.setPropertyPreserveUnit("right", {
+          value: right,
+          unit: "px",
+        });
+        if (xSingle) this.setPropertyPreserveUnit("left", undefined);
+      }
     }
   }
   setPositionStrategy(position: PositionValue | undefined): void {
@@ -350,11 +606,11 @@ export abstract class StylableHandle<
       const top = rect.y - containerRect.y;
       const left = rect.x - containerRect.x;
 
-      this.style.setProperty("top", {
+      this.setPropertyPreserveUnit("top", {
         value: top,
         unit: "px",
       });
-      this.style.setProperty("left", {
+      this.setPropertyPreserveUnit("left", {
         value: left,
         unit: "px",
       });

@@ -32,7 +32,7 @@ export class ElllElementaProject extends Project {
     this.drive = drive;
 
     this.styleManager = new ElllStyleManager({
-      elll: this.elll,
+      project: this,
       drive,
     });
     this.libraryManager = new ElllLibraryManager({

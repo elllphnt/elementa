@@ -1,73 +1,35 @@
-import { DriveFile, File } from "@repo/backend";
-import { DriveDirectoryTreeContent } from "./drive_directory_tree_content";
-import { FileTreeContextProvider } from "../file_tree/file_tree_context_provider";
-
-interface DriveDirectoryTreeProps {
-  directory: File;
-  hidden?: RegExp;
-  contextMenuOptions?: (file: File, context?: any) => any[][];
-}
+import { DriveFile } from "@repo/backend";
+import { useContext } from "react";
+import { FileTreeContext } from "../file_tree/_contexts";
+import { useSortedFileTreeEntries } from "../file_tree/_hooks";
+import { FileTree } from "../file_tree/file_tree";
+import { FileTreeNewEntry } from "../file_tree/new_entry";
 
 export function DriveDirectoryTree({
   directory,
-  hidden,
-  contextMenuOptions,
-}: DriveDirectoryTreeProps): JSX.Element {
-  const handleNewEntry = async ({
-    name,
-    parent,
-    type,
-  }: {
-    name: string;
-    parent: File;
-    type: string;
-  }) => {
-    const newFile = await parent.createEntry({ name, type });
-    if (!newFile) return "Failed to create file";
-  };
+}: {
+  directory: DriveFile;
+}): JSX.Element {
+  const context = useContext(FileTreeContext);
+  const [directoryEntries, fileEntries] = useSortedFileTreeEntries(directory, {
+    hidden: context?.hidden,
+  });
 
-  const handleContextMenu = ({
-    file,
-    context,
-  }: {
-    file: File;
-    context?: any;
-  }) => {
-    const options = [
-      [
-        {
-          label: "Copy Drive URL",
-          action: () => {
-            navigator.clipboard.writeText((file as DriveFile).edfUrl);
-          },
-        },
-        {
-          label: "Open",
-          action: () => {},
-        },
-        {
-          label: "Delete",
-          action: async () => await file.delete(),
-        },
-      ],
-    ];
-    if (contextMenuOptions) {
-      const custom = contextMenuOptions(file, context);
-      if (custom?.length) options.push(...custom);
-    }
-    return options;
-  };
-
-  const handleClick = ({ file }: { file: File }) => {};
+  const hasDirectoryNewEntry =
+    context?.newEntry?.parent === directory &&
+    context?.newEntry?.type === "directory";
+  const hasFileNewEntry =
+    context?.newEntry?.parent === directory &&
+    context?.newEntry?.type !== "directory";
 
   return (
-    <FileTreeContextProvider
-      handleNewEntry={handleNewEntry}
-      handleContextMenu={handleContextMenu}
-      handleClick={handleClick}
-      hidden={hidden}
-    >
-      <DriveDirectoryTreeContent directory={directory} />
-    </FileTreeContextProvider>
+    <>
+      {hasDirectoryNewEntry && <FileTreeNewEntry />}
+      {directoryEntries?.map((entry) => (
+        <FileTree key={entry.id} file={entry} />
+      ))}
+      {hasFileNewEntry && <FileTreeNewEntry />}
+      {fileEntries?.map((entry) => <FileTree key={entry.id} file={entry} />)}
+    </>
   );
 }

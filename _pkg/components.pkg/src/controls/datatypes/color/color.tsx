@@ -5,6 +5,7 @@ import { useControlMenu } from "~/src/control_menu/_hooks";
 import { colorControlViews, SpinnerControl } from "../../_";
 import { useControlValue } from "../../_hooks/value";
 import { ControlProps } from "../../_type";
+import { colorDataFromRgb, colorDataToRgb } from "./_utils";
 
 const checker = (
   <svg
@@ -47,7 +48,7 @@ export function ColorControl({
   let currentValue = useControlValue(value$, value);
   let color =
     typeof currentValue === "object"
-      ? tinycolor(currentValue)
+      ? tinycolor(colorDataToRgb(currentValue))
       : tinycolor("transparent");
   const alpha = color.getAlpha() * 100;
   const { openMenu } = useControlMenu();
@@ -112,7 +113,7 @@ export function ColorControl({
               color={color.toHex()}
               onChange={(value) => {
                 const newColor = tinycolor(value).toRgb();
-                onChange?.(newColor);
+                onChange?.(colorDataFromRgb(newColor));
               }}
               onClick={(e) => e.stopPropagation()}
             />
@@ -132,7 +133,7 @@ export function ColorControl({
                 const newColor = tinycolor(color)
                   .setAlpha(value / 100)
                   .toRgb();
-                onChange?.(newColor);
+                onChange?.(colorDataFromRgb(newColor));
               }
             }}
             settings={{

@@ -90,7 +90,7 @@ const styleContext: ContextWithEnabler = {
     selection$.pipe(
       switchMap((selection) => {
         if (!selection.length) {
-          return of(false);
+          return of(true);
         } else {
           return combineLatestOrEmpty(
             selection.map((handle) => {
@@ -116,7 +116,7 @@ const styleContext: ContextWithEnabler = {
     ),
   enabled: (selection) => {
     if (!selection.length) {
-      return false;
+      return true;
     } else {
       return selection.every((handle) => {
         if (!(handle instanceof EntityHandle)) {

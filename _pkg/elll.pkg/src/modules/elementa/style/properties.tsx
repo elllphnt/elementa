@@ -71,9 +71,10 @@ export const positionStylePropertyControls: StylePropertyGroupConfig[] = [
               key: "compound-inset",
               icon: icons.edges,
               label: "Edges",
-              control: elllControlTypes.Length,
+              control: elllControlTypes.Dimension,
               controlSettings: {
-                min: 0,
+                defaultUnit: "px",
+                units: [...lengthUnits, ...percentUnits],
               },
             },
             properties: [
@@ -83,9 +84,10 @@ export const positionStylePropertyControls: StylePropertyGroupConfig[] = [
                 autoInitialize: true,
                 variant: ControlEntryVariant.Mini,
                 icon: icons.top,
-                control: elllControlTypes.Length,
+                control: elllControlTypes.Dimension,
                 controlSettings: {
-                  min: 0,
+                  defaultUnit: "px",
+                  units: [...lengthUnits, ...percentUnits],
                 },
               },
               {
@@ -94,9 +96,10 @@ export const positionStylePropertyControls: StylePropertyGroupConfig[] = [
                 autoInitialize: true,
                 variant: ControlEntryVariant.Mini,
                 icon: icons.right,
-                control: elllControlTypes.Length,
+                control: elllControlTypes.Dimension,
                 controlSettings: {
-                  min: 0,
+                  defaultUnit: "px",
+                  units: [...lengthUnits, ...percentUnits],
                 },
               },
               {
@@ -105,9 +108,10 @@ export const positionStylePropertyControls: StylePropertyGroupConfig[] = [
                 autoInitialize: true,
                 variant: ControlEntryVariant.Mini,
                 icon: icons.bottom,
-                control: elllControlTypes.Length,
+                control: elllControlTypes.Dimension,
                 controlSettings: {
-                  min: 0,
+                  defaultUnit: "px",
+                  units: [...lengthUnits, ...percentUnits],
                 },
               },
               {
@@ -116,9 +120,10 @@ export const positionStylePropertyControls: StylePropertyGroupConfig[] = [
                 autoInitialize: true,
                 variant: ControlEntryVariant.Mini,
                 icon: icons.left,
-                control: elllControlTypes.Length,
+                control: elllControlTypes.Dimension,
                 controlSettings: {
-                  min: 0,
+                  defaultUnit: "px",
+                  units: [...lengthUnits, ...percentUnits],
                 },
               },
             ],
@@ -463,9 +468,7 @@ export const layoutStylePropertyControls: StylePropertyGroupConfig[] = [
               icon: icons.gap,
               label: "Gap",
               control: elllControlTypes.Length,
-              controlSettings: {
-                min: 0,
-              },
+              controlSettings: {},
             },
             properties: [
               {

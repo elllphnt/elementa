@@ -65,4 +65,8 @@ export const css = (theme: Theme) =>
             background-color: ${theme.dark.backgroundColor};
         }
     }
+
+    img {
+        display: block;
+    }
 `;

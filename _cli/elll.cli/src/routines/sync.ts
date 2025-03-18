@@ -26,8 +26,8 @@ export async function sync({
   const files = await listWorkspaceFiles({
     workspace_id: repository.workspace_id,
     types: [
-      elllFileTypes.components.elll,
-      elllFileTypes.components.react,
+      elllFileTypes.component,
+      elllFileTypes.primitive,
       elllFileTypes.state,
     ],
   });

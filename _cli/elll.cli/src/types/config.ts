@@ -3,6 +3,10 @@ export interface Config {
   root: string;
   repositoryId: string;
   resources?: ResourceConfig[];
+  storage: {
+    root: string;
+    baseUrl?: string;
+  };
 }
 
 export interface ResourceConfig {

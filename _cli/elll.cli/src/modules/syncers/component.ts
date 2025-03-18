@@ -7,11 +7,12 @@ import { makeElllUrl } from "@elllphnt/utils";
 import nodePath from "path";
 import { fsUtils } from "../../lib/fs.js";
 import { paths } from "../../lib/paths.js";
+import { downloadDriveFile, getDriveFile } from "../api/drive.js";
 import { formatTypescript } from "../format/typescript.js";
 import { Syncer } from "../sync/syncer.js";
 import { makeAbsoluteFileUrl } from "../urls/urls.js";
 
-export const elllComponentSyncer: Syncer = {
+export const componentSyncer: Syncer = {
   async updatePath({ id, path, context }) {
     const config = context.config;
     const currentFile = context.registry.get(id);
@@ -45,7 +46,7 @@ export const elllComponentSyncer: Syncer = {
     const namespace = new Namespace();
     const importMap = new ImportMap({ namespace });
 
-    const { generate, dependencies } = transpileComponent(json);
+    const { generate, dependencies, references } = transpileComponent(json);
     for (const dep of dependencies) {
       let depUrl: string;
 
@@ -65,6 +66,31 @@ export const elllComponentSyncer: Syncer = {
         url: depUrl,
       });
     }
+    const refValues: Map<number, any> = new Map();
+
+    for (const ref of references) {
+      let refUrl: string;
+
+      switch (ref.data.type) {
+        case "drive-file": {
+          const id: string = (ref.data as any).id;
+          const file = await getDriveFile(id);
+          if (!file) {
+            console.error(`Failed to get file: ${id}`);
+            continue;
+          }
+          const outPath = nodePath.join(context.config.storage.root, file.path);
+          const baseUrl = context.config.storage.baseUrl || "/";
+          const url = nodePath.join(baseUrl, file.path);
+          await downloadDriveFile(id, outPath);
+          refValues.set(ref.key, url);
+          break;
+        }
+        default: {
+          refValues.set(ref.key, null);
+        }
+      }
+    }
 
     const componentCode = generate({
       getName: (key) => {
@@ -73,6 +99,9 @@ export const elllComponentSyncer: Syncer = {
           throw new Error(`Name for key not found: ${key}`);
         }
         return name;
+      },
+      getResolvedValue: (key) => {
+        return refValues.get(key);
       },
     });
     const importCode = importMap.toCode();
@@ -84,6 +113,7 @@ export const elllComponentSyncer: Syncer = {
       ``,
       `export default Component;`,
     ].join("\n");
+
     const formatted = await formatTypescript(code);
 
     await fsUtils.write(outPath, formatted);

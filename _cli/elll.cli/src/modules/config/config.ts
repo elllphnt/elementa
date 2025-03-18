@@ -53,6 +53,9 @@ export async function getDefaultConfig(
     version: "1.0",
     repositoryId,
     root: "elll",
+    storage: {
+      root: "storage",
+    },
   };
 }
 

@@ -4,7 +4,7 @@ import { Observable } from "rxjs";
 import tinycolor from "tinycolor2";
 import { useControlValue } from "../../_hooks/value";
 import { FullControlEntry } from "../../entries/full_control_entry";
-import { SaturationValuePicker } from "./pickers/saturation_value";
+import { colorDataFromRgb, colorDataToRgb } from "./_utils";
 
 export function ColorControlMenu({
   value,
@@ -16,24 +16,16 @@ export function ColorControlMenu({
   onChange?: (color: ColorData) => void;
 }) {
   let currentValue = useControlValue(value$, value);
-  const color = tinycolor(currentValue);
+  const color = tinycolor(
+    currentValue ? colorDataToRgb(currentValue) : undefined,
+  );
 
   return (
-    <div className="color_picker el-space-y-4">
-      <SaturationValuePicker
-        hue={120}
-        value={0}
-        saturation={1}
-        onChange={() => {}}
-        style={{
-          height: "200px",
-          width: "100%",
-        }}
-      />
+    <div className="color_picker el-space-y-4 el-p-3">
       <HexAlphaColorPicker
         color={color.toHex8String()}
         onChange={(value) => {
-          onChange?.(tinycolor(value).toRgb());
+          onChange?.(colorDataFromRgb(tinycolor(value).toRgb()));
         }}
       />
 
@@ -47,7 +39,7 @@ export function ColorControlMenu({
           }}
           color={color.toHex8String()}
           onChange={(value) => {
-            onChange?.(tinycolor(value).toRgb());
+            onChange?.(colorDataFromRgb(tinycolor(value).toRgb()));
           }}
           prefixed
           alpha

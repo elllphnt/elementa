@@ -5,8 +5,12 @@ import {
 } from "@elllphnt/elll-element";
 import { Observable } from "rxjs";
 import { CssStyleSheet } from "../css/_";
+import { Stylesheet } from "../style/stylesheet";
 
 export abstract class StyleManager {
+  abstract rootStylesheet: Stylesheet;
+  abstract rootCssStylesheet: CssStyleSheet;
+
   abstract get stylesheets(): CssStyleSheet[];
   abstract get stylesheets$(): Observable<CssStyleSheet[]>;
 
