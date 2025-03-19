@@ -1,4 +1,4 @@
-import { elllIcons16, Icon } from "@repo/components";
+import { ControlMenuContainer, elllIcons16, Icon } from "@repo/components";
 import { useObservable } from "@repo/utils";
 import { useElll } from "~/src/hooks/elll/elll";
 
@@ -10,7 +10,7 @@ export function AccountModal() {
   const picture = useObservable(user?.picture$, user?.picture);
 
   return (
-    <div
+    <ControlMenuContainer
       className="el-h-full el-w-full el-space-y-3"
       style={{
         width: 240,
@@ -40,6 +40,6 @@ export function AccountModal() {
       >
         Log out
       </button>
-    </div>
+    </ControlMenuContainer>
   );
 }

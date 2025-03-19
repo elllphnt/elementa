@@ -1,4 +1,9 @@
-import { Icon, elllIcons16, useControlMenu } from "@repo/components";
+import {
+  IconButton,
+  Tooltip,
+  elllIcons16,
+  useControlMenu,
+} from "@repo/components";
 import { useObservable } from "@repo/utils";
 import Logo from "~/src/components/modules/elll/logo";
 import { useRepository } from "~/src/hooks/backend/repository";
@@ -35,21 +40,18 @@ function PublishButton() {
   const { openMenu } = useControlMenu();
 
   return (
-    <button
-      className="el-font-semibold el-flex el-gap-1 el-items-center el-justify-center el-text-fg-400 hover:el-text-fg hover:el-bg-fg/10 el-h-5 el-w-5 el-rounded el-transition-colors"
-      onClick={(e) =>
-        openMenu({
-          title: "Export",
-          anchor: e.currentTarget,
-          viewId: modalViews.export.id,
-        })
-      }
-    >
-      <Icon
-        className="el-h-4 el-w-4 el-relative top-0.5"
-        name={elllIcons16.export}
+    <Tooltip content="Export" side="bottom" sideOffset={4} delayDuration={0}>
+      <IconButton
+        icon={elllIcons16.export}
+        onClick={(e) =>
+          openMenu({
+            title: "Export",
+            anchor: e.currentTarget,
+            viewId: modalViews.export.id,
+          })
+        }
       />
-    </button>
+    </Tooltip>
   );
 }
 
@@ -57,21 +59,18 @@ function UserButton() {
   const { openMenu } = useControlMenu();
 
   return (
-    <button
-      className="el-font-semibold el-flex el-gap-1 el-items-center el-justify-center el-text-fg-400 hover:el-text-fg hover:el-bg-fg/10 el-h-5 el-w-5 el-rounded el-transition-colors"
-      onClick={(e) =>
-        openMenu({
-          title: "Account",
-          anchor: e.currentTarget,
-          viewId: modalViews.account.id,
-        })
-      }
-    >
-      <Icon
-        className="el-h-4 el-w-4 el-relative top-0.5"
-        name={elllIcons16.activityUser}
+    <Tooltip content="Account" side="bottom" sideOffset={4} delayDuration={0}>
+      <IconButton
+        icon={elllIcons16.activityUser}
+        onClick={(e) =>
+          openMenu({
+            title: "Account",
+            anchor: e.currentTarget,
+            viewId: modalViews.account.id,
+          })
+        }
       />
-    </button>
+    </Tooltip>
   );
 }
 

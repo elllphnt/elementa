@@ -1,6 +1,7 @@
 import {
   ColumnControlContainer,
   ControlEntry,
+  ControlMenuContainer,
   TextControl,
 } from "@repo/components";
 import { useRepository } from "~/src/hooks/backend/repository";
@@ -9,8 +10,7 @@ export function ProjectInfoModal() {
   const repository = useRepository();
 
   return (
-    <div
-      className="el-h-full el-w-full el-space-y-4"
+    <ControlMenuContainer
       style={{
         width: 300,
       }}
@@ -33,6 +33,6 @@ export function ProjectInfoModal() {
           Close Workspace
         </button> */}
       </ColumnControlContainer>
-    </div>
+    </ControlMenuContainer>
   );
 }

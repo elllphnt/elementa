@@ -997,7 +997,7 @@ export const elllIcons16Data = {
           fill="currentColor"
           fill-opacity="0.5"
         />
-        <mask id="path-2-inside-1_55_2" fill="white">
+        <mask id="path-2-inside-1_55_2" fill="currentColor">
           <path
             fillRule="evenodd"
             clipRule="evenodd"
@@ -1437,6 +1437,34 @@ export const elllIcons20Data = {
           fillRule="evenodd"
           clipRule="evenodd"
           d="M14.5 11C14.2239 11 14 11.2239 14 11.5V14H11.5C11.2239 14 11 14.2239 11 14.5C11 14.7761 11.2239 15 11.5 15H14V17.5C14 17.7761 14.2239 18 14.5 18C14.7761 18 15 17.7761 15 17.5V15H17.5C17.7761 15 18 14.7761 18 14.5C18 14.2239 17.7761 14 17.5 14H15V11.5C15 11.2239 14.7761 11 14.5 11Z"
+          fill="currentColor"
+        />
+      </>
+    ),
+  },
+  activityStyle: {
+    name: "elll.icons.20px.activity-atyle",
+    viewBox: "0 0 20 20",
+    height: 20,
+    width: 20,
+    content: (
+      <>
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M3 2C2.44772 2 2 2.44772 2 3V15L3 14V8H7V10L8 9V3C8 2.44772 7.55228 2 7 2H3ZM7 3H3V7H7V3Z"
+          fill="currentColor"
+        />
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M18 17C18 17.5523 17.5523 18 17 18L5 18L6 17L12 17L12 13L10 13L11 12L17 12C17.5523 12 18 12.4477 18 13L18 17ZM17 13L17 17L13 17L13 13L17 13Z"
+          fill="currentColor"
+        />
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M12.7782 4.3934C12.3877 4.00287 11.7545 4.00287 11.364 4.3934L2.87868 12.8787C1.70711 14.0503 1.70711 15.9497 2.87868 17.1213C4.05025 18.2929 5.94975 18.2929 7.12132 17.1213L15.6066 8.63604C15.9971 8.24552 15.9971 7.61235 15.6066 7.22183L12.7782 4.3934ZM14.8995 7.92893L12.0711 5.10051L9.24264 7.92893L12.0711 10.7574L14.8995 7.92893ZM5.70711 11.4645L8.53553 8.63604L11.364 11.4645L8.53553 14.2929L5.70711 11.4645ZM5 12.1716L3.58579 13.5858C2.80474 14.3668 2.80474 15.6332 3.58579 16.4142C4.36683 17.1953 5.63317 17.1953 6.41421 16.4142L7.82843 15L5 12.1716Z"
           fill="currentColor"
         />
       </>

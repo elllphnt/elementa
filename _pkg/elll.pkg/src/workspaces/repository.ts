@@ -32,7 +32,7 @@ const styleActivity: Activity = {
   id: "elll.activity.style",
   type: "primary",
   name: "Style",
-  icon: elllIcons20.fileAudio,
+  icon: elllIcons20.activityStyle,
   panel: {
     viewId: activityPanelViews.style.id,
   },
@@ -42,7 +42,7 @@ const resourcesActivity: Activity = {
   id: "elll.activity.resources",
   type: "primary",
   name: "Resources",
-  icon: elllIcons20.activityCode,
+  icon: elllIcons20.activityAssets,
   panel: {
     viewId: activityPanelViews.resources.id,
   },

@@ -1,4 +1,5 @@
 import { Repository } from "@repo/backend";
+import { ControlMenuContainer } from "@repo/components";
 import { CopyControl } from "~/src/components/ui/controls/_uncertain/copy/copy";
 import { useRepository } from "~/src/hooks/backend/repository";
 
@@ -81,13 +82,13 @@ export function ExportMenu() {
   }
 
   return (
-    <div
+    <ControlMenuContainer
       style={{
         width: 300,
       }}
       className="el-space-y-3"
     >
       <RepositoryExportMenu repository={repository} />
-    </div>
+    </ControlMenuContainer>
   );
 }
