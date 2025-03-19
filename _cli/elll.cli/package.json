@@ -1,12 +1,13 @@
 {
   "name": "elll",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "dist/index.js",
   "scripts": {
     "dev:sync": "nodemon --watch src --exec tsx src/index.ts sync -f",
     "packup": "tsx ./scripts/packup.ts",
     "start": "tsx src/index.ts",
-    "build": "tsx ./scripts/build.ts"
+    "build": "tsx ./scripts/build.ts",
+    "pub": "npm run build && npm run packup && cd dist && npm publish"
   },
   "type": "module",
   "keywords": [],
