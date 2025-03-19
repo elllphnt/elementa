@@ -3,10 +3,11 @@ import {
   Element,
   Entity,
   FragmentInstance,
+  Renderable,
   SlotRenderable,
   Stylesheet,
 } from "@repo/elementa-stager";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, map, Observable } from "rxjs";
 import { makeEntityDropType } from "~/src/_lib/droptypes";
 import { makeElementHandle, updateEntityHandleList } from "~/src/_lib/handles";
 import { IElementHandle, ILayoutUpdatePropagation } from "~/src/_types/_";
@@ -34,13 +35,17 @@ export class SlotHandle extends StylableHandle<SlotRenderable> {
   }
 
   instanceStyle(selector: string) {
-    return this.instance.style;
+    return this.instance.style(selector);
   }
   get entityStylesheet(): Stylesheet | undefined {
-    return this.instance.style.stylesheet;
+    return this.instance.fill?.stylesheet;
   }
   get entityStylesheet$(): Observable<Stylesheet | undefined> {
-    return this.instance.style.stylesheet$;
+    return this.instance.fill$.pipe(map((fill) => fill?.stylesheet));
+  }
+
+  getStyledHtmlElement(): HTMLElement | undefined {
+    return this.renderable.htmlElement(Renderable.defaultHtmlElementKey);
   }
 
   constructor({

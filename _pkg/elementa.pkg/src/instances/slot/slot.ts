@@ -9,9 +9,21 @@ import { SlotInstanceStyle } from "./style";
 
 export class SlotInstance extends Instance<SlotElement> {
   readonly environment: FragmentEnvironment;
-  readonly style: SlotInstanceStyle;
+  private _styles: Map<string, SlotInstanceStyle> = new Map();
 
   private _content$ = new BehaviorSubject<ElementInstance[]>([]);
+
+  style(selector: string): SlotInstanceStyle {
+    let style = this._styles.get(selector);
+    if (!style) {
+      style = new SlotInstanceStyle({
+        slot: this,
+        selector,
+      });
+      this._styles.set(selector, style);
+    }
+    return style;
+  }
 
   get content$(): Observable<ElementInstance[]> {
     return this._content$;
@@ -49,9 +61,6 @@ export class SlotInstance extends Instance<SlotElement> {
       parent: null,
     });
     this.environment = environment;
-    this.style = new SlotInstanceStyle({
-      slot: this,
-    });
 
     const contentSubscription = combineLatestOrEmpty([
       this.fill$.pipe(switchMap((slot) => slot?.content$ ?? of([]))),
@@ -74,11 +83,12 @@ export class SlotInstance extends Instance<SlotElement> {
     });
 
     this.addDisposer(() => {
-      this.style.dispose();
       contentSubscription.unsubscribe();
       this.content.forEach((instance) => instance.dispose());
       this._content$.next([]);
       this._content$.complete();
+
+      this._styles.forEach((style) => style.dispose());
     });
   }
 }

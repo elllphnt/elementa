@@ -6,6 +6,7 @@ import {
   StyleData,
   StylePropertyName,
 } from "@elllphnt/elll-element";
+import { Style } from "@repo/elementa-models";
 import { Disposable } from "@repo/utils";
 import { Observable } from "rxjs";
 
@@ -17,6 +18,9 @@ export abstract class InstanceStyle extends Disposable {
   static key = 0;
   static keySeed = Math.floor(Math.random() * 1000);
   readonly key = `${InstanceStyle.keySeed}-${InstanceStyle.key++}`;
+
+  abstract get style(): Style | undefined;
+  abstract get style$(): Observable<Style | undefined>;
 
   abstract propertyValue<N extends StylePropertyName>(
     property: N,

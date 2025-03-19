@@ -3,6 +3,8 @@ import chalk from "chalk";
 import { createWriteStream } from "fs";
 import { pipeline } from "stream/promises";
 import { baseUrl, tokenManager } from "./_common.js";
+import { mkdir } from "fs/promises";
+import { dirname } from "path";
 
 export const driveServiceClient = createDriveServiceClient({
   baseUrl,
@@ -64,5 +66,9 @@ export async function download(url: string, path: string): Promise<void> {
   if (!response.ok) {
     throw new Error(`Failed to download from ${url}: ${response.statusText}`);
   }
+
+  // Ensure the parent directory exists
+  await mkdir(dirname(path), { recursive: true });
+
   await pipeline(response.body!, createWriteStream(path));
 }

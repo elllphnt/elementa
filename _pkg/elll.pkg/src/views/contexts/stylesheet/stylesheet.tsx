@@ -14,6 +14,7 @@ import {
   ScrollArea,
   TreeEntry,
 } from "@repo/components";
+import { Style } from "@repo/elementa-models";
 import { useManyObservables, useObservable } from "@repo/utils";
 import cx from "classnames";
 import _ from "lodash";
@@ -405,13 +406,19 @@ function ElementStylesheetPanel({
     elements.map((a) => a.key).join(","),
   );
   const activeSelector = resolveCommon(activeSelectors) || baseSelector;
-
-  const stylesheets = elements.map((handle) => handle.entity.stylesheet);
-  const styles = useManyObservables(
-    stylesheets.map((a) => a.style$(activeSelector, true)),
-    stylesheets.map((a) => a.style(activeSelector, true)),
-    stylesheets.map((a) => a.key).join(",") + activeSelector,
+  const intanceStyles = elements.map((element) =>
+    element.instanceStyle(activeSelector),
   );
+
+  const styles = useManyObservables(
+    intanceStyles.map((a) => a.style$),
+    intanceStyles.map((a) => a.style),
+    intanceStyles.map((a) => a.key).join(",") + activeSelector,
+  ).filter(Boolean) as Style[];
+
+  if (!styles.length) {
+    return <></>;
+  }
 
   return (
     <div className="el-h-full el-w-full el-flex el-flex-col">
@@ -426,6 +433,18 @@ function ElementStylesheetPanel({
           <StyleEditor
             key={styles.map((a) => a.key).join(",")}
             styles={styles}
+            sections={[
+              "position",
+              "box",
+              "layout",
+              "text",
+              "background",
+              "appearance",
+              "transform",
+              "effect",
+              "transition",
+              "animation",
+            ]}
           />
         </ScrollArea>
       </div>
@@ -477,15 +496,7 @@ function RootStylesheetPanel() {
           <StyleEditor
             key={style.key}
             styles={[style]}
-            disabled={[
-              "animation",
-              "box",
-              "effect",
-              "layout",
-              "transform",
-              "transition",
-              "position",
-            ]}
+            sections={["text", "background"]}
           />
         </ScrollArea>
       </div>

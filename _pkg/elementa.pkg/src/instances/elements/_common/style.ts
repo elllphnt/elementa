@@ -24,6 +24,14 @@ export class ElementInstanceStyle extends InstanceStyle {
   get stylesheet() {
     return this.element.entity.stylesheet;
   }
+
+  get style() {
+    return this.stylesheet.style(this.selector, true);
+  }
+  get style$() {
+    return of(this.style);
+  }
+
   get styleOverridesMap() {
     return this.element.entity.styleOverridesMap;
   }

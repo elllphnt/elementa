@@ -99,7 +99,7 @@ export function FileExplorer({
         <IconButton icon={elllIcons16.chevron} iconClassName="el-rotate-180" />
         <TextControl
           value={path}
-          onChange={(value) => setPath(stateKey || "")}
+          onChange={(value) => setPath(value || "")}
           settings={{
             placeholder: "Path",
           }}

@@ -1,5 +1,4 @@
 import {
-  baseSelector,
   Evaluable,
   Expression,
   isExpression,
@@ -9,14 +8,13 @@ import {
   StyleModifierData,
   StylePropertyName,
 } from "@elllphnt/elll-element";
-import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
+import { map, Observable, of, switchMap } from "rxjs";
 import { InstanceStyle } from "~/src/style/style";
 import { SlotInstance } from "./slot";
 
 export class SlotInstanceStyle extends InstanceStyle {
   readonly slot: SlotInstance;
-
-  readonly _selectorString$ = new BehaviorSubject<string>(baseSelector);
+  readonly selector: string;
 
   get stylesheet() {
     return this.slot.fill?.stylesheet;
@@ -25,9 +23,25 @@ export class SlotInstanceStyle extends InstanceStyle {
     return this.slot.fill$.pipe(map((fill) => fill?.stylesheet));
   }
 
-  get styleOverridesMap() {
-    return this.slot.entity.styleOverridesMap;
+  get style() {
+    return this.stylesheet?.style(this.selector, true);
   }
+  get style$() {
+    return this.stylesheet$.pipe(
+      switchMap(
+        (stylesheet) =>
+          stylesheet?.style$(this.selector, true) ?? of(undefined),
+      ),
+    );
+  }
+
+  get styleOverridesMap() {
+    return this.slot.fill?.styleOverridesMap;
+  }
+  get styleOverridesMap$() {
+    return this.slot.fill$.pipe(map((fill) => fill?.styleOverridesMap));
+  }
+
   get environment() {
     return this.slot.environment;
   }
@@ -46,22 +60,20 @@ export class SlotInstanceStyle extends InstanceStyle {
     return this.environment.styleModifiers$;
   }
 
-  get selectorString() {
-    return this._selectorString$.value;
-  }
-  get selectorString$() {
-    return this._selectorString$.asObservable();
-  }
-
   override<N extends StylePropertyName>(
     property: N,
   ): Expression<StyleData[N]> | undefined {
-    return this.styleOverridesMap.override(property as any) as any;
+    return this.styleOverridesMap?.override(property as any) as any;
   }
   override$<N extends StylePropertyName>(
     property: N,
-  ): Observable<Expression<StyleData[N]>> {
-    return this.styleOverridesMap.override$(property as any) as any;
+  ): Observable<Expression<StyleData[N]> | undefined> {
+    return this.styleOverridesMap$.pipe(
+      switchMap(
+        (styleOverridesMap) =>
+          styleOverridesMap?.override$(property as any) ?? of(undefined),
+      ),
+    ) as any;
   }
 
   propertyValue<N extends StylePropertyName>(
@@ -72,7 +84,7 @@ export class SlotInstanceStyle extends InstanceStyle {
       return override as any;
     } else {
       return this.stylesheet
-        ?.style(this.selectorString, undefined)
+        ?.style(this.selector, undefined)
         ?.propertyValue(property) as Evaluable<StyleData[N]>;
     }
   }
@@ -84,14 +96,10 @@ export class SlotInstanceStyle extends InstanceStyle {
         if (override) {
           return of(override);
         } else {
-          return this.selectorString$.pipe(
-            switchMap((selector) =>
-              this.stylesheet$.pipe(
-                switchMap(
-                  (stylesheet) =>
-                    stylesheet?.style$(selector, undefined) ?? of(undefined),
-                ),
-              ),
+          return this.stylesheet$.pipe(
+            switchMap(
+              (stylesheet) =>
+                stylesheet?.style$(this.selector, undefined) ?? of(undefined),
             ),
             switchMap(
               (style) => style?.propertyValue$(property) ?? of(undefined),
@@ -120,7 +128,7 @@ export class SlotInstanceStyle extends InstanceStyle {
   resolvedCascadePropertyValue<N extends StylePropertyName>(
     property: N,
   ): Evaluable<StyleData[N]> {
-    const style = this.stylesheet?.style(this.selectorString, undefined);
+    const style = this.stylesheet?.style(this.selector, undefined);
     if (style) {
       const value = style.propertyValue(property);
       if (value !== undefined) {
@@ -132,14 +140,10 @@ export class SlotInstanceStyle extends InstanceStyle {
   resolvedCascadePropertyValue$<N extends StylePropertyName>(
     property: N,
   ): Observable<Evaluable<StyleData[N]>> {
-    return this.selectorString$.pipe(
-      switchMap((selector) =>
-        this.stylesheet$.pipe(
-          switchMap(
-            (stylesheet) =>
-              stylesheet?.style$(selector, undefined) ?? of(undefined),
-          ),
-        ),
+    return this.stylesheet$.pipe(
+      switchMap(
+        (stylesheet) =>
+          stylesheet?.style$(this.selector, undefined) ?? of(undefined),
       ),
       switchMap((style) => style?.propertyValue$(property) ?? of(undefined)),
       switchMap((value) =>
@@ -209,28 +213,10 @@ export class SlotInstanceStyle extends InstanceStyle {
     );
   }
 
-  constructor({ slot }: { slot: SlotInstance }) {
+  constructor({ slot, selector }: { slot: SlotInstance; selector: string }) {
     super();
     this.slot = slot;
-
-    const selectorStringSubscription = this.modifiers$
-      .pipe(
-        switchMap((modifiers) => {
-          if (modifiers.length) {
-            return this.slot.entity.component.project.styleManager.stringifyElllSelector$(
-              modifiers,
-            );
-          } else {
-            return of(baseSelector);
-          }
-        }),
-      )
-      .subscribe(this._selectorString$);
-
-    this.addDisposer(() => {
-      selectorStringSubscription.unsubscribe();
-      this._selectorString$.complete();
-    });
+    this.selector = selector;
   }
 
   setProperty<N extends StylePropertyName>(
@@ -238,7 +224,7 @@ export class SlotInstanceStyle extends InstanceStyle {
     value: StyleData[N],
   ): void {
     this.stylesheet
-      ?.style(this.selectorString, true)
+      ?.style(this.selector, true)
       .setProperty(property as any, value as any);
   }
 
@@ -246,6 +232,6 @@ export class SlotInstanceStyle extends InstanceStyle {
     property: N,
     value: Expression | undefined,
   ): void {
-    this.styleOverridesMap.setOverride(property as any, value as any);
+    this.styleOverridesMap?.setOverride(property as any, value as any);
   }
 }

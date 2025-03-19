@@ -1,12 +1,4 @@
 import * as esbuild from "esbuild";
-import fs from "fs";
-
-const packageJson = JSON.parse(fs.readFileSync("./package.json", "utf8"));
-
-// get non @elllphnt/* dependencies
-const dependencies = Object.keys(packageJson.dependencies).filter(
-  (dep) => !dep.startsWith("@elllphnt/"),
-);
 
 export async function build({
   outputPath,
@@ -21,12 +13,13 @@ export async function build({
     platform: "node",
     format: "cjs",
     treeShaking: true,
-    minify: true,
+    // minify: true,
+    external: ["prettier"],
   });
 
   return result;
 }
 
 build({
-  outputPath: "./dist/index.js",
+  outputPath: "./dist/index.cjs",
 });

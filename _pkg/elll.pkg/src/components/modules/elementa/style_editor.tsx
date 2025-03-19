@@ -1,4 +1,3 @@
-import { ControlMenuAffinityProvider } from "@repo/components";
 import { Style } from "@repo/elementa-models";
 import React from "react";
 import {
@@ -12,122 +11,118 @@ import {
   transitionStylePropertyControls,
 } from "~/src/modules/elementa/style/properties";
 import { StyleAnimationsControlSheet } from "~/src/views/sheets/style/animations";
+import { BackgroundControlSheet } from "~/src/views/sheets/style/background";
 import { StyleEffectsControlSheet } from "~/src/views/sheets/style/effects";
 import { StylePropertiesControlSheet } from "~/src/views/sheets/style/style_properties/style_properties";
 import { Sheet } from "../../ui/sheets/sheet";
 
 const styleEditorSections = {
-  position: "position",
-  box: "box",
-  layout: "layout",
-  text: "text",
-  appearance: "appearance",
-  transform: "transform",
-  effect: "effect",
-  transition: "transition",
-  animation: "animation",
-};
-
-const sections: Array<{
-  key: string;
-  title: string;
-  properties: Array<StylePropertyGroupConfig>;
-}> = [
-  {
-    key: styleEditorSections.position,
+  position: {
+    type: "property-group",
     title: "Position",
     properties: positionStylePropertyControls,
   },
-  {
-    key: styleEditorSections.box,
+  box: {
+    type: "property-group",
     title: "Box",
     properties: boxStylePropertyControls,
   },
-  {
-    key: styleEditorSections.layout,
+  layout: {
+    type: "property-group",
     title: "Layout",
     properties: layoutStylePropertyControls,
   },
-  {
-    key: styleEditorSections.text,
+  text: {
+    type: "property-group",
     title: "Text",
     properties: textStylePropertyControls,
   },
-  {
-    key: styleEditorSections.appearance,
+  background: {
+    type: "sheet",
+    title: "Background",
+    sheet: BackgroundControlSheet,
+  },
+  appearance: {
+    type: "property-group",
     title: "Appearance",
     properties: appearancesStylePropertyControls,
   },
-  {
-    key: styleEditorSections.transform,
+  transform: {
+    type: "property-group",
     title: "Transform",
     properties: transformStylePropertyControls,
   },
-  {
-    key: styleEditorSections.transition,
+  effect: {
+    type: "sheet",
+    title: "Effects",
+    sheet: StyleEffectsControlSheet,
+  },
+  transition: {
+    type: "property-group",
     title: "Transition",
     properties: transitionStylePropertyControls,
   },
-];
+  animation: {
+    type: "sheet",
+    title: "Animations",
+    sheet: StyleAnimationsControlSheet,
+  },
+} satisfies Record<
+  string,
+  | {
+      type: "property-group";
+      title: string;
+      properties: Array<StylePropertyGroupConfig>;
+    }
+  | {
+      type: "sheet";
+      title: string;
+      sheet: React.ComponentType<{ styles: Style[] }>;
+    }
+>;
 
 export type StyleEdtitorSection = keyof typeof styleEditorSections;
 
+function StyleEditorSection({
+  name,
+  styles,
+}: {
+  name: StyleEdtitorSection;
+  styles: Style[];
+}): JSX.Element {
+  const section = styleEditorSections[name];
+  if (section.type === "property-group") {
+    return (
+      <Sheet title={section.title}>
+        <StylePropertiesControlSheet
+          styles={styles}
+          properties={section.properties}
+        />
+      </Sheet>
+    );
+  } else {
+    return (
+      <Sheet title={section.title}>
+        <section.sheet styles={styles} />
+      </Sheet>
+    );
+  }
+}
 export function StyleEditor({
   styles,
-  disabled,
+  sections,
 }: {
   styles: Style[];
-  disabled?: StyleEdtitorSection[];
+  sections: StyleEdtitorSection[];
 }): JSX.Element {
-  const enabledSections = { ...styleEditorSections };
-  for (const section of disabled ?? []) {
-    delete enabledSections[section];
-  }
-
-  let additionalSectionsWithSideMenu: React.ReactNode[] = [];
-  const additionalSectionsWithDefaultMenu: React.ReactNode[] = [];
-
-  if (enabledSections.effect) {
-    additionalSectionsWithSideMenu.push(
-      <React.Fragment key="effects">
-        <hr />
-        <Sheet title="Effects">
-          <StyleEffectsControlSheet />
-        </Sheet>
-      </React.Fragment>,
-    );
-  }
-
-  if (enabledSections.animation) {
-    additionalSectionsWithDefaultMenu.push(
-      <React.Fragment key="animations">
-        <hr />
-        <Sheet title="Animations">
-          <StyleAnimationsControlSheet />
-        </Sheet>
-      </React.Fragment>,
-    );
-  }
-
   return (
     <div style={{ width: "100%", height: "fit-content" }}>
-      <ControlMenuAffinityProvider affinity="side">
-        {sections
-          .filter((section) => section.key in enabledSections)
-          .map((section, index) => (
-            <React.Fragment key={section.title}>
-              {index > 0 && <hr />}
-              <Sheet title={section.title}>
-                <StylePropertiesControlSheet
-                  styles={styles}
-                  properties={section.properties}
-                />
-              </Sheet>
-            </React.Fragment>
-          ))}
-        {additionalSectionsWithSideMenu}
-      </ControlMenuAffinityProvider>
-      {additionalSectionsWithDefaultMenu}
+      {sections.map((section, index) => (
+        <React.Fragment key={section}>
+          {index > 0 && <hr />}
+          <StyleEditorSection name={section} styles={styles} />
+        </React.Fragment>
+      ))}
     </div>
   );
 }

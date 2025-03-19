@@ -453,7 +453,7 @@ export class ComponentElement extends ElementElementContainer<ComponentElementDa
       componentUrl: this.componentUrl,
       props: this.props,
       unwrapped: this.unwrapped,
-      fills: Object.fromEntries(
+      slotFills: Object.fromEntries(
         Object.entries(this.slotFills).map(([key, slot]) => [key, slot.data]),
       ),
     } as ComponentElementData;
@@ -475,12 +475,12 @@ export class ComponentElement extends ElementElementContainer<ComponentElementDa
         map((slots) => Object.fromEntries(slots)),
       ),
     ]).pipe(
-      map(([data, componentUrl, props, unwrapped, fills]) => ({
+      map(([data, componentUrl, props, unwrapped, slotFills]) => ({
         ...data,
         componentUrl,
         props,
         unwrapped,
-        fills,
+        slotFills,
       })),
     );
   }

@@ -1,22 +1,32 @@
 import fs from "fs";
 import { createRequire } from "node:module";
+import { argv } from "node:process";
+
+const isPrivate = !argv.includes("--public");
 
 const require = createRequire(import.meta.url);
 const log = (...args: any[]) => console.log("packup:", ...args);
 
 log("packing up...");
 
+const externals = ["prettier"];
+
 const packageJson = JSON.parse(fs.readFileSync("./package.json", "utf8"));
+if (isPrivate) {
+  packageJson.name = "@elllphnt/" + packageJson.name;
+}
 delete packageJson.scripts;
 delete packageJson.devDependencies;
-delete packageJson.dependencies;
 delete packageJson.type;
 delete packageJson.jest;
 packageJson.main = "index.js";
 packageJson.types = "index.d.ts";
 packageJson.bin = {
-  [packageJson.name]: "index.js",
+  [packageJson.name]: "index.cjs",
 };
+packageJson.dependencies = Object.fromEntries(
+  externals.map((name) => [name, packageJson.dependencies[name]]),
+);
 
 fs.writeFileSync("./dist/package.json", JSON.stringify(packageJson, null, 2));
 log("updated package.json");
@@ -28,10 +38,6 @@ if (fs.existsSync("./README.md")) {
 if (fs.existsSync("./LICENSE")) {
   fs.cpSync("./LICENSE", "./dist/LICENSE");
   log("copied LICENSE");
-}
-if (fs.existsSync("./.npmrc")) {
-  fs.cpSync("./.npmrc", "./dist/.npmrc");
-  log("copied .npmrc");
 }
 
 log("packup done.");
