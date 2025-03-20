@@ -33,7 +33,7 @@ function DriveDirectoryContent({
 }): JSX.Element {
   const context = useContext(FileTreeContext);
   const [directoryEntries, fileEntries] = useSortedFileTreeEntries(directory, {
-    hidden: context?.hidden,
+    hidden: context?.hiddenPattern,
   });
 
   const hasEntry = directoryEntries.length || fileEntries.length;
@@ -158,7 +158,7 @@ export function DriveDirectoryComponent({
         handleNewEntry={handleNewEntry}
         handleContextMenu={handleContextMenu}
         handleClick={handleClick}
-        hidden={hidden}
+        hiddenPattern={hidden}
         handleDrop={handleDrop as any}
         acceptDrop={acceptDrop as any}
       >

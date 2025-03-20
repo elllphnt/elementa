@@ -6,7 +6,7 @@ import {
 } from "@repo/components";
 import { useCallback, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
-import { DrawerLoader } from "~/src/components/ui/drawers/drawer_loader";
+import { DrawerLoader } from "~/src/components/ui/drawers/_common/drawer_loader";
 import { useRepository } from "~/src/hooks/backend/repository";
 import { CommitRecordDiff } from "~/src/libs/vcs";
 import { useElll } from "../../../hooks/elll/elll";

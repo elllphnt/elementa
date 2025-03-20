@@ -202,7 +202,19 @@ export abstract class Workspace implements Datafiable<WorkspaceData> {
   }
 
   addEditor(editor: EditorState) {
-    this._editors$.next([...this.editors, editor]);
+    const next: EditorState[] = [];
+    const toRemove: EditorState[] = [];
+
+    for (const e of this.editors) {
+      if (!e.stable) {
+        toRemove.push(e);
+      } else {
+        next.push(e);
+      }
+    }
+    next.push(editor);
+    this._editors$.next(next);
+    toRemove.forEach((e) => e.dispose());
   }
   removeEditor(editor: EditorState) {
     this._editors$.next(this.editors.filter((e) => e !== editor));

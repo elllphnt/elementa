@@ -5,28 +5,25 @@ import { useSortedFileTreeEntries } from "./_hooks";
 import { FileTree } from "./file_tree";
 import { FileTreeNewEntry } from "./new_entry";
 
-export function FileTreeEntries({
-  file,
-  newDirectoryEntry,
-  newFileEntry,
-}: {
-  file: File;
-  newDirectoryEntry?: boolean;
-  newFileEntry?: boolean;
-}): JSX.Element {
+export function FileTreeEntries({ file }: { file: File }): JSX.Element {
   const context = useContext(FileTreeContext);
-  const [directoryEntries, fileEntries] = useSortedFileTreeEntries(file, {
-    hidden: context?.hidden,
-  });
+  const [directoryEntries, fileEntries] = useSortedFileTreeEntries(file);
+
+  const hasDirectoryNewEntry =
+    context?.newEntry?.parent === file &&
+    context?.newEntry?.type === "directory";
+  const hasFileNewEntry =
+    context?.newEntry?.parent === file &&
+    context?.newEntry?.type !== "directory";
 
   return (
-    <>
-      {newDirectoryEntry && <FileTreeNewEntry />}
+    <div className="el-space-y-0.5">
+      {hasDirectoryNewEntry && <FileTreeNewEntry />}
       {directoryEntries?.map((entry) => (
         <FileTree key={entry.id} file={entry} />
       ))}
-      {newFileEntry && <FileTreeNewEntry />}
+      {hasFileNewEntry && <FileTreeNewEntry />}
       {fileEntries?.map((entry) => <FileTree key={entry.id} file={entry} />)}
-    </>
+    </div>
   );
 }

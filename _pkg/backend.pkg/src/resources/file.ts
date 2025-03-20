@@ -1,3 +1,4 @@
+import { combineLatestOrEmpty } from "@repo/utils";
 import {
   BehaviorSubject,
   Observable,
@@ -6,7 +7,6 @@ import {
   map,
   switchMap,
 } from "rxjs";
-import { combineLatestOrEmpty } from "@repo/utils";
 import { Backend } from "../lib/backend";
 import { Resource, ResourceData } from "../lib/resource";
 import { Store } from "../lib/store";
@@ -285,7 +285,11 @@ export abstract class File<D extends FileData = FileData> extends Resource<D> {
       this._fetchingEntries$.next(true);
       await this.fetchEntryData();
     } finally {
-      this._fetchingEntries$.next(false);
+      setTimeout(() => {
+        this._fetchingEntries$.next(false);
+        // The store instances are debounced by 100ms.
+        // This allow the store to update to propagate before setting fetching to false.
+      }, 200);
     }
   }
 

@@ -1,5 +1,5 @@
-import { PropsWithChildren, useContext } from "react";
 import { useObservable } from "@repo/utils";
+import { PropsWithChildren, useContext } from "react";
 import { IconData } from "./_types";
 import { IconElement } from "./elll_icons";
 import { IconStoreContext } from "./store/context";
@@ -29,7 +29,7 @@ export function Icon({ name, color, ...svgProps }: IconProps) {
     ...svgProps,
     style: {
       ...svgProps.style,
-      fill: color,
+      color,
     },
   };
 

@@ -1,6 +1,6 @@
 import { useObservable } from "@repo/utils";
 import { useDriveFileAtPath } from "~/src/hooks/backend/file";
-import { DrawerLoader } from "../../drawers/drawer_loader";
+import { DrawerLoader } from "../../drawers/_common/drawer_loader";
 import { DriveDirectoryComponent } from "./drive_directory";
 
 interface DriveDirectoryViewProps {

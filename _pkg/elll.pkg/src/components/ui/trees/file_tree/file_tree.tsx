@@ -54,8 +54,9 @@ export const FileTree = memo(function FileTree({
     [...stateKey, "open"],
     false,
   );
-
+  const entriesQuery = file.entries();
   const deleting = useObservable(file.deleting$, file.deleting);
+  const fetching = useObservable(entriesQuery.fetching$, entriesQuery.fetching);
 
   const hasDirectoryNewEntry =
     context?.newEntry?.parent === file &&
@@ -184,19 +185,14 @@ export const FileTree = memo(function FileTree({
         onClick={handleClick}
         onContextMenu={handleContextMenu}
         onDoubleClick={handleDoubleClick}
-        loading={deleting}
+        loading={deleting || fetching}
       >
         {head}
       </TreeEntry>
 
       {open ? (
         <TreeIndent>
-          <FileTreeEntries
-            key={file.id}
-            newDirectoryEntry={hasDirectoryNewEntry}
-            newFileEntry={hasFileNewEntry}
-            file={file}
-          />
+          <FileTreeEntries key={file.id} file={file} />
         </TreeIndent>
       ) : (
         <></>

@@ -17,6 +17,7 @@ import { useBackend } from "~/src/hooks/backend/backend";
 import { useWorkspaceFileAtPath } from "~/src/hooks/backend/file";
 import { useProjectLibraries } from "~/src/hooks/project/libraries";
 import { useWorkspaceState } from "~/src/hooks/shell/workspace";
+import { WorkspaceOnlyFilesView } from "./workspace_only";
 
 function WorkspaceFiles(): JSX.Element {
   const [directory, query] = useWorkspaceFileAtPath("", {
@@ -24,7 +25,7 @@ function WorkspaceFiles(): JSX.Element {
   });
   const fetching = useObservable(query?.fetching$, query?.fetching);
 
-  if (fetching) {
+  if (!fetching) {
     return (
       <div className="el-h-full el-w-full el-text-sm el-flex el-flex-col el-gap-2 el-items-center el-justify-center el-text-fg">
         <div className="font-mono">/</div>
@@ -228,10 +229,6 @@ export function FilesView(): JSX.Element {
       </ScrollArea>
     );
   } else {
-    return (
-      <ScrollArea scrollY containerClassName="el-p-2">
-        <WorkspaceFiles />
-      </ScrollArea>
-    );
+    return <WorkspaceOnlyFilesView />;
   }
 }

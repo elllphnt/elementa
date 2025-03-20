@@ -37,12 +37,12 @@ export type HandleDoubleClick = (event: ClickEvent) => boolean | void;
 // context
 
 export type FileTreeContextType = {
-  // config
   stateKey?: string[];
-  defaultFileType?: string;
-  defaultFileTypeName?: string;
-  hidden?: RegExp;
-  // state
+  // hidden
+  hiddenPattern?: RegExp;
+  showHidden?: boolean;
+  setShowHidden?: (value: boolean) => void;
+  // local state
   newEntry?: NewEntry;
   renameEntry?: RenameEntry;
   setNewEntry?: (entry: NewEntry | undefined) => void;

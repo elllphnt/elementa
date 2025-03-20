@@ -12,7 +12,7 @@ export function DriveDirectoryTree({
 }): JSX.Element {
   const context = useContext(FileTreeContext);
   const [directoryEntries, fileEntries] = useSortedFileTreeEntries(directory, {
-    hidden: context?.hidden,
+    hidden: context?.hiddenPattern,
   });
 
   const hasDirectoryNewEntry =

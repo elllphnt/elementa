@@ -1,4 +1,5 @@
 import React from "react";
+import { elllIcons16 } from "../icons/elll_icons";
 import Icon from "../icons/icon";
 import { useContextMenuInnerContext } from "./_hooks";
 import { ContextMenuOption } from "./_types";
@@ -56,10 +57,10 @@ export function ContextMenuOptionView({
           option.icon
         )}
       </div>
-      <div className="grow">{option.label}</div>
+      <div className="el-grow">{option.label}</div>
       {subMenu && (
         <div className="el-h-4 el-w-4 el-shrink-0">
-          <Icon />
+          <Icon name={elllIcons16.chevron} />
         </div>
       )}
     </button>

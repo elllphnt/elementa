@@ -4,6 +4,7 @@ import {
   IconButton,
   ProgressBar,
   ScrollArea,
+  Tooltip,
   ViewComponent,
   elllIcons16,
 } from "@repo/components";
@@ -24,6 +25,8 @@ function EditorTab({
   const title = useObservable(editor.title$, editor.title);
   const icon = useObservable(editor.icon$, editor.icon);
   const [hover, setHover] = useState(false);
+  const stable = useObservable(editor.stable$, editor.stable);
+
   return (
     <div
       style={{
@@ -40,8 +43,8 @@ function EditorTab({
     >
       <div
         className={cx("el-shrink-0 el-flex el-items-center el-px-2", {
-          "el-text-fg-500 ": active,
-          "el-text-fg-500": !active,
+          "el-text-fg-500 ": stable,
+          "el-text-fg-400 el-italic": !stable,
         })}
         style={{
           height: "100%",
@@ -93,11 +96,18 @@ function EditorActions({ editor }: { editor: EditorState }) {
   return (
     <div className="el-flex el-items-center el-space-x-1 el-h-full el-px-2">
       {actions.map((action) => (
-        <IconButton
+        <Tooltip
           key={action.name}
-          icon={action.icon}
-          onClick={action.action}
-        />
+          content={action.name}
+          delayDuration={0}
+          sideOffset={4}
+        >
+          <IconButton
+            key={action.name}
+            icon={action.icon}
+            onClick={action.action}
+          />
+        </Tooltip>
       ))}
     </div>
   );

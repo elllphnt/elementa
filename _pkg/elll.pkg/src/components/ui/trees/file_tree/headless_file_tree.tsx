@@ -19,9 +19,7 @@ export function HeadlessFileTree({
 }): JSX.Element {
   const shell = useShell();
   const context = useContext(FileTreeContext);
-  const [directoryEntries, fileEntries] = useSortedFileTreeEntries(file, {
-    hidden: context?.hidden,
-  });
+  const [directoryEntries, fileEntries] = useSortedFileTreeEntries(file);
 
   const hasEntry = directoryEntries.length || fileEntries.length;
   const hasDirectoryNewEntry =

@@ -2,7 +2,13 @@ import { useObservable } from "@repo/utils";
 import { useEffect, useRef } from "react";
 import { BehaviorSubject } from "rxjs";
 
-const dropTarget$ = new BehaviorSubject<HTMLElement | undefined>(undefined);
+const dropTarget$ = new BehaviorSubject<
+  | [
+      HTMLElement,
+      ((event: DragEvent, data?: Record<string, any>) => void) | undefined,
+    ]
+  | undefined
+>(undefined);
 const dragData$ = new BehaviorSubject<Record<string, any> | undefined>(
   undefined,
 );
@@ -93,7 +99,10 @@ export function useDrop(
   dependencies: any[] = [],
 ) {
   const ref = useRef<HTMLElement | undefined>(undefined);
-  const dropTarget = useObservable(dropTarget$, dropTarget$.value);
+  const [dropTarget] = useObservable(dropTarget$, dropTarget$.value) ?? [
+    undefined,
+    () => {},
+  ];
 
   const isDropTarget = ref.current && dropTarget === ref.current;
   const containsDropTarget = dropTarget && ref.current?.contains(dropTarget);
@@ -109,7 +118,7 @@ export function useDrop(
       if (accept) {
         event.preventDefault();
         event.stopPropagation();
-        dropTarget$.next(element);
+        dropTarget$.next([element, _handleDrop]);
 
         if (typeof accept === "string") {
           event.dataTransfer.dropEffect = accept;
@@ -120,7 +129,6 @@ export function useDrop(
     };
     const handleDragOver = (event: DragEvent) => {
       if (!event.dataTransfer) return;
-
       const accept = acceptDrop?.(event, dragData$.value);
       if (accept) {
         event.preventDefault();
@@ -134,23 +142,11 @@ export function useDrop(
       }
     };
 
-    const handleDrop = (event: DragEvent) => {
-      if (!event.dataTransfer) return;
-
-      event.preventDefault();
-      event.stopPropagation();
-      dropTarget$.next(undefined);
-
-      _handleDrop?.(event, dragData$.value);
-    };
-
     element.addEventListener("dragenter", handleDragEnter);
-    element.addEventListener("drop", handleDrop);
     element.addEventListener("dragover", handleDragOver);
 
     return () => {
       element.removeEventListener("dragenter", handleDragEnter);
-      element.removeEventListener("drop", handleDrop);
       element.removeEventListener("dragover", handleDragOver);
     };
   }, dependencies);
@@ -172,9 +168,13 @@ export function useDragDropObserver() {
   useEffect(() => {
     const handleDragEnter = () => {
       dropTarget$.next(undefined);
-      dragData$.next(undefined);
     };
-    const handleDragEnd = () => {
+    const handleDragEnd = (event: DragEvent) => {
+      const dropTarget = dropTarget$.value;
+      if (dropTarget) {
+        const [, handleDrop] = dropTarget;
+        handleDrop?.(event, dragData$.value);
+      }
       dropTarget$.next(undefined);
       dragData$.next(undefined);
     };

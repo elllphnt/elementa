@@ -4,10 +4,10 @@ import { useShell } from "@repo/shell";
 import { useObservable } from "@repo/utils";
 import cx from "classnames";
 import { useContext } from "react";
+import { useWorkspaceFileAtPath } from "~/src/hooks/backend/file";
 import { FileTreeContext, FileTreeContextType } from "../file_tree/_contexts";
 import { useFileDrop, useSortedFileTreeEntries } from "../file_tree/_hooks";
 import { WorkspaceDirectoryTree } from "./workspace_directory_tree";
-import { useWorkspaceFileAtPath } from "~/src/hooks/backend/file";
 
 function WorkspaceDirectoryContent({
   directory,
@@ -33,7 +33,7 @@ function WorkspaceDirectoryContent({
   const shell = useShell();
   const context = useContext(FileTreeContext);
   const [directoryEntries, fileEntries] = useSortedFileTreeEntries(directory, {
-    hidden: context?.hidden,
+    hidden: context?.hiddenPattern,
   });
 
   const hasEntry = directoryEntries.length || fileEntries.length;

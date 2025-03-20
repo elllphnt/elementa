@@ -1,7 +1,7 @@
 import { TreeEntry } from "@repo/components";
 import { useCallback, useContext, useState } from "react";
-import { FileTreeContext } from "./_contexts";
 import FileIcon from "../../icons/file_icon";
+import { FileTreeContext } from "./_contexts";
 
 export function FileTreeNewEntry() {
   const context = useContext(FileTreeContext);
@@ -28,7 +28,7 @@ export function FileTreeNewEntry() {
     } finally {
       setTimeout(() => {
         context.setNewEntry?.(undefined);
-      });
+      }, 100);
       setLoading(false);
     }
   }, [name]);

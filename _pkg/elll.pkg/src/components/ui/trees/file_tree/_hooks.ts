@@ -6,12 +6,10 @@ import { map, switchMap } from "rxjs";
 import { mimeTypes } from "~/src/libs/mimetypes";
 import { FileTreeContext } from "./_contexts";
 
-export function useSortedFileTreeEntries(
-  directory: File,
-  options?: {
-    hidden?: RegExp;
-  },
-) {
+export function useSortedFileTreeEntries(directory: File) {
+  const context = useContext(FileTreeContext);
+  const showHidden = context?.showHidden;
+  const hiddenPattern = context?.hiddenPattern;
   const entriesQuery = directory.entries({ autoFetch: true });
 
   const [_entriesWithNameType$, _entriesWithNameType] = useMemo(() => {
@@ -44,7 +42,7 @@ export function useSortedFileTreeEntries(
   const fileEntries: File[] = [];
 
   for (const entry of entriesWithNameType) {
-    if (options?.hidden && entry.name && options.hidden.test(entry.name)) {
+    if (!showHidden && entry.name && hiddenPattern?.test(entry.name)) {
       continue;
     }
     if (entry.type === "directory") {
@@ -58,7 +56,7 @@ export function useSortedFileTreeEntries(
   directoryEntries.sort((a, b) => a.name?.localeCompare(b.name ?? "") || 0);
   fileEntries.sort((a, b) => a.name?.localeCompare(b.name ?? "") || 0);
 
-  return [directoryEntries, fileEntries] as const;
+  return [directoryEntries, fileEntries, entriesQuery] as const;
 }
 
 export function useFileDrag(file: File) {
@@ -129,6 +127,9 @@ export function useFileDrop(file: File) {
       },
       handleDrop: (event, data) => {
         if (context?.handleDrop?.(event, file)) {
+          return;
+        }
+        if (!file.isDirectory) {
           return;
         }
 
