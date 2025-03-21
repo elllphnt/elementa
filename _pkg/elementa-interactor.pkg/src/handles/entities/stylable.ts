@@ -9,8 +9,16 @@ import {
   StyleData,
   StylePropertyName,
 } from "@elllphnt/elll-element";
-import { PageElement, Stylesheet } from "@repo/elementa-models";
-import { InstanceRenderable } from "@repo/elementa-renderer";
+import {
+  PageElement,
+  Stylesheet,
+  StylesheetCssStyleSheet,
+} from "@repo/elementa-models";
+import {
+  InstanceRenderable,
+  RuleDomStyleSheetAdaptor,
+  StyleRuleDomAdaptor,
+} from "@repo/elementa-renderer";
 import { InstanceStyle } from "@repo/elementa-stager";
 import {
   combineLatestOrEmpty,
@@ -19,17 +27,21 @@ import {
   RectData,
 } from "@repo/utils";
 import {
+  animationFrameScheduler,
   BehaviorSubject,
   combineLatest,
+  debounceTime,
   map,
   Observable,
   of,
   switchMap,
 } from "rxjs";
+import { layoutProperties } from "~/src/_lib/css";
 import { lengthToPixels } from "~/src/_lib/utils";
 import { IHandle } from "~/src/_types/handles/handle";
 import { IElementaInteractor } from "~/src/_types/interactor";
 import { Handle } from "../handle";
+import { LayoutUpdatePropagation } from "../handle_rect";
 import { EntityHandle } from "./entity";
 
 /**
@@ -70,6 +82,10 @@ export abstract class StylableHandle<
   }
 
   abstract instanceStyle(selector: string): InstanceStyle;
+  abstract get cssStyleSheet(): StylesheetCssStyleSheet | undefined;
+  abstract get cssStyleSheet$(): Observable<
+    StylesheetCssStyleSheet | undefined
+  >;
 
   get style() {
     return this.instanceStyle(this.activeSelector || baseSelector);
@@ -222,6 +238,60 @@ export abstract class StylableHandle<
 
     this.addDisposer(() => {
       activeStylesSubscription.unsubscribe();
+    });
+  }
+
+  watchCssStyleSheet() {
+    // watch style changes
+    const stylesheetSubscription = this.cssStyleSheet$
+      .pipe(
+        switchMap((stylesheet) => {
+          const adaptor = stylesheet
+            ? (this.interactor.stager.stylesheetDomManager.stylesheetAdaptor(
+                stylesheet,
+              ) as RuleDomStyleSheetAdaptor)
+            : undefined;
+          if (!adaptor) return of([]);
+
+          return (
+            stylesheet?.rules$.pipe(
+              switchMap((rules) =>
+                combineLatestOrEmpty(
+                  rules.map((rule) => adaptor.adaptorOf$(rule)),
+                ),
+              ),
+              map(
+                (adaptors) => adaptors.filter(Boolean) as StyleRuleDomAdaptor[],
+              ),
+            ) ?? of([])
+          );
+        }),
+        switchMap((ruleAdaptors) =>
+          combineLatestOrEmpty(
+            ruleAdaptors.map((adaptor) =>
+              adaptor.updated$.pipe(
+                map((updated) => {
+                  return updated.some((property) =>
+                    layoutProperties.has(property),
+                  );
+                }),
+              ),
+            ),
+          ),
+        ),
+        map((layoutUpdateds) => layoutUpdateds.some(Boolean)),
+        debounceTime(0, animationFrameScheduler),
+      )
+      .subscribe((layoutUpdated) => {
+        if (layoutUpdated) {
+          this.handleLayoutUpdate({
+            propagation: new LayoutUpdatePropagation(),
+          });
+        }
+      });
+
+    this.addDisposer(() => {
+      stylesheetSubscription.unsubscribe();
     });
   }
 

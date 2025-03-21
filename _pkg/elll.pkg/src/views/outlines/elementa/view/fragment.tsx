@@ -1,6 +1,6 @@
 import { ElementHandle, FragmentHandle } from "@repo/elementa-interactor";
 import { useObservable } from "@repo/utils";
-import { ElementOutline } from "./elements/element";
+import { ElementOutline } from "./element";
 
 export function FragmentOutline({
   fragment,

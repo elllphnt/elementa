@@ -60,6 +60,10 @@ export const css = (theme: Theme) =>
         transition: none !important;
     }
 
+    .elementa-element-slot-empty > * {
+        opacity: 0.3 !important;
+    }
+
     @media(prefers-color-scheme: dark) {
         html, body {
             background-color: ${theme.dark.backgroundColor};

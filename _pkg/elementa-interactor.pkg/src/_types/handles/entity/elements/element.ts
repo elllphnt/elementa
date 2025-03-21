@@ -52,5 +52,4 @@ export interface IElementHandle<R extends ElementRenderable = ElementRenderable>
   setPositionStrategy(position: PositionValue | undefined): void;
   ensurePositioned(): void;
   resolveContainingHandle(withPosition?: PositionValue): IHandle | undefined;
-  getConnectionOptions(position: PointData): ContextMenuOption[][];
 }

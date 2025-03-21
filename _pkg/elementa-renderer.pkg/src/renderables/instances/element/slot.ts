@@ -1,11 +1,12 @@
 import { SlotElementInstance } from "@repo/elementa";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, distinctUntilChanged, Observable } from "rxjs";
 import { updateInstanceRenderableList } from "../../../_lib/renderables";
 import { ElementaRenderer } from "../../../elementa_renderer";
 import { ElementRenderable } from "./element";
 
 export class SlotElementRenderable extends ElementRenderable<SlotElementInstance> {
   private _placeholder$ = new BehaviorSubject<ElementRenderable[]>([]);
+  private _empty$ = new BehaviorSubject<boolean>(false);
 
   get placeholder$(): Observable<ElementRenderable[]> {
     return this._placeholder$.asObservable();
@@ -19,6 +20,13 @@ export class SlotElementRenderable extends ElementRenderable<SlotElementInstance
   }
   get renderables$(): Observable<ElementRenderable[]> {
     return this.placeholder$;
+  }
+
+  get isEmpty$(): Observable<boolean> {
+    return this._empty$.asObservable().pipe(distinctUntilChanged());
+  }
+  get isEmpty(): boolean {
+    return this._empty$.value;
   }
 
   constructor({
@@ -47,5 +55,9 @@ export class SlotElementRenderable extends ElementRenderable<SlotElementInstance
       placeholderSubscription.unsubscribe();
       this.placeholder.forEach((child) => child.dispose());
     });
+  }
+
+  setEmpty(empty: boolean) {
+    this._empty$.next(empty);
   }
 }

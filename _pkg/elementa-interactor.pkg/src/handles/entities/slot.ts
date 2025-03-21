@@ -6,6 +6,7 @@ import {
   Renderable,
   SlotRenderable,
   Stylesheet,
+  StylesheetCssStyleSheet,
 } from "@repo/elementa-stager";
 import { BehaviorSubject, map, Observable } from "rxjs";
 import { makeEntityDropType } from "~/src/_lib/droptypes";
@@ -37,6 +38,13 @@ export class SlotHandle extends StylableHandle<SlotRenderable> {
   instanceStyle(selector: string) {
     return this.instance.style(selector);
   }
+  get cssStyleSheet(): StylesheetCssStyleSheet | undefined {
+    return this.instance.fill?.cssStyleSheet;
+  }
+  get cssStyleSheet$(): Observable<StylesheetCssStyleSheet | undefined> {
+    return this.instance.fill$.pipe(map((fill) => fill?.cssStyleSheet));
+  }
+
   get entityStylesheet(): Stylesheet | undefined {
     return this.instance.fill?.stylesheet;
   }
@@ -88,6 +96,7 @@ export class SlotHandle extends StylableHandle<SlotRenderable> {
     );
 
     this.watchStyle();
+    this.watchCssStyleSheet();
 
     this.addDisposer(() => {
       this._children$.complete();

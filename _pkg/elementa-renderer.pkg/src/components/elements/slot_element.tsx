@@ -1,6 +1,7 @@
 import { useObservable } from "@repo/utils";
+import cx from "classnames";
 import { useSlot } from "~/src/hooks/slot";
-import { SlotRenderable } from "~/src/renderables/_";
+import { ElementRenderable } from "~/src/renderables/_";
 import { SlotElementRenderable } from "../../renderables/instances/element/slot";
 import { BaseElementComponent } from "./_/_base_element";
 import ElementComponent from "./element";
@@ -16,13 +17,16 @@ export function SlotElementComponent({
   const slot = useSlot(element.entity.id);
   const slotFill = useObservable(slot?.instance.fill$, slot?.instance.fill);
   const className = slotFill?.stylesheet.className;
+  const content = useObservable(slot?.content$, slot?.content) || [];
 
   return (
     <BaseElementComponent
       key={element.key}
       element={element}
       partKey={partKey}
-      className={className}
+      className={cx(className, {
+        "elementa-element-slot-empty": !content.length,
+      })}
       onRef={(ref) => {
         if (partKey) {
           slot?.setHtmlElement(partKey, ref);
@@ -31,22 +35,21 @@ export function SlotElementComponent({
         }
       }}
     >
-      <SlotElementContent element={element} slot={slot} />
+      <SlotElementContent element={element} content={content} />
     </BaseElementComponent>
   );
 }
 
 export function SlotElementContent({
   element,
-  slot,
+  content,
   onRef,
 }: {
   element: SlotElementRenderable;
-  slot?: SlotRenderable;
+  content: ElementRenderable[];
   onRef?: (element: HTMLElement | null) => void;
 }): JSX.Element {
   const placeholder = useObservable(element.placeholder$, element.placeholder);
-  const content = useObservable(slot?.content$, slot?.content) || [];
 
   if (content.length) {
     return (

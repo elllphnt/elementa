@@ -12,7 +12,8 @@ import {
   VectorElementHandle,
 } from "@repo/elementa-interactor";
 import { useObservable } from "@repo/utils";
-import { EntityHandleOutlineEntry, useEntityHandleOpenState } from "../handle";
+import { EntityHandleOutlineEntry, useEntityHandleOpenState } from "./handle";
+import { SlotOutline } from "./slot";
 
 export function VectorElementOutline({
   element,
@@ -49,8 +50,8 @@ export function ComponentElementOutline({
   element: ComponentElementHandle;
   stateKey?: string[];
 }) {
-  const children = useObservable(element.children$, element.children);
-  const [open, setOpen] = useEntityHandleOpenState(element);
+  const template = useObservable(element.template$, element.template);
+  const slots = useObservable(template?.slots$, template?.slots) || [];
   const componentName = useObservable(
     element.entity.componentName$,
     element.entity.componentName,
@@ -63,14 +64,14 @@ export function ComponentElementOutline({
       handle={element}
       icon={elllIcons16.component}
       fallbackName={componentName || "Component"}
-      container={children.length > 0}
+      container={slots.length > 0}
       content={() => (
         <>
-          {children.map((child) => (
-            <ElementOutline
-              key={child.key}
-              element={child as ElementHandle}
-              stateKey={[...stateKey, "children", `${child.id}`]}
+          {slots.map((slot) => (
+            <SlotOutline
+              key={slot.key}
+              slot={slot}
+              stateKey={[...stateKey, "slots", `${slot.id}`]}
             />
           ))}
         </>

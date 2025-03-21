@@ -1,12 +1,14 @@
 import { EdgeName } from "@elllphnt/elll-element";
 import { ElementRenderable, Renderable } from "@repo/elementa-renderer";
-import { FragmentInstance, Stylesheet } from "@repo/elementa-stager";
-import { PointData } from "@repo/utils";
+import {
+  FragmentInstance,
+  Stylesheet,
+  StylesheetCssStyleSheet,
+} from "@repo/elementa-stager";
 import { map, Observable, of, switchMap } from "rxjs";
 import { IElementHandle } from "~/src/_types/handles/entity/elements/element";
 import { IFragmentHandle } from "~/src/_types/handles/entity/fragment";
 import { IHandle } from "~/src/_types/handles/handle";
-import { ContextMenuOption } from "~/src/managers/host";
 import { handleProperties } from "../../_libs/properties";
 import { handleTypes } from "../../_libs/types";
 import { StylableHandle } from "../stylable";
@@ -35,6 +37,12 @@ export abstract class ElementHandle<
 
   instanceStyle(selector: string) {
     return this.instance.style(selector);
+  }
+  get cssStyleSheet(): StylesheetCssStyleSheet | undefined {
+    return this.instance.entity.cssStyleSheet;
+  }
+  get cssStyleSheet$(): Observable<StylesheetCssStyleSheet | undefined> {
+    return of(this.instance.entity.cssStyleSheet);
   }
 
   get entityStylesheet(): Stylesheet | undefined {
@@ -106,15 +114,10 @@ export abstract class ElementHandle<
       });
 
     this.watchStyle();
+    this.watchCssStyleSheet();
 
     this.addDisposer(() => {
       draggableMovableSubscription.unsubscribe();
     });
-  }
-
-  getConnectionOptions(position: PointData): ContextMenuOption[][] {
-    let options: ContextMenuOption[][] = [];
-
-    return options;
   }
 }
