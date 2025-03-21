@@ -12,7 +12,7 @@ import {
 import { useElementaInteractor } from "~/src/hooks/elementa_interactor";
 import { SizeControl } from "../../handles/controls/size/size";
 import { CornerHandle } from "../../handles/interactions/corner";
-import { GapHandle } from "../../handles/interactions/gap";
+import { GapHandle } from "../../handles/interactions/gap/gap";
 import {
   FramePaddingHandle,
   PaddingHandle,

@@ -133,9 +133,6 @@ export const interactionsStyleSheet = (theme: Theme) => /* css */ `
         pointer-event: none;
         outline: none;
     }
-    .elementa-interface.flag-gapping .elementa-gap-handle {
-        background: #f082
-    }
     .elementa-interface.flag-gapping .elementa-selection-controls {
         display: none;
     }
