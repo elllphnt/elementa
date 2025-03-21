@@ -1,5 +1,5 @@
 import { File } from "@repo/backend";
-import { ScrollArea } from "@repo/components";
+import { elllIcons16, Icon, ScrollArea } from "@repo/components";
 import { useShell } from "@repo/shell";
 import { useObservable } from "@repo/utils";
 import cx from "classnames";
@@ -68,16 +68,25 @@ export function WorkspaceDirectoryDrawerContent({
         <p>
           This directory is empty.
           <br />
-          Click{" "}
-          <span
-            onClick={() => {
-              context?.setNewEntry?.({ parent: root, type: "file" });
+          Click the{" "}
+          <Icon
+            name={elllIcons16.plus}
+            style={{
+              height: "1em",
+              width: "1em",
+              display: "inline-block",
             }}
-            className="el-font-bold el-cursor-pointer"
-          >
-            here
-          </span>{" "}
-          button to create a new file.
+          />{" "}
+          or{" "}
+          <Icon
+            name={elllIcons16.folderClosed}
+            style={{
+              height: "1em",
+              width: "1em",
+              display: "inline-block",
+            }}
+          />{" "}
+          button to create a new file or directory.
         </p>
       </DrawerEmpty>
     );

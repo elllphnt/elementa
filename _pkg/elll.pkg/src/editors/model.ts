@@ -76,16 +76,14 @@ export abstract class ModelEditorState<
 
   get _data(): ModelEditorStateData {
     return {
-      id: this.id,
-      editorId: this.editorId,
+      ...super._data,
       url: this.url,
     };
   }
   get _data$(): Observable<ModelEditorStateData> {
-    return combineLatestOrEmpty([this.url$]).pipe(
-      map(([url]) => ({
-        id: this.id,
-        editorId: this.editorId,
+    return combineLatestOrEmpty([super._data$, this.url$]).pipe(
+      map(([data, url]) => ({
+        ...data,
         url,
       })),
     );
@@ -133,6 +131,7 @@ export abstract class ModelEditorState<
   }
 
   restore(data: ModelEditorStateData): void {
+    super.restore(data);
     if (data.url) {
       this._url$.next(data.url ?? undefined);
     }

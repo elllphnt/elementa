@@ -162,6 +162,7 @@ export class MouseInteraction extends Interaction<"start" | "stop"> {
     this._endPosition$.next(start);
   }
   stop() {
+    this._running$.next(false);
     this._window$.next(undefined);
   }
 }

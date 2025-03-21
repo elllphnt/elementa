@@ -77,7 +77,9 @@ export class UtilitySheetEditorState extends EditorState<UtilitySheetEditorState
     });
   }
 
-  restore(data: UtilitySheetEditorStateData): void {}
+  restore(data: UtilitySheetEditorStateData): void {
+    super.restore(data);
+  }
 }
 
 export const utilitySheetEditor: Editor = {

@@ -4,6 +4,8 @@ import { Observable, of } from "rxjs";
 import { ModelConstructor } from "../modules/elll/model/contructor";
 import { Model } from "../modules/elll/model/model";
 import { IElll } from "../types/elll";
+import { fileColor, fileIcon } from "../components/ui/icons/file_icon";
+import { mimeTypes } from "../libs/mimetypes";
 
 export class JsonModel extends Disposable implements Model {
   static key = 0;
@@ -16,16 +18,17 @@ export class JsonModel extends Disposable implements Model {
   }
 
   get icon(): string {
-    return elllIcons16.textJustify;
+    return fileIcon(mimeTypes.json);
   }
   get icon$(): Observable<string> {
-    return of(elllIcons16.textJustify);
+    return of(fileIcon(mimeTypes.json));
   }
+
   get color(): string {
-    return "";
+    return fileColor(mimeTypes.json);
   }
   get color$(): Observable<string> {
-    return of("");
+    return of(fileColor(mimeTypes.json));
   }
 
   constructor({ elll, url }: { elll: any; url: string }) {

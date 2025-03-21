@@ -21,6 +21,7 @@ import {
 import { CssStyleSheet } from "~/src/css/_";
 import { Schema } from "~/src/schema/_";
 import { Component } from "../component";
+import { FrameWidget } from "./_";
 import { fragmentVariants } from "./_libs/fragment";
 import { Element, PageElement } from "./elements/_";
 import { ElementContainer } from "./elements/_common/container";
@@ -268,6 +269,21 @@ export class Fragment extends Entity<FragmentData> implements ElementContainer {
   }
   removeElements(...elements: Element[]) {
     ElementContainer.removeElements(this, ...elements);
+
+    if (this.variant === fragmentVariants.fragment) {
+      // if empty remove self and all depending frames
+      this.component.widgets.forEach((widget) => {
+        if (
+          widget.type === entityTypes.widgets.frame &&
+          (widget as FrameWidget).fragmentId === this.id
+        ) {
+          widget.remove();
+        }
+      });
+      if (!this.content.length) {
+        this.remove();
+      }
+    }
   }
   moveElements(index: number, ...elements: Element[]) {
     ElementContainer.moveElements(this, index, ...elements);

@@ -1,6 +1,7 @@
-import { elllIcons16 } from "@repo/components";
+import { elllFileTypes } from "@elllphnt/utils";
 import { Disposable } from "@repo/utils";
 import { Observable, of } from "rxjs";
+import { fileColor, fileIcon } from "../components/ui/icons/file_icon";
 import { ModelConstructor } from "../modules/elll/model/contructor";
 import { Model } from "../modules/elll/model/model";
 import { IElll } from "../types/elll";
@@ -16,16 +17,17 @@ export class ReactModel extends Disposable implements Model {
   }
 
   get icon(): string {
-    return elllIcons16.component;
+    return fileIcon(elllFileTypes.primitive);
   }
   get icon$(): Observable<string> {
-    return of(elllIcons16.component);
+    return of(fileIcon(elllFileTypes.primitive));
   }
+
   get color(): string {
-    return "#08f";
+    return fileColor(elllFileTypes.primitive);
   }
   get color$(): Observable<string> {
-    return of("#08f");
+    return of(fileColor(elllFileTypes.primitive));
   }
 
   constructor({ elll, url }: { elll: any; url: string }) {

@@ -139,12 +139,10 @@ export function Interface({
       event.target?.addEventListener("dragend", handleDragEnd);
     };
 
-    window.addEventListener("dragstart", handleDragStart, { capture: true });
+    window.addEventListener("dragstart", handleDragStart);
 
     return () => {
-      window.removeEventListener("dragstart", handleDragStart, {
-        capture: true,
-      });
+      window.removeEventListener("dragstart", handleDragStart);
     };
   }, [intrface]);
 

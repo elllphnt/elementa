@@ -426,4 +426,19 @@ export class FrameWidget extends Widget<FrameWidgetData> {
       this._viewport$.next(undefined);
     }
   }
+
+  remove(): void {
+    super.remove();
+    if (this.fragmentId) {
+      // if fragment is not in use, remove it
+      const framesForFragment = this.component.widgets.filter(
+        (widget) =>
+          widget.type === entityTypes.widgets.frame &&
+          (widget as FrameWidget).fragmentId === this.fragmentId,
+      );
+      if (!framesForFragment.length) {
+        this.fragment?.remove();
+      }
+    }
+  }
 }

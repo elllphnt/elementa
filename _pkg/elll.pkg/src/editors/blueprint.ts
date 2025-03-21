@@ -67,7 +67,9 @@ export class BlueprintEditorState extends EditorState<BlueprintEditorStateData> 
     super({ id, editorId: editors.bleuprint, shell });
   }
 
-  restore(data: BlueprintEditorStateData): void {}
+  restore(data: BlueprintEditorStateData): void {
+    super.restore(data);
+  }
 }
 
 export const blueprintEditor: Editor = {

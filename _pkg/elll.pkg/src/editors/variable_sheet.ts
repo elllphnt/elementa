@@ -87,7 +87,9 @@ export class VariableSheetEditorState extends EditorState<VariableSheetEditorSta
     super({ id, editorId: keys.editors.variableSheet, shell });
   }
 
-  restore(data: VariableSheetEditorStateData): void {}
+  restore(data: VariableSheetEditorStateData): void {
+    super.restore(data);
+  }
 }
 
 export const variableSheetEditor: Editor = {

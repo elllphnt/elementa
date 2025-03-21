@@ -67,7 +67,9 @@ export class SpecEditorState extends EditorState<SpecEditorStateData> {
     super({ id, editorId: editors.spec, shell });
   }
 
-  restore(data: SpecEditorStateData): void {}
+  restore(data: SpecEditorStateData): void {
+    super.restore(data);
+  }
 }
 
 export const specEditor: Editor = {

@@ -1,8 +1,9 @@
 import { ComponentData } from "@elllphnt/elll-element";
-import { elllIcons16 } from "@repo/components";
+import { elllFileTypes } from "@elllphnt/utils";
 import { Component } from "@repo/elementa-models";
 import { Observable, map, of } from "rxjs";
 import { IElll } from "~/src/types/elll";
+import { fileColor, fileIcon } from "../components/ui/icons/file_icon";
 import { stripEmpty } from "../libs/utils";
 import { getElllElementaInfrastrcture } from "../modules/elementa/infrastructure/_lib";
 import { ElllElementaProject } from "../modules/elementa/project/project";
@@ -29,17 +30,17 @@ export class ComponentModel extends Component implements Model {
   }
 
   get icon(): string {
-    return elllIcons16.component;
+    return fileIcon(elllFileTypes.component);
   }
   get icon$(): Observable<string> {
-    return of(elllIcons16.component);
+    return of(fileIcon(elllFileTypes.component));
   }
 
   get color(): string {
-    return "#f80";
+    return fileColor(elllFileTypes.component);
   }
   get color$(): Observable<string> {
-    return of("#f80");
+    return of(fileColor(elllFileTypes.component));
   }
 
   get loading() {

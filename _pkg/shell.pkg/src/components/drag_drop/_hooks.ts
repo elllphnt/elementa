@@ -34,8 +34,7 @@ export function useDrag(
     if (!element) return;
 
     const handleDragStart = (event: DragEvent) => {
-      event.stopPropagation();
-
+      if (event.target !== element) return;
       const dataTransfer = event.dataTransfer;
       if (!dataTransfer) return;
 

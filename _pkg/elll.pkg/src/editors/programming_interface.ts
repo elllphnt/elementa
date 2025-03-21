@@ -67,7 +67,9 @@ export class ProgrammingInterfaceEditorState extends EditorState<ProgrammingInte
     super({ id, editorId: editors.programmingInterface, shell });
   }
 
-  restore(data: ProgrammingInterfaceEditorStateData): void {}
+  restore(data: ProgrammingInterfaceEditorStateData): void {
+    super.restore(data);
+  }
 }
 
 export const programmingInterfaceEditor: Editor = {

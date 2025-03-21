@@ -327,6 +327,7 @@ export class ElementaInteractor
   updateEntityHandleList = updateEntityHandleList;
 
   setFlag(key: string, value: boolean) {
+    console.log("setFlag", key, value);
     this._flags$.next({ ...this._flags$.value, [key]: value });
   }
 

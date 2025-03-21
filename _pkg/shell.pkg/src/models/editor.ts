@@ -1,11 +1,12 @@
-import { BehaviorSubject, Observable, of } from "rxjs";
-import { Datafiable, Disposable } from "@repo/utils";
+import { combineLatestOrEmpty, Datafiable, Disposable } from "@repo/utils";
+import { BehaviorSubject, map, Observable, of } from "rxjs";
 import { Context } from "./context";
 import { Shell } from "./shell";
 
 export type EditorStateData = {
   id: string;
   editorId: string;
+  stable?: boolean;
 };
 export type EditorAction = {
   name: string;
@@ -61,15 +62,21 @@ export abstract class EditorState<D extends EditorStateData = EditorStateData>
     return {
       id: this.id,
       editorId: this.editorId,
+      stable: this.stable,
     };
   }
   get _data$(): Observable<EditorStateData> {
-    return of(this._data);
+    return combineLatestOrEmpty([this.stable$]).pipe(
+      map(([stable]) => ({
+        id: this.id,
+        editorId: this.editorId,
+        stable,
+      })),
+    );
   }
 
   abstract get data(): D;
   abstract get data$(): Observable<D>;
-  abstract restore(data: D): void;
 
   get stable() {
     return this._stable$.value;
@@ -122,6 +129,10 @@ export abstract class EditorState<D extends EditorStateData = EditorStateData>
         a.name === name ? { ...a, ...action } : a,
       ),
     );
+  }
+
+  restore(data: EditorStateData): void {
+    this._stable$.next(data.stable ?? false);
   }
 }
 

@@ -107,6 +107,8 @@ export abstract class ContentEditorState<
   }
 
   restore(data: ContentEditorStateData): void {
+    super.restore(data);
+
     if (data.url) {
       this._url$.next(data.url ?? undefined);
     }

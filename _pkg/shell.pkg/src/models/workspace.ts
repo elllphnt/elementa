@@ -267,6 +267,7 @@ export abstract class Workspace implements Datafiable<WorkspaceData> {
       create: (data) => {
         const state = this.shell.createEditorState(data);
         if (!state) throw new Error("Editor state not created");
+        state.restore(data);
         return state;
       },
       restore: (editor, data) => editor.restore(data),

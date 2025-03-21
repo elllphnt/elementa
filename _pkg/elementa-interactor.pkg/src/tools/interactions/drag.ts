@@ -9,6 +9,8 @@ export type RectDrawInteraction = {
   run(window: Window, start: PointData): void;
 };
 
+let _key = 0;
+
 export function createDragInteraction({
   interactor,
   draggables,
@@ -25,11 +27,13 @@ export function createDragInteraction({
   ) => void;
   onDrop?: (position: PointData) => void | boolean;
 }) {
+  const key = _key++;
   const mouseInteraction = new MouseInteraction();
 
   let currentDraggables = [...draggables];
 
   mouseInteraction.on("start", () => {
+    console.log("dragx start", key);
     interactor.setFlag("dragging", true);
     interactor.setFlag("dropping", true);
     // create drag images and set instance as placeholders
@@ -73,6 +77,7 @@ export function createDragInteraction({
 
     // remove images, clear placeholders
     mouseInteraction?.on("stop", () => {
+      console.log("dragx stop", key);
       deltaSubscription?.unsubscribe();
       mouseInteraction?.dispose();
 

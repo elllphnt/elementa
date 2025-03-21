@@ -242,11 +242,12 @@ export function FrameWidgetHandleComponent({
         map((tool) => tool instanceof EntityTool),
         distinctUntilChanged(),
       ),
-    ]).subscribe(([dragging, entityTool]) => {
+    ]).subscribe(([dropping, entityTool]) => {
       const root = rootRef.current;
       if (!root) return;
 
-      if (dragging || entityTool) {
+      if (dropping || entityTool) {
+        console.log("pointereventsauto", { dropping, entityTool });
         root.style.pointerEvents = "auto";
       } else {
         root.style.pointerEvents = "none";

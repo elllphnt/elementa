@@ -87,7 +87,7 @@ export function PrimitiveElementOutline({
 }) {
   const children = useObservable(element.children$, element.children);
   const [open, setOpen] = useEntityHandleOpenState(element);
-  const componentName = useObservable(
+  const moduleName = useObservable(
     element.entity.moduleName$,
     element.entity.moduleName,
   );
@@ -95,8 +95,8 @@ export function PrimitiveElementOutline({
   return (
     <EntityHandleOutlineEntry
       handle={element}
-      icon={elllIcons16.component}
-      fallbackName={componentName || "Primitive"}
+      icon={elllIcons16.primitive}
+      fallbackName={moduleName || "Primitive"}
       container={children.length > 0}
       content={() => (
         <>

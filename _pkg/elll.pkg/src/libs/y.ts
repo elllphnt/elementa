@@ -47,7 +47,9 @@ export function updateYArray<T>(array: y.Array<T>, data: any[]) {
     });
   }
 
-  array.delete(data.length - 1, array.length - data.length);
+  if (data.length < array.length) {
+    array.delete(data.length, array.length - data.length);
+  }
 }
 export function updateYMap(map: y.Map<any>, data: any) {
   let deletedKey = new Set(map.keys());

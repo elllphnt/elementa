@@ -63,10 +63,10 @@ export class ReactEditorState extends MonacoEditorState<ReactEditorStateData> {
   }
 
   get contexts() {
-    return [reactPreviewContext];
+    return [];
   }
   get contexts$() {
-    return of([reactPreviewContext]);
+    return of([]);
   }
 
   constructor({ id, shell }: { id?: string; shell: Shell }) {
