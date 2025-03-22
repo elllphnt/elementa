@@ -8,12 +8,8 @@ import {
 import { useObservable } from "@repo/utils";
 import { ReactNode } from "react";
 import { Observable } from "rxjs";
-import { useCommonReactivePair } from "../../../../../hooks/utils/reactivity";
-import {
-  EditorControlMap,
-  ElllControlType,
-  elllControlMap,
-} from "../../_types";
+import { useCommonReactivePair } from "../../../hooks/utils/reactivity";
+import { EditorControlMap, ElllControlType, elllControlMap } from "./_types";
 
 export function ValueSetControl<C extends ElllControlType, I, T>({
   items,

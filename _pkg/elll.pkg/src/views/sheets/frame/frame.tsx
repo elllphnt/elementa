@@ -7,6 +7,9 @@ import {
 import { FrameWidgetHandle } from "@repo/elementa-interactor";
 import _ from "lodash";
 import { of, switchMap } from "rxjs";
+import { elllControlTypes } from "~/src/components/ui/controls/_types";
+import { StylePropertyControlEntry } from "~/src/components/ui/controls/style_property";
+import { ValueSetControl } from "~/src/components/ui/controls/value_set";
 import { useFramePageStyles } from "~/src/hooks/elementa/frame";
 import { useInstancesCommonReactiveValue } from "../../../hooks/utils/reactivity";
 
@@ -20,29 +23,26 @@ function PageSizeEntry({
   variant?: ControlEntryVariant;
 }) {
   const Dimension = _.capitalize(dimension) as Capitalize<typeof dimension>;
-
   const pageStyles = useFramePageStyles(frames);
 
-  // return (
-  //   <InstanceStyleControlEntry
-  //     variant={variant}
-  //     property={dimension}
-  //     name={Dimension}
-  //     styles={pageStyles}
-  //     control={BaseControlType.Dimension}
-  //     controlSettings={{
-  //       defaultUnit: "px",
-  //       units: [
-  //         {
-  //           unit: "px",
-  //           label: "Pixel",
-  //         },
-  //       ],
-  //     }}
-  //   />
-  // );
-
-  return <>Page Size</>;
+  return (
+    <StylePropertyControlEntry
+      name={Dimension}
+      variant={variant}
+      property={dimension}
+      styles={pageStyles}
+      control={elllControlTypes.Dimension}
+      controlSettings={{
+        defaultUnit: "px",
+        units: [
+          {
+            unit: "px",
+            label: "Pixel",
+          },
+        ],
+      }}
+    />
+  );
 }
 
 function FrameSizeEntry({
@@ -60,25 +60,24 @@ function FrameSizeEntry({
   if (source === "frame") {
     return (
       <ControlEntry key="frame" label={Dimension} variant={variant}>
-        {/* <InstanceControl
-          key="frame"
-          instances={frames.map((handle) => handle.renderable.instance)}
+        <ValueSetControl
+          items={frames.map((handle) => handle.renderable.instance)}
+          vKey={frames.map((h) => h.key).join(",")}
           value$={(instance) => instance.entity[`${dimension}$`]}
           value={(instance) => instance.entity[dimension]}
           onChange={(instance, value) =>
             instance.entity[`set${Dimension}`](value)
           }
-          control={BaseControlType.Number}
-        /> */}
+          control={elllControlTypes.Number}
+        />
       </ControlEntry>
     );
   } else if (source === "viewport") {
     return (
       <ControlEntry key="viewport" label={Dimension} variant={variant}>
-        {/* <InstanceControl
-          key="viewport"
-          variant={variant}
-          instances={frames.map((handle) => handle.renderable.instance)}
+        <ValueSetControl
+          items={frames.map((handle) => handle.renderable.instance)}
+          vKey={frames.map((h) => h.key).join(",")}
           value$={(instance) =>
             instance.entity.viewport?.[`${dimension}$`] ?? of(undefined)
           }
@@ -86,8 +85,8 @@ function FrameSizeEntry({
           onChange={(instance, value) =>
             instance.entity.viewport?.update({ [dimension]: value })
           }
-          control={BaseControlType.Number}
-        /> */}
+          control={elllControlTypes.Number}
+        />
       </ControlEntry>
     );
   } else {
@@ -138,22 +137,24 @@ export function FrameControl({
     <>
       <RowControlContainer>
         <MiniControlEntry label="X">
-          {/* <InstanceControl
-            instances={selection.map((handle) => handle.renderable.instance)}
+          <ValueSetControl
+            items={selection.map((handle) => handle.renderable.instance)}
+            vKey={selection.map((h) => h.key).join(",")}
             value$={(instance) => instance.entity.x$}
             value={(instance) => instance.entity.x}
             onChange={(instance, value) => instance.entity.setX(value)}
-            control={BaseControlType.Number}
-          /> */}
+            control={elllControlTypes.Number}
+          />
         </MiniControlEntry>
         <MiniControlEntry label="Y">
-          {/* <InstanceControl
-            instances={selection.map((handle) => handle.renderable.instance)}
+          <ValueSetControl
+            items={selection.map((handle) => handle.renderable.instance)}
+            vKey={selection.map((h) => h.key).join(",")}
             value$={(instance) => instance.entity.y$}
             value={(instance) => instance.entity.y}
             onChange={(instance, value) => instance.entity.setY(value)}
-            control={BaseControlType.Number}
-          /> */}
+            control={elllControlTypes.Number}
+          />
         </MiniControlEntry>
       </RowControlContainer>
       <RowControlContainer>

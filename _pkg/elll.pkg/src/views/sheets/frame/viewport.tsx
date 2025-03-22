@@ -7,6 +7,8 @@ import {
 import { FrameWidgetHandle } from "@repo/elementa-interactor";
 import { FrameViewport } from "@repo/elementa-models";
 import { map } from "rxjs";
+import { elllControlTypes } from "~/src/components/ui/controls/_types";
+import { ValueSetControl } from "~/src/components/ui/controls/value_set";
 import { FramePresetControl } from "../../../components/ui/controls/_uncertain/frame_preset/frame_preset";
 import { useInstancesCommonReactiveValue } from "../../../hooks/utils/reactivity";
 
@@ -55,31 +57,34 @@ export function FrameViewportSheet({
         />
       </FullControlEntry>
       <FullControlEntry label="Width">
-        {/* <InstanceControl
-          instances={selection.map((handle) => handle.renderable.instance)}
+        <ValueSetControl
+          items={selection.map((handle) => handle.renderable.instance)}
+          vKey={selection.map((h) => h.key).join(",")}
           value$={(instance) => instance.entity.viewportWidth$}
           value={(instance) => instance.entity.viewportWidth}
           onChange={(instance, value) =>
             instance.entity.setViewportWidth(value)
           }
-          control={BaseControlType.Number}
-        /> */}
+          control={elllControlTypes.Number}
+        />
       </FullControlEntry>
       <FullControlEntry label="Height">
-        {/* <InstanceControl
-          instances={selection.map((handle) => handle.renderable.instance)}
+        <ValueSetControl
+          items={selection.map((handle) => handle.renderable.instance)}
+          vKey={selection.map((h) => h.key).join(",")}
           value$={(instance) => instance.entity.viewportHeight$}
           value={(instance) => instance.entity.viewportHeight}
           onChange={(instance, value) =>
             instance.entity.setViewportHeight(value)
           }
-          control={BaseControlType.Number}
-        /> */}
+          control={elllControlTypes.Number}
+        />
       </FullControlEntry>
       <RowControlContainer>
         <FullControlEntry label="Scroll">
-          {/* <InstanceControl
-            instances={selection.map((handle) => handle.renderable.instance)}
+          <ValueSetControl
+            items={selection.map((handle) => handle.renderable.instance)}
+            vKey={selection.map((h) => h.key).join(",")}
             value$={(instance) => instance.entity.overflow$}
             value={(instance) => instance.entity.overflow}
             onChange={(instance, value) =>
@@ -92,8 +97,8 @@ export function FrameViewportSheet({
                 { label: "Area", value: "scroll-area" },
               ],
             }}
-            control={BaseControlType.Select}
-          /> */}
+            control={elllControlTypes.Select}
+          />
         </FullControlEntry>
       </RowControlContainer>
     </>

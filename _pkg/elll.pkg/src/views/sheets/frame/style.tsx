@@ -1,7 +1,7 @@
 import { FullControlEntry } from "@repo/components";
 import { FrameWidgetHandle } from "@repo/elementa-interactor";
 import { elllControlTypes } from "~/src/components/ui/controls/_types";
-import { ValueSetControlEntry } from "~/src/components/ui/controls/_uncertain/value_set/value_set";
+import { ValueSetControl } from "~/src/components/ui/controls/value_set";
 
 export function FrameStyleControlSheet({
   selection,
@@ -10,7 +10,7 @@ export function FrameStyleControlSheet({
 }): JSX.Element {
   return (
     <>
-      <ValueSetControlEntry
+      {/* <ValueSetControlEntry
         control={elllControlTypes.Color}
         label="Foreground"
         onRemove={() => {
@@ -41,14 +41,15 @@ export function FrameStyleControlSheet({
           instance.entity.setBackgroundColor(value)
         }
         vKey={selection.map((h) => h.key).join(",")}
-      />
+      /> */}
       <FullControlEntry label="Color scheme">
-        {/* <InstanceControl
-          control={BaseControlType.Switch}
-          instances={selection.map((handle) => handle.renderable.instance)}
+        <ValueSetControl
+          items={selection.map((handle) => handle.renderable.instance)}
+          vKey={selection.map((h) => h.key).join(",")}
           value$={(instance) => instance.entity.colorScheme$}
           value={(instance) => instance.entity.colorScheme}
           onChange={(instance, value) => instance.entity.setColorScheme(value)}
+          control={elllControlTypes.Switch}
           controlSettings={{
             options: [
               {
@@ -61,7 +62,7 @@ export function FrameStyleControlSheet({
               },
             ],
           }}
-        /> */}
+        />
       </FullControlEntry>
     </>
   );

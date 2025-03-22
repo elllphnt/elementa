@@ -3,6 +3,7 @@ import {
   FrameWidgetHandle,
   PageElementHandle,
 } from "@repo/elementa-interactor";
+import { Style } from "@repo/elementa-models";
 import { useManyObservables } from "@repo/utils";
 
 export function useFramePageStyles(frames: FrameWidgetHandle[]) {
@@ -17,7 +18,12 @@ export function useFramePageStyles(frames: FrameWidgetHandle[]) {
     fragments.map((fragment) => fragment.page),
     key,
   ).filter(Boolean) as PageElementHandle[];
-  const styles = pages.map((page) => page.style);
+  const instanceStyles = pages.map((page) => page.style);
+  const styles = useManyObservables(
+    instanceStyles.map((style) => style.style$),
+    instanceStyles.map((style) => style.style),
+    instanceStyles.map((style) => style.key).join("."),
+  ).filter(Boolean) as Style[];
 
   return styles;
 }
