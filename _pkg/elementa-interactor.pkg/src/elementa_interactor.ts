@@ -1,5 +1,5 @@
 import { Entity } from "@repo/elementa-models";
-import { ElementaStager } from "@repo/elementa-stager";
+import { ElementaStager, Renderable } from "@repo/elementa-stager";
 import { Disposable } from "@repo/utils";
 import {
   BehaviorSubject,
@@ -15,6 +15,7 @@ import {
 } from "./_lib/handles";
 import { IElementaInteractor, IEntityHandle, IHandle } from "./_types/_";
 import { IHost } from "./_types/host";
+import { fitIntoViewport } from "./commands/handlers/viewport";
 import {
   FallbackHandle,
   FrameWidgetHandle,
@@ -266,6 +267,28 @@ export class ElementaInteractor
         );
       });
 
+    // center viewport on initial load
+    const fitInterfaceSubscription = this.stager.ready$.subscribe((ready) => {
+      if (ready && !this.stager.viewport.initialized) {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            // wait until after the next paint to get the correct frame rect
+            const f = this.frames[0];
+            const i = () => ({
+              scale: this.stager.viewport.scale,
+              pan: this.stager.viewport.pan,
+              windowRect: this.stager.viewport.windowRect(
+                f.renderable.htmlElement(Renderable.defaultHtmlElementKey)!,
+              ).data,
+              contentRect: f.contentRect.data,
+            });
+            fitIntoViewport(this);
+            this.stager.viewport.initialize();
+          });
+        });
+      }
+    });
+
     // const fallbackHandleSubscription = this.stager.component$.subscribe(
     //   (component) => {
     //     if (component) {
@@ -293,6 +316,7 @@ export class ElementaInteractor
       framesSubscription.unsubscribe();
       entityToolSubscription.unsubscribe();
       widgetHandlesSubscription.unsubscribe();
+      fitInterfaceSubscription.unsubscribe();
       // widgetHandlesSubscription.unsubscribe();
       // handlesSubscription.unsubscribe();
       // fallbackHandleSubscription.unsubscribe();
@@ -315,6 +339,15 @@ export class ElementaInteractor
       // this.keyboardManager.dispose();
     });
   }
+
+  refresh() {
+    this.frames.forEach((frame) => {
+      frame.handleLayoutUpdate({
+        propagation: new LayoutUpdatePropagation(),
+      });
+    });
+  }
+
   registerHandle(handle: IHandle): void {
     this._handles.set(handle.id, handle);
   }

@@ -3,8 +3,7 @@ import { CommandHandler } from "~/src/_types/managers/command";
 
 export const fitIntoViewport: CommandHandler = (interactor) => {
   const contentRect = Rect.union(
-    interactor.frames.map((widget) => widget.contentRect ?? Rect.nullRect()) ??
-      [],
+    interactor.frames.map((widget) => widget.contentRect),
   );
   const vRect = interactor.stager.viewport.rect;
   const viewportRect = vRect.inset(Math.min(vRect.width, vRect.height) / 10);

@@ -169,12 +169,15 @@ export class ElementaEditorState extends ElementaBaseEditorState<ComponentEditor
   }
 
   get ready() {
-    return this.elementaStager?.ready ?? false;
+    return (
+      this.elementaStager?.ready && this.elementaStager.viewport.initialized
+    );
   }
   get ready$() {
-    return this.elementaStager$.pipe(
-      switchMap((stager) => stager?.ready$ ?? of(false)),
-    );
+    return combineLatestOrEmpty([
+      this.elementaStager$,
+      this.elementaStager?.viewport.initialized$ ?? of(undefined),
+    ]).pipe(map(([stager, initialized]) => stager?.ready && initialized));
   }
 
   get elementaRenderer() {

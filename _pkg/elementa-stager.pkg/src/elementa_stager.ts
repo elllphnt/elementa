@@ -10,7 +10,13 @@ import { DomStyleSheetManager } from "@repo/elementa-renderer/dist/style/dom/man
 import { combineLatestOrEmpty } from "@repo/utils";
 import { createElement } from "react";
 import { Root, createRoot } from "react-dom/client";
-import { BehaviorSubject, Observable, map, switchMap } from "rxjs";
+import {
+  BehaviorSubject,
+  Observable,
+  combineLatest,
+  map,
+  switchMap,
+} from "rxjs";
 import { ElementaEditorMode } from "./_lib/mode";
 import ElementaStage from "./components/stage";
 import { Viewport } from "./viewport";
@@ -121,17 +127,14 @@ export class ElementaStager extends ElementaRenderer {
       this._widgets$.next(newWidgets);
     });
 
-    const readySubscription = this.ready$.subscribe((ready) => {
-      if (!ready && !this.viewport.initialized) {
+    const readySubscription = combineLatest([
+      this.ready$,
+      this.viewport.initialized$,
+    ]).subscribe(([ready, initialized]) => {
+      if (!ready || !initialized) {
         this.domRoot?.style.setProperty("opacity", "0");
-      } else if (this.viewport.initialized) {
-        // if viewport is initialized, set visibility to visible immediately
-        this.domRoot?.style.setProperty("opacity", "1");
       } else {
-        // otherwise, wait a timeout to set visibility to visible to allow the fitIntoViewport command to execute
-        setTimeout(() => {
-          this.domRoot?.style.setProperty("opacity", "1");
-        }, 300);
+        this.domRoot?.style.setProperty("opacity", "1");
       }
     });
 

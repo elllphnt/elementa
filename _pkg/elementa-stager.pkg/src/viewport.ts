@@ -1,5 +1,4 @@
 import {
-  DeepPartial,
   Disposable,
   PointData,
   Rect,
@@ -7,8 +6,6 @@ import {
   VectorData,
   combineLatestOrEmpty,
 } from "@repo/utils";
-import { diff } from "deep-object-diff";
-import _ from "lodash";
 import {
   BehaviorSubject,
   debounceTime,
@@ -30,7 +27,7 @@ export class Viewport extends Disposable {
   readonly scaleMin: number;
   readonly scaleMax: number;
 
-  private _initialized = false;
+  private _initialized$ = new BehaviorSubject<boolean>(false);
   private _position$ = new BehaviorSubject<PointData>({ x: 0, y: 0 });
   private _size$ = new BehaviorSubject<{ width: number; height: number }>({
     width: 0,
@@ -45,7 +42,10 @@ export class Viewport extends Disposable {
   private _contentVisible$ = new BehaviorSubject<boolean>(true);
 
   get initialized() {
-    return this._initialized;
+    return this._initialized$.value;
+  }
+  get initialized$() {
+    return this._initialized$.asObservable();
   }
 
   get contentVisible() {
@@ -382,15 +382,9 @@ export class Viewport extends Disposable {
 
   private _setPan(pan: PointData) {
     this._pan$.next(pan);
-    if (!this._initialized) {
-      this._initialized = true;
-    }
   }
   private _setScale(scale: number) {
     this._scale$.next(scale);
-    if (!this._initialized) {
-      this._initialized = true;
-    }
   }
 
   setSize(width: number, height: number) {
@@ -846,7 +840,18 @@ export class Viewport extends Disposable {
   // bounding rect
   contentRect(element: HTMLElement) {
     const viewportRect = this.viewportRect(element);
-    return this.rectViewportToContent(viewportRect);
+    const contentRect = this.rectViewportToContent(viewportRect);
+    console.log(element.dataset.entity, {
+      windowRect: this.windowRect(element).data,
+      viewportRect: viewportRect.data,
+      contentRect: contentRect.data,
+      x: this.x,
+      y: this.y,
+      scale: this.scale,
+      pan: this.pan,
+      origin: this.initialContentOrigin,
+    });
+    return contentRect;
   }
   viewportRect(element: HTMLElement) {
     const windowRect = this.windowRect(element);
@@ -966,20 +971,16 @@ export class Viewport extends Disposable {
     this._setPan(pan);
   }
 
-  restore(data: DeepPartial<ViewportData>): void {
-    const _diff = diff(this.data, data);
-    this.restoreDiff(_diff);
+  initialize() {
+    this._initialized$.next(true);
   }
-  restoreDiff(data: DeepPartial<ViewportData>): void {
+
+  restore(data: ViewportData): void {
     if (data.pan) {
-      this._setPan(_.merge({}, this.pan, data.pan));
+      this._setPan(data.pan);
     }
     if (data.scale) {
       this._setScale(data.scale);
-    }
-
-    if (data.pan || data.scale) {
-      this._initialized = true;
     }
   }
 }
