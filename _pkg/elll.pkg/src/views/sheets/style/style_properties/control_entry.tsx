@@ -1,7 +1,10 @@
 import { Icon } from "@repo/components";
 import { Style } from "@repo/elementa-models";
+import { useObservable } from "@repo/utils";
+import { useMemo } from "react";
 import { map } from "rxjs";
 import { StylePropertyControlEntry } from "~/src/components/ui/controls/style_property";
+import { useElll } from "~/src/hooks/elll/elll";
 import { useCommonReactivePair } from "~/src/hooks/utils/reactivity";
 import { StylePropertyConfig } from "~/src/modules/elementa/style/properties";
 import { Conditional } from "./conditional";
@@ -11,12 +14,23 @@ import { addDigitToLowestRank } from "./utils";
 export function StylePropertiesControlEntry({
   index,
   styles,
-  property,
+  property: _property,
 }: {
   index?: number;
   styles: Style[];
   property: StylePropertyConfig;
 }) {
+  const elll = useElll();
+  const [_overrides$, _overrides] = useMemo(() => {
+    const overrides = _property.overrides?.(styles, elll);
+    const overrides$ = _property.overrides$?.(styles, elll);
+    return [overrides$, overrides];
+  }, [elll, styles.map((s) => s.key).join(",")]);
+  const overrides = useObservable(_overrides$, _overrides);
+  const property = {
+    ..._property,
+    ...overrides,
+  };
   const [_value$, _value] = useCommonReactivePair(
     styles.map((style) => style.propertyValue$(property.name)),
     styles.map((style) => style.propertyValue(property.name)),

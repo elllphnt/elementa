@@ -735,6 +735,86 @@ export const elllIcons16Data = {
       </>
     ),
   },
+  justify: {
+    name: "elll.icons.16px.justify",
+    viewBox: "0 0 16 16",
+    height: 16,
+    width: 16,
+    content: (
+      <>
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M8 2H9V14H8V2ZM6 5H3V11H6V5ZM2 4V12H7V4H2ZM11 7H13V9H11V7ZM10 10V6H14V10H10Z"
+          fill="currentColor"
+        />
+      </>
+    ),
+  },
+  align: {
+    name: "elll.icons.16px.align",
+    viewBox: "0 0 16 16",
+    height: 16,
+    width: 16,
+    content: (
+      <>
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M14 2V3L2 3V2L14 2ZM7 5H4V11H7V5ZM3 4V12H8V4H3ZM10 5H12V7H10V5ZM9 8V4H13V8H9Z"
+          fill="currentColor"
+        />
+      </>
+    ),
+  },
+  alignContent: {
+    name: "elll.icons.16px.align-content",
+    viewBox: "0 0 16 16",
+    height: 16,
+    width: 16,
+    content: (
+      <>
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M14 3V2L2 2V3L14 3ZM4 5H6V8H4V5ZM3 9V4H7V9H3ZM9 11H4V13H9V11ZM3 10V14H10V10H3ZM9 5H12V8H9V5ZM8 9V4H13V9H8Z"
+          fill="currentColor"
+        />
+      </>
+    ),
+  },
+  rows: {
+    name: "elll.icons.16px.rows",
+    viewBox: "0 0 16 16",
+    height: 16,
+    width: 16,
+    content: (
+      <>
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M13 3H3V4H13V3ZM3 2H2V3V4V5H3H13H14V4V3V2H13H3ZM13 7H3V8H13V7ZM3 6H2V7V8V9H3H13H14V8V7V6H13H3ZM3 11H13V13H3V11ZM2 10H3H13H14V11V13V14H13H3H2V13V11V10Z"
+          fill="currentColor"
+        />
+      </>
+    ),
+  },
+  columns: {
+    name: "elll.icons.16px.columns",
+    viewBox: "0 0 16 16",
+    height: 16,
+    width: 16,
+    content: (
+      <>
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M3 3L3 13H4L4 3H3ZM2 13V14H3H4H5V13L5 3V2H4H3H2V3V13ZM7 3L7 13H8L8 3H7ZM6 13V14H7H8H9V13L9 3V2H8H7H6V3L6 13ZM11 13L11 3L13 3L13 13H11ZM10 14V13L10 3V2H11H13H14V3L14 13V14H13H11H10Z"
+          fill="currentColor"
+        />
+      </>
+    ),
+  },
   inset: {
     name: "elll.icons.16px.inset",
     viewBox: "0 0 16 16",
@@ -742,14 +822,11 @@ export const elllIcons16Data = {
     width: 16,
     content: (
       <>
-        <rect x="2.5" y="2.5" width="11" height="11" stroke="currentColor" />
-        <rect
-          opacity="0.4"
-          x="4.5"
-          y="4.5"
-          width="7"
-          height="7"
-          stroke="currentColor"
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M3 3H13V13H3V3ZM2 14V2H14V14H2ZM4 5V7H5V5H7V4H5H4V5ZM11 5H9V4L11 4H12V5V7H11V5ZM9 12H11H12V11V9H11V11H9V12ZM5 9H4V11V12H5H7V11H5V9Z"
+          fill="currentColor"
         />
       </>
     ),
@@ -765,6 +842,22 @@ export const elllIcons16Data = {
         <rect x="4" y="2" width="8" height="1" fill="currentColor" />
         <rect x="4" y="13" width="8" height="1" fill="currentColor" />
         <rect x="13" y="4" width="1" height="8" fill="currentColor" />
+      </>
+    ),
+  },
+  color: {
+    name: "elll.icons.16px.color",
+    viewBox: "0 0 16 16",
+    height: 16,
+    width: 16,
+    content: (
+      <>
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M7.81025 13.997C7.84437 13.9983 7.87854 13.9993 7.91273 13.9999C7.94093 14.0004 7.97003 13.9994 7.99995 13.997M7.81025 13.997C7.80484 13.9968 7.79944 13.9966 7.79404 13.9964C7.52628 13.9854 7.26078 13.9528 7 13.8996C6.40337 13.7778 5.83141 13.5475 5.3135 13.2176C4.5358 12.7221 3.91026 12.0212 3.50603 11.1924C3.1018 10.3635 2.93464 9.43905 3.02302 8.52114C3.1114 7.60323 3.45188 6.72763 4.00682 5.99117L8 1L11.9932 5.99092C12.5481 6.72735 12.8886 7.6029 12.977 8.52077C13.0654 9.43863 12.8982 10.3631 12.494 11.1919C12.0897 12.0206 11.4642 12.7215 10.6865 13.217C9.93764 13.694 9.0758 13.9627 8.18975 13.9964C8.18384 13.9966 8.17793 13.9968 8.17202 13.997C8.14379 13.998 8.11554 13.9987 8.08726 13.9992C8.06175 13.9997 8.03552 13.9989 8.0086 13.997C8.00574 13.9968 8.00282 13.9973 7.99995 13.997M7.29169 12.9374L8.07591 12.9993C8.81135 12.9853 9.52875 12.7688 10.1492 12.3736C10.7714 11.9772 11.2718 11.4165 11.5952 10.7535C11.9186 10.0904 12.0523 9.35091 11.9816 8.61661C11.9113 7.88686 11.6419 7.19055 11.2028 6.60368L8.00002 2.6007L4.79725 6.60392C4.35815 7.19082 4.08869 7.88718 4.01842 8.61698C3.94771 9.35133 4.08145 10.0909 4.40483 10.754C4.72822 11.4171 5.22866 11.9778 5.85082 12.3742C6.29161 12.655 6.78133 12.8456 7.29169 12.9374Z"
+          fill="currentColor"
+        />
       </>
     ),
   },
@@ -1096,6 +1189,22 @@ export const elllIcons16Data = {
       </>
     ),
   },
+  fontWeightStyle: {
+    name: "elll.icons.16px.font-weight-style",
+    viewBox: "0 0 16 16",
+    height: 16,
+    width: 16,
+    content: (
+      <>
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M3.04189 2H13.0419L12.8682 2.98481L12.6946 3.96962H11.6946L11.8682 2.98481H9.36824L7.63176 12.8329H9.13176L8.95811 13.8177H2.95811L3.13176 12.8329H4.63176L6.36824 2.98481H3.86824L3.69459 3.96962H2.69459L2.86824 2.98481L3.04189 2Z"
+          fill="currentColor"
+        />
+      </>
+    ),
+  },
   fontSize: {
     name: "elll.icons.16px.font-size",
     viewBox: "0 0 16 16",
@@ -1237,6 +1346,54 @@ export const elllIcons16Data = {
       </>
     ),
   },
+  textDecorationUnderline: {
+    name: "elll.icons.16px.text-decoration-underline",
+    viewBox: "0 0 16 16",
+    height: 16,
+    width: 16,
+    content: (
+      <>
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M13 2H3V3V4H4V3H7.5V11H6V12H10V11H8.5V3H12V4H13V3V2ZM14 13H2V14H14V13Z"
+          fill="currentColor"
+        />
+      </>
+    ),
+  },
+  textDecorationStrikeout: {
+    name: "elll.icons.16px.text-decoration-strikeout",
+    viewBox: "0 0 16 16",
+    height: 16,
+    width: 16,
+    content: (
+      <>
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M13 2H3V3V4H4V3H7.5V7H4V8H7.5V13H6V14H10V13H8.5V8H12V7H8.5V3H12V4H13V3V2Z"
+          fill="currentColor"
+        />
+      </>
+    ),
+  },
+  textDecorationOverline: {
+    name: "elll.icons.16px.text-decoration-overline",
+    viewBox: "0 0 16 16",
+    height: 16,
+    width: 16,
+    content: (
+      <>
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M14 2H2V3H14V2ZM13 4H3V5V6H4V5H7.5V13H6V14H10V13H8.5V5H12V6H13V5V4Z"
+          fill="currentColor"
+        />
+      </>
+    ),
+  },
   textOverflow: {
     name: "elll.icons.16px.text-overflow",
     viewBox: "0 0 16 16",
@@ -1252,6 +1409,54 @@ export const elllIcons16Data = {
         <rect x="7.5" y="3" width="1" height="11" fill="currentColor" />
         <rect x="3" y="3" width="1" height="1" fill="currentColor" />
         <rect x="6" y="13" width="4" height="1" fill="currentColor" />
+      </>
+    ),
+  },
+  textCapitalize: {
+    name: "elll.icons.16px.text-capitalize",
+    viewBox: "0 0 16 16",
+    height: 16,
+    width: 16,
+    content: (
+      <>
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M2 2H12V3V4H11V3H7.5V13H8.91617V14H4.91617V13H6.5V3H3V4H2V3V2ZM9.98912 12.7634C9.61673 12.2508 9.41617 11.6335 9.41617 11V7.5V5H10.4162V7H12.4162V8H10.4162V11C10.4162 11.4224 10.5499 11.8339 10.7981 12.1756C11.0464 12.5173 11.3964 12.7716 11.7981 12.9021C12.1998 13.0326 12.6325 13.0326 13.0342 12.9021C13.4359 12.7716 13.7859 12.5173 14.0342 12.1756L14.8432 12.7634C14.4708 13.2759 13.9457 13.6574 13.3432 13.8532C12.7407 14.0489 12.0916 14.0489 11.4891 13.8532C10.8866 13.6574 10.3615 13.2759 9.98912 12.7634Z"
+          fill="currentColor"
+        />
+      </>
+    ),
+  },
+  textUppercase: {
+    name: "elll.icons.16px.text-uppercase",
+    viewBox: "0 0 16 16",
+    height: 16,
+    width: 16,
+    content: (
+      <>
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M3 2H13V3V4H12V3H8.5V13H9.91617V14H5.91617V13H7.5V3H4V4H3V3V2Z"
+          fill="currentColor"
+        />
+      </>
+    ),
+  },
+  textLowercase: {
+    name: "elll.icons.16px.text-lowercase",
+    viewBox: "0 0 16 16",
+    height: 16,
+    width: 16,
+    content: (
+      <>
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M4.5 7V5H3.5V7.5V11C3.5 11.6335 3.70056 12.2508 4.07295 12.7634C4.44533 13.2759 4.97042 13.6574 5.57295 13.8532C6.17548 14.0489 6.82452 14.0489 7.42705 13.8532C8.02958 13.6574 8.55467 13.2759 8.92705 12.7634L8.11803 12.1756C7.86978 12.5173 7.51972 12.7716 7.11803 12.9021C6.71635 13.0326 6.28365 13.0326 5.88197 12.9021C5.48028 12.7716 5.13022 12.5173 4.88197 12.1756C4.63371 11.8339 4.5 11.4224 4.5 11V8H6.5V7H4.5ZM8.5 11C8.5 11.6335 8.70056 12.2508 9.07295 12.7634C9.44533 13.2759 9.97042 13.6574 10.5729 13.8532C11.1755 14.0489 11.8245 14.0489 12.4271 13.8532C13.0296 13.6574 13.5547 13.2759 13.9271 12.7634L13.118 12.1756C12.8698 12.5173 12.5197 12.7716 12.118 12.9021C11.7163 13.0326 11.2837 13.0326 10.882 12.9021C10.4803 12.7716 10.1302 12.5173 9.88197 12.1756C9.63371 11.8339 9.5 11.4224 9.5 11V8H11.5V7H9.5V5H8.5V7.5V11Z"
+          fill="currentColor"
+        />
       </>
     ),
   },

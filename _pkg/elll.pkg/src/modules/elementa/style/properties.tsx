@@ -8,13 +8,23 @@ import {
   percentUnits,
   ResolvedControlProps,
 } from "@repo/components";
+import { Style } from "@repo/elementa-models";
+import { combineLatestOrEmpty } from "@repo/utils";
+import { combineLatest, map, Observable, of, switchMap } from "rxjs";
+import { fontVariantName } from "~/src/libs/fonts/font";
+import { resolveCommon } from "~/src/libs/utils";
+import { IElll } from "~/src/types/elll";
 import {
   EditorControlMap,
   ElllControlType,
   elllControlTypes,
 } from "../../../components/ui/controls/_types";
+import {
+  getElllWorkspaceElementaProject,
+  getElllWorkspaceElementaProject$,
+} from "../project/_lib";
 
-const icons = elllIcons16 as Record<string, string>;
+const icons = elllIcons16;
 
 export type StylePropertyConfig<T extends ElllControlType = ElllControlType> = {
   name: StylePropertyName;
@@ -26,6 +36,11 @@ export type StylePropertyConfig<T extends ElllControlType = ElllControlType> = {
   icon?: string;
   groups?: StylePropertyGroupConfig[];
   variant?: ControlEntryVariant;
+  overrides?: (styles: Style[], elll: IElll) => Partial<StylePropertyConfig<T>>;
+  overrides$?: (
+    styles: Style[],
+    elll: IElll,
+  ) => Observable<Partial<StylePropertyConfig<T>>>;
 };
 export type StylePropertyGroupConfig = {
   name: string;
@@ -305,15 +320,15 @@ export const layoutStylePropertyControls: StylePropertyGroupConfig[] = [
         initialValue: "flex",
         controlSettings: {
           options: [
-            { value: "flex", label: <Icon name={icons.row} /> },
+            { value: "flex", label: <Icon name={icons.column} /> },
             { value: "grid", label: <Icon name={icons.grid} /> },
           ],
         },
         groups: [
-          // Flex
+          // Direction
           {
-            name: "Flex",
-            icon: icons.column,
+            name: "Direction",
+            icon: icons.direction,
             enabled: (value) => value === "flex",
             properties: [
               {
@@ -325,36 +340,30 @@ export const layoutStylePropertyControls: StylePropertyGroupConfig[] = [
                 autoInitialize: true,
                 controlSettings: {
                   options: [
-                    { value: "row", label: <Icon name={icons.row} /> },
-                    { value: "column", label: <Icon name={icons.column} /> },
+                    { value: "row", label: <Icon name={icons.direction} /> },
+                    {
+                      value: "column",
+                      label: (
+                        <Icon name={icons.direction} className="el-rotate-90" />
+                      ),
+                    },
                   ],
                 },
               },
-              {
-                name: "justify-content",
-                displayName: "Justify",
-                icon: icons.justifyContent,
-                control: elllControlTypes.Select,
-                autoInitialize: true,
-                initialValue: "center",
-                controlSettings: {
-                  options: [
-                    { value: "start", label: "Start" },
-                    { value: "end", label: "End" },
-                    { value: "center", label: "Center" },
-                    { value: "space-between", label: "Space Between" },
-                    { value: "space-around", label: "Space Around" },
-                    { value: "space-evenly", label: "Space Evenly" },
-                  ],
-                },
-              },
+            ],
+          },
+          // Align
+          {
+            name: "Align",
+            icon: icons.align,
+            enabled: (value) => value === "flex",
+            properties: [
               {
                 name: "align-items",
                 displayName: "Align",
-                icon: icons.alignItems,
-                control: elllControlTypes.Select,
+                icon: icons.align,
                 initialValue: "center",
-                autoInitialize: true,
+                control: elllControlTypes.Select,
                 controlSettings: {
                   options: [
                     { value: "stretch", label: "Stretch" },
@@ -367,16 +376,89 @@ export const layoutStylePropertyControls: StylePropertyGroupConfig[] = [
               },
             ],
           },
+          // Justify
+          {
+            name: "Justify",
+            icon: icons.justify,
+            enabled: (value) => value === "flex",
+            properties: [
+              {
+                name: "justify-content",
+                displayName: "Justify",
+                icon: icons.justify,
+                initialValue: "center",
+                control: elllControlTypes.Select,
+                controlSettings: {
+                  options: [
+                    { value: "start", label: "Start" },
+                    { value: "end", label: "End" },
+                    { value: "center", label: "Center" },
+                    { value: "space-between", label: "Space Between" },
+                    { value: "space-around", label: "Space Around" },
+                    { value: "space-evenly", label: "Space Evenly" },
+                  ],
+                },
+              },
+            ],
+          },
+          // Wrap
+          {
+            name: "Wrap",
+            icon: icons.wrap,
+            enabled: (value) => value === "flex",
+            properties: [
+              {
+                name: "flex-wrap",
+                displayName: "Wrap",
+                icon: icons.wrap,
+                control: elllControlTypes.Select,
+                initialValue: "wrap",
+                controlSettings: {
+                  options: [
+                    { value: "wrap", label: "Wrap" },
+                    { value: "wrap-reverse", label: "Wrap Reverse" },
+                  ],
+                },
+                groups: [
+                  {
+                    name: "Align Content",
+                    icon: icons.alignContent,
+                    properties: [
+                      {
+                        name: "align-content",
+                        displayName: "Align Content",
+                        icon: icons.alignContent,
+                        control: elllControlTypes.Select,
+                        initialValue: "center",
+                        controlSettings: {
+                          options: [
+                            { value: "start", label: "Start" },
+                            { value: "end", label: "End" },
+                            { value: "center", label: "Center" },
+                            { value: "stretch", label: "Stretch" },
+                            { value: "space-between", label: "Space Between" },
+                            { value: "space-around", label: "Space Around" },
+                            { value: "space-evenly", label: "Space Evenly" },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
           // Grid
           {
-            name: "Grid",
-            icon: icons.grid,
+            name: "Template",
+            icon: icons.columns,
             enabled: (value) => value === "grid",
             properties: [
               {
                 name: "grid-template-rows",
                 displayName: "Rows",
-                icon: icons.row,
+                icon: icons.rows,
+                initialValue: 2,
                 control: elllControlTypes.Spinner,
                 controlSettings: {
                   min: 0,
@@ -386,15 +468,21 @@ export const layoutStylePropertyControls: StylePropertyGroupConfig[] = [
               {
                 name: "grid-template-columns",
                 displayName: "Columns",
-                icon: icons.column,
+                icon: icons.columns,
                 initialValue: 2,
-                autoInitialize: true,
                 control: elllControlTypes.Spinner,
                 controlSettings: {
                   min: 0,
                   showIncrementors: true,
                 },
               },
+            ],
+          },
+          {
+            name: "Items",
+            icon: icons.container,
+            enabled: (value) => value === "grid",
+            properties: [
               {
                 name: "justify-items",
                 displayName: "Justify Items",
@@ -412,7 +500,7 @@ export const layoutStylePropertyControls: StylePropertyGroupConfig[] = [
               {
                 name: "align-items",
                 displayName: "Align Items",
-                icon: icons.alignItems,
+                icon: icons.align,
                 control: elllControlTypes.Select,
                 controlSettings: {
                   options: [
@@ -423,10 +511,17 @@ export const layoutStylePropertyControls: StylePropertyGroupConfig[] = [
                   ],
                 },
               },
+            ],
+          },
+          {
+            name: "Content",
+            icon: icons.grid,
+            enabled: (value) => value === "grid",
+            properties: [
               {
                 name: "justify-content",
                 displayName: "Justify Content",
-                icon: icons.justifyContent,
+                icon: icons.justify,
                 control: elllControlTypes.Select,
                 controlSettings: {
                   options: [
@@ -475,8 +570,10 @@ export const layoutStylePropertyControls: StylePropertyGroupConfig[] = [
                 name: "gap-y",
                 displayName: "Row Gap",
                 icon: icons.gap,
-                initialValue: { value: 8, unit: "px" },
-                autoInitialize: true,
+                initialValue: {
+                  value: 8,
+                  unit: "px",
+                },
                 control: elllControlTypes.Length,
                 variant: ControlEntryVariant.Mini,
               },
@@ -484,30 +581,12 @@ export const layoutStylePropertyControls: StylePropertyGroupConfig[] = [
                 name: "gap-x",
                 displayName: "Column Gap",
                 icon: icons.gap,
-                initialValue: { value: 8, unit: "px" },
-                autoInitialize: true,
+                initialValue: {
+                  value: 8,
+                  unit: "px",
+                },
                 control: elllControlTypes.Length,
                 variant: ControlEntryVariant.Mini,
-              },
-            ],
-          },
-          // Wrap
-          {
-            name: "Wrap",
-            icon: icons.wrap,
-            properties: [
-              {
-                name: "flex-wrap",
-                displayName: "Wrap",
-                icon: icons.wrap,
-                control: elllControlTypes.Select,
-                initialValue: "wrap",
-                controlSettings: {
-                  options: [
-                    { value: "wrap", label: "Wrap" },
-                    { value: "wrap-reverse", label: "Wrap Reverse" },
-                  ],
-                },
               },
             ],
           },
@@ -520,7 +599,7 @@ export const layoutStylePropertyControls: StylePropertyGroupConfig[] = [
     icon: icons.inset,
     compound: {
       key: "compound-padding",
-      icon: icons.edges,
+      icon: icons.inset,
       label: "Padding",
       control: elllControlTypes.Dimension,
       controlSettings: {
@@ -606,12 +685,12 @@ export const layoutStylePropertyControls: StylePropertyGroupConfig[] = [
 export const textStylePropertyControls: StylePropertyGroupConfig[] = [
   {
     name: "Color",
-    icon: icons.fileVector,
+    icon: icons.color,
     properties: [
       {
         name: "color",
         displayName: "Color",
-        icon: icons.fileVector,
+        icon: icons.color,
         control: elllControlTypes.Color,
       },
     ],
@@ -623,14 +702,102 @@ export const textStylePropertyControls: StylePropertyGroupConfig[] = [
       {
         name: "font-family",
         displayName: "Font Family",
-        icon: icons.fontFamily,
-        control: elllControlTypes.Text,
+        icon: icons.font,
+        control: elllControlTypes.Select,
+        overrides: (styles, elll) => {
+          // return fonts from elll
+          const typefaces =
+            getElllWorkspaceElementaProject(elll)?.styleManager.typefaceSheet
+              .typefaces;
+          return {
+            controlSettings: {
+              options: typefaces?.map((typeface) => ({
+                value: typeface.definition?.family,
+                label: typeface.definition?.family,
+              })),
+            },
+          };
+        },
+        overrides$: (styles, elll) => {
+          return getElllWorkspaceElementaProject$(elll).pipe(
+            switchMap(
+              (project) =>
+                project?.styleManager.typefaceSheet.typefaces$ ?? of([]),
+            ),
+            map((typefaces) => ({
+              controlSettings: {
+                options: typefaces.map((typeface) => ({
+                  value: typeface.definition?.family,
+                  label: typeface.definition?.family,
+                })),
+              },
+            })),
+          );
+        },
       },
       {
         name: "font-weight-style",
         displayName: "Weight Style",
         icon: icons.fontWeightStyle,
         control: elllControlTypes.Select,
+        overrides: (styles, elll) => {
+          const currentFontFamily = resolveCommon(
+            styles.map((s) => s.propertyValue("font-family")),
+          );
+          const typeface =
+            typeof currentFontFamily === "string"
+              ? getElllWorkspaceElementaProject(
+                  elll,
+                )?.styleManager.typefaceSheet.typefaces.find(
+                  (t) => t.definition?.family === currentFontFamily,
+                )
+              : undefined;
+
+          const optionsFromTypeface = typeface?.variants?.map((variant) => ({
+            value: variant,
+            label: fontVariantName(variant),
+          }));
+
+          return {
+            controlSettings: {
+              options: optionsFromTypeface ?? [],
+            },
+          };
+        },
+        overrides$: (styles, elll) => {
+          return combineLatest([
+            getElllWorkspaceElementaProject$(elll).pipe(
+              switchMap(
+                (project) =>
+                  project?.styleManager.typefaceSheet.typefaces$ ?? of([]),
+              ),
+            ),
+            combineLatestOrEmpty(
+              styles.map((s) => s.propertyValue$("font-family")),
+            ),
+          ]).pipe(
+            map(([typefaces, fontFamilies]) => {
+              const currentFontFamily = resolveCommon(fontFamilies);
+              const typeface =
+                typeof currentFontFamily === "string"
+                  ? typefaces.find(
+                      (t) => t.definition?.family === currentFontFamily,
+                    )
+                  : undefined;
+              const optionsFromTypeface = typeface?.variants?.map(
+                (variant) => ({
+                  value: variant,
+                  label: fontVariantName(variant),
+                }),
+              );
+              return {
+                controlSettings: {
+                  options: optionsFromTypeface ?? [],
+                },
+              };
+            }),
+          );
+        },
       },
     ],
   },
@@ -666,13 +833,22 @@ export const textStylePropertyControls: StylePropertyGroupConfig[] = [
         name: "text-align",
         displayName: "Align",
         icon: icons.textAlignCenter,
-        control: elllControlTypes.Select,
+        control: elllControlTypes.Switch,
         controlSettings: {
           options: [
-            { value: "left", label: "Left" },
-            { value: "center", label: "Center" },
-            { value: "right", label: "Right" },
-            { value: "justify", label: "Justify" },
+            {
+              value: "left",
+              label: <Icon name={elllIcons16.textAlignStart} />,
+            },
+            {
+              value: "center",
+              label: <Icon name={elllIcons16.textAlignCenter} />,
+            },
+            { value: "right", label: <Icon name={elllIcons16.textAlignEnd} /> },
+            {
+              value: "justify",
+              label: <Icon name={elllIcons16.textJustify} />,
+            },
           ],
         },
       },
@@ -686,13 +862,21 @@ export const textStylePropertyControls: StylePropertyGroupConfig[] = [
         name: "text-decoration",
         displayName: "Decoration",
         icon: icons.textDecoration,
-        control: elllControlTypes.Select,
+        control: elllControlTypes.Switch,
         controlSettings: {
           options: [
-            { value: "none", label: "None" },
-            { value: "underline", label: "Underline" },
-            { value: "overline", label: "Overline" },
-            { value: "line-through", label: "Line Through" },
+            {
+              value: "underline",
+              label: <Icon name={elllIcons16.textDecorationUnderline} />,
+            },
+            {
+              value: "overline",
+              label: <Icon name={elllIcons16.textDecorationOverline} />,
+            },
+            {
+              value: "line-through",
+              label: <Icon name={elllIcons16.textDecorationStrikeout} />,
+            },
           ],
         },
       },
@@ -700,19 +884,27 @@ export const textStylePropertyControls: StylePropertyGroupConfig[] = [
   },
   {
     name: "Transform",
-    icon: icons.textTransform,
+    icon: icons.textCapitalize,
     properties: [
       {
         name: "text-transform",
         displayName: "Transform",
-        icon: icons.textTransform,
-        control: elllControlTypes.Select,
+        icon: icons.textCapitalize,
+        control: elllControlTypes.Switch,
         controlSettings: {
           options: [
-            { value: "none", label: "None" },
-            { value: "uppercase", label: "Uppercase" },
-            { value: "lowercase", label: "Lowercase" },
-            { value: "capitalize", label: "Capitalize" },
+            {
+              value: "uppercase",
+              label: <Icon name={elllIcons16.textUppercase} />,
+            },
+            {
+              value: "lowercase",
+              label: <Icon name={elllIcons16.textLowercase} />,
+            },
+            {
+              value: "capitalize",
+              label: <Icon name={elllIcons16.textCapitalize} />,
+            },
           ],
         },
       },
@@ -748,20 +940,6 @@ export const textStylePropertyControls: StylePropertyGroupConfig[] = [
         controlSettings: {
           min: 0,
         },
-      },
-    ],
-  },
-];
-export const backgroundStylePropertyControls: StylePropertyGroupConfig[] = [
-  {
-    name: "Color",
-    icon: icons.background,
-    properties: [
-      {
-        name: "background-color",
-        displayName: "Color",
-        icon: icons.containerFilled,
-        control: elllControlTypes.Fill,
       },
     ],
   },

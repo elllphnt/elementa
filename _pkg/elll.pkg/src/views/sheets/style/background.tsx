@@ -11,12 +11,12 @@ export function BackgroundControlSheet({ styles }: { styles: Style[] }) {
         styles={styles}
         group={{
           name: "Background Color",
-          icon: elllIcons16.containerFilled,
+          icon: elllIcons16.color,
           properties: [
             {
               name: "background-color",
               displayName: "Background Color",
-              icon: elllIcons16.containerFilled,
+              icon: elllIcons16.color,
               initialValue: 1,
               control: elllControlTypes.Color,
             },
