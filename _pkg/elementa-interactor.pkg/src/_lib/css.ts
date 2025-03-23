@@ -53,6 +53,17 @@ export const layoutProperties = new Set([
   "grid-template-rows",
   "grid-template-areas",
   "grid-template",
+  "--elll-translate-x",
+  "--elll-translate-y",
+  "--elll-translate-z",
+  "--elll-rotate-x",
+  "--elll-rotate-y",
+  "--elll-rotate-z",
+  "--elll-scale-x",
+  "--elll-scale-y",
+  "--elll-scale-z",
+  "--elll-skew-x",
+  "--elll-skew-y",
 ]);
 
 export function resolveNearestPositionedParent(

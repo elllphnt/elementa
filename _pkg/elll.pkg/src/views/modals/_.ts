@@ -15,6 +15,7 @@ import { CreateVersionModal } from "./tag/create_tag";
 import { TypefaceManager } from "./typefaces/typefaces";
 import { AccountModal } from "./user/account";
 import { ExportMenu } from "./workspace/export";
+import { BackgroundLayer } from "./background_layer/background_layer";
 
 export const modalViews = {
   project: {
@@ -99,5 +100,11 @@ export const modalViews = {
   dynamic: {
     id: keys.views.modals.dynamic,
     render: DynamicControlMenuView,
+  },
+
+  // Background Layer
+  backgroundLayer: {
+    id: keys.views.modals.backgroundLayer,
+    render: BackgroundLayer,
   },
 } satisfies Record<string, View>;

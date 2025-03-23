@@ -1,6 +1,6 @@
-import { Icon, Tooltip, ViewComponent } from "@repo/components";
-import cx from "classnames";
+import { ViewComponent } from "@repo/components";
 import { useWorkspaceState } from "../../../hooks/shell/workspace";
+import Tabs from "./tabs";
 
 export type TabPanelProps<D> = D & {
   stateKey: string[];
@@ -67,64 +67,16 @@ export function TabContainer<P extends {} = {}>({
         width: "100%",
       }}
     >
-      <div
-        style={{
-          height: 35,
-          flexShrink: 0,
-        }}
-      >
-        <div
-          className={cx("no-scrollbar", {
-            // "el-px-2": useIcon,
-          })}
-          style={{
-            width: "100%",
-            height: "100%",
-            overflowX: "auto",
-            display: "flex",
-            alignItems: "center",
-            // justifyContent: useIcon?"center":
-          }}
-        >
-          {enabledTabs.map((tab, index) => {
-            const name =
-              typeof tab.name === "function" ? tab.name(props) : tab.name;
-            const trim = trimFirst && index === 0;
-
-            return (
-              <Tooltip
-                key={tab.key}
-                content={name}
-                sideOffset={4}
-                delayDuration={0}
-              >
-                <button
-                  style={{
-                    textTransform: "uppercase",
-                    letterSpacing: "0.8px",
-                    fontSize: "0.85em",
-                    lineHeight: 1,
-                  }}
-                  className={cx({
-                    "el-pr-3": trim,
-                    "el-px-3": !trim,
-                    "el-text-fg-500": tab.key === activeTabKey,
-                    "el-text-fg-300 hover:el-text-fg-400":
-                      tab.key !== activeTabKey,
-                  })}
-                  onClick={() => setActiveTabKey(tab.key)}
-                >
-                  {useIcon ? (
-                    <Icon name={tab.icon} className="el-h-4 el-w-4" />
-                  ) : (
-                    name
-                  )}
-                </button>
-              </Tooltip>
-            );
-          })}
-        </div>
-      </div>
+      <Tabs
+        useIcon={useIcon}
+        trimFirst={trimFirst}
+        tabs={enabledTabs.map((tab) => ({
+          ...tab,
+          name: typeof tab.name === "function" ? tab.name(props) : tab.name,
+        }))}
+        active={activeTabKey}
+        setActive={setActiveTabKey}
+      />
 
       {hr ? <hr /> : <></>}
       <div

@@ -9,7 +9,7 @@ import {
   StylePropertyName,
 } from "@elllphnt/elll-element";
 import { combineLatestOrEmpty } from "@repo/utils";
-import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
+import { BehaviorSubject, map, Observable, of } from "rxjs";
 import { CssStyleSheet } from "~/src/css/_";
 import { StylesheetCssStyleSheet } from "~/src/css/stylesheets/stylesheet/stylesheet";
 import { StyleOverridesMap, Stylesheet } from "~/src/style/_";
@@ -103,15 +103,6 @@ export abstract class Element<
     );
   }
 
-  // styles
-
-  get styles() {
-    return this.stylesheet.styles;
-  }
-  get styles$() {
-    return this.stylesheet.styles$;
-  }
-
   // style overrides
 
   get styleOverrides() {
@@ -140,10 +131,9 @@ export abstract class Element<
       ...super._data,
       type: this.type,
       link: this.link,
-      styles: Object.fromEntries(
-        Object.entries(this.styles).map(([key, style]) => [key, style.data]),
-      ),
+      styles: this.stylesheet.data.styles,
       styleOverrides: this.styleOverridesMap.data as any,
+      styleFragments: this.stylesheet.data.styleFragments,
       interactions: this.interactions,
       hidden: this.hidden,
       repeat: this.repeat,
@@ -153,16 +143,7 @@ export abstract class Element<
     return combineLatestOrEmpty([
       super._data$,
       this.link$,
-      this.styles$.pipe(
-        switchMap((styles) =>
-          combineLatestOrEmpty(
-            Object.entries(styles).map(([key, style]) =>
-              style.data$.pipe(map((data) => [key, data])),
-            ),
-          ),
-        ),
-        map((styles) => Object.fromEntries(styles)),
-      ),
+      this.stylesheet.data$,
       this.styleOverridesMap.data$,
       this.interactions$,
       this.hidden$,
@@ -172,7 +153,7 @@ export abstract class Element<
         ([
           data,
           link,
-          styles,
+          stylesheet,
           styleOverrides,
           interactions,
           hidden,
@@ -180,7 +161,8 @@ export abstract class Element<
         ]) => ({
           ...data,
           link,
-          styles,
+          styles: stylesheet.styles,
+          styleFragments: stylesheet.styleFragments,
           styleOverrides: styleOverrides as any,
           interactions,
           hidden,
@@ -279,6 +261,7 @@ export abstract class Element<
     // styles
     this.stylesheet.restore({
       styles: data.styles,
+      styleFragments: data.styleFragments,
     });
 
     // hidden

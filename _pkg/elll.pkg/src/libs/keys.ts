@@ -36,6 +36,7 @@ export const keys = {
       state: "elll.views.modals.state",
       typefaces: "elll.views.modals.typefaces",
       dynamic: "elll.views.modals.dynamic",
+      backgroundLayer: "elll.views.modals.backgroundLayer",
     },
   },
   editors: {

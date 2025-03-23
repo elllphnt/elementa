@@ -944,11 +944,222 @@ export const textStylePropertyControls: StylePropertyGroupConfig[] = [
     ],
   },
 ];
-export const appearancesStylePropertyControls: StylePropertyGroupConfig[] = [
+export const borderStylePropertyControls: StylePropertyGroupConfig[] = [
   {
-    name: "Border",
-    icon: icons.border,
+    name: "Width",
+    icon: icons.width,
+    compound: {
+      key: "compound-border-width",
+      icon: icons.edges,
+      label: "Edges",
+      control: elllControlTypes.Dimension,
+      controlSettings: {
+        min: 0,
+        defaultUnit: "px",
+        units: [...lengthUnits, ...percentUnits],
+      },
+    },
+    properties: [
+      {
+        name: "border-top-width",
+        displayName: "Top",
+        autoInitialize: true,
+        initialValue: {
+          value: 1,
+          unit: "px",
+        },
+        variant: ControlEntryVariant.Mini,
+        icon: icons.top,
+        control: elllControlTypes.Dimension,
+        controlSettings: {
+          min: 0,
+          defaultUnit: "px",
+          units: [...lengthUnits, ...percentUnits],
+        },
+      },
+      {
+        name: "border-right-width",
+        displayName: "Right",
+        autoInitialize: true,
+        initialValue: {
+          value: 1,
+          unit: "px",
+        },
+        variant: ControlEntryVariant.Mini,
+        icon: icons.right,
+        control: elllControlTypes.Dimension,
+        controlSettings: {
+          min: 0,
+          defaultUnit: "px",
+          units: [...lengthUnits, ...percentUnits],
+        },
+      },
+      {
+        name: "border-bottom-width",
+        displayName: "Bottom",
+        autoInitialize: true,
+        initialValue: {
+          value: 1,
+          unit: "px",
+        },
+        variant: ControlEntryVariant.Mini,
+        icon: icons.bottom,
+        control: elllControlTypes.Dimension,
+        controlSettings: {
+          min: 0,
+          defaultUnit: "px",
+          units: [...lengthUnits, ...percentUnits],
+        },
+      },
+      {
+        name: "border-left-width",
+        displayName: "Left",
+        autoInitialize: true,
+        initialValue: {
+          value: 1,
+          unit: "px",
+        },
+        variant: ControlEntryVariant.Mini,
+        icon: icons.left,
+        control: elllControlTypes.Dimension,
+        controlSettings: {
+          min: 0,
+          defaultUnit: "px",
+          units: [...lengthUnits, ...percentUnits],
+        },
+      },
+    ],
   },
+  {
+    name: "Style",
+    icon: icons.border,
+    compound: {
+      key: "compound-border-style",
+      icon: icons.edges,
+      label: "Edges",
+      control: elllControlTypes.Select,
+      controlSettings: {
+        options: [
+          { value: "solid", label: "Solid" },
+          { value: "dashed", label: "Dashed" },
+          { value: "dotted", label: "Dotted" },
+          { value: "double", label: "Double" },
+        ],
+      },
+    },
+    properties: [
+      {
+        name: "border-top-style",
+        displayName: "Top",
+        autoInitialize: true,
+        initialValue: "solid",
+        variant: ControlEntryVariant.Mini,
+        icon: icons.top,
+        control: elllControlTypes.Select,
+        controlSettings: {
+          options: [
+            { value: "solid", label: "Solid" },
+            { value: "dashed", label: "Dashed" },
+            { value: "dotted", label: "Dotted" },
+            { value: "double", label: "Double" },
+          ],
+        },
+      },
+      {
+        name: "border-right-style",
+        displayName: "Right",
+        autoInitialize: true,
+        initialValue: "solid",
+        variant: ControlEntryVariant.Mini,
+        icon: icons.right,
+        control: elllControlTypes.Select,
+        controlSettings: {
+          options: [
+            { value: "solid", label: "Solid" },
+            { value: "dashed", label: "Dashed" },
+            { value: "dotted", label: "Dotted" },
+            { value: "double", label: "Double" },
+          ],
+        },
+      },
+      {
+        name: "border-bottom-style",
+        displayName: "Bottom",
+        autoInitialize: true,
+        initialValue: "solid",
+        variant: ControlEntryVariant.Mini,
+        icon: icons.bottom,
+        control: elllControlTypes.Select,
+        controlSettings: {
+          options: [
+            { value: "solid", label: "Solid" },
+            { value: "dashed", label: "Dashed" },
+            { value: "dotted", label: "Dotted" },
+            { value: "double", label: "Double" },
+          ],
+        },
+      },
+      {
+        name: "border-left-style",
+        displayName: "Left",
+        autoInitialize: true,
+        initialValue: "solid",
+        variant: ControlEntryVariant.Mini,
+        icon: icons.left,
+        control: elllControlTypes.Select,
+        controlSettings: {
+          options: [
+            { value: "solid", label: "Solid" },
+            { value: "dashed", label: "Dashed" },
+            { value: "dotted", label: "Dotted" },
+            { value: "double", label: "Double" },
+          ],
+        },
+      },
+    ],
+  },
+  {
+    name: "Color",
+    icon: icons.color,
+    compound: {
+      key: "compound-border-color",
+      icon: icons.edges,
+      label: "Edges",
+      control: elllControlTypes.Color,
+    },
+    properties: [
+      {
+        name: "border-top-color",
+        displayName: "Top",
+        variant: ControlEntryVariant.Mini,
+        icon: icons.top,
+        control: elllControlTypes.Color,
+      },
+      {
+        name: "border-right-color",
+        displayName: "Right",
+        variant: ControlEntryVariant.Mini,
+        icon: icons.right,
+        control: elllControlTypes.Color,
+      },
+      {
+        name: "border-bottom-color",
+        displayName: "Bottom",
+        control: elllControlTypes.Color,
+        variant: ControlEntryVariant.Mini,
+        icon: icons.bottom,
+      },
+      {
+        name: "border-left-color",
+        displayName: "Left",
+        control: elllControlTypes.Color,
+        variant: ControlEntryVariant.Mini,
+        icon: icons.left,
+      },
+    ],
+  },
+];
+export const appearancesStylePropertyControls: StylePropertyGroupConfig[] = [
   {
     name: "Opacity",
     icon: icons.opacity,
@@ -957,12 +1168,14 @@ export const appearancesStylePropertyControls: StylePropertyGroupConfig[] = [
         name: "opacity",
         displayName: "Opacity",
         icon: icons.opacity,
-        control: elllControlTypes.Spinner,
+        control: elllControlTypes.Slider,
         controlSettings: {
           min: 0,
           max: 1,
           step: 0.01,
           round: 2,
+          scale: 100,
+          suffix: "%",
         },
       },
     ],
@@ -1010,7 +1223,7 @@ export const appearancesStylePropertyControls: StylePropertyGroupConfig[] = [
 export const transformStylePropertyControls: StylePropertyGroupConfig[] = [
   {
     name: "Translate",
-    icon: icons.transform,
+    icon: icons.position,
     properties: [
       {
         name: "translate-x",
@@ -1028,7 +1241,7 @@ export const transformStylePropertyControls: StylePropertyGroupConfig[] = [
   },
   {
     name: "Rotate",
-    icon: icons.rotate,
+    icon: icons.rotation,
     properties: [
       {
         name: "rotate-z",
@@ -1086,16 +1299,12 @@ export const transformStylePropertyControls: StylePropertyGroupConfig[] = [
       {
         name: "skew-x",
         displayName: "Skew X",
-        icon: icons.skewX,
-        control: elllControlTypes.Spinner,
-        variant: ControlEntryVariant.Mini,
+        control: elllControlTypes.Angle,
       },
       {
         name: "skew-y",
         displayName: "Skew Y",
-        icon: icons.skewY,
-        control: elllControlTypes.Spinner,
-        variant: ControlEntryVariant.Mini,
+        control: elllControlTypes.Angle,
       },
     ],
   },
@@ -1109,18 +1318,40 @@ export const transitionStylePropertyControls: StylePropertyGroupConfig[] = [
         name: "transition-property",
         displayName: "Translate Property",
         icon: icons.transition,
-        control: elllControlTypes.String,
+        control: elllControlTypes.Select,
+        controlSettings: {
+          options: [
+            { value: "none", label: "None" },
+            { value: "all", label: "All" },
+            {
+              label: "Color",
+              value: ["color", "background-color", "border-color"].join(","),
+            },
+            {
+              label: "Opacity",
+              value: "opacity",
+            },
+            {
+              label: "Transform",
+              value: "transform",
+            },
+            {
+              label: "Shadow",
+              value: "box-shadow",
+            },
+          ],
+        },
       },
     ],
   },
   {
     name: "Duration",
-    icon: icons.time,
+    icon: icons.duration,
     properties: [
       {
         name: "transition-duration",
         displayName: "Duration",
-        icon: icons.time,
+        icon: icons.duration,
         control: elllControlTypes.Duration,
       },
     ],
@@ -1139,12 +1370,12 @@ export const transitionStylePropertyControls: StylePropertyGroupConfig[] = [
   },
   {
     name: "Delay",
-    icon: icons.time,
+    icon: icons.delay,
     properties: [
       {
         name: "transition-delay",
         displayName: "Delay",
-        icon: icons.time,
+        icon: icons.delay,
         control: elllControlTypes.Duration,
       },
     ],

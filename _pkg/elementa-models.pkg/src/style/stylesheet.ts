@@ -1,4 +1,4 @@
-import { baseSelector, StyleData } from "@elllphnt/elll-element";
+import { baseSelector, StylableData } from "@elllphnt/elll-element";
 import { combineLatestOrEmpty, Disposable } from "@repo/utils";
 import { BehaviorSubject, map, Observable, switchMap } from "rxjs";
 import { Datafiable, restoreReactiveMap } from "~/src/_lib/restore";
@@ -6,18 +6,11 @@ import { Project } from "~/src/project/_";
 import { Style } from "./style";
 import { StyleFragmentRegistry } from "./style_fragment_set";
 
-export type StylesheetData = {
-  styles?: Record<string, StyleData>;
-};
-
 /**
  * A standalone modelization of an Elll StylesheetData object.
  * Can be used to store and manipulate stylesheet data.
  */
-export class Stylesheet
-  extends Disposable
-  implements Datafiable<StylesheetData>
-{
+export class Stylesheet extends Disposable implements Datafiable<StylableData> {
   static key = 0;
   static keySeed = Math.floor(Math.random() * 1000);
   readonly key = `${Stylesheet.keySeed}-${Stylesheet.key++}`;
@@ -80,7 +73,7 @@ export class Stylesheet
     return this.style$(baseSelector, create) as any;
   }
 
-  get data() {
+  get data(): StylableData {
     return {
       styles: Object.fromEntries(
         Object.entries(this.styles).map(([selector, style]) => [
@@ -88,6 +81,7 @@ export class Stylesheet
           style.data,
         ]),
       ),
+      styleFragments: this.fragmentRegistry.data,
     };
   }
   get data$() {
@@ -102,9 +96,11 @@ export class Stylesheet
         ),
         map((styles) => Object.fromEntries(styles)),
       ),
+      this.fragmentRegistry.data$,
     ]).pipe(
-      map(([styles]) => ({
+      map(([styles, styleFragments]) => ({
         styles,
+        styleFragments,
       })),
     );
   }
@@ -119,7 +115,7 @@ export class Stylesheet
     });
   }
 
-  restore(data: StylesheetData): void {
+  restore(data: StylableData): void {
     restoreReactiveMap({
       datafiable$: this._styles$,
       data: data.styles,
@@ -135,6 +131,8 @@ export class Stylesheet
         style.dispose();
       },
     });
+
+    this.fragmentRegistry.restore(data.styleFragments || []);
   }
 
   addStyle(selector: string) {

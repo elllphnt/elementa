@@ -439,6 +439,7 @@ function ElementStylesheetPanel({
               "layout",
               "text",
               "background",
+              "border",
               "appearance",
               "transform",
               "effect",

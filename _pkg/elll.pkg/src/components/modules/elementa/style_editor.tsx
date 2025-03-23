@@ -2,6 +2,7 @@ import { Style } from "@repo/elementa-models";
 import React from "react";
 import {
   appearancesStylePropertyControls,
+  borderStylePropertyControls,
   boxStylePropertyControls,
   layoutStylePropertyControls,
   positionStylePropertyControls,
@@ -41,6 +42,11 @@ const styleEditorSections = {
     type: "sheet",
     title: "Background",
     sheet: BackgroundControlSheet,
+  },
+  border: {
+    type: "property-group",
+    title: "Border",
+    properties: borderStylePropertyControls,
   },
   appearance: {
     type: "property-group",

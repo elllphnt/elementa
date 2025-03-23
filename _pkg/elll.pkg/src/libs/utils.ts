@@ -28,13 +28,16 @@ export function stripEmpty(data: any): any {
   }
 }
 
-export function resolveArrayIntersection<T>(arrays: T[][]): T[] {
+export function resolveArrayIntersection<T>(
+  arrays: T[][],
+  equal: (a: T, b: T) => boolean = (a, b) => a === b,
+): T[] {
   if (arrays.length === 0) {
     return [];
   }
 
   return arrays.reduce((acc, val) => {
-    return acc.filter((a) => val.includes(a));
+    return acc.filter((a) => val.some((b) => equal(a, b)));
   });
 }
 

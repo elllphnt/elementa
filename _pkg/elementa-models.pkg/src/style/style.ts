@@ -11,7 +11,7 @@ import {
   VarRef,
 } from "@elllphnt/elll-element";
 import { Datafiable, Disposable } from "@repo/utils";
-import { BehaviorSubject, map, Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, map, Observable } from "rxjs";
 import { Project } from "~/src/project/_";
 import { StyleFragmentRegistry } from "./style_fragment_set";
 
@@ -96,11 +96,14 @@ export class Style extends Disposable implements Datafiable<StyleData> {
     this.project = project;
     this.fragmentRegistry = fragmentRegistry;
 
-    const cssSubscription = this.data$.subscribe((data) => {
+    const cssSubscription = combineLatest([
+      this.data$,
+      this.fragmentRegistry.allFragments$,
+    ]).subscribe(([data, fragments]) => {
       const css = styleToCss(data, {
-        getFragment: (type, id) => this.fragmentRegistry.fragment(type, id),
+        getFragment: (type, id) =>
+          fragments.find((f) => f.type === type && f._id === id) as any,
       });
-      console.log("style data changed", data, css);
       this._css$.next(css);
     });
 

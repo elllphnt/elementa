@@ -51,6 +51,31 @@ export class StyleFragmentRegistry
     );
   }
 
+  fragments$<T extends StyleFragmentType>(
+    type: T,
+  ): Observable<StyleFragmentData<T>[]> {
+    return this._fragment$.pipe(
+      map(
+        (fragments) =>
+          Object.values(fragments).filter(
+            (fragment) => fragment.type === type,
+          ) as StyleFragmentData<T>[],
+      ),
+    );
+  }
+  fragments<T extends StyleFragmentType>(type: T): StyleFragmentData<T>[] {
+    return Object.values(this._fragment$.value).filter(
+      (fragment) => fragment.type === type,
+    ) as StyleFragmentData<T>[];
+  }
+
+  get allFragments$(): Observable<StyleFragmentData[]> {
+    return this.data$;
+  }
+  get allFragments(): StyleFragmentData[] {
+    return this.data;
+  }
+
   constructor() {
     super();
 
@@ -62,8 +87,8 @@ export class StyleFragmentRegistry
   addFragment<T extends StyleFragmentType>(
     type: T,
     data: StyleFragmentDataTypeMap[T],
-  ): void {
-    const fragments: StyleFragmentData<T> = {
+  ): StyleFragmentData<T> {
+    const fragment: StyleFragmentData<T> = {
       _id: genId(),
       type,
       data,
@@ -71,8 +96,10 @@ export class StyleFragmentRegistry
 
     this._fragment$.next({
       ...this._fragment$.value,
-      [fragments._id]: fragments,
+      [fragment._id]: fragment,
     });
+
+    return fragment;
   }
   setFragmentData<T extends StyleFragmentType>(
     id: string,
