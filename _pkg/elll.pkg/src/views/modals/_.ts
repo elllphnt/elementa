@@ -1,7 +1,9 @@
 import { View } from "@repo/shell";
 import { keys } from "~/src/libs/keys";
+import { BackgroundLayer } from "./background_layer/background_layer";
 import { CommitView } from "./commit/commit";
 import { DynamicControlMenuView } from "./dynamics/dynamics";
+import { Effect } from "./effect/effect";
 import { ProjectSpec } from "./onboarding/build_your_project/build_your_project";
 import { NpmPackageBrowser } from "./packages/npm_package_browser";
 import { NpmPackageViewer } from "./packages/npm_package_viewer";
@@ -15,7 +17,6 @@ import { CreateVersionModal } from "./tag/create_tag";
 import { TypefaceManager } from "./typefaces/typefaces";
 import { AccountModal } from "./user/account";
 import { ExportMenu } from "./workspace/export";
-import { BackgroundLayer } from "./background_layer/background_layer";
 
 export const modalViews = {
   project: {
@@ -106,5 +107,11 @@ export const modalViews = {
   backgroundLayer: {
     id: keys.views.modals.backgroundLayer,
     render: BackgroundLayer,
+  },
+
+  // Effect
+  effect: {
+    id: keys.views.modals.effect,
+    render: Effect,
   },
 } satisfies Record<string, View>;

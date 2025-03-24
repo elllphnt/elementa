@@ -1,4 +1,3 @@
-// import { AnimationData } from "@elllphnt/elll-element";
 // import {
 //   elllIcons16,
 //   Icon,
@@ -7,167 +6,169 @@
 //   useControlMenu,
 // } from "@repo/components";
 // import { Style } from "@repo/elementa-models";
-// import { useManyObservables, useObservable } from "@repo/utils";
-// import React from "react";
-// import { useElllProject } from "~/src/hooks/project/project";
-// import { resolveArrayIntersection } from "~/src/libs/utils";
+// import { useManyObservables } from "@repo/utils";
+// import { useCallback, useAnimation, useMemo } from "react";
+// import { BehaviorSubject } from "rxjs";
 
-// function AnimationEntry({
-//   animation,
-//   onRemove,
-//   onClick,
-//   onEdit,
-// }: {
-//   animation: AnimationData;
-//   onRemove: () => void;
-//   onClick: (e: React.MouseEvent) => void;
-//   onEdit: (e: React.MouseEvent) => void;
-// }) {
-//   const keyframe = useProjectKeyframeSet(animation.keyframe);
-//   const name = useObservable(keyframe?.name$, keyframe?.name);
+import { animationToCss } from "@elllphnt/elll-element";
+import {
+  StyleFragmentData,
+  StyleFragmentType,
+} from "@elllphnt/elll-element/types/_primitives/style/fragments/fragment";
+import {
+  elllIcons16,
+  Icon,
+  TreeEntry,
+  useAction,
+  useControlMenu,
+} from "@repo/components";
+import { Style } from "@repo/elementa-models";
+import { useManyObservables } from "@repo/utils";
+import { keys } from "~/src/libs/keys";
+import { resolveArrayIntersection } from "~/src/libs/utils";
 
-//   return (
-//     <TreeEntry
-//       icon={<Icon name={elllIcons16.appearances} />}
-//       onClick={onClick}
-//       actions={[
-//         {
-//           icon: <Icon name={elllIcons16.edit} />,
-//           handler: onEdit,
-//         },
-//         {
-//           icon: <Icon name={elllIcons16.cross} />,
-//           handler: onRemove,
-//         },
-//       ]}
-//     >
-//       {name ?? "Animation"}
-//     </TreeEntry>
-//   );
-// }
+function AnimationControlEntry({
+  styles,
+  animation,
+}: {
+  styles: Style[];
+  animation: StyleFragmentData<StyleFragmentType.Animation>;
+}) {
+  const { openMenu } = useControlMenu();
+  let text = "";
+  try {
+    text = animationToCss(animation.data);
+    if (!text) {
+      text = "Animation";
+    }
+  } catch (e) {
+    text = "Animation";
+  }
 
-// export function StyleAnimationsControlSheet({
-//   styles,
-// }: {
-//   styles: Style[];
-// }): JSX.Element {
-//   const project = useElllProject();
-//   const stylesKey = styles.map((style) => style.key).join(",");
-//   const animations = useManyObservables(
-//     styles.map((style) => style.propertyValue$("animation")),
-//     styles.map((style) => style.propertyValue("animation")),
-//     stylesKey,
-//   ).filter(Boolean) as AnimationData[][];
-//   const { openMenu, closeMenu } = useControlMenu();
+  return (
+    <TreeEntry
+      icon={<Icon name={elllIcons16.opacity} />}
+      className="el-border"
+      onClick={() => {
+        openMenu({
+          title: "Animation",
+          viewId: keys.views.modals.animation,
+          props: {
+            styles,
+            fragmentId: animation._id,
+          },
+        });
+      }}
+      actions={[
+        {
+          icon: <Icon name={elllIcons16.cross} />,
+          handler: () => {
+            styles.forEach((style) => {
+              style.fragmentRegistry.removeFragment(animation._id);
+              const backgroundAnimationsValue =
+                style.propertyValue("animations");
+              let animations =
+                typeof backgroundAnimationsValue === "string"
+                  ? backgroundAnimationsValue.split(",").map((s) => s.trim())
+                  : [];
+              animations = animations.filter((id) => id !== animation._id);
+              style.setProperty("animations", animations.join(","));
+            });
+          },
+        },
+      ]}
+    >
+      {text}
+    </TreeEntry>
+  );
+}
 
-//   let commonAnimations = resolveArrayIntersection(animations);
+export function StyleAnimationsControlSheet({ styles }: { styles: Style[] }) {
+  const allAnimations = useManyObservables(
+    styles.map((style) =>
+      style.fragmentRegistry.fragments$(StyleFragmentType.Animation),
+    ),
+    styles.map((style) =>
+      style.fragmentRegistry.fragments(StyleFragmentType.Animation),
+    ),
+    styles.map((style) => style.key).join("."),
+  );
+  const animationValues = useManyObservables(
+    styles.map((s) => s.propertyValue$("animations")),
+    styles.map((s) => s.propertyValue("animations")),
+    styles.map((style) => style.key).join("."),
+  );
+  const commonUsedAnimationIds = resolveArrayIntersection(
+    animationValues.map((v) =>
+      typeof v === "string" ? v.split(",").map((v) => v.trim()) : [],
+    ),
+  );
+  const commonUnusedAnimationMap: Record<
+    string,
+    StyleFragmentData<StyleFragmentType.Animation>
+  > = Object.fromEntries(
+    resolveArrayIntersection(allAnimations, (a, b) => a._id === b._id).map(
+      (g) => [g._id, g],
+    ),
+  );
 
-//   useAction({
-//     title: "Add Animation",
-//     icon: elllIcons16.plus,
-//     index: 1,
-//     handler: () => {
-//       const newAnimation: AnimationData = {
-//         key: Math.random().toString(36).substring(7),
-//       };
-//       styles.forEach((style) => {
-//         let animations = style.propertyValue("animation");
-//         animations = animations
-//           ? [...animations, newAnimation]
-//           : [newAnimation];
-//         style.setProperty("animation", animations);
-//       });
-//     },
-//   });
-//   useAction({
-//     title: "All Animations",
-//     icon: elllIcons16.folderOpen,
-//     index: 0,
-//     handler: (e) => {
-//       openMenu({
-//         anchor: e.currentTarget as any,
-//         viewId: "animationControlViews.browser.id",
-//         title: "All Animations",
-//         props: {
-//           onSelect: (animation: AnimationData) => {
-//             styles.forEach((style) => {
-//               let animations = style.propertyValue("animation");
-//               const newAnimations = animations?.filter(
-//                 (a) => a.key !== animation.key,
-//               );
-//               style.setProperty("animation", newAnimations);
-//             });
-//             closeMenu();
-//           },
-//         },
-//       });
-//     },
-//   });
+  const commonUsedAnimations: StyleFragmentData<StyleFragmentType.Animation>[] =
+    [];
+  commonUsedAnimationIds.forEach((id) => {
+    const animation = commonUnusedAnimationMap[id];
+    if (animation) {
+      delete commonUnusedAnimationMap[id];
+      commonUsedAnimations.push(animation);
+    }
+  });
+  const commonUnusedAnimations: StyleFragmentData<StyleFragmentType.Animation>[] =
+    Object.values(commonUnusedAnimationMap);
 
-//   return (
-//     <>
-//       {commonAnimations.map((animation) => (
-//         <AnimationEntry
-//           key={animation.key}
-//           animation={animation}
-//           onRemove={() => {
-//             styles.forEach((style) => {
-//               let animations = style.propertyValue("animation");
-//               animations = animations?.filter((t) => t !== animation);
-//               style.setProperty("animation", animations);
-//             });
-//           }}
-//           onEdit={(e) => {
-//             let keyframeSetId = animation.keyframe;
-//             if (!keyframeSetId) {
-//               const keyframeSet = new KeyFrameSet({ project });
-//               keyframeSet.addKeyframe({ offset: 0 });
-//               keyframeSet.addKeyframe({ offset: 1 });
-//               project.keyframeSetStore.addKeyframeSet(keyframeSet);
-//               keyframeSetId = keyframeSet.id;
-//               styles.forEach((style) => {
-//                 let animations = style.propertyValue("animation");
-//                 style.setProperty(
-//                   "animation",
-//                   animations?.map((a) => {
-//                     if (a.key === animation.key) {
-//                       return {
-//                         ...a,
-//                         keyframe: keyframeSetId,
-//                       };
-//                     }
-//                     return a;
-//                   }),
-//                 );
-//               });
-//             }
+  useAction({
+    title: "Add Animation",
+    icon: elllIcons16.plus,
+    index: Number.MAX_SAFE_INTEGER,
+    handler: () => {
+      styles.forEach((style) => {
+        const fragment = style.fragmentRegistry.addFragment(
+          StyleFragmentType.Animation,
+          {},
+        );
+        const backgroundAnimationsValue = style.propertyValue("animations");
+        const backgroundAnimations =
+          typeof backgroundAnimationsValue === "string"
+            ? backgroundAnimationsValue.split(",").map((s) => s.trim())
+            : [];
+        backgroundAnimations.unshift(fragment._id);
+        style.setProperty("animations", backgroundAnimations.join(","));
+      });
+    },
+  });
 
-//             openMenu({
-//               anchor: e.currentTarget as any,
-//               viewId: modalViews.keyFrameSetEditor.id,
-//               title: "Keyframes",
-//               props: {
-//                 keyframeSetId,
-//               },
-//             });
-//           }}
-//           onClick={(e) => {
-//             openMenu({
-//               anchor: e.currentTarget as any,
-//               viewId: animationControlViews.styleMenu.id,
-//               title: "Animation",
-//               props: {
-//                 styles,
-//                 animationKey: animation.key,
-//               },
-//             });
-//           }}
-//         />
-//       ))}
-//     </>
-//   );
-// }
+  return (
+    <>
+      {commonUsedAnimations.map((animation) => (
+        <AnimationControlEntry
+          key={animation._id}
+          styles={styles}
+          animation={animation}
+        />
+      ))}
 
-export function StyleAnimationsControlSheet() {
-  return <>Animations</>;
+      {commonUnusedAnimations.length ? (
+        <>
+          <hr />
+          {commonUnusedAnimations.map((animation) => (
+            <AnimationControlEntry
+              key={animation._id}
+              styles={styles}
+              animation={animation}
+            />
+          ))}
+        </>
+      ) : (
+        <></>
+      )}
+    </>
+  );
 }

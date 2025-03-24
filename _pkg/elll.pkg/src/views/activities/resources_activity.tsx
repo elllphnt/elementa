@@ -16,11 +16,11 @@ export function ResourcesActivityView(): JSX.Element {
           viewId: drawerViews.packages.id,
           title: "Packages",
         },
-        {
-          key: "elll.drawer.developmentActivity.libraries",
-          viewId: drawerViews.libraries.id,
-          title: "Libraries",
-        },
+        // {
+        //   key: "elll.drawer.developmentActivity.libraries",
+        //   viewId: drawerViews.libraries.id,
+        //   title: "Libraries",
+        // },
       ]}
     />
   );

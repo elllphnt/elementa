@@ -37,6 +37,8 @@ export const keys = {
       typefaces: "elll.views.modals.typefaces",
       dynamic: "elll.views.modals.dynamic",
       backgroundLayer: "elll.views.modals.backgroundLayer",
+      effect: "elll.views.modals.effect",
+      animation: "elll.views.modals.animation",
     },
   },
   editors: {

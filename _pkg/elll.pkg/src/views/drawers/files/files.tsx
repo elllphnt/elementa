@@ -6,7 +6,6 @@ import {
   ContextMenuOption,
   Icon,
   ProgressBar,
-  ScrollArea,
   TreeHeading,
   TreeIndent,
 } from "@repo/components";
@@ -15,7 +14,6 @@ import { ReactNode, useMemo } from "react";
 import { WorkspaceDirectoryTree } from "~/src/components/ui/trees/workspace_directory/workspace_directory_tree";
 import { useBackend } from "~/src/hooks/backend/backend";
 import { useWorkspaceFileAtPath } from "~/src/hooks/backend/file";
-import { useProjectLibraries } from "~/src/hooks/project/libraries";
 import { useWorkspaceState } from "~/src/hooks/shell/workspace";
 import { WorkspaceOnlyFilesView } from "./workspace_only";
 
@@ -202,33 +200,33 @@ function FilesSection({
 }
 
 export function FilesView(): JSX.Element {
-  const libraries = useProjectLibraries();
+  // const libraries = useProjectLibraries();
 
-  if (libraries.length) {
-    return (
-      <ScrollArea
-        scrollY
-        containerClassName="el-p-2"
-        containerStyle={{ paddingTop: 0 }}
-      >
-        <FilesSection
-          title="Local"
-          stateKey={["files", "sections", "workspace"]}
-          content={({ open }) => (open ? <WorkspaceFiles /> : <></>)}
-        />
-        {libraries.map((tagId) => (
-          <FilesSection
-            key={tagId}
-            title={tagId}
-            stateKey={["files", "sections", tagId]}
-            content={({ open }) =>
-              open ? <LibraryFiles tagId={tagId} /> : <></>
-            }
-          />
-        ))}
-      </ScrollArea>
-    );
-  } else {
-    return <WorkspaceOnlyFilesView />;
-  }
+  // if (libraries.length) {
+  //   return (
+  //     <ScrollArea
+  //       scrollY
+  //       containerClassName="el-p-2"
+  //       containerStyle={{ paddingTop: 0 }}
+  //     >
+  //       <FilesSection
+  //         title="Local"
+  //         stateKey={["files", "sections", "workspace"]}
+  //         content={({ open }) => (open ? <WorkspaceFiles /> : <></>)}
+  //       />
+  //       {libraries.map((tagId) => (
+  //         <FilesSection
+  //           key={tagId}
+  //           title={tagId}
+  //           stateKey={["files", "sections", tagId]}
+  //           content={({ open }) =>
+  //             open ? <LibraryFiles tagId={tagId} /> : <></>
+  //           }
+  //         />
+  //       ))}
+  //     </ScrollArea>
+  //   );
+  // } else {
+  // }
+  return <WorkspaceOnlyFilesView />;
 }

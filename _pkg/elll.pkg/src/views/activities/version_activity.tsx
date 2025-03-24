@@ -16,11 +16,11 @@ export function VersionActivityView(): JSX.Element {
           viewId: drawerViews.commits.id,
           title: "Commits",
         },
-        {
-          key: "elll.drawer.versionActivity.tags",
-          viewId: drawerViews.tags.id,
-          title: "Versions",
-        },
+        // {
+        //   key: "elll.drawer.versionActivity.tags",
+        //   viewId: drawerViews.tags.id,
+        //   title: "Versions",
+        // },
       ]}
     />
   );
