@@ -1,5 +1,10 @@
 import { Repository as RepositoryData } from "@elllphnt/repository-service-client";
-import { elllEntities, parseFileId } from "@elllphnt/utils";
+import {
+  elllEntities,
+  makeEntityId,
+  parseEntityId,
+  parseFileId,
+} from "@elllphnt/utils";
 import { File as WorkspaceFileData } from "@elllphnt/workspace-service-client";
 import { combineLatestOrEmpty } from "@repo/utils";
 import { BehaviorSubject, distinctUntilChanged, filter, map, tap } from "rxjs";
@@ -10,11 +15,14 @@ import {
   repositoryServiceFactory,
   VcsRecord,
 } from "../services/repository_service";
-import { Syncer } from "../syncer";
+import { FileContentEvent, Syncer } from "../syncer";
 import { Commit } from "./commit";
 import { RepositoryTag } from "./repository_tag";
 import { Tenant } from "./tenant";
 import { Workspace } from "./workspace";
+
+const nullSha256 =
+  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
 
 export function driveToVcsFileId(file_id: string) {
   const idStruct = parseFileId(file_id);
@@ -315,6 +323,36 @@ export class Repository extends AutoSavableResource<RepositoryData> {
         this.handleWorkspaceFileEvent(event);
       });
 
+    const workspaceFileContentEventSubscription = syncer.fileContentEvent$
+      .pipe(
+        filter((event) => {
+          const workspace_id = this.workspaceId;
+          if (!workspace_id) return false;
+
+          const bare_id = parseEntityId(workspace_id)?.bare_id;
+          if (!bare_id) return false;
+
+          const fileIdPrefix = makeEntityId({
+            entity_name: "workspace_file",
+            bare_id,
+          });
+
+          return event.payload.file_id.startsWith(fileIdPrefix);
+        }),
+      )
+      .subscribe((event) => {
+        this.handleWorkspaceFileContentEvent(event);
+      });
+
+    this.addDisposer(() => {
+      workspaceFileContentEventSubscription.unsubscribe();
+    });
+    this.addDisposer(
+      syncer.watchEntities("repository", {
+        id: this.id,
+      }),
+    );
+
     this.addDisposer(() => {
       this._tenantId$.complete();
       this._name$.complete();
@@ -339,7 +377,7 @@ export class Repository extends AutoSavableResource<RepositoryData> {
       [id]: {
         type: file.type,
         path: file.path,
-        sha: entry?.sha || "",
+        sha: entry?.sha || nullSha256,
       },
     });
   }
@@ -352,12 +390,34 @@ export class Repository extends AutoSavableResource<RepositoryData> {
   }
 
   private handleWorkspaceFileEvent(event: any) {
+    if (event.payload.type === "directory") {
+      return;
+    }
+
     if (event.topic === "entity.created") {
       this.writeWorkspaceFileToWorkspaceRecord(event.payload);
     } else if (event.topic === "entity.updated") {
       this.writeWorkspaceFileToWorkspaceRecord(event.payload);
     } else if (event.topic === "entity.deleted") {
       this.removeWorkspaceFileFromWorkspaceRecord(event.payload.id);
+    }
+  }
+  private handleWorkspaceFileContentEvent(event: {
+    topic: string;
+    payload: FileContentEvent;
+  }) {
+    const record = this._workspaceRecord$.value || {};
+    const id = driveToVcsFileId(event.payload.file_id);
+    const entry = record[id] as VcsRecord[string] | undefined;
+
+    if (entry) {
+      this._workspaceRecord$.next({
+        ...record,
+        [id]: {
+          ...entry,
+          sha: event.payload.hash,
+        },
+      });
     }
   }
 
@@ -428,6 +488,10 @@ export class Repository extends AutoSavableResource<RepositoryData> {
 
   async delete() {
     await this.repositoryService.deleteRepository(this.id);
+  }
+
+  setHeadCommitId(commitId: string) {
+    this._headCommitId$.next(commitId);
   }
 
   async setPointer(name: string, tag_id: string) {

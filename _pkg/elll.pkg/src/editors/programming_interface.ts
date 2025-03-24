@@ -9,8 +9,8 @@ import {
 import { combineLatestOrEmpty } from "@repo/utils";
 import { Observable, map, of } from "rxjs";
 import { IElll } from "../types/elll";
-import { boardViews } from "../views/board/_";
 import { editors } from "./_editors";
+import { keys } from "../libs/keys";
 
 export type ProgrammingInterfaceEditorStateData = EditorStateData & {};
 
@@ -76,6 +76,6 @@ export const programmingInterfaceEditor: Editor = {
   id: editors.programmingInterface,
   createState: (shell) => new ProgrammingInterfaceEditorState({ shell }),
   views: {
-    board: boardViews.programmingInterfaceEditor.id,
+    board: keys.views.board.programmingInterfaceEditor,
   },
 };

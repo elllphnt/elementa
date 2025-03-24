@@ -1,17 +1,8 @@
 import { File } from "@repo/backend";
-import { ContextMenuOption, elllIcons16, useAction } from "@repo/components";
+import { elllIcons16, useAction } from "@repo/components";
 import { useContext } from "react";
-import { jsonEditor } from "~/src/editors/monaco/json";
-import { useElll } from "~/src/hooks/elll/elll";
-import { getEditorForFileType } from "~/src/libs/filetypes";
-import { initFile } from "~/src/libs/init_file";
 import FileIcon from "../../icons/file_icon";
-import {
-  FileTreeContext,
-  HandleClick,
-  HandleContextMenu,
-  HandleNewEntry,
-} from "../file_tree/_contexts";
+import { FileTreeContext } from "../file_tree/_contexts";
 import { useSortedFileTreeEntries } from "../file_tree/_hooks";
 import { FileTree } from "../file_tree/file_tree";
 import { FileTreeContextProvider } from "../file_tree/file_tree_context_provider";

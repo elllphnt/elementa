@@ -238,7 +238,12 @@ export class RepositoryService extends Service {
       throw result.error;
     }
 
-    return this.commitStore.push(result.data as any);
+    if (result.data) {
+      this.commitStore.push(result.data as any);
+      this.repositoryStore
+        .instance(repository_id)
+        ?.setHeadCommitId(result.data.id);
+    }
   }
   async resetRepositoryWorkspace(
     repository_id: string,

@@ -203,7 +203,6 @@ export class Workspace
   }
 
   watchFiles() {
-    console.log("watching files");
     const syncer = Syncer.instance(this.backend);
     return syncer.watchEntities("workspace_file", {
       workspace_id: this.id,

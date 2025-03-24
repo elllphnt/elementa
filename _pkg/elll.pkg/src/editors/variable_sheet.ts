@@ -96,6 +96,6 @@ export const variableSheetEditor: Editor = {
   id: keys.editors.variableSheet,
   createState: (shell) => new VariableSheetEditorState({ shell }),
   views: {
-    board: boardViews.variableSheet.id,
+    board: keys.views.board.variableSheet,
   },
 };

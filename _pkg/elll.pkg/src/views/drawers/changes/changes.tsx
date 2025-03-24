@@ -47,7 +47,7 @@ function ResetControl() {
   const [reseting, setReseting] = useState<boolean>(false);
   useAction({
     title: "Reset changes",
-    icon: elllIcons16.wrap,
+    icon: elllIcons16.undo,
     handler: () => {
       if (repository) {
         setReseting(true);

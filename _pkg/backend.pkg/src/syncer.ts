@@ -5,8 +5,17 @@ import {
 } from "@elllphnt/pubsub-service-client";
 import { EntityName } from "@elllphnt/utils";
 import { Disposable } from "@repo/utils";
-import { filter, Subject } from "rxjs";
+import { filter, Observable, Subject } from "rxjs";
 import { Backend } from "./lib/backend";
+
+export type FileContentMetadata = {
+  file_id: string;
+  hash: string;
+};
+export type FileContentEvent = FileContentMetadata & {
+  emitter: string;
+  deleted?: boolean;
+};
 
 export type SubscriptionClient = ReturnType<typeof createSubscriptionClient>;
 
@@ -47,6 +56,14 @@ export class Syncer extends Disposable {
       filter((event) => event.topic.startsWith("entity.")),
     );
   }
+  get fileContentEvent$() {
+    return this.event$.pipe(
+      filter((event) => event.topic.startsWith("file_content.")),
+    ) as Observable<{
+      topic: string;
+      payload: FileContentEvent;
+    }>;
+  }
 
   constructor({ baseUrl, backend }: { baseUrl: string; backend: Backend }) {
     super();
@@ -59,7 +76,6 @@ export class Syncer extends Disposable {
     });
 
     const subscription = this.entityEvent$.subscribe((event) => {
-      console.log("entity Event", event);
       switch (event.topic) {
         case "entity.created": {
           const entity = this.backend.instance(event.payload.id, true);
@@ -86,6 +102,7 @@ export class Syncer extends Disposable {
   async init() {
     const subscription = await this.client.createSubscription();
     this.client.listenToSubscriptionEvents(subscription.id, (event) => {
+      console.log(`Event received: ${event.topic}`, event);
       this._event$.next(event);
     });
 
@@ -93,6 +110,7 @@ export class Syncer extends Disposable {
       { topic: "entity.created" },
       { topic: "entity.updated" },
       { topic: "entity.deleted" },
+      { topic: "file_content.updated" },
     ]);
 
     this.subscription = subscription;

@@ -1,5 +1,5 @@
 import { Commit } from "@repo/backend";
-import { ProgressBar } from "@repo/components";
+import { ControlMenuContainer, ProgressBar } from "@repo/components";
 import { useObservable } from "@repo/utils";
 import { useState } from "react";
 import { useRepository } from "~/src/hooks/backend/repository";
@@ -23,7 +23,7 @@ export function CommitView({ commit }: { commit: Commit }): JSX.Element {
   };
 
   return (
-    <div
+    <ControlMenuContainer
       style={{
         display: "flex",
         flexDirection: "column",
@@ -56,6 +56,6 @@ export function CommitView({ commit }: { commit: Commit }): JSX.Element {
           ) : null}
         </button>
       </div>
-    </div>
+    </ControlMenuContainer>
   );
 }

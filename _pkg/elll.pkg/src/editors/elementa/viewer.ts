@@ -16,7 +16,6 @@ import {
   componentModelConstructor,
 } from "~/src/models/component";
 import { IElll } from "~/src/types/elll";
-import { boardViews } from "~/src/views/board/_";
 import { editors } from "../_editors";
 import { ModelEditorStateData } from "../model";
 import { ElementaBaseEditorState } from "./elementa";
@@ -165,7 +164,7 @@ export const componentViewer: Editor = {
   id: editors.componentViewer,
   createState: (shell) => new ElementaViewerState({ shell }),
   views: {
-    board: boardViews.componentViewer.id,
-    bar: boardViews.componentViewerBar.id,
+    board: keys.views.board.componentViewer,
+    bar: keys.views.board.componentViewerBar,
   },
 };

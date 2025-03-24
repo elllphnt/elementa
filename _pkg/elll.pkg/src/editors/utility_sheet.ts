@@ -8,8 +8,8 @@ import {
 } from "@repo/shell";
 import { combineLatestOrEmpty } from "@repo/utils";
 import { Observable, map, of } from "rxjs";
+import { keys } from "../libs/keys";
 import { IElll } from "../types/elll";
-import { boardViews } from "../views/board/_";
 import { editors } from "./_editors";
 
 export type UtilitySheetEditorStateData = EditorStateData & {};
@@ -86,6 +86,6 @@ export const utilitySheetEditor: Editor = {
   id: editors.utilitySheet,
   createState: (shell) => new UtilitySheetEditorState({ shell }),
   views: {
-    board: boardViews.utilitySheet.id,
+    board: keys.views.board.utilitySheet,
   },
 };

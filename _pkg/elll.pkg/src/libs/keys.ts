@@ -5,6 +5,19 @@ export const keys = {
     properties: "elll.views.properties",
     stylesheet: "elll.views.stylesheet",
     reactPreview: "elll.views.react-preview",
+    board: {
+      home: "elll.view.board.home",
+      monacoEditor: "elll.view.board.editor.monaco",
+      componentEditor: "elll.view.board.editor.component",
+      componentViewer: "elll.view.board.viewer.component",
+      componentViewerBar: "elll.view.board.viewer.component.bar",
+      featuresEditor: "elll.view.board.editor.features",
+      blueprintEditor: "elll.view.board.editor.blueprint",
+      programmingInterfaceEditor:
+        "elll.view.board.editor.programming-interface",
+      variableSheet: "elll.view.board.editor.variable-sheet",
+      utilitySheet: "elll.view.board.editor.utility-sheet",
+    },
     drawers: {
       files: "elll.views.drawers.files",
       workspace: "elll.views.drawers.workspace",

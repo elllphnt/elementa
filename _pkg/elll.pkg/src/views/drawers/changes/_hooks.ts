@@ -17,6 +17,12 @@ export function useRepositoryWorkspaceChanges() {
     head?.fetchingRecord$,
     head?.fetchingRecord,
   );
+  console.log("WorkspaceChanges", {
+    head,
+    workspaceRecord,
+    commitRecord,
+    fetchingCommitRecord,
+  });
   const changes = workspaceRecord
     ? diffRecords(commitRecord ?? {}, workspaceRecord)
     : [];

@@ -6,6 +6,7 @@ import { boardViews } from "../../views/board/_";
 import { editors } from "../_editors";
 import { ModelEditorStateData } from "../model";
 import { MonacoEditorState } from "./monaco";
+import { keys } from "~/src/libs/keys";
 
 export type JsonEditorStateData = ModelEditorStateData & {};
 
@@ -89,6 +90,6 @@ export const jsonEditor: Editor = {
   id: editors.json,
   createState: (shell) => new JsonEditorState({ shell }),
   views: {
-    board: boardViews.monacoEditor.id,
+    board: keys.views.board.monacoEditor,
   },
 };

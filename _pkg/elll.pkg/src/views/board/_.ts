@@ -1,4 +1,5 @@
 import { View } from "@repo/shell";
+import { keys } from "~/src/libs/keys";
 import { BlueprintBoardView } from "./editors/blueprint/blueprint_board";
 import { ComponentBoardView } from "./editors/elementa/editor/component_board";
 import { ComponentViewerBoardView } from "./editors/elementa/viewer/component_board";
@@ -12,45 +13,45 @@ import { HomeBoardView } from "./home/home_board";
 
 export const boardViews = {
   home: {
-    id: "elll.view.board.home",
+    id: keys.views.board.home,
     render: HomeBoardView,
   },
 
   // editors
   monacoEditor: {
-    id: "elll.view.board.editor.monaco",
+    id: keys.views.board.monacoEditor,
     render: MonacoBoardView,
   },
   componentEditor: {
-    id: "elll.view.board.editor.component",
+    id: keys.views.board.componentEditor,
     render: ComponentBoardView,
   },
   componentViewer: {
-    id: "elll.view.board.viewer.component",
+    id: keys.views.board.componentViewer,
     render: ComponentViewerBoardView,
   },
   componentViewerBar: {
-    id: "elll.view.board.viewer.component.bar",
+    id: keys.views.board.componentViewerBar,
     render: ComponentViewerBar,
   },
   featuresEditor: {
-    id: "elll.view.board.editor.features",
+    id: keys.views.board.featuresEditor,
     render: FeaturesBoardView,
   },
   blueprintEditor: {
-    id: "elll.view.board.editor.blueprint",
+    id: keys.views.board.blueprintEditor,
     render: BlueprintBoardView,
   },
   programmingInterfaceEditor: {
-    id: "elll.view.board.editor.programming-interface",
+    id: keys.views.board.programmingInterfaceEditor,
     render: ProgrammingInterfaceBoardView,
   },
   variableSheet: {
-    id: "elll.view.board.editor.variable-sheet",
+    id: keys.views.board.variableSheet,
     render: VariableSheetBoardView,
   },
   utilitySheet: {
-    id: "elll.view.board.editor.utility-sheet",
+    id: keys.views.board.utilitySheet,
     render: UtilitySheetBoardView,
   },
 } satisfies Record<string, View>;

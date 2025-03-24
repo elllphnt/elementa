@@ -5,7 +5,6 @@ import { Observable, map, of, switchMap } from "rxjs";
 import { formatTypescript } from "~/src/libs/code/format";
 import { keys } from "~/src/libs/keys";
 import { reactModelConstructor } from "../../models/react";
-import { boardViews } from "../../views/board/_";
 import { editors } from "../_editors";
 import { ModelEditorStateData } from "../model";
 import { MonacoEditorState } from "./monaco";
@@ -97,6 +96,6 @@ export const reactEditor: Editor = {
   id: editors.react,
   createState: (shell) => new ReactEditorState({ shell }),
   views: {
-    board: boardViews.monacoEditor.id,
+    board: keys.views.board.monacoEditor,
   },
 };

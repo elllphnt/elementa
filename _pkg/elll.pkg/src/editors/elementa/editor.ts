@@ -452,7 +452,7 @@ export const componentEditor: Editor = {
   id: editors.componentEditor,
   createState: (shell) => new ElementaEditorState({ shell }),
   views: {
-    board: boardViews.componentEditor.id,
+    board: keys.views.board.componentEditor,
     outline: outlineViews.componentEditor.id,
   },
 };

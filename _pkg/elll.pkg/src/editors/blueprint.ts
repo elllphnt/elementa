@@ -11,6 +11,7 @@ import { Observable, map, of } from "rxjs";
 import { IElll } from "../types/elll";
 import { boardViews } from "../views/board/_";
 import { editors } from "./_editors";
+import { keys } from "../libs/keys";
 
 export type BlueprintEditorStateData = EditorStateData & {};
 
@@ -76,6 +77,6 @@ export const blueprintEditor: Editor = {
   id: editors.bleuprint,
   createState: (shell) => new BlueprintEditorState({ shell }),
   views: {
-    board: boardViews.blueprintEditor.id,
+    board: keys.views.board.blueprintEditor,
   },
 };

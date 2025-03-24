@@ -11,6 +11,7 @@ import { Observable, map, of } from "rxjs";
 import { IElll } from "../types/elll";
 import { boardViews } from "../views/board/_";
 import { editors } from "./_editors";
+import { keys } from "../libs/keys";
 
 export type SpecEditorStateData = EditorStateData & {};
 
@@ -76,6 +77,6 @@ export const specEditor: Editor = {
   id: editors.spec,
   createState: (shell) => new SpecEditorState({ shell }),
   views: {
-    board: boardViews.featuresEditor.id,
+    board: keys.views.board.featuresEditor,
   },
 };

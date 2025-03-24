@@ -2,8 +2,11 @@ import { makeFileId, parseEntityId } from "@elllphnt/utils";
 import { Icon, TreeEntry, elllIcons16 } from "@repo/components";
 import { useShell } from "@repo/shell";
 import { useObservable } from "@repo/utils";
+import { useState } from "react";
 import FileIcon from "~/src/components/ui/icons/file_icon";
 import { useRepository } from "~/src/hooks/backend/repository";
+import { useElll } from "~/src/hooks/elll/elll";
+import { getEditorForFileType } from "~/src/libs/filetypes";
 import { nameFromPath } from "~/src/modules/elementa/_utils";
 import { useWorkspace } from "../../../hooks/backend/workspace";
 
@@ -20,7 +23,10 @@ function PositiveWorkspaceChangeEntry({
 }: {
   change: any;
 }): JSX.Element {
+  const elll = useElll();
+  const repository = useRepository();
   const workspace = useWorkspace();
+  const [reseting, setReseting] = useState<boolean>(false);
 
   const bareDriveId = workspace
     ? parseEntityId(workspace.id)?.bare_id
@@ -69,16 +75,46 @@ function PositiveWorkspaceChangeEntry({
       suffix={<Icon className="el-h-4 el-w-4" name={icon} color={color} />}
       onClick={() => {
         if (!file) return;
-        // editorManager.openFile(file.url);
+        file.untilLoaded().then(() => {
+          const type = file.type;
+          if (!type) {
+            elll.shell.toast({
+              message: `Unable to determine file type for ${file.name}.`,
+            });
+            return;
+          }
+          const editor = getEditorForFileType(type);
+          if (!editor) {
+            elll.shell.toast({
+              message: `No editor available for ${file.name}.`,
+            });
+            return;
+          }
+          elll.editorManager.openModel(editor, file.url);
+        });
       }}
-      // actions={[
-      //   {
-      //     icon: <Icon name={elllIcons16.cross} />,
-      //     handler: async () => {
-      //       file?.resetData();
-      //     },
-      //   },
-      // ]}
+      actions={[
+        {
+          icon: <Icon name={elllIcons16.undo} />,
+          handler: async () => {
+            if (!file_id) return;
+            try {
+              setReseting(true);
+              await repository?.resetWorkspace({
+                file_ids: [file_id],
+              });
+            } catch (err) {
+              console.error(err);
+              elll.shell.toast({
+                message: "Failed to reset changes.",
+              });
+            } finally {
+              setReseting(false);
+            }
+          },
+        },
+      ]}
+      loading={reseting}
     >
       {name} <span className="el-text-fg-300 el-text-sm">{directory}</span>
     </TreeEntry>

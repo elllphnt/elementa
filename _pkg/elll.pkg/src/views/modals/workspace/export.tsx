@@ -2,6 +2,7 @@ import { Repository } from "@repo/backend";
 import { ControlMenuContainer } from "@repo/components";
 import { CopyControl } from "~/src/components/ui/controls/_uncertain/copy/copy";
 import { useRepository } from "~/src/hooks/backend/repository";
+import { ChangesView } from "./changes";
 
 export function InstallMenu({ repository }: { repository: Repository }) {
   const command = `npx elll@latest init ${repository.id}`;
@@ -20,8 +21,7 @@ export function InstallMenu({ repository }: { repository: Repository }) {
       </div>
 
       <p className="el-text-base el-text-fg-400">
-        Connect your local environment to this project by running the following
-        command.
+        Install the latest snapshot of this project into your frontend codebase.
       </p>
       <CopyControl value={command} className="el-font-mono" />
     </div>
@@ -57,15 +57,10 @@ export function RepositoryExportMenu({
   repository: Repository;
 }) {
   return (
-    <div
-      style={{
-        width: 300,
-      }}
-      className="el-space-y-3"
-    >
+    <div className="el-space-y-3">
       <InstallMenu repository={repository} />
       <hr />
-      <SyncMenu />
+      <ChangesView />
     </div>
   );
 }
@@ -75,9 +70,9 @@ export function ExportMenu() {
 
   if (!repository) {
     return (
-      <div className="el-p">
+      <ControlMenuContainer className="el-p">
         <p className="el-text-fg-400 el-text-center">No repository found.</p>
-      </div>
+      </ControlMenuContainer>
     );
   }
 
@@ -86,7 +81,6 @@ export function ExportMenu() {
       style={{
         width: 300,
       }}
-      className="el-space-y-3"
     >
       <RepositoryExportMenu repository={repository} />
     </ControlMenuContainer>
