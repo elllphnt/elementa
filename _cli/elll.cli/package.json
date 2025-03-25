@@ -1,6 +1,6 @@
 {
   "name": "elll",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "main": "dist/index.js",
   "scripts": {
     "dev:sync": "nodemon --watch src --exec tsx src/index.ts sync -f",
@@ -24,6 +24,7 @@
     "axios": "^1.7.7",
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
+    "esbuild": "^0.25.1",
     "inquirer": "^12.2.0",
     "prettier": "^3.5.3",
     "ts-node": "^10.9.2",
