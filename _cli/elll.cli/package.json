@@ -1,6 +1,6 @@
 {
   "name": "elll",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "main": "dist/index.js",
   "scripts": {
     "dev:sync": "nodemon --watch src --exec tsx src/index.ts sync -f",
