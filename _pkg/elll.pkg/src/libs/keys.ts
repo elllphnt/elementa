@@ -52,6 +52,12 @@ export const keys = {
       backgroundLayer: "elll.views.modals.backgroundLayer",
       effect: "elll.views.modals.effect",
       animation: "elll.views.modals.animation",
+      generateFilesWithAi: "elll.views.modals.generateFilesWithAi",
+      workspaceFileExplorer: "elll.views.modals.workspaceFileExplorer",
+      copilot: "elll.views.modals.copilot",
+    },
+    notifications: {
+      aiGeneration: "elll.views.notifications.aiGeneration",
     },
   },
   editors: {
@@ -88,6 +94,9 @@ export const keys = {
     elementa: {
       editorUrl: "elementa.editorUrl",
       viewerUrl: "elementa.viewerUrl",
+    },
+    elll: {
+      commandName: "elll.commandName",
     },
   },
 };

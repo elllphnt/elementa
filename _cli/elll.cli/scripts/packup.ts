@@ -1,15 +1,12 @@
 import fs from "fs";
-import { createRequire } from "node:module";
 import { argv } from "node:process";
+import { externals } from "./constant";
 
 const isPrivate = !argv.includes("--public");
 
-const require = createRequire(import.meta.url);
 const log = (...args: any[]) => console.log("packup:", ...args);
 
 log("packing up...");
-
-const externals = ["prettier"];
 
 const packageJson = JSON.parse(fs.readFileSync("./package.json", "utf8"));
 if (isPrivate) {

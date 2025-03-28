@@ -41,7 +41,7 @@ function FixedRepeatedComponent({
   const children = new Array(resolvedCount).fill(null).map((_, index) => {
     return (
       <RepeatedComponentItem key={index} index={index}>
-        <Component {...props} />
+        <Component {...props} partKey={`item_${index}`} />
       </RepeatedComponentItem>
     );
   });
@@ -65,7 +65,7 @@ function DynamicRepeatedComponent({
     return resolvedDataset.map((data, index) => {
       return (
         <RepeatedComponentItem key={index} index={index} data={data}>
-          <Component {...props} />
+          <Component {...props} partKey={`item_${index}`} />
         </RepeatedComponentItem>
       );
     });

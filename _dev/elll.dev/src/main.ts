@@ -92,6 +92,8 @@ export async function runApp() {
     ];
   });
 
+  elll.setConfig("elll.commandName", "@elllphnt/elll");
+
   const root = document.getElementById("root");
   if (!root) {
     throw new Error("Root element not found");

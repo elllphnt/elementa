@@ -1,6 +1,7 @@
 export * from "./components/drag_drop/_hooks";
 export * from "./components/drawer/_";
 export * from "./components/modals/_";
+export * from "./components/notifications/_";
 export * from "./components/shell/shell";
 export * from "./hooks/editor";
 export { useActiveEditor, useActiveEditorView } from "./hooks/editor";

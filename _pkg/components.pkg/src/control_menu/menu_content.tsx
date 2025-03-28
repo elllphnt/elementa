@@ -1,3 +1,4 @@
+import cx from "classnames";
 import { elllIcons16 } from "../icons/elll_icons";
 import Icon from "../icons/icon";
 import View from "../view/view";
@@ -25,7 +26,10 @@ export function ControlMenuContent({
       }}
     >
       <div
-        className="el-flex el-items-center el-px-3 el-py-2 el-pr-2"
+        className={cx("el-flex el-items-center el-py-2 el-pr-2", {
+          "el-pl-2": onBack,
+          "el-pl-3": !onBack,
+        })}
         style={{
           gap: 8,
           width: "100%",

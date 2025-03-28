@@ -1,17 +1,10 @@
 #!/usr/bin/env node
 
-import { elllFileTypes } from "@elllphnt/utils";
+export * from "@elllphnt/elll-transpiler";
+export type { Config } from "./modules/config/config.js";
+
 import chalk from "chalk";
 import { elll } from "./commands/elll.js";
-import { registerSyncer } from "./modules/sync/syncer.js";
-import { componentSyncer } from "./modules/syncers/component.js";
-import { primitveSyncer } from "./modules/syncers/primitive.js";
-import { stateSyncer } from "./modules/syncers/state.js";
-
-// Register syncers
-registerSyncer(elllFileTypes.component, componentSyncer);
-registerSyncer(elllFileTypes.primitive, primitveSyncer);
-registerSyncer(elllFileTypes.state, stateSyncer);
 
 // Run the CLI
 elll.parseAsync(process.argv).catch((error) => {

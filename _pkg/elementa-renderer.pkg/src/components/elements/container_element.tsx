@@ -7,13 +7,13 @@ import ElementComponent from "./element";
 
 export function ContainerElementComponent({
   element,
-  partKey,
+  onRef,
 }: {
   element: ContainerElementRenderable;
-  partKey?: string;
+  onRef?: (element: HTMLElement | null, key?: string) => void;
 }): JSX.Element {
   return (
-    <BaseElementComponent key={element.key} element={element} partKey={partKey}>
+    <BaseElementComponent key={element.key} element={element} onRef={onRef}>
       <ContainerElementContent element={element} />
     </BaseElementComponent>
   );

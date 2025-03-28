@@ -21,7 +21,7 @@ function RawBaseElementComponent({
   className?: string;
   component?: keyof JSX.IntrinsicElements | React.ComponentType<any>;
   partKey?: string;
-  onRef?: (element: HTMLElement | null) => void;
+  onRef?: (element: HTMLElement | null, key?: string) => void;
 }>): JSX.Element {
   const ref = useRef<HTMLElement | null>(null);
   const styleSheetClassName = element.entity.cssStyleSheet.className;

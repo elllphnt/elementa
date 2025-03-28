@@ -1,9 +1,7 @@
-import { elllFileTypes } from "@elllphnt/utils";
 import { RepositoryTag } from "@repo/backend";
 import {
   ActionRegistry,
   ActionRegistryContext,
-  ContextMenuOption,
   Icon,
   ProgressBar,
   TreeHeading,
@@ -47,41 +45,7 @@ function WorkspaceFiles(): JSX.Element {
     );
   }
 
-  return (
-    <WorkspaceDirectoryTree
-      directory={directory}
-      fileTypes={[
-        { type: elllFileTypes.component, name: "Component" },
-        { type: elllFileTypes.primitive, name: "Primitive" },
-        { type: elllFileTypes.state, name: "State" },
-        { type: elllFileTypes.context, name: "Context" },
-      ]}
-      defaultFileType={elllFileTypes.component}
-      defaultFileTypeName="component"
-      contextMenuOptions={(file) => {
-        const options = [] as ContextMenuOption[][];
-        const openOptions = [] as ContextMenuOption[];
-
-        // if (
-        //   file.type === elllFileTypes.components.elll
-        // ) {
-        //   openOptions.push({
-        //     label: "Open as text",
-        //     action: () => {
-        //       elll.editorManager.openFile(file.url, {
-        //         preferedEditorId: codeEditor.id,
-        //       });
-        //     },
-        //   });
-        // }
-
-        if (openOptions.length) {
-          options.push(openOptions);
-        }
-        return options;
-      }}
-    />
-  );
+  return <WorkspaceDirectoryTree directory={directory} />;
 }
 
 function LibraryFiles({ tagId }: { tagId: string }): JSX.Element {
@@ -116,41 +80,7 @@ function LibraryFiles({ tagId }: { tagId: string }): JSX.Element {
     );
   }
 
-  return (
-    <WorkspaceDirectoryTree
-      directory={directory}
-      fileTypes={[
-        { type: elllFileTypes.component, name: "Component" },
-        { type: elllFileTypes.primitive, name: "Primitive" },
-        { type: elllFileTypes.state, name: "State" },
-        { type: elllFileTypes.context, name: "Context" },
-      ]}
-      defaultFileType={elllFileTypes.component}
-      defaultFileTypeName="component"
-      contextMenuOptions={(file) => {
-        const options = [] as ContextMenuOption[][];
-        const openOptions = [] as ContextMenuOption[];
-
-        // if (
-        //   file.type === elllFileTypes.components.elll
-        // ) {
-        //   openOptions.push({
-        //     label: "Open as text",
-        //     action: () => {
-        //       elll.editorManager.openFile(file.url, {
-        //         preferedEditorId: codeEditor.id,
-        //       });
-        //     },
-        //   });
-        // }
-
-        if (openOptions.length) {
-          options.push(openOptions);
-        }
-        return options;
-      }}
-    />
-  );
+  return <WorkspaceDirectoryTree directory={directory} />;
 }
 
 function FilesSection({

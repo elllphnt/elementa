@@ -3,26 +3,21 @@ import * as nodepath from "path";
 export const remoteRoot = "components";
 
 export const paths = {
+  // config
   config: ({ directory }: { directory: string }) =>
-    nodepath.join(directory, "elll.yml"),
+    nodepath.join(directory, "elll.config.ts"),
 
-  localWorkspaceFile: ({ root, path }: { path: string; root: string }) =>
-    nodepath.join(root, "local", path),
-  externalWorkspaceFile: ({
-    root,
-    workspaceId,
-    path,
-  }: {
-    path: string;
-    workspaceId: string;
-    root: string;
-  }) => nodepath.join(root, "external", workspaceId, path),
+  // repository
+  gitignore: ({ configPath }: { configPath: string }) =>
+    nodepath.join(nodepath.dirname(configPath), ".gitignore"),
 
-  cachedResource: ({ configPath, id }: { configPath: string; id: string }) =>
-    nodepath.join(nodepath.dirname(configPath), ".elll", "cache", `${id}`),
-
-  registry: ({ configPath }: { configPath: string }) =>
-    nodepath.join(nodepath.dirname(configPath), ".elll/registry.yml"),
+  // elll
+  elll: ({ configPath }: { configPath: string }) =>
+    nodepath.join(nodepath.dirname(configPath), ".elll"),
+  cache: ({ configPath }: { configPath: string }) =>
+    nodepath.join(nodepath.dirname(configPath), ".elll", "cache.yml"),
+  cachedFile: ({ configPath, id }: { configPath: string; id: string }) =>
+    nodepath.join(nodepath.dirname(configPath), ".elll", "files", `${id}`),
 };
 
 export function convertPath({

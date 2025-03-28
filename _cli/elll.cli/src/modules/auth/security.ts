@@ -1,3 +1,5 @@
+// src/modules/auth/security.ts
+
 import crypto from "crypto";
 import os from "os";
 

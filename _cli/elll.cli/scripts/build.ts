@@ -1,4 +1,5 @@
 import * as esbuild from "esbuild";
+import { externals } from "./constant";
 
 export async function build({
   outputPath,
@@ -14,7 +15,7 @@ export async function build({
     format: "cjs",
     treeShaking: true,
     // minify: true,
-    external: ["prettier"],
+    external: externals,
   });
 
   return result;

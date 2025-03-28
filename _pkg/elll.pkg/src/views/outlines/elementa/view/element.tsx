@@ -57,8 +57,6 @@ export function ComponentElementOutline({
     element.entity.componentName,
   );
 
-  console.log("ComponentElementOutline", element.entity);
-
   return (
     <EntityHandleOutlineEntry
       handle={element}
@@ -120,12 +118,17 @@ export function TextElementOutline({
   stateKey?: string[];
 }) {
   const text = useObservable(element.entity.text$, element.entity.text);
+  const namespace = useObservable(
+    element.instance.environment.namespace$,
+    element.instance.environment.namespace,
+  );
+  const resolvedText = namespace.resolveValue(text);
 
   return (
     <EntityHandleOutlineEntry
       handle={element}
       icon={elllIcons16.text}
-      fallbackName={text || "Text"}
+      fallbackName={resolvedText || "Text"}
     />
   );
 }

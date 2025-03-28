@@ -3,6 +3,7 @@ import cx from "classnames";
 import { ComponentElementHandle } from "~/src/handles/_";
 import { useHandleDom } from "../_hooks/interaction_target";
 import { FragmentHandleComponent } from "../fragment";
+import { BaseElementHandleComponent } from "./_base";
 
 export function ComponentElementHandleComponent({
   element,
@@ -18,11 +19,8 @@ export function ComponentElementHandleComponent({
 
   return (
     <>
-      <div
-        ref={(r) => {
-          setRectHtmlElement(r);
-          addInteractionTarget(r);
-        }}
+      <BaseElementHandleComponent
+        element={element}
         className={cx(
           "interaction-target elementa-handle elementa-handle-container",
         )}

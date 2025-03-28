@@ -30,6 +30,7 @@ logs/
 
 dist/
 
-# elll
-.elll
-elll.yml
+# Elll
+.elll/
+moo/
+elll.config.ts

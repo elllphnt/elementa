@@ -1,11 +1,20 @@
 import { Repository } from "@repo/backend";
 import { ControlMenuContainer } from "@repo/components";
+import { useObservable } from "@repo/utils";
 import { CopyControl } from "~/src/components/ui/controls/_uncertain/copy/copy";
 import { useRepository } from "~/src/hooks/backend/repository";
+import { useElll } from "~/src/hooks/elll/elll";
+import { keys } from "~/src/libs/keys";
 import { ChangesView } from "./changes";
 
 export function InstallMenu({ repository }: { repository: Repository }) {
-  const command = `npx elll@latest init ${repository.id}`;
+  const elll = useElll();
+  const commandName =
+    useObservable(
+      elll.config$(keys.configs.elll.commandName),
+      elll.config(keys.configs.elll.commandName),
+    ) || "elll";
+  const command = `npx ${commandName}@latest add ${repository.id}`;
 
   return (
     <div className="el-space-y-3">

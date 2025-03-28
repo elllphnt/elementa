@@ -36,7 +36,7 @@
         "@codemirror/state": "^6.4.1",
         "@codemirror/view": "^6.25.0",
         "@elllphnt/elll-client": "*",
-        "@elllphnt/elll-element": "^0.26.17",
+        "@elllphnt/elll-element": "^0.26.19",
         "@elllphnt/elll-intelligence": "^0.1.0",
         "@elllphnt/elll-room-protocol": "^0.1.17",
         "@elllphnt/elll-router": "^0.0.1",

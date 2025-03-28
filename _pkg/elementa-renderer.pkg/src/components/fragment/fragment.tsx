@@ -47,9 +47,11 @@ function RecursionAlert({
 export function FragmentComponent({
   fragment,
   isolated,
+  onRef,
 }: {
   fragment: FragmentRenderable;
   isolated?: boolean;
+  onRef?: (element: HTMLElement | null, key?: string) => void;
 }) {
   const slots = useObservable(fragment.slots$, fragment.slots);
   const content = useObservable(fragment.content$, fragment.content);
@@ -70,12 +72,33 @@ export function FragmentComponent({
     {} as Record<string, SlotRenderable>,
   );
 
+  let jsxContent = <></>;
+
+  if (content.length === 1) {
+    const element = content[0];
+    jsxContent = (
+      <ElementComponent key={element.key} element={element} onRef={onRef} />
+    );
+  } else {
+    jsxContent = (
+      <>
+        {content.map((element) => (
+          <ElementComponent
+            key={element.key}
+            element={element}
+            onRef={(e, key) =>
+              onRef?.(e, [element.key, key].filter(Boolean).join(":"))
+            }
+          />
+        ))}
+      </>
+    );
+  }
+
   return (
     <FragmentNamespaceProvider fragment={fragment} root={isolated}>
       <SlotsContext.Provider value={slotMap}>
-        {content.map((element) => (
-          <ElementComponent key={element.key} element={element} />
-        ))}
+        {jsxContent}
       </SlotsContext.Provider>
     </FragmentNamespaceProvider>
   );

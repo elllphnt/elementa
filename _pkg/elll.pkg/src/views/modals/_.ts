@@ -1,9 +1,13 @@
 import { View } from "@repo/shell";
 import { keys } from "~/src/libs/keys";
+import { AiGenerateFilesModal } from "./ai/ai_generate_files";
+import { CopilotModal } from "./ai/copilot";
+import { GenerationNotification } from "./ai/generation";
 import { BackgroundLayer } from "./background_layer/background_layer";
 import { CommitView } from "./commit/commit";
 import { DynamicControlMenuView } from "./dynamics/dynamics";
 import { Effect } from "./effect/effect";
+import { WorkspaceFileExplorerView } from "./file_exporer/file_explorer";
 import { ProjectSpec } from "./onboarding/build_your_project/build_your_project";
 import { NpmPackageBrowser } from "./packages/npm_package_browser";
 import { NpmPackageViewer } from "./packages/npm_package_viewer";
@@ -113,5 +117,25 @@ export const modalViews = {
   effect: {
     id: keys.views.modals.effect,
     render: Effect,
+  },
+
+  // AI
+  generateFilesWithAi: {
+    id: keys.views.modals.generateFilesWithAi,
+    render: AiGenerateFilesModal,
+  },
+  copilot: {
+    id: keys.views.modals.copilot,
+    render: CopilotModal,
+  },
+  generationNotification: {
+    id: keys.views.notifications.aiGeneration,
+    render: GenerationNotification,
+  },
+
+  // Workspace File Explorer
+  workspaceFileExplorer: {
+    id: keys.views.modals.workspaceFileExplorer,
+    render: WorkspaceFileExplorerView,
   },
 } satisfies Record<string, View>;

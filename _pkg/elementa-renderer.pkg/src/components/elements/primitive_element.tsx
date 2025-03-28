@@ -26,17 +26,17 @@ function useContent({ element }: { element: PrimitiveElementRenderable }) {
 export function PrimitiveElementComponent({
   element,
   data,
-  partKey,
+  onRef,
 }: {
   element: PrimitiveElementRenderable;
   data?: any;
-  partKey?: string;
+  onRef?: (element: HTMLElement | null, key?: string) => void;
 }): JSX.Element {
   return (
     <BaseElementComponent
       element={element}
-      partKey={partKey}
       component={PrimitiveElementComponentContent}
+      onRef={onRef}
     />
   );
 }
@@ -72,9 +72,11 @@ export const PrimitiveElementComponentContent = forwardRef(
     );
 
     return (
-      <Component ref={ref} {...forwardedProps} {...resolvedProps}>
-        {content}
-      </Component>
+      <>
+        <Component ref={ref} {...forwardedProps} {...resolvedProps}>
+          {content}
+        </Component>
+      </>
     );
   },
 );

@@ -23,62 +23,49 @@ import VectorElementComponent from "./vector/vector_element";
 
 export const ElementComponent = memo(function ({
   element,
-  data,
-  partKey,
+  onRef,
 }: {
   element: ElementRenderable;
-  data?: any;
-  partKey?: string;
+  onRef?: (element: HTMLElement | null, key?: string) => void;
 }): JSX.Element {
   const content = switchEntityType(element.instance.entity.type, {
     [entityTypes.elements.component]: () => {
       const componentElement = element as ComponentElementRenderable;
       return (
-        <ComponentElementComponent
-          partKey={partKey}
-          element={componentElement}
-        />
+        <ComponentElementComponent element={componentElement} onRef={onRef} />
       );
     },
     [entityTypes.elements.primitive]: () => {
       const primitiveElement = element as PrimitiveElementRenderable;
       return (
-        <PrimitiveElementComponent
-          partKey={partKey}
-          element={primitiveElement}
-        />
+        <PrimitiveElementComponent element={primitiveElement} onRef={onRef} />
       );
     },
     [entityTypes.elements.container]: () => {
       const containerElement = element as ContainerElementRenderable;
       return (
-        <ContainerElementComponent
-          partKey={partKey}
-          element={containerElement}
-        />
+        <ContainerElementComponent element={containerElement} onRef={onRef} />
       );
     },
     [entityTypes.elements.slot]: () => {
       const slotElement = element as SlotElementRenderable;
-      return <SlotElementComponent partKey={partKey} element={slotElement} />;
+      return <SlotElementComponent element={slotElement} onRef={onRef} />;
     },
     [entityTypes.elements.text]: () => {
       const textElement = element as TextElementRenderable;
-      return <TextElementComponent partKey={partKey} element={textElement} />;
+      return <TextElementComponent element={textElement} onRef={onRef} />;
     },
     [entityTypes.elements.media]: () => {
       const imageElement = element as MediaElementRenderable;
-      return <MediaElementComponent partKey={partKey} element={imageElement} />;
+      return <MediaElementComponent element={imageElement} onRef={onRef} />;
     },
     [entityTypes.elements.vector]: () => {
       const vectorElement = element as VectorElementRenderable;
-      return (
-        <VectorElementComponent partKey={partKey} element={vectorElement} />
-      );
+      return <VectorElementComponent element={vectorElement} onRef={onRef} />;
     },
     [entityTypes.elements.page]: () => {
       const pageElement = element as PageElementRenderable;
-      return <PageElementComponent partKey={partKey} element={pageElement} />;
+      return <PageElementComponent element={pageElement} onRef={onRef} />;
     },
   });
 

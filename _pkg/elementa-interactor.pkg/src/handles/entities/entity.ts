@@ -62,7 +62,8 @@ export abstract class EntityHandle<
       const toRemove = { ...this.rects };
 
       for (const key in htmlElements) {
-        if (partKey && key !== partKey) continue;
+        const htmlElement = htmlElements[key];
+        if (!htmlElement || (partKey && key !== partKey)) continue;
 
         const existing = toRemove[key];
         if (existing) {

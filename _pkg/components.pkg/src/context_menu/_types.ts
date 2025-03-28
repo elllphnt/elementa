@@ -16,5 +16,6 @@ export type ContextMenu = {
     x: number;
     y: number;
   };
-  options: ContextMenuOption[][];
+  options?: ContextMenuOption[][];
+  viewId?: string;
 };

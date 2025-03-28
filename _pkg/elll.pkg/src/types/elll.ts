@@ -4,6 +4,7 @@ import { Shell } from "@repo/shell";
 import { Disposable } from "@repo/utils";
 import { Observable } from "rxjs";
 import { ContentManager } from "../modules/elll/content/manager";
+import { Copilot } from "../modules/elll/copilot/copilot";
 import { EditorManager } from "../modules/elll/editor/manager";
 import { ModelManager } from "../modules/elll/model/manager";
 import { Room } from "../modules/elll/room/room";
@@ -16,6 +17,7 @@ export interface IElll extends Disposable {
   readonly contentManager: ContentManager;
   readonly modelManager: ModelManager;
   readonly editorManager: EditorManager;
+  readonly copilot: Copilot;
 
   readonly user: User | undefined;
   readonly user$: Observable<User | undefined>;

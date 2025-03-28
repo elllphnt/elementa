@@ -484,7 +484,6 @@ export class ComponentElement extends ElementElementContainer<ComponentElementDa
     const propsSubscription = this.props$
       .pipe(pairwiseOrEmpty())
       .subscribe(async ([prev, next]) => {
-        console.log("props changed", [prev, next]);
         const currentResolutionNumber = ++resolutionNumber;
         const resolvedProps = Object.fromEntries(
           await Promise.all(

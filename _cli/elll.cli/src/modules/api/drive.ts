@@ -1,10 +1,10 @@
 import { createDriveServiceClient, File } from "@elllphnt/drive-service-client";
 import chalk from "chalk";
 import { createWriteStream } from "fs";
-import { pipeline } from "stream/promises";
-import { baseUrl, tokenManager } from "./_common.js";
 import { mkdir } from "fs/promises";
 import { dirname } from "path";
+import { pipeline } from "stream/promises";
+import { baseUrl, tokenManager } from "./_common.js";
 
 export const driveServiceClient = createDriveServiceClient({
   baseUrl,
@@ -70,5 +70,5 @@ export async function download(url: string, path: string): Promise<void> {
   // Ensure the parent directory exists
   await mkdir(dirname(path), { recursive: true });
 
-  await pipeline(response.body!, createWriteStream(path));
+  await pipeline(response.body as any, createWriteStream(path));
 }

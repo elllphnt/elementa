@@ -1,10 +1,11 @@
-import React from "react";
 import { BehaviorSubject } from "rxjs";
 
 export type Notification = {
   key: number;
   title?: string;
-  message: React.ReactNode;
+  message: string;
+  viewId?: string;
+  props?: Record<string, any>;
   actions?: {
     label: string;
     handler: () => void;

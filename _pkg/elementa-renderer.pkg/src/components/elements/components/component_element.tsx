@@ -1,13 +1,17 @@
 import { useObservable } from "@repo/utils";
-import { ComponentElementRenderable } from "~/src/renderables/instances/_";
+import {
+  ComponentElementRenderable,
+  Renderable,
+} from "~/src/renderables/instances/_";
 import { FragmentComponent } from "../../_";
-import { BaseElementComponent } from "../_/_base_element";
 import { ComponentPlaceHolder } from "./placeholder";
 
 export function ComponentElementComponentContent({
   element,
+  onRef,
 }: {
   element: ComponentElementRenderable;
+  onRef?: (element: HTMLElement | null, key?: string) => void;
 }): JSX.Element {
   const template = useObservable(element.template$, element.template);
 
@@ -15,17 +19,17 @@ export function ComponentElementComponentContent({
     return <></>;
   }
 
-  return <FragmentComponent fragment={template} isolated />;
+  return <FragmentComponent fragment={template} isolated onRef={onRef} />;
 }
 
 export function ComponentElementComponent({
   element,
   data,
-  partKey,
+  onRef,
 }: {
   element: ComponentElementRenderable;
   data?: any;
-  partKey?: string;
+  onRef?: (element: HTMLElement | null) => void;
 }): JSX.Element {
   const component = useObservable(
     element.entity.localComponent$,
@@ -33,24 +37,16 @@ export function ComponentElementComponent({
   );
   const loaded = useObservable(component?.loaded$, component?.loaded);
 
-  const naked = useObservable(
-    element.entity.unwrapped$,
-    element.entity.unwrapped,
-  );
-
-  if (!loaded && naked) {
+  if (!loaded) {
     return <ComponentPlaceHolder key="placeholder" component={component} />;
-  } else if (naked) {
-    return (
-      <>
-        <ComponentElementComponentContent element={element} />
-      </>
-    );
   } else {
     return (
-      <BaseElementComponent element={element} partKey={partKey}>
-        <ComponentElementComponentContent element={element} />
-      </BaseElementComponent>
+      <ComponentElementComponentContent
+        element={element}
+        onRef={(e, key) =>
+          element.setHtmlElement(key || Renderable.defaultHtmlElementKey, e)
+        }
+      />
     );
   }
 }

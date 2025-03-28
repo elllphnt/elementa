@@ -19,6 +19,7 @@ import { RepositoryWorkspace } from "~/src/workspaces/repository";
 import { IElll } from "../../types/elll";
 import { ElllHost } from "../../types/host";
 import { ContentManager } from "./content/manager";
+import { Copilot } from "./copilot/copilot";
 import { EditorManager } from "./editor/manager";
 import { ModelManager } from "./model/manager";
 import { Room } from "./room/room";
@@ -31,6 +32,7 @@ export class Elll extends Disposable implements IElll {
   readonly contentManager: ContentManager;
   readonly modelManager: ModelManager;
   readonly editorManager: EditorManager;
+  readonly copilot: Copilot;
 
   private _configs$ = new BehaviorSubject<Record<string, any>>({});
   private _room$ = new BehaviorSubject<Room | undefined>(undefined);
@@ -126,6 +128,7 @@ export class Elll extends Disposable implements IElll {
     this.contentManager = new ContentManager({ elll: this });
     this.modelManager = new ModelManager({ elll: this });
     this.editorManager = new EditorManager({ elll: this });
+    this.copilot = new Copilot({ elll: this });
 
     // load shell workspace when backend workspace changes
     const workspaceSubscription = this.repository$.subscribe((repository) => {

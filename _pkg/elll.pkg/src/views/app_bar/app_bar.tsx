@@ -1,4 +1,5 @@
 import {
+  Icon,
   IconButton,
   Tooltip,
   elllIcons16,
@@ -9,6 +10,7 @@ import Logo from "~/src/components/modules/elll/logo";
 import { useRepository } from "~/src/hooks/backend/repository";
 import { useWorkspace } from "~/src/hooks/backend/workspace";
 import { useElll } from "~/src/hooks/elll/elll";
+import { keys } from "~/src/libs/keys";
 import { modalViews } from "../modals/_";
 
 function ProjectButton() {
@@ -40,18 +42,26 @@ function PublishButton() {
   const { openMenu } = useControlMenu();
 
   return (
-    <Tooltip content="Export" side="bottom" sideOffset={4} delayDuration={0}>
-      <IconButton
-        icon={elllIcons16.export}
-        onClick={(e) =>
-          openMenu({
-            title: "Export",
-            anchor: e.currentTarget,
-            viewId: modalViews.export.id,
-          })
-        }
-      />
-    </Tooltip>
+    <button
+      onClick={(e) =>
+        openMenu({
+          title: "Export",
+          anchor: e.currentTarget,
+          viewId: modalViews.export.id,
+        })
+      }
+      className="el-flex el-gap-2 el-items-center el-h-5 el-bg-pm/80 el-pl-2 el-pr-1 el-text-pm-ctr el-text-fg-100 hover:el-bg-pm el-transition-colors el-text-sm el-rounded"
+    >
+      <div
+        style={{
+          position: "relative",
+          top: 1,
+        }}
+      >
+        Export
+      </div>
+      <Icon name={elllIcons16.export} />
+    </button>
   );
 }
 
@@ -67,6 +77,25 @@ function UserButton() {
             title: "Account",
             anchor: e.currentTarget,
             viewId: modalViews.account.id,
+          })
+        }
+      />
+    </Tooltip>
+  );
+}
+
+function CopilotButton() {
+  const { openMenu } = useControlMenu();
+
+  return (
+    <Tooltip content="Copilot" side="bottom" sideOffset={4} delayDuration={0}>
+      <IconButton
+        icon={elllIcons16.ai}
+        onClick={(e) =>
+          openMenu({
+            title: "Copilot",
+            anchor: e.currentTarget,
+            viewId: keys.views.modals.copilot,
           })
         }
       />
@@ -91,7 +120,7 @@ export function AppBarView(): JSX.Element {
   const workspace = useWorkspace();
 
   return (
-    <div className="el-h-full el-w-full el-flex el-p-2 el-justify-between el-items-center">
+    <div className="el-h-full el-w-full el-flex el-px-2 el-justify-between el-items-center">
       <div className="el-h-full el-flex el-items-center el-shrink-0">
         <ElllButton />
       </div>
@@ -99,6 +128,7 @@ export function AppBarView(): JSX.Element {
         {workspace && <ProjectButton />}
       </div>
       <div className="el-h-full el-flex el-items-center el-justify-end el-gap-2">
+        {workspace && <CopilotButton />}
         {workspace && <PublishButton />}
         <UserButton />
       </div>

@@ -1,8 +1,29 @@
+import { elllIcons16, useAction, useControlMenu } from "@repo/components";
 import { useObservable } from "@repo/utils";
 import { DrawerError } from "~/src/components/ui/drawers/_common/drawer_error";
 import { DrawerLoader } from "~/src/components/ui/drawers/_common/drawer_loader";
 import { WorkspaceDirectoryDrawer } from "~/src/components/ui/drawers/workspace_directory/workspace_directory";
 import { useWorkspaceFileAtPath } from "~/src/hooks/backend/file";
+import { keys } from "~/src/libs/keys";
+
+function AiAction() {
+  const { openMenu } = useControlMenu();
+
+  useAction({
+    title: "Generate With AI",
+    icon: elllIcons16.ai,
+    index: -1,
+    handler: (e) => {
+      openMenu({
+        anchor: e.currentTarget as HTMLElement,
+        viewId: keys.views.modals.generateFilesWithAi,
+        title: "Generate With AI",
+      });
+    },
+  });
+
+  return <></>;
+}
 
 export function WorkspaceOnlyFilesView(): JSX.Element {
   const [directory, query] = useWorkspaceFileAtPath("", {
@@ -41,5 +62,10 @@ export function WorkspaceOnlyFilesView(): JSX.Element {
     );
   }
 
-  return <WorkspaceDirectoryDrawer root={directory} />;
+  return (
+    <>
+      <AiAction />
+      <WorkspaceDirectoryDrawer root={directory} />
+    </>
+  );
 }

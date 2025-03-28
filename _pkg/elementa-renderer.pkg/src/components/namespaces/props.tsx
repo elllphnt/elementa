@@ -1,9 +1,8 @@
-import { FragmentEnvironment } from "@repo/elementa";
+import { FragmentEnvironment, Namespace } from "@repo/elementa";
 import { useManyObservables, useObservable } from "@repo/utils";
-import { PropsWithChildren, useMemo } from "react";
+import { PropsWithChildren } from "react";
 import { NamespaceContext } from "../../contexts/namespace";
 import { useNamespace } from "../../hooks/namespace";
-import { Namespace } from "@repo/elementa";
 
 export function PropsNamespaceProvider({
   children,
@@ -16,16 +15,9 @@ export function PropsNamespaceProvider({
   isolated?: boolean;
 }>): JSX.Element {
   const upstreamNamespace = useNamespace();
-  const downstreamNamespace = useMemo(() => {
-    if (isolated) {
-      return new Namespace();
-    } else {
-      return new Namespace(
-        upstreamNamespace.content,
-        upstreamNamespace.twoSlashMap,
-      );
-    }
-  }, []);
+  const downstreamNamespace = isolated
+    ? new Namespace()
+    : new Namespace(upstreamNamespace.content, upstreamNamespace.twoSlashMap);
 
   const props = useObservable(environment?.props$, environment?.props) ?? [];
   const propsKey = props.map((prop) => prop.key).join(".");

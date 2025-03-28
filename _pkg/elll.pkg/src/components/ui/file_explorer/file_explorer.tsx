@@ -8,6 +8,7 @@ import {
   TreeEntry,
 } from "@repo/components";
 import { useObservable } from "@repo/utils";
+import cx from "classnames";
 import { useWorkspaceState } from "~/src/hooks/shell/workspace";
 
 function Directory({
@@ -54,11 +55,13 @@ export function FileExplorer({
   initialPath = "",
   stateKey = "fileExplorer",
   onFileClicked,
+  onSelect,
 }: {
   drive: IFileDrive;
   initialPath?: string;
   stateKey?: string;
   onFileClicked?: (file: File) => void;
+  onSelect?: (file: File) => void;
 }) {
   const [path, setPath] = useWorkspaceState<string>(
     `${stateKey}.path`,
@@ -96,9 +99,17 @@ export function FileExplorer({
   return (
     <div className="el-h-full el-w-full el-flex el-flex-col el-gap-2">
       <div className="el-flex el-items-center el-gap-2">
-        <IconButton icon={elllIcons16.chevron} iconClassName="el-rotate-180" />
+        <IconButton
+          icon={elllIcons16.chevron}
+          iconClassName="el-rotate-180"
+          onClick={() => {
+            const parts = path.split("/");
+            parts.pop();
+            setPath(parts.join("/"));
+          }}
+        />
         <TextControl
-          value={path}
+          value={"/" + path}
           onChange={(value) => setPath(value || "")}
           settings={{
             placeholder: "Path",
@@ -106,6 +117,24 @@ export function FileExplorer({
         />
       </div>
       <div className="el-grow el-overflow-hidden">{content}</div>
+      {onSelect ? (
+        <button
+          className={cx("el-h-7 el-rounded", {
+            "el-bg-pm el-text-pm-ctr": file,
+            "el-bg-fg/5 el-text-fg-300": !file,
+          })}
+          disabled={!file}
+          onClick={() => {
+            if (file) {
+              onSelect(file);
+            }
+          }}
+        >
+          Select
+        </button>
+      ) : (
+        <></>
+      )}{" "}
     </div>
   );
 }
