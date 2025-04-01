@@ -1,6 +1,6 @@
 import { elllIcons16, Icon, ScrollArea, TreeEntry } from "@repo/components";
-import { editors } from "~/src/editors/_editors";
 import { useElll } from "~/src/hooks/elll/elll";
+import { keys } from "~/src/libs/keys";
 import { Typefaces } from "./typefaces";
 
 export function StyleAssetsView(): JSX.Element {
@@ -17,7 +17,7 @@ export function StyleAssetsView(): JSX.Element {
         container
         icon={<Icon name={elllIcons16.addFolder} />}
         onClick={() => {
-          elll.editorManager.openEditor(editors.utilitySheet);
+          elll.editorManager.openEditor(keys.editors.utilitySheet);
         }}
       >
         Keyframes

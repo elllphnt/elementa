@@ -28,20 +28,7 @@ export class TextTool extends ElementTool {
       component,
     });
 
-    element.setContent({
-      type: "doc",
-      content: [
-        {
-          type: "paragraph",
-          content: [
-            {
-              type: "text",
-              text: "Hello World!",
-            },
-          ],
-        },
-      ],
-    });
+    element.setText("Hello World!");
 
     return element;
   }

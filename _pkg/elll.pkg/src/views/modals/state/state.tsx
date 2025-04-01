@@ -9,7 +9,6 @@ import {
   StateInstance,
   ValueStateInstance,
 } from "@repo/elementa";
-import { SchemaControl } from "~/src/views/modals/state/schema";
 
 export function ValueStateView({ state }: { state: ValueStateInstance }) {
   return (
@@ -26,11 +25,11 @@ export function ValueStateView({ state }: { state: ValueStateInstance }) {
           onChange={(value) => state.entity.setName(value)}
         />
       </FullControlEntry>
-      <FullControlEntry label="Schema">
-        <SchemaControl
-          value={state.entity.schema}
-          value$={state.entity.schema$}
-          onChange={(value) => state.entity.setSchema(value)}
+      <FullControlEntry label="Type">
+        <TextControl
+          value={state.entity.tsType}
+          value$={state.entity.tsType$}
+          onChange={(value) => state.entity.setTsType(value)}
         />
       </FullControlEntry>
       <FullControlEntry label="Initial Value">

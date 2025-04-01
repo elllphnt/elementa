@@ -51,6 +51,7 @@ export class ElementaStageManager {
     const elementa = new Elementa({
       moduleManager: this.moduleManager,
     });
+
     const stage = new ElementaStager({
       elementa,
       stylesheetManager: this.stylesheetManager,

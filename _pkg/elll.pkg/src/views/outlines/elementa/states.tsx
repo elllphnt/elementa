@@ -325,8 +325,6 @@ export function StateOutline({
 
   const isContainer = typeof value === "object" && value !== null;
 
-  console.log("StateOutline environment", { environment, state });
-
   return (
     <div className="el-space-y-1">
       <StateEntryLine

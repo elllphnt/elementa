@@ -18,7 +18,9 @@ export function StatesNamespaceProvider({
   const states = useObservable(environment.states$, environment.states);
   let content = <>{children}</>;
 
-  for (const state of states) {
+  // reverse the states order so that the first state becomes the outermost provider
+  const reversedStates = [...states].reverse();
+  for (const state of reversedStates) {
     switchEntityType(
       state.entity.type,
       {

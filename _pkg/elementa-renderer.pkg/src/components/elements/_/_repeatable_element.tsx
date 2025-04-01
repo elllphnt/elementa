@@ -1,27 +1,38 @@
 import { Evaluable } from "@elllphnt/elll-element";
 import { useObservable } from "@repo/utils";
-import { ComponentType, PropsWithChildren } from "react";
+import { ComponentType } from "react";
 import { NamespaceContext } from "~/src/contexts/namespace";
 import { useNamespace } from "~/src/hooks/namespace";
 import { ElementRenderable } from "../../../renderables/instances/element/element";
 
+function Test() {
+  const namespace = useNamespace();
+
+  return <>I{namespace.key}I</>;
+}
+
 function RepeatedComponentItem({
-  children,
   data,
   index,
-}: PropsWithChildren<{
+  Component,
+  props,
+}: {
   data?: any;
   index: number;
-}>) {
+  props: any;
+  Component: ComponentType<any>;
+}) {
   const namespace = useNamespace({ clone: true });
   namespace.set("$", {
     data,
     index,
   });
+  namespace.set("index", index);
+  namespace.set("item", data);
 
   return (
-    <NamespaceContext.Provider value={namespace}>
-      {children}
+    <NamespaceContext.Provider key={namespace.key} value={namespace}>
+      {namespace.key} <Component {...props} partKey={`item_${index}`} />
     </NamespaceContext.Provider>
   );
 }
@@ -40,9 +51,14 @@ function FixedRepeatedComponent({
 
   const children = new Array(resolvedCount).fill(null).map((_, index) => {
     return (
-      <RepeatedComponentItem key={index} index={index}>
-        <Component {...props} partKey={`item_${index}`} />
-      </RepeatedComponentItem>
+      <>
+        <RepeatedComponentItem
+          key={index}
+          index={index}
+          Component={Component}
+          props={props}
+        />
+      </>
     );
   });
 
@@ -58,17 +74,27 @@ function DynamicRepeatedComponent({
   props: any;
   dataset?: Evaluable<any[]>;
 }) {
-  const namespace = useNamespace({ clone: true });
-  const resolvedDataset = namespace.resolveValue(namespace);
+  const namespace = useNamespace();
+  const resolvedDataset = namespace.resolveValue(dataset);
 
   if (Array.isArray(resolvedDataset)) {
-    return resolvedDataset.map((data, index) => {
-      return (
-        <RepeatedComponentItem key={index} index={index} data={data}>
-          <Component {...props} partKey={`item_${index}`} />
-        </RepeatedComponentItem>
-      );
-    });
+    return (
+      <>
+        {resolvedDataset.map((data, index) => {
+          return (
+            <RepeatedComponentItem
+              key={index}
+              index={index}
+              data={data}
+              Component={Component}
+              props={props}
+            />
+          );
+        })}
+      </>
+    );
+  } else {
+    return <></>;
   }
 }
 

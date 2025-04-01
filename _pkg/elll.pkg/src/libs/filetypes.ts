@@ -1,17 +1,17 @@
 import { elllFileTypes } from "@elllphnt/utils";
-import { componentEditor } from "../editors/elementa/editor";
+import { keys } from "./keys";
 import { mimeTypes } from "./mimetypes";
-import { jsonEditor } from "../editors/monaco/json";
-import { reactEditor } from "../editors/monaco/react";
 
 export function getEditorForFileType(type: string): string | undefined {
   switch (type) {
     case elllFileTypes.component:
-      return componentEditor.id;
+      return keys.editors.elementa.editor;
     case elllFileTypes.primitive:
-      return reactEditor.id;
+      return keys.editors.react;
+    case elllFileTypes.state:
+      return keys.editors.typescript;
     case mimeTypes.json:
-      return jsonEditor.id;
+      return keys.editors.json;
     default:
       return undefined;
   }

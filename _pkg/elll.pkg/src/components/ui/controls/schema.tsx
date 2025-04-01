@@ -1,4 +1,3 @@
-import { SchemaData } from "@elllphnt/elll-element";
 import {
   BooleanControl,
   ControlProps,
@@ -6,10 +5,8 @@ import {
   NumberControl,
   StringControl,
 } from "@repo/components";
-import { ElllControlType } from "./_types";
-import { Control } from "./control";
 
-export function SchemaControl({
+export function TypedControl({
   value,
   value$,
   onChange,
@@ -17,60 +14,29 @@ export function SchemaControl({
 }: ControlProps<
   any,
   {
-    schema?: SchemaData;
+    type?: string;
   }
 >) {
-  if (settings?.schema?.control?.type) {
-    return (
-      <Control
-        type={settings.schema.control.type as ElllControlType}
-        value$={value$}
-        value={value}
-        onChange={onChange}
-        settings={settings.schema.control.options}
-      />
-    );
-  } else {
-    switch (settings?.schema?.type) {
-      case "number": {
-        return (
-          <NumberControl
-            value$={value$}
-            value={value}
-            onChange={onChange}
-            settings={settings.schema.control?.options as any}
-          />
-        );
-      }
-      case "string": {
-        return (
-          <StringControl
-            value$={value$}
-            value={value}
-            onChange={onChange}
-            settings={settings.schema.control?.options as any}
-          />
-        );
-      }
-      case "boolean": {
-        return (
-          <BooleanControl
-            value$={value$}
-            value={value}
-            onChange={onChange}
-            settings={settings.schema.control?.options as any}
-          />
-        );
-      }
-      default: {
-        return (
-          <ExpressionControl
-            value$={value$}
-            value={value}
-            onChange={onChange}
-          />
-        );
-      }
+  switch (settings?.type) {
+    case "number": {
+      return (
+        <NumberControl value$={value$} value={value} onChange={onChange} />
+      );
+    }
+    case "string": {
+      return (
+        <StringControl value$={value$} value={value} onChange={onChange} />
+      );
+    }
+    case "boolean": {
+      return (
+        <BooleanControl value$={value$} value={value} onChange={onChange} />
+      );
+    }
+    default: {
+      return (
+        <ExpressionControl value$={value$} value={value} onChange={onChange} />
+      );
     }
   }
 }

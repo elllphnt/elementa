@@ -42,7 +42,7 @@ export class TextElementHandle extends ElementHandle<TextElementRenderable> {
   }
 
   extractContentExpressions() {
-    const textContent = this.entity.text;
+    const textContent = this.entity.text || "";
     const expressions = Namespace.extractExpressionsFromString(textContent);
     const propExpressions = expressions.filter((expr) =>
       expr.startsWith("props."),

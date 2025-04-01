@@ -4,7 +4,6 @@ import {
   FragmentParam,
   Prop,
   SlotFill,
-  Transformer,
 } from "@repo/elementa-models";
 import {
   BehaviorSubject,
@@ -105,10 +104,15 @@ export class ComponentElementFragmentEnvironment extends FragmentEnvironment {
   }
 
   propValue(prop: Prop) {
-    return this.element.entity.resolvedProp(prop.id) ?? prop.default;
+    return (
+      this.element.entity.resolvedProp(prop.identifier || "") ?? prop.default
+    );
   }
   propValue$(prop: Prop): Observable<any> {
-    return this.element.entity.resolvedProp$(prop.id).pipe(
+    return prop.identifier$.pipe(
+      switchMap((identifier) =>
+        this.element.entity.resolvedProp$(identifier || ""),
+      ),
       switchMap((value) => {
         if (value) {
           return of(value);
@@ -123,15 +127,6 @@ export class ComponentElementFragmentEnvironment extends FragmentEnvironment {
   }
   paramValue$(param: FragmentParam): Observable<any> {
     return of(undefined);
-  }
-
-  get transformers(): Transformer[] {
-    return this.element.entity.localComponent?.transformers || [];
-  }
-  get transformers$(): Observable<Transformer[]> {
-    return this.element.entity.localComponent$.pipe(
-      switchMap((component) => component?.transformers$ || of([])),
-    );
   }
 
   constructor({

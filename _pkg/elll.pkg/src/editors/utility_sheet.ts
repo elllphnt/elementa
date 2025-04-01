@@ -10,7 +10,6 @@ import { combineLatestOrEmpty } from "@repo/utils";
 import { Observable, map, of } from "rxjs";
 import { keys } from "../libs/keys";
 import { IElll } from "../types/elll";
-import { editors } from "./_editors";
 
 export type UtilitySheetEditorStateData = EditorStateData & {};
 
@@ -64,7 +63,7 @@ export class UtilitySheetEditorState extends EditorState<UtilitySheetEditorState
   }
 
   constructor({ id, shell }: { id?: string; shell: Shell }) {
-    super({ id, editorId: editors.utilitySheet, shell });
+    super({ id, editorId: keys.editors.utilitySheet, shell });
 
     this.addAction({
       icon: elllIcons16.plus,
@@ -83,7 +82,7 @@ export class UtilitySheetEditorState extends EditorState<UtilitySheetEditorState
 }
 
 export const utilitySheetEditor: Editor = {
-  id: editors.utilitySheet,
+  id: keys.editors.utilitySheet,
   createState: (shell) => new UtilitySheetEditorState({ shell }),
   views: {
     board: keys.views.board.utilitySheet,

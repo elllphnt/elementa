@@ -6,7 +6,6 @@ import { FragmentFragmentsNamespaceProvider } from "./fragments";
 import { ParamsNamespaceProvider } from "./params";
 import { PropsNamespaceProvider } from "./props";
 import { StatesNamespaceProvider } from "./states/states";
-import { TransformersNamespaceProvider } from "./transformers";
 
 export function EnvironmentNamespaceConsumer({
   fragment,
@@ -44,10 +43,8 @@ export const FragmentNamespaceProvider = memo(function ({
         <ParamsNamespaceProvider environment={environment}>
           <StatesNamespaceProvider environment={environment}>
             <FragmentFragmentsNamespaceProvider fragment={fragment}>
-              <TransformersNamespaceProvider environment={environment}>
-                <EnvironmentNamespaceConsumer fragment={environment} />
-                {children}
-              </TransformersNamespaceProvider>
+              <EnvironmentNamespaceConsumer fragment={environment} />
+              {children}
             </FragmentFragmentsNamespaceProvider>
           </StatesNamespaceProvider>
         </ParamsNamespaceProvider>

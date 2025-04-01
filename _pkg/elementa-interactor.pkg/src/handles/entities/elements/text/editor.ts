@@ -41,12 +41,6 @@ export class ProseMirrorTextElementEditor implements ITextElementEditor {
   mount(root: HTMLElement): void {
     let doc = schema.node("doc", null, [schema.node("paragraph", null, [])]);
 
-    try {
-      doc = schema.nodeFromJSON(this.element.entity.content);
-    } catch (e) {
-      console.error(e);
-    }
-
     const state = EditorState.create({
       schema,
       doc,
@@ -61,7 +55,7 @@ export class ProseMirrorTextElementEditor implements ITextElementEditor {
       dispatchTransaction: (transaction) => {
         const newState = editor.state.apply(transaction);
         if (transaction.docChanged) {
-          this.element.entity.setContent(newState.doc.toJSON());
+          this.element.entity.setText(newState.doc.toJSON());
         }
         editor.updateState(newState);
       },

@@ -1,5 +1,12 @@
-import { entityTypes, switchEntityType } from "@elllphnt/elll-element";
+import {
+  entityTypes,
+  Evaluable,
+  switchEntityType,
+} from "@elllphnt/elll-element";
+import { useObservable } from "@repo/utils";
 import { memo } from "react";
+import { NamespaceContext } from "~/src/contexts/namespace";
+import { useNamespace } from "~/src/hooks/namespace";
 import {
   ComponentElementRenderable,
   MediaElementRenderable,
@@ -21,14 +28,14 @@ import { SlotElementComponent } from "./slot_element";
 import TextElementComponent from "./text/text_element";
 import VectorElementComponent from "./vector/vector_element";
 
-export const ElementComponent = memo(function ({
+function RawElement({
   element,
   onRef,
 }: {
   element: ElementRenderable;
   onRef?: (element: HTMLElement | null, key?: string) => void;
 }): JSX.Element {
-  const content = switchEntityType(element.instance.entity.type, {
+  return switchEntityType(element.instance.entity.type, {
     [entityTypes.elements.component]: () => {
       const componentElement = element as ComponentElementRenderable;
       return (
@@ -68,10 +75,150 @@ export const ElementComponent = memo(function ({
       return <PageElementComponent element={pageElement} onRef={onRef} />;
     },
   });
+}
+
+function RepeatedElementItem({
+  data,
+  index,
+  element,
+  onRef,
+}: {
+  data?: any;
+  index: number;
+  element: ElementRenderable;
+  onRef?: (element: HTMLElement | null, key?: string) => void;
+}) {
+  const namespace = useNamespace({ clone: true });
+  namespace.set("$", {
+    data,
+    index,
+  });
+  namespace.set("index", index);
+  namespace.set("item", data);
 
   return (
+    <NamespaceContext.Provider key={namespace.key} value={namespace}>
+      <RawElement
+        element={element}
+        onRef={(el) => {
+          if (onRef) {
+            onRef(el, `item_${index}`);
+          }
+        }}
+      />
+    </NamespaceContext.Provider>
+  );
+}
+
+function FixedRepeatedElement({
+  count,
+  element,
+  onRef,
+}: {
+  count?: Evaluable<number>;
+  element: ElementRenderable;
+  onRef?: (element: HTMLElement | null, key?: string) => void;
+}) {
+  const namespace = useNamespace();
+  const resolvedCount = namespace.resolveValue(count) ?? 1;
+
+  const children = new Array(resolvedCount).fill(null).map((_, index) => {
+    return (
+      <>
+        <RepeatedElementItem
+          key={index}
+          index={index}
+          element={element}
+          onRef={onRef}
+        />
+      </>
+    );
+  });
+
+  return <>{children}</>;
+}
+
+function DynamicRepeatedElement({
+  dataset,
+  element,
+  onRef,
+}: {
+  dataset?: Evaluable<any[]>;
+  element: ElementRenderable;
+  onRef?: (element: HTMLElement | null, key?: string) => void;
+}) {
+  const namespace = useNamespace();
+  const resolvedDataset = namespace.resolveValue(dataset);
+
+  if (Array.isArray(resolvedDataset)) {
+    return (
+      <>
+        {resolvedDataset.map((data, index) => {
+          return (
+            <RepeatedElementItem
+              key={index}
+              index={index}
+              data={data}
+              element={element}
+              onRef={onRef}
+            />
+          );
+        })}
+      </>
+    );
+  } else {
+    return <></>;
+  }
+}
+
+function RepeatableElement({
+  element,
+  onRef,
+}: {
+  element: ElementRenderable;
+  onRef?: (element: HTMLElement | null, key?: string) => void;
+}): JSX.Element {
+  const repeat = useObservable(
+    element.instance.entity.repeat$,
+    element.instance.entity.repeat,
+  );
+
+  if (repeat?.mode) {
+    switch (repeat.mode) {
+      case "fixed":
+        return (
+          <FixedRepeatedElement
+            count={repeat.count}
+            element={element}
+            onRef={onRef}
+          />
+        );
+      case "dynamic":
+        return (
+          <DynamicRepeatedElement
+            dataset={repeat.dataset}
+            element={element}
+            onRef={onRef}
+          />
+        );
+    }
+  } else {
+    return <RawElement element={element} />;
+  }
+}
+
+export const ElementComponent = memo(function ({
+  element,
+  onRef,
+}: {
+  element: ElementRenderable;
+  onRef?: (element: HTMLElement | null, key?: string) => void;
+}): JSX.Element {
+  return (
     <>
-      <ElementErrorBoundary element={element}>{content}</ElementErrorBoundary>
+      <ElementErrorBoundary element={element}>
+        <RepeatableElement element={element} onRef={onRef} />
+      </ElementErrorBoundary>
     </>
   );
 });

@@ -8,9 +8,8 @@ import {
 } from "@repo/shell";
 import { combineLatestOrEmpty } from "@repo/utils";
 import { Observable, map, of } from "rxjs";
-import { IElll } from "../types/elll";
-import { editors } from "./_editors";
 import { keys } from "../libs/keys";
+import { IElll } from "../types/elll";
 
 export type ProgrammingInterfaceEditorStateData = EditorStateData & {};
 
@@ -64,7 +63,7 @@ export class ProgrammingInterfaceEditorState extends EditorState<ProgrammingInte
   }
 
   constructor({ id, shell }: { id?: string; shell: Shell }) {
-    super({ id, editorId: editors.programmingInterface, shell });
+    super({ id, editorId: keys.editors.programmingInterface, shell });
   }
 
   restore(data: ProgrammingInterfaceEditorStateData): void {
@@ -73,7 +72,7 @@ export class ProgrammingInterfaceEditorState extends EditorState<ProgrammingInte
 }
 
 export const programmingInterfaceEditor: Editor = {
-  id: editors.programmingInterface,
+  id: keys.editors.programmingInterface,
   createState: (shell) => new ProgrammingInterfaceEditorState({ shell }),
   views: {
     board: keys.views.board.programmingInterfaceEditor,

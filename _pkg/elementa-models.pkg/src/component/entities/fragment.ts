@@ -2,7 +2,6 @@ import {
   entityTypes,
   FragmentData,
   FragmentParamData,
-  SchemaData,
 } from "@elllphnt/elll-element";
 import { combineLatestOrEmpty, Disposable } from "@repo/utils";
 import {
@@ -13,13 +12,8 @@ import {
   of,
   switchMap,
 } from "rxjs";
-import {
-  Datafiable,
-  restoreReactiveArray,
-  restoreReactiveObject,
-} from "~/src/_lib/restore";
+import { Datafiable, restoreReactiveArray } from "~/src/_lib/restore";
 import { CssStyleSheet } from "~/src/css/_";
-import { Schema } from "~/src/schema/_";
 import { Component } from "../component";
 import { FrameWidget } from "./_";
 import { fragmentVariants } from "./_libs/fragment";
@@ -34,7 +28,7 @@ export class FragmentParam
   key: string;
 
   private _name$ = new BehaviorSubject<string | undefined>(undefined);
-  private _schema$ = new BehaviorSubject<Schema | undefined>(undefined);
+  private _tsType$ = new BehaviorSubject<string | undefined>(undefined);
   private _required$ = new BehaviorSubject<boolean | undefined>(undefined);
 
   get name() {
@@ -44,11 +38,11 @@ export class FragmentParam
     return this._name$.asObservable();
   }
 
-  get schema() {
-    return this._schema$.value;
+  get tsType() {
+    return this._tsType$.value;
   }
-  get schema$() {
-    return this._schema$.asObservable();
+  get tsType$() {
+    return this._tsType$.asObservable();
   }
 
   get required() {
@@ -62,20 +56,20 @@ export class FragmentParam
     return {
       key: this.key,
       name: this.name,
-      schema: this.schema?.data as SchemaData | undefined,
+      tsType: this.tsType,
       required: this.required,
     };
   }
   get data$(): Observable<FragmentParamData> {
     return combineLatestOrEmpty([
       this.name$,
-      this._schema$.pipe(switchMap((schema) => schema?.data$ ?? of(undefined))),
+      this._tsType$,
       this._required$,
     ]).pipe(
-      map(([name, schema, required]) => ({
+      map(([name, tsType, required]) => ({
         key: this.key,
         name,
-        schema: schema as SchemaData | undefined,
+        tsType,
         required,
       })),
     );
@@ -86,7 +80,7 @@ export class FragmentParam
     this.key = key ?? Math.random().toString(36).substring(7);
 
     this.addDisposer(() => {
-      this._schema$.complete();
+      this._tsType$.complete();
       this._required$.complete();
     });
   }
@@ -94,8 +88,8 @@ export class FragmentParam
   setName(name: string | undefined) {
     this._name$.next(name);
   }
-  setSchema(schema: Schema | undefined) {
-    this._schema$.next(schema);
+  setSchema(tsType: string | undefined) {
+    this._tsType$.next(tsType);
   }
   setRequired(required: boolean) {
     this._required$.next(required);
@@ -108,16 +102,7 @@ export class FragmentParam
 
     this._name$.next(data.name);
     this._required$.next(data.required);
-
-    restoreReactiveObject({
-      data: data.schema,
-      datafiable$: this._schema$,
-      create: () => new Schema(),
-      restore: (schema, data) => schema.restore(data),
-      dispose: (schema) => schema.dispose(),
-      identifyData: (data) => data.type,
-      identifyDatafiable: (schema) => schema.data.type,
-    });
+    this._tsType$.next(data.tsType);
   }
 }
 

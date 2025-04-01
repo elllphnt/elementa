@@ -23,27 +23,29 @@ function ElllPropControlEntry({
   elements: ComponentElementHandle[];
   prop: Prop;
 }) {
+  const identifier = useObservable(prop.identifier$, prop.identifier);
   const name = useObservable(prop.name$, prop.name);
   const [_value$, _value] = useInstancesCommonReactivePair({
     instances: elements.map((h) => h.instance),
-    value$: (i) => i.entity.prop$(prop.id),
-    value: (i) => i.entity.prop(prop.id),
+    value$: (i) => i.entity.prop$(identifier || ""),
+    value: (i) => i.entity.prop(identifier || ""),
   });
-  const schema = useObservable(prop.schema$, prop.schema);
-  const schemaData = useObservable(schema?.data$, schema?.data);
+  const tsType = useObservable(prop.tsType$, prop.tsType);
 
   return (
     <EvaluableControlEntry
-      label={name ?? prop.id}
-      control={elllControlTypes.Schema}
+      label={name || identifier || prop.id}
+      control={elllControlTypes.Typed}
       controlSettings={{
-        schema: schemaData,
+        type: tsType,
       }}
       value={_value}
       value$={_value$}
       onChange={(value) => {
         elements.forEach((element) => {
-          element.entity.setProp(prop.id, value);
+          if (prop.name) {
+            element.entity.setProp(prop.name, value);
+          }
         });
       }}
     />
@@ -51,37 +53,37 @@ function ElllPropControlEntry({
 }
 function PrimitivePropControlEntry({
   elements,
-  name,
+  identifier,
   config,
 }: {
   elements: PrimitiveElementHandle[];
-  name: string;
+  identifier: string;
   config: DataInputConfig;
 }) {
   const [_value$, _value] = useInstancesCommonReactivePair({
     instances: elements.map((h) => h.instance),
-    value$: (i) => i.entity.prop$(name),
-    value: (i) => i.entity.prop(name),
+    value$: (i) => i.entity.prop$(identifier),
+    value: (i) => i.entity.prop(identifier),
   });
-  const schema = config.schema;
+  const tsType = config.tsType;
 
   return (
     <DynamicControlEntry
-      label={config.name ?? name}
-      control={elllControlTypes.Schema}
+      label={config.name || identifier}
+      control={elllControlTypes.Typed}
       controlSettings={{
-        schema,
+        type: tsType,
       }}
       value={_value}
       value$={_value$}
       onChange={(value) => {
         elements.forEach((element) => {
-          element.entity.setProp(name, value);
+          element.entity.setProp(identifier, value);
         });
       }}
       onRemove={() => {
         elements.forEach((element) => {
-          element.entity.setProp(name, undefined);
+          element.entity.setProp(identifier, undefined);
         });
       }}
       dynamics={{
@@ -165,11 +167,11 @@ export function PrimitivePropsSheet({
   if (props.length) {
     content = (
       <>
-        {props.map(([name, config]) => (
+        {props.map(([identifier, config]) => (
           <PrimitivePropControlEntry
             elements={selection}
-            key={name}
-            name={name}
+            key={identifier}
+            identifier={identifier}
             config={config}
           />
         ))}

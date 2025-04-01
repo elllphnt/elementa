@@ -38,14 +38,21 @@ export function ComponentElementComponent({
   const loaded = useObservable(component?.loaded$, component?.loaded);
 
   if (!loaded) {
-    return <ComponentPlaceHolder key="placeholder" component={component} />;
+    return (
+      <ComponentPlaceHolder
+        element={element}
+        key="placeholder"
+        component={component}
+      />
+    );
   } else {
     return (
       <ComponentElementComponentContent
         element={element}
-        onRef={(e, key) =>
-          element.setHtmlElement(key || Renderable.defaultHtmlElementKey, e)
-        }
+        onRef={(e, key) => {
+          element.setHtmlElement(key || Renderable.defaultHtmlElementKey, e);
+          onRef?.(e);
+        }}
       />
     );
   }

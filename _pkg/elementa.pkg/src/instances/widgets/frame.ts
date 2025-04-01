@@ -4,7 +4,6 @@ import {
   FrameWidget,
   Prop,
   SlotFill,
-  Transformer,
 } from "@repo/elementa-models";
 import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
 import { updateInstanceList } from "~/src/_lib/instances";
@@ -69,13 +68,6 @@ export class FrameFragmentEnvironment extends FragmentEnvironment {
     return this.frame.entity.component.props$;
   }
 
-  get transformers(): Transformer[] {
-    return this.frame.entity.component.transformers;
-  }
-  get transformers$(): Observable<Transformer[]> {
-    return this.frame.entity.component.transformers$;
-  }
-
   get slots(): SlotInstance[] {
     return [];
   }
@@ -91,10 +83,11 @@ export class FrameFragmentEnvironment extends FragmentEnvironment {
   }
 
   propValue(prop: Prop): any {
-    return this.frame.entity.prop(prop.id) ?? prop.default;
+    return this.frame.entity.prop(prop.identifier || "") ?? prop.default;
   }
   propValue$(prop: Prop): Observable<any> {
-    return this.frame.entity.prop$(prop.id).pipe(
+    return prop.identifier$.pipe(
+      switchMap((identifier) => this.frame.entity.prop$(identifier || "")),
       switchMap((value) => {
         if (value) {
           return of(value);

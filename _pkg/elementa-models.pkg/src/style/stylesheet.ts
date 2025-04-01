@@ -1,4 +1,4 @@
-import { baseSelector, StylableData } from "@elllphnt/elll-element";
+import { baseSelector, StyleSheetData } from "@elllphnt/elll-element";
 import { combineLatestOrEmpty, Disposable } from "@repo/utils";
 import { BehaviorSubject, map, Observable, switchMap } from "rxjs";
 import { Datafiable, restoreReactiveMap } from "~/src/_lib/restore";
@@ -10,7 +10,10 @@ import { StyleFragmentRegistry } from "./style_fragment_set";
  * A standalone modelization of an Elll StylesheetData object.
  * Can be used to store and manipulate stylesheet data.
  */
-export class Stylesheet extends Disposable implements Datafiable<StylableData> {
+export class Stylesheet
+  extends Disposable
+  implements Datafiable<StyleSheetData>
+{
   static key = 0;
   static keySeed = Math.floor(Math.random() * 1000);
   readonly key = `${Stylesheet.keySeed}-${Stylesheet.key++}`;
@@ -18,6 +21,7 @@ export class Stylesheet extends Disposable implements Datafiable<StylableData> {
   readonly fragmentRegistry = new StyleFragmentRegistry();
 
   private _styles$ = new BehaviorSubject<Record<string, Style>>({});
+  private _expressions$ = new BehaviorSubject<Record<string, string>>({});
 
   get className() {
     return `elll-stylesheet-${this.key}`;
@@ -28,6 +32,44 @@ export class Stylesheet extends Disposable implements Datafiable<StylableData> {
   }
   get styles() {
     return this._styles$.value;
+  }
+
+  get staticStyles$() {
+    return this.styles$.pipe(
+      map((styles) => {
+        return Object.fromEntries(
+          Object.entries(styles).filter(
+            ([selector]) => !selector.startsWith("__expression:"),
+          ),
+        );
+      }),
+    );
+  }
+  get staticStyles() {
+    return Object.fromEntries(
+      Object.entries(this.styles).filter(
+        ([selector]) => !selector.startsWith("__expression:"),
+      ),
+    );
+  }
+
+  get dynamicStyles$() {
+    return this.styles$.pipe(
+      map((styles) => {
+        return Object.fromEntries(
+          Object.entries(styles).filter(([selector]) =>
+            selector.startsWith("__expression:"),
+          ),
+        );
+      }),
+    );
+  }
+  get dynamicStyles() {
+    return Object.fromEntries(
+      Object.entries(this.styles).filter(([selector]) =>
+        selector.startsWith("__expression:"),
+      ),
+    );
   }
 
   style<C extends true | undefined>(
@@ -55,6 +97,20 @@ export class Stylesheet extends Disposable implements Datafiable<StylableData> {
     );
   }
 
+  get expressions$() {
+    return this._expressions$;
+  }
+  get expressions() {
+    return this._expressions$.value;
+  }
+
+  expression(id: string): string | undefined {
+    return this.expressions[id];
+  }
+  expression$(id: string): Observable<string | undefined> {
+    return this.expressions$.pipe(map((expressions) => expressions[id]));
+  }
+
   get selectors() {
     return Object.keys(this.styles);
   }
@@ -73,7 +129,7 @@ export class Stylesheet extends Disposable implements Datafiable<StylableData> {
     return this.style$(baseSelector, create) as any;
   }
 
-  get data(): StylableData {
+  get data(): StyleSheetData {
     return {
       styles: Object.fromEntries(
         Object.entries(this.styles).map(([selector, style]) => [
@@ -81,10 +137,11 @@ export class Stylesheet extends Disposable implements Datafiable<StylableData> {
           style.data,
         ]),
       ),
-      styleFragments: this.fragmentRegistry.data,
+      fragments: this.fragmentRegistry.data,
+      expressions: this.expressions,
     };
   }
-  get data$() {
+  get data$(): Observable<StyleSheetData> {
     return combineLatestOrEmpty([
       this.styles$.pipe(
         switchMap((styles) =>
@@ -97,10 +154,12 @@ export class Stylesheet extends Disposable implements Datafiable<StylableData> {
         map((styles) => Object.fromEntries(styles)),
       ),
       this.fragmentRegistry.data$,
+      this.expressions$,
     ]).pipe(
-      map(([styles, styleFragments]) => ({
+      map(([styles, styleFragments, expressions]) => ({
         styles,
         styleFragments,
+        expressions,
       })),
     );
   }
@@ -115,7 +174,7 @@ export class Stylesheet extends Disposable implements Datafiable<StylableData> {
     });
   }
 
-  restore(data: StylableData): void {
+  restore(data: StyleSheetData): void {
     restoreReactiveMap({
       datafiable$: this._styles$,
       data: data.styles,
@@ -132,7 +191,8 @@ export class Stylesheet extends Disposable implements Datafiable<StylableData> {
       },
     });
 
-    this.fragmentRegistry.restore(data.styleFragments || []);
+    this.fragmentRegistry.restore(data.fragments || []);
+    this._expressions$.next(data.expressions || {});
   }
 
   addStyle(selector: string) {
@@ -149,6 +209,13 @@ export class Stylesheet extends Disposable implements Datafiable<StylableData> {
 
     return style;
   }
+
+  setExpression(id: string, expression: string): void {
+    const expressions = { ...this.expressions };
+    expressions[id] = expression;
+    this._expressions$.next(expressions);
+  }
+
   removeStyle(selector: string): void {
     const existing = this.styles[selector];
     if (!existing) return;

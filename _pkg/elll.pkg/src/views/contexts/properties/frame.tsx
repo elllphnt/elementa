@@ -7,6 +7,7 @@ const sheets = [
   elementaSheetViews.alignment,
   elementaSheetViews.frame,
   elementaSheetViews.frameViewport,
+  elementaSheetViews.frameProps,
   elementaSheetViews.frameStyle,
 ] as SheetView[];
 

@@ -1,7 +1,6 @@
 import { useObservable } from "@repo/utils";
 import cx from "classnames";
 import { ComponentElementHandle } from "~/src/handles/_";
-import { useHandleDom } from "../_hooks/interaction_target";
 import { FragmentHandleComponent } from "../fragment";
 import { BaseElementHandleComponent } from "./_base";
 
@@ -11,11 +10,6 @@ export function ComponentElementHandleComponent({
   element: ComponentElementHandle;
 }) {
   const template = useObservable(element.template$, element.template);
-  const { setRectHtmlElement, addInteractionTarget } = useHandleDom(element);
-
-  if (!template) {
-    return <></>;
-  }
 
   return (
     <>
@@ -25,7 +19,7 @@ export function ComponentElementHandleComponent({
           "interaction-target elementa-handle elementa-handle-container",
         )}
       />
-      <FragmentHandleComponent fragment={template} />
+      {template ? <FragmentHandleComponent fragment={template} /> : <></>}
     </>
   );
 }

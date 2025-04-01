@@ -8,10 +8,8 @@ import {
 } from "@repo/shell";
 import { combineLatestOrEmpty } from "@repo/utils";
 import { Observable, map, of } from "rxjs";
-import { IElll } from "../types/elll";
-import { boardViews } from "../views/board/_";
-import { editors } from "./_editors";
 import { keys } from "../libs/keys";
+import { IElll } from "../types/elll";
 
 export type SpecEditorStateData = EditorStateData & {};
 
@@ -65,7 +63,7 @@ export class SpecEditorState extends EditorState<SpecEditorStateData> {
   }
 
   constructor({ id, shell }: { id?: string; shell: Shell }) {
-    super({ id, editorId: editors.spec, shell });
+    super({ id, editorId: keys.editors.spec, shell });
   }
 
   restore(data: SpecEditorStateData): void {
@@ -74,7 +72,7 @@ export class SpecEditorState extends EditorState<SpecEditorStateData> {
 }
 
 export const specEditor: Editor = {
-  id: editors.spec,
+  id: keys.editors.spec,
   createState: (shell) => new SpecEditorState({ shell }),
   views: {
     board: keys.views.board.featuresEditor,

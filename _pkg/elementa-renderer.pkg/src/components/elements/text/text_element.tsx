@@ -9,6 +9,7 @@ export function TextElementComponent({
 }: {
   element: TextElementRenderable;
   partKey?: string;
+  onRef?: (element: HTMLElement | null, key?: string) => void;
 }): JSX.Element {
   const mode = useObservable(element.mode$, element.mode);
 

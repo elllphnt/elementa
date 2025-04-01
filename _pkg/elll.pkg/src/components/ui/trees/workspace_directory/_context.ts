@@ -1,9 +1,14 @@
 import { File } from "@repo/backend";
-import { ContextMenuOption, elllIcons16 } from "@repo/components";
+import {
+  ContextMenuOption,
+  elllIcons16,
+  useControlMenu,
+} from "@repo/components";
 import { jsonEditor } from "~/src/editors/monaco/json";
 import { useElll } from "~/src/hooks/elll/elll";
 import { getEditorForFileType } from "~/src/libs/filetypes";
 import { initFile } from "~/src/libs/init_file";
+import { keys } from "~/src/libs/keys";
 import { FileTreeContextType } from "../file_tree/_contexts";
 
 export const workpsaceDirectoryTreeFileTypes = [
@@ -19,6 +24,7 @@ export function useWorkspaceFileTreeContext({
   directory: File;
 }): Partial<FileTreeContextType> {
   const elll = useElll();
+  const { openMenu } = useControlMenu();
   return {
     handleNewEntry: async ({ name, parent, type }) => {
       const newFile = await parent.createEntry({ name, type });
@@ -51,6 +57,18 @@ export function useWorkspaceFileTreeContext({
             label: "New Directory",
             action: () => {
               context?.setNewEntry?.({ parent: file, type: "directory" });
+            },
+          },
+          {
+            label: "Generate With AI",
+            action: () => {
+              openMenu({
+                title: "Generate With AI",
+                viewId: keys.views.modals.generateFilesWithAi,
+                props: {
+                  path: file.path,
+                },
+              });
             },
           },
         ];

@@ -1,9 +1,10 @@
-import { resetCss } from "@elllphnt/elll-element";
+import { entityTypes, resetCss } from "@elllphnt/elll-element";
 import {
   ChildFragmentEnvironment,
   Elementa,
   FragmentEnvironment,
   FragmentInstance,
+  makeStateInstance,
   SlotInstance,
   StateInstance,
   updateInstanceList,
@@ -11,9 +12,9 @@ import {
 import {
   Fragment,
   FragmentParam,
+  FrameWidget,
   Prop,
   SlotFill,
-  Transformer,
 } from "@repo/elementa-models";
 import {
   ElementaRenderer,
@@ -84,20 +85,41 @@ export class ElementaViewerFragmentEnvironment extends FragmentEnvironment {
     );
   }
 
-  get transformers(): Transformer[] {
-    return this.editor.elementa.component?.transformers ?? [];
+  get defaultFrame() {
+    return this.editor.elementa.component?.widgets.find(
+      (w) => w.type === entityTypes.widgets.frame,
+    ) as FrameWidget;
   }
-  get transformers$(): Observable<Transformer[]> {
+  get defaultFrame$() {
     return this.editor.elementa.component$.pipe(
-      switchMap((component) => component?.transformers$ ?? of([])),
+      switchMap((component) => component?.widgets$ ?? of([])),
+      map(
+        (widgets) =>
+          widgets.find(
+            (w) => w.type === entityTypes.widgets.frame,
+          ) as FrameWidget,
+      ),
     );
   }
 
   propValue(prop: Prop): any {
-    return prop.default;
+    return this.defaultFrame?.prop(prop.identifier || "") ?? prop.default;
   }
   propValue$(prop: Prop): Observable<any> {
-    return of(prop.default);
+    return prop.identifier$.pipe(
+      switchMap((identifier) =>
+        this.defaultFrame$.pipe(
+          switchMap((frame) => frame.prop$(identifier || "")),
+        ),
+      ),
+      switchMap((value) => {
+        if (value) {
+          return of(value);
+        } else {
+          return prop.default$;
+        }
+      }),
+    );
   }
 
   paramValue(param: FragmentParam) {
@@ -140,7 +162,7 @@ export class ElementaViewerFragmentEnvironment extends FragmentEnvironment {
           instances: this.states,
           entities: states,
           createInstance: (state) =>
-            new StateInstance({ entity: state, elementa: this.elementa }),
+            makeStateInstance({ state, elementa: this.elementa, parent: null }),
         });
 
         this._states$.next(newStates);

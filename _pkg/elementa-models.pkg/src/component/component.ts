@@ -19,13 +19,9 @@ import { CssStyleSheet } from "../css/_";
 import { Project } from "../project/_";
 import {
   ComponentElement,
-  ConditionalTransformer,
   ContainerElement,
-  MapTransformer,
   MediaElement,
-  RepeatTransformer,
   SlotElement,
-  SwitchTransformer,
   TextElement,
   VectorElement,
 } from "./entities/_";
@@ -39,7 +35,6 @@ import { ModuleState } from "./entities/states/module";
 import { State } from "./entities/states/state";
 import { ValueState } from "./entities/states/value";
 import { Template } from "./entities/template";
-import { Transformer } from "./entities/transformers/transformer";
 import { FrameWidget, Widget } from "./entities/widgets/_";
 
 export abstract class Component extends Disposable {
@@ -54,7 +49,6 @@ export abstract class Component extends Disposable {
   private _states$ = new BehaviorSubject<State[]>([]);
   private _props$ = new BehaviorSubject<Prop[]>([]);
   private _fragments$ = new BehaviorSubject<Fragment[]>([]);
-  private _transformers$ = new BehaviorSubject<Transformer[]>([]);
 
   abstract get loaded$(): Observable<boolean>;
   abstract get loaded(): boolean;
@@ -160,13 +154,6 @@ export abstract class Component extends Disposable {
     return this._fragments$.asObservable();
   }
 
-  get transformers() {
-    return this._transformers$.value;
-  }
-  get transformers$() {
-    return this._transformers$.asObservable();
-  }
-
   get slots(): SlotElement[] {
     return this.entities.filter((entity) =>
       entityTypeMatch(entity.type, entityTypes.elements.slot),
@@ -191,7 +178,6 @@ export abstract class Component extends Disposable {
       states: this.states.map((state) => state.data),
       props: this.props.map((prop) => prop.data),
       fragments: this.fragments.map((fragment) => fragment.data),
-      transformers: this.transformers.map((transformer) => transformer.data),
     };
   }
   get data$(): Observable<ComponentData> {
@@ -213,13 +199,8 @@ export abstract class Component extends Disposable {
           combineLatestOrEmpty(fragments.map((f) => f.data$)),
         ),
       ),
-      this._transformers$.pipe(
-        switchMap((transformers) =>
-          combineLatestOrEmpty(transformers.map((t) => t.data$)),
-        ),
-      ),
     ]).pipe(
-      map(([template, widgets, states, props, fragments, transformers]) => {
+      map(([template, widgets, states, props, fragments]) => {
         return {
           _id: this.id,
           template,
@@ -227,7 +208,6 @@ export abstract class Component extends Disposable {
           states,
           props,
           fragments,
-          transformers,
         };
       }),
     );
@@ -263,14 +243,12 @@ export abstract class Component extends Disposable {
       this.props.forEach((prop) => prop.dispose());
       this.widgets.forEach((widget) => widget.dispose());
       this.fragments.forEach((fragment) => fragment.dispose());
-      this.transformers.forEach((transformer) => transformer.dispose());
       this.entities.forEach((entity) => entity.dispose());
 
       this._states$.next([]);
       this._props$.next([]);
       this._widgets$.next([]);
       this._fragments$.next([]);
-      this._transformers$.next([]);
       this._entities$.next([]);
       this._entityMap$.next({});
 
@@ -281,7 +259,6 @@ export abstract class Component extends Disposable {
       this._props$.complete();
       this._widgets$.complete();
       this._fragments$.complete();
-      this._transformers$.complete();
     });
   }
 
@@ -329,15 +306,6 @@ export abstract class Component extends Disposable {
     this._fragments$.next(this.fragments.filter((f) => f !== fragment));
   }
 
-  addTransformer(transformer: Transformer) {
-    this._transformers$.next([...this.transformers, transformer]);
-  }
-  removeTransformer(transformer: Transformer) {
-    this._transformers$.next(
-      this.transformers.filter((t) => t !== transformer),
-    );
-  }
-
   createState({ id, type }: { id?: string; type: string }) {
     return switchEntityType<State>(type, {
       [entityTypes.states.value]: () => new ValueState({ id, component: this }),
@@ -377,18 +345,6 @@ export abstract class Component extends Disposable {
         new VectorElement({ id, component: this }),
     });
   }
-  createTransformer({ id, type }: { id?: string; type: string }) {
-    return switchEntityType<Transformer>(type, {
-      [entityTypes.transformers.conditional]: () =>
-        new ConditionalTransformer({ id, component: this }),
-      [entityTypes.transformers.map]: () =>
-        new MapTransformer({ id, component: this }),
-      [entityTypes.transformers.repeat]: () =>
-        new RepeatTransformer({ id, component: this }),
-      [entityTypes.transformers.switch]: () =>
-        new SwitchTransformer({ id, component: this }),
-    });
-  }
   createEntity({ id, type }: { id?: string; type: string }) {
     return switchEntityType<Entity>(type, {
       [entityTypes.element]: () => this.createElement({ id, type }),
@@ -396,7 +352,6 @@ export abstract class Component extends Disposable {
       [entityTypes.state]: () => this.createState({ id, type }),
       [entityTypes.prop]: () => this.createProp({ id }),
       [entityTypes.fragment]: () => this.createFragment({ id }),
-      [entityTypes.transformer]: () => this.createTransformer({ id, type }),
     });
   }
 
@@ -435,13 +390,6 @@ export abstract class Component extends Disposable {
       component: this,
       datafiables$: this._fragments$,
       data: data.fragments,
-    });
-
-    // transformers
-    Entity.restoreReactiveArray({
-      component: this,
-      datafiables$: this._transformers$,
-      data: data.transformers,
     });
   }
 }

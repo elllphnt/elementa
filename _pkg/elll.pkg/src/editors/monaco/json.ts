@@ -1,12 +1,10 @@
 import { Editor, Shell } from "@repo/shell";
 import { combineLatestOrEmpty } from "@repo/utils";
 import { Observable, map, of, switchMap } from "rxjs";
+import { keys } from "~/src/libs/keys";
 import { jsonModelConstructor } from "../../models/json";
-import { boardViews } from "../../views/board/_";
-import { editors } from "../_editors";
 import { ModelEditorStateData } from "../model";
 import { MonacoEditorState } from "./monaco";
-import { keys } from "~/src/libs/keys";
 
 export type JsonEditorStateData = ModelEditorStateData & {};
 
@@ -59,7 +57,7 @@ export class JsonEditorState extends MonacoEditorState<JsonEditorStateData> {
   }
 
   constructor({ id, shell }: { id?: string; shell: Shell }) {
-    super({ id, editorId: editors.json, shell });
+    super({ id, editorId: keys.editors.json, shell });
 
     // initialize on first load
     this.loaded$.subscribe((loaded) => {
@@ -87,7 +85,7 @@ export class JsonEditorState extends MonacoEditorState<JsonEditorStateData> {
 }
 
 export const jsonEditor: Editor = {
-  id: editors.json,
+  id: keys.editors.json,
   createState: (shell) => new JsonEditorState({ shell }),
   views: {
     board: keys.views.board.monacoEditor,

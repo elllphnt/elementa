@@ -1,20 +1,21 @@
-import {
-  entityTypes,
-  Expression,
-  PropData,
-  SchemaData,
-} from "@elllphnt/elll-element";
+import { entityTypes, Expression, PropData } from "@elllphnt/elll-element";
 import { combineLatestOrEmpty } from "@repo/utils";
-import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
-import { restoreReactiveObject } from "~/src/_lib/restore";
-import { Schema } from "~/src/schema/_";
+import { BehaviorSubject, map, Observable } from "rxjs";
 import { Component } from "../component";
 import { Entity } from "./entity";
 
 export class Prop extends Entity<PropData> {
-  private _schema$ = new BehaviorSubject<Schema | undefined>(undefined);
+  private _identifier$ = new BehaviorSubject<string | undefined>(undefined);
+  private _tsType$ = new BehaviorSubject<string | undefined>(undefined);
   private _required$ = new BehaviorSubject<boolean | undefined>(undefined);
   private _default$ = new BehaviorSubject<Expression | undefined>(undefined);
+
+  get identifier() {
+    return this._identifier$.value;
+  }
+  get identifier$() {
+    return this._identifier$.asObservable();
+  }
 
   get default() {
     return this._default$.value;
@@ -23,11 +24,11 @@ export class Prop extends Entity<PropData> {
     return this._default$.asObservable();
   }
 
-  get schema() {
-    return this._schema$.value;
+  get tsType() {
+    return this._tsType$.value;
   }
-  get schema$() {
-    return this._schema$.asObservable();
+  get tsType$() {
+    return this._tsType$.asObservable();
   }
 
   get required() {
@@ -40,23 +41,26 @@ export class Prop extends Entity<PropData> {
   get data(): PropData {
     return {
       ...super._data,
-      schema: this.schema?.data,
+      tsType: this.tsType,
       required: this.required,
       default: this.default,
+      identifier: this.identifier,
     } as PropData;
   }
   get data$(): Observable<PropData> {
     return combineLatestOrEmpty([
       super._data$,
-      this._schema$.pipe(switchMap((schema) => schema?.data$ ?? of(undefined))),
+      this._tsType$,
       this._required$,
       this._default$,
+      this._identifier$,
     ]).pipe(
-      map(([data, schema, required, defaultVal]) => ({
+      map(([data, tsType, required, defaultVal, identifier]) => ({
         ...data,
-        schema: schema as SchemaData | undefined,
+        tsType,
         required,
         default: defaultVal,
+        identifier,
       })),
     );
   }
@@ -65,7 +69,7 @@ export class Prop extends Entity<PropData> {
     super({ id, component, type: entityTypes.prop });
 
     this.addDisposer(() => {
-      this._schema$.complete();
+      this._tsType$.complete();
       this._required$.complete();
       this._default$.complete();
     });
@@ -74,8 +78,11 @@ export class Prop extends Entity<PropData> {
   setDefault(defaultValue: Expression | undefined) {
     this._default$.next(defaultValue);
   }
-  setSchema(schema: Schema | undefined) {
-    this._schema$.next(schema);
+  setIdentifier(identifier: string | undefined) {
+    this._identifier$.next(identifier);
+  }
+  setTsType(tsType: string | undefined) {
+    this._tsType$.next(tsType);
   }
   setRequired(required: boolean) {
     this._required$.next(required);
@@ -89,15 +96,7 @@ export class Prop extends Entity<PropData> {
     super.restore(data);
     this._required$.next(data.required);
     this._default$.next(data.default);
-
-    restoreReactiveObject({
-      data: data.schema,
-      datafiable$: this._schema$,
-      create: () => new Schema(),
-      restore: (schema, data) => schema.restore(data),
-      dispose: (schema) => schema.dispose(),
-      identifyData: (data) => data.type,
-      identifyDatafiable: (schema) => schema.data.type,
-    });
+    this._tsType$.next(data.tsType);
+    this._identifier$.next(data.identifier);
   }
 }

@@ -25,7 +25,7 @@ export function ValueStateNamespaceProvider({
   };
   namespace.set(state.namespaceKey, namespaceValue);
   if (name) {
-    namespace.set(name, namespaceValue);
+    namespace.set(["hooks", name], namespaceValue);
   }
 
   return (

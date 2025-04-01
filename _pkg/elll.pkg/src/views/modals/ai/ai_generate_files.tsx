@@ -61,7 +61,7 @@ export function AiGenerateFilesModal({
       props: { generation },
       message: "",
     });
-    setQuery("");
+    // setQuery("");
   };
 
   return (

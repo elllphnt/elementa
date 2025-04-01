@@ -10,6 +10,7 @@ export function MediaElementComponent({
 }: {
   element: MediaElementRenderable;
   partKey?: string;
+  onRef?: (element: HTMLElement | null, key?: string) => void;
 }): JSX.Element {
   const namespace = useNamespace();
   const media = useObservable(element.entity.media$, element.entity.media);

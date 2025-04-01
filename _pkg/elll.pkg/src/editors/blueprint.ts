@@ -8,10 +8,8 @@ import {
 } from "@repo/shell";
 import { combineLatestOrEmpty } from "@repo/utils";
 import { Observable, map, of } from "rxjs";
-import { IElll } from "../types/elll";
-import { boardViews } from "../views/board/_";
-import { editors } from "./_editors";
 import { keys } from "../libs/keys";
+import { IElll } from "../types/elll";
 
 export type BlueprintEditorStateData = EditorStateData & {};
 
@@ -65,7 +63,7 @@ export class BlueprintEditorState extends EditorState<BlueprintEditorStateData> 
   }
 
   constructor({ id, shell }: { id?: string; shell: Shell }) {
-    super({ id, editorId: editors.bleuprint, shell });
+    super({ id, editorId: keys.editors.bleuprint, shell });
   }
 
   restore(data: BlueprintEditorStateData): void {
@@ -74,7 +72,7 @@ export class BlueprintEditorState extends EditorState<BlueprintEditorStateData> 
 }
 
 export const blueprintEditor: Editor = {
-  id: editors.bleuprint,
+  id: keys.editors.bleuprint,
   createState: (shell) => new BlueprintEditorState({ shell }),
   views: {
     board: keys.views.board.blueprintEditor,

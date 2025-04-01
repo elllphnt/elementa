@@ -38,7 +38,7 @@ function ElllPropControlEntry({
       value$={_value$}
       onChange={(value) => {
         elements.forEach((element) => {
-          element.entity.setProp(prop.id, value);
+          element.entity.setProp(prop.name, value);
         });
       }}
     />

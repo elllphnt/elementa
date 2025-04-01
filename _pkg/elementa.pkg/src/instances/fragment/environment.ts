@@ -1,11 +1,5 @@
 import { StyleModifierData } from "@elllphnt/elll-element";
-import {
-  Fragment,
-  FragmentParam,
-  Prop,
-  SlotFill,
-  Transformer,
-} from "@repo/elementa-models";
+import { Fragment, FragmentParam, Prop, SlotFill } from "@repo/elementa-models";
 import { combineLatestOrEmpty, Disposable } from "@repo/utils";
 import { BehaviorSubject, Observable, of, switchMap } from "rxjs";
 import { Namespace } from "~/src/namespace/_";
@@ -69,9 +63,6 @@ export abstract class FragmentEnvironment extends Disposable {
 
   abstract get fragments(): FragmentInstance[];
   abstract get fragments$(): Observable<FragmentInstance[]>;
-
-  abstract get transformers(): Transformer[];
-  abstract get transformers$(): Observable<Transformer[]>;
 
   abstract propValue(prop: Prop): any;
   abstract propValue$(prop: Prop): Observable<any>;
@@ -142,13 +133,6 @@ export class ChildFragmentEnvironment extends FragmentEnvironment {
   get fragments$(): Observable<FragmentInstance[]> {
     return of([]);
     // return this.parent.fragments$;
-  }
-
-  get transformers(): Transformer[] {
-    return this.parent.transformers;
-  }
-  get transformers$(): Observable<Transformer[]> {
-    return this.parent.transformers$;
   }
 
   get slots(): SlotInstance[] {

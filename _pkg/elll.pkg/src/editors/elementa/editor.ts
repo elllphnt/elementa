@@ -25,10 +25,8 @@ import {
 } from "~/src/models/component";
 import { ElementaHost } from "~/src/modules/elementa/host/host";
 import { IElll } from "~/src/types/elll";
-import { boardViews } from "~/src/views/board/_";
 import { outlineViews } from "~/src/views/outlines/_";
 import { ElementaInteractor } from "../../../../elementa-interactor.pkg/dist";
-import { editors } from "../_editors";
 import {
   ElementaBaseEditorState,
   ElementaBaseEditorStateData,
@@ -241,7 +239,7 @@ export class ElementaEditorState extends ElementaBaseEditorState<ComponentEditor
   }
 
   constructor({ id, shell }: { id?: string; shell: Shell }) {
-    super({ id, editorId: editors.componentEditor, shell });
+    super({ id, editorId: keys.editors.elementa.editor, shell });
 
     this.iframe = ElementaEditorState.getIframe(this.elll);
 
@@ -449,7 +447,7 @@ export class ElementaEditorState extends ElementaBaseEditorState<ComponentEditor
 }
 
 export const componentEditor: Editor = {
-  id: editors.componentEditor,
+  id: keys.editors.elementa.editor,
   createState: (shell) => new ElementaEditorState({ shell }),
   views: {
     board: keys.views.board.componentEditor,

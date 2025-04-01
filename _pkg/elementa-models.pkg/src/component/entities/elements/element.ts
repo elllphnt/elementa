@@ -131,9 +131,7 @@ export abstract class Element<
       ...super._data,
       type: this.type,
       link: this.link,
-      styles: this.stylesheet.data.styles,
-      styleOverrides: this.styleOverridesMap.data as any,
-      styleFragments: this.stylesheet.data.styleFragments,
+      stylesheet: this.stylesheet.data,
       interactions: this.interactions,
       hidden: this.hidden,
       repeat: this.repeat,
@@ -144,31 +142,18 @@ export abstract class Element<
       super._data$,
       this.link$,
       this.stylesheet.data$,
-      this.styleOverridesMap.data$,
       this.interactions$,
       this.hidden$,
       this.repeat$,
     ]).pipe(
-      map(
-        ([
-          data,
-          link,
-          stylesheet,
-          styleOverrides,
-          interactions,
-          hidden,
-          repeat,
-        ]) => ({
-          ...data,
-          link,
-          styles: stylesheet.styles,
-          styleFragments: stylesheet.styleFragments,
-          styleOverrides: styleOverrides as any,
-          interactions,
-          hidden,
-          repeat,
-        }),
-      ),
+      map(([data, link, stylesheet, interactions, hidden, repeat]) => ({
+        ...data,
+        link,
+        stylesheet,
+        interactions,
+        hidden,
+        repeat,
+      })),
     );
   }
 
@@ -259,10 +244,7 @@ export abstract class Element<
     super.restore(data);
 
     // styles
-    this.stylesheet.restore({
-      styles: data.styles,
-      styleFragments: data.styleFragments,
-    });
+    this.stylesheet.restore(data.stylesheet ?? {});
 
     // hidden
     this._hidden$.next(data.hidden ?? {});

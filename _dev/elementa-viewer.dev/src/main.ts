@@ -26,10 +26,14 @@ async function init({
   infrastructure: Infrastructure;
 }) {
   await registerServiceWorker();
-  const moduleManager = new ModuleManager({
-    infrastructure,
-    serviceWorkerBaseUrl: "https://sw",
-  });
+  const moduleManager = new ModuleManager(
+    {
+      infrastructure,
+      serviceWorkerBaseUrl: "https://sw",
+    },
+    (...args) => console.log(...args),
+  );
+
   const elementa = new Elementa({
     moduleManager,
   });

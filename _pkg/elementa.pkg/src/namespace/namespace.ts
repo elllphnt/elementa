@@ -1,41 +1,31 @@
-import {
-  Expression,
-  evaluateExpression,
-  isExpression,
-} from "@elllphnt/elll-element";
-import jsepNew from "@jsep-plugin/new";
-import jsepNumbers from "@jsep-plugin/numbers";
-import jsepObject from "@jsep-plugin/object";
-import jsepSpread from "@jsep-plugin/spread";
-import jsepTemplate from "@jsep-plugin/template";
-import jsepTernary from "@jsep-plugin/ternary";
-import jsep from "jsep";
+import { Expression, isExpression } from "@elllphnt/elll-element";
 import _ from "lodash";
-
-jsep.plugins.register(jsepNew);
-jsep.plugins.register(jsepNumbers);
-jsep.plugins.register(jsepObject);
-jsep.plugins.register(jsepSpread);
-jsep.plugins.register(jsepTemplate);
-jsep.plugins.register(jsepTernary);
 
 const expressionRegex = /\{\{([^}]*\}?[^}]*)\}\}/;
 const twoSlashRegex = /^(\/\/\w+:\w+)/;
 
-const expressionCache = new Map<string, jsep.Expression>();
+export function evaluateExpressionSafely(
+  expression: string,
+  context: Record<string, any>,
+): any {
+  const code = `
+    "use strict";
+    const {hooks, props, item, index} = context;
+    return (${expression});
+  `;
 
-const getCompiledExpression = (expression: string) => {
-  const trimmed = expression.trim();
-  if (expressionCache.has(trimmed)) {
-    return expressionCache.get(trimmed)!;
-  } else {
-    const compiled = jsep(trimmed);
-    expressionCache.set(trimmed, compiled);
-    return compiled;
+  try {
+    const fn = new Function("context", code);
+    return fn(context);
+  } catch (error: any) {
+    return undefined;
   }
-};
+}
 
 export class Namespace {
+  static key = 0;
+  key = Namespace.key++;
+
   content: object;
   twoSlashMap: Record<string, string> = {};
 
@@ -72,7 +62,9 @@ export class Namespace {
   }
   resolveString(str: string, missingValue?: string): string {
     const result = str.replace(expressionRegex, (match, expression) => {
-      const value = this.get(expression);
+      const value = this.resolveExpression({
+        __expression: expression,
+      });
       if (value !== undefined && value !== null) {
         return value.toString();
       } else {
@@ -100,10 +92,7 @@ export class Namespace {
       return this.resolveTwoSlash(expression.__expression);
     }
     try {
-      return evaluateExpression(
-        getCompiledExpression(expression.__expression),
-        this.content,
-      );
+      return evaluateExpressionSafely(expression.__expression, this.content);
     } catch (e) {
       console.error(e);
       return undefined;

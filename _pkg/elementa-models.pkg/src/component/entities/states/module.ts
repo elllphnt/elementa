@@ -87,10 +87,10 @@ export class ModuleState extends State<ModuleStateData> {
       this.moduleUrl$,
       this.args$,
     ]).pipe(
-      map(([data, moduleUrl, parameters]) => ({
+      map(([data, moduleUrl, args]) => ({
         ...data,
         moduleUrl,
-        parameters,
+        args,
       })),
     );
   }

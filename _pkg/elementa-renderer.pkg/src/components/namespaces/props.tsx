@@ -22,9 +22,9 @@ export function PropsNamespaceProvider({
   const props = useObservable(environment?.props$, environment?.props) ?? [];
   const propsKey = props.map((prop) => prop.key).join(".");
 
-  const propNames = useManyObservables(
-    props.map((prop) => prop.name$),
-    props.map((prop) => prop.name),
+  const propIdentifiers = useManyObservables(
+    props.map((prop) => prop.identifier$),
+    props.map((prop) => prop.identifier),
     propsKey,
   );
   const propValues = useManyObservables(
@@ -36,13 +36,13 @@ export function PropsNamespaceProvider({
   const propResolvedValues = propValues.map((propValue) => {
     return upstreamNamespace.resolveValue(propValue);
   });
-  propNames.forEach((name, index) => {
+  propIdentifiers.forEach((identifier, index) => {
     const value = propResolvedValues[index];
-    if (name !== undefined) {
-      downstreamNamespace.set(["props", name], value);
+    if (identifier !== undefined) {
+      downstreamNamespace.set(["props", identifier], value);
       downstreamNamespace.setTwoSlash(
         `//prop:${props[index].id}`,
-        `props.${name}`,
+        `props.${identifier}`,
       );
     }
   });

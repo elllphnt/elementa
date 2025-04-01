@@ -1,13 +1,12 @@
 import { StateData, ValueStateData, entityTypes } from "@elllphnt/elll-element";
-import { combineLatestOrEmpty, restoreReactiveObject } from "@repo/utils";
-import { BehaviorSubject, Observable, map, of, switchMap } from "rxjs";
-import { Schema } from "~/src/schema/schema";
+import { combineLatestOrEmpty } from "@repo/utils";
+import { BehaviorSubject, Observable, map } from "rxjs";
 import { Component } from "../../component";
 import { State } from "./state";
 
 export class ValueState extends State<ValueStateData> {
   private _initialValue$ = new BehaviorSubject<any>(undefined);
-  private _schema$ = new BehaviorSubject<Schema | undefined>(undefined);
+  private _tsType$ = new BehaviorSubject<string | undefined>(undefined);
 
   get initialValue() {
     return this._initialValue$.value;
@@ -16,30 +15,30 @@ export class ValueState extends State<ValueStateData> {
     return this._initialValue$.asObservable();
   }
 
-  get schema() {
-    return this._schema$.value;
+  get tsType() {
+    return this._tsType$.value;
   }
-  get schema$() {
-    return this._schema$.asObservable();
+  get tsType$() {
+    return this._tsType$.asObservable();
   }
 
   get data(): ValueStateData {
     return {
       ...super._data,
       initialValue: this.initialValue,
-      schema: this.schema?.data,
+      tsType: this.tsType,
     };
   }
   get data$(): Observable<StateData> {
     return combineLatestOrEmpty([
       super._data$,
       this.initialValue$,
-      this.schema$.pipe(switchMap((schema) => schema?.data$ ?? of(undefined))),
+      this.tsType$,
     ]).pipe(
-      map(([data, initialValue, schema]) => ({
+      map(([data, initialValue, tsType]) => ({
         ...data,
         initialValue,
-        schema,
+        tsType,
       })),
     );
   }
@@ -53,7 +52,7 @@ export class ValueState extends State<ValueStateData> {
 
     this.addDisposer(() => {
       this._initialValue$.complete();
-      this._schema$.complete();
+      this._tsType$.complete();
     });
   }
 
@@ -61,21 +60,12 @@ export class ValueState extends State<ValueStateData> {
     this._initialValue$.next(value);
   }
 
-  setSchema(schema: Schema | undefined) {
-    this._schema$.next(schema);
+  setTsType(tsType: string | undefined) {
+    this._tsType$.next(tsType);
   }
 
   restore(data: ValueStateData) {
     super.restore(data);
     this._initialValue$.next(data.initialValue);
-    restoreReactiveObject({
-      datafiable$: this._schema$,
-      data: data.schema,
-      create: () => new Schema(),
-      restore: (schema, data) => schema.restore(data),
-      dispose: (schema) => schema.dispose(),
-      identifyData: () => "constant",
-      identifyDatafiable: () => "constant",
-    });
   }
 }

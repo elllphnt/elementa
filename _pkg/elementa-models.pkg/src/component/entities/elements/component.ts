@@ -122,9 +122,7 @@ export class SlotFill
 
   get data(): SlotFillData {
     return {
-      styles: this.stylesheet.data.styles,
-      styleOverrides: this.styleOverridesMap.data as any,
-      styleFragments: this.stylesheet.data.styleFragments,
+      stylesheet: this.stylesheet.data,
       interactions: this.interactions,
       content: this.content.map((content) => content.data),
     };
@@ -132,7 +130,6 @@ export class SlotFill
   get data$(): Observable<SlotFillData> {
     return combineLatestOrEmpty([
       this.stylesheet.data$,
-      this.styleOverridesMap.data$,
       this.interactions$,
       this.content$.pipe(
         switchMap((content) =>
@@ -140,10 +137,8 @@ export class SlotFill
         ),
       ),
     ]).pipe(
-      map(([stylesheet, styleOverrides, interactions, content]) => ({
-        styles: stylesheet.styles,
-        styleOverrides: styleOverrides as any,
-        styleFragments: stylesheet.styleFragments,
+      map(([stylesheet, interactions, content]) => ({
+        stylesheet,
         interactions,
         content,
       })),
@@ -224,9 +219,7 @@ export class SlotFill
 
   restore(data: SlotFillData) {
     // styles
-    this.stylesheet.restore({
-      styles: data.styles,
-    });
+    this.stylesheet.restore(data.stylesheet ?? {});
 
     // interactions
     this._interactions$.next(data.interactions ?? {});

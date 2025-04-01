@@ -1,8 +1,16 @@
 import { Component } from "@repo/elementa-models";
+import { ComponentElementRenderable, Renderable } from "~/src/renderables/_";
 
-export function ComponentPlaceHolder({ component }: { component?: Component }) {
+export function ComponentPlaceHolder({
+  element,
+  component,
+}: {
+  element: ComponentElementRenderable;
+  component?: Component;
+}) {
   return (
     <div
+      ref={(e) => element.setHtmlElement(Renderable.defaultHtmlElementKey, e)}
       style={{
         backgroundColor: "#8881",
         border: "1px solid #8884",

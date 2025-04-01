@@ -58,29 +58,31 @@ export class StylesheetCssStyleSheet extends RuleCssStyleSheet {
     this.stylesheet = stylesheet;
     this.layer = layer;
 
-    const rulesSubscription = this.stylesheet.styles$.subscribe((styles) => {
-      const toRemove = { ...this._rules$.value };
-      const newRules: Record<string, StylesheetCssStyleRule> = {};
+    const rulesSubscription = this.stylesheet.staticStyles$.subscribe(
+      (styles) => {
+        const toRemove = { ...this._rules$.value };
+        const newRules: Record<string, StylesheetCssStyleRule> = {};
 
-      for (const selector in styles) {
-        if (toRemove[selector]) {
-          newRules[selector] = toRemove[selector];
-          delete toRemove[selector];
-        } else {
-          newRules[selector] = new StylesheetCssStyleRule({
-            layer: this.layer,
-            stylesheet: this.stylesheet,
-            selector,
-          });
+        for (const selector in styles) {
+          if (toRemove[selector]) {
+            newRules[selector] = toRemove[selector];
+            delete toRemove[selector];
+          } else {
+            newRules[selector] = new StylesheetCssStyleRule({
+              layer: this.layer,
+              stylesheet: this.stylesheet,
+              selector,
+            });
+          }
         }
-      }
 
-      for (const selector in toRemove) {
-        toRemove[selector].dispose();
-      }
+        for (const selector in toRemove) {
+          toRemove[selector].dispose();
+        }
 
-      this._rules$.next(newRules);
-    });
+        this._rules$.next(newRules);
+      },
+    );
 
     this.addDisposer(() => {
       rulesSubscription.unsubscribe();

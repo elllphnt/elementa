@@ -10,6 +10,7 @@ import { componentEditor } from "~/src/editors/elementa/editor";
 import { componentViewer } from "~/src/editors/elementa/viewer";
 import { jsonEditor } from "~/src/editors/monaco/json";
 import { reactEditor } from "~/src/editors/monaco/react";
+import { typescriptEditor } from "~/src/editors/monaco/typescript";
 import { programmingInterfaceEditor } from "~/src/editors/programming_interface";
 import { specEditor } from "~/src/editors/spec";
 import { utilitySheetEditor } from "~/src/editors/utility_sheet";
@@ -92,6 +93,7 @@ export function createElllInstance(config: ElllConfig) {
     programmingInterfaceEditor,
     variableSheetEditor,
     utilitySheetEditor,
+    typescriptEditor,
   );
 
   // load home workspace

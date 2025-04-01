@@ -8,13 +8,13 @@ import {
   stringifyModifer,
   StyleModifierData,
   StyleModifierDefinitionData,
+  StyleSheetData,
 } from "@elllphnt/elll-element";
 import { IFileDrive } from "@repo/backend";
 import {
   CssStyleSheet,
   Stylesheet,
   StylesheetCssStyleSheet,
-  StylesheetData,
 } from "@repo/elementa-models";
 import { BehaviorSubject, combineLatest, map, Observable } from "rxjs";
 import { jsonModelConstructor } from "~/src/models/json";
@@ -68,7 +68,7 @@ export type StyleSystemData = {
   breakpoints?: Record<string, number>;
   colorSchemes?: ColorSchemeData[];
   viewports?: ViewportData[];
-  stylesheets?: Record<string, StylesheetData>;
+  stylesheets?: Record<string, StyleSheetData>;
 };
 
 // ----------------- VIEWPORT MATCHING FUNCTION -----------------

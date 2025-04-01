@@ -1,5 +1,6 @@
 import { useObservable } from "@repo/utils";
 import cx from "classnames";
+import { useNamespace } from "~/src/hooks/namespace";
 import { useSlot } from "~/src/hooks/slot";
 import { ElementRenderable } from "~/src/renderables/_";
 import { SlotElementRenderable } from "../../renderables/instances/element/slot";
@@ -10,14 +11,36 @@ import ElementComponent from "./element";
 export function SlotElementComponent({
   element,
   partKey,
+  onRef,
 }: {
   element: SlotElementRenderable;
   partKey?: string;
+  onRef?: (element: HTMLElement | null, key?: string) => void;
 }): JSX.Element {
+  const namespace = useNamespace();
   const slot = useSlot(element.entity.id);
   const slotFill = useObservable(slot?.instance.fill$, slot?.instance.fill);
   const className = slotFill?.stylesheet.className;
   const content = useObservable(slot?.content$, slot?.content) || [];
+  const dynamicStyles =
+    useObservable(
+      slotFill?.stylesheet.dynamicStyles$,
+      slotFill?.stylesheet.dynamicStyles,
+    ) || {};
+  const styleExpressions =
+    useObservable(
+      slotFill?.stylesheet.expressions$,
+      slotFill?.stylesheet.expressions,
+    ) || {};
+
+  const dynamicClasses = Object.fromEntries(
+    Object.entries(dynamicStyles).map(([key, style]) => [
+      style.className,
+      namespace.resolveValue(
+        styleExpressions[key.slice("__expression:".length)],
+      ),
+    ]),
+  );
 
   return (
     <BaseElementComponent
@@ -26,6 +49,7 @@ export function SlotElementComponent({
       partKey={partKey}
       className={cx(className, {
         "elementa-element-slot-empty": !content.length,
+        ...dynamicClasses,
       })}
       onRef={(ref) => {
         if (partKey) {

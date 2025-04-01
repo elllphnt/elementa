@@ -12,6 +12,7 @@ import { RepeatControlSheet } from "./element/repeat";
 import { FrameControl } from "./frame/frame";
 import { FrameStyleControlSheet } from "./frame/style";
 import { FrameViewportSheet } from "./frame/viewport";
+import { FrameComponentPropsSheet } from "./frame/props";
 
 export const elementaSheetViews = {
   // renderable
@@ -46,6 +47,18 @@ export const elementaSheetViews = {
     id: "elementa.sheet.frame.viewport",
     title: "Viewport",
     render: FrameViewportSheet,
+    enabled: ({ selection }) => {
+      return selection.every(
+        (instance) =>
+          instance instanceof EntityHandle &&
+          entityTypeMatch(instance.entity.type, entityTypes.widgets.frame),
+      );
+    },
+  },
+  frameProps: {
+    id: "elementa.sheet.frame.props",
+    title: "Props",
+    render: FrameComponentPropsSheet,
     enabled: ({ selection }) => {
       return selection.every(
         (instance) =>

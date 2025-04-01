@@ -1,11 +1,11 @@
 import { baseControlMap, baseControlTypes, ControlMap } from "@repo/components";
 import { FillControl } from "./_uncertain/fill/fill";
-import { SchemaControl } from "./schema";
+import { TypedControl } from "./schema";
 
 export const elllControlTypes = {
   ...baseControlTypes,
   Fill: "fill",
-  Schema: "schema",
+  Typed: "typed",
 } as const;
 export type ElllControlType =
   (typeof elllControlTypes)[keyof typeof elllControlTypes];
@@ -13,7 +13,7 @@ export type ElllControlType =
 export const elllControlMap = {
   ...baseControlMap,
   [elllControlTypes.Fill]: FillControl,
-  [elllControlTypes.Schema]: SchemaControl,
+  [elllControlTypes.Typed]: TypedControl,
 } satisfies ControlMap<ElllControlType>;
 
 export type EditorControlMap = typeof elllControlMap;

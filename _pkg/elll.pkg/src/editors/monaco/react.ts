@@ -5,7 +5,6 @@ import { Observable, map, of, switchMap } from "rxjs";
 import { formatTypescript } from "~/src/libs/code/format";
 import { keys } from "~/src/libs/keys";
 import { reactModelConstructor } from "../../models/react";
-import { editors } from "../_editors";
 import { ModelEditorStateData } from "../model";
 import { MonacoEditorState } from "./monaco";
 
@@ -69,7 +68,7 @@ export class ReactEditorState extends MonacoEditorState<ReactEditorStateData> {
   }
 
   constructor({ id, shell }: { id?: string; shell: Shell }) {
-    super({ id, editorId: editors.react, shell });
+    super({ id, editorId: keys.editors.react, shell });
 
     // initialize on first load
     this.loaded$.subscribe((loaded) => {
@@ -93,7 +92,7 @@ export class ReactEditorState extends MonacoEditorState<ReactEditorStateData> {
 }
 
 export const reactEditor: Editor = {
-  id: editors.react,
+  id: keys.editors.react,
   createState: (shell) => new ReactEditorState({ shell }),
   views: {
     board: keys.views.board.monacoEditor,

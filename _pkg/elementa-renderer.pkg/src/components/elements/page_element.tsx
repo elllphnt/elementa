@@ -11,6 +11,7 @@ export function PageElementComponent({
 }: PropsWithChildren<{
   element: PageElementRenderable;
   partKey?: string;
+  onRef?: (element: HTMLElement | null, key?: string) => void;
 }>): JSX.Element {
   const frame = useContext(FrameContext);
   const content = useObservable(element.content$, element.content);

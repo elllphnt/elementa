@@ -10,6 +10,7 @@ export function VectorElementComponent({
 }: {
   element: VectorElementRenderable;
   partKey?: string;
+  onRef?: (element: HTMLElement | null, key?: string) => void;
 }): JSX.Element {
   const content = useObservable(
     element.entity.content$,

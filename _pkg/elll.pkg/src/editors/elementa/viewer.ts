@@ -16,7 +16,6 @@ import {
   componentModelConstructor,
 } from "~/src/models/component";
 import { IElll } from "~/src/types/elll";
-import { editors } from "../_editors";
 import { ModelEditorStateData } from "../model";
 import { ElementaBaseEditorState } from "./elementa";
 import { stylesheetManager } from "./libs/stylesheet_manager";
@@ -75,7 +74,7 @@ export class ElementaViewerState extends ElementaBaseEditorState<ComponentEditor
   }
 
   constructor({ id, shell }: { id?: string; shell: Shell }) {
-    super({ id, editorId: editors.componentViewer, shell });
+    super({ id, editorId: keys.editors.elementa.viewer, shell });
 
     this.iframe = ElementaViewerState.getIframe(this.elll);
 
@@ -161,7 +160,7 @@ export class ElementaViewerState extends ElementaBaseEditorState<ComponentEditor
 }
 
 export const componentViewer: Editor = {
-  id: editors.componentViewer,
+  id: keys.editors.elementa.viewer,
   createState: (shell) => new ElementaViewerState({ shell }),
   views: {
     board: keys.views.board.componentViewer,

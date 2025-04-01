@@ -63,6 +63,7 @@ export const keys = {
   editors: {
     json: "elll.editor.model.json",
     react: "elll.editor.model.react",
+    typescript: "elll.editor.model.typescript",
     spec: "elll.editor.spec",
     bleuprint: "elll.editor.blueprint",
     programmingInterface: "elll.editor.programming-interface",

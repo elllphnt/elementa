@@ -81,7 +81,9 @@ export class BaseElementErrorBoundary extends React.Component<
       this.props.element !== prevProps.element ||
       this.props.namespace !== prevProps.namespace
     ) {
-      this.setState({ hasError: false });
+      if (this.state.hasError) {
+        this.setState({ hasError: false });
+      }
     }
   }
 
@@ -117,6 +119,10 @@ export function ElementErrorBoundary({
   children: React.ReactNode;
 }) {
   const namespace = useNamespace();
+  console.log(
+    `Rendering ElementErrorBoundary ${element.entity.key} ${element.entity.name}`,
+    namespace,
+  );
   return (
     <BaseElementErrorBoundary element={element} namespace={namespace}>
       {children}

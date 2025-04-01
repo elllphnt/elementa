@@ -17,8 +17,8 @@ export function TextElementViewer({
   const namespace = useNamespace();
 
   return (
-    <BaseElementComponent element={element} partKey={partKey} component="span">
-      {`${namespace.resolveValue(text || "") || ""}` || <span>&nbsp;</span>}
+    <BaseElementComponent element={element} partKey={partKey}>
+      {`${namespace.resolveValue(text ?? "") ?? ""}` || <span>&nbsp;</span>}
     </BaseElementComponent>
   );
 }

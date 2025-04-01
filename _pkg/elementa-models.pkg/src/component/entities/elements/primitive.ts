@@ -1,10 +1,20 @@
 import {
   entityTypes,
   Evaluable,
+  Expression,
   isReference,
   PrimitiveElementData,
+  PrimitiveElementElementData,
+  StyleData,
+  StylePropertyName,
 } from "@elllphnt/elll-element";
-import { pairwiseOrEmpty } from "@repo/utils";
+import {
+  combineLatestOrEmpty,
+  Datafiable,
+  Disposable,
+  pairwiseOrEmpty,
+  restoreReactiveMap,
+} from "@repo/utils";
 import _ from "lodash";
 import {
   BehaviorSubject,
@@ -14,8 +24,133 @@ import {
   of,
   switchMap,
 } from "rxjs";
+import { CssStyleSheet, StylesheetCssStyleSheet } from "~/src/css/_";
+import { StyleOverridesMap } from "~/src/style/overrides";
+import { Stylesheet } from "~/src/style/stylesheet";
 import { Component } from "../../component";
 import { ElementElementContainer } from "./_common/container";
+
+export class PrimitiveElementElement
+  extends Disposable
+  implements Datafiable<PrimitiveElementElementData>
+{
+  static key = 0;
+  key = ++PrimitiveElementElement.key;
+
+  readonly cssStyleSheet: StylesheetCssStyleSheet;
+  readonly styleOverridesMap: StyleOverridesMap;
+
+  private _interactions$ = new BehaviorSubject<Record<string, Expression>>({});
+
+  get stylesheet(): Stylesheet {
+    return this.cssStyleSheet.stylesheet;
+  }
+
+  // interactions
+
+  get interactions() {
+    return this._interactions$.value;
+  }
+  get interactions$() {
+    return this._interactions$.asObservable();
+  }
+
+  interaction(event: string) {
+    return this.interactions[event];
+  }
+  interaction$(event: string) {
+    return this.interactions$.pipe(map((interactions) => interactions[event]));
+  }
+
+  // style overrides
+
+  get styleOverrides() {
+    return this.styleOverridesMap.data;
+  }
+  get styleOverrides$() {
+    return this.styleOverridesMap.data$;
+  }
+
+  styleOverride(property: StylePropertyName) {
+    return this.styleOverridesMap.override(property);
+  }
+  styleOverride$(property: StylePropertyName) {
+    return this.styleOverridesMap.override$(property);
+  }
+
+  get data(): PrimitiveElementElementData {
+    return {
+      stylesheet: this.stylesheet.data,
+      interactions: this.interactions,
+    };
+  }
+  get data$(): Observable<PrimitiveElementElementData> {
+    return combineLatestOrEmpty([
+      this.stylesheet.data$,
+      this.interactions$,
+    ]).pipe(
+      map(([stylesheet, interactions]) => ({
+        stylesheet,
+        interactions,
+      })),
+    );
+  }
+
+  constructor({
+    primitiveId,
+    elementName,
+    component,
+  }: {
+    primitiveId: string;
+    elementName: string;
+    component: Component;
+  }) {
+    super();
+    this.styleOverridesMap = new StyleOverridesMap();
+    this.cssStyleSheet = new StylesheetCssStyleSheet({
+      target: `primitive-element:${primitiveId}:${elementName}`,
+      stylesheet: new Stylesheet({
+        project: component.project,
+      }),
+    });
+
+    this.addDisposer(() => {
+      this.stylesheet.dispose();
+      this._interactions$.complete();
+    });
+  }
+
+  setInteraction(event: string, handler: Expression) {
+    this._interactions$.next({
+      ...this.interactions,
+      [event]: handler,
+    });
+  }
+  clearInteraction(event: string) {
+    const interactions = { ...this.interactions };
+    delete interactions[event];
+    this._interactions$.next(interactions);
+  }
+
+  addStyle(selector: string) {
+    this.stylesheet.addStyle(selector);
+  }
+  removeStyle(selector: string) {
+    this.stylesheet.removeStyle(selector);
+  }
+
+  setStyleOverride<N extends StylePropertyName>(
+    property: N,
+    value: Evaluable<StyleData[N]> | undefined,
+  ) {
+    this.styleOverridesMap.setOverride(property, value);
+  }
+
+  restore(data: PrimitiveElementElementData) {
+    this.stylesheet.restore(data.stylesheet ?? {});
+    this._interactions$.next(data.interactions ?? {});
+  }
+}
 
 export class PrimitiveElement extends ElementElementContainer<PrimitiveElementData> {
   private _initialized$ = new BehaviorSubject<boolean | undefined>(undefined);
@@ -24,6 +159,9 @@ export class PrimitiveElement extends ElementElementContainer<PrimitiveElementDa
   private _resolvedProps$ = new BehaviorSubject<Record<string, Evaluable<any>>>(
     {},
   );
+  private _elements$ = new BehaviorSubject<
+    Record<string, PrimitiveElementElement>
+  >({});
 
   get initialized() {
     return this._initialized$.value;
@@ -121,12 +259,99 @@ export class PrimitiveElement extends ElementElementContainer<PrimitiveElementDa
     return this._resolvedProps$.asObservable().pipe(map((props) => props[key]));
   }
 
+  get elements() {
+    return this._elements$.value;
+  }
+  get elements$() {
+    return this._elements$.asObservable();
+  }
+
+  private _getOrCreateElement(
+    elements: Record<string, PrimitiveElementElement>,
+    name: string,
+  ): PrimitiveElementElement {
+    let element = elements[name];
+    if (!element) {
+      element = new PrimitiveElementElement({
+        primitiveId: this.id,
+        elementName: name,
+        component: this.component,
+      });
+      this._elements$.next({
+        ...elements,
+        [name]: element,
+      });
+    }
+    return element;
+  }
+
+  element<C extends true | undefined>(
+    name: string,
+    create?: C,
+  ): C extends true
+    ? PrimitiveElementElement
+    : PrimitiveElementElement | undefined {
+    if (create) {
+      return this._getOrCreateElement(this.elements, name) as any;
+    }
+    return this.elements[name] as any;
+  }
+
+  element$<C extends true | undefined>(
+    name: string,
+    create?: C,
+  ): Observable<
+    C extends true
+      ? PrimitiveElementElement
+      : PrimitiveElementElement | undefined
+  > {
+    return this._elements$.pipe(
+      map((els) => {
+        if (create) {
+          return this._getOrCreateElement(els, name) as any;
+        }
+        return els[name];
+      }),
+    );
+  }
+
+  get allCssStylesheets(): CssStyleSheet[] {
+    return [
+      ...super.allCssStylesheets,
+      ...Object.values(this.elements).map((element) => {
+        return element.cssStyleSheet;
+      }),
+    ];
+  }
+  get allCssStylesheets$(): Observable<CssStyleSheet[]> {
+    return combineLatest([
+      super.allCssStylesheets$,
+      this.elements$.pipe(
+        map((elements) => {
+          return Object.values(elements).map((element) => {
+            return element.cssStyleSheet;
+          });
+        }),
+      ),
+    ]).pipe(
+      map(([stylesheets, elementStylesheets]) => {
+        return [...stylesheets, ...elementStylesheets];
+      }),
+    );
+  }
+
   get data(): PrimitiveElementData {
     return {
       ...super._data,
       initialized: this.initialized,
       moduleUrl: this.moduleUrl,
       props: this.props,
+      elements: Object.fromEntries(
+        Object.entries(this.elements).map(([key, element]) => [
+          key,
+          element.data,
+        ]),
+      ),
     };
   }
   get data$(): Observable<PrimitiveElementData> {
@@ -135,12 +360,26 @@ export class PrimitiveElement extends ElementElementContainer<PrimitiveElementDa
       this.initialized$,
       this.moduleUrl$,
       this.props$,
+      this.elements$.pipe(
+        switchMap((elements) =>
+          combineLatestOrEmpty(
+            Object.entries(elements).map(([key, element]) => {
+              return element.data$.pipe(map((data) => [key, data] as const));
+            }),
+          ).pipe(
+            map((data) => {
+              return Object.fromEntries(data);
+            }),
+          ),
+        ),
+      ),
     ]).pipe(
-      map(([data, initialized, moduleUrl, props]) => ({
+      map(([data, initialized, moduleUrl, props, elements]) => ({
         ...data,
         initialized,
         moduleUrl,
         props,
+        elements,
       })),
     );
   }
@@ -209,11 +448,42 @@ export class PrimitiveElement extends ElementElementContainer<PrimitiveElementDa
     this._props$.next(newProps);
   }
 
+  setElement(name: string, element: PrimitiveElementElement | undefined) {
+    const elements = { ...this._elements$.value };
+
+    if (element === undefined) {
+      delete elements[name];
+    } else {
+      elements[name] = element;
+    }
+
+    this._elements$.next(elements);
+  }
+
   restore(data: PrimitiveElementData) {
     super.restore(data);
 
     this._initialized$.next(data.initialized);
     this._moduleUrl$.next(data.moduleUrl);
     this._props$.next(data.props ?? {});
+
+    // restore elements
+    restoreReactiveMap({
+      datafiable$: this._elements$,
+      data: data.elements ?? {},
+      create: () => {
+        return new PrimitiveElementElement({
+          primitiveId: this.id,
+          elementName: "name",
+          component: this.component,
+        });
+      },
+      restore: (element, data) => {
+        element.restore(data);
+      },
+      dispose: (element) => {
+        element.dispose();
+      },
+    });
   }
 }
