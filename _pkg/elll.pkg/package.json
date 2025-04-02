@@ -1,6 +1,6 @@
 {
     "name": "@repo/elllbuild",
-    "version": "0.3.21",
+    "version": "0.3.22",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
@@ -8,7 +8,7 @@
         "watch:babel": "babel src -d dist -x .ts,.tsx --watch",
         "watch": "yarn watch:tsc & yarn watch:babel",
         "build": "tsx scripts/build.ts",
-        "pub": "yarn build && elll-artifacts publish -a elll -e dev build/index.js"
+        "pub": "tsx scripts/publish.ts"
     },
     "devDependencies": {
         "@types/react": "^18.2.32",
@@ -35,6 +35,7 @@
         "@codemirror/search": "^6.5.6",
         "@codemirror/state": "^6.4.1",
         "@codemirror/view": "^6.25.0",
+        "@elllphnt/elll-artifacts": "^0.2.3",
         "@elllphnt/elll-client": "*",
         "@elllphnt/elll-element": "^0.26.26",
         "@elllphnt/elll-intelligence": "^0.1.0",
