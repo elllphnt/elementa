@@ -1,26 +1,17 @@
-import { Message as IntelligenceMessageData } from "@elllphnt/intelligence-service-client";
+import { ThreadEntry as ThreadEntryData } from "@elllphnt/intelligence-service-client";
 import { elllEntities } from "@elllphnt/utils";
 import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
 import { Backend } from "../lib/backend";
 import { Resource } from "../lib/resource";
-import {
-  intelligenceServiceFactory,
-  MessageContent,
-} from "../services/intelligence_service";
+import { intelligenceServiceFactory } from "../services/intelligence_service";
 import { IntelligenceThread } from "./intelligence_thread";
 
-export class IntelligenceMessage extends Resource<IntelligenceMessageData> {
-  static readonly entity = elllEntities.intelligenceMessage.name;
+export class IntelligenceThreadEntry extends Resource<ThreadEntryData> {
+  static readonly entity = elllEntities.intelligenceThreadEntry.name;
 
   private _threadId$ = new BehaviorSubject<string | undefined>(undefined);
-  private _role$ = new BehaviorSubject<string | undefined>(undefined);
-  private _content$ = new BehaviorSubject<
-    {
-      type?: string;
-      text?: string;
-      image_url?: string;
-    }[]
-  >([]);
+  private _type$ = new BehaviorSubject<string | undefined>(undefined);
+  private _data$ = new BehaviorSubject<any>(undefined);
   private _createdAt$ = new BehaviorSubject<Date | undefined>(undefined);
 
   get intelligenceService() {
@@ -35,11 +26,18 @@ export class IntelligenceMessage extends Resource<IntelligenceMessageData> {
     return this.id;
   }
 
-  get content() {
-    return this._content$.value;
+  get type() {
+    return this._type$.value;
   }
-  get content$() {
-    return this._content$.asObservable().pipe(distinctUntilChanged());
+  get type$() {
+    return this._type$.asObservable().pipe(distinctUntilChanged());
+  }
+
+  get data() {
+    return this._data$.value;
+  }
+  get data$() {
+    return this._data$.asObservable().pipe(distinctUntilChanged());
   }
 
   get threadId() {
@@ -62,13 +60,6 @@ export class IntelligenceMessage extends Resource<IntelligenceMessageData> {
     );
   }
 
-  get role() {
-    return this._role$.value;
-  }
-  get role$() {
-    return this._role$.asObservable().pipe(distinctUntilChanged());
-  }
-
   get createdAt() {
     return this._createdAt$.value;
   }
@@ -80,33 +71,25 @@ export class IntelligenceMessage extends Resource<IntelligenceMessageData> {
     super({
       backend: init.backend,
       id: init.id,
-      entity: IntelligenceMessage.entity,
+      entity: IntelligenceThreadEntry.entity,
     });
 
     this.addDisposer(() => {
-      this._content$.complete();
       this._threadId$.complete();
-      this._role$.complete();
+      this._type$.complete();
+      this._data$.complete();
+      this._createdAt$.complete();
     });
   }
 
-  loadData(data: IntelligenceMessageData) {
-    if (typeof data.content === "string") {
-      this._content$.next([
-        {
-          type: "text",
-          text: data.content,
-        },
-      ]);
-    } else {
-      this._content$.next(data.content ?? []);
-    }
+  loadData(data: ThreadEntryData) {
     this._threadId$.next(data.thread_id);
-    this._role$.next(data.role);
     this._createdAt$.next(new Date(data.created_at ?? 0));
+    this._type$.next(data.type);
+    this._data$.next(data.data);
   }
-  concatContent(content: MessageContent[]) {
-    this._content$.next([...this._content$.value, ...content]);
+  setData(data: any) {
+    this._data$.next(data);
   }
 
   async fetchData() {}

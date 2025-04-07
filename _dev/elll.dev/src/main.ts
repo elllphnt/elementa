@@ -1,6 +1,4 @@
 import { createElllInstance, ElllHost } from "@repo/elllbuild";
-import "@repo/styles/dist/elll.css";
-import "reactflow/dist/style.css";
 import { BehaviorSubject, Observable } from "rxjs";
 import { getUser, tokenManager } from "./clients";
 

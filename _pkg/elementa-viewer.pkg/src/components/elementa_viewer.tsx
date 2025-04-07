@@ -1,6 +1,6 @@
+import { FragmentComponent, RouterContext } from "@repo/elementa-renderer";
 import { useObservable } from "@repo/utils";
 import { ElementaViewer } from "../elementa_viewer";
-import { FragmentComponent, RouterContext } from "@repo/elementa-renderer";
 
 export function ElementaViewerComponent({
   viewer,
@@ -14,9 +14,11 @@ export function ElementaViewerComponent({
   }
 
   return (
-    <RouterContext.Provider value={viewer.router}>
-      <FragmentComponent key={template.key} fragment={template} isolated />
-    </RouterContext.Provider>
+    <>
+      <RouterContext.Provider value={viewer.router}>
+        <FragmentComponent key={template.key} fragment={template} isolated />
+      </RouterContext.Provider>
+    </>
   );
 }
 

@@ -1,4 +1,5 @@
-import { IntelligenceMessage, IntelligenceThread } from "@repo/backend";
+import { MessagePayload } from "@elllphnt/elll-aicp";
+import { IntelligenceThread, IntelligenceThreadEntry } from "@repo/backend";
 import {
   ActionBar,
   ActionRegistry,
@@ -10,10 +11,6 @@ import {
 import { useObservable } from "@repo/utils";
 import { memo, useMemo, useState } from "react";
 import AutosizeTextArea from "react-textarea-autosize";
-import {
-  componentEditor,
-  ElementaEditorState,
-} from "~/src/editors/elementa/editor";
 import { useWorkspace } from "~/src/hooks/backend/workspace";
 import { useElll } from "~/src/hooks/elll/elll";
 import { useBackend } from "../../../hooks/backend/backend";
@@ -88,74 +85,12 @@ function Input() {
     }
 
     thread?.postMessage({
-      content: message,
-      onRequest: async (request) => {
-        const result: Record<string, any> = {};
-        for (const call of request.tool_calls) {
-          elll.shell.toast(JSON.stringify(call));
-          switch (call.tool) {
-            case "get_content": {
-              const editor = elll.shell.workspace?.activeEditor;
-              if (editor?.editorId === componentEditor.id) {
-                const componentEditor = editor as ElementaEditorState;
-                const content = componentEditor.componentModel?.data.template;
-                result[call.id] = content
-                  ? { status: "success", content }
-                  : { status: "empty" };
-              } else {
-                console.log("onRequest", "No editor", editor);
-                result[call.id] = { status: "error", error: "No editor" };
-              }
-              break;
-            }
-            case "editor_insert_element": {
-              const editor = elll.shell.workspace?.activeEditor;
-              // if (editor?.editorId === componentEditor.id) {
-              //   const componentEditor = editor as ElementaEditorState;
-              //   const component = componentEditor.componentModel;
-              //   if (!component) {
-              //     result[call.id] = { status: "error", error: "No component" };
-              //     break;
-              //   } else {
-              //     let args = call.args;
-              //     const entity = component.entity(args.container);
-              //     if (!entity || !(entity instanceof Element)) {
-              //       result[call.id] = {
-              //         status: "error",
-              //         error: "Entity not found",
-              //       };
-              //       break;
-              //     }
-              //     let container: ElementContainer | undefined = entity as any;
-              //     if (!(container instanceof ElementContainer)) {
-              //       container = entity.container || component.template;
-              //     }
-
-              //     const element = component.createElement({
-              //       type: entityTypes.elements.text,
-              //     }) as TextElement;
-              //     element.setContent(JSON.stringify(args.element));
-
-              //     container.appendElements(element);
-              //     result[call.id] = { status: "success" };
-              //   }
-              // }
-              break;
-            }
-            default: {
-              result[call.id] = {
-                status: "error",
-                error: "Unsupported method.",
-              };
-              break;
-            }
-          }
-        }
-
-        console.log("onRequest", request, result);
-
-        return result;
-      },
+      content: [
+        {
+          type: "text",
+          text: message,
+        },
+      ],
     });
   };
 
@@ -210,13 +145,30 @@ function Input() {
   );
 }
 
+const ThreadEntry = memo(function ThreadEntry({
+  entry,
+}: {
+  entry: IntelligenceThreadEntry;
+}) {
+  const type = useObservable(entry.type$, entry.type);
+
+  if (type === "message") {
+    return <Message message={entry} />;
+  } else {
+    return <>{type}</>;
+  }
+});
+
 const Message = memo(function Message({
   message,
 }: {
-  message: IntelligenceMessage;
+  message: IntelligenceThreadEntry;
 }) {
-  const content = useObservable(message.content$, message.content);
-  const author = useObservable(message.role$, message.role);
+  const data = useObservable(message.data$, message.data) as
+    | MessagePayload
+    | undefined;
+  const content = data?.content || [];
+  const author = data?.role;
   const isUser = author?.toLowerCase() === "user";
 
   return (
@@ -284,7 +236,7 @@ function Thread() {
     ? backend.instance<IntelligenceThread>(activeTheadId, true)
     : undefined;
   const messagesQuery = thread?.messages({ autoFetch: true });
-  const messages = useObservable(messagesQuery?.data$, messagesQuery?.data);
+  const entries = useObservable(messagesQuery?.data$, messagesQuery?.data);
   const loading = useObservable(thread?.messaging$, thread?.messaging);
 
   return (
@@ -306,10 +258,10 @@ function Thread() {
           ) : (
             <></>
           )}
-          {messages?.map((message, i) => (
+          {entries?.map((entry, i) => (
             <>
               {i > 0 ? <hr /> : <></>}
-              <Message key={i} message={message} />
+              <ThreadEntry key={i} entry={entry} />
             </>
           ))}
         </ScrollArea>

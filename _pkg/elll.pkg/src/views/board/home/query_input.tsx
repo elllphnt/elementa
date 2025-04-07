@@ -4,7 +4,6 @@ import { ProgressBar } from "@repo/components";
 import cx from "classnames";
 import { useCallback, useEffect, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
-import { generateProject } from "~/src/modules/onboarding/generate_project";
 import { useElll } from "~/src/hooks/elll/elll";
 import { buildPrompt } from "~/src/libs/ai_generation/prompt";
 import { getElllephantApiClient } from "~/src/libs/ai_generation/utils";
@@ -37,7 +36,7 @@ export default function QueryInput() {
   const [suggestions, setSuggestions] = useState<QueryData[]>([]);
   const [error, setError] = useState<string | undefined>();
 
-  const runGenerateWorkspace = useCallback(
+  const generateProject = useCallback(
     async (query: string) => {
       try {
         setError(undefined);
@@ -77,7 +76,7 @@ export default function QueryInput() {
 
   const handleSubmit = useCallback(async () => {
     if (!query.trim()) return;
-    runGenerateWorkspace(query.trim());
+    generateProject(query.trim());
   }, [query]);
 
   useEffect(() => {
@@ -89,7 +88,7 @@ export default function QueryInput() {
     if (typeof initialQuery === "string") {
       elll.setConfig("initialQuery", undefined);
       setQuery(initialQuery);
-      runGenerateWorkspace(initialQuery);
+      generateProject(initialQuery);
     }
     if (getSuggestionQueries) {
       getSuggestionQueries(3).then(setSuggestions);
@@ -108,7 +107,7 @@ export default function QueryInput() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             maxRows={6}
-            placeholder="Describe what you want to build..."
+            placeholder="Type your idea… e.g. “A sleek landing page for my startup”"
             className="el-w-full el-resize-none el-bg-transparent el-outline-none el-h-fit el-p-3 el-pr-0"
             onKeyDown={(e) => {
               if (e.key === "Enter") {

@@ -3,31 +3,9 @@
 @import url(./color_picker.css);
 @import url(./rc_slider.css);
 @import url(./progress_bar.css);
-@import url(./animations.css);
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-html {
-  color: rgb(var(--color-foreground));
-  background-color: rgb(var(--color-background));
-}
-body {
-  font-family: "Inter", sans-serif;
-  font-size: 13px;
-  line-height: 1.5;
-  color: rgb(var(--color-gray-900));
-}
-
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-input {
-  background-color: transparent;
-}
-
-button {
-  outline: none;
+.elll {
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
 }

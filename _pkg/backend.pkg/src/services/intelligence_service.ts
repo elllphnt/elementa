@@ -1,68 +1,19 @@
+import {
+  concatLLMContentPart,
+  ErrorPayload,
+  IntelligenceEvent,
+  LLMContent,
+  MessageIntent,
+  MessagePayload,
+} from "@elllphnt/elll-aicp";
 import { TokenManager } from "@elllphnt/elll-client";
-import { Message } from "@elllphnt/intelligence-service-client";
 import { elllEntities } from "@elllphnt/utils";
 import { intelligenceServiceClientFactory } from "../clients";
 import { Backend } from "../lib/backend";
 import { createConstructorFactory } from "../lib/factory";
 import { Service } from "../lib/service";
 import { IntelligenceThread } from "../resources/intelligence_thread";
-import { IntelligenceMessage } from "../resources/intelligence_thread_message";
-
-export type MessageContent = {
-  index?: number;
-  type?: string;
-  text?: string;
-  image_url?: string;
-};
-
-export type RequestToolCall = {
-  id: string;
-  tool: string;
-  args: Record<string, any>;
-};
-export type Request = {
-  thread_id: string;
-  tool_calls: RequestToolCall[];
-};
-export type RequestHandler = (request: Request) => Promise<Record<string, any>>;
-
-export type RequestEvent = {
-  type: "thread.request";
-  data: Request;
-};
-export type MessageStartEvent = {
-  type: "thread.message.start";
-  data: Message;
-};
-export type MessageDeltaEvent = {
-  type: "thread.message.delta";
-  data: {
-    id: string;
-    thread_id: string;
-    role?: "assistant" | "user" | "system" | "tool";
-    content?: string;
-    name?: string;
-  };
-};
-export type MessageEndEvent = {
-  type: "thread.message.end";
-  data: Message;
-};
-export type ErrorEvent = {
-  type: "error";
-  data: {
-    name: string;
-    message: string;
-    details?: Record<string, any>;
-  };
-};
-
-export type EventData =
-  | RequestEvent
-  | MessageStartEvent
-  | MessageDeltaEvent
-  | MessageEndEvent
-  | ErrorEvent;
+import { IntelligenceThreadEntry } from "../resources/intelligence_thread_entry";
 
 export class IntelligenceService extends Service {
   constructor({ backend }: { backend: Backend }) {
@@ -80,8 +31,8 @@ export class IntelligenceService extends Service {
   get threadStore() {
     return this.backend.store(IntelligenceThread);
   }
-  get messageStore() {
-    return this.backend.store(IntelligenceMessage);
+  get entryStore() {
+    return this.backend.store(IntelligenceThreadEntry);
   }
 
   // Thread
@@ -218,7 +169,7 @@ export class IntelligenceService extends Service {
 
   // Message
 
-  async fetchMessages({
+  async fetchEntries({
     thread_id,
     cursor,
     limit,
@@ -228,7 +179,7 @@ export class IntelligenceService extends Service {
     limit: number;
   }) {
     const result = await this.intelligenceServiceClient.get(
-      "/intelligence/threads/{thread_id}/messages",
+      "/intelligence/threads/{thread_id}/entries",
       {
         params: {
           path: {
@@ -248,115 +199,108 @@ export class IntelligenceService extends Service {
 
     return (
       result.data?.map((message) => {
-        return this.messageStore.push(message);
+        return this.entryStore.push(message);
       }) ?? []
     );
   }
-  async handleStreamEvent(event: EventData, onRequest: RequestHandler) {
-    console.log("Stream event:", event);
+
+  async handleIntelligenceEvent(event: IntelligenceEvent) {
     switch (event.type) {
-      case "thread.message.start": {
-        this.messageStore.push(event.data);
+      case "message.start": {
+        this.entryStore.push({
+          id: event.payload.entry_id,
+          type: "message",
+          entity: elllEntities.intelligenceThreadEntry.name,
+          thread_id: event.payload.thread_id,
+          data: event.payload.data as any,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        });
         break;
       }
-      case "thread.message.end": {
-        this.messageStore.push(event.data);
-        console.log("Message end", this.messageStore);
-        break;
-      }
-      case "thread.message.delta": {
-        let message = this.messageStore.instance(event.data.id);
-        if (!message) {
-          message = this.messageStore.push({
-            id: event.data.id,
-            entity: elllEntities.intelligenceMessage.name,
-            thread_id: event.data.thread_id,
-            content: [
-              {
-                type: "text",
-                text: event.data.content ?? "",
-              },
-            ],
-            role: event.data.role!,
+      case "message.delta": {
+        let entry = this.entryStore.instance(event.payload.entry_id);
+        if (!entry) {
+          entry = this.entryStore.push({
+            id: event.payload.entry_id,
+            type: "message",
+            entity: elllEntities.intelligenceThreadEntry.name,
+            thread_id: event.payload.thread_id,
+            data: event.payload.delta as any,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           });
         } else {
-          console.log("Updating existing message", event.data.id);
-          message.concatContent([
-            {
-              type: "text",
-              text: event.data.content ?? "",
-            },
-          ]);
-        }
+          if (entry.type === "message") {
+            const newData: MessagePayload = {
+              ...entry.data,
+              content: concatLLMContentPart(
+                entry.data.content || [],
+                event.payload.delta.content || [],
+              ),
+            };
 
+            if (event.payload.delta.intent) {
+              newData.intent = event.payload.delta.intent;
+            }
+
+            entry.setData(newData);
+          }
+        }
         break;
       }
-      case "thread.request": {
-        if (onRequest) {
-          const result = await onRequest(event.data);
-          this.postMessage({
-            threadId: event.data.thread_id,
-            answers: result,
-            onRequest,
+      case "action.start": {
+        let entry = this.entryStore.instance(event.payload.entry_id);
+        if (!entry) {
+          entry = this.entryStore.push({
+            id: event.payload.entry_id,
+            type: "action",
+            entity: elllEntities.intelligenceThreadEntry.name,
+            thread_id: event.payload.thread_id,
+            data: event.payload.data as any,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          });
+        } else {
+          if (entry.type === "message") {
+            entry.setData(event.payload.data);
+          }
+        }
+        break;
+      }
+      case "action.update": {
+        const entry = this.entryStore.instance(event.payload.entry_id);
+        if (entry && entry.type === "action") {
+          entry.setData({
+            ...entry.data,
+            ...event.payload.update,
           });
         }
         break;
       }
       case "error": {
-        this.handleStreamError(event.data, onRequest);
+        this.handleStreamError(event.payload);
+        break;
       }
     }
   }
-  async handleStreamError(
-    error: ErrorEvent["data"],
-    onRequest: RequestHandler,
-  ) {
-    console.log("Stream error:", error);
-    switch (error.name) {
-      case "answers_required_error":
-        const request = error.details?.request as Request;
-        if (request) {
-          const result = await onRequest(request);
-          this.postMessage({
-            threadId: error.details!.thread_id,
-            answers: result,
-            onRequest,
-          });
-        } else {
-          console.error("Request not found in answers_required_error details");
-        }
-        break;
-      case "unexpected_error":
-        console.error("Unexpected error:", error.message);
-        break;
-      default:
-        console.error("Error:", error.message);
-    }
+  async handleStreamError(error: ErrorPayload) {
+    console.error("Error:", error.message);
   }
 
   async postMessage({
     threadId,
     content,
-    answers,
-    onRequest,
   }: {
     threadId: string;
-    content?: string;
-    answers?: Record<string, string>;
-    onRequest: (request: Request) => any;
+    content?: LLMContent;
+    intent?: MessageIntent;
   }) {
-    if (!content && !answers) {
-      throw new Error("Answer or content is required");
-    }
-
-    // Make a POST request to the streaming endpoint
     const tokenManager = this.backend.getProperty(
       "elllephantApiTokenManager",
     ) as TokenManager;
-    const baseUrl = this.backend.getProperty("elllephantApiBaseUrl") as string;
-    const url = `${baseUrl}/intelligence/threads/${threadId}/messages`;
+    const baseUrl = "http://localhost:32989"; //this.backend.getProperty("elllephantApiBaseUrl") as string;
+    const url = `${baseUrl}/intelligence/messages`;
 
     try {
       const response = await fetch(url, {
@@ -366,7 +310,7 @@ export class IntelligenceService extends Service {
           "Accept": "application/json",
           "Authorization": `Bearer ${await tokenManager.getToken()}`,
         },
-        body: JSON.stringify({ content, answers, stream: true }),
+        body: JSON.stringify({ thread_id: threadId, content, stream: true }),
       });
 
       if (!response.body) {
@@ -392,7 +336,7 @@ export class IntelligenceService extends Service {
               .filter(Boolean);
             const parsedChunks = parts.map((part) => JSON.parse(part));
             parsedChunks.forEach((parsedChunk) =>
-              this.handleStreamEvent(parsedChunk, onRequest),
+              this.handleIntelligenceEvent(parsedChunk),
             );
           } catch (error) {
             console.error("Error parsing chunk:", error, "Chunk:", chunkStr);

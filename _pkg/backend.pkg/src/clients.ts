@@ -1,10 +1,11 @@
 import { createConfigurationServiceClient } from "@elllphnt/configuration-service-client";
+import { createDriveServiceClient } from "@elllphnt/drive-service-client";
 import { TokenManager } from "@elllphnt/elll-client";
 import { createIdentityServiceClient } from "@elllphnt/identity-service-client";
 import { createIntelligenceServiceClient } from "@elllphnt/intelligence-service-client";
 import { createRepositoryServiceClient } from "@elllphnt/repository-service-client";
 import { createWorkspaceServiceClient } from "@elllphnt/workspace-service-client";
-import { createDriveServiceClient } from "@elllphnt/drive-service-client";
+import { Backend } from "./lib/backend";
 import { ClientFactory } from "./lib/client";
 import { createFactory } from "./lib/factory";
 
@@ -59,10 +60,16 @@ export const repositoryServiceClientFactory = createElllephantApiClientFactory(
   },
 );
 
-export const intelligenceServiceClientFactory =
-  createElllephantApiClientFactory(createIntelligenceServiceClient, {
-    name: "intelligence-service-client",
-  });
+export const intelligenceServiceClientFactory = createFactory(
+  ({ backend }: { backend: Backend }) =>
+    createIntelligenceServiceClient({
+      baseUrl: "http://localhost:32989",
+      tokenManager: backend.getProperty("elllephantApiBaseUrl"),
+    }),
+);
+createElllephantApiClientFactory(createIntelligenceServiceClient, {
+  name: "intelligence-service-client",
+});
 
 export const configurationServiceClientFactory =
   createElllephantApiClientFactory(createConfigurationServiceClient, {

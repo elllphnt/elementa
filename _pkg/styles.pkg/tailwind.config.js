@@ -77,4 +77,11 @@ module.exports = {
     },
     extend: {},
   },
+  prefix: "el-",
+  content: [
+    "../elll.pkg/src/**/*.{js,ts,jsx,tsx}",
+    "../editor.pkg/src/**/*.{js,ts,jsx,tsx}",
+    "../components.pkg/src/**/*.{js,ts,jsx,tsx}",
+    "../shell.pkg/src/**/*.{js,ts,jsx,tsx}",
+  ],
 };

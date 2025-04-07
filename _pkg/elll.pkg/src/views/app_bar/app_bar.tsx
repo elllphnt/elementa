@@ -121,13 +121,13 @@ export function AppBarView(): JSX.Element {
 
   return (
     <div className="el-h-full el-w-full el-flex el-px-2 el-justify-between el-items-center">
-      <div className="el-h-full el-flex el-items-center el-shrink-0">
+      <div className="el-h-full el-w-1/3 el-shrink-0 el-flex el-items-center">
         <ElllButton />
       </div>
-      <div className="el-h-full el-flex el-items-center el-shrink-0">
+      <div className="el-h-full el-w-1/3 el-shrink-0 el-flex el-items-center el-justify-center">
         {workspace && <ProjectButton />}
       </div>
-      <div className="el-h-full el-flex el-items-center el-justify-end el-gap-2">
+      <div className="el-h-full el-w-1/3 el-shrink-0 el-flex el-items-center el-justify-end el-gap-2">
         {workspace && <CopilotButton />}
         {workspace && <PublishButton />}
         <UserButton />

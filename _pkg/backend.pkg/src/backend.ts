@@ -14,7 +14,7 @@ import { Configuration } from "./resources/configuration";
 import { Drive } from "./resources/drive";
 import { DriveFile } from "./resources/drive_file";
 import { IntelligenceThread } from "./resources/intelligence_thread";
-import { IntelligenceMessage } from "./resources/intelligence_thread_message";
+import { IntelligenceThreadEntry } from "./resources/intelligence_thread_entry";
 import { Repository } from "./resources/repository";
 import { RepositoryTag } from "./resources/repository_tag";
 import { Tenant } from "./resources/tenant";
@@ -72,7 +72,7 @@ export class ElllBackend extends Backend {
     this.addStore(Workspace);
     this.addStore(WorkspaceFile);
     this.addStore(IntelligenceThread);
-    this.addStore(IntelligenceMessage);
+    this.addStore(IntelligenceThreadEntry);
     this.addStore(Configuration);
     this.addStore(Repository);
     this.addStore(Commit);

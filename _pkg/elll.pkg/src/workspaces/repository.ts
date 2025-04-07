@@ -89,10 +89,10 @@ export class RepositoryWorkspace extends Workspace {
   readonly elll: IElll;
 
   get contexts() {
-    return [];
+    return [copilotContext];
   }
   get contexts$() {
-    return of([]);
+    return of([copilotContext]);
   }
 
   get layout(): WorkspaceLayout {

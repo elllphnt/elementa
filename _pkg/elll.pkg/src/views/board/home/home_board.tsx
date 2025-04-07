@@ -11,8 +11,6 @@ import { useObservable } from "@repo/utils";
 import { useState } from "react";
 import { useElll } from "~/src/hooks/elll/elll";
 import { configs } from "~/src/libs/configs";
-import { keys } from "~/src/libs/keys";
-import { ElllElementaProject } from "~/src/modules/elementa/project/project";
 import { RepositoryHistory } from "~/src/modules/elll/history";
 import { modalViews } from "../../modals/_";
 import QueryInput from "./query_input";
@@ -23,7 +21,13 @@ export function WorkspaceBoardPlaceholderView({}: {
   return <ElllPlaceholder />;
 }
 
-function NewWorkspaceButton() {
+function NewWorkspaceButton({
+  type,
+  label,
+}: {
+  type: "library" | "application";
+  label: string;
+}) {
   const elll = useElll();
   const tenant = useObservable(elll.tenant$, elll.tenant);
   const [isCreating, setIsCreating] = useState(false);
@@ -38,36 +42,10 @@ function NewWorkspaceButton() {
     try {
       const repository = await tenant.createRepository({
         name: "New Project",
-        type: "component-library",
+        type,
       });
       if (!repository) return;
-      // open project
       elll.host.openProject(repository.id);
-
-      const key = elll.shell.showNotification({
-        title: "Initializing project",
-        message: "Generating project features...",
-        progress: true,
-      });
-
-      // set project description
-      const project = elll.config<ElllElementaProject>(
-        keys.configs.editors.elementa.project,
-      );
-      if (!project) {
-        throw new Error("Project not found");
-      }
-
-      // await firstValueFrom(
-      //   project.variableManager.loaded$.pipe(filter(Boolean), timeout(5000)),
-      // );
-      // await firstValueFrom(
-      //   project.utilityManager.loaded$.pipe(filter(Boolean), timeout(5000)),
-      // );
-
-      // const { variables, utilities } = generateTailwindStylePreset();
-      // project.variableManager.restore({ sets: variables });
-      // project.utilityManager.restore({ sets: utilities });
     } finally {
       setIsCreating(false);
     }
@@ -79,7 +57,7 @@ function NewWorkspaceButton() {
       onClick={handleCreate}
       loading={isCreating}
     >
-      Start from scratch
+      {label}
     </TreeEntry>
   );
 }
@@ -87,9 +65,10 @@ function NewWorkspaceButton() {
 function StartSection() {
   return (
     <div className="el-space-y-2">
-      <p className="el-text-lg">Start</p>
+      <p className="el-text-lg">Start from scratch</p>
       <div className="el-space-y-1">
-        <NewWorkspaceButton />
+        <NewWorkspaceButton type="application" label="New Web App" />
+        <NewWorkspaceButton type="library" label="New UI Library" />
       </div>
     </div>
   );
@@ -209,59 +188,9 @@ export function HomeBoardView(): JSX.Element {
 
         <div className="el-w-full el-flex el-flex-col el-gap-4">
           <h1 className="el-text-2xl el-font-bold">
-            What can I help you build?
+            What do you want to bring to life today?
           </h1>
           <QueryInput />
-
-          {/* <button
-            onClick={() =>
-              shell.showNotification({
-                title: "Workspace Successfully Initialized",
-                message: (
-                  <div className="el-space-y-1">
-                    <p>
-                      Your project workspace has been set up, and a project
-                      description along with a list of features has been
-                      generated based on your initial prompt.
-                    </p>
-                    <p className="el-font-semibold el-text-lg el-text-fg el-mb-1">
-                      What's Next?
-                    </p>
-                    <ol className="el-list-decimal el-space-y-1">
-                      <li>
-                        <span className="el-font-semibold el-text-fg">
-                          Adjust Features
-                        </span>
-                        : Review and customize the features to better match your
-                        project requirements.
-                      </li>
-                      <li>
-                        <span className="el-font-semibold el-text-fg">
-                          Generate Your Project
-                        </span>
-                        : Once you're satisfied with the adjustments, click the{" "}
-                        <span className="el-font-semibold el-text-fg">
-                          "Generate Project"
-                        </span>{" "}
-                        button to create your project implementation.
-                      </li>
-                    </ol>
-                  </div>
-                ),
-                actions: [
-                  {
-                    label: "Thanks!",
-                    handler: () => {
-                      console.log("Thanks!");
-                    },
-                    primary: true,
-                  },
-                ],
-              })
-            }
-          >
-            Notify
-          </button> */}
         </div>
       </div>
     </div>

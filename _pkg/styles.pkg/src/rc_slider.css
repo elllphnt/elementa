@@ -1,22 +1,24 @@
-.elll-slider .rc-slider-rail {
-  background-color: rgb(var(--color-foreground-400) / 1);
-  height: 2px;
-  border-radius: 2px;
-}
+.elll {
+  .elll-slider .rc-slider-rail {
+    background-color: rgb(var(--color-foreground-400) / 1);
+    height: 2px;
+    border-radius: 2px;
+  }
 
-.elll-slider .rc-slider-track {
-  background-color: rgb(var(--color-primary-300));
-  height: 2px;
-  border-radius: 2px;
-}
+  .elll-slider .rc-slider-track {
+    background-color: rgb(var(--color-primary-300));
+    height: 2px;
+    border-radius: 2px;
+  }
 
-.elll-slider .rc-slider-handle {
-  border: 2px solid rgb(var(--color-primary-300));
-  border-color: rgb(var(--color-primary-300)) !important;
-  background-color: rgb(var(--color-background-000));
-  width: 12px;
-  height: 12px;
-  margin-top: -5px;
-  box-shadow: none !important;
-  opacity: 1;
+  .elll-slider .rc-slider-handle {
+    border: 2px solid rgb(var(--color-primary-300));
+    border-color: rgb(var(--color-primary-300)) !important;
+    background-color: rgb(var(--color-background-000));
+    width: 12px;
+    height: 12px;
+    margin-top: -5px;
+    box-shadow: none !important;
+    opacity: 1;
+  }
 }

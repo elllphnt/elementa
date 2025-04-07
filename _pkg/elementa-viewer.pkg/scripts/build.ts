@@ -34,6 +34,8 @@ export async function build({
   return result;
 }
 
-build({
-  outputPath: "./build/index.js",
-});
+if (require.main === module) {
+  build({
+    outputPath: "./build/index.js",
+  });
+}

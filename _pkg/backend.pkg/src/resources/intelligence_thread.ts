@@ -1,13 +1,11 @@
+import { LLMContent, MessageIntent } from "@elllphnt/elll-aicp";
 import { Thread as IntelligenceThreadData } from "@elllphnt/intelligence-service-client";
 import { elllEntities } from "@elllphnt/utils";
 import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
 import { Backend } from "../lib/backend";
 import { AutoSavableResource } from "../lib/resource";
-import {
-  intelligenceServiceFactory,
-  RequestHandler,
-} from "../services/intelligence_service";
-import { IntelligenceMessage } from "./intelligence_thread_message";
+import { intelligenceServiceFactory } from "../services/intelligence_service";
+import { IntelligenceThreadEntry } from "./intelligence_thread_entry";
 
 export class IntelligenceThread extends AutoSavableResource<IntelligenceThreadData> {
   static readonly entity = elllEntities.intelligenceThread.name;
@@ -24,7 +22,7 @@ export class IntelligenceThread extends AutoSavableResource<IntelligenceThreadDa
   }
 
   get messageStore() {
-    return this.backend.store(IntelligenceMessage);
+    return this.backend.store(IntelligenceThreadEntry);
   }
 
   get key() {
@@ -104,7 +102,7 @@ export class IntelligenceThread extends AutoSavableResource<IntelligenceThreadDa
           ),
       fetch: async ({ cursor }) => {
         const limit = 10;
-        const messages = await this.intelligenceService.fetchMessages({
+        const messages = await this.intelligenceService.fetchEntries({
           thread_id: this.id,
           cursor,
           limit,
@@ -146,17 +144,17 @@ export class IntelligenceThread extends AutoSavableResource<IntelligenceThreadDa
 
   async postMessage({
     content,
-    onRequest,
+    intent,
   }: {
-    content: string;
-    onRequest: RequestHandler;
+    content?: LLMContent;
+    intent?: MessageIntent;
   }) {
     try {
       this._messaging$.next(true);
       return await this.intelligenceService.postMessage({
         threadId: this.id,
         content,
-        onRequest,
+        intent,
       });
     } finally {
       this._messaging$.next(false);

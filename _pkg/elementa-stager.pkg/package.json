@@ -9,7 +9,7 @@
         "watch:babel": "babel src -d dist -x .ts,.tsx --watch",
         "watch": "yarn watch:tsc & yarn watch:babel",
         "build": "tsx scripts/build.ts",
-        "pub": "yarn build && elll-artifacts publish -a elementa-stager -e dev build/index.js"
+        "pub": "tsx scripts/publish.ts"
     },
     "devDependencies": {
         "@babel/core": "^7.12.0",

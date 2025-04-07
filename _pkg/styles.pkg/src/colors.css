@@ -1,4 +1,4 @@
-:root {
+.elll {
   --color-primary-500: 44 85 200;
   --color-primary-400: 46 98 231;
   --color-primary-300: 61 118 250;
@@ -26,10 +26,8 @@
   --color-blue: 61 118 250;
   --color-green: 2 219 177;
   --color-yellow: 250 183 60;
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
+  @media (prefers-color-scheme: dark) {
     --color-primary-500: 112 160 255;
     --color-primary-400: 82 137 255;
     --color-primary-300: 61 118 250;

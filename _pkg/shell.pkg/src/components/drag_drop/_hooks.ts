@@ -140,13 +140,19 @@ export function useDrop(
         }
       }
     };
+    const handleDrop = (event: DragEvent) => {
+      event.preventDefault();
+      _handleDrop?.(event, dragData$.value);
+    };
 
     element.addEventListener("dragenter", handleDragEnter);
     element.addEventListener("dragover", handleDragOver);
+    element.addEventListener("drop", handleDrop);
 
     return () => {
       element.removeEventListener("dragenter", handleDragEnter);
       element.removeEventListener("dragover", handleDragOver);
+      element.removeEventListener("drop", handleDrop);
     };
   }, dependencies);
 
@@ -171,6 +177,8 @@ export function useDragDropObserver() {
     const handleDragEnd = (event: DragEvent) => {
       const dropTarget = dropTarget$.value;
       if (dropTarget) {
+        event.preventDefault();
+        event.stopPropagation();
         const [, handleDrop] = dropTarget;
         handleDrop?.(event, dragData$.value);
       }
