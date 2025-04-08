@@ -2,6 +2,10 @@ import { Reference } from "@elllphnt/elll-element";
 import { DriveFile } from "@repo/backend";
 import { FileSystem, Infrastructure } from "@repo/elementa-models";
 import { IElll } from "~/src/types/elll";
+import {
+  getElllWorkspaceElementaProject,
+  getElllWorkspaceElementaProject$,
+} from "../project/_lib";
 import { IElllElementaInfrastructure } from "./_types";
 import { ElllElementaFileSystem } from "./file_system";
 
@@ -11,6 +15,13 @@ export class ElllElementaInfrastructure
 {
   readonly elll: IElll;
   readonly fileSystem: FileSystem;
+
+  get defaultProject() {
+    return getElllWorkspaceElementaProject(this.elll);
+  }
+  get defaultProject$() {
+    return getElllWorkspaceElementaProject$(this.elll);
+  }
 
   constructor({ elll }: { elll: IElll }) {
     super();

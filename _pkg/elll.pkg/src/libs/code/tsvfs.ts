@@ -244,12 +244,12 @@ export class TSVirtualFileSystem extends Disposable {
     return getElllWorkspaceElementaProject$(this.elll);
   }
   get monaco() {
-    return this.elll.config(keys.configs.editors.monaco.instance) as
+    return this.elll.property(keys.configs.editors.monaco.instance) as
       | Monaco
       | undefined;
   }
   get monaco$() {
-    return this.elll.config$(
+    return this.elll.property$(
       keys.configs.editors.monaco.instance,
     ) as Observable<Monaco | undefined>;
   }

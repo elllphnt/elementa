@@ -66,7 +66,7 @@ export function createElllInstance(config: ElllConfig) {
   elll.modelManager.registerModelConstructor(reactModelConstructor);
 
   // configs
-  elll.setConfig(configs.elll.history, new RepositoryHistory({ elll }));
+  elll.setProperty(configs.elll.history, new RepositoryHistory({ elll }));
 
   // shell resources
   const shell = elll.shell;

@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { queryIntelligence } from "../utils";
+import { messageIntelligence } from "../utils";
 
 const instructions = ({
   type,
@@ -34,7 +34,7 @@ export async function parseProjectFeature({
   features: any[];
   client: AxiosInstance;
 }) {
-  const response = await queryIntelligence({
+  const response = await messageIntelligence({
     messages: [
       {
         role: "developer",

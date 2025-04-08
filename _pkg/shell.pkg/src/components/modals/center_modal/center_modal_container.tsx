@@ -1,6 +1,6 @@
 import { ViewComponent } from "@repo/components";
-import { useShell } from "~/src/hooks/shell";
 import { useObservable } from "@repo/utils";
+import { useShell } from "~/src/hooks/shell";
 
 export function WorkspaceModalContainer(): JSX.Element {
   const shell = useShell();
@@ -15,6 +15,7 @@ export function WorkspaceModalContainer(): JSX.Element {
 
   return (
     <div
+      className="fade-in el-bg-[#0002] dark:el-bg-[#0005]"
       style={{
         position: "absolute",
         inset: 0,
@@ -31,7 +32,7 @@ export function WorkspaceModalContainer(): JSX.Element {
       }}
     >
       <div
-        className="el-bg-bg el-rounded-lg el-shadow-lg el-border"
+        className="el-bg-bg el-rounded-lg el-shadow-lg el-border fade-in-bottom"
         style={{
           overflow: "hidden",
         }}

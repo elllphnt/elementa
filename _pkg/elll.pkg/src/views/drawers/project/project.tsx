@@ -1,8 +1,15 @@
-import { ScrollArea, TextControl } from "@repo/components";
+import {
+  elllIcons16,
+  Icon,
+  ScrollArea,
+  TextControl,
+  TreeEntry,
+} from "@repo/components";
 import { CopyControl } from "~/src/components/ui/controls/_uncertain/copy/copy";
 import { useRepository } from "~/src/hooks/backend/repository";
 import { useElll } from "~/src/hooks/elll/elll";
 import { useElllProject } from "~/src/hooks/project/project";
+import { modalViews } from "../../modals/_";
 
 export function ProjectView(): JSX.Element {
   const elll = useElll();
@@ -30,9 +37,9 @@ export function ProjectView(): JSX.Element {
         <CopyControl value={repository?.id ?? ""} className="el-font-mono" />
       </div>
 
-      {/* <div className="el-space-y-1" style={{ pointerEvents: "auto" }}>
+      <div className="el-space-y-1" style={{ pointerEvents: "auto" }}>
         <label className="el-text-fg-400">
-          Edit the specification for this project.
+          Define what this project is about.
         </label>
         <TreeEntry
           icon={<Icon name={elllIcons16.ai} />}
@@ -40,32 +47,31 @@ export function ProjectView(): JSX.Element {
           onClick={() => {
             elll.shell.showModal({
               affinity: "workspace",
-              viewId: modalViews.spec.id,
+              viewId: modalViews.brief.id,
               closeOnBackdropClick: true,
             });
           }}
         >
-          Specification
+          Brief
         </TreeEntry>
       </div>
 
       <div className="el-space-y-1">
         <label className="el-text-fg-400">
-          Design and structure the UI components and interactions for this
-          project.
+          Design and structure the building blocks of this project.
         </label>
         <TreeEntry
           icon={<Icon name={elllIcons16.fileStylesheet} />}
           className="el-border"
           onClick={() => {
-            elll.editorManager.openEditor(blueprintEditor.id);
+            elll.editorManager.openEditor("blueprintEditor.id");
           }}
         >
           Blueprint
         </TreeEntry>
       </div>
 
-      <div className="el-space-y-1">
+      {/*<div className="el-space-y-1">
         <label className="el-text-fg-400">
           Define and manage queries and actions consumed by the UI layer.
         </label>

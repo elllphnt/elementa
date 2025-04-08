@@ -1,0 +1,82 @@
+.elll {
+  .tiptap {
+    /* color: rgb(var(--color-foreground-400)); */
+
+    p.is-editor-empty:first-child::before {
+      color: rgb(var(--color-foreground) / 0.3);
+      content: attr(data-placeholder);
+      float: left;
+      height: 0;
+      pointer-events: none;
+    }
+
+    /* Markdown style */
+    h1 {
+      font-size: 1.5em; /* remains unchanged */
+      font-weight: bold;
+      margin-top: 0.75em;
+      margin-bottom: 0.5em;
+    }
+    h2 {
+      font-size: 1.3em; /* updated: smaller than before */
+      font-weight: bold;
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
+    }
+    h3 {
+      font-size: 1.12em; /* updated: smaller than before */
+      font-weight: 600;
+      margin-top: 0.25em;
+      margin-bottom: 0.5em;
+    }
+    p {
+      color: rgb(var(--color-foreground-400));
+      margin-bottom: 0.5em;
+    }
+    li p {
+      margin-bottom: 0.1em;
+    }
+    p:has(+ ul),
+    p:has(+ ol) {
+      margin-bottom: 0.1em;
+    }
+    ul,
+    ol {
+      color: rgb(var(--color-foreground-400));
+      margin-bottom: 0.5em;
+    }
+
+    ul {
+      list-style-type: disc; /* equivalent to el-list-disc */
+      padding-left: 1.3em; /* equivalent to el-pl-5 (20px) */
+    }
+    ol {
+      list-style-type: decimal; /* equivalent to el-list-decimal */
+      padding-left: 1.3em; /* equivalent to el-pl-5 */
+    }
+    blockquote {
+      border-left-width: 4px; /* equivalent to el-border-l-4 */
+      border-left-color: rgb(
+        var(--color-foreground) / 0.3
+      ); /* equivalent to el-border-gray-300 */
+      padding-left: 1em; /* equivalent to el-pl-4 */
+      font-style: italic; /* equivalent to el-italic */
+    }
+    code {
+      background-color: rgb(
+        var(--color-foreground) / 0.1
+      ); /* equivalent to el-bg-gray-100 */
+      padding-left: 0.25em; /* equivalent to el-px-1 */
+      padding-right: 0.25em; /* equivalent to el-px-1 */
+      border-radius: 0.25em; /* equivalent to el-rounded */
+    }
+    pre code {
+      white-space: pre-wrap; /* equivalent to el-whitespace-pre-wrap */
+    }
+
+    p:empty::before {
+      content: "";
+      display: inline-block;
+    }
+  }
+}

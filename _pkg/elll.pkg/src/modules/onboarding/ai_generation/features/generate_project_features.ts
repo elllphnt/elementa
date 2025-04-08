@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { queryIntelligence } from "../utils";
+import { messageIntelligence } from "../utils";
 
 const instructions = ({ type }: { type: string }) => `
 You will be given the description of a ${type} project.
@@ -27,7 +27,7 @@ export async function generateProjectFeatures({
   description: string;
   client: AxiosInstance;
 }) {
-  const response = await queryIntelligence({
+  const response = await messageIntelligence({
     messages: [
       {
         role: "developer",

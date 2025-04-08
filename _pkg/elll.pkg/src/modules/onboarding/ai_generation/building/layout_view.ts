@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { queryIntelligence } from "../utils";
+import { messageIntelligence } from "../utils";
 
 export type SizeData = { value: number; unit: "px" | "%" | "vh" | "vw" };
 export type AreaCommon = {
@@ -130,7 +130,7 @@ export async function layoutView({
   view: ViewData;
   client: AxiosInstance;
 }): Promise<Layout> {
-  const response = await queryIntelligence({
+  const response = await messageIntelligence({
     messages: [
       {
         role: "developer",

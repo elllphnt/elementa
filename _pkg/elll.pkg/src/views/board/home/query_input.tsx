@@ -5,8 +5,9 @@ import cx from "classnames";
 import { useCallback, useEffect, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { useElll } from "~/src/hooks/elll/elll";
-import { buildPrompt } from "~/src/libs/ai_generation/prompt";
-import { getElllephantApiClient } from "~/src/libs/ai_generation/utils";
+import { buildPrompt } from "~/src/modules/onboarding/ai_generation/prompt";
+import { getElllephantApiClient } from "~/src/modules/onboarding/ai_generation/utils";
+import { generateProject } from "~/src/modules/onboarding/generate_project";
 
 type QueryData = {
   type: string;
@@ -27,6 +28,12 @@ const projectTypes: Array<{ type: string; description: string; name: string }> =
       description:
         "A set of primarily static web pages with informational content.",
     },
+    {
+      type: "library",
+      name: "Library",
+      description:
+        "A reusable piece of code that can be used in other projects.",
+    },
   ];
 
 export default function QueryInput() {
@@ -36,31 +43,32 @@ export default function QueryInput() {
   const [suggestions, setSuggestions] = useState<QueryData[]>([]);
   const [error, setError] = useState<string | undefined>();
 
-  const generateProject = useCallback(
+  const handleGenerateProject = useCallback(
     async (query: string) => {
       try {
         setError(undefined);
         setLoading(true);
         const client = getElllephantApiClient(elll);
-        const prompt = await buildPrompt({
+        const { type, title } = await buildPrompt({
           query,
           client,
           projectTypes,
         });
 
-        if (prompt.type === "invalid") {
+        if (type === "invalid") {
           setError(
             "Invalid query. Please provide a valid query to generate a software project.",
           );
-        } else if (prompt.type === "other") {
+        } else if (type === "other") {
           setError(
             `Sorry we only support the following project types for now: ${projectTypes.map((p) => p.name).join(", ")}.`,
           );
         } else {
-          console.log("Prompt", prompt);
           await generateProject({
             elll,
-            prompt,
+            type,
+            title,
+            prompt: query,
           });
         }
       } catch (error) {
@@ -76,19 +84,19 @@ export default function QueryInput() {
 
   const handleSubmit = useCallback(async () => {
     if (!query.trim()) return;
-    generateProject(query.trim());
+    handleGenerateProject(query.trim());
   }, [query]);
 
   useEffect(() => {
-    const initialQuery = elll.config<string>("initialQuery");
-    const getSuggestionQueries = elll.config<
+    const initialQuery = elll.property<string>("initialQuery");
+    const getSuggestionQueries = elll.property<
       (count: number) => Promise<QueryData[]>
     >("getSuggestionQueries");
 
     if (typeof initialQuery === "string") {
-      elll.setConfig("initialQuery", undefined);
+      elll.setProperty("initialQuery", undefined);
       setQuery(initialQuery);
-      generateProject(initialQuery);
+      handleGenerateProject(initialQuery);
     }
     if (getSuggestionQueries) {
       getSuggestionQueries(3).then(setSuggestions);

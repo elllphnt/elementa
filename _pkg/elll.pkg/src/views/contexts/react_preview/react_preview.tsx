@@ -39,12 +39,12 @@ class ReactViewerComponent extends Component {
 function useReactViewer() {
   const elll = useElll();
   return useMemo(() => {
-    let viewer = elll.config<ElementaViewerState>(
+    let viewer = elll.property<ElementaViewerState>(
       keys.configs.editors.react.viewer,
     );
     if (!viewer) {
       viewer = new ElementaViewerState({ shell: elll.shell });
-      elll.setConfig(keys.configs.editors.react.viewer, viewer);
+      elll.setProperty(keys.configs.editors.react.viewer, viewer);
     }
     return viewer;
   }, [elll]);
@@ -53,12 +53,12 @@ function useReactViewer() {
 function useViewerComponent(model: ReactModel) {
   const project = useElllProject();
   return useMemo(() => {
-    let component = project.elll.config<ReactViewerComponent>(
+    let component = project.elll.property<ReactViewerComponent>(
       keys.configs.editors.react.viewerComponent,
     );
     if (!component) {
       component = new ReactViewerComponent({ model, project });
-      project.elll.setConfig(
+      project.elll.setProperty(
         keys.configs.editors.react.viewerComponent,
         component,
       );

@@ -41,13 +41,13 @@ export type JsonSchema = {
 };
 
 export function getElllephantApiClient(elll: IElll) {
-  let client = elll.config<AxiosInstance>(configs.elllephant.client);
+  let client = elll.property<AxiosInstance>(configs.elllephant.client);
   if (client) {
     return client;
   }
 
-  const baseUrl = elll.config<string>(configs.elllephant.url);
-  const tokenManager = elll.config<TokenManager>(
+  const baseUrl = elll.property<string>(configs.elllephant.url);
+  const tokenManager = elll.property<TokenManager>(
     configs.elllephant.tokenManager,
   );
 
@@ -64,7 +64,7 @@ export function getElllephantApiClient(elll: IElll) {
     return config;
   });
 
-  elll.setConfig(configs.elllephant.client, client);
+  elll.setProperty(configs.elllephant.client, client);
   return client;
 }
 
@@ -74,7 +74,18 @@ export type ToolDef = {
   parameters: any;
   handler: (args: any) => Promise<any>;
 };
-export async function queryIntelligence({
+
+export const aiModels = {
+  gemini_2_5_pro: "gemini-2.5-pro-exp-03-25",
+  gemini_2_0_flash: "gemini-2.0-flash-001",
+  o3_mini: "o3-mini",
+  gpt_4o_mini: "gpt-4o-mini",
+  deepseek_r1: "deepseek-r1",
+  deepseek_v3: "deepseek-v3",
+} as const;
+export type AIModelCode = (typeof aiModels)[keyof typeof aiModels];
+
+export async function messageIntelligence({
   messages,
   client,
   model,
@@ -88,7 +99,7 @@ export async function queryIntelligence({
   tools?: ToolDef[];
 }) {
   const response = await client.post<AssistantMessageData>(
-    "/intelligence/completions",
+    "/intelligence/query",
     {
       messages,
       model,
@@ -121,7 +132,7 @@ export async function queryIntelligence({
       }
     }
 
-    return queryIntelligence({
+    return messageIntelligence({
       messages: newMessages,
       model,
       schema,
@@ -131,4 +142,29 @@ export async function queryIntelligence({
   } else {
     return response.data.content ?? "";
   }
+}
+export async function queryIntelligence({
+  instructions,
+  query,
+  model,
+  schema,
+  format,
+  client,
+}: {
+  instructions: string;
+  query: string;
+  model?: AIModelCode;
+  schema?: any;
+  format?: "json" | "text";
+  client: AxiosInstance;
+}) {
+  const response = await client.post<string>("/intelligence/query", {
+    instructions,
+    query,
+    model,
+    schema,
+    format,
+  });
+
+  return response.data;
 }

@@ -8,6 +8,16 @@ import { appBarViews } from "../views/app_bar/_";
 
 // activities
 
+const appActivity: Activity = {
+  id: "elll.activity.app",
+  type: "primary",
+  name: "Application",
+  icon: elllIcons20.workspace,
+  panel: {
+    viewId: activityPanelViews.app.id,
+  },
+  priority: 110,
+};
 const designActivity: Activity = {
   id: "elll.activity.design",
   type: "primary",
@@ -48,6 +58,7 @@ const resourcesActivity: Activity = {
   },
   priority: 70,
 };
+
 const versionControlActivity: Activity = {
   id: "elll.activity.version-control",
   type: "primary",
@@ -56,7 +67,7 @@ const versionControlActivity: Activity = {
   panel: {
     viewId: activityPanelViews.version.id,
   },
-  priority: 60,
+  priority: 50,
 };
 
 const projectActivity: Activity = {
@@ -145,6 +156,7 @@ export class RepositoryWorkspace extends Workspace {
       designActivity,
       styleActivity,
       resourcesActivity,
+      appActivity,
       versionControlActivity,
       projectActivity,
     );

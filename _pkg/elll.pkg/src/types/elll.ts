@@ -32,10 +32,13 @@ export interface IElll extends Disposable {
   readonly room$: Observable<Room | undefined>;
 
   config<T>(key: string): T | undefined;
-  config$<T>(key: string): Observable<T | undefined>;
+
+  property<T>(key: string): T | undefined;
+  property$<T>(key: string): Observable<T | undefined>;
 
   // readonly properties: Shell["properties"];
 
+  setProperty(key: string, value: any): void;
   setConfig(key: string, value: any): void;
   render(dom: HTMLElement): void;
 }

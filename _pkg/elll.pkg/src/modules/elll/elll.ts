@@ -34,7 +34,8 @@ export class Elll extends Disposable implements IElll {
   readonly editorManager: EditorManager;
   readonly copilot: Copilot;
 
-  private _configs$ = new BehaviorSubject<Record<string, any>>({});
+  private _configs: Record<string, any> = {};
+  private _properties$ = new BehaviorSubject<Record<string, any>>({});
   private _room$ = new BehaviorSubject<Room | undefined>(undefined);
 
   get repository() {
@@ -80,10 +81,13 @@ export class Elll extends Disposable implements IElll {
   }
 
   config(key: string) {
-    return this._configs$.value[key];
+    return this._configs[key];
   }
-  config$(key: string) {
-    return this._configs$.pipe(map((configs) => configs[key]));
+  property(key: string) {
+    return this._properties$.value[key];
+  }
+  property$(key: string) {
+    return this._properties$.pipe(map((properties) => properties[key]));
   }
 
   constructor({
@@ -109,10 +113,10 @@ export class Elll extends Disposable implements IElll {
     };
   }) {
     super();
-    this.setConfig(configs.elementa.editorUrl, services.elementa.editorUrl);
-    this.setConfig(configs.elementa.viewerUrl, services.elementa.viewerUrl);
-    this.setConfig(configs.elllephant.url, services.elllephant.url);
-    this.setConfig(
+    this.setProperty(configs.elementa.editorUrl, services.elementa.editorUrl);
+    this.setProperty(configs.elementa.viewerUrl, services.elementa.viewerUrl);
+    this.setProperty(configs.elllephant.url, services.elllephant.url);
+    this.setProperty(
       configs.elllephant.tokenManager,
       services.elllephant.tokenManager,
     );
@@ -176,10 +180,10 @@ export class Elll extends Disposable implements IElll {
   }
 
   setConfig(key: string, value: any) {
-    this._configs$.next({
-      ...this._configs$.value,
-      [key]: value,
-    });
+    this._configs[key] = value;
+  }
+  setProperty(key: string, value: any) {
+    this._properties$.next({ ...this._properties$.value, [key]: value });
   }
 
   init() {}

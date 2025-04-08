@@ -643,6 +643,16 @@ export const elllIcons16Data = {
     fill: true,
     data: "m6.65,12.35l-.71-.71,3.65-3.65-3.65-3.65.71-.71,4.35,4.35-4.35,4.35Z",
   },
+  trash: {
+    name: "elll.icons.16px.trash",
+    viewBox: "0 0 16 16",
+    height: 16,
+    width: 16,
+    fill: true,
+    fillRule: "evenodd",
+    clipRule: "evenodd",
+    data: "M6 3.5C6 3.22386 6.22386 3 6.5 3H9.5C9.77614 3 10 3.22386 10 3.5V4H6V3.5ZM5 4V3.5C5 2.67157 5.67157 2 6.5 2H9.5C10.3284 2 11 2.67157 11 3.5V4H14V5H13V5.5V12.5C13 13.3284 12.3284 14 11.5 14H4.5C3.67157 14 3 13.3284 3 12.5V5.5V5H2V4H5ZM4 5H12V5.5V12.5C12 12.7761 11.7761 13 11.5 13H4.5C4.22386 13 4 12.7761 4 12.5V5.5V5ZM7 6V6.5V11.5V12H6V11.5V6.5V6H7ZM10 6.5V6H9V6.5V11.5V12H10V11.5V6.5Z",
+  },
   top: {
     name: "elll.icons.16px.top",
     viewBox: "0 0 16 16",
@@ -2197,6 +2207,8 @@ export function IconElement({
       strokeLinejoin={data.strokeLinejoin}
       height={data.height}
       width={data.width}
+      clipRule={data.clipRule}
+      fillRule={data.fillRule}
       {...svgProps}
     >
       {content}

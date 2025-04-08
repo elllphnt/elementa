@@ -17,8 +17,8 @@ export function getMonaco() {
 export function useMonaco() {
   const elll = useElll();
   return useObservable(
-    elll.config$(keys.configs.editors.monaco.instance),
-    elll.config(keys.configs.editors.monaco.instance),
+    elll.property$(keys.configs.editors.monaco.instance),
+    elll.property(keys.configs.editors.monaco.instance),
   );
 }
 
@@ -69,7 +69,7 @@ export async function setupMonaco(elll: IElll) {
     setupTypescript({ monaco, elll });
     setupCommands({ monaco, elll });
 
-    elll.setConfig(keys.configs.editors.monaco.instance, monaco);
+    elll.setProperty(keys.configs.editors.monaco.instance, monaco);
   } catch (e) {
     console.error("Failed to setup Monaco");
     console.error(e);

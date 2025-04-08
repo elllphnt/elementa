@@ -8,10 +8,10 @@ import { CommitView } from "./commit/commit";
 import { DynamicControlMenuView } from "./dynamics/dynamics";
 import { Effect } from "./effect/effect";
 import { WorkspaceFileExplorerView } from "./file_exporer/file_explorer";
-import { ProjectSpec } from "./onboarding/build_your_project/build_your_project";
 import { NpmPackageBrowser } from "./packages/npm_package_browser";
 import { NpmPackageViewer } from "./packages/npm_package_viewer";
 import { PackageBrowser } from "./packages/package_browser";
+import { Brief } from "./project/brief/brief";
 import { DeleteProjectModal } from "./project/delete_project";
 import { ProjectInfoModal } from "./project/project";
 import { ProjectList } from "./project/project_list";
@@ -34,6 +34,10 @@ export const modalViews = {
   deleteProject: {
     id: "elll.views.modals.delete-project",
     render: DeleteProjectModal,
+  },
+  brief: {
+    id: "elll.views.modals.generate-project",
+    render: Brief,
   },
 
   // Workspace
@@ -74,13 +78,6 @@ export const modalViews = {
   npmPackageViewer: {
     id: "elll.views.modals.package-viewer.npm",
     render: NpmPackageViewer,
-  },
-
-  // Onboarding
-
-  spec: {
-    id: "elll.views.modals.generate-project",
-    render: ProjectSpec,
   },
 
   // Style System

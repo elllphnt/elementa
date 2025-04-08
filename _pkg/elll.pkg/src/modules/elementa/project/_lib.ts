@@ -15,7 +15,7 @@ export function getElllElementaProject({
   if (!project) {
     const infrastructure = getElllElementaInfrastrcture({ elll });
     project = new ElllElementaProject({ infrastructure, driveId });
-    infrastructure.elll.setConfig(configKey, project);
+    elll.setConfig(configKey, project);
   }
 
   return project;

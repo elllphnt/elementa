@@ -91,7 +91,7 @@ function RepositoryEntry({ repository }: { repository: Repository }) {
 
 function RecentProjectList() {
   const elll = useElll();
-  const history = elll.config<RepositoryHistory>(configs.elll.history);
+  const history = elll.property<RepositoryHistory>(configs.elll.history);
   const tenant = useObservable(elll.tenant$, elll.tenant);
   const repositoryQuery = tenant?.repositories({ autoFetch: true });
   const repositories = useObservable(history?.recent$(5), history?.recent(5));

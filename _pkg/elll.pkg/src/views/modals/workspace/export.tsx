@@ -11,8 +11,8 @@ export function InstallMenu({ repository }: { repository: Repository }) {
   const elll = useElll();
   const commandName =
     useObservable(
-      elll.config$(keys.configs.elll.commandName),
-      elll.config(keys.configs.elll.commandName),
+      elll.property$(keys.configs.elll.commandName),
+      elll.property(keys.configs.elll.commandName),
     ) || "elll";
   const command = `npx ${commandName}@latest add ${repository.id}`;
 

@@ -1,5 +1,6 @@
 import { View } from "@repo/shell";
 import { keys } from "~/src/libs/keys";
+import { AppView } from "./app/app";
 import { ChangesView } from "./changes/changes";
 import { CommitsView } from "./commits/commits";
 import { DangerView } from "./danger/danger";
@@ -23,6 +24,10 @@ export const drawerViews = {
   workspace: {
     id: "elll.views.drawers.workspace",
     render: DangerView,
+  },
+  app: {
+    id: "elll.views.drawers.app",
+    render: AppView,
   },
   project: {
     id: "elll.views.drawers.project",

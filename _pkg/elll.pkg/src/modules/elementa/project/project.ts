@@ -2,6 +2,8 @@ import { IFileDrive, Resource } from "@repo/backend";
 import { Project } from "@repo/elementa-models";
 import { IElll } from "~/src/types/elll";
 import { IElllElementaInfrastructure } from "../infrastructure/_types";
+import { ElllApp } from "./app/app";
+import { Brief } from "./brief/brief";
 import { ElllComponentManager } from "./components/component_manager";
 import { ElllLibraryManager } from "./libraries/library_manager";
 import { ElllPackageManager } from "./packages/package_manager";
@@ -15,6 +17,9 @@ export class ElllElementaProject extends Project {
   readonly libraryManager: ElllLibraryManager;
   readonly packageManager: ElllPackageManager;
   readonly componentManager: ElllComponentManager;
+  readonly app: ElllApp;
+
+  readonly brief: Brief;
 
   constructor({
     infrastructure,
@@ -45,6 +50,13 @@ export class ElllElementaProject extends Project {
     });
     this.componentManager = new ElllComponentManager({
       elll: this.elll,
+    });
+    this.app = new ElllApp({
+      project: this,
+    });
+    this.brief = new Brief({
+      elll: this.elll,
+      drive,
     });
   }
 }

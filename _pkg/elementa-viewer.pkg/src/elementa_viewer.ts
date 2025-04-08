@@ -13,15 +13,11 @@ import {
   Fragment,
   FragmentParam,
   FrameWidget,
+  Infrastructure,
   Prop,
   SlotFill,
 } from "@repo/elementa-models";
-import {
-  ElementaRenderer,
-  FragmentRenderable,
-  Router,
-  updateInstanceRenderableList,
-} from "@repo/elementa-renderer";
+import { ElementaRenderer } from "@repo/elementa-renderer";
 import { DomStyleSheetManager } from "@repo/elementa-renderer/dist/style/dom/manager";
 import { createElement } from "react";
 import { createRoot, Root } from "react-dom/client";
@@ -210,84 +206,34 @@ export class ElementaViewerFragmentEnvironment extends FragmentEnvironment {
 }
 
 export class ElementaViewer extends ElementaRenderer {
-  readonly router: Router;
+  readonly infrastructure: Infrastructure;
   private reactRoot: Root | undefined;
+  private _address$ = new BehaviorSubject<string | undefined>(undefined);
 
-  private _template$ = new BehaviorSubject<FragmentRenderable | undefined>(
-    undefined,
-  );
-  private _colorScheme$ = new BehaviorSubject<"default" | "dark">("default");
-
-  get template() {
-    return this._template$.value;
+  get address() {
+    return this._address$.value;
   }
-  get template$() {
-    return this._template$.asObservable();
-  }
-
-  get colorScheme() {
-    return this._colorScheme$.value;
-  }
-  get colorScheme$() {
-    return this._colorScheme$.asObservable();
-  }
-
-  get ready() {
-    return this.template?.ready ?? false;
-  }
-  get ready$() {
-    return this.template$.pipe(switchMap((page) => page?.ready$ ?? of(false)));
+  get address$() {
+    return this._address$.asObservable();
   }
 
   constructor({
     elementa,
+    infrastructure,
     stylesheetManager,
-    router,
   }: {
     elementa: Elementa;
+    infrastructure: Infrastructure;
     stylesheetManager: DomStyleSheetManager;
-    router: Router;
   }) {
     super({
       elementa,
       stylesheetManager,
     });
-
-    this.router = router;
-
-    const fragmentSubscription = this.elementa.component$
-      .pipe(map((component) => component?.template))
-      .subscribe((template) => {
-        const newInstances = updateInstanceList({
-          instances: this.template ? [this.template.instance] : [],
-          entities: (template ? [template] : []) as Fragment[],
-          createInstance: (entity) => {
-            const environment = new ElementaViewerFragmentEnvironment({
-              entity,
-              editor: this,
-            });
-            const instance = new FragmentInstance({
-              environment,
-              parent: null,
-            });
-            instance.addDisposer(() => {
-              environment.dispose();
-            });
-            return instance;
-          },
-        });
-
-        const newRenderables = updateInstanceRenderableList({
-          renderables: this.template ? [this.template] : [],
-          instances: newInstances,
-          renderer: this,
-        });
-
-        this._template$.next(newRenderables[0]);
-      });
+    this.infrastructure = infrastructure;
 
     this.addDisposer(() => {
-      fragmentSubscription.unsubscribe();
+      this._address$.complete();
     });
   }
 
@@ -306,8 +252,7 @@ export class ElementaViewer extends ElementaRenderer {
     this.reactRoot?.unmount();
     this.reactRoot = undefined;
   }
-
-  setColorScheme(colorScheme: "default" | "dark") {
-    this._colorScheme$.next(colorScheme);
+  setAddress(address: string | undefined) {
+    this._address$.next(address);
   }
 }

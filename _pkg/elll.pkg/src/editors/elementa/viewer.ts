@@ -1,4 +1,3 @@
-import { Router } from "@repo/elementa-renderer";
 import { ElementaViewer } from "@repo/elementa-viewer";
 import { Context, Editor, Shell } from "@repo/shell";
 import { combineLatestOrEmpty } from "@repo/utils";
@@ -29,12 +28,12 @@ export class ElementaViewerState extends ElementaBaseEditorState<ComponentEditor
   private _contexts$ = new BehaviorSubject<Context[]>([]);
 
   get elementaViewer() {
-    return this.elll.config<ElementaViewer>(
+    return this.elll.property<ElementaViewer>(
       keys.configs.editors.elementa.viewer,
     );
   }
   get elementaViewer$() {
-    return this.elll.config$<ElementaViewer>(
+    return this.elll.property$<ElementaViewer>(
       keys.configs.editors.elementa.viewer,
     );
   }
@@ -112,13 +111,13 @@ export class ElementaViewerState extends ElementaBaseEditorState<ComponentEditor
   }
 
   static getIframe(elll: IElll) {
-    let iframe = elll.config<HTMLIFrameElement | undefined>(
+    let iframe = elll.property<HTMLIFrameElement | undefined>(
       keys.configs.editors.elementa.viewerIframe,
     );
     if (iframe) {
       return iframe;
     } else {
-      const iframeUrl = elll.config<string>(keys.configs.elementa.viewerUrl);
+      const iframeUrl = elll.property<string>(keys.configs.elementa.viewerUrl);
 
       iframe = document.createElement("iframe");
       iframe.id = Math.random().toString(36).substring(7) + "";
@@ -134,15 +133,14 @@ export class ElementaViewerState extends ElementaBaseEditorState<ComponentEditor
         const window = iframe!.contentWindow;
         const viewer: ElementaViewer = await (window as any).init({
           stylesheetManager,
-          router: new Router(),
-          infrastructure: elll.config(
+          infrastructure: elll.property(
             keys.configs.editors.elementa.infrastructure,
           ),
         });
-        elll.setConfig(keys.configs.editors.elementa.viewer, viewer);
+        elll.setProperty(keys.configs.editors.elementa.viewer, viewer);
       };
 
-      elll.setConfig(keys.configs.editors.elementa.viewerIframe, iframe);
+      elll.setProperty(keys.configs.editors.elementa.viewerIframe, iframe);
       return iframe;
     }
   }

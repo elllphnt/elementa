@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { queryIntelligence } from "../utils";
+import { messageIntelligence } from "../utils";
 
 const instructions = ({
   type,
@@ -51,7 +51,7 @@ export async function organizeFeatures({
       domainId: string;
     }>;
   };
-  const response = await queryIntelligence({
+  const response = await messageIntelligence({
     messages: [
       {
         role: "developer",

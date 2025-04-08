@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { queryIntelligence } from "../utils";
+import { messageIntelligence } from "../utils";
 
 export type DisplayData = {
   name: string;
@@ -144,7 +144,7 @@ export async function planFeature({
   client: AxiosInstance;
   views: Omit<ViewData, "components">[];
 }): Promise<FeaturePlan> {
-  const response = await queryIntelligence({
+  const response = await messageIntelligence({
     messages: [
       {
         role: "developer",

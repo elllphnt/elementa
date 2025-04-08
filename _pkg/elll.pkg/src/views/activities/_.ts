@@ -6,6 +6,7 @@ import { StyleActivityView } from "./style_activity";
 import { VersionActivityView } from "./version_activity";
 import { WorkspaceActivityView } from "./workspace_activity";
 import { ResourcesActivityView } from "./resources_activity";
+import { AppActivityView } from "./app_activity";
 
 export const activityPanelViews = {
   workspace: {
@@ -35,5 +36,9 @@ export const activityPanelViews = {
   project: {
     id: "elll.view.activity-panel.project",
     render: ProjectActivityView,
+  },
+  app: {
+    id: "elll.view.activity-panel.app",
+    render: AppActivityView,
   },
 } satisfies Record<string, View>;

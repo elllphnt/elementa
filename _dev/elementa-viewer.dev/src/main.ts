@@ -4,7 +4,6 @@ import {
   ElementaViewer,
   Infrastructure,
   ModuleManager,
-  Router,
 } from "@repo/elementa-viewer";
 import "./main.css";
 import { registerServiceWorker } from "./service_worker";
@@ -18,21 +17,16 @@ if (!root) {
 
 async function init({
   stylesheetManager,
-  router,
   infrastructure,
 }: {
   stylesheetManager: DomStyleSheetManager;
-  router: Router;
   infrastructure: Infrastructure;
 }) {
   await registerServiceWorker();
-  const moduleManager = new ModuleManager(
-    {
-      infrastructure,
-      serviceWorkerBaseUrl: "https://sw",
-    },
-    (...args) => console.log(...args),
-  );
+  const moduleManager = new ModuleManager({
+    infrastructure,
+    serviceWorkerBaseUrl: "https://sw",
+  });
 
   const elementa = new Elementa({
     moduleManager,
@@ -41,7 +35,7 @@ async function init({
   const editor = new ElementaViewer({
     elementa,
     stylesheetManager,
-    router,
+    infrastructure,
   });
 
   editor.mount(root!);

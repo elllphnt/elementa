@@ -8,12 +8,12 @@ export function getElllElementaInfrastrcture({
 }: {
   elll: IElll;
 }): IElllElementaInfrastructure {
-  let infrastructure = elll.config<IElllElementaInfrastructure>(
+  let infrastructure = elll.property<IElllElementaInfrastructure>(
     keys.configs.editors.elementa.infrastructure,
   );
   if (!infrastructure) {
     infrastructure = new ElllElementaInfrastructure({ elll });
-    infrastructure.elll.setConfig(
+    infrastructure.elll.setProperty(
       keys.configs.editors.elementa.infrastructure,
       infrastructure,
     );

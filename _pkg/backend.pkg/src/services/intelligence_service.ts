@@ -1,11 +1,4 @@
-import {
-  concatLLMContentPart,
-  ErrorPayload,
-  IntelligenceEvent,
-  LLMContent,
-  MessageIntent,
-  MessagePayload,
-} from "@elllphnt/elll-aicp";
+import { ErrorPayload, IntelligenceEvent } from "@elllphnt/elll-aicp";
 import { TokenManager } from "@elllphnt/elll-client";
 import { elllEntities } from "@elllphnt/utils";
 import { intelligenceServiceClientFactory } from "../clients";

@@ -4,7 +4,12 @@ import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
 import { updateInstanceList } from "./_lib/instances";
 import { makeStateInstance } from "./_lib/make_state_instance";
 import { makeWidgetInstance } from "./_lib/make_widget_instance";
-import { StateInstance, WidgetInstance } from "./instances/_";
+import {
+  DefaultFragmentEnvironment,
+  FragmentEnvironment,
+  StateInstance,
+  WidgetInstance,
+} from "./instances/_";
 import { ModuleManager } from "./modules/module_manager";
 
 /**
@@ -16,6 +21,7 @@ export class Elementa extends Disposable {
   key = `${Elementa.keySeed}-${Elementa.key++}`;
 
   readonly moduleManager: ModuleManager;
+  readonly fragmentEnvironment: FragmentEnvironment;
 
   private _component$ = new BehaviorSubject<Component | undefined>(undefined);
   private _widgets$ = new BehaviorSubject<WidgetInstance[]>([]);
@@ -52,6 +58,7 @@ export class Elementa extends Disposable {
   constructor({ moduleManager }: { moduleManager: ModuleManager }) {
     super();
     this.moduleManager = moduleManager;
+    this.fragmentEnvironment = new DefaultFragmentEnvironment();
 
     const widgetsSubscription = this.component$
       .pipe(switchMap((component) => component?.widgets$ ?? of([])))

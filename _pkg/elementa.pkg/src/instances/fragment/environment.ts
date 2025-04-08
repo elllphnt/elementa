@@ -173,3 +173,69 @@ export class ChildFragmentEnvironment extends FragmentEnvironment {
     this.parent = parent;
   }
 }
+
+export class DefaultFragmentEnvironment extends FragmentEnvironment {
+  get id(): string {
+    return "default";
+  }
+  get componentStack(): string[] {
+    return [];
+  }
+  get componentStack$(): Observable<string[]> {
+    return of([]);
+  }
+  get paged(): boolean {
+    return false;
+  }
+  get paged$(): Observable<boolean> {
+    return of(false);
+  }
+  get styleModifiers(): StyleModifierData[] {
+    return [];
+  }
+  get styleModifiers$(): Observable<StyleModifierData[]> {
+    return of([]);
+  }
+  get states(): StateInstance[] {
+    return [];
+  }
+  get states$(): Observable<StateInstance[]> {
+    return of([]);
+  }
+  get props(): Prop[] {
+    return [];
+  }
+  get props$(): Observable<Prop[]> {
+    return of([]);
+  }
+  get slots(): SlotInstance[] {
+    return [];
+  }
+  get slots$(): Observable<SlotInstance[]> {
+    return of([]);
+  }
+  slotFill(id: string): SlotFill | undefined {
+    return undefined;
+  }
+  slotFill$(id: string): Observable<SlotFill | undefined> {
+    return of(undefined);
+  }
+  get fragments(): FragmentInstance[] {
+    return [];
+  }
+  get fragments$(): Observable<FragmentInstance[]> {
+    return of([]);
+  }
+  propValue(prop: Prop): any {
+    return null;
+  }
+  propValue$(prop: Prop): Observable<any> {
+    return of(null);
+  }
+  paramValue(param: FragmentParam): any {
+    return null;
+  }
+  paramValue$(param: FragmentParam): Observable<any> {
+    return of(null);
+  }
+}

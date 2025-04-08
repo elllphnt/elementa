@@ -218,12 +218,12 @@ export class ElementaEditorState extends ElementaBaseEditorState<ComponentEditor
   }
 
   get manager() {
-    return this.elll.config<ElementaStageManager>(
+    return this.elll.property<ElementaStageManager>(
       keys.configs.editors.elementa.stageManager,
     );
   }
   get manager$() {
-    return this.elll.config$<ElementaStageManager>(
+    return this.elll.property$<ElementaStageManager>(
       keys.configs.editors.elementa.stageManager,
     );
   }
@@ -357,13 +357,13 @@ export class ElementaEditorState extends ElementaBaseEditorState<ComponentEditor
   }
 
   static getIframe(elll: IElll) {
-    let iframe = elll.config<HTMLIFrameElement | undefined>(
+    let iframe = elll.property<HTMLIFrameElement | undefined>(
       keys.configs.editors.elementa.editorIframe,
     );
     if (iframe) {
       return iframe;
     } else {
-      const iframeUrl = elll.config<string>(keys.configs.elementa.editorUrl);
+      const iframeUrl = elll.property<string>(keys.configs.elementa.editorUrl);
 
       iframe = document.createElement("iframe");
       iframe.id = Math.random().toString(36).substring(7) + "";
@@ -380,24 +380,24 @@ export class ElementaEditorState extends ElementaBaseEditorState<ComponentEditor
         const manager: ElementaStageManager = await (window as any).init({
           stylesheetManager,
           theme: stagerTheme,
-          infrastructure: elll.config(
+          infrastructure: elll.property(
             keys.configs.editors.elementa.infrastructure,
           ),
         });
-        elll.setConfig(keys.configs.editors.elementa.stageManager, manager);
+        elll.setProperty(keys.configs.editors.elementa.stageManager, manager);
       };
 
-      elll.setConfig(keys.configs.editors.elementa.editorIframe, iframe);
+      elll.setProperty(keys.configs.editors.elementa.editorIframe, iframe);
       return iframe;
     }
   }
 
   getPreviewEditor() {
     const key = "elll.editor.component.preview";
-    let editor = this.elll.config(key);
+    let editor = this.elll.property(key);
     if (!editor) {
       editor = new ElementaViewerState({ shell: this.shell });
-      this.elll.setConfig(key, editor);
+      this.elll.setProperty(key, editor);
     }
     return editor as ElementaViewerState;
   }

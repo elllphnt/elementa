@@ -35,7 +35,7 @@ export async function publish({
   } else {
     // otherwise, build and publish the new version
 
-    await build({ outputPath: `dist/index.js` });
+    await build({ outputPath: `build/index.js` });
     await publishArtifact({
       artifact,
       version,
@@ -43,7 +43,7 @@ export async function publish({
       files: [
         {
           role: "main",
-          localPath: "dist/index.js",
+          localPath: "build/index.js",
           destinationPath: "index.js",
         },
       ],

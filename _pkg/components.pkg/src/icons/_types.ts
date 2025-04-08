@@ -8,6 +8,8 @@ export type IconData = {
   strokeWidth?: number;
   strokeLinecap?: "round" | "square" | "butt";
   strokeLinejoin?: "round" | "bevel" | "miter";
+  fillRule?: "evenodd" | "nonzero" | "inherit";
+  clipRule?: string | number;
   data?: string;
   content?: JSX.Element;
 };

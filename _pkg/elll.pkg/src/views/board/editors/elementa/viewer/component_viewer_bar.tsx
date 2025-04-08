@@ -2,6 +2,7 @@ import { elllIcons16, Icon } from "@repo/components";
 // import { ElementaViewer } from "@repo/elementa";
 import { useObservable } from "@repo/utils";
 import cx from "classnames";
+import { useEffect, useState } from "react";
 import { ElementaViewerState } from "~/src/editors/elementa/viewer";
 
 function IconButton({
@@ -32,12 +33,44 @@ function IconButton({
   );
 }
 
+function AddressInput({ editor }: { editor: ElementaViewerState }) {
+  const viewer = useObservable(editor.elementaViewer$, editor.elementaViewer);
+  const address = useObservable(viewer?.address$, viewer?.address);
+  const [value, setValue] = useState(address);
+
+  useEffect(() => {
+    if (address) {
+      setValue(address);
+    }
+  }, [address]);
+
+  return (
+    <div className="el-flex el-items-center el-gap-1 el-h-6 el-w-full el-border el-rounded-full">
+      <input
+        className="el-px-3"
+        style={{
+          height: "100%",
+          width: "100%",
+        }}
+        value={value}
+        placeholder="Enter address"
+        onChange={(e) => {
+          setValue(e.currentTarget.value);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            viewer?.setAddress(value);
+          }
+        }}
+      />
+    </div>
+  );
+}
+
 function ComponentViewerBarContent({
   editor,
-  // elementaEditor,
 }: {
   editor: ElementaViewerState;
-  // elementaEditor: ElementaViewer;
 }): JSX.Element {
   return (
     <div
@@ -51,7 +84,9 @@ function ComponentViewerBarContent({
         pointerEvents: "auto",
       }}
     >
-      <div className="el-flex el-gap-1"></div>
+      <div className="el-grow">
+        <AddressInput editor={editor} />
+      </div>
 
       <div className="el-flex el-gap-1">
         <IconButton
@@ -78,11 +113,6 @@ export function ComponentViewerBar({
   if (!elementaEditor) {
     return <></>;
   } else {
-    return (
-      <ComponentViewerBarContent
-        editor={editor}
-        // elementaEditor={elementaEditor}
-      />
-    );
+    return <ComponentViewerBarContent editor={editor} />;
   }
 }
