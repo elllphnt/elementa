@@ -8,12 +8,8 @@ import {
 } from "@repo/elementa-models";
 import { Disposable } from "@repo/utils";
 import { BehaviorSubject, map, Observable } from "rxjs";
-import {
-  FragmentEnvironment,
-  FragmentInstance,
-  SlotInstance,
-  StateInstance,
-} from "../_";
+import { FragmentInstance, SlotInstance, StateInstance } from "../_";
+import { FragmentEnvironment } from "../fragment/environment";
 
 export abstract class ComponentPropResolver {
   readonly environment: FragmentEnvironment;
@@ -121,7 +117,6 @@ export class ComponentInstanceEnvironment extends FragmentEnvironment {
     propResolver: ComponentPropResolver;
   }) {
     super({
-      entity: component.template,
       elementa: propResolver.environment.elementa,
     });
 
@@ -153,6 +148,7 @@ export class ComponentInstance extends Disposable {
 
     this.template = new FragmentInstance({
       environment: this.environment,
+      entity: component.template,
       parent: null,
     });
   }

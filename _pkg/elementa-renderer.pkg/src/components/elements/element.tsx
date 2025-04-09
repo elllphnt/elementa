@@ -10,7 +10,6 @@ import { useNamespace } from "~/src/hooks/namespace";
 import {
   ComponentElementRenderable,
   MediaElementRenderable,
-  PageElementRenderable,
   PrimitiveElementRenderable,
 } from "~/src/renderables/instances/_";
 import { ContainerElementRenderable } from "../../renderables/instances/element/container";
@@ -22,7 +21,6 @@ import { ElementErrorBoundary } from "./_/_error_boundary";
 import ComponentElementComponent from "./components/component_element";
 import { ContainerElementComponent } from "./container_element";
 import { MediaElementComponent } from "./media/media_element";
-import { PageElementComponent } from "./page_element";
 import PrimitiveElementComponent from "./primitive_element";
 import { SlotElementComponent } from "./slot_element";
 import TextElementComponent from "./text/text_element";
@@ -69,10 +67,6 @@ function RawElement({
     [entityTypes.elements.vector]: () => {
       const vectorElement = element as VectorElementRenderable;
       return <VectorElementComponent element={vectorElement} onRef={onRef} />;
-    },
-    [entityTypes.elements.page]: () => {
-      const pageElement = element as PageElementRenderable;
-      return <PageElementComponent element={pageElement} onRef={onRef} />;
     },
   });
 }

@@ -8,9 +8,9 @@ export function ElementaViewerComponent({
 }: {
   viewer: ElementaViewer;
 }): JSX.Element {
-  const address = useObservable(viewer.address$, viewer.address);
+  const url = useObservable(viewer.history.url$, viewer.history.url);
 
-  if (!address) {
+  if (!url) {
     return (
       <div
         style={{
@@ -30,14 +30,13 @@ export function ElementaViewerComponent({
     );
   }
 
-  if (address?.startsWith("elll:")) {
-    return <ComponentContent viewer={viewer} componentUrl={address} />;
-  } else if (address?.startsWith("app:")) {
-    const path = address.replace("app:", "");
-    return <AppContent viewer={viewer} path={path} />;
+  if (url?.startsWith("elll:")) {
+    return <ComponentContent viewer={viewer} componentUrl={url} />;
+  } else if (url?.startsWith("app:")) {
+    return <AppContent viewer={viewer} />;
   }
 
-  return <>{address}</>;
+  return <>{url}</>;
 }
 
 export default ElementaViewerComponent;

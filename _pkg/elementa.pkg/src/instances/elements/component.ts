@@ -129,14 +129,8 @@ export class ComponentElementFragmentEnvironment extends FragmentEnvironment {
     return of(undefined);
   }
 
-  constructor({
-    entity,
-    element,
-  }: {
-    entity: Fragment;
-    element: ComponentElementInstance;
-  }) {
-    super({ entity, elementa: element.elementa });
+  constructor({ element }: { element: ComponentElementInstance }) {
+    super({ elementa: element.elementa });
     this.element = element;
 
     const statesSubscription = this.element.entity.localComponent$
@@ -177,6 +171,7 @@ export class ComponentElementFragmentEnvironment extends FragmentEnvironment {
             });
             const instance = new FragmentInstance({
               environment,
+              entity,
               parent: this.element,
             });
             instance.addDisposer(() => {
@@ -271,11 +266,11 @@ export class ComponentElementInstance<
           instances: this.fragment ? [this.fragment] : [],
           createInstance: (entity) => {
             const environment = new ComponentElementFragmentEnvironment({
-              entity,
               element: this,
             });
             const instance = new FragmentInstance({
               environment,
+              entity,
               parent: this,
             });
             instance.addDisposer(() => {

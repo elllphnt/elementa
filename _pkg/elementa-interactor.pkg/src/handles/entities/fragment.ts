@@ -8,7 +8,6 @@ import { IFragmentHandle } from "~/src/_types/handles/entity/fragment";
 import { IElementaInteractor } from "~/src/_types/interactor";
 import { makeElementHandle, updateEntityHandleList } from "../../_lib/handles";
 import { handleTypes } from "../_libs/types";
-import { PageElementHandle } from "./elements/_";
 import { EntityHandle } from "./entity";
 import { SlotHandle } from "./slot";
 
@@ -38,23 +37,6 @@ export class FragmentHandle
   }
   get children$(): Observable<IElementHandle[]> {
     return this.content$;
-  }
-
-  get page() {
-    const pageCandidate = this.content[0];
-    return pageCandidate instanceof PageElementHandle
-      ? pageCandidate
-      : undefined;
-  }
-  get page$() {
-    return this.content$.pipe(
-      map((content) => {
-        const pageCandidate = content[0];
-        return pageCandidate instanceof PageElementHandle
-          ? pageCandidate
-          : undefined;
-      }),
-    );
   }
 
   get selected(): boolean {

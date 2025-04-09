@@ -9,11 +9,7 @@ import {
   StyleData,
   StylePropertyName,
 } from "@elllphnt/elll-element";
-import {
-  PageElement,
-  Stylesheet,
-  StylesheetCssStyleSheet,
-} from "@repo/elementa-models";
+import { Stylesheet, StylesheetCssStyleSheet } from "@repo/elementa-models";
 import {
   InstanceRenderable,
   RuleDomStyleSheetAdaptor,
@@ -717,12 +713,6 @@ export abstract class StylableHandle<
           if (candidatePosition && candidatePosition !== "static") {
             break;
           }
-        } else if (position === "fixed") {
-          if (candidate instanceof PageElement) {
-            break;
-          }
-        } else {
-          break;
         }
       }
 

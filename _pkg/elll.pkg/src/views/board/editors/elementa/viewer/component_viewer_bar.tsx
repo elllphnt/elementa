@@ -35,14 +35,14 @@ function IconButton({
 
 function AddressInput({ editor }: { editor: ElementaViewerState }) {
   const viewer = useObservable(editor.elementaViewer$, editor.elementaViewer);
-  const address = useObservable(viewer?.address$, viewer?.address);
-  const [value, setValue] = useState(address);
+  const url = useObservable(viewer?.history.url$, viewer?.history.url);
+  const [value, setValue] = useState(url || "");
 
   useEffect(() => {
-    if (address) {
-      setValue(address);
+    if (url) {
+      setValue(url);
     }
-  }, [address]);
+  }, [url]);
 
   return (
     <div className="el-flex el-items-center el-gap-1 el-h-6 el-w-full el-border el-rounded-full">
@@ -55,11 +55,11 @@ function AddressInput({ editor }: { editor: ElementaViewerState }) {
         value={value}
         placeholder="Enter address"
         onChange={(e) => {
-          setValue(e.currentTarget.value);
+          setValue(e.target.value);
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            viewer?.setAddress(value);
+            viewer?.history.push(value);
           }
         }}
       />

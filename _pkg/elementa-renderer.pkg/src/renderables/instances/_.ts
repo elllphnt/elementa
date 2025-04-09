@@ -1,4 +1,6 @@
 export * from "../renderable";
+export * from "./app/_";
+export * from "./component/_";
 export * from "./element/_";
 export * from "./fragment";
 export * from "./instance";

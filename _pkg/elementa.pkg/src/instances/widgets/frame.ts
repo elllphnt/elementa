@@ -113,7 +113,6 @@ export class FrameFragmentEnvironment extends FragmentEnvironment {
     frame: FrameWidgetInstance;
   }) {
     super({
-      entity,
       elementa: frame.elementa,
     });
     this.frame = frame;
@@ -130,6 +129,7 @@ export class FrameFragmentEnvironment extends FragmentEnvironment {
             });
             const instance = new FragmentInstance({
               environment,
+              entity: fragment,
               parent: this.frame,
             });
 
@@ -191,6 +191,7 @@ export class FrameWidgetInstance extends WidgetInstance<FrameWidget> {
             });
             const instance = new FragmentInstance({
               environment,
+              entity: fragment,
               parent: this,
             });
             instance.addDisposer(() => {

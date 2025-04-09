@@ -1,7 +1,7 @@
 import { StyleModifierData } from "@elllphnt/elll-element";
 import { Fragment, FragmentParam, Prop, SlotFill } from "@repo/elementa-models";
-import { combineLatestOrEmpty, Disposable } from "@repo/utils";
-import { BehaviorSubject, Observable, of, switchMap } from "rxjs";
+import { Disposable } from "@repo/utils";
+import { BehaviorSubject, Observable, of } from "rxjs";
 import { Namespace } from "~/src/namespace/_";
 import { Elementa } from "../../elementa";
 import { SlotInstance } from "../_";
@@ -9,7 +9,6 @@ import { StateInstance } from "../states/state";
 import { FragmentInstance } from "./fragment";
 
 export abstract class FragmentEnvironment extends Disposable {
-  readonly entity: Fragment;
   readonly elementa: Elementa;
   private _namespace$ = new BehaviorSubject<Namespace>(new Namespace());
 
@@ -24,24 +23,6 @@ export abstract class FragmentEnvironment extends Disposable {
   abstract get styleModifiers(): StyleModifierData[];
   abstract get styleModifiers$(): Observable<StyleModifierData[]>;
 
-  get selector(): string {
-    return this.styleModifiers
-      .map((m) => this.entity.project.styleManager.modifierToString(m))
-      .join(":");
-  }
-  get selector$(): Observable<string> {
-    return this.styleModifiers$.pipe(
-      switchMap((modifiers) =>
-        combineLatestOrEmpty(
-          modifiers.map((m) =>
-            this.entity.project.styleManager.modifierToString$(m),
-          ),
-        ),
-      ),
-      switchMap((modifiers) => of(modifiers.join(":"))),
-    );
-  }
-
   abstract get states(): StateInstance[];
   abstract get states$(): Observable<StateInstance[]>;
 
@@ -53,13 +34,6 @@ export abstract class FragmentEnvironment extends Disposable {
 
   abstract slotFill(id: string): SlotFill | undefined;
   abstract slotFill$(id: string): Observable<SlotFill | undefined>;
-
-  get params(): FragmentParam[] {
-    return this.entity.params;
-  }
-  get params$(): Observable<FragmentParam[]> {
-    return this.entity.params$;
-  }
 
   abstract get fragments(): FragmentInstance[];
   abstract get fragments$(): Observable<FragmentInstance[]>;
@@ -77,9 +51,8 @@ export abstract class FragmentEnvironment extends Disposable {
     return this._namespace$.value;
   }
 
-  constructor({ entity, elementa }: { entity: Fragment; elementa: Elementa }) {
+  constructor({ elementa }: { elementa: Elementa }) {
     super();
-    this.entity = entity;
     this.elementa = elementa;
     this.addDisposer(() => {
       this._namespace$.complete();
@@ -95,7 +68,7 @@ export class ChildFragmentEnvironment extends FragmentEnvironment {
   parent: FragmentEnvironment;
 
   get id(): string {
-    return `${this.parent.id}-child-${this.entity.id}`;
+    return `${this.parent.id}-child`;
   }
   get componentStack(): string[] {
     return this.parent.componentStack;
@@ -169,7 +142,7 @@ export class ChildFragmentEnvironment extends FragmentEnvironment {
     entity: Fragment;
     parent: FragmentEnvironment;
   }) {
-    super({ entity, elementa: parent.elementa });
+    super({ elementa: parent.elementa });
     this.parent = parent;
   }
 }

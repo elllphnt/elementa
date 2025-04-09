@@ -3,7 +3,6 @@ import { PropsWithChildren, memo, useEffect } from "react";
 import { FragmentRenderable } from "~/src/renderables/instances/fragment";
 import { useNamespace } from "../../hooks/namespace";
 import { FragmentFragmentsNamespaceProvider } from "./fragments";
-import { ParamsNamespaceProvider } from "./params";
 import { PropsNamespaceProvider } from "./props";
 import { StatesNamespaceProvider } from "./states/states";
 
@@ -40,14 +39,12 @@ export const FragmentNamespaceProvider = memo(function ({
         environment={environment}
         isolated={root}
       >
-        <ParamsNamespaceProvider environment={environment}>
-          <StatesNamespaceProvider environment={environment}>
-            <FragmentFragmentsNamespaceProvider fragment={fragment}>
-              <EnvironmentNamespaceConsumer fragment={environment} />
-              {children}
-            </FragmentFragmentsNamespaceProvider>
-          </StatesNamespaceProvider>
-        </ParamsNamespaceProvider>
+        <StatesNamespaceProvider environment={environment}>
+          <FragmentFragmentsNamespaceProvider fragment={fragment}>
+            <EnvironmentNamespaceConsumer fragment={environment} />
+            {children}
+          </FragmentFragmentsNamespaceProvider>
+        </StatesNamespaceProvider>
       </PropsNamespaceProvider>
     );
   } else {

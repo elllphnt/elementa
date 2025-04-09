@@ -4,20 +4,13 @@ import {
   FragmentParamData,
 } from "@elllphnt/elll-element";
 import { combineLatestOrEmpty, Disposable } from "@repo/utils";
-import {
-  BehaviorSubject,
-  distinctUntilChanged,
-  map,
-  Observable,
-  of,
-  switchMap,
-} from "rxjs";
+import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
 import { Datafiable, restoreReactiveArray } from "~/src/_lib/restore";
 import { CssStyleSheet } from "~/src/css/_";
 import { Component } from "../component";
 import { FrameWidget } from "./_";
 import { fragmentVariants } from "./_libs/fragment";
-import { Element, PageElement } from "./elements/_";
+import { Element } from "./elements/_";
 import { ElementContainer } from "./elements/_common/container";
 import { Entity } from "./entity";
 
@@ -109,7 +102,6 @@ export class FragmentParam
 export class Fragment extends Entity<FragmentData> implements ElementContainer {
   readonly variant: string;
 
-  private _page$ = new BehaviorSubject<PageElement | undefined>(undefined);
   private _content$ = new BehaviorSubject<Element[]>([]);
   private _params$ = new BehaviorSubject<FragmentParam[]>([]);
 
@@ -120,41 +112,8 @@ export class Fragment extends Entity<FragmentData> implements ElementContainer {
     return this._params$.asObservable();
   }
 
-  page<C extends true | undefined>(
-    create?: C,
-  ): C extends true ? PageElement : PageElement | undefined {
-    let page = this._page$.value;
-    if (!page && create) {
-      page = new PageElement({ component: this.component });
-      this.setPage(page);
-    }
-    return page as any;
-  }
-  page$<C extends true | undefined>(
-    create?: C,
-  ): C extends true
-    ? Observable<PageElement>
-    : Observable<PageElement | undefined> {
-    return this._page$.asObservable().pipe(
-      map((page) => {
-        let _page = page;
-        if (!_page && create) {
-          _page = new PageElement({ component: this.component });
-          this.setPage(_page);
-        }
-        return _page;
-      }),
-      distinctUntilChanged(),
-    ) as any;
-  }
-
   get allCssStylesheets(): CssStyleSheet[] {
     const stylesheets = [...this.content.flatMap((c) => c.allCssStylesheets)];
-    const page = this.page();
-    if (page) {
-      stylesheets.push(...page.allCssStylesheets);
-    }
-
     return stylesheets;
   }
   get allCssStylesheets$(): Observable<CssStyleSheet[]> {
@@ -164,15 +123,8 @@ export class Fragment extends Entity<FragmentData> implements ElementContainer {
           combineLatestOrEmpty(content.map((c) => c.allCssStylesheets$)),
         ),
       ),
-      this.page$(undefined).pipe(
-        switchMap((page) => (page ? page.allCssStylesheets$ : of([]))),
-      ),
-    ]).pipe(
-      map(([contentStylesheets, pageStylesheets]) => [
-        ...contentStylesheets.flat(),
-        ...pageStylesheets,
-      ]),
-    );
+      of([]),
+    ]).pipe(map(([contentStylesheets]) => [...contentStylesheets.flat()]));
   }
 
   get content() {
@@ -185,7 +137,6 @@ export class Fragment extends Entity<FragmentData> implements ElementContainer {
   get data(): FragmentData {
     return {
       ...super._data,
-      page: this.page()?.data,
       content: this.content.map((c) => c.data),
       params: this.params.map((p) => p.data),
     };
@@ -193,9 +144,6 @@ export class Fragment extends Entity<FragmentData> implements ElementContainer {
   get data$(): Observable<FragmentData> {
     return combineLatestOrEmpty([
       super._data$,
-      this.page$(undefined).pipe(
-        switchMap((p) => (p ? p.data$ : of(undefined))),
-      ),
       this.content$.pipe(
         switchMap((children) =>
           combineLatestOrEmpty(children.map((c) => c.data$)),
@@ -205,9 +153,8 @@ export class Fragment extends Entity<FragmentData> implements ElementContainer {
         switchMap((params) => combineLatestOrEmpty(params.map((p) => p.data$))),
       ),
     ]).pipe(
-      map(([data, page, content, params]) => ({
+      map(([data, content, params]) => ({
         ...data,
-        page,
         content,
         params,
       })),
@@ -236,9 +183,6 @@ export class Fragment extends Entity<FragmentData> implements ElementContainer {
     ElementContainer.watchContent(this);
   }
 
-  setPage(page: PageElement | undefined) {
-    this._page$.next(page);
-  }
   setContent(content: Element[]) {
     this._content$.next(content);
   }
@@ -286,12 +230,6 @@ export class Fragment extends Entity<FragmentData> implements ElementContainer {
   }
 
   restore(data: FragmentData) {
-    Entity.restoreReactiveObject({
-      datafiable$: this._page$,
-      data: data.page,
-      component: this.component,
-    });
-
     Entity.restoreReactiveArray({
       datafiables$: this._content$,
       data: data.content,

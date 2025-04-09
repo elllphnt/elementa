@@ -6,7 +6,6 @@ import {
   FrameWidgetInstance,
   Instance,
   MediaElementInstance,
-  PageElementInstance,
   PrimitiveElementInstance,
   SlotElementInstance,
   TextElementInstance,
@@ -20,7 +19,6 @@ import {
   MediaElementRenderable,
 } from "../renderables/instances/_";
 import { ContainerElementRenderable } from "../renderables/instances/element/container";
-import { PageElementRenderable } from "../renderables/instances/element/page";
 import { PrimitiveElementRenderable } from "../renderables/instances/element/primitive";
 import { SlotElementRenderable } from "../renderables/instances/element/slot";
 import { TextElementRenderable } from "../renderables/instances/element/text";
@@ -55,12 +53,6 @@ export function makeInstanceRenderable<I extends Instance>({
       return new PrimitiveElementRenderable({
         renderer,
         instance: instance as unknown as PrimitiveElementInstance,
-      }) as any;
-    },
-    [entityTypes.elements.page]: () => {
-      return new PageElementRenderable({
-        renderer,
-        instance: instance as unknown as PageElementInstance,
       }) as any;
     },
     [entityTypes.elements.container]: () => {

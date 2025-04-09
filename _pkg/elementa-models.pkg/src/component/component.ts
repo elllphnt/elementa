@@ -26,7 +26,6 @@ import {
   VectorElement,
 } from "./entities/_";
 import { Element } from "./entities/elements/element";
-import { PageElement } from "./entities/elements/page";
 import { PrimitiveElement } from "./entities/elements/primitive";
 import { Entity } from "./entities/entity";
 import { Fragment } from "./entities/fragment";
@@ -327,8 +326,6 @@ export abstract class Component extends Disposable {
   }
   createElement({ id, type }: { id?: string; type: string }) {
     return switchEntityType<Element>(type, {
-      [entityTypes.elements.page]: () =>
-        new PageElement({ id, component: this }),
       [entityTypes.elements.container]: () =>
         new ContainerElement({ id, component: this }),
       [entityTypes.elements.slot]: () =>

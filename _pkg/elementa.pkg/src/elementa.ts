@@ -58,7 +58,9 @@ export class Elementa extends Disposable {
   constructor({ moduleManager }: { moduleManager: ModuleManager }) {
     super();
     this.moduleManager = moduleManager;
-    this.fragmentEnvironment = new DefaultFragmentEnvironment();
+    this.fragmentEnvironment = new DefaultFragmentEnvironment({
+      elementa: this,
+    });
 
     const widgetsSubscription = this.component$
       .pipe(switchMap((component) => component?.widgets$ ?? of([])))

@@ -59,12 +59,7 @@ export class FrameWidgetHandle
   }
 
   get height() {
-    if (
-      this.entity.viewport?.overflow === "scroll-y" ||
-      this.entity.viewport?.overflow === "scroll-area"
-    ) {
-      this.fragment?.page?.style.resolvedPropertyValue("height");
-    } else if (this.entity.viewport?.overflow === "scroll-x") {
+    if (this.entity.viewport?.overflow === "scroll-x") {
       return this.entity.viewport.height;
     } else {
       return this.entity.height;
@@ -74,20 +69,7 @@ export class FrameWidgetHandle
     return this.entity.viewport$.pipe(
       switchMap((viewport) => viewport?.overflow$ ?? of(undefined)),
       switchMap((overflow) => {
-        if (overflow === "scroll-y" || overflow === "scroll-area") {
-          return this.fragment$.pipe(
-            switchMap(
-              (fragment) =>
-                fragment?.page$.pipe(
-                  switchMap(
-                    (page) =>
-                      page?.style.resolvedPropertyValue$("height") ??
-                      of(undefined),
-                  ),
-                ) ?? of(undefined),
-            ),
-          );
-        } else if (overflow === "scroll-x") {
+        if (overflow === "scroll-x") {
           return this.entity.viewport?.height$ ?? of(undefined);
         } else {
           return this.entity.height$;
@@ -96,12 +78,7 @@ export class FrameWidgetHandle
     );
   }
   get width() {
-    if (
-      this.entity.viewport?.overflow === "scroll-x" ||
-      this.entity.viewport?.overflow === "scroll-area"
-    ) {
-      this.fragment?.page?.style.resolvedPropertyValue("width");
-    } else if (this.entity.viewport?.overflow === "scroll-y") {
+    if (this.entity.viewport?.overflow === "scroll-y") {
       return this.entity.viewport.width;
     } else {
       return this.entity.width;
@@ -111,20 +88,7 @@ export class FrameWidgetHandle
     return this.entity.viewport$.pipe(
       switchMap((viewport) => viewport?.overflow$ ?? of(undefined)),
       switchMap((overflow) => {
-        if (overflow === "scroll-x" || overflow === "scroll-area") {
-          return this.fragment$.pipe(
-            switchMap(
-              (fragment) =>
-                fragment?.page$.pipe(
-                  switchMap(
-                    (page) =>
-                      page?.style.resolvedPropertyValue$("width") ??
-                      of(undefined),
-                  ),
-                ) ?? of(undefined),
-            ),
-          );
-        } else if (overflow === "scroll-y") {
+        if (overflow === "scroll-y") {
           return this.entity.viewport?.width$ ?? of(undefined);
         } else {
           return this.entity.width$;
@@ -208,15 +172,7 @@ export class FrameWidgetHandle
   ): void {
     if (x) {
       this.entity.setX(rect.x);
-      if (
-        this.entity.overflow === "scroll-x" ||
-        this.entity.overflow === "scroll-area"
-      ) {
-        this.fragment?.page?.style?.setProperty("width", {
-          value: rect.width,
-          unit: "px",
-        });
-      } else if (this.entity.overflow === "scroll-y") {
+      if (this.entity.overflow === "scroll-y") {
         this.entity.setViewportWidth(rect.width);
       } else {
         this.entity.setWidth(rect.width);
@@ -224,15 +180,7 @@ export class FrameWidgetHandle
     }
     if (y) {
       this.entity.setY(rect.y);
-      if (
-        this.entity.overflow === "scroll-y" ||
-        this.entity.overflow === "scroll-area"
-      ) {
-        this.fragment?.page?.style?.setProperty("height", {
-          value: rect.height,
-          unit: "px",
-        });
-      } else if (this.entity.overflow === "scroll-x") {
+      if (this.entity.overflow === "scroll-x") {
         this.entity.setViewportHeight(rect.height);
       } else {
         this.entity.setHeight(rect.height);
@@ -246,11 +194,10 @@ export class FrameWidgetHandle
       | undefined,
   ): void {
     if (
+      !this.entity.viewport ||
       this.entity.overflow === "scroll-y" ||
       this.entity.overflow === "scroll-area"
     ) {
-      this.fragment?.page?.style.setProperty("height", height);
-    } else if (!this.entity.viewport) {
       if (typeof height === "number" || typeof height === "undefined") {
         this.entity.setHeight(height);
       }
@@ -263,11 +210,10 @@ export class FrameWidgetHandle
       | undefined,
   ): void {
     if (
+      !this.entity.viewport ||
       this.entity.overflow === "scroll-x" ||
       this.entity.overflow === "scroll-area"
     ) {
-      this.fragment?.page?.style.setProperty("width", width);
-    } else if (!this.entity.viewport) {
       if (typeof width === "number" || typeof width === "undefined") {
         this.entity.setWidth(width);
       }

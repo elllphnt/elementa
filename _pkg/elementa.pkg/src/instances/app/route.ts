@@ -47,6 +47,20 @@ export class RouteInstance extends Disposable {
     undefined,
   );
 
+  get view$(): Observable<ComponentInstance | undefined> {
+    return this._view$;
+  }
+  get view(): ComponentInstance | undefined {
+    return this._view$.value;
+  }
+
+  get layout$(): Observable<ComponentInstance | undefined> {
+    return this._layout$;
+  }
+  get layout(): ComponentInstance | undefined {
+    return this._layout$.value;
+  }
+
   constructor({
     environment,
     route,

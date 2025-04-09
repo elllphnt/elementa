@@ -2,13 +2,12 @@ import { entityTypes, switchEntityType } from "@elllphnt/elll-element";
 import {
   Element,
   Entity,
-  FragmentInstance,
   Renderable,
   SlotRenderable,
   Stylesheet,
   StylesheetCssStyleSheet,
 } from "@repo/elementa-stager";
-import { BehaviorSubject, map, Observable } from "rxjs";
+import { BehaviorSubject, map, Observable, of } from "rxjs";
 import { makeEntityDropType } from "~/src/_lib/droptypes";
 import { makeElementHandle, updateEntityHandleList } from "~/src/_lib/handles";
 import { IElementHandle, ILayoutUpdatePropagation } from "~/src/_types/_";
@@ -29,10 +28,12 @@ export class SlotHandle extends StylableHandle<SlotRenderable> {
   }
 
   get contextSelector(): string {
-    return (this.fragment.instance as FragmentInstance).environment.selector;
+    return "(this.fragment.instance as FragmentInstance).environment.selector";
   }
   get contextSelector$(): Observable<string> {
-    return (this.fragment.instance as FragmentInstance).environment.selector$;
+    return of(
+      "(this.fragment.instance as FragmentInstance).environment.selector$",
+    );
   }
 
   instanceStyle(selector: string) {

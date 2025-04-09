@@ -5,7 +5,6 @@ import {
   FragmentRenderable,
   FrameWidgetRenderable,
   MediaElementRenderable,
-  PageElementRenderable,
   PrimitiveElementRenderable,
   SlotElementRenderable,
   TextElementRenderable,
@@ -21,7 +20,6 @@ import {
   PrimitiveElementHandle,
 } from "../handles/_";
 import { ContainerElementHandle } from "../handles/entities/elements/container";
-import { PageElementHandle } from "../handles/entities/elements/page";
 import { SlotElementHandle } from "../handles/entities/elements/slot";
 import { TextElementHandle } from "../handles/entities/elements/text/text";
 import { VectorElementHandle } from "../handles/entities/elements/vector";
@@ -58,13 +56,6 @@ export const makeElementHandle: IElementaInteractor["makeElementHandle"] =
           return new SlotElementHandle({
             fragment,
             renderable: renderable as unknown as SlotElementRenderable,
-            parent,
-          }) as any;
-        },
-        [entityTypes.elements.page]: () => {
-          return new PageElementHandle({
-            fragment,
-            renderable: renderable as unknown as PageElementRenderable,
             parent,
           }) as any;
         },

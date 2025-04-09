@@ -1,10 +1,10 @@
 import { FragmentInstance } from "@repo/elementa";
 import { fragmentVariants } from "@repo/elementa-models";
 import { updateMapList } from "@repo/utils";
-import { BehaviorSubject, map, Observable } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { updateInstanceRenderableList } from "../../_lib/renderables";
 import { ElementaRenderer } from "../../elementa_renderer";
-import { ElementRenderable, PageElementRenderable } from "./element/_";
+import { ElementRenderable } from "./element/_";
 import { InstanceRenderable } from "./instance";
 import { SlotRenderable } from "./slot";
 
@@ -18,23 +18,6 @@ export class FragmentRenderable extends InstanceRenderable<FragmentInstance> {
   }
   get content(): ElementRenderable[] {
     return this._content$.value;
-  }
-
-  get page() {
-    const pageCandidate = this.content[0];
-    return pageCandidate instanceof PageElementRenderable
-      ? pageCandidate
-      : undefined;
-  }
-  get page$() {
-    return this.content$.pipe(
-      map((content) => {
-        const pageCandidate = content[0];
-        return pageCandidate instanceof PageElementRenderable
-          ? pageCandidate
-          : undefined;
-      }),
-    );
   }
 
   get fragments$() {

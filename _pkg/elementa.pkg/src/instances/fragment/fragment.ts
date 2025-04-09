@@ -1,15 +1,8 @@
 import { Fragment } from "@repo/elementa-models";
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  Observable,
-  switchMap,
-} from "rxjs";
+import { BehaviorSubject, combineLatest, Observable } from "rxjs";
 import { updateInstanceList } from "~/src/_lib/instances";
 import { makeElementInstance } from "~/src/_lib/make_element_instance";
 import { ElementInstance } from "../elements/element";
-import { PageElementInstance } from "../elements/page";
 import { Instance } from "../instance";
 import { FragmentEnvironment } from "./environment";
 
@@ -33,47 +26,24 @@ export class FragmentInstance extends Instance<Fragment> {
     return this._recursion$.value;
   }
 
-  get page() {
-    const candidate = this.content[0];
-    if (candidate instanceof PageElementInstance) {
-      return candidate;
-    }
-  }
-  get page$() {
-    return this.content$.pipe(
-      map((content) => {
-        const candidate = content[0];
-        if (candidate instanceof PageElementInstance) {
-          return candidate;
-        }
-      }),
-    );
-  }
-
   constructor({
     environment,
+    entity,
     parent,
   }: {
     environment: FragmentEnvironment;
+    entity: Fragment;
     parent: Instance | null;
   }) {
     super({
-      entity: environment.entity,
+      entity,
       elementa: environment.elementa,
       parent,
     });
     this.environment = environment;
 
     const contentSubscription = combineLatest([
-      this.environment.paged$.pipe(
-        switchMap((paged) => {
-          if (paged) {
-            return this.entity.page$(true).pipe(map((page) => [page]));
-          } else {
-            return this.entity.content$;
-          }
-        }),
-      ),
+      this.entity.content$,
       this.environment.componentStack$,
     ]).subscribe(([content, componentStack]) => {
       const recursion = this.resolveRecursion(componentStack);

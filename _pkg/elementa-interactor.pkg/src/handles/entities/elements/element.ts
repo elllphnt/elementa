@@ -29,10 +29,12 @@ export abstract class ElementHandle<
   }
 
   get contextSelector(): string {
-    return (this.fragment.instance as FragmentInstance).environment.selector;
+    return "(this.fragment.instance as FragmentInstance).environment.selector";
   }
   get contextSelector$(): Observable<string> {
-    return (this.fragment.instance as FragmentInstance).environment.selector$;
+    return of(
+      "(this.fragment.instance as FragmentInstance).environment.selector$",
+    );
   }
 
   instanceStyle(selector: string) {

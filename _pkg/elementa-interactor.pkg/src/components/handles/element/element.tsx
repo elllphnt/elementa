@@ -5,7 +5,6 @@ import {
   ContainerElementHandle,
   ElementHandle,
   MediaElementHandle,
-  PageElementHandle,
   PrimitiveElementHandle,
   SlotElementHandle,
   TextElementHandle,
@@ -14,7 +13,6 @@ import {
 import { ComponentElementHandleComponent } from "./component_element";
 import { ContainerElementHandleComponent } from "./container_element";
 import { MediaElementHandleComponent } from "./content_element";
-import { PageElementHandleComponent } from "./page_element";
 import { PrimitiveElementHandleComponent } from "./primitive_element";
 import { SlotElementHandleComponent } from "./slot_element";
 import { TextElementHandleComponent } from "./text_element";
@@ -60,10 +58,6 @@ export const ElementHandleComponent = memo(function ElementHandleComponent({
     [entityTypes.elements.vector]: () => {
       const vectorElement = element as VectorElementHandle;
       return <VectorElementHandleComponent element={vectorElement} />;
-    },
-    [entityTypes.elements.page]: () => {
-      const pageElement = element as PageElementHandle;
-      return <PageElementHandleComponent element={pageElement} />;
     },
   });
 

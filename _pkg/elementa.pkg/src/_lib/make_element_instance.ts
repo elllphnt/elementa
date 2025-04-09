@@ -4,7 +4,6 @@ import {
   ContainerElement,
   Element,
   MediaElement,
-  PageElement,
   PrimitiveElement,
   SlotElement,
   TextElement,
@@ -16,7 +15,6 @@ import {
   ElementInstance,
   Instance,
   MediaElementInstance,
-  PageElementInstance,
   PrimitiveElementInstance,
   SlotElementInstance,
   TextElementInstance,
@@ -55,12 +53,6 @@ export function makeElementInstance({
     [entityTypes.elements.slot]: () =>
       new SlotElementInstance({
         element: element as SlotElement,
-        environment,
-        parent,
-      }),
-    [entityTypes.elements.page]: () =>
-      new PageElementInstance({
-        element: element as PageElement,
         environment,
         parent,
       }),
