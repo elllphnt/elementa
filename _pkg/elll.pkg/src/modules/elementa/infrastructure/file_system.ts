@@ -1,3 +1,4 @@
+import { ErrorTupple } from "@elllphnt/elll-element";
 import {
   elllEntities,
   getUrlScheme,
@@ -7,7 +8,12 @@ import {
 import { DriveFile, File, parseElllResourceUrl } from "@repo/backend";
 import { FileSystem, Project } from "@repo/elementa-models";
 import { of } from "rxjs";
-import { getFileDriveId, makeAbsoluteFileUrl } from "~/src/libs/url";
+import {
+  getFileDriveId,
+  makeAbsoluteDriveFileUrl,
+  makeAbsoluteFileUrl,
+  makeRelativeDriveFileUrl,
+} from "~/src/libs/url";
 import { getElllElementaProject } from "../project/_lib";
 import { IElllElementaInfrastructure } from "./_types";
 
@@ -15,12 +21,13 @@ export class ElllElementaFileSystem extends FileSystem {
   readonly infrastructure: IElllElementaInfrastructure;
 
   fileContent(url: string) {
-    return this.infrastructure.elll.contentManager.content(url, "text")?.data;
+    return this.infrastructure.elll.contentManager.content<string>(url, "text")
+      ?.data;
   }
   fileContent$(url: string) {
     return (
-      this.infrastructure.elll.contentManager.content(url, "text")?.data$ ??
-      of(undefined)
+      this.infrastructure.elll.contentManager.content<string>(url, "text")
+        ?.data$ ?? of(undefined)
     );
   }
 
@@ -47,6 +54,12 @@ export class ElllElementaFileSystem extends FileSystem {
   }
   getAbsoluteFileUrl(baseUrl: string, url: string): string {
     return makeAbsoluteFileUrl(baseUrl, url);
+  }
+  getAbsoluteDriveFileUrl(driveUrl: string, url: string): ErrorTupple<string> {
+    return makeAbsoluteDriveFileUrl(driveUrl, url);
+  }
+  getRelativeDriveFileUrl(url: string): ErrorTupple<string> {
+    return makeRelativeDriveFileUrl(url);
   }
   getFileProject(url: string): Project | undefined {
     const driveId = getFileDriveId(url);

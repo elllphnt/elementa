@@ -57,4 +57,10 @@ export class TextCommitFileContent extends Content {
   update(data: any): void {
     console.warn("Cannot update text commit file content");
   }
+  setName(name: string): void {
+    console.warn("Cannot rename text commit file content");
+  }
+  async delete(): Promise<void> {
+    console.warn("Cannot delete text commit file content");
+  }
 }

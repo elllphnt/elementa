@@ -212,9 +212,7 @@ export class WorkspaceService extends Service {
       throw result.error;
     }
 
-    if (result.data) {
-      return this.workspaceFileStore.push(result.data);
-    }
+    return this.workspaceFileStore.push(result.data!);
   }
   async fetchWorkspaceFile(file_id: string) {
     const result = await this.workspaceServiceClient.get(

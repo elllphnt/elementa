@@ -6,8 +6,8 @@ import {
   TextControl,
   TreeEntry,
 } from "@repo/components";
-import { blueprintEditor } from "~/src/editors/blueprint";
-import { specEditor } from "~/src/editors/spec";
+import { blueprintEditor } from "~/src/editors/blueprint/blueprint";
+import { specEditor } from "~/src/editors/brief/brief";
 import { useWorkspace } from "~/src/hooks/backend/workspace";
 import { useElll } from "~/src/hooks/elll/elll";
 

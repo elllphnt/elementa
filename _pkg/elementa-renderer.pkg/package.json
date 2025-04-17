@@ -23,7 +23,7 @@
     },
     "peerDependencies": {},
     "dependencies": {
-        "@elllphnt/elll-element": "^0.26.27",
+        "@elllphnt/elll-element": "^0.26.32",
         "@repo/utils": "*",
         "deep-object-diff": "^1.1.9",
         "lodash": "^4.17.21",

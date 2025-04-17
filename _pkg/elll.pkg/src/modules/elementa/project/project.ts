@@ -3,7 +3,7 @@ import { Project } from "@repo/elementa-models";
 import { IElll } from "~/src/types/elll";
 import { IElllElementaInfrastructure } from "../infrastructure/_types";
 import { ElllApp } from "./app/app";
-import { Brief } from "./brief/brief";
+import { Blueprint } from "./blueprint/blueprint";
 import { ElllComponentManager } from "./components/component_manager";
 import { ElllLibraryManager } from "./libraries/library_manager";
 import { ElllPackageManager } from "./packages/package_manager";
@@ -13,13 +13,16 @@ export class ElllElementaProject extends Project {
   readonly elll: IElll;
   readonly drive: IFileDrive;
 
+  get url() {
+    return this.drive.url;
+  }
+
   readonly styleManager: ElllStyleManager;
   readonly libraryManager: ElllLibraryManager;
   readonly packageManager: ElllPackageManager;
   readonly componentManager: ElllComponentManager;
   readonly app: ElllApp;
-
-  readonly brief: Brief;
+  readonly blueprint: Blueprint;
 
   constructor({
     infrastructure,
@@ -54,7 +57,7 @@ export class ElllElementaProject extends Project {
     this.app = new ElllApp({
       project: this,
     });
-    this.brief = new Brief({
+    this.blueprint = new Blueprint({
       elll: this.elll,
       drive,
     });

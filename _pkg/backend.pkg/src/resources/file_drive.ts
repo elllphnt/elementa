@@ -3,6 +3,7 @@ import { File } from "./file";
 
 export interface IFileDrive<F extends File = File> {
   id: string;
+  url: string;
   fileAtPath(
     path: string,
     options?: {
@@ -12,4 +13,5 @@ export interface IFileDrive<F extends File = File> {
       };
     },
   ): Query<F, F | undefined>;
+  createFile({ type, path }: { type: string; path: string }): Promise<F>;
 }

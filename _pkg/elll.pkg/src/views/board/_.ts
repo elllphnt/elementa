@@ -1,10 +1,10 @@
 import { View } from "@repo/shell";
 import { keys } from "~/src/libs/keys";
 import { BlueprintBoardView } from "./editors/blueprint/blueprint_board";
+import { BriefBoardView } from "./editors/brief/brief_board";
 import { ComponentBoardView } from "./editors/elementa/editor/component_board";
 import { ComponentViewerBoardView } from "./editors/elementa/viewer/component_board";
 import { ComponentViewerBar } from "./editors/elementa/viewer/component_viewer_bar";
-import { FeaturesBoardView } from "./editors/features/features_board";
 import { MonacoBoardView } from "./editors/monaco/monaco_board";
 import { ProgrammingInterfaceBoardView } from "./editors/programming_interface/programming_interface_board";
 import { UtilitySheetBoardView } from "./editors/utility_sheet/utility_sheet_board";
@@ -35,8 +35,8 @@ export const boardViews = {
     render: ComponentViewerBar,
   },
   featuresEditor: {
-    id: keys.views.board.featuresEditor,
-    render: FeaturesBoardView,
+    id: keys.views.board.briefEditor,
+    render: BriefBoardView,
   },
   blueprintEditor: {
     id: keys.views.board.blueprintEditor,

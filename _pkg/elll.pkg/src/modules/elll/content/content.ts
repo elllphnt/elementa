@@ -27,4 +27,6 @@ export abstract class Content<D = any> extends Disposable {
   }
 
   abstract update(data: D): void;
+  abstract setName(name: string): void;
+  abstract delete(): Promise<void>;
 }

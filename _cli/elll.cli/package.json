@@ -20,7 +20,7 @@
     "@elllphnt/elll-transpiler": "^0.1.0",
     "@elllphnt/identity-service-client": "^0.1.7",
     "@elllphnt/repository-service-client": "^1.0.10",
-    "@elllphnt/utils": "^0.9.2",
+    "@elllphnt/utils": "^0.9.9",
     "@elllphnt/workspace-service-client": "^0.1.9",
     "axios": "^1.7.7",
     "chalk": "^5.3.0",

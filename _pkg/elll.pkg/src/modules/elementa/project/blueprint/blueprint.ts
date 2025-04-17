@@ -4,16 +4,14 @@ import { jsonModelConstructor } from "~/src/models/json";
 import { IElll } from "~/src/types/elll";
 import { SynchronizedModelFile } from "../file";
 
-export type RouteData = {
-  id: string;
-  segment: string;
-  name?: string;
-  parentId?: string;
-  layoutId?: string;
-  viewId?: string;
+export type NodeData = {
+  position: {
+    x: number;
+    y: number;
+  };
 };
 export type BlueprintData = {
-  routes?: RouteData[];
+  nodes?: Record<string, NodeData>;
 };
 
 export class Blueprint extends SynchronizedModelFile<BlueprintData> {
@@ -26,25 +24,18 @@ export class Blueprint extends SynchronizedModelFile<BlueprintData> {
     return this._data$.asObservable();
   }
 
-  get description() {
-    return this._data$.getValue().description;
+  get nodes() {
+    return this._data$.getValue().nodes || {};
   }
-  get description$() {
-    return this._data$.pipe(map((data) => data.description));
-  }
-
-  get goals() {
-    return this._data$.getValue().goals || [];
-  }
-  get goals$() {
-    return this._data$.pipe(map((data) => data.goals || []));
+  get nodes$() {
+    return this._data$.pipe(map((data) => data.nodes || {}));
   }
 
   constructor({ elll, drive }: { elll: IElll; drive: IFileDrive }) {
     super({
       elll,
       drive,
-      path: ".elll/brief",
+      path: ".elll/blueprint",
       model: jsonModelConstructor.name,
     });
 
@@ -54,45 +45,16 @@ export class Blueprint extends SynchronizedModelFile<BlueprintData> {
     });
   }
 
-  setDescription(description: string) {
+  updateNode(id: string, data: Partial<NodeData>) {
     this._data$.next({
-      ...this._data$.getValue(),
-      description,
-    });
-  }
-  setGoals(goals: UserGoalData[]) {
-    this._data$.next({
-      ...this._data$.getValue(),
-      goals,
-    });
-  }
-
-  addGoal(goal: UserGoalData) {
-    const goals = this._data$.getValue().goals ?? [];
-    this._data$.next({
-      ...this._data$.getValue(),
-      goals: [...goals, goal],
-    });
-  }
-  insertGoal(index: number, goal: UserGoalData) {
-    const goals = this._data$.getValue().goals ?? [];
-    this._data$.next({
-      ...this._data$.getValue(),
-      goals: [...goals.slice(0, index), goal, ...goals.slice(index)],
-    });
-  }
-  removeGoal(index: number) {
-    const goals = this._data$.getValue().goals ?? [];
-    this._data$.next({
-      ...this._data$.getValue(),
-      goals: [...goals.slice(0, index), ...goals.slice(index + 1)],
-    });
-  }
-  updateGoal(index: number, goal: UserGoalData) {
-    const goals = this._data$.getValue().goals ?? [];
-    this._data$.next({
-      ...this._data$.getValue(),
-      goals: [...goals.slice(0, index), goal, ...goals.slice(index + 1)],
+      ...this._data$.value,
+      nodes: {
+        ...this.nodes,
+        [id]: {
+          ...this.nodes[id],
+          ...data,
+        },
+      },
     });
   }
 

@@ -1,6 +1,7 @@
 export const mimeTypes = {
   json: "application/json",
   text: "text/plain",
+  markdown: "text/markdown",
   html: "text/html",
   css: "text/css",
   uriList: "text/uri-list",

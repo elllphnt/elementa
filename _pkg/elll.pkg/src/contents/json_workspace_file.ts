@@ -192,4 +192,10 @@ export class JsonWorkspaceFileContent extends Content {
       console.log("updateYMap", data, sharedType.toJSON());
     });
   }
+  setName(name: string): void {
+    this.file.setName(name);
+  }
+  delete(): Promise<void> {
+    return this.file.delete();
+  }
 }

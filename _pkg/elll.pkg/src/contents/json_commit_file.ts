@@ -70,6 +70,12 @@ export class JsonCommitFileContent extends Content {
   }
 
   update(data: any): void {
-    console.warn("Cannot update text commit file content");
+    console.warn("Cannot update json commit file content");
+  }
+  setName(name: string): void {
+    console.warn("Cannot rename json commit file content");
+  }
+  async delete(): Promise<void> {
+    console.warn("Cannot delete json commit file content");
   }
 }

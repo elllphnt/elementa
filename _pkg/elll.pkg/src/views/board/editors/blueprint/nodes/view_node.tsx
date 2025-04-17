@@ -1,6 +1,6 @@
 // import { useManyObservables, useObservable } from "@repo/utils";
 // import { useState } from "react";
-// import { NodeProps } from "reactflow";
+// import { NodeProps } from "@xyflow/react";
 // import { buildView } from "~/src/commands/build_view";
 // import { useElllProject } from "~/src/hooks/project/project";
 // import { useEditorBlueprint } from "../_context";

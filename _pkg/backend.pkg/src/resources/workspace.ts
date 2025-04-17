@@ -7,8 +7,8 @@ import { AutoSavableResource } from "../lib/resource";
 import { intelligenceServiceFactory } from "../services/intelligence_service";
 import { workspaceServiceFactory } from "../services/workspace_service";
 import { Syncer } from "../syncer";
-import { WorkspaceFile } from "./workspace_file";
 import { IFileDrive } from "./file_drive";
+import { WorkspaceFile } from "./workspace_file";
 
 export class Workspace
   extends AutoSavableResource<WorkspaceData>
@@ -180,6 +180,15 @@ export class Workspace
 
   protected async fetchData(): Promise<void> {
     await this.workspaceService.fetchWorkspace(this.id);
+  }
+
+  createFile({ type, path }: { type: string; path: string }) {
+    const file = this.workspaceService.createWorkspaceFile({
+      workspace_id: this.id,
+      type,
+      path,
+    });
+    return file;
   }
 
   createIntelligenceThread({

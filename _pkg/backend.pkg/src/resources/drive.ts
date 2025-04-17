@@ -210,6 +210,15 @@ export class Drive
     return this.driveService.deleteDrive(this.id);
   }
 
+  createFile({ type, path }: { type: string; path: string }) {
+    const file = this.driveService.createDriveFile({
+      drive_id: this.id,
+      type,
+      path,
+    });
+    return file;
+  }
+
   watchFiles() {
     console.log("watching files");
     const syncer = Syncer.instance(this.backend);

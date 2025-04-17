@@ -1,174 +1,235 @@
 // src/components/BlueprintEditor.tsx
-import { useCallback, useEffect } from "react";
-import ReactFlow, {
+import { elllIcons16, Icon } from "@repo/components";
+import { useObservable } from "@repo/utils";
+import {
   Background,
   BackgroundVariant,
-  Connection,
-  Edge,
-  MarkerType,
   Node,
   NodeTypes,
+  OnConnect,
+  OnConnectEnd,
+  OnConnectStart,
+  OnConnectStartParams,
+  OnEdgesChange,
+  OnNodesChange,
+  OnSelectionChangeFunc,
+  ReactFlow,
   ReactFlowProvider,
-  addEdge,
-  useEdgesState,
-  useNodesState, // Import Provider
-  useReactFlow,
-} from "reactflow";
-import "reactflow/dist/style.css"; // Import default styles
-import {
-  BlueprintData,
-  RouteData,
-} from "~/src/modules/elementa/project/blueprint/blueprint";
-import route_node from "./route_node";
-import { RouteNodeData } from "./type";
-import { getLayoutedElements } from "./utils/layout";
+  Viewport,
+} from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
+import { useCallback, useLayoutEffect, useMemo, useRef } from "react";
+import { BlueprintEditor } from "~/src/editors/blueprint/editor";
+import { Menu } from "./menu";
+import RouteNode from "./route_node";
 
-// Define node types for React Flow
 const nodeTypes: NodeTypes = {
-  routeNode: route_node,
+  route: RouteNode,
 };
 
-// --- Helper Function to parse data ---
-const parseBlueprintData = (
-  data?: BlueprintData,
-): { initialNodes: Node<RouteNodeData>[]; initialEdges: Edge[] } => {
-  const initialNodes: Node<RouteNodeData>[] = [];
-  const initialEdges: Edge[] = [];
+export function BlueprintEditorComponent({
+  editor,
+}: {
+  editor: BlueprintEditor;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const connectionRef = useRef<OnConnectStartParams>();
+  const routes = useObservable(editor.routes$, editor.routes);
+  const nodeInfos = useObservable(editor.nodes$, editor.nodes);
+  const edges = useObservable(editor.edges$, editor.edges);
+  const state = useObservable(editor.state$, editor.state);
 
-  if (!data?.routes) {
-    return { initialNodes, initialEdges };
-  }
-
-  data.routes.forEach((route: RouteData) => {
-    // Create Node
-    initialNodes.push({
-      id: route.id,
-      type: "routeNode", // Use our custom node type
-      data: {
-        segment: route.segment,
-        name: route.name,
-        layoutId: route.layoutId,
-        viewId: route.viewId,
-      },
-      // Initial position - will be overwritten by layout
-      position: { x: 0, y: 0 },
-    });
-
-    // Create Edge if parentId exists
-    if (route.parentId) {
-      initialEdges.push({
-        id: `e-${route.parentId}-${route.id}`,
-        source: route.parentId,
-        target: route.id,
-        type: "smoothstep", // Or 'default', 'step'
-        style: { stroke: "#aaa", strokeWidth: 1.5 }, // Basic edge styling
-        markerEnd: {
-          // Add an arrowhead
-          type: MarkerType.ArrowClosed,
-          width: 15,
-          height: 15,
-          color: "#aaa",
+  const nodes = useMemo(() => {
+    return routes.map((route) => {
+      const info = nodeInfos[route.id];
+      const node: Node = {
+        id: route.id,
+        type: "route",
+        data: {
+          editor: editor,
+          route,
         },
-      });
+        position: info?.position || { x: 0, y: 0 },
+      };
+      return node;
+    });
+  }, [routes, nodeInfos, editor]);
+
+  useLayoutEffect(() => {
+    if (ref.current) {
+      editor.setRootDom(ref.current);
     }
-  });
+  }, [editor]);
 
-  return { initialNodes, initialEdges };
-};
-
-function EditorCanvas({ blueprintData }: { blueprintData: BlueprintData }) {
-  const [nodes, setNodes, onNodesChange] = useNodesState<RouteNodeData>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const { fitView } = useReactFlow(); // Get fitView from context
-
-  // New: Handler for auto layout button
-  const handleAutoLayout = () => {
-    const { layoutedNodes, layoutedEdges } = getLayoutedElements(
-      nodes,
-      edges,
-      "TB",
-    );
-    setNodes(layoutedNodes);
-    setEdges(layoutedEdges);
-  };
-
-  useEffect(() => {
-    if (blueprintData?.routes) {
-      const { initialNodes, initialEdges } = parseBlueprintData(blueprintData);
-
-      if (initialNodes.length > 0) {
-        const { layoutedNodes, layoutedEdges } = getLayoutedElements(
-          initialNodes,
-          initialEdges,
-          "TB",
-        );
-        setNodes(layoutedNodes);
-        setEdges(layoutedEdges);
-
-        // Fit view after a short delay to allow layout calculation and rendering
-        // Adjust delay if needed
-        const timer = setTimeout(() => {
-          fitView({ padding: 0.2, duration: 300 }); // Add padding around the fitted view
-        }, 100);
-        return () => clearTimeout(timer); // Cleanup timeout on unmount or data change
-      } else {
-        setNodes([]);
-        setEdges([]);
+  const handleNodesChange: OnNodesChange = useCallback(
+    (changes) => {
+      for (const change of changes) {
+        switch (change.type) {
+          case "position": {
+            if (change.position) {
+              editor.blueprint?.updateNode(change.id, {
+                position: change.position,
+              });
+            }
+            break;
+          }
+        }
       }
-    } else {
-      setNodes([]);
-      setEdges([]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [blueprintData, setNodes, setEdges]); // fitView is stable, no need to include
+    },
+    [editor],
+  );
+  const handleEdgesChange: OnEdgesChange = useCallback(
+    (changes) => {},
+    [editor],
+  );
+  const handleConnect: OnConnect = useCallback(
+    (connection) => {
+      if (!connection.target || !connection.source) return;
+      const route = editor.app?.route(connection.target);
+      route?.update({
+        parentId: connection.source,
+      });
+      connectionRef.current = undefined;
+    },
+    [editor],
+  );
+  const handleConnectStart: OnConnectStart = useCallback((_, params) => {
+    connectionRef.current = params;
+  }, []);
+  const handleConnectEnd: OnConnectEnd = useCallback((event) => {
+    // allow connection to occur if possible
+    setTimeout(() => {
+      const param = connectionRef.current;
+      connectionRef.current = undefined;
 
-  // Callback for handling new connections (optional, if you want users to create edges)
-  const onConnect = useCallback(
-    (params: Connection) =>
-      setEdges((eds) =>
-        addEdge(
-          { ...params, type: "smoothstep", style: { stroke: "#aaa" } },
-          eds,
-        ),
-      ),
-    [setEdges],
+      const rect = editor.getRootWindowRect();
+      if (!rect) return;
+
+      if (param && rect && event instanceof MouseEvent) {
+        const absolutePosition = {
+          x: event.clientX,
+          y: event.clientY,
+        };
+        const viewport = editor.state.viewport;
+        const position = {
+          x: absolutePosition.x - rect.x,
+          y: absolutePosition.y - rect.y,
+        };
+        const adjustedPosition = {
+          x: (position.x - viewport.x) / viewport.zoom,
+          y: (position.y - viewport.y) / viewport.zoom,
+        };
+
+        if (param.handleType === "source") {
+          editor.addRoute({
+            parentId: param.nodeId || undefined,
+            node: {
+              position: adjustedPosition,
+            },
+          });
+        } else {
+          editor.addRoute({
+            childId: param.nodeId || undefined,
+            node: {
+              position,
+            },
+          });
+        }
+      }
+    });
+  }, []);
+  const handleViewportChange = useCallback(
+    (viewport: Viewport) => {
+      editor.setState({ viewport });
+    },
+    [editor],
   );
 
-  const proOptions = { hideAttribution: true }; // Hide React Flow attribution for cleaner look
-
-  return (
-    <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      onNodesChange={onNodesChange} // Handles node dragging, selection, etc.
-      onEdgesChange={onEdgesChange} // Handles edge selection, deletion
-      onConnect={onConnect} // Handles creating new connections
-      nodeTypes={nodeTypes} // Register custom node types
-      fitView // Prop to trigger fitView programmatically if needed (we use the hook)
-      fitViewOptions={{ padding: 0.2, duration: 300 }} // Options for initial fitView
-      proOptions={proOptions} // Hide attribution
-    >
-      {/* New: Auto Layout Button */}
-      <div style={{ position: "absolute", top: 10, right: 10, zIndex: 10 }}>
-        <button onClick={handleAutoLayout}>Auto Layout</button>
-      </div>
-      <Background
-        variant={BackgroundVariant.Lines}
-        gap={15}
-        size={1}
-        className="el-text-fg/5"
-        color="currentColor"
-      />
-    </ReactFlow>
+  const handleSelectionChange: OnSelectionChangeFunc = useCallback(
+    (selection) => {
+      const nodes = selection?.nodes?.map((node: any) => node.id) || [];
+      const edges = selection?.edges?.map((edge: any) => edge.id) || [];
+      editor.setState({ selection: { nodes, edges } });
+    },
+    [editor],
   );
-}
 
-function BlueprintEditor({ blueprintData }: { blueprintData: BlueprintData }) {
+  const handleDelete = useCallback(() => {
+    editor.deleteSelection();
+  }, [editor]);
+
   return (
     <ReactFlowProvider>
-      <EditorCanvas blueprintData={blueprintData} />
+      <ReactFlow
+        ref={ref}
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={handleNodesChange}
+        onEdgesChange={handleEdgesChange}
+        onConnect={handleConnect}
+        nodeTypes={nodeTypes}
+        proOptions={{ hideAttribution: true }}
+        selectionOnDrag
+        onConnectEnd={handleConnectEnd}
+        onConnectStart={handleConnectStart}
+        viewport={state.viewport}
+        onViewportChange={handleViewportChange}
+        onSelectionChange={handleSelectionChange}
+      >
+        <Menu editor={editor} />
+        {/* Auto Layout & Delete Buttons */}
+        <div
+          style={{
+            position: "absolute",
+            top: 10,
+            right: 10,
+            zIndex: 10,
+            display: "flex",
+            gap: 10,
+          }}
+        >
+          <button onClick={() => editor.autoLayout()}>Auto Layout</button>
+          <button onClick={handleDelete}>Delete Selected</button>
+        </div>
+        <Background
+          variant={BackgroundVariant.Lines}
+          gap={15}
+          size={1}
+          className="el-text-fg/5"
+          color="currentColor"
+        />
+
+        {nodes.length === 0 && (
+          <div
+            style={{
+              position: "absolute",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+              gap: 10,
+              inset: 0,
+              zIndex: 10,
+            }}
+          >
+            <button
+              className="el-bg-bg hover:el-bg-bg-100 el-text-fg el-border el-rounded-full el-flex el-items-center el-justify-center"
+              style={{
+                width: 40,
+                height: 40,
+              }}
+              onClick={() => {
+                if (!editor.app) return;
+                const route = editor.app.createRoute();
+                editor.app.addRoute(route);
+              }}
+            >
+              <Icon name={elllIcons16.plus} />
+            </button>
+            <div className="el-text-sm">Add a route to get started</div>
+          </div>
+        )}
+      </ReactFlow>
     </ReactFlowProvider>
   );
 }
-
-export default BlueprintEditor;

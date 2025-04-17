@@ -11,7 +11,7 @@ export const keys = {
       componentEditor: "elll.view.board.editor.component",
       componentViewer: "elll.view.board.viewer.component",
       componentViewerBar: "elll.view.board.viewer.component.bar",
-      featuresEditor: "elll.view.board.editor.features",
+      briefEditor: "elll.view.board.editor.brief",
       blueprintEditor: "elll.view.board.editor.blueprint",
       programmingInterfaceEditor:
         "elll.view.board.editor.programming-interface",
@@ -64,7 +64,7 @@ export const keys = {
     json: "elll.editor.model.json",
     react: "elll.editor.model.react",
     typescript: "elll.editor.model.typescript",
-    spec: "elll.editor.spec",
+    brief: "elll.editor.brief",
     bleuprint: "elll.editor.blueprint",
     programmingInterface: "elll.editor.programming-interface",
     variableSheet: "elll.editor.variable-sheet",

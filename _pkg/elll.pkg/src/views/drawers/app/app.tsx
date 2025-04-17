@@ -1,7 +1,6 @@
 import { elllIcons16, Icon, ScrollArea, TreeEntry } from "@repo/components";
 import { useElll } from "~/src/hooks/elll/elll";
 import { keys } from "~/src/libs/keys";
-import { modalViews } from "../../modals/_";
 
 export function AppView(): JSX.Element {
   const elll = useElll();
@@ -19,11 +18,7 @@ export function AppView(): JSX.Element {
           icon={<Icon name={elllIcons16.ai} />}
           className="el-border"
           onClick={() => {
-            elll.shell.showModal({
-              affinity: "workspace",
-              viewId: modalViews.brief.id,
-              closeOnBackdropClick: true,
-            });
+            elll.editorManager.openEditor(keys.editors.brief);
           }}
         >
           Brief

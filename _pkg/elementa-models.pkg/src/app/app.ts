@@ -15,11 +15,20 @@ import { genId } from "../_lib/id";
 import { Project } from "../project/_";
 import { Route } from "./route";
 
+export type AppModelState = Omit<AppData, "routes">;
 export class App extends Disposable {
   readonly id: string;
   readonly project: Project;
 
+  private _state$ = new BehaviorSubject<AppModelState>({});
   private _routes$ = new BehaviorSubject<Record<string, Route>>({});
+
+  get state(): AppModelState {
+    return this._state$.value;
+  }
+  get state$(): Observable<AppModelState> {
+    return this._state$.asObservable();
+  }
 
   get routes(): Route[] {
     return Object.values(this._routes$.value);
@@ -38,21 +47,31 @@ export class App extends Disposable {
     );
   }
 
+  route(id: string) {
+    return this._routes$.value[id];
+  }
+  route$(id: string) {
+    return this._routes$.pipe(map((routes) => routes[id]));
+  }
+
   get data(): AppData {
     return {
+      ...this.state,
       routes: this.routes.map((route) => route.data),
     };
   }
   get data$(): Observable<AppData> {
     return combineLatestOrEmpty([
+      this.state$,
       this.routes$.pipe(
         switchMap((routes) =>
           combineLatestOrEmpty(routes.map((route) => route.data$)),
         ),
       ),
     ]).pipe(
-      map(([routes]) => {
+      map(([state, routes]) => {
         return {
+          ...state,
           routes,
         };
       }),
@@ -73,19 +92,46 @@ export class App extends Disposable {
     });
   }
 
+  update(data: Partial<AppModelState>) {
+    this._state$.next({
+      ...this._state$.value,
+      ...data,
+    });
+  }
+
   addRoute(route: Route) {
     this._routes$.next({
       ...this._routes$.value,
       [route.id]: route,
     });
   }
+  createRoute() {
+    const route = new Route({
+      id: genId(),
+      app: this,
+    });
+    return route;
+  }
+  removeRoutes(ids: string[]) {
+    const routes = { ...this._routes$.value };
+    const deleted: Route[] = [];
+    for (const id of ids) {
+      const route = routes[id];
+      if (route) {
+        route.dispose();
+        delete routes[id];
+        deleted.push(route);
+      }
+    }
+    this._routes$.next(routes);
+    return deleted;
+  }
 
-  restore(data: AppData) {
+  restore({ routes, ...modelData }: AppData) {
+    this._state$.next(modelData);
     restoreReactiveMap({
       datafiable$: this._routes$,
-      data: Object.fromEntries(
-        data.routes?.map((route) => [route.id, route]) || [],
-      ),
+      data: Object.fromEntries(routes?.map((route) => [route.id, route]) || []),
       create: (data) =>
         new Route({
           id: data.id,

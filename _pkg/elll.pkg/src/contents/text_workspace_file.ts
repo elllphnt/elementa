@@ -194,4 +194,10 @@ export class TextWorkspaceFileContent extends Content {
       text.insert(0, data);
     });
   }
+  setName(name: string): void {
+    this.file.setName(name);
+  }
+  delete(): Promise<void> {
+    return this.file.delete();
+  }
 }

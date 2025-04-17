@@ -1,3 +1,4 @@
+import { ErrorTupple } from "@elllphnt/elll-element";
 import { Observable } from "rxjs";
 import { Project } from "../project/project";
 
@@ -7,6 +8,12 @@ export abstract class FileSystem {
 
   abstract fileName(url: string): string | undefined;
   abstract fileName$(url: string): Observable<string | undefined>;
+
+  abstract getAbsoluteDriveFileUrl(
+    driveUrl: string,
+    url: string,
+  ): ErrorTupple<string>;
+  abstract getRelativeDriveFileUrl(url: string): ErrorTupple<string>;
 
   abstract getAbsoluteFileUrl(base: string, url: string): string;
   abstract getStandardFileUrl(url: string): string;

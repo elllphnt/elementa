@@ -8,12 +8,12 @@ import {
 } from "@repo/shell";
 import { combineLatestOrEmpty } from "@repo/utils";
 import { Observable, map, of } from "rxjs";
-import { keys } from "../libs/keys";
-import { IElll } from "../types/elll";
+import { keys } from "../../libs/keys";
+import { IElll } from "../../types/elll";
 
-export type BlueprintEditorStateData = EditorStateData & {};
+export type BriefEditorStateData = EditorStateData & {};
 
-export class BlueprintEditorState extends EditorState<BlueprintEditorStateData> {
+export class BriefEditorState extends EditorState<BriefEditorStateData> {
   get elll() {
     const elll = this.shell.properties.value<IElll>("elll");
     if (!elll) {
@@ -23,21 +23,21 @@ export class BlueprintEditorState extends EditorState<BlueprintEditorStateData> 
   }
 
   get title(): string {
-    return "Blueprint";
+    return "Features";
   }
   get title$(): Observable<string> {
-    return of("Blueprint");
+    return of("Features");
   }
 
   get icon() {
     return {
-      name: elllIcons16.stylesheet,
+      name: elllIcons16.ai,
       color: "",
     };
   }
   get icon$() {
     return of({
-      name: elllIcons16.stylesheet,
+      name: elllIcons16.ai,
       color: "",
     });
   }
@@ -49,12 +49,12 @@ export class BlueprintEditorState extends EditorState<BlueprintEditorStateData> 
     return of([]);
   }
 
-  get data(): BlueprintEditorStateData {
+  get data(): BriefEditorStateData {
     return {
       ...super._data,
     };
   }
-  get data$(): Observable<BlueprintEditorStateData> {
+  get data$(): Observable<BriefEditorStateData> {
     return combineLatestOrEmpty([super._data$]).pipe(
       map(([superData]) => ({
         ...superData,
@@ -63,18 +63,18 @@ export class BlueprintEditorState extends EditorState<BlueprintEditorStateData> 
   }
 
   constructor({ id, shell }: { id?: string; shell: Shell }) {
-    super({ id, editorId: keys.editors.bleuprint, shell });
+    super({ id, editorId: keys.editors.brief, shell });
   }
 
-  restore(data: BlueprintEditorStateData): void {
+  restore(data: BriefEditorStateData): void {
     super.restore(data);
   }
 }
 
-export const blueprintEditor: Editor = {
-  id: keys.editors.bleuprint,
-  createState: (shell) => new BlueprintEditorState({ shell }),
+export const specEditor: Editor = {
+  id: keys.editors.brief,
+  createState: (shell) => new BriefEditorState({ shell }),
   views: {
-    board: keys.views.board.blueprintEditor,
+    board: keys.views.board.briefEditor,
   },
 };

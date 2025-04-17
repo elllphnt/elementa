@@ -1,6 +1,6 @@
 // src/utils/layoutUtils.ts
 import dagre from "@dagrejs/dagre";
-import { Edge, Node } from "reactflow";
+import { Edge, Node } from "@xyflow/react";
 import { RouteNodeData } from "../type";
 
 const dagreGraph = new dagre.graphlib.Graph();

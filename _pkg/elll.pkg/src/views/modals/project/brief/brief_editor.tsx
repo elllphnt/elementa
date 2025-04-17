@@ -1,12 +1,10 @@
 import {
   ControlProps,
   elllIcons16,
-  Icon,
   IconButton,
   ScrollArea,
   useControlValue,
 } from "@repo/components";
-import { useObservable } from "@repo/utils";
 import cx from "classnames";
 import {
   MarkdownEditor,
@@ -109,34 +107,34 @@ export function UserGoalListItem({
 }
 export function UserGoalList() {
   const project = useElllProject();
-  const brief = project.brief;
-  const goals = useObservable(brief.goals$, brief.goals);
-  return (
-    <div className="el-flex el-flex-col el-gap-2">
-      {goals.map((goal, index) => (
-        <UserGoalListItem
-          key={index}
-          goal={goal}
-          onChange={(goal) => {
-            brief.updateGoal(index, goal);
-          }}
-          onRemove={() => {
-            brief.removeGoal(index);
-          }}
-          stateKey={[`user-goal-${index}`]}
-        />
-      ))}
-      <button
-        className="el-flex el-items-center el-gap-2 el-justify-center el-p-2 el-rounded el-bg-bg-200/30 el-text-fg-400 hover:el-bg-bg-200/50"
-        onClick={() => {
-          brief.setGoals([...brief.goals, { title: "", description: "" }]);
-        }}
-      >
-        <Icon name={elllIcons16.plus} />
-        <span className="el-text-fg-400">Add a user goal</span>
-      </button>
-    </div>
-  );
+  // const goals = useObservable(brief.goals$, brief.goals);
+  // return (
+  //   <div className="el-flex el-flex-col el-gap-2">
+  //     {goals.map((goal, index) => (
+  //       <UserGoalListItem
+  //         key={index}
+  //         goal={goal}
+  //         onChange={(goal) => {
+  //           brief.updateGoal(index, goal);
+  //         }}
+  //         onRemove={() => {
+  //           brief.removeGoal(index);
+  //         }}
+  //         stateKey={[`user-goal-${index}`]}
+  //       />
+  //     ))}
+  //     <button
+  //       className="el-flex el-items-center el-gap-2 el-justify-center el-p-2 el-rounded el-bg-bg-200/30 el-text-fg-400 hover:el-bg-bg-200/50"
+  //       onClick={() => {
+  //         brief.setGoals([...brief.goals, { title: "", description: "" }]);
+  //       }}
+  //     >
+  //       <Icon name={elllIcons16.plus} />
+  //       <span className="el-text-fg-400">Add a user goal</span>
+  //     </button>
+  //   </div>
+  // );
+  return <>Goals list</>;
 }
 
 export function BriefEditor() {

@@ -16,7 +16,7 @@ export class ContentManager {
 
   private _contents: Record<string, Content> = {};
 
-  content(url: string, format: string): Content | undefined {
+  content<T>(url: string, format: string): Content<T> | undefined {
     let content = this._contents[url];
     if (!content) {
       try {

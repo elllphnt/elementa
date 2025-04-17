@@ -199,6 +199,16 @@ export class Commit
     this._timestamp$.next(new Date(data.timestamp).getTime());
   }
 
+  createFile({
+    type,
+    path,
+  }: {
+    type: string;
+    path: string;
+  }): Promise<CommitFile> {
+    throw new Error("Cannot create file in commit");
+  }
+
   fetchData() {
     return this.repositoryService.fetchCommit(this.id);
   }

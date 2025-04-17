@@ -7,6 +7,35 @@ import { useElll } from "~/src/hooks/elll/elll";
 import { keys } from "~/src/libs/keys";
 import { ChangesView } from "./changes";
 
+export function PublishMenu({ repository }: { repository: Repository }) {
+  const elll = useElll();
+  const commandName =
+    useObservable(
+      elll.property$(keys.configs.elll.commandName),
+      elll.property(keys.configs.elll.commandName),
+    ) || "elll";
+  const command = `npx ${commandName}@latest add ${repository.id}`;
+
+  return (
+    <div className="el-space-y-3">
+      <div
+        style={{
+          letterSpacing: "0.8px",
+          fontSize: "0.85em",
+          lineHeight: 1,
+        }}
+        className="el-uppercase el-text-fg-500"
+      >
+        Install
+      </div>
+
+      <p className="el-text-base el-text-fg-400">
+        Install the latest snapshot of this project into your frontend codebase.
+      </p>
+      <CopyControl value={command} className="el-font-mono" />
+    </div>
+  );
+}
 export function InstallMenu({ repository }: { repository: Repository }) {
   const elll = useElll();
   const commandName =
@@ -67,7 +96,7 @@ export function RepositoryExportMenu({
 }) {
   return (
     <div className="el-space-y-3">
-      <InstallMenu repository={repository} />
+      <PublishMenu repository={repository} />
       <hr />
       <ChangesView />
     </div>

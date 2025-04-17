@@ -1,10 +1,13 @@
+import { ErrorTupple } from "@elllphnt/elll-element";
 import {
   elllEntities,
+  getDriveFileEntity,
   getUrlScheme,
   makeElllUrl,
   makeEntityId,
   makeFileId,
   parseElllUrl,
+  parseEntityId,
   parseFileId,
 } from "@elllphnt/utils";
 
@@ -36,6 +39,21 @@ export function makeRelativeFileUrl(from: string, to: string) {
     }
   }
 }
+export function makeRelativeDriveFileUrl(url: string): ErrorTupple<string> {
+  const scheme = getUrlScheme(url);
+
+  switch (scheme) {
+    case "local": {
+      return [url, undefined];
+    }
+    case "elll": {
+      return makeRelativeElllDriveFileUrl(url);
+    }
+    default: {
+      return [url, undefined];
+    }
+  }
+}
 export function makeRelativeElllFileUrl(from: string, to: string) {
   const fromUrlStruct = parseElllUrl(from);
   const toUrlStruct = parseElllUrl(to);
@@ -58,6 +76,20 @@ export function makeRelativeElllFileUrl(from: string, to: string) {
     return to;
   }
 }
+export function makeRelativeElllDriveFileUrl(url: string): ErrorTupple<string> {
+  const UrlStruct = parseElllUrl(url);
+
+  if (!UrlStruct) {
+    return [undefined, new Error("Invalid elll url")];
+  }
+
+  const idStruct = parseFileId(UrlStruct.id);
+  if (!idStruct) {
+    return [undefined, new Error("Invalid file id")];
+  }
+
+  return [makeLocalFileUrl(idStruct.bare_file_id), undefined];
+}
 
 export function makeAbsoluteFileUrl(base: string, url: string) {
   const scheme = getUrlScheme(url);
@@ -75,6 +107,27 @@ export function makeAbsoluteFileUrl(base: string, url: string) {
     }
   }
 }
+
+export function makeAbsoluteDriveFileUrl(
+  drive_url: string,
+  url: string,
+): ErrorTupple<string> {
+  const scheme = getUrlScheme(url);
+  if (scheme !== "local") {
+    return [url, undefined];
+  }
+
+  const driveScheme = getUrlScheme(drive_url);
+  switch (driveScheme) {
+    case "elll": {
+      return makeAbsoluteElllDriveFileUrl(drive_url, url);
+    }
+    default: {
+      return [url, undefined];
+    }
+  }
+}
+
 export function makeAbsoluteElllFileUrl(base: string, url: string) {
   const { bare_id } = parseLocalFileUrl(url);
 
@@ -98,6 +151,34 @@ export function makeAbsoluteElllFileUrl(base: string, url: string) {
   }
   const fileUrl = makeElllUrl(file_id);
   return fileUrl;
+}
+export function makeAbsoluteElllDriveFileUrl(
+  drive_url: string,
+  url: string,
+): ErrorTupple<string> {
+  const { bare_id } = parseLocalFileUrl(url);
+
+  const driveUrlStruct = parseElllUrl(drive_url);
+  if (!driveUrlStruct) {
+    return [undefined, new Error("Invalid elll url")];
+  }
+
+  const driveStruct = parseEntityId(driveUrlStruct.id);
+  if (!driveStruct) {
+    return [undefined, new Error("Invalid entity id")];
+  }
+
+  const fileEntity = getDriveFileEntity(driveStruct.entity_name);
+  const file_id = makeFileId({
+    entity: fileEntity.name as any,
+    bare_drive_id: driveStruct.bare_id,
+    bare_file_id: bare_id,
+  });
+  if (!file_id) {
+    return [undefined, new Error(`Invalid file id: ${bare_id}`)];
+  }
+  const fileUrl = makeElllUrl(file_id);
+  return [fileUrl, undefined];
 }
 
 export function getFileDriveId(url: string) {
