@@ -1,7 +1,18 @@
+import { agentMessageToText } from "@elllphnt/elll-acp";
 import { AppData } from "@elllphnt/elll-element";
-import { IFileDrive } from "@repo/backend";
+import { File, IFileDrive } from "@repo/backend";
 import { App } from "@repo/elementa-models";
-import { map, Observable } from "rxjs";
+import {
+  BehaviorSubject,
+  distinctUntilChanged,
+  filter,
+  firstValueFrom,
+  map,
+  Observable,
+  of,
+  switchMap,
+  timeout,
+} from "rxjs";
 import { mimeTypes } from "~/src/libs/mimetypes";
 import { jsonModelConstructor } from "~/src/models/json";
 import { Content } from "~/src/modules/elll/content/content";
@@ -47,6 +58,41 @@ export class ElllApp extends App {
   readonly drive: IFileDrive;
   readonly elll: IElll;
   readonly file: ElllAppFile;
+
+  private _generatingFeatureBriefs$ = new BehaviorSubject<string[]>([]);
+  private _generatingBrief$ = new BehaviorSubject(false);
+  private _generatingFeatures$ = new BehaviorSubject(false);
+
+  get generatingBrief$() {
+    return this._generatingBrief$.asObservable();
+  }
+  get generatingBrief() {
+    return this._generatingBrief$.getValue();
+  }
+
+  get generatingFeatures$() {
+    return this._generatingFeatures$.asObservable();
+  }
+  get generatingFeatures() {
+    return this._generatingFeatures$.getValue();
+  }
+
+  get generatingFeatureBriefs$() {
+    return this._generatingFeatureBriefs$.asObservable();
+  }
+  get generatingFeatureBriefs() {
+    return this._generatingFeatureBriefs$.getValue();
+  }
+
+  isFeatureBriefGenerating(url: string) {
+    return this.generatingFeatureBriefs.includes(url);
+  }
+  isFeatureBriefGenerating$(url: string): Observable<boolean> {
+    return this.generatingFeatureBriefs$.pipe(
+      map((generatingFeatureBriefs) => generatingFeatureBriefs.includes(url)),
+      distinctUntilChanged(),
+    );
+  }
 
   get briefFileQuery() {
     return this.drive.fileAtPath(".elll/brief", {
@@ -106,7 +152,7 @@ export class ElllApp extends App {
     );
   }
 
-  async addFeature(name: string): Promise<void> {
+  async addFeature(name: string) {
     const file = await this.drive.createFile({
       type: mimeTypes.markdown,
       path: `.elll/features/${name}`,
@@ -119,6 +165,7 @@ export class ElllApp extends App {
     this.update({
       featureUrls: [...(this.state.featureUrls ?? []), url],
     });
+    return file;
   }
   removeFeature(index: number): void {
     const featureUrls = this.state.featureUrls ?? [];
@@ -146,6 +193,32 @@ export class ElllApp extends App {
     });
   }
 
+  get loading() {
+    return this.file.loading || this.briefFileQuery.fetching;
+  }
+  get loading$() {
+    return this.file.loading$.pipe(
+      switchMap((loading) => {
+        if (loading) return of(true);
+        return this.briefFileQuery.fetching$ ?? of(false);
+      }),
+    );
+  }
+
+  get loaded() {
+    return this.file.loaded && !!this.briefFileQuery.data;
+  }
+  get loaded$() {
+    return this.file.loaded$.pipe(
+      switchMap((loaded) => {
+        if (!loaded) return of(false);
+        return (
+          this.briefFileQuery.data$.pipe(map((file) => !!file)) ?? of(false)
+        );
+      }),
+    );
+  }
+
   constructor({ project }: { project: IElllElementaProject }) {
     super({ project });
     this.elll = project.elll;
@@ -157,5 +230,149 @@ export class ElllApp extends App {
       path: ".elll/app",
       model: jsonModelConstructor.name,
     });
+  }
+
+  setFeatureBriefGenerating(url: string, generating: boolean) {
+    const generatingFeatureBriefs = this.generatingFeatureBriefs;
+    if (generating) {
+      if (!generatingFeatureBriefs.includes(url)) {
+        this._generatingFeatureBriefs$.next([...generatingFeatureBriefs, url]);
+      }
+    }
+    if (!generating) {
+      if (generatingFeatureBriefs.includes(url)) {
+        this._generatingFeatureBriefs$.next(
+          generatingFeatureBriefs.filter((u) => u !== url),
+        );
+      }
+    }
+  }
+
+  async generateBrief({ prompt }: { prompt: string }) {
+    this._generatingBrief$.next(true);
+    try {
+      await firstValueFrom(
+        this.briefFile$.pipe(filter(Boolean), timeout(10000)),
+      );
+      const stream = await this.elll.backend.agentClient.query(
+        "/agents/editor/generate/brief",
+        {
+          author: this.elll.user?.id ?? "",
+          content: [
+            {
+              text: prompt,
+            },
+          ],
+        },
+      );
+
+      for await (const event of stream) {
+        if (event.type === "message.start") {
+          this.briefContent?.update("");
+        }
+        if (event.type === "message.delta") {
+          this.briefContent?.update(
+            this.briefContent.data + agentMessageToText(event.payload as any),
+          );
+        }
+      }
+    } finally {
+      this._generatingBrief$.next(false);
+    }
+  }
+  async generateFeatures() {
+    const brief = this.briefContent?.data ?? "";
+    const frozenFeatures = [...this.features];
+    const featureNames = frozenFeatures.map((feature) => feature.name);
+
+    this._generatingFeatures$.next(true);
+    try {
+      let update: {
+        add: string[];
+        remove: number[];
+      } = {
+        add: [],
+        remove: [],
+      };
+
+      const stream = await this.elll.backend.agentClient.query(
+        "/agents/editor/generate/features",
+        {
+          data: {
+            brief,
+            features: featureNames,
+          },
+        },
+      );
+
+      for await (const event of stream) {
+        if (event.type === "message.end") {
+          update = event.payload.data;
+        }
+      }
+
+      // remove features
+      for (const index of update.remove) {
+        const feature = frozenFeatures[index];
+        const currentIndex = this.features.indexOf(feature);
+        if (currentIndex !== -1) {
+          this.removeFeature(index);
+        }
+      }
+
+      // add features
+      const newFeatures: File[] = [];
+      for (const title of update.add) {
+        const file = await this.addFeature(title);
+        if (file) {
+          newFeatures.push(file);
+        }
+      }
+
+      // Generate briefs for new features
+      for (const feature of newFeatures) {
+        await this.generateFeatureBrief(feature.url);
+      }
+    } finally {
+      this._generatingFeatures$.next(false);
+    }
+  }
+  async generateFeatureBrief(url: string) {
+    const feature = this.features.find((f) => f.url === url);
+    if (!feature) {
+      this.elll.shell.toast("Feature not found. Please refresh the project.");
+      return;
+    }
+
+    try {
+      this.setFeatureBriefGenerating(feature.url, true);
+
+      const brief = this.briefContent?.data ?? "";
+      const features = this.features.map((f) => f.name);
+
+      const stream = await this.elll.backend.agentClient.query(
+        "/agents/editor/generate/feature-brief",
+        {
+          data: {
+            brief,
+            features,
+            feature: feature.name,
+          },
+        },
+      );
+
+      for await (const event of stream) {
+        if (event.type === "message.start") {
+          feature.update("");
+        }
+        if (event.type === "message.delta") {
+          feature.update(
+            (feature.data || "") + agentMessageToText(event.payload as any),
+          );
+        }
+      }
+    } finally {
+      this.setFeatureBriefGenerating(feature.url, false);
+    }
   }
 }

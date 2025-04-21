@@ -1,5 +1,5 @@
 import { TokenManager } from "@elllphnt/elll-client";
-import { docs, messages, notifications } from "@elllphnt/elll-room-protocol";
+import { docs, messages } from "@elllphnt/elll-room-protocol";
 import { decodeMessage, encodeMessage } from "@elllphnt/elll-ws-protocol";
 import { Disposable } from "@repo/utils";
 import { BehaviorSubject, map } from "rxjs";
@@ -7,25 +7,25 @@ import { v4 as uuidv4 } from "uuid";
 import * as y from "yjs";
 import { ReconnectingWebSocket } from "~/src/libs/ws";
 
+const systemDocs = [docs.presence];
+
 export class Room extends Disposable {
   readonly id = uuidv4();
   readonly ws: ReconnectingWebSocket;
-  readonly workspaceId: string;
-  readonly userId: string;
   readonly tokenManager: TokenManager;
 
-  readonly presenceDoc = new y.Doc();
-  readonly docs = {
+  readonly docs: Record<number, y.Doc> = {
     [docs.presence]: new y.Doc(),
     [docs.file]: new y.Doc(),
   };
+
   private _initialized$ = new BehaviorSubject<Record<number, boolean>>({});
 
   initialized$(channel: number) {
-    return this._initialized$.pipe(map((initialized) => initialized[channel]));
+    return this._initialized$.pipe(map((m) => m[channel] === true));
   }
   initialized(channel: number) {
-    return this._initialized$.value[channel];
+    return this._initialized$.value[channel] === true;
   }
 
   doc(channel: number) {
@@ -43,56 +43,56 @@ export class Room extends Disposable {
   get fileDoc$() {
     return this.doc$(docs.file);
   }
+  get presenceDoc() {
+    return this.doc(docs.presence);
+  }
+  get presenceDoc$() {
+    return this.doc$(docs.presence);
+  }
 
   constructor({
     url,
     workspaceId,
-    userId,
     tokenManager,
   }: {
     url: string;
     workspaceId: string;
-    userId: string;
     tokenManager: TokenManager;
   }) {
     super();
-
-    this.workspaceId = workspaceId;
-    this.userId = userId;
     this.tokenManager = tokenManager;
-    this.ws = new ReconnectingWebSocket(url, {
-      reconnectInterval: 3000,
+
+    const u = new URL(url);
+    u.searchParams.set("workspace_id", workspaceId);
+    u.searchParams.set("client_id", this.id);
+
+    this.ws = new ReconnectingWebSocket(u.toString(), {
+      reconnectInterval: 3_000,
       maxReconnectAttempts: Infinity,
+      getToken: async () => this.tokenManager.getToken(),
     });
 
+    this.ws.on("open", () => {
+      console.log("WebSocket connection opened");
+
+      for (const [channel, doc] of Object.entries(this.docs)) {
+        const state = y.encodeStateVector(doc);
+        this.sendDocState(Number(channel), state);
+      }
+    });
+
+    this.setupLocalBroadcasts();
+    this.setupMessageHandler();
+
+    this.addDisposer(() => this.ws.close());
     this.init();
-
-    this.addDisposer(() => {
-      this.ws.close();
-    });
   }
 
-  private init(): void {
-    this.ws.on("open", async () => {
-      console.log("WebSocket connection established for Room");
+  private async init() {
+    await this.ws.connect();
+  }
 
-      const client_id = this.id;
-      const workspace_id = this.workspaceId;
-      const user_id = this.userId;
-      const access_token = await this.tokenManager.getToken();
-
-      const initMessage = encodeMessage({
-        msgType: messages.INIT.code,
-        args: messages.INIT.encode({
-          client_id,
-          workspace_id,
-          user_id,
-          access_token,
-        }),
-      });
-      this.ws.send(initMessage);
-    });
-
+  private setupMessageHandler() {
     this.ws.on("message", async (event) => {
       const buffer = await event.data.arrayBuffer();
       const { msgType, args } = decodeMessage(buffer);
@@ -102,96 +102,107 @@ export class Room extends Disposable {
           const [code, message, details] = messages.NOTIFY.decode(
             ...(args as Parameters<typeof messages.NOTIFY.decode>),
           );
-          this.handleNotification(code, message, details);
+          console.log("NOTIFY", code, message, details);
           break;
         }
-        case messages.DOC_UPDATE.code: {
-          const [channel, update] = messages.DOC_UPDATE.decode(
-            ...(args as Parameters<typeof messages.DOC_UPDATE.decode>),
-          );
-          const ydoc = this.docs[channel];
-          if (ydoc) {
-            y.applyUpdate(ydoc, new Uint8Array(update));
-            if (ydoc.store.pendingDs?.length) {
-              console.log("Not in sync.", ydoc);
-              this.initiateSynchronization(channel, ydoc);
-            } else if (!this.initialized(channel)) {
-              this.setInitialized(channel, true);
-              console.log("Initialized", channel);
-            }
-          }
-          console.log("DOC_UPDATE", ydoc, channel, this.docs);
-          break;
-        }
+
         case messages.DOC_STATE.code: {
-          const [channel, state] = messages.DOC_STATE.decode(
+          const [channel, remoteState] = messages.DOC_STATE.decode(
             ...(args as Parameters<typeof messages.DOC_STATE.decode>),
           );
-          console.log("DOC_STATE", [channel, state]);
-          const ydoc = this.docs[channel];
-          if (ydoc) {
-            const update = y.encodeStateAsUpdate(ydoc, new Uint8Array(state));
-            this.ws.send(
-              encodeMessage({
-                msgType: messages.DOC_UPDATE.code,
-                args: messages.DOC_UPDATE.encode(channel, update),
-              }),
+          const doc = this.docs[channel];
+          if (!doc || this.initialized(channel)) break;
+
+          // 1) Compute our local state vector
+          const localState = y.encodeStateVector(doc);
+
+          // 2) If vectors differ, compute & send our missing updates
+          const vectorsEqual =
+            localState.length === remoteState.length &&
+            localState.every((b, i) => b === (remoteState as Uint8Array)[i]);
+
+          if (!vectorsEqual) {
+            const update = y.encodeStateAsUpdate(
+              doc,
+              new Uint8Array(remoteState),
             );
+            this.sendDocUpdate(channel, update);
+          }
+
+          // 3) In all cases—handshake done
+          this.setInitialized(channel, true);
+          break;
+        }
+
+        case messages.DOC_UPDATE.code: {
+          const [channel, rawUpdate] = messages.DOC_UPDATE.decode(
+            ...(args as Parameters<typeof messages.DOC_UPDATE.decode>),
+          );
+          console.log("DOC_UPDATE", channel);
+          const doc = this.docs[channel];
+          if (!doc) break;
+
+          y.applyUpdate(doc, new Uint8Array(rawUpdate));
+          console.log("applyUpdate", doc.toJSON(), doc);
+
+          // mark initialized on first arrive
+          if (!this.initialized(channel)) {
+            this.setInitialized(channel, true);
           }
           break;
         }
+
+        default:
+          console.warn("Unhandled msgType", msgType);
       }
     });
-
-    for (const [channel, doc] of Object.entries(this.docs)) {
-      doc.on("update", (update: Uint8Array) => {
-        const message = encodeMessage({
-          msgType: messages.DOC_UPDATE.code,
-          args: messages.DOC_UPDATE.encode(parseInt(channel), update),
-        });
-
-        if (message.byteLength > 100000) {
-          console.warn(
-            "large message",
-            update.length,
-            update[0],
-            update[update.length - 1],
-          );
-        }
-
-        this.ws.send(message);
-      });
-    }
-
-    this.ws.connect();
   }
 
-  setInitialized(channel: number, value: boolean) {
+  private setupLocalBroadcasts() {
+    Object.entries(this.docs).forEach(([chanStr, doc]) => {
+      const channel = Number(chanStr);
+      if (systemDocs.includes(channel)) return;
+
+      doc.on("update", (update: Uint8Array) => {
+        this.sendDocUpdate(channel, update);
+      });
+    });
+  }
+
+  private sendDocUpdate(channel: number, update: Uint8Array) {
+    const msg = encodeMessage({
+      msgType: messages.DOC_UPDATE.code,
+      args: messages.DOC_UPDATE.encode(channel, update),
+    });
+
+    try {
+      this.ws.send(msg);
+    } catch (e) {
+      console.error("Failed to send DOC_UPDATE", e);
+    }
+
+    console.log("sendDocUpdate", channel, update.byteLength);
+  }
+  private sendDocState(channel: number, state: Uint8Array) {
+    const msg = encodeMessage({
+      msgType: messages.DOC_STATE.code,
+      args: messages.DOC_STATE.encode(channel, state),
+    });
+
+    try {
+      this.ws.send(msg);
+    } catch (e) {
+      console.error("Failed to send DOC_STATE", e);
+    }
+
+    console.log("sendDocState", channel, state.byteLength);
+  }
+
+  private setInitialized(channel: number, value: boolean) {
     this._initialized$.next({
       ...this._initialized$.value,
       [channel]: value,
     });
-  }
-
-  initiateSynchronization(no: number, doc: y.Doc) {
-    if (doc) {
-      this.ws.send(
-        encodeMessage({
-          msgType: messages.DOC_STATE.code,
-          args: messages.DOC_STATE.encode(no, y.encodeStateVector(doc)),
-        }),
-      );
-    }
-  }
-
-  handleNotification(code: string, message: string, details: any) {
-    switch (code) {
-      case notifications.connection.initialized: {
-        for (const [no, doc] of Object.entries(this.docs)) {
-          this.initiateSynchronization(parseInt(no), doc);
-        }
-        break;
-      }
-    }
+    console.log("setInitialized", channel, value);
   }
 }

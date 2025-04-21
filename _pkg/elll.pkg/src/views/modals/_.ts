@@ -11,7 +11,6 @@ import { WorkspaceFileExplorerView } from "./file_exporer/file_explorer";
 import { NpmPackageBrowser } from "./packages/npm_package_browser";
 import { NpmPackageViewer } from "./packages/npm_package_viewer";
 import { PackageBrowser } from "./packages/package_browser";
-import { Brief } from "./project/brief/brief";
 import { DeleteProjectModal } from "./project/delete_project";
 import { ProjectInfoModal } from "./project/project";
 import { ProjectList } from "./project/project_list";
@@ -34,10 +33,6 @@ export const modalViews = {
   deleteProject: {
     id: "elll.views.modals.delete-project",
     render: DeleteProjectModal,
-  },
-  brief: {
-    id: "elll.views.modals.generate-project",
-    render: Brief,
   },
 
   // Workspace

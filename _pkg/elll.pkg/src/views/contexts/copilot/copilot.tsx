@@ -1,4 +1,4 @@
-import { MessagePayload } from "@elllphnt/elll-aicp";
+import { AgentMessage } from "@elllphnt/elll-acp";
 import { IntelligenceThread, IntelligenceThreadEntry } from "@repo/backend";
 import {
   ActionBar,
@@ -87,7 +87,6 @@ function Input() {
     thread?.postMessage({
       content: [
         {
-          type: "text",
           text: message,
         },
       ],
@@ -131,7 +130,7 @@ function Input() {
           }
         }}
       />
-      <div className="el-flex el-items-center el-justify-between el-w-full el-pb-1 el-px-2 el-justify-end">
+      <div className="el-flex el-items-center el-w-full el-pb-1 el-px-2 el-justify-between">
         <ActionBar registry={actionRegistry} />
 
         <button
@@ -165,14 +164,14 @@ const Message = memo(function Message({
   message: IntelligenceThreadEntry;
 }) {
   const data = useObservable(message.data$, message.data) as
-    | MessagePayload
+    | AgentMessage
     | undefined;
   const content = data?.content || [];
   const author = data?.role;
   const isUser = author?.toLowerCase() === "user";
 
   return (
-    <div className="el-p-3 el-space-y-3" style={{ alignSelf: "start" }}>
+    <div className="el-px-3 el-space-y-2" style={{ alignSelf: "start" }}>
       <div
         className="el-flex el-w-full"
         style={{
@@ -213,15 +212,12 @@ const MessageContent = memo(function MessageContent({
   content,
 }: {
   content: {
-    type?: string;
     text?: string;
     image_url?: string;
   };
 }) {
-  if (content.type === "text") {
+  if (content.text) {
     return <span>{content.text as any}</span>;
-  } else if (content.type === "image_url") {
-    return <img src={content.image_url} alt="image" />;
   }
 
   return <></>;
@@ -241,29 +237,24 @@ function Thread() {
 
   return (
     <div className="el-flex el-flex-col el-grow el-overflow-hidden el-gap-2">
-      <div className="el-grow el-overflow-hidden">
-        <ScrollArea scrollY>
-          {loading ? (
-            <div
-              style={{
-                position: "absolute",
-                top: -1,
-                left: 0,
-                right: 0,
-                zIndex: 10,
-              }}
-            >
-              <ProgressBar />
-            </div>
-          ) : (
-            <></>
-          )}
-          {entries?.map((entry, i) => (
-            <>
-              {i > 0 ? <hr /> : <></>}
-              <ThreadEntry key={i} entry={entry} />
-            </>
-          ))}
+      <div className="el-relative el-grow el-overflow-hidden">
+        {loading ? (
+          <div
+            style={{
+              position: "absolute",
+              top: -1,
+              left: 0,
+              right: 0,
+              zIndex: 10,
+            }}
+          >
+            <ProgressBar />
+          </div>
+        ) : (
+          <></>
+        )}
+        <ScrollArea scrollY containerClassName="el-space-y-6 el-py-3">
+          {entries?.map((entry, i) => <ThreadEntry key={i} entry={entry} />)}
         </ScrollArea>
       </div>
     </div>

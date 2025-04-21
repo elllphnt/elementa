@@ -1,7 +1,7 @@
-import { LLMContent, MessageIntent } from "@elllphnt/elll-aicp";
 import { Thread as IntelligenceThreadData } from "@elllphnt/intelligence-service-client";
 import { elllEntities } from "@elllphnt/utils";
 import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
+import { IntelligenceMessage } from "../lib/ai";
 import { Backend } from "../lib/backend";
 import { AutoSavableResource } from "../lib/resource";
 import { intelligenceServiceFactory } from "../services/intelligence_service";
@@ -142,19 +142,15 @@ export class IntelligenceThread extends AutoSavableResource<IntelligenceThreadDa
     this._metadata$.next(data.metadata);
   }
 
-  async postMessage({
-    content,
-    intent,
-  }: {
-    content?: LLMContent;
-    intent?: MessageIntent;
-  }) {
+  async postMessage(message: Omit<IntelligenceMessage, "role">) {
     try {
       this._messaging$.next(true);
       return await this.intelligenceService.postMessage({
         threadId: this.id,
-        content,
-        intent,
+        message: {
+          ...message,
+          role: "user",
+        },
       });
     } finally {
       this._messaging$.next(false);

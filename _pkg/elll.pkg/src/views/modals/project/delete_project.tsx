@@ -42,13 +42,12 @@ export function DeleteProjectModal() {
       </p>
       <div className="el-space-y-1">
         <p className="el-text-fg-400">
-          Are you sure you want to delete this workspace? This action cannot be
+          Are you sure you want to delete this project? This action cannot be
           undone.
         </p>
 
         <p className="el-text-fg-400">
-          To confirm deletion, type the name of the workspace in the field
-          below.
+          To confirm deletion, type the name of the project in the field below.
         </p>
       </div>
 

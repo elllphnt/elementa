@@ -63,8 +63,8 @@ export const repositoryServiceClientFactory = createElllephantApiClientFactory(
 export const intelligenceServiceClientFactory = createFactory(
   ({ backend }: { backend: Backend }) =>
     createIntelligenceServiceClient({
-      baseUrl: "http://localhost:32989",
-      tokenManager: backend.getProperty("elllephantApiBaseUrl"),
+      baseUrl: "http://localhost:59365",
+      tokenManager: backend.getProperty("elllephantApiTokenManager"),
     }),
 );
 createElllephantApiClientFactory(createIntelligenceServiceClient, {

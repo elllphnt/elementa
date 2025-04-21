@@ -58,8 +58,8 @@ export async function runApp() {
         tokenManager: tokenManager,
       },
       room: {
-        // url: "http://localhost:56633",
-        url: "https://api.elllephant.com/rooms",
+        url: "http://localhost:56633",
+        // url: "https://api.elllephant.com/rooms",
         tokenManager: tokenManager,
       },
       elementa: {

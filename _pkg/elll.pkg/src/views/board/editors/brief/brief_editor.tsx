@@ -3,8 +3,10 @@ import {
   elllIcons16,
   Icon,
   IconButton,
+  Popper,
   ProgressBar,
   ScrollArea,
+  TextAreaControl,
   useControlValue,
 } from "@repo/components";
 import { useObservable } from "@repo/utils";
@@ -45,14 +47,20 @@ function NakedTextControl({
 }
 
 export function FeatureListItem({
+  app,
   feature,
   stateKey,
   onRemove,
 }: {
+  app: ElllApp;
   feature: Content<string>;
   stateKey?: string[];
   onRemove: () => void;
 }) {
+  const generatingBrief = useObservable(
+    app.isFeatureBriefGenerating$(feature.url),
+    app.isFeatureBriefGenerating(feature.url),
+  );
   const content = useObservable(feature.data$, feature.data);
   const name = useObservable(feature.name$, feature.name);
   const [open, setOpen] = useWorkspaceState(
@@ -61,7 +69,7 @@ export function FeatureListItem({
   );
 
   return (
-    <div className="el-group el-space-y-1 el-bg-bg-200/30 el-rounded">
+    <div className="el-relative el-group el-space-y-1 el-bg-bg-200/30 el-rounded">
       <div className="el-flex el-p-2 el-items-center el-gap-2">
         <IconButton
           icon={elllIcons16.chevron}
@@ -74,13 +82,24 @@ export function FeatureListItem({
         <input
           type="text"
           placeholder="Add a title"
-          className="el-input el-text-lg el-font-semibold el-grow"
+          className={cx("el-input el-font-semibold el-grow", {
+            "el-text-fg-500 el-text-lg": !open,
+            "el-text-fg-400": open,
+          })}
           value={name}
           onChange={(e) => {
             feature.setName(e.target.value);
           }}
         />
         <div className="el-hidden group-hover:el-flex el-items-center el-gap-1 ">
+          <IconButton
+            icon={elllIcons16.refresh}
+            iconClassName="el-text-fg-400"
+            onClick={() => {
+              app.generateFeatureBrief(feature.url);
+            }}
+          />
+
           <IconButton
             icon={elllIcons16.trash}
             iconClassName="el-text-fg-400"
@@ -103,6 +122,21 @@ export function FeatureListItem({
             }}
             placeholder="Describe what you want to build."
           />
+        </div>
+      ) : (
+        <></>
+      )}
+
+      {generatingBrief ? (
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
+        >
+          <ProgressBar />
         </div>
       ) : (
         <></>
@@ -193,6 +227,7 @@ export function FeatureList() {
           onRemove={() => {
             project.app.removeFeature(index);
           }}
+          app={project.app}
         />
       ))}
       <AddFeatureButton app={project.app} />
@@ -200,10 +235,77 @@ export function FeatureList() {
   );
 }
 
+export function BriefRefreshButton({
+  app,
+  className,
+}: {
+  app: ElllApp;
+  className?: string;
+}) {
+  const [anchor, setAnchor] = useState<HTMLElement | undefined>(undefined);
+  const [prompt, setPrompt] = useState<string | undefined>(undefined);
+  return (
+    <>
+      <IconButton
+        icon={elllIcons16.refresh}
+        iconClassName={cx("el-text-fg-400", className)}
+        onClick={(e) => setAnchor(e.currentTarget)}
+      />
+      <Popper
+        filled
+        border
+        shadow
+        anchor={anchor}
+        onClose={() => setAnchor(undefined)}
+        align="center"
+        position="bottom"
+        offset={8}
+        exclusive
+      >
+        <div style={{ width: 240 }} className="el-p-2 el-space-y-2">
+          <TextAreaControl
+            value={prompt}
+            onChange={(value) => setPrompt(value || "")}
+            settings={{
+              minRows: 3,
+              maxRows: 5,
+              placeholder: "Add a prompt to generate a new brief",
+            }}
+          />
+          <div className="el-flex el-justify-end el-gap-2">
+            <button
+              className="el-bg-pm el-text-pm-ctr el-h-6 el-px-2 el-rounded"
+              onClick={async () => {
+                if (!prompt) return;
+                app.generateBrief({
+                  prompt,
+                });
+                setAnchor(undefined);
+              }}
+            >
+              Generate
+            </button>
+          </div>
+        </div>
+      </Popper>
+    </>
+  );
+}
+
 export function BriefEditor() {
   const repository = useRepository();
   const project = useElllProject();
   const app = project.app;
+  const generatingBrief = useObservable(
+    app.generatingBrief$,
+    app.generatingBrief,
+  );
+  const generatingFeatures = useObservable(
+    app.generatingFeatures$,
+    app.generatingFeatures,
+  );
+  const loading = useObservable(app.loading$, app.loading);
+  const loaded = useObservable(app.loaded$, app.loaded);
   const brief = useObservable(app.briefContent$, app.briefContent);
 
   return (
@@ -216,35 +318,63 @@ export function BriefEditor() {
           paddingBottom: 48,
         }}
       >
-        <div className="el-space-y-1">
-          <NakedTextControl
-            value$={repository?.name$}
-            value={repository?.name}
-            onChange={(value) => {
-              repository?.setName(value || "");
-            }}
-            settings={{
-              placeholder: "Add a title",
-              className: "el-text-3xl el-font-bold",
-            }}
-          />
+        <div className="el-flex el-items-end">
+          <div className="el-grow">
+            <NakedTextControl
+              value$={repository?.name$}
+              value={repository?.name}
+              onChange={(value) => {
+                repository?.setName(value || "");
+              }}
+              settings={{
+                placeholder: "Add a title",
+                className: "el-text-3xl el-font-bold el-w-full",
+              }}
+            />
+          </div>
+          <div className="el-flex el-gap-2">
+            <BriefRefreshButton app={app} />
+          </div>
         </div>
-        <hr />
-        <div className="el-space-y-1">
-          <MarkdownEditorControl
-            value$={brief?.data$}
-            value={brief?.data}
-            onChange={(value) => brief?.update(value || "")}
-            settings={{
-              placeholder:
-                "Describe what your app is about, how its parts fit together, and what the user should experience.",
-            }}
-          />
-        </div>
-        <div className="el-space-y-2">
-          <p className="el-input el-text-2xl el-font-bold">Features</p>
-          <FeatureList />
-        </div>
+        {loading || generatingBrief ? <ProgressBar height={1} /> : <hr />}
+        {loaded ? (
+          <>
+            <div className="el-space-y-1">
+              <MarkdownEditorControl
+                value$={brief?.data$}
+                value={brief?.data}
+                onChange={(value) => brief?.update(value || "")}
+                settings={{
+                  placeholder:
+                    "Describe what your app is about, how its parts fit together, and what the user should experience.",
+                }}
+              />
+            </div>
+            <div className="el-space-y-6">
+              <div className="el-flex el-items-end el-justify-between">
+                <p className="el-input el-text-2xl el-font-bold">Features</p>
+                <div className="el-flex el-gap-2">
+                  <IconButton
+                    icon={elllIcons16.refresh}
+                    onClick={() => {
+                      app.generateFeatures();
+                    }}
+                  />
+                </div>
+              </div>
+
+              {loading || generatingFeatures ? (
+                <ProgressBar height={1} />
+              ) : (
+                <hr />
+              )}
+
+              <FeatureList />
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
       </div>
     </ScrollArea>
   );

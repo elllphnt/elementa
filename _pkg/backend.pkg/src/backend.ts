@@ -1,4 +1,5 @@
 import { TokenManager } from "@elllphnt/elll-client";
+import { createAgentClient } from "./agent";
 import {
   configurationServiceClientFactory,
   driveServiceClientFactory,
@@ -32,6 +33,8 @@ import { Syncer } from "./syncer";
 export class ElllBackend extends Backend {
   readonly syncer: Syncer;
 
+  readonly agentClient: ReturnType<typeof createAgentClient>;
+
   constructor({
     elllephantApiBaseUrl,
     elllephantApiTokenManager,
@@ -43,6 +46,11 @@ export class ElllBackend extends Backend {
 
     this.setProperty("elllephantApiBaseUrl", elllephantApiBaseUrl);
     this.setProperty("elllephantApiTokenManager", elllephantApiTokenManager);
+
+    this.agentClient = createAgentClient({
+      baseUrl: "http://localhost:32989",
+      getToken: () => elllephantApiTokenManager.getToken(),
+    });
 
     this.syncer = new Syncer({ baseUrl: elllephantApiBaseUrl, backend: this });
     Syncer.setInstance(this, this.syncer);

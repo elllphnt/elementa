@@ -1,14 +1,14 @@
 type EventListener = (event: Event | MessageEvent<any>) => void;
 
 interface ReconnectingWebSocketOptions {
-  token?: string; // Authorization token
+  getToken?: () => Promise<string>; // Authorization token
   reconnectInterval?: number; // Retry interval in ms
   maxReconnectAttempts?: number; // Maximum reconnect attempts
 }
 
 export class ReconnectingWebSocket {
   url: string;
-  private token: string | null;
+  private getToken?: () => Promise<string>;
   private reconnectInterval: number;
   private maxReconnectAttempts: number;
   private currentReconnectAttempts: number;
@@ -20,7 +20,7 @@ export class ReconnectingWebSocket {
 
   constructor(url: string, options: ReconnectingWebSocketOptions = {}) {
     this.url = url;
-    this.token = options.token || null;
+    this.getToken = options.getToken;
     this.reconnectInterval = options.reconnectInterval || 5000;
     this.maxReconnectAttempts = options.maxReconnectAttempts || Infinity;
     this.currentReconnectAttempts = 0;
@@ -29,11 +29,11 @@ export class ReconnectingWebSocket {
     this.socket = null;
   }
 
-  connect(): void {
+  async connect(): Promise<void> {
     // Pass the token as subprotocol
     this.socket = new WebSocket(
       this.url,
-      this.token ? [this.token] : undefined,
+      this.getToken ? [await this.getToken()] : undefined,
     );
 
     // Bind WebSocket events
@@ -114,72 +114,5 @@ export class ReconnectingWebSocket {
     if (this.socket) {
       this.socket.close();
     }
-  }
-}
-
-export class WebSocketWithRequest extends ReconnectingWebSocket {
-  timeout: number;
-  pendingRequests = new Map<
-    string,
-    {
-      resolve: (data: any) => void;
-      timeout: any;
-    }
-  >();
-
-  constructor(
-    url: string,
-    options: ReconnectingWebSocketOptions & {
-      timeout?: number;
-    } = {},
-  ) {
-    super(url, options);
-    this.timeout = options.timeout || 5000;
-  }
-
-  public request<T>(request: { type: string; data: any }): Promise<T> {
-    return new Promise((resolve, reject) => {
-      const requestId = Math.random().toString(36).slice(2);
-      this.pendingRequests.set(requestId, {
-        resolve: (data: any) => {
-          resolve(data);
-        },
-        timeout: setTimeout(() => {
-          reject(new Error("Request timed out"));
-          this.pendingRequests.delete(requestId);
-        }, this.timeout),
-      });
-      console.log("Sending request:", { id: requestId, ...request }, [
-        ...this.pendingRequests.keys(),
-      ]);
-      (window as any).req1 = this.pendingRequests;
-
-      this.send(JSON.stringify({ id: requestId, ...request }));
-    });
-  }
-
-  protected handleMessage(event: MessageEvent<any>): void {
-    let data: any;
-
-    if (typeof event.data === "string") {
-      data = JSON.parse(event.data);
-    }
-
-    if (data?.id) {
-      const req = this.pendingRequests.get(data.id);
-      (window as any).req2 = this.pendingRequests;
-
-      if (req) {
-        req.resolve(data.data);
-        clearTimeout(req.timeout);
-        this.pendingRequests.delete(data.id);
-      }
-    } else {
-      super.handleMessage(event);
-    }
-  }
-
-  protected handleClose(event: CloseEvent): void {
-    super.handleClose(event);
   }
 }

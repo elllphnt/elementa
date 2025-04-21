@@ -12,7 +12,8 @@
     "dependencies": {
         "@elllphnt/configuration-service-client": "^0.1.2",
         "@elllphnt/drive-service-client": "^0.2.0",
-        "@elllphnt/elll-aicp": "^0.1.8",
+        "@elllphnt/elll-acp": "^0.2.3",
+        "@elllphnt/elll-agent-client": "^0.1.0",
         "@elllphnt/elll-client": "^0.1.4",
         "@elllphnt/identity-service-client": "^0.1.8",
         "@elllphnt/intelligence-service-client": "^0.1.12",

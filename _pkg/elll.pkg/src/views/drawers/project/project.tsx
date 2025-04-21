@@ -1,19 +1,8 @@
-import {
-  elllIcons16,
-  Icon,
-  ScrollArea,
-  TextControl,
-  TreeEntry,
-} from "@repo/components";
+import { ScrollArea, TextControl } from "@repo/components";
 import { CopyControl } from "~/src/components/ui/controls/_uncertain/copy/copy";
 import { useRepository } from "~/src/hooks/backend/repository";
-import { useElll } from "~/src/hooks/elll/elll";
-import { useElllProject } from "~/src/hooks/project/project";
-import { modalViews } from "../../modals/_";
 
 export function ProjectView(): JSX.Element {
-  const elll = useElll();
-  const project = useElllProject();
   const repository = useRepository();
 
   return (
@@ -36,55 +25,6 @@ export function ProjectView(): JSX.Element {
         <label className="el-text el-text-fg-400">Repository ID</label>
         <CopyControl value={repository?.id ?? ""} className="el-font-mono" />
       </div>
-
-      <div className="el-space-y-1" style={{ pointerEvents: "auto" }}>
-        <label className="el-text-fg-400">
-          Define what this project is about.
-        </label>
-        <TreeEntry
-          icon={<Icon name={elllIcons16.ai} />}
-          className="el-border"
-          onClick={() => {
-            elll.shell.showModal({
-              affinity: "workspace",
-              viewId: modalViews.brief.id,
-              closeOnBackdropClick: true,
-            });
-          }}
-        >
-          Brief
-        </TreeEntry>
-      </div>
-
-      <div className="el-space-y-1">
-        <label className="el-text-fg-400">
-          Design and structure the building blocks of this project.
-        </label>
-        <TreeEntry
-          icon={<Icon name={elllIcons16.fileStylesheet} />}
-          className="el-border"
-          onClick={() => {
-            elll.editorManager.openEditor("blueprintEditor.id");
-          }}
-        >
-          Blueprint
-        </TreeEntry>
-      </div>
-
-      {/*<div className="el-space-y-1">
-        <label className="el-text-fg-400">
-          Define and manage queries and actions consumed by the UI layer.
-        </label>
-        <TreeEntry
-          icon={<Icon name={elllIcons16.script} />}
-          className="el-border"
-          onClick={() => {
-            elll.editorManager.openEditor(programmingInterfaceEditor.id);
-          }}
-        >
-          Programming Interface
-        </TreeEntry>
-      </div> */}
     </ScrollArea>
   );
 }

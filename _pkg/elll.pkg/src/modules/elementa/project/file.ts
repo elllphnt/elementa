@@ -1,6 +1,6 @@
 import { File, IFileDrive, Query } from "@repo/backend";
 import { Disposable } from "@repo/utils";
-import { BehaviorSubject, Observable, of, switchMap } from "rxjs";
+import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
 import { mimeTypes } from "~/src/libs/mimetypes";
 import { IElll } from "~/src/types/elll";
 import { Model } from "../../elll/model/model";
@@ -15,6 +15,20 @@ export abstract class SynchronizedDataFile<D = any> extends Disposable {
   }
   get file$() {
     return this._fileQuery.data$;
+  }
+
+  get loading() {
+    return this._fileQuery.fetching;
+  }
+  get loading$() {
+    return this._fileQuery.fetching$;
+  }
+
+  get loaded() {
+    return !!this._fileQuery.data;
+  }
+  get loaded$() {
+    return this._fileQuery.data$.pipe(map((file) => !!file));
   }
 
   abstract get sourceData$(): Observable<D>;
@@ -76,6 +90,30 @@ export abstract class SynchronizedModelFile<
   }
   get model$() {
     return this._model$.asObservable();
+  }
+
+  get loading() {
+    return super.loading || !!this.model?.content?.loading;
+  }
+  get loading$() {
+    return super.loading$.pipe(
+      switchMap((loading) => {
+        if (loading) return of(true);
+        return this.model?.content?.loading$ ?? of(false);
+      }),
+    );
+  }
+
+  get loaded() {
+    return super.loaded && !!this.model?.content?.loaded;
+  }
+  get loaded$() {
+    return super.loaded$.pipe(
+      switchMap((loaded) => {
+        if (!loaded) return of(false);
+        return this.model?.content?.loaded$ ?? of(false);
+      }),
+    );
   }
 
   protected get _modelSourceData$(): Observable<D | undefined> {

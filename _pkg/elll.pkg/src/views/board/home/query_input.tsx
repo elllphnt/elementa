@@ -89,7 +89,7 @@ export default function QueryInput() {
 
   useEffect(() => {
     const initialQuery = elll.property<string>("initialQuery");
-    const getSuggestionQueries = elll.property<
+    const getSuggestionQueries = elll.config<
       (count: number) => Promise<QueryData[]>
     >("getSuggestionQueries");
 

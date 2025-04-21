@@ -352,7 +352,7 @@ export class BlueprintEditor extends Disposable {
       const pos = g.node(node.id);
       if (pos) {
         this.blueprint?.updateNode(node.id, {
-          position: { x: pos.x - pos.width / 2, y: pos.y },
+          position: { x: pos.x - pos.width / 2, y: pos.y - pos.height / 2 },
         });
       }
     });

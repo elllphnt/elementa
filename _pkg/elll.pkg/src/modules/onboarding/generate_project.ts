@@ -1,5 +1,6 @@
+import { keys } from "~/src/libs/keys";
 import { IElll } from "~/src/types/elll";
-import { modalViews } from "~/src/views/modals/_";
+import { getElllWorkspaceElementaProject } from "../elementa/project/_lib";
 
 export async function generateProject({
   elll,
@@ -23,13 +24,11 @@ export async function generateProject({
   });
   elll.host.openProject(repository.id);
 
-  elll.shell.showModal({
-    viewId: modalViews.brief.id,
-    affinity: "workspace",
-    closeOnBackdropClick: true,
-    closeOnEscape: true,
-    props: {
-      prompt,
-    },
+  const project = getElllWorkspaceElementaProject(elll);
+  project?.app.generateBrief({ prompt }).then(() => {
+    project?.app.generateFeatures();
   });
+
+  await elll.shell.workspace?.untilInitialized();
+  elll.editorManager.openEditor(keys.editors.brief);
 }

@@ -1,5 +1,10 @@
 .elll {
   .tiptap {
+    font-size: 1rem;
+    line-height: 1.75;
+    font-family:
+      "ui-sans-serif", "SF Pro Text", "SF UI Text", "Helvetica Neue", Helvetica,
+      Arial, sans-serif;
     /* color: rgb(var(--color-foreground-400)); */
 
     p.is-editor-empty:first-child::before {
@@ -11,69 +16,100 @@
     }
 
     /* Markdown style */
+    /* Typography */
     h1 {
-      font-size: 1.5em; /* remains unchanged */
-      font-weight: bold;
-      margin-top: 0.75em;
-      margin-bottom: 0.5em;
+      font-size: 1.75em;
+      font-weight: 700;
+      margin: 1em 0 0.6em;
+      /* color: rgb(var(--color-foreground-500)); */
     }
+
     h2 {
-      font-size: 1.3em; /* updated: smaller than before */
-      font-weight: bold;
-      margin-top: 0.5em;
-      margin-bottom: 0.5em;
-    }
-    h3 {
-      font-size: 1.12em; /* updated: smaller than before */
+      font-size: 1.4em;
       font-weight: 600;
-      margin-top: 0.25em;
-      margin-bottom: 0.5em;
+      margin: 0.9em 0 0.5em;
+      /* color: rgb(var(--color-foreground-500)); */
     }
+
+    h3 {
+      font-size: 1.2em;
+      font-weight: 600;
+      margin: 0.75em 0 0.4em;
+      /* color: rgb(var(--color-foreground-400)); */
+    }
+
+    /* Paragraphs */
     p {
-      color: rgb(var(--color-foreground-400));
-      margin-bottom: 0.5em;
+      font-size: 1em;
+      line-height: 1.7;
+      /* color: rgb(var(--color-foreground-400)); */
+      margin-bottom: 0.75em;
     }
+
     li p {
-      margin-bottom: 0.1em;
+      margin-bottom: 0.25em;
     }
+
     p:has(+ ul),
     p:has(+ ol) {
-      margin-bottom: 0.1em;
+      margin-bottom: 0.25em;
     }
+
+    /* Lists */
     ul,
     ol {
-      color: rgb(var(--color-foreground-400));
-      margin-bottom: 0.5em;
+      padding-left: 1.5em;
+      margin-bottom: 0.75em;
+      /* color: rgb(var(--color-foreground-400)); */
     }
 
     ul {
-      list-style-type: disc; /* equivalent to el-list-disc */
-      padding-left: 1.3em; /* equivalent to el-pl-5 (20px) */
-    }
-    ol {
-      list-style-type: decimal; /* equivalent to el-list-decimal */
-      padding-left: 1.3em; /* equivalent to el-pl-5 */
-    }
-    blockquote {
-      border-left-width: 4px; /* equivalent to el-border-l-4 */
-      border-left-color: rgb(
-        var(--color-foreground) / 0.3
-      ); /* equivalent to el-border-gray-300 */
-      padding-left: 1em; /* equivalent to el-pl-4 */
-      font-style: italic; /* equivalent to el-italic */
-    }
-    code {
-      background-color: rgb(
-        var(--color-foreground) / 0.1
-      ); /* equivalent to el-bg-gray-100 */
-      padding-left: 0.25em; /* equivalent to el-px-1 */
-      padding-right: 0.25em; /* equivalent to el-px-1 */
-      border-radius: 0.25em; /* equivalent to el-rounded */
-    }
-    pre code {
-      white-space: pre-wrap; /* equivalent to el-whitespace-pre-wrap */
+      list-style-type: disc;
     }
 
+    ol {
+      list-style-type: decimal;
+    }
+
+    /* Blockquotes */
+    blockquote {
+      border-left: 4px solid rgb(var(--color-primary-300) / 0.4);
+      padding-left: 1em;
+      margin: 1em 0;
+      font-style: italic;
+      color: rgb(var(--color-foreground-400));
+      background-color: rgb(var(--color-background-100));
+      border-radius: 0.5em;
+    }
+
+    /* Inline code */
+    code {
+      background-color: rgb(var(--color-background-200));
+      /* color: rgb(var(--color-foreground-500)); */
+      padding: 0.2em 0.4em;
+      border-radius: 0.25em;
+      font-size: 0.95em;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    /* Preformatted code */
+    pre {
+      background-color: rgb(var(--color-background-200));
+      /* color: rgb(var(--color-foreground-500)); */
+      padding: 1em;
+      border-radius: 0.5em;
+      overflow-x: auto;
+      margin-bottom: 1em;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+
+    /* Empty paragraph fix */
     p:empty::before {
       content: "";
       display: inline-block;
