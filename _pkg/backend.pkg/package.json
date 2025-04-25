@@ -19,7 +19,7 @@
         "@elllphnt/intelligence-service-client": "^0.1.12",
         "@elllphnt/pubsub-service-client": "^0.1.4",
         "@elllphnt/repository-service-client": "^1.0.10",
-        "@elllphnt/utils": "^0.9.9",
+        "@elllphnt/utils": "^0.9.11",
         "@elllphnt/workspace-service-client": "^0.1.9",
         "@repo/utils": "*",
         "@tiptap/extension-placeholder": "^2.11.7",

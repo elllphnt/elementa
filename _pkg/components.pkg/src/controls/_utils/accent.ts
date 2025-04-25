@@ -1,7 +1,14 @@
 export type ColorAccent =
-  | "blue"
-  | "green"
   | "red"
+  | "orange"
   | "yellow"
-  | "purple"
+  | "green"
+  | "cyan"
+  | "blue"
+  | "violet"
+  | "pink"
+  | "rose"
+  | "gray"
+  | "error"
+  | "neutral"
   | "primary";

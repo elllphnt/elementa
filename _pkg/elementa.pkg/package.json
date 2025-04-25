@@ -32,7 +32,7 @@
     "dependencies": {
         "@babel/standalone": "^7.26.9",
         "@elllphnt/elll-element": "^0.26.32",
-        "@elllphnt/utils": "^0.9.9",
+        "@elllphnt/utils": "^0.9.11",
         "@jsep-plugin/new": "^1.0.3",
         "@jsep-plugin/numbers": "^1.0.1",
         "@jsep-plugin/object": "^1.2.1",

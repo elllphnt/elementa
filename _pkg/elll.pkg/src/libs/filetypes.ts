@@ -8,7 +8,11 @@ export function getEditorForFileType(type: string): string | undefined {
       return keys.editors.elementa.editor;
     case elllFileTypes.primitive:
       return keys.editors.react;
-    case elllFileTypes.state:
+    case elllFileTypes.hook:
+      return keys.editors.typescript;
+    case elllFileTypes.routine:
+      return keys.editors.typescript;
+    case elllFileTypes.context:
       return keys.editors.typescript;
     case mimeTypes.json:
       return keys.editors.json;

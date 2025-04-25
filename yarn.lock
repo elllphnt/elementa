@@ -604,10 +604,10 @@
   resolved "https://npm.pkg.github.com/download/@elllphnt/utils/0.2.2/e0386561b0b8822d606abdfd9f04d0720a0ea0e0#e0386561b0b8822d606abdfd9f04d0720a0ea0e0"
   integrity sha512-MY5mWXxd5XP/BwbCbi44qnidzNqN8tPgDB3dLcO++1zxRepkva9S32tn0wy0Y+Yt1l7p6kXGQhegP6p2gq3HTg==
 
-"@elllphnt/utils@^0.9.9":
-  version "0.9.9"
-  resolved "https://npm.pkg.github.com/download/@elllphnt/utils/0.9.9/ba9848c4b8251d47e23f370b66d3424a4a06ed79#ba9848c4b8251d47e23f370b66d3424a4a06ed79"
-  integrity sha512-J7rLrIsoNXvKhOMYZKvZAPLJtfIWDUXvpBRVgJSf3XLDB+lnjCcKHjZ9nCNSnwQOIZfgO5haJhjsYfVBKaDEDg==
+"@elllphnt/utils@^0.9.11":
+  version "0.9.11"
+  resolved "https://npm.pkg.github.com/download/@elllphnt/utils/0.9.11/ac4c80d25566ffec7f001af188e2ec510abc2b6f#ac4c80d25566ffec7f001af188e2ec510abc2b6f"
+  integrity sha512-kKu0AWaVh+VyntModb/qx5QIhaC0ZRsCWR5UGls9x25LYSlSbn+pzvgQdd6QYWOR5AjIb9OwiZjf7YvIv1fmhA==
   dependencies:
     "@paralleldrive/cuid2" "^2.2.2"
     diff "^7.0.0"

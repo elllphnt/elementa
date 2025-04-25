@@ -45,7 +45,7 @@
         "@elllphnt/elll-room-protocol": "^0.2.0",
         "@elllphnt/elll-router": "^0.0.1",
         "@elllphnt/elll-ws-protocol": "^0.2.3",
-        "@elllphnt/utils": "^0.9.9",
+        "@elllphnt/utils": "^0.9.11",
         "@hello-pangea/dnd": "^17.0.0",
         "@lezer/highlight": "^1.2.0",
         "@monaco-editor/loader": "^1.4.0",

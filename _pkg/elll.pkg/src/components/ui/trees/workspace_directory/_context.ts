@@ -1,3 +1,4 @@
+import { elllFileTypes } from "@elllphnt/utils";
 import { File } from "@repo/backend";
 import {
   ContextMenuOption,
@@ -12,10 +13,31 @@ import { keys } from "~/src/libs/keys";
 import { FileTreeContextType } from "../file_tree/_contexts";
 
 export const workpsaceDirectoryTreeFileTypes = [
-  { icon: elllIcons16.component, type: "component", name: "Component" },
-  { icon: elllIcons16.primitive, type: "primitive", name: "Primitive" },
-  { icon: elllIcons16.state, type: "state", name: "State" },
-  { icon: elllIcons16.context, type: "context", name: "Context" },
+  {
+    icon: elllIcons16.component,
+    type: elllFileTypes.component,
+    name: "Component",
+  },
+  {
+    icon: elllIcons16.primitive,
+    type: elllFileTypes.primitive,
+    name: "Primitive",
+  },
+  {
+    icon: elllIcons16.state,
+    type: elllFileTypes.hook,
+    name: "Hook",
+  },
+  {
+    icon: elllIcons16.context,
+    type: elllFileTypes.context,
+    name: "Context",
+  },
+  {
+    icon: elllIcons16.routine,
+    type: elllFileTypes.routine,
+    name: "Routine",
+  },
 ];
 
 export function useWorkspaceFileTreeContext({

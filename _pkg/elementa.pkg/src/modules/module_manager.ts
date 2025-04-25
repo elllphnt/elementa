@@ -130,6 +130,7 @@ export class ModuleManager extends Disposable {
     }).outputText;
   }
   async transpileDependencies(
+    url: string,
     content: string,
     packages: PackageData[],
   ): Promise<Promise<[string | undefined, string[]]>> {
@@ -160,10 +161,14 @@ export class ModuleManager extends Disposable {
                 })
               ) {
                 return;
-              } else if (path.node.source.value.startsWith("fid:")) {
-                const url = path.node.source.value;
-                dependencies.push(url);
-                path.node.source.value = `https://sw/modules/${Math.random()}/${encodeURIComponent(url)}`;
+              } else if (path.node.source.value.startsWith("local:")) {
+                const absoluteUrl =
+                  this.infrastructure.fileSystem.getAbsoluteFileUrl(
+                    url,
+                    path.node.source.value,
+                  );
+                dependencies.push(absoluteUrl);
+                path.node.source.value = `https://sw/modules/${Math.random()}/${encodeURIComponent(absoluteUrl)}`;
               } else {
                 const source = path.node.source.value;
                 const pkg = packageMap[source];
@@ -201,16 +206,15 @@ export class ModuleManager extends Disposable {
 
     // transpile dependencies
     const [transformedScript, dependencies] = await this.transpileDependencies(
+      url,
       jsScript,
       packages,
     );
-    const standardDependencies = dependencies.map((url) =>
-      this.infrastructure.fileSystem.getStandardFileUrl(url),
-    );
+    console.log("dependencies", { dependencies });
 
     // load script to service worker
     await this.loadScriptToSW(url, transformedScript ?? "");
-    this._dependencyMap.set(url, standardDependencies);
+    this._dependencyMap.set(url, dependencies);
 
     // ensure dependencies are loaded
     for (const url of dependencies) {

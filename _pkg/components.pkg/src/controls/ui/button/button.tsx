@@ -49,8 +49,8 @@ export const ControlButton = forwardRef<
         "el-border-blue/20 el-bg-blue/10 hover:el-bg-blue/20":
           accent === "blue",
         "el-border-red/20 el-bg-red/10 hover:el-bg-red/20": accent === "red",
-        "el-border-purple/20 el-bg-purple/10 hover:el-bg-purple/20":
-          accent === "purple",
+        "el-border-violet/20 el-bg-violet/10 hover:el-bg-violet/20":
+          accent === "violet",
         "el-border-pm/20 el-bg-pm/10 hover:el-bg-pm/20": accent === "primary",
       })}
       style={{
