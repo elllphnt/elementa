@@ -1,15 +1,22 @@
-import { AgentMessage } from "@elllphnt/elll-acp";
+import {
+  AgentAction,
+  AgentActionStatus,
+  AgentMessage,
+} from "@elllphnt/elll-acp";
 import { IntelligenceThread, IntelligenceThreadEntry } from "@repo/backend";
 import {
   ActionBar,
   ActionRegistry,
   elllIcons16,
+  Icon,
   ProgressBar,
+  ProgressCircle,
   ScrollArea,
   useControlMenu,
 } from "@repo/components";
 import { useObservable } from "@repo/utils";
-import { memo, useMemo, useState } from "react";
+import cx from "classnames";
+import React, { memo, useMemo, useState } from "react";
 import AutosizeTextArea from "react-textarea-autosize";
 import { useWorkspace } from "~/src/hooks/backend/workspace";
 import { useElll } from "~/src/hooks/elll/elll";
@@ -24,8 +31,8 @@ export function CopilotPanel(): JSX.Element {
         pointerEvents: "auto",
       }}
     >
-      <Input />
       <Thread />
+      <Input />
     </div>
   );
 }
@@ -72,12 +79,12 @@ function Input() {
   }, []);
 
   const sendMessage = async (message: string) => {
+    if (!workspace) return;
     let thread = activeTheadId
       ? backend.instance<IntelligenceThread>(activeTheadId, true)
       : undefined;
 
     if (!thread) {
-      if (!workspace) return;
       thread = await workspace.createIntelligenceThread();
       if (thread) {
         setActiveThreadId(thread.id);
@@ -90,6 +97,11 @@ function Input() {
           text: message,
         },
       ],
+      data: {
+        context: {
+          workspaceId: workspace.id,
+        },
+      },
     });
   };
 
@@ -100,7 +112,7 @@ function Input() {
 
   return (
     <div
-      className="el-bg-bg-100/50 el-border-b"
+      className="el-bg-bg-100/50 el-border-t"
       style={{
         display: "flex",
         flexDirection: "column",
@@ -153,9 +165,65 @@ const ThreadEntry = memo(function ThreadEntry({
 
   if (type === "message") {
     return <Message message={entry} />;
-  } else {
-    return <>{type}</>;
+  } else if (type === "action") {
+    return <ActionEntry entry={entry} />;
   }
+});
+
+const ActionEntry = memo(function ActionEntry({
+  entry,
+}: {
+  entry: IntelligenceThreadEntry;
+}) {
+  const data = useObservable(entry.data$, entry.data) as
+    | AgentAction
+    | undefined;
+
+  let statusClass = "el-bg-fg/20 el-text-fg";
+  let statusIcon: React.ReactNode = (
+    <Icon name={elllIcons16.play} className="el-h-4 el-w-4" />
+  );
+
+  if (data?.status === AgentActionStatus.Running) {
+    statusClass = "el-bg-yellow/20 el-text-yellow";
+    statusIcon = <ProgressCircle size={12} />;
+  } else if (data?.status === AgentActionStatus.Completed) {
+    statusClass = "el-bg-green/20 el-text-green";
+    statusIcon = (
+      <Icon name={elllIcons16.circleCheckmark} className="el-h-4 el-w-4" />
+    );
+  } else if (
+    data?.status === AgentActionStatus.Failed ||
+    data?.status === AgentActionStatus.Aborted
+  ) {
+    statusClass = "el-bg-red/20 el-text-red";
+    statusIcon = <Icon name={elllIcons16.cross} className="el-h-4 el-w-4" />;
+  }
+
+  return (
+    <div className="el-px-3 el-space-y-2 el-w-full">
+      <div className="el-p-2 el-rounded-lg el-border el-flex el-gap-2 el-bg-bg-100">
+        <div
+          className={cx(
+            "el-h-6 el-w-6 el-flex el-items-center el-justify-center el-rounded-full",
+            statusClass,
+          )}
+        >
+          {statusIcon}
+        </div>
+        <div className="el-space-y-1">
+          <div
+            style={{
+              textTransform: "capitalize",
+            }}
+          >
+            {data?.action}
+          </div>
+          <div className="el-text-xs el-text-fg-400">{data?.message}</div>
+        </div>
+      </div>
+    </div>
+  );
 });
 
 const Message = memo(function Message({
@@ -167,11 +235,14 @@ const Message = memo(function Message({
     | AgentMessage
     | undefined;
   const content = data?.content || [];
-  const author = data?.role;
-  const isUser = author?.toLowerCase() === "user";
+  const isUser = data?.role === "user";
+  const author = isUser ? "User" : "Copilot";
 
   return (
-    <div className="el-px-3 el-space-y-2" style={{ alignSelf: "start" }}>
+    <div
+      className="el-px-3 el-space-y-2 el-w-full"
+      style={{ alignSelf: "start" }}
+    >
       <div
         className="el-flex el-w-full"
         style={{
@@ -180,16 +251,24 @@ const Message = memo(function Message({
         }}
       >
         <div
-          className="el-flex el-gap-2 el-items-center"
+          className="el-flex el-gap-1 el-items-center el-text-fg/50"
           style={{
             flexDirection: isUser ? "row-reverse" : "row",
             // justifyContent: isUser ? "flex-end" : "flex-start",
           }}
         >
-          <div className="el-h-5 el-w-5 el-rounded-full el-bg-bg-100/50 el-flex el-items-center el-border" />
+          <Icon
+            name={isUser ? elllIcons16.activityUser : elllIcons16.ai}
+            className="el-h-4 el-w-4"
+          />
           <span
-            className="el-text-sm el-text-fg/50"
-            style={{ textTransform: "capitalize" }}
+            className="el-text-sm"
+            style={{
+              textTransform: "capitalize",
+              lineHeight: 1,
+              position: "relative",
+              top: 1,
+            }}
           >
             {author}
           </span>
@@ -242,7 +321,7 @@ function Thread() {
           <div
             style={{
               position: "absolute",
-              top: -1,
+              bottom: -1,
               left: 0,
               right: 0,
               zIndex: 10,
@@ -250,11 +329,19 @@ function Thread() {
           >
             <ProgressBar />
           </div>
-        ) : (
-          <></>
-        )}
-        <ScrollArea scrollY containerClassName="el-space-y-6 el-py-3">
-          {entries?.map((entry, i) => <ThreadEntry key={i} entry={entry} />)}
+        ) : null}
+        <ScrollArea scrollY containerClassName="el-flex el-flex-col-reverse">
+          <div
+            style={{
+              height: 1,
+              overflowAnchor: "auto",
+            }}
+          />
+          {entries?.map((entry, i) => (
+            <div key={i} className="el-w-full el-py-3">
+              <ThreadEntry entry={entry} />
+            </div>
+          ))}
         </ScrollArea>
       </div>
     </div>

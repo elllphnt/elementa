@@ -1,6 +1,14 @@
 import { IconData } from "./_types";
 
 export const elllIcons16Data = {
+  circleCheckmark: {
+    name: "elll:circle-checkmark",
+    viewBox: "0 0 16 16",
+    height: 16,
+    width: 16,
+    fill: true,
+    data: "M8 2C11.3137 2 14 4.68629 14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2ZM8 3C5.23858 3 3 5.23858 3 8C3 10.7614 5.23858 13 8 13C10.7614 13 13 10.7614 13 8C13 5.23858 10.7614 3 8 3ZM11.3535 6.35352L7 10.707L4.64648 8.35352L5.35352 7.64648L7 9.29297L10.6465 5.64648L11.3535 6.35352Z",
+  },
   refresh: {
     name: "elll:refresh",
     viewBox: "0 0 16 16",

@@ -322,39 +322,59 @@ export class BlueprintEditor extends Disposable {
     g.setGraph({ rankdir: "TB", ranksep: 100 });
     g.setDefaultEdgeLabel(() => ({}));
 
-    // use routes to create graph nodes
-    const nodes = this.routes.map((route) => {
-      const wrect = this.getNodeWindowRect(route.id);
-      const vrect = this.getNodeViewportRect(route.id);
+    // 0) Sort routes by their current visual position
+    const sorted = this.routes.slice().sort((a, b) => {
+      const aRect = this.getNodeViewportRect(a.id)!;
+      const bRect = this.getNodeViewportRect(b.id)!;
+      // primary = left (x), secondary = top (y)
+      if (aRect.x !== bRect.x) return aRect.x - bRect.x;
+      return aRect.y - bRect.y;
+    });
+
+    // 1) Add nodes in sorted order
+    const nodes = sorted.map((route) => {
       const rect = this.getNodeContentRect(route.id);
-      console.log({ rect, vrect, wrect, v: this.state.viewport, id: route.id });
-      const defaultSize = { width: 100, height: 50 };
-      let size = defaultSize;
-      if (rect) {
-        size = {
-          width: rect.width,
-          height: rect.height,
-        };
-      }
+      const size = rect
+        ? { width: rect.width, height: rect.height }
+        : { width: 100, height: 50 };
       g.setNode(route.id, size);
       return { id: route.id };
     });
 
-    // add each edge
+    // 2) Add edges
     this.edges.forEach((edge) => {
       g.setEdge(edge.source, edge.target);
     });
 
+    // 3) Run Dagre layout
     dagre.layout(g);
 
-    // update node positions adjusted to center nodes
-    nodes.forEach((node) => {
-      const pos = g.node(node.id);
-      if (pos) {
-        this.blueprint?.updateNode(node.id, {
-          position: { x: pos.x - pos.width / 2, y: pos.y - pos.height / 2 },
-        });
-      }
+    // 4) Top‑align within each rank (as before)
+    const rankGroups = new Map<
+      number,
+      Array<{ id: string; y: number; height: number }>
+    >();
+    nodes.forEach(({ id }) => {
+      const n = g.node(id)!;
+      const rank = (n as any).rank as number;
+      if (!rankGroups.has(rank)) rankGroups.set(rank, []);
+      rankGroups.get(rank)!.push({ id, y: n.y, height: n.height });
+    });
+    rankGroups.forEach((group) => {
+      const topYs = group.map((n) => n.y - n.height / 2);
+      const baseline = Math.min(...topYs);
+      group.forEach((n) => {
+        const node = g.node(n.id)!;
+        node.y = baseline + node.height / 2;
+      });
+    });
+
+    // 5) Write back positions centered by size
+    nodes.forEach(({ id }) => {
+      const n = g.node(id)!;
+      this.blueprint?.updateNode(id, {
+        position: { x: n.x - n.width / 2, y: n.y - n.height / 2 },
+      });
     });
   }
   setNodeMenuId(nodeId: string | undefined) {
