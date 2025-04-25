@@ -6,10 +6,15 @@
     "types": "dist/index.d.ts",
     "scripts": {
         "build": "tsc",
-        "watch": "tsc -w"
+        "watch": "tsc -w",
+        "test": "tsx src/index.test.ts"
     },
     "dependencies": {
         "@types/lodash": "^4.14.202",
         "deep-object-diff": "^1.1.9"
+    },
+    "devDependencies": {
+        "tsx": "^4.19.3",
+        "uvu": "^0.5.6"
     }
 }
