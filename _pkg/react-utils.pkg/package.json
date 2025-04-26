@@ -1,5 +1,5 @@
 {
-    "name": "@repo/utils",
+    "name": "@repo/react-utils",
     "version": "0.1.0",
     "description": "A collection of utilities for the repository",
     "main": "dist/index.js",

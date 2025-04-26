@@ -14,6 +14,10 @@ export class Disposable implements IDisposable {
       console.warn("Adding disposer after dispose()");
     }
     this._disposers.push(disposer);
+    return () => this.removeDisposer(disposer);
+  }
+  removeDisposer(disposer: Disposer) {
+    this._disposers = this._disposers.filter((d) => d !== disposer);
   }
 
   dispose() {
