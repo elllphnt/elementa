@@ -3,6 +3,9 @@ import * as y from "yjs";
 import { Disposable } from "../core/disposable";
 
 export class CRDTModel<S extends Record<string, any>> extends Disposable {
+  static key = Math.round(Math.random() * 100000);
+  key = CRDTModel.key++;
+
   readonly ymap: y.Map<any>;
   private readonly _state$ = new BehaviorSubject<S>({} as S);
 

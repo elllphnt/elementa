@@ -1,5 +1,4 @@
 import {
-  CssStyleData,
   getStyleDataType,
   isVarRef,
   normalizeStyleData,
@@ -10,8 +9,8 @@ import {
   styleToCss,
   VarRef,
 } from "@elllphnt/elll-element";
-import { Datafiable, Disposable } from "@repo/utils";
-import { BehaviorSubject, combineLatest, map, Observable } from "rxjs";
+import { CRDTModel } from "@repo/utils";
+import { combineLatest, map, Observable } from "rxjs";
 import { Project } from "~/src/project/_";
 import { StyleFragmentRegistry } from "./style_fragment_set";
 
@@ -19,17 +18,9 @@ import { StyleFragmentRegistry } from "./style_fragment_set";
  * A standalone modelization of an Elll StyleData object.
  * Can be used to store and manipulate style data.
  */
-export class Style extends Disposable implements Datafiable<StyleData> {
-  static key = 0;
-  static keySeed = Math.floor(Math.random() * 1000);
-  key = `${Style.keySeed}-${Style.key++}`;
-
+export class Style extends CRDTModel<StyleData> {
   readonly fragmentRegistry: StyleFragmentRegistry;
   readonly project: Project;
-
-  private _data$ = new BehaviorSubject<StyleData>({});
-  private _settings$ = new BehaviorSubject<Record<string, any>>({});
-  private _css$ = new BehaviorSubject<CssStyleData>({});
 
   get className() {
     return `elll-style-${this.key}`;
@@ -152,9 +143,5 @@ export class Style extends Disposable implements Datafiable<StyleData> {
     }
 
     return normalizeStyleData(dataType, value);
-  }
-
-  restore(data: StyleData): void {
-    this._data$.next(data);
   }
 }

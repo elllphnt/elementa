@@ -12,9 +12,6 @@ import {
 } from "./instances/_";
 import { ModuleManager } from "./modules/module_manager";
 
-/**
- * Elementa is the instanciation of a component entity.
- */
 export class Elementa extends Disposable {
   static key = 0;
   static keySeed = Math.floor(Math.random() * 1000);

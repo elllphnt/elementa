@@ -1,7 +1,6 @@
 import { baseSelector, StyleSheetData } from "@elllphnt/elll-element";
-import { combineLatestOrEmpty, Disposable } from "@repo/utils";
+import { combineLatestOrEmpty, CRDTModel } from "@repo/utils";
 import { BehaviorSubject, map, Observable, switchMap } from "rxjs";
-import { Datafiable, restoreReactiveMap } from "~/src/_lib/restore";
 import { Project } from "~/src/project/_";
 import { Style } from "./style";
 import { StyleFragmentRegistry } from "./style_fragment_set";
@@ -10,28 +9,12 @@ import { StyleFragmentRegistry } from "./style_fragment_set";
  * A standalone modelization of an Elll StylesheetData object.
  * Can be used to store and manipulate stylesheet data.
  */
-export class Stylesheet
-  extends Disposable
-  implements Datafiable<StyleSheetData>
-{
-  static key = 0;
-  static keySeed = Math.floor(Math.random() * 1000);
-  readonly key = `${Stylesheet.keySeed}-${Stylesheet.key++}`;
+export class Stylesheet extends CRDTModel<StyleSheetData> {
   readonly project: Project;
   readonly fragmentRegistry = new StyleFragmentRegistry();
 
-  private _styles$ = new BehaviorSubject<Record<string, Style>>({});
-  private _expressions$ = new BehaviorSubject<Record<string, string>>({});
-
   get className() {
     return `elll-stylesheet-${this.key}`;
-  }
-
-  get styles$() {
-    return this._styles$;
-  }
-  get styles() {
-    return this._styles$.value;
   }
 
   get staticStyles$() {

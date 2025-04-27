@@ -5,6 +5,9 @@ import { Disposable } from "../core/disposable";
 import { CRDTModel } from "./model";
 
 export class CRDTModelMap<M extends CRDTModel<any>> extends Disposable {
+  static key = Math.round(Math.random() * 100000);
+  key = CRDTModelMap.key++;
+
   private readonly ymap: y.Map<y.Map<any>>;
   private readonly createModel: (ymap: y.Map<any>) => M;
   private readonly _items$ = new BehaviorSubject<Record<string, M>>({});

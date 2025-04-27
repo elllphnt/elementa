@@ -3,7 +3,7 @@ import {
   StyleFragmentDataTypeMap,
   StyleFragmentType,
 } from "@elllphnt/elll-element/types/_primitives/style/fragments/fragment";
-import { Datafiable, Disposable } from "@repo/utils";
+import { Disposable } from "@repo/utils";
 import { BehaviorSubject, map, Observable } from "rxjs";
 import { genId } from "../_lib/id";
 
