@@ -17,26 +17,26 @@ function createModel(initial: Record<string, any> = {}) {
 
 test("initializes with map entries", () => {
   const model = createModel({ a: 1, b: "two" });
-  assert.equal(model.value, { a: 1, b: "two" });
+  assert.equal(model.state, { a: 1, b: "two" });
 });
 
 test("initializes empty when no initial entries", () => {
   const model = createModel();
-  assert.equal(model.value, {});
+  assert.equal(model.state, {});
 });
 
 test("patch updates values", () => {
   const model = createModel({ a: 1 });
   model.patch({ b: 2 });
-  assert.is(model.value.a, 1);
-  assert.is(model.value.b, 2);
+  assert.is(model.state.a, 1);
+  assert.is(model.state.b, 2);
 });
 
 test("set replaces entries and removes missing keys", () => {
   const model = createModel({ a: 1, b: 2 });
   model.set({ a: 10, c: 3 });
-  assert.ok(!("b" in model.value));
-  assert.equal(model.value, { a: 10, c: 3 });
+  assert.ok(!("b" in model.state));
+  assert.equal(model.state, { a: 10, c: 3 });
 });
 
 test("transact groups updates", () => {
@@ -45,14 +45,14 @@ test("transact groups updates", () => {
     model.patch({ x: 1 });
     model.patch({ y: 2 });
   });
-  assert.equal(model.value, { x: 1, y: 2 });
+  assert.equal(model.state, { x: 1, y: 2 });
 });
 
 test("dispose unsubscribes observer and completes value$", () => {
   const model = createModel({ a: 1 });
   let nextCount = 0;
   let completed = false;
-  model.value$.subscribe(
+  model.state$.subscribe(
     () => {
       nextCount++;
     },

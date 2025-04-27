@@ -331,10 +331,10 @@
     xml2js "^0.6.2"
     yup "^1.4.0"
 
-"@elllphnt/elll-element@^0.26.32":
-  version "0.26.32"
-  resolved "https://npm.pkg.github.com/download/@elllphnt/elll-element/0.26.32/01b71189aa37412ad65b5747438302b5cb7de85f#01b71189aa37412ad65b5747438302b5cb7de85f"
-  integrity sha512-5NwYmdmNxct/G/Lf2ggPA5ua2KIlV2XuXUlAFZhOk6RkJY1/KbW0k9Hd1HbfZFU989pT1PmXEtucyJx5+SNj/A==
+"@elllphnt/elll-element@^0.28.3":
+  version "0.28.3"
+  resolved "https://npm.pkg.github.com/download/@elllphnt/elll-element/0.28.3/618867ca7b0bef91373284702c252a9f2ca943be#618867ca7b0bef91373284702c252a9f2ca943be"
+  integrity sha512-iXDUHdOX4zufWj2aF84wLk3Pt1fVmTqjnqYUodwuhX1Nlti8TFeo9hIYKniIjBB/p0D0pmW2fuuxc8ppqdNwxg==
   dependencies:
     "@elllphnt/utils" "^0.2.1"
     "@jsep-plugin/new" "^1.0.3"

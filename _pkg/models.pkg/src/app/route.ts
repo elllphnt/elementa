@@ -1,104 +1,105 @@
 import { RouteData } from "@elllphnt/elll-element";
-import { Disposable } from "@repo/utils";
-import { BehaviorSubject, map } from "rxjs";
-import { Entity } from "../component/_";
+import { CRDTModel } from "@repo/utils";
+import { distinctUntilChanged, map } from "rxjs";
+import * as y from "yjs";
+import { genId } from "../_lib/id";
 import { App } from "./app";
 
-export class Route extends Disposable {
+export class Route extends CRDTModel<RouteData> {
   readonly app: App;
-  readonly id: string;
 
-  private _data$ = new BehaviorSubject<Omit<RouteData, "id"> | undefined>(
-    undefined,
-  );
-
-  get data() {
-    return {
-      ...this._data$.value,
-      id: this.id,
-    };
-  }
-  get data$() {
-    return this._data$.asObservable().pipe(
-      map((data) => ({
-        ...data,
-        id: this.id,
-      })),
-    );
+  get id() {
+    return this.state.id;
   }
 
   get path() {
-    return this.data?.path;
+    return this.state.path;
   }
   get path$() {
-    return this.data$.pipe(map((data) => data.path));
+    return this.state$.pipe(
+      map((data) => data.path),
+      distinctUntilChanged(),
+    );
   }
 
   get parentId() {
-    return this.data?.parentId;
+    return this.state.parentId;
   }
   get parentId$() {
-    return this.data$.pipe(map((data) => data.parentId));
-  }
-
-  get viewUrl() {
-    return this.data?.viewUrl;
-  }
-  get viewUrl$() {
-    return this.data$.pipe(map((data) => data.viewUrl));
-  }
-
-  get view() {
-    return this.viewUrl
-      ? this.app.project.componentManager.component(this.viewUrl)
-      : undefined;
-  }
-  get view$() {
-    return this.viewUrl$.pipe(
-      map((viewUrl) => {
-        if (!viewUrl) return undefined;
-        return this.app.project.componentManager.component(viewUrl);
-      }),
+    return this.state$.pipe(
+      map((data) => data.parentId),
+      distinctUntilChanged(),
     );
   }
 
-  get layoutUrl() {
-    return this.data?.layoutUrl;
+  get mainViewUrl() {
+    return this.state.mainViewUrl;
   }
-  get layoutUrl$() {
-    return this.data$.pipe(map((data) => data.layoutUrl));
-  }
-  get layout() {
-    return this.layoutUrl
-      ? this.app.project.componentManager.component(this.layoutUrl)
-      : undefined;
-  }
-  get layout$() {
-    return this.layoutUrl$.pipe(
-      map((layoutUrl) => {
-        if (!layoutUrl) return undefined;
-        return this.app.project.componentManager.component(layoutUrl);
-      }),
+  get mainViewUrl$() {
+    return this.state$.pipe(
+      map((data) => data.mainViewUrl),
+      distinctUntilChanged(),
     );
   }
 
-  constructor({ id, app }: { id?: string; app: App }) {
-    super();
-    this.app = app;
-    this.id = id ?? Entity.createId();
+  get errorViewUrl() {
+    return this.state.errorViewUrl;
+  }
+  get errorViewUrl$() {
+    return this.state$.pipe(
+      map((data) => data.errorViewUrl),
+      distinctUntilChanged(),
+    );
   }
 
-  update(update: Partial<RouteData>) {
-    this._data$.next({
-      ...this.data,
-      ...update,
-    });
+  get pendingViewUrl() {
+    return this.state.pendingViewUrl;
+  }
+  get pendingViewUrl$() {
+    return this.state$.pipe(
+      map((data) => data.pendingViewUrl),
+      distinctUntilChanged(),
+    );
   }
 
-  restore({ id, ...data }: RouteData) {
-    if (id !== this.id) {
-      throw new Error("Route id mismatch");
+  get notFoundViewUrl() {
+    return this.state.notFoundViewUrl;
+  }
+  get notFoundViewUrl$() {
+    return this.state$.pipe(
+      map((data) => data.notFoundViewUrl),
+      distinctUntilChanged(),
+    );
+  }
+
+  get loaderUrl() {
+    return this.state.loaderUrl;
+  }
+  get loaderUrl$() {
+    return this.state$.pipe(
+      map((data) => data.loaderUrl),
+      distinctUntilChanged(),
+    );
+  }
+
+  get handlerUrl() {
+    return this.state.handlerUrl;
+  }
+  get handlerUrl$() {
+    return this.state$.pipe(
+      map((data) => data.handlerUrl),
+      distinctUntilChanged(),
+    );
+  }
+
+  constructor({ ymap, app }: { ymap: y.Map<any>; app: App }) {
+    super(ymap);
+    if (!this.id) {
+      this.patch({
+        id: genId(),
+      });
     }
-    this._data$.next(data);
+
+    this.app = app;
   }
 }

@@ -26,7 +26,7 @@
     },
     "peerDependencies": {},
     "dependencies": {
-        "@elllphnt/elll-element": "^0.26.32",
+        "@elllphnt/elll-element": "^0.28.3",
         "@repo/utils": "*",
         "rxjs": "^7.8.1",
         "tsc-watch": "^6.2.0",

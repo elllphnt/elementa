@@ -2,7 +2,7 @@
 import { BehaviorSubject, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { Disposable } from "../core/disposable";
-import { CRDTModel, CRDTModelDataType } from "./model";
+import { CRDTModel } from "./model";
 
 export class CRDTModelList<M extends CRDTModel<any>> extends Disposable {
   private readonly yarray: y.Array<y.Map<any>>;
@@ -84,35 +84,27 @@ export class CRDTModelList<M extends CRDTModel<any>> extends Disposable {
     this.yarray.doc.transact(fn);
   }
 
-  add(...inits: CRDTModelDataType<M>[]): y.Map<any>[] {
-    if (inits.length === 0) {
+  add(...items: y.Map<any>[]) {
+    if (items.length === 0) {
       return [];
     }
-
-    const maps = inits.map((init) => {
-      const ymap = new y.Map<any>(Object.entries(init));
-      return ymap;
-    });
-    this.yarray.push(maps);
-    return maps;
+    this.yarray.push(items);
   }
-
-  insertAt(index: number, ...inits: CRDTModelDataType<M>[]): y.Map<any>[] {
-    if (inits.length === 0) {
+  insertAt(index: number, ...items: y.Map<any>[]) {
+    if (items.length === 0) {
       return [];
     }
-
-    const maps = inits.map((init) => {
-      const ymap = new y.Map<any>(Object.entries(init));
-      return ymap;
-    });
-
-    this.yarray.insert(index, maps);
-    return maps;
+    this.yarray.insert(index, items);
   }
 
   removeAt(index: number, length?: number): void {
     this.yarray.delete(index, length);
+  }
+  remove(item: M): void {
+    const index = this.items.findIndex((model) => model === item);
+    if (index >= 0) {
+      this.removeAt(index);
+    }
   }
 
   clear(): void {

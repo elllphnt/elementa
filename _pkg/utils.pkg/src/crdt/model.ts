@@ -2,15 +2,15 @@ import { BehaviorSubject, Observable } from "rxjs";
 import * as y from "yjs";
 import { Disposable } from "../core/disposable";
 
-export class CRDTModel<D extends Record<string, any>> extends Disposable {
+export class CRDTModel<S extends Record<string, any>> extends Disposable {
   readonly ymap: y.Map<any>;
-  private readonly _value$ = new BehaviorSubject<D>({} as D);
+  private readonly _state$ = new BehaviorSubject<S>({} as S);
 
-  get value(): D {
-    return this._value$.value;
+  get state(): S {
+    return this._state$.value;
   }
-  get value$(): Observable<D> {
-    return this._value$.asObservable();
+  get state$(): Observable<S> {
+    return this._state$.asObservable();
   }
 
   constructor(ymap: y.Map<any>) {
@@ -22,11 +22,11 @@ export class CRDTModel<D extends Record<string, any>> extends Disposable {
     for (const [key, value] of this.ymap.entries()) {
       initial[key] = value;
     }
-    this._value$.next(initial as D);
+    this._state$.next(initial as S);
 
     // Live observe deltas
     const observer = (event: y.YMapEvent<any>) => {
-      const current = { ...this._value$.value };
+      const current = { ...this._state$.value };
 
       for (const [key, change] of event.changes.keys.entries()) {
         if (change.action === "add" || change.action === "update") {
@@ -37,15 +37,40 @@ export class CRDTModel<D extends Record<string, any>> extends Disposable {
         }
       }
 
-      this._value$.next(current as D);
+      this._state$.next(current as S);
     };
 
     this.ymap.observe(observer);
 
     this.addDisposer(() => {
       this.ymap.unobserve(observer);
-      this._value$.complete();
+      this._state$.complete();
     });
+  }
+
+  getOrCreateMap(key: keyof S): y.Map<any> {
+    let map = this.ymap.get(key as string);
+    if (!map) {
+      map = new y.Map();
+      this.ymap.set(key as string, map);
+    }
+    return map;
+  }
+  getOrCreateArray(key: keyof S): y.Array<any> {
+    let array = this.ymap.get(key as string);
+    if (!array) {
+      array = new y.Array();
+      this.ymap.set(key as string, array);
+    }
+    return array;
+  }
+  getOrCreateText(key: keyof S): y.Text {
+    let text = this.ymap.get(key as string);
+    if (!text) {
+      text = new y.Text();
+      this.ymap.set(key as string, text);
+    }
+    return text;
   }
 
   transact(fn: () => void): void {
@@ -57,7 +82,7 @@ export class CRDTModel<D extends Record<string, any>> extends Disposable {
   }
 
   /** Replace full object */
-  set(next: D): void {
+  set(next: S): void {
     this.transact(() => {
       for (const key of Array.from(this.ymap.keys())) {
         if (!(key in next)) {
@@ -71,7 +96,7 @@ export class CRDTModel<D extends Record<string, any>> extends Disposable {
   }
 
   /** Patch partial fields */
-  patch(patch: Partial<D>): void {
+  patch(patch: Partial<S>): void {
     this.transact(() => {
       for (const [key, value] of Object.entries(patch)) {
         this.ymap.set(key, value);

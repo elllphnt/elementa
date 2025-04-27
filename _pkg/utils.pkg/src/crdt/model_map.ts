@@ -2,7 +2,7 @@
 import { BehaviorSubject, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { Disposable } from "../core/disposable";
-import { CRDTModel, CRDTModelDataType } from "./model";
+import { CRDTModel } from "./model";
 
 export class CRDTModelMap<M extends CRDTModel<any>> extends Disposable {
   private readonly ymap: y.Map<y.Map<any>>;
@@ -17,11 +17,11 @@ export class CRDTModelMap<M extends CRDTModel<any>> extends Disposable {
     return this._items$.asObservable();
   }
 
-  itemOf(key: string): M | undefined {
+  item(key: string): M | undefined {
     return this.items[key];
   }
 
-  itemOf$(key: string): Observable<M | undefined> {
+  item$(key: string): Observable<M | undefined> {
     return this.items$.pipe(map((items) => items[key]));
   }
 
@@ -89,10 +89,8 @@ export class CRDTModelMap<M extends CRDTModel<any>> extends Disposable {
   }
 
   /** Set a new model */
-  set(key: string, init: CRDTModelDataType<M> = {} as any): void {
-    const map = new y.Map<any>(Object.entries(init));
-    this.ymap.set(key, map);
-    return;
+  set(key: string, init: y.Map<any>): void {
+    this.ymap.set(key, init);
   }
 
   /** Delete an existing model */

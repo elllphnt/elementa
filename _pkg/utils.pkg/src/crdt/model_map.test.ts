@@ -28,31 +28,31 @@ test("initializes with prepopulated entries", () => {
   });
   const m = new CRDTModelMap(ymap, (ym) => new CRDTModel(ym));
   assert.equal(Object.keys(m.items), ["one"]);
-  assert.equal(m.items.one.value, { a: 1, b: 2 });
+  assert.equal(m.items.one.state, { a: 1, b: 2 });
 });
 
 test("set and retrieve model", () => {
   const m = makeMap();
   m.set("one", { a: 1 });
-  const item = m.itemOf("one");
+  const item = m.item("one");
   assert.instance(item, CRDTModel);
-  assert.equal(item?.value, { a: 1 });
+  assert.equal(item?.state, { a: 1 });
   assert.equal(Object.keys(m.items), ["one"]);
 });
 
 test("patch inner model", () => {
   const m = makeMap();
   m.set("one", { a: 1 });
-  const item = m.itemOf("one")!;
+  const item = m.item("one")!;
   item.patch({ b: 2 });
-  assert.equal(item.value, { a: 1, b: 2 });
+  assert.equal(item.state, { a: 1, b: 2 });
 });
 
 test("delete key", () => {
   const m = makeMap();
   m.set("one", { foo: true });
   m.delete("one");
-  assert.not.ok(m.itemOf("one"));
+  assert.not.ok(m.item("one"));
   assert.equal(m.items, {});
 });
 
@@ -76,7 +76,7 @@ test("items$ emits updates", () => {
   assert.equal(events[0], {});
   // after x
   assert.equal(Object.keys(events[1]), ["x"]);
-  assert.equal(events[1].x.value, { v: 1 });
+  assert.equal(events[1].x.state, { v: 1 });
   // after y
   assert.equal(Object.keys(events[2]).sort(), ["x", "y"]);
   // after delete x
@@ -86,11 +86,11 @@ test("items$ emits updates", () => {
 test("itemOf$ emits undefined then model once set", () => {
   const m = makeMap();
   const events: (CRDTModel<any> | undefined)[] = [];
-  m.itemOf$("key").subscribe((v) => events.push(v));
+  m.item$("key").subscribe((v) => events.push(v));
   assert.equal(events, [undefined]);
   m.set("key", { x: 5 });
   assert.instance(events[1], CRDTModel);
-  assert.is(events[1]?.value.x, 5);
+  assert.is(events[1]?.state.x, 5);
 });
 
 test("dispose completes items$ and disposes inner models", () => {
