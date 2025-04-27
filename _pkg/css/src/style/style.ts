@@ -4,9 +4,9 @@ import {
   StyleFragmentType,
   StylePropertyName,
 } from "@elllphnt/elementa-base";
-import { CssStyleData, HyphenCssStyle } from "./css.js";
-import { applyDefaultCss, styleToCssPropertyConfigMap } from "./properties.js";
-import { stripUndefined } from "./utils/object.js";
+import { CssStyleData, HyphenCssStyle } from "../base/types";
+import { stripUndefined } from "../utils/object";
+import { applyDefaultCss, styleToCssPropertyConfigMap } from "./properties";
 
 export type StyleToCssContext = {
   getFragment: <T extends StyleFragmentType>(

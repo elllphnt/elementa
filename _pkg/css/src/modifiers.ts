@@ -5,8 +5,15 @@ import {
   stringifyStyleData,
   StyleModifierData,
   StyleModifierDefinitionData,
+  systemModifiers,
 } from "@elllphnt/elementa-base";
 import { populateTemplateString } from "./utils/string";
+
+function getSystemModifierDefinition(
+  name: string
+): StyleModifierDefinitionData | undefined {
+  return systemModifiers[name];
+}
 
 export function styleModifierToCssSelector({
   modifier,
@@ -17,7 +24,9 @@ export function styleModifierToCssSelector({
     name: string
   ) => StyleModifierDefinitionData | undefined;
 }): ErrorTupple<CssSelector> {
-  const definition = getModifierDefinition(modifier.name);
+  const definition =
+    getSystemModifierDefinition(modifier.name) ||
+    getModifierDefinition(modifier.name);
   if (!definition) {
     const error = new Error(`Unknown modifier: ${modifier.name}`);
     return [undefined, error];

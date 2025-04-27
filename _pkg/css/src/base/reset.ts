@@ -1,4 +1,4 @@
-export const transformCssPropperties = () => /*css*/ `
+export const transformCssProperties = () => /*css*/ `
 @layer base {
     @property --elll-translate-x {
         syntax: "*";
@@ -203,5 +203,5 @@ export const resetCss = () =>
         initial-value: center;
     }
 }`,
-    transformCssPropperties(),
+    transformCssProperties(),
   ].join("\n");
