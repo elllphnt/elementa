@@ -1,0 +1,21 @@
+{
+    "name": "@elllphnt/elementa-utils",
+    "version": "0.1.0",
+    "description": "A collection of utilities for the repository",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc -p tsconfig.build.json",
+        "build:watch": "tsc -p tsconfig.build.json -w",
+        "watch": "tsc -w",
+        "test": "tsx src/index.test.ts"
+    },
+    "dependencies": {
+        "rxjs": "^7.8.2",
+        "yjs": "^13.6.26"
+    },
+    "devDependencies": {
+        "tsx": "^4.19.3",
+        "uvu": "^0.5.6"
+    }
+}

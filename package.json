@@ -1,29 +1,22 @@
 {
-    "name": "elllephant",
+    "name": "elementa",
     "private": true,
     "scripts": {
-        "build:styles": "npm run build --workspace @repo/styles",
-        "build:utils": "npm run build --workspace @repo/utils",
-        "build:components": "npm run build --workspace @repo/components",
-        "build:backend": "npm run build --workspace @repo/backend",
-        "build:app": "npm run build --workspace elllephant",
-        "build:elll-app": "npm run build --workspace elll-app",
-        "build:elllephant": "npm run build:styles && npm run build:utils && npm run build:components && npm run build:backend && npm run build:app",
-        "build:elll": "npm run build:styles && npm run build:utils && npm run build:components && npm run build:backend && npm run build:elll-app",
-        "dev:elll": "npm run token --workspace elll-dev && npm run dev --workspace elll-dev",
-        "dev:elementa-editor": "npm run dev --workspace elementa-editor",
-        "dev:elementa-viewer": "npm run dev --workspace elementa-viewer",
-        "dev": "concurrently \"npm run dev:elll\" \"npm run dev:elementa-editor\" \"npm run dev:elementa-viewer\""
+        "build": "turbo run build",
+        "dev": "turbo run dev",
+        "clean": "turbo run clean",
+        "lint": "turbo run lint",
+        "typecheck": "turbo run typecheck"
     },
     "workspaces": [
-        "_app/*",
         "_cli/*",
         "_dev/*",
         "_pkg/*"
     ],
-    "resolutions": {},
-    "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
     "devDependencies": {
-        "concurrently": "^9.1.2"
+        "concurrently": "^9.1.2",
+        "turbo": "^2.5.2",
+        "esbuild": "^0.20.2",
+        "typescript": "^5.2.2"
     }
 }

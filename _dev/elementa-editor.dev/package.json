@@ -10,9 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@repo/elementa": "*",
-    "@repo/elementa-renderer": "*",
-    "@repo/elementa-models": "*",
+    "@repo/elementa": "workspace:*",
+    "@repo/elementa-renderer": "workspace:*",
+    "@elllphnt/elementa-models": "workspace:*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

@@ -1,0 +1,3 @@
+packages:
+  - _pkg/*
+  - _dev/*

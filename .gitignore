@@ -1,2 +1,62 @@
+# Node.js
 node_modules/
-.parcel-cache/
+.pnpm-debug.log
+.pnpm-store/
+
+# TypeScript
+*.tsbuildinfo
+
+# Build outputs
+dist/
+
+# Turbo
+turbo/
+.cache/
+
+# Vite / Next.js (if you add UI later)
+.next/
+.vite/
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDEs and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# GitHub Packages
+.npmrc
+*.npmrc.local
+
+# Mac-specific
+.DS_Store
+
+# Windows-specific
+Thumbs.db
+
+# Temp files
+*.tmp
+*.temp
+*.swp
+*.bak
+
+# Test snapshots
+__snapshots__/
+
+# Storybook (if you use it later)
+storybook-static/
+out/
