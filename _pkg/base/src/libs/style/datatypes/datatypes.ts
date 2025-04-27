@@ -1,0 +1,65 @@
+import { ErrorTupple } from "../../../types/_.js";
+import { ArrayItem } from "../../../types/_primitives/array.js";
+import {
+  StyleDataType,
+  StyleDataTypeMap,
+} from "../../../types/_primitives/style/datatypes.js";
+import { styleDataNormalizers } from "./nomalizers.js";
+import { styleDataParsers } from "./parsers.js";
+import { styleDataSchemas } from "./schemas.js";
+import { styleDataStringifiers } from "./stringifiers.js";
+
+export function parseStyleData(
+  type: StyleDataType,
+  input: string,
+): ErrorTupple<any> {
+  const parse = styleDataParsers[type];
+  return parse(input);
+}
+
+export function getStyleDataType(
+  data: any,
+  possibleTypes?: StyleDataType[],
+): StyleDataType | undefined {
+  const types =
+    possibleTypes || (Object.keys(styleDataSchemas) as StyleDataType[]);
+  for (const type of types) {
+    if (validateStyleData(type, data)) {
+      return type;
+    }
+  }
+  return undefined;
+}
+
+export function stringifyStyleData<T extends StyleDataType>(
+  type: T,
+  value: StyleDataTypeMap[T],
+): string {
+  const stringify = styleDataStringifiers[type];
+  return stringify(value);
+}
+
+export function stringifyFlexibleStyleData<T extends StyleDataType[]>(
+  value: StyleDataTypeMap[ArrayItem<T>],
+  ...types: T
+): string {
+  let electedType = getStyleDataType(value, types) || types[0];
+  return stringifyStyleData(electedType, value);
+}
+
+export function validateStyleData<T extends StyleDataType>(
+  type: T,
+  value: any,
+): value is StyleDataTypeMap[T] {
+  const schema = styleDataSchemas[type];
+  return schema.isValidSync(value);
+}
+
+export function normalizeStyleData<T>(type: StyleDataType, value: T): T {
+  const normalize = styleDataNormalizers[type];
+  if (normalize) {
+    return normalize(value);
+  } else {
+    return value;
+  }
+}
