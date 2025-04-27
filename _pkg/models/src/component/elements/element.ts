@@ -8,9 +8,8 @@ import {
 } from "@elllphnt/elementa-base";
 import { distinctUntilChanged, map, Observable, of } from "rxjs";
 import * as y from "yjs";
-import { CssStyleSheet } from "~/src/css/_";
-import { StylesheetCssStyleSheet } from "~/src/css/stylesheets/stylesheet/stylesheet";
-import { Stylesheet } from "~/src/style/_";
+import { CssStyleSheet, StylesheetCssStyleSheet } from "../../css/_";
+import { Stylesheet } from "../../style/stylesheet";
 import { Component } from "../component";
 import { IdentifiableModel } from "../identifiable";
 
@@ -136,9 +135,10 @@ export abstract class Element<
     this.component = component;
     this.cssStyleSheet = new StylesheetCssStyleSheet({
       target: `${this.type}:${this.id}`,
-      stylesheet: new Stylesheet({
-        project: component.project,
-      }),
+      stylesheet: new Stylesheet(
+        this.getOrCreateMap("stylesheet"),
+        component.project
+      ),
     });
 
     this.addDisposer(() => {

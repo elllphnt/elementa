@@ -2,9 +2,9 @@
 import { BehaviorSubject, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { Disposable } from "../core/disposable";
-import { CRDTModel } from "./model";
+import { MapCRDTModel } from "./map";
 
-export class CRDTModelMap<M extends CRDTModel<any>> extends Disposable {
+export class CRDTModelMap<M extends MapCRDTModel<any>> extends Disposable {
   static key = Math.round(Math.random() * 100000);
   key = CRDTModelMap.key++;
 

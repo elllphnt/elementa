@@ -13,7 +13,7 @@ import {
   TextShadowFilterData,
   validateStyleData,
 } from "@elllphnt/elementa-base";
-import { applySelectedCssStyle, CssStyleData } from "./_";
+import { applySelectedCssStyle, CssStyleData } from "../base/_";
 import { animationToCss } from "./fragments/animation";
 import { backgroundLayerToCss } from "./fragments/background_layer";
 import {

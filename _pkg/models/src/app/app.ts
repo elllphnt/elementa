@@ -1,8 +1,8 @@
 import { AppData } from "@elllphnt/elementa-base";
 import {
   combineLatestOrEmpty,
-  CRDTModel,
   CRDTModelList,
+  MapCRDTModel,
 } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, distinctUntilChanged, map, switchMap } from "rxjs";
 import * as y from "yjs";
@@ -10,7 +10,7 @@ import { Project } from "../project/_";
 import { Route } from "./route";
 import { AppVariable } from "./variable";
 
-export class App extends CRDTModel<AppData> {
+export class App extends MapCRDTModel<AppData> {
   readonly project: Project;
 
   readonly routes: CRDTModelList<Route>;

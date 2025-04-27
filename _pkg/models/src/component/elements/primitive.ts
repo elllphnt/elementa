@@ -5,7 +5,7 @@ import {
   PrimitiveSubElementData,
   ResolvableOrEvaluable,
 } from "@elllphnt/elementa-base";
-import { assert, CRDTModel, CRDTModelMap } from "@elllphnt/elementa-utils";
+import { assert, CRDTModelMap, MapCRDTModel } from "@elllphnt/elementa-utils";
 import {
   combineLatest,
   distinctUntilChanged,
@@ -17,13 +17,13 @@ import {
   tap,
 } from "rxjs";
 import * as y from "yjs";
-import { ResolvableRecord } from "~/src/_lib/resolvable";
-import { CssStyleSheet, StylesheetCssStyleSheet } from "~/src/css/_";
-import { Stylesheet } from "~/src/style/stylesheet";
+import { ResolvableRecord } from "../../_lib/resolvable";
+import { CssStyleSheet, StylesheetCssStyleSheet } from "../../css/_";
+import { Stylesheet } from "../../style/stylesheet";
 import { Component } from "../component";
 import { Element } from "./element";
 
-export class PrimitiveSubElement extends CRDTModel<PrimitiveSubElementData> {
+export class PrimitiveSubElement extends MapCRDTModel<PrimitiveSubElementData> {
   readonly component: Component;
   readonly cssStyleSheet: StylesheetCssStyleSheet;
 
@@ -49,9 +49,10 @@ export class PrimitiveSubElement extends CRDTModel<PrimitiveSubElementData> {
     this.component = component;
     this.cssStyleSheet = new StylesheetCssStyleSheet({
       target: `primitive-sub-element`,
-      stylesheet: new Stylesheet({
-        project: component.project,
-      }),
+      stylesheet: new Stylesheet(
+        this.getOrCreateMap("stylesheet"),
+        component.project
+      ),
     });
 
     this.addDisposer(() => {

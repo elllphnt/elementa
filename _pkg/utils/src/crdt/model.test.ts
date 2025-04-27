@@ -1,9 +1,9 @@
 import { test } from "uvu";
 import * as assert from "uvu/assert";
 import * as y from "yjs";
-import { CRDTModel } from "./model";
+import { MapCRDTModel } from "./map";
 
-// helper to create a CRDTModel with initial entries
+// helper to create a MapCRDTModel with initial entries
 function createModel(initial: Record<string, any> = {}) {
   const doc = new y.Doc();
   const ymap = doc.getMap<any>("test");
@@ -12,7 +12,7 @@ function createModel(initial: Record<string, any> = {}) {
       ymap.set(k, v);
     }
   });
-  return new CRDTModel<typeof initial>(ymap);
+  return new MapCRDTModel<typeof initial>(ymap);
 }
 
 test("initializes with map entries", () => {
@@ -59,7 +59,7 @@ test("dispose unsubscribes observer and completes value$", () => {
     () => {},
     () => {
       completed = true;
-    },
+    }
   );
   model.dispose();
   model.patch({ b: 2 }); // should not emit

@@ -1,8 +1,8 @@
 import { CssSelector } from "@elllphnt/elementa-base";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-utils";
 import { combineLatest, map, Observable, switchMap } from "rxjs";
-import { Style } from "~/src/style/style";
-import { Stylesheet } from "~/src/style/stylesheet";
+import { Style } from "../../../style/style";
+import { Stylesheet } from "../../../style/stylesheet";
 import { CssStyleRule } from "../../lib/rule/stylerule";
 
 /**

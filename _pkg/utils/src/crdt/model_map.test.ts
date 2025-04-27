@@ -1,14 +1,14 @@
 import { test } from "uvu";
 import * as assert from "uvu/assert";
 import * as y from "yjs";
-import { CRDTModel } from "./model";
+import { MapCRDTModel } from "./map";
 import { CRDTModelMap } from "./model_map";
 
 // helper to build a fresh map
 function makeMap() {
   const doc = new y.Doc();
   const ymap = doc.getMap<y.Map<any>>("root");
-  return new CRDTModelMap(ymap, (ym) => new CRDTModel(ym));
+  return new CRDTModelMap(ymap, (ym) => new MapCRDTModel(ym));
 }
 
 test("initially empty", () => {
@@ -26,7 +26,7 @@ test("initializes with prepopulated entries", () => {
     ]);
     ymap.set("one", inner);
   });
-  const m = new CRDTModelMap(ymap, (ym) => new CRDTModel(ym));
+  const m = new CRDTModelMap(ymap, (ym) => new MapCRDTModel(ym));
   assert.equal(Object.keys(m.items), ["one"]);
   assert.equal(m.items.one.state, { a: 1, b: 2 });
 });
@@ -35,7 +35,7 @@ test("set and retrieve model", () => {
   const m = makeMap();
   m.set("one", { a: 1 });
   const item = m.item("one");
-  assert.instance(item, CRDTModel);
+  assert.instance(item, MapCRDTModel);
   assert.equal(item?.state, { a: 1 });
   assert.equal(Object.keys(m.items), ["one"]);
 });
@@ -66,7 +66,7 @@ test("clear all keys", () => {
 
 test("items$ emits updates", () => {
   const m = makeMap();
-  const events: Record<string, CRDTModel<any>>[] = [];
+  const events: Record<string, MapCRDTModel<any>>[] = [];
   m.items$.subscribe((val) => events.push(val));
   m.set("x", { v: 1 });
   m.set("y", { v: 2 });
@@ -85,11 +85,11 @@ test("items$ emits updates", () => {
 
 test("itemOf$ emits undefined then model once set", () => {
   const m = makeMap();
-  const events: (CRDTModel<any> | undefined)[] = [];
+  const events: (MapCRDTModel<any> | undefined)[] = [];
   m.item$("key").subscribe((v) => events.push(v));
   assert.equal(events, [undefined]);
   m.set("key", { x: 5 });
-  assert.instance(events[1], CRDTModel);
+  assert.instance(events[1], MapCRDTModel);
   assert.is(events[1]?.state.x, 5);
 });
 
@@ -104,7 +104,7 @@ test("dispose completes items$ and disposes inner models", () => {
     () => {},
     () => {
       completed = true;
-    },
+    }
   );
   m.set("one", { a: 1 });
   m.dispose();

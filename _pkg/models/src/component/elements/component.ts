@@ -8,10 +8,10 @@ import {
 import {
   assert,
   combineLatestOrEmpty,
-  CRDTModel,
   CRDTModelMap,
   getOrCreateYArray,
   getOrCreateYMap,
+  MapCRDTModel,
 } from "@elllphnt/elementa-utils";
 import {
   distinctUntilChanged,
@@ -22,15 +22,15 @@ import {
   tap,
 } from "rxjs";
 import * as y from "yjs";
-import { ResolvableRecord } from "~/src/_lib/resolvable";
-import { StylesheetCssStyleSheet } from "~/src/css/_";
-import { Stylesheet } from "~/src/style/stylesheet";
+import { ResolvableRecord } from "../../_lib/resolvable";
+import { StylesheetCssStyleSheet } from "../../css/_";
+import { Stylesheet } from "../../style/stylesheet";
 import { Component } from "../component";
 import { IdentifiableModel } from "../identifiable";
 import { ElementList } from "./_list";
 import { Element } from "./element";
 
-export class SlotFill extends CRDTModel<SlotFillData> {
+export class SlotFill extends MapCRDTModel<SlotFillData> {
   readonly component: Component;
   readonly cssStyleSheet: StylesheetCssStyleSheet;
   readonly content: ElementList;
@@ -73,9 +73,10 @@ export class SlotFill extends CRDTModel<SlotFillData> {
     this.component = component;
     this.cssStyleSheet = new StylesheetCssStyleSheet({
       target: `slot-fill`,
-      stylesheet: new Stylesheet({
-        project: component.project,
-      }),
+      stylesheet: new Stylesheet(
+        this.getOrCreateMap("stylesheet"),
+        component.project
+      ),
     });
     this.content = new ElementList(this.getOrCreateArray("content"), component);
 

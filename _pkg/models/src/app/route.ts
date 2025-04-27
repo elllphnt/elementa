@@ -1,11 +1,11 @@
 import { RouteData } from "@elllphnt/elementa-base";
-import { CRDTModel } from "@elllphnt/elementa-utils";
+import { MapCRDTModel } from "@elllphnt/elementa-utils";
 import { distinctUntilChanged, map } from "rxjs";
 import * as y from "yjs";
 import { genId } from "../_lib/id";
 import { App } from "./app";
 
-export class Route extends CRDTModel<RouteData> {
+export class Route extends MapCRDTModel<RouteData> {
   readonly app: App;
 
   get id() {

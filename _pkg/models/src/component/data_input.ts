@@ -1,10 +1,10 @@
 import { DataInputData } from "@elllphnt/elementa-base";
-import { CRDTModel } from "@elllphnt/elementa-utils";
+import { MapCRDTModel } from "@elllphnt/elementa-utils";
 import { map } from "rxjs";
 import * as y from "yjs";
 import { Component } from "./component";
 
-export class DataInput extends CRDTModel<DataInputData> {
+export class DataInput extends MapCRDTModel<DataInputData> {
   readonly component: Component;
 
   constructor(ymap: y.Map<any>, component: Component) {

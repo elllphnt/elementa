@@ -2,9 +2,9 @@
 import { BehaviorSubject, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { Disposable } from "../core/disposable";
-import { CRDTModel } from "./model";
+import { MapCRDTModel } from "./map";
 
-export class CRDTModelList<M extends CRDTModel<any>> extends Disposable {
+export class CRDTModelList<M extends MapCRDTModel<any>> extends Disposable {
   static key = Math.round(Math.random() * 100000);
   key = CRDTModelList.key++;
 
@@ -26,13 +26,13 @@ export class CRDTModelList<M extends CRDTModel<any>> extends Disposable {
     return this.items$.pipe(
       map((items) => {
         return items.find((model) => model.ymap === ymap);
-      }),
+      })
     );
   }
 
   constructor(
     yarray: y.Array<y.Map<any>>,
-    createModel: (ymap: y.Map<any>) => M,
+    createModel: (ymap: y.Map<any>) => M
   ) {
     super();
     this.yarray = yarray;

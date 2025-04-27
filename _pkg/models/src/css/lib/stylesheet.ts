@@ -1,4 +1,4 @@
-import { Disposable } from "@repo/utils";
+import { Disposable } from "@elllphnt/elementa-utils";
 
 /**
  * Represents a single CSS stylesheet.

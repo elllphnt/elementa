@@ -1,10 +1,10 @@
 import { test } from "uvu";
 import * as assert from "uvu/assert";
 import * as y from "yjs";
-import { CRDTModel } from "./model";
+import { MapCRDTModel } from "./map";
 import { CRDTModelList } from "./model_list";
 
-class DummyModel extends CRDTModel<any> {
+class DummyModel extends MapCRDTModel<any> {
   constructor(public ymap: y.Map<any>) {
     super(ymap);
   }
@@ -99,7 +99,7 @@ test("dispose completes items$ and disposes models", () => {
     () => {},
     () => {
       completed = true;
-    },
+    }
   );
   list.add({ foo: 1 });
   list.dispose();
@@ -116,7 +116,7 @@ test("initializes with prepopulated array entries", () => {
   });
   const list = new CRDTModelList<DummyModel>(
     yarray,
-    (ymap) => new DummyModel(ymap),
+    (ymap) => new DummyModel(ymap)
   );
   assert.is(list.items.length, 2);
   assert.is(list.items[0].ymap.get("foo"), 3);

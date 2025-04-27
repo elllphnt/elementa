@@ -1,3 +1,5 @@
+import { CssSelector } from "@elllphnt/elementa-base";
+import { CssStyleData } from "@elllphnt/elementa-css";
 import { Disposable } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 

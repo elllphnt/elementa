@@ -444,6 +444,9 @@ importers:
       '@elllphnt/elementa-base':
         specifier: workspace:*
         version: link:../base
+      '@elllphnt/elementa-css':
+        specifier: workspace:*
+        version: link:../css
       '@elllphnt/elementa-utils':
         specifier: workspace:*
         version: link:../utils

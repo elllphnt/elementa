@@ -1,5 +1,5 @@
 import { ComponentData } from "@elllphnt/elementa-base";
-import { CRDTModel, CRDTModelList } from "@elllphnt/elementa-utils";
+import { CRDTModelList, MapCRDTModel } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
 import * as y from "yjs";
 import { Project } from "../project/project";
@@ -9,7 +9,7 @@ import { State } from "./states/_";
 import { createState } from "./states/_create";
 import { Template } from "./template";
 
-export abstract class Component extends CRDTModel<ComponentData> {
+export abstract class Component extends MapCRDTModel<ComponentData> {
   readonly project: Project;
 
   readonly template: Template;

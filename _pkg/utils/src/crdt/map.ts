@@ -2,9 +2,9 @@ import { BehaviorSubject, Observable } from "rxjs";
 import * as y from "yjs";
 import { Disposable } from "../core/disposable";
 
-export class CRDTModel<S extends Record<string, any>> extends Disposable {
+export class MapCRDTModel<S extends Record<string, any>> extends Disposable {
   static key = Math.round(Math.random() * 100000);
-  key = CRDTModel.key++;
+  key = MapCRDTModel.key++;
 
   readonly ymap: y.Map<any>;
   private readonly _state$ = new BehaviorSubject<S>({} as S);
@@ -108,4 +108,4 @@ export class CRDTModel<S extends Record<string, any>> extends Disposable {
   }
 }
 
-export type CRDTModelDataType<M> = M extends CRDTModel<infer D> ? D : never;
+export type CRDTModelDataType<M> = M extends MapCRDTModel<infer D> ? D : never;

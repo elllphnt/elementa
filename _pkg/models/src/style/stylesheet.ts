@@ -1,67 +1,33 @@
 import { baseSelector, StyleSheetData } from "@elllphnt/elementa-base";
-import { combineLatestOrEmpty, CRDTModel } from "@elllphnt/elementa-utils";
-import { map, Observable, switchMap } from "rxjs";
-import { Project } from "~/src/project/_";
+import { assert, CRDTModelMap, MapCRDTModel } from "@elllphnt/elementa-utils";
+import { filter, map, Observable, tap } from "rxjs";
+import * as y from "yjs";
+import { Project } from "../project/project";
 import { Style } from "./style";
-import { StyleFragmentRegistry } from "./style_fragment_set";
+import { StyleFragmentRegistry } from "./style_fragment_registry";
 
 /**
  * A standalone modelization of an Elll StylesheetData object.
  * Can be used to store and manipulate stylesheet data.
  */
-export class Stylesheet extends CRDTModel<StyleSheetData> {
+export class Stylesheet extends MapCRDTModel<StyleSheetData> {
   readonly project: Project;
-  readonly fragmentRegistry = new StyleFragmentRegistry();
+  readonly fragmentRegistry: StyleFragmentRegistry;
+  readonly styles: CRDTModelMap<Style>;
 
   get className() {
     return `elll-stylesheet-${this.key}`;
-  }
-
-  get staticStyles$() {
-    return this.styles$.pipe(
-      map((styles) => {
-        return Object.fromEntries(
-          Object.entries(styles).filter(
-            ([selector]) => !selector.startsWith("__expression:")
-          )
-        );
-      })
-    );
-  }
-  get staticStyles() {
-    return Object.fromEntries(
-      Object.entries(this.styles).filter(
-        ([selector]) => !selector.startsWith("__expression:")
-      )
-    );
-  }
-
-  get dynamicStyles$() {
-    return this.styles$.pipe(
-      map((styles) => {
-        return Object.fromEntries(
-          Object.entries(styles).filter(([selector]) =>
-            selector.startsWith("__expression:")
-          )
-        );
-      })
-    );
-  }
-  get dynamicStyles() {
-    return Object.fromEntries(
-      Object.entries(this.styles).filter(([selector]) =>
-        selector.startsWith("__expression:")
-      )
-    );
   }
 
   style<C extends true | undefined>(
     selector: string,
     create?: C
   ): C extends true ? Style : Style | undefined {
-    let style = this.styles[selector];
+    let style = this.styles.item(selector);
     if (!style && create) {
-      style = this.addStyle(selector);
+      this.addStyle(selector);
+      style = this.styles.item(selector);
+      assert(style, "Style not defined after insertion");
     }
     return style;
   }
@@ -69,36 +35,35 @@ export class Stylesheet extends CRDTModel<StyleSheetData> {
     selector: string,
     create?: C
   ): C extends true ? Observable<Style> : Observable<Style | undefined> {
-    return this.styles$.pipe(
-      map((styles) => {
-        let style = styles[selector];
-        if (!style && create) {
-          style = this.addStyle(selector);
+    return this.styles.item$(selector).pipe(
+      tap((style) => {
+        if (!style) {
+          this.addStyle(selector);
         }
-        return style;
-      })
+      }),
+      filter((style) => !!style || !create)
     );
   }
 
-  get expressions$() {
-    return this._expressions$;
+  get conditions$() {
+    return this.state$.pipe(map((s) => s.conditions));
   }
-  get expressions() {
-    return this._expressions$.value;
+  get conditions() {
+    return this.state.conditions;
   }
 
-  expression(id: string): string | undefined {
-    return this.expressions[id];
+  condition(id: string): string | undefined {
+    return this.conditions[id];
   }
-  expression$(id: string): Observable<string | undefined> {
-    return this.expressions$.pipe(map((expressions) => expressions[id]));
+  condition$(id: string): Observable<string | undefined> {
+    return this.conditions$.pipe(map((conditions) => conditions[id]));
   }
 
   get selectors() {
     return Object.keys(this.styles);
   }
   get selectors$() {
-    return this.styles$.pipe(map((styles) => Object.keys(styles)));
+    return this.styles.items$.pipe(map((styles) => Object.keys(styles)));
   }
 
   baseStyle<C extends true | undefined>(
@@ -112,100 +77,46 @@ export class Stylesheet extends CRDTModel<StyleSheetData> {
     return this.style$(baseSelector, create) as any;
   }
 
-  get data(): StyleSheetData {
-    return {
-      styles: Object.fromEntries(
-        Object.entries(this.styles).map(([selector, style]) => [
-          selector,
-          style.data,
-        ])
-      ),
-      fragments: this.fragmentRegistry.data,
-      expressions: this.expressions,
-    };
-  }
-  get data$(): Observable<StyleSheetData> {
-    return combineLatestOrEmpty([
-      this.styles$.pipe(
-        switchMap((styles) =>
-          combineLatestOrEmpty(
-            Object.entries(styles).map(([selector, style]) =>
-              style.data$.pipe(map((data) => [selector, data]))
-            )
-          )
-        ),
-        map((styles) => Object.fromEntries(styles))
-      ),
-      this.fragmentRegistry.data$,
-      this.expressions$,
-    ]).pipe(
-      map(([styles, styleFragments, expressions]) => ({
-        styles,
-        styleFragments,
-        expressions,
-      }))
-    );
-  }
-
-  constructor({ project }: { project: Project }) {
-    super();
+  constructor(ymap: y.Map<any>, project: Project) {
+    super(ymap);
     this.project = project;
+    this.fragmentRegistry = new StyleFragmentRegistry(
+      this.getOrCreateArray("fragments")
+    );
+    this.styles = new CRDTModelMap(
+      this.getOrCreateMap("styles"),
+      (map) => new Style(map, project, this.fragmentRegistry)
+    );
+
     this.addDisposer(() => {
-      Object.values(this.styles).forEach((style) => style.dispose());
-      this._styles$.next({});
-      this._styles$.complete();
+      this.fragmentRegistry.dispose();
+      this.styles.dispose();
     });
-  }
-
-  restore(data: StyleSheetData): void {
-    restoreReactiveMap({
-      datafiable$: this._styles$,
-      data: data.styles,
-      create: () =>
-        new Style({
-          project: this.project,
-          fragmentRegistry: this.fragmentRegistry,
-        }),
-      restore: (style, styleData) => {
-        style.restore(styleData);
-      },
-      dispose: (style) => {
-        style.dispose();
-      },
-    });
-
-    this.fragmentRegistry.restore(data.fragments || []);
-    this._expressions$.next(data.expressions || {});
   }
 
   addStyle(selector: string) {
-    const existing = this.styles[selector];
+    const existing = this.styles.item(selector);
     if (existing) {
-      return existing;
+      return;
     }
-
-    const style = new Style({
-      project: this.project,
-      fragmentRegistry: this.fragmentRegistry,
-    });
-    this._styles$.next({ ...this.styles, [selector]: style });
-
-    return style;
+    this.styles.set(selector, new y.Map());
+  }
+  removeStyle(selector: string) {
+    const existing = this.styles.item(selector);
+    if (!existing) {
+      return;
+    }
+    this.styles.delete(selector);
   }
 
-  setExpression(id: string, expression: string): void {
-    const expressions = { ...this.expressions };
-    expressions[id] = expression;
-    this._expressions$.next(expressions);
+  setCondition(id: string, expression: string): void {
+    const conditions = { ...this.conditions };
+    conditions[id] = expression;
+    this.patch({ conditions });
   }
-
-  removeStyle(selector: string): void {
-    const existing = this.styles[selector];
-    if (!existing) return;
-
-    const styles = { ...this.styles };
-    delete styles[selector];
-    this._styles$.next(styles);
-    existing.dispose();
+  removeCondition(id: string) {
+    const conditions = { ...this.conditions };
+    delete conditions[id];
+    this.patch({ conditions });
   }
 }

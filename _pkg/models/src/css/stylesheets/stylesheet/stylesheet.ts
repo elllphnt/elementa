@@ -1,5 +1,5 @@
 import { BehaviorSubject, map } from "rxjs";
-import { Stylesheet } from "~/src/style/stylesheet";
+import { Stylesheet } from "../../../style/stylesheet";
 import { RuleCssStyleSheet } from "../../lib/rule/rule";
 import { StylesheetCssStyleRule } from "./rule";
 
@@ -13,7 +13,7 @@ export class StylesheetCssStyleSheet extends RuleCssStyleSheet {
   readonly stylesheet: Stylesheet;
   readonly layer?: string;
   private _rules$ = new BehaviorSubject<Record<string, StylesheetCssStyleRule>>(
-    {},
+    {}
   );
 
   get className() {
@@ -58,7 +58,7 @@ export class StylesheetCssStyleSheet extends RuleCssStyleSheet {
     this.stylesheet = stylesheet;
     this.layer = layer;
 
-    const rulesSubscription = this.stylesheet.staticStyles$.subscribe(
+    const rulesSubscription = this.stylesheet.styles.items$.subscribe(
       (styles) => {
         const toRemove = { ...this._rules$.value };
         const newRules: Record<string, StylesheetCssStyleRule> = {};
@@ -81,7 +81,7 @@ export class StylesheetCssStyleSheet extends RuleCssStyleSheet {
         }
 
         this._rules$.next(newRules);
-      },
+      }
     );
 
     this.addDisposer(() => {

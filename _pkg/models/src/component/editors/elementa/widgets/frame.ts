@@ -21,5 +21,6 @@ export type FrameWidgetData = WidgetData & {
     overflow?: OverflowValue;
   };
   colorScheme?: string;
+  styleModifierEnabled?: boolean;
   styleModifiers?: string[];
 };

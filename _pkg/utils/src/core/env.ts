@@ -1,4 +1,5 @@
 const env =
+  // @ts-ignore
   (typeof process !== "undefined" && process.env?.__ENV__) ||
   // @ts-ignore
   (typeof Deno !== "undefined" && Deno.env?.get?.("__ENV__")) ||

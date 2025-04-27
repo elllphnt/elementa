@@ -1,11 +1,11 @@
 import { IdentifiableData } from "@elllphnt/elementa-base";
-import { CRDTModel } from "@elllphnt/elementa-utils";
+import { MapCRDTModel } from "@elllphnt/elementa-utils";
 import { init } from "@paralleldrive/cuid2";
 import * as y from "yjs";
 
 export abstract class IdentifiableModel<
   S extends IdentifiableData
-> extends CRDTModel<S> {
+> extends MapCRDTModel<S> {
   static createId() {
     return init();
   }

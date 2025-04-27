@@ -1,4 +1,4 @@
-import { Resolvable } from "@elllphnt/elementa-base";
+import { isStaticReference, Resolvable } from "@elllphnt/elementa-base";
 import { Disposable } from "@elllphnt/elementa-utils";
 import {
   BehaviorSubject,
@@ -51,7 +51,10 @@ export class ResolvableValue<T> extends Disposable {
           });
         }),
         switchMap((resolvable) =>
-          from(this.infra.resolveReference(resolvable)).pipe(
+          (isStaticReference(resolvable)
+            ? from(this.infra.resolveReference(resolvable))
+            : of(resolvable as unknown as T)
+          ).pipe(
             tap((resolved) => {
               const prev = this._state$.getValue();
               this._state$.next({ ...prev, value: resolved, isResolved: true });
@@ -149,8 +152,10 @@ export class ResolvableRecord<V> extends Disposable {
         switchMap((record) => {
           const observables: Record<string, Observable<V | undefined>> = {};
           for (const key in record) {
-            observables[key] = from(
-              this.infra.resolveReference(record[key])
+            observables[key] = (
+              isStaticReference(record[key])
+                ? from(this.infra.resolveReference(record[key]))
+                : of(record[key] as unknown as V)
             ).pipe(
               catchError((error) => {
                 console.error(
@@ -253,7 +258,10 @@ export class ResolvableList<V> extends Disposable {
         }),
         switchMap((list) => {
           const observables = list.map((item) =>
-            from(this.infra.resolveReference(item)).pipe(
+            (isStaticReference(item)
+              ? from(this.infra.resolveReference(item))
+              : of(item as unknown as V)
+            ).pipe(
               catchError((error) => {
                 console.error("ResolvableList: error resolving item", error);
                 return of(undefined as V);

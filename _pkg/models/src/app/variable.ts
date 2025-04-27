@@ -1,10 +1,10 @@
 import { AppVariableData } from "@elllphnt/elementa-base";
-import { CRDTModel } from "@elllphnt/elementa-utils";
+import { MapCRDTModel } from "@elllphnt/elementa-utils";
 import { distinctUntilChanged, map } from "rxjs";
 import * as y from "yjs";
 import { App } from "./app";
 
-export class AppVariable extends CRDTModel<AppVariableData> {
+export class AppVariable extends MapCRDTModel<AppVariableData> {
   readonly app: App;
 
   get identifier() {

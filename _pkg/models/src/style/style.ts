@@ -6,31 +6,28 @@ import {
   StylePropertyConfig,
   stylePropertyConfigMap,
   StylePropertyName,
-  styleToCss,
   VarRef,
 } from "@elllphnt/elementa-base";
-import { CRDTModel } from "@elllphnt/elementa-utils";
-import { combineLatest, map, Observable } from "rxjs";
-import { Project } from "~/src/project/_";
-import { StyleFragmentRegistry } from "./style_fragment_set";
+import { CssStyleData, styleToCss } from "@elllphnt/elementa-css";
+import { MapCRDTModel } from "@elllphnt/elementa-utils";
+import { BehaviorSubject, combineLatest, map, Observable } from "rxjs";
+import * as y from "yjs";
+import { Project } from "../project/project";
+import { StyleFragmentRegistry } from "./style_fragment_registry";
 
 /**
  * A standalone modelization of an Elll StyleData object.
  * Can be used to store and manipulate style data.
  */
-export class Style extends CRDTModel<StyleData> {
+export class Style extends MapCRDTModel<StyleData> {
   readonly fragmentRegistry: StyleFragmentRegistry;
   readonly project: Project;
 
+  private _settings$ = new BehaviorSubject<Record<string, any>>({});
+  private _css$ = new BehaviorSubject<CssStyleData>({});
+
   get className() {
     return `elll-style-${this.key}`;
-  }
-
-  get data() {
-    return this._data$.value;
-  }
-  get data$() {
-    return this._data$.asObservable();
   }
 
   setting(key: string) {
@@ -48,21 +45,21 @@ export class Style extends CRDTModel<StyleData> {
   }
 
   propertyDefined(property: StylePropertyName) {
-    return this.data[property] !== undefined;
+    return this.state[property] !== undefined;
   }
   propertyDefined$(property: StylePropertyName) {
-    return this.data$.pipe(map((data) => data[property] !== undefined));
+    return this.state$.pipe(map((data) => data[property] !== undefined));
   }
 
   propertyValue<N extends StylePropertyName>(property: N): StyleData[N] {
-    return this.data[property];
+    return this.state[property];
   }
   propertyValue$<N extends StylePropertyName>(
     property: N
   ): Observable<StyleData[N]> {
-    return this.data$.pipe(map((data) => data[property]));
+    return this.state$.pipe(map((data) => data[property]));
   }
-  provertyValueWithoutUnset<N extends StylePropertyName>(
+  propertyValueWithoutUnset<N extends StylePropertyName>(
     property: N
   ): StyleData[N] {
     const value = this.propertyValue(property) as any;
@@ -76,30 +73,27 @@ export class Style extends CRDTModel<StyleData> {
     ) as any;
   }
 
-  constructor({
-    project,
-    fragmentRegistry,
-  }: {
-    project: Project;
-    fragmentRegistry: StyleFragmentRegistry;
-  }) {
-    super();
+  constructor(
+    ymap: y.Map<any>,
+    project: Project,
+    fragmentRegistry: StyleFragmentRegistry
+  ) {
+    super(ymap);
     this.project = project;
     this.fragmentRegistry = fragmentRegistry;
 
     const cssSubscription = combineLatest([
-      this.data$,
+      this.state$,
       this.fragmentRegistry.allFragments$,
     ]).subscribe(([data, fragments]) => {
       const css = styleToCss(data, {
         getFragment: (type, id) =>
-          fragments.find((f) => f.type === type && f._id === id) as any,
+          fragments.find((f) => f.type === type && f.id === id) as any,
       });
       this._css$.next(css);
     });
 
     this.addDisposer(() => {
-      this._data$.complete();
       this._settings$.complete();
       this._css$.complete();
 
@@ -114,8 +108,7 @@ export class Style extends CRDTModel<StyleData> {
     const nextValue = isVarRef(value)
       ? (value as VarRef)
       : (this.normalizeValue as any)(property, value);
-    this._data$.next({
-      ...this.data,
+    this.patch({
       [property]: nextValue,
     });
   }
