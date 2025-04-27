@@ -1,5 +1,5 @@
-import { ElementaCanvasData } from "./canvas";
+import { ElementaFrameData } from "./frame";
 
-export type ElementaEditorComponentData = {
-  canvas: ElementaCanvasData;
+export type ElementaEditorComponentStateData = {
+  frames: ElementaFrameData[];
 };

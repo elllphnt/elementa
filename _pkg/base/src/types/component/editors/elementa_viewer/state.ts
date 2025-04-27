@@ -1,6 +1,6 @@
 import { CornerData } from "../../../_";
 import { RenderingContextData } from "../elementa/rendering_context";
 
-export type ElementaViewerComponentData = RenderingContextData & {
+export type ElementaViewerComponentStateData = RenderingContextData & {
   corners?: CornerData<number>;
 };

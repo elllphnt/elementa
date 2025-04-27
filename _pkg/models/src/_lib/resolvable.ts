@@ -152,10 +152,11 @@ export class ResolvableRecord<V> extends Disposable {
         switchMap((record) => {
           const observables: Record<string, Observable<V | undefined>> = {};
           for (const key in record) {
+            const value = record[key];
             observables[key] = (
-              isStaticReference(record[key])
-                ? from(this.infra.resolveReference(record[key]))
-                : of(record[key] as unknown as V)
+              isStaticReference(value)
+                ? from(this.infra.resolveReference(value))
+                : of(value as unknown as V)
             ).pipe(
               catchError((error) => {
                 console.error(

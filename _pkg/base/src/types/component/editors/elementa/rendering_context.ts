@@ -1,6 +1,6 @@
-import { ColorData, OverflowValue } from "../../../_";
+import { ColorData, OverflowValue, StyleModifierData } from "../../../_";
 
-export type ColorTheme = {
+export type ColorThemeData = {
   scheme?: string;
   foreground?: ColorData;
   background?: ColorData;
@@ -13,9 +13,10 @@ export type ViewportData = {
 };
 
 export type RenderingContextData = {
-  theme?: ColorTheme;
+  theme?: ColorThemeData;
   props?: Record<string, any>;
   viewport?: ViewportData;
-  styleModifiers?: string[];
+  viewportEnabled?: boolean;
+  styleModifiers?: StyleModifierData[];
   styleModifierEnabled?: boolean;
 };

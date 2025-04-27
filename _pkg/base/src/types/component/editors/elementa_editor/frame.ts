@@ -1,7 +1,7 @@
 import { CornerData, IdentifiableData } from "../../../_";
 import { RenderingContextData } from "../elementa/rendering_context";
 
-export type ElementaFrame = IdentifiableData &
+export type ElementaFrameData = IdentifiableData &
   RenderingContextData & {
     name?: string;
     fragmentId?: string;
