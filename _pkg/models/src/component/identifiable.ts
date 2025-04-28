@@ -1,69 +1,54 @@
 import { IdentifiableData } from "@elllphnt/elementa-base";
-import { Extendable, attachReactiveMap } from "@elllphnt/elementa-utils";
+import {
+  Extendable,
+  ReactiveMap,
+  attachReactiveMap,
+} from "@elllphnt/elementa-utils";
 import { init } from "@paralleldrive/cuid2";
 import * as y from "yjs";
 
-export type IdentifiableModelType<S extends IdentifiableData> = ReturnType<
-  typeof attachReactiveMap<S>
-> & {
+export type Identifiable<S extends IdentifiableData> = ReactiveMap<S> & {
   id: string;
   cloneIds(clone: y.Map<any>): void;
+  cloneOwnId(clone: y.Map<any>): void;
   cloneState(): y.Map<any>;
 };
 
-/**
- * Attach IdentifiableModel behavior to a y.Map
- */
-export function withIdentifiableModelBehavior<S extends IdentifiableData>(
+export function attachIdentifiable<S extends IdentifiableData>(
   ymap: y.Map<any>
-): IdentifiableModelType<S> {
+): Identifiable<S> {
   const identifiable = attachReactiveMap<S>(
     ymap as Extendable<y.Map<any>>
-  ) as Extendable<IdentifiableModelType<S>>;
+  ) as Extendable<Identifiable<S>>;
 
-  // Auto-generate ID if missing
   if (!identifiable.value.id) {
     identifiable.set("id", IdentifiableModel.createId() as any);
   }
 
-  // Native ID accessor
   Object.defineProperty(identifiable, "id", {
     get() {
       return identifiable.value.id;
     },
-    set(value: string) {
-      identifiable.set("id", value as any);
-    },
   });
 
-  // Clone this model's ID into a clone
   identifiable.cloneIds = (clone: y.Map<any>) => {
-    clone.set("id", IdentifiableModel.createId());
+    identifiable.cloneOwnId(clone);
   };
 
-  // Clone full CRDT state + fresh IDs
-  identifiable.cloneState = () => {
-    const clone = identifiable.ymap.clone();
-    identifiable.cloneIds(clone);
-    return clone;
+  identifiable.cloneOwnId = (clone: y.Map<any>) => {
+    clone.set("id", identifiable.id);
   };
 
-  return identifiable as IdentifiableModelType<S>;
+  return identifiable as Identifiable<S>;
 }
 
-/**
- * Create a new local IdentifiableModel
- */
 export function createIdentifiableModel<
   S extends IdentifiableData
->(): IdentifiableModelType<S> {
+>(): Identifiable<S> {
   const ymap = new y.Map<any>();
-  return withIdentifiableModelBehavior<S>(ymap);
+  return attachIdentifiable<S>(ymap);
 }
 
-/**
- * Static helpers for cloning list and map of identifiables
- */
 export namespace IdentifiableModel {
   export const createId = init();
 

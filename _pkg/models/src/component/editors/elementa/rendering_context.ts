@@ -2,7 +2,13 @@ import {
   RenderingContextData,
   StyleModifierData,
 } from "@elllphnt/elementa-base";
-import { attachReactiveMap, Extendable } from "@elllphnt/elementa-utils";
+import {
+  attachReactiveMap,
+  Extendable,
+  ReactiveMap,
+  setEnhancer,
+  setModelFields,
+} from "@elllphnt/elementa-utils";
 import {
   combineLatest,
   distinctUntilChanged,
@@ -13,15 +19,13 @@ import {
 } from "rxjs";
 import * as y from "yjs";
 import { Component } from "../../component";
-import { ColorThemeModel, withColorThemeBehavior } from "./color_theme";
-import { ViewportModel, withViewportBehavior } from "./viewport";
+import { attachColorTheme, ColorTheme } from "./color_theme";
+import { attachViewport, Viewport } from "./viewport";
 
-export type RenderingContextModel = ReturnType<
-  typeof attachReactiveMap<RenderingContextData>
-> & {
+export type RenderingContext = ReactiveMap<RenderingContextData> & {
   component: Component;
-  theme: ColorThemeModel;
-  viewport: ViewportModel;
+  theme: ColorTheme;
+  viewport: Viewport;
 
   props: Record<string, any>;
   props$: Observable<Record<string, any>>;
@@ -37,44 +41,29 @@ export type RenderingContextModel = ReturnType<
 
   styleModifiers: StyleModifierData[];
   styleModifiers$: Observable<StyleModifierData[]>;
-
-  setProp(varName: string, value: any): void;
-  clearProp(varName: string): void;
-  setCustomStyleModifiers(styleModifiers: StyleModifierData[]): void;
-  enableStyleModifier(): void;
-  disableStyleModifier(): void;
-  enableViewport(): void;
-  disableViewport(): void;
 };
 
 /**
  * Attach RenderingContext behavior to a y.Map
  */
-export function withRenderingContextBehavior(
+export function attachRenderingContext(
   ymap: y.Map<any>,
   component: Component
-): RenderingContextModel {
+): RenderingContext {
   const context = attachReactiveMap<RenderingContextData>(
     ymap as Extendable<y.Map<any>>
-  ) as Extendable<RenderingContextModel>;
+  ) as Extendable<RenderingContext>;
 
   context.component = component;
-  context.theme = withColorThemeBehavior(context.getOrCreateMap("theme"));
-  context.viewport = withViewportBehavior(context.getOrCreateMap("viewport"));
+  context.theme = attachColorTheme(context.getOrCreateMap("theme"));
+  context.viewport = attachViewport(context.getOrCreateMap("viewport"));
 
-  // Properties
-  Object.defineProperty(context, "props", {
-    get() {
-      return context.value.props;
-    },
-    set(value) {
-      context.set("props", value);
-    },
-  });
-  context.props$ = context.observable$.pipe(
-    map((value) => value.props),
-    distinctUntilChanged()
-  );
+  setModelFields(context, [
+    "props",
+    "viewportEnabled",
+    "styleModifierEnabled",
+    "styleModifiers",
+  ]);
 
   // Viewport enabled
   Object.defineProperty(context, "viewportEnabled", {
@@ -207,15 +196,14 @@ export function withRenderingContextBehavior(
     context.set("viewportEnabled", false);
   };
 
-  return context as RenderingContextModel;
+  setEnhancer(context, attachRenderingContext);
+  return context as RenderingContext;
 }
 
 /**
  * Create a new local RenderingContext
  */
-export function createRenderingContextModel(
-  component: Component
-): RenderingContextModel {
+export function createRenderingContext(component: Component): RenderingContext {
   const ymap = new y.Map<any>();
-  return withRenderingContextBehavior(ymap, component);
+  return attachRenderingContext(ymap, component);
 }

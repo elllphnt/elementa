@@ -1,10 +1,14 @@
 import { ComponentData } from "@elllphnt/elementa-base";
 import {
-  Extendable,
-  ReactiveListOf,
   attachReactiveMap,
+  createEnhancedReactiveList,
+  getOrCreateYArray,
+  getOrCreateYMap,
+  ReactiveList,
+  ReactiveMap,
+  setModelFields,
 } from "@elllphnt/elementa-utils";
-import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
+import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { Project } from "../project/project";
 import { DataInputModel, withDataInputBehavior } from "./data_input";
@@ -13,21 +17,21 @@ import { StateModel } from "./states/_";
 import { createState } from "./states/_create";
 import { TemplateModel, withTemplateBehavior } from "./template";
 
-export type Component = ReturnType<typeof attachReactiveMap<ComponentData>> & {
+export type Component = ReactiveMap<ComponentData> & {
   project: Project;
 
   template: TemplateModel;
   editorStates: y.Map<y.Map<any>>;
 
-  props: ReactiveListOf<y.Map<any>, DataInputModel>;
-  fragments: ReactiveListOf<y.Map<any>, FragmentModel>;
-  states: ReactiveListOf<y.Map<any>, StateModel>;
+  props: ReactiveList<DataInputModel>;
+  fragments: ReactiveList<FragmentModel>;
+  states: ReactiveList<StateModel>;
 
   name: string;
-  name$: ReturnType<typeof map>;
+  name$: Observable<string>;
 
   fragment(id: string): FragmentModel | undefined;
-  fragment$(id: string): ReturnType<typeof map>;
+  fragment$(id: string): Observable<FragmentModel | undefined>;
 
   getEditorState(key: string): y.Map<any>;
 };
@@ -36,49 +40,42 @@ export function withComponentBehavior(
   ymap: y.Map<any>,
   project: Project
 ): Component {
-  const component = attachReactiveMap<ComponentData>(
-    ymap as Extendable<y.Map<any>>
-  ) as Extendable<Component>;
+  const rxMap = attachReactiveMap<ComponentData>(ymap as y.Map<any>);
+  const component = rxMap as Component;
 
   component.project = project;
 
   component.template = withTemplateBehavior(
-    component.getOrCreateMap("template"),
-    project.componentManager ? (component as any) : (component as any) // workaround to avoid cyclic
+    getOrCreateYMap(rxMap, "template"),
+    component
   );
 
-  component.editorStates = component.getOrCreateMap("editors");
+  component.editorStates = getOrCreateYMap(rxMap, "editors");
 
-  component.props = new CRDTModelList(
-    component.getOrCreateArray("props"),
+  component.props = createEnhancedReactiveList(
+    getOrCreateYArray<y.Map<any>>(rxMap, "props"),
+    withDataInputBehavior,
     (ymap) => withDataInputBehavior(ymap, component)
   );
 
-  component.fragments = new CRDTModelList(
-    component.getOrCreateArray("fragments"),
+  component.fragments = createEnhancedReactiveList(
+    getOrCreateYArray<y.Map<any>>(rxMap, "fragments"),
+    withFragmentBehavior,
     (ymap) => withFragmentBehavior(ymap, component)
   );
 
-  component.states = new CRDTModelList(
-    component.getOrCreateArray("states"),
+  component.states = createEnhancedReactiveList(
+    getOrCreateYArray<y.Map<any>>(rxMap, "states"),
+    createState,
     (ymap) => createState(ymap, component)
   );
 
-  Object.defineProperty(component, "name", {
-    get() {
-      return component.value.name ?? "";
-    },
-  });
-
-  component.name$ = component.observable$.pipe(
-    map((v) => v.name ?? ""),
-    distinctUntilChanged()
-  );
+  setModelFields(component, ["name"]);
 
   const _fragmentsById$ = new BehaviorSubject<Record<string, FragmentModel>>(
     {}
   );
-  const fragmentSub = component.fragments.items$.subscribe((fragments) => {
+  const fragmentSub = component.fragments.observable$.subscribe((fragments) => {
     _fragmentsById$.next(
       Object.fromEntries(fragments.map((fragment) => [fragment.id, fragment]))
     );
@@ -104,7 +101,7 @@ export function withComponentBehavior(
     return map;
   };
 
-  const baseDispose = (component as any).dispose?.bind(component);
+  const baseDispose = component.dispose.bind(component);
   component.dispose = () => {
     component.props.dispose();
     component.fragments.dispose();
@@ -114,12 +111,9 @@ export function withComponentBehavior(
     if (baseDispose) baseDispose();
   };
 
-  return component as Component;
+  return component;
 }
 
-/**
- * Create a new local Component
- */
 export function createComponentModel(project: Project): Component {
   const ymap = new y.Map<any>();
   return withComponentBehavior(ymap, project);

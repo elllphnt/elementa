@@ -1,37 +1,37 @@
 import { ElementaEditorComponentStateData } from "@elllphnt/elementa-base";
 import {
-  attachListOfReactives,
   attachReactiveMap,
+  createEnhancedReactiveList,
   Extendable,
-  ReactiveListOf,
+  getOrCreateYArray,
+  ReactiveList,
+  ReactiveMap,
+  setEnhancer,
 } from "@elllphnt/elementa-utils";
 import * as y from "yjs";
 import { Component } from "../../component";
-import { ElementaFrameModel, withElementaFrameBehavior } from "./frame";
+import { attachElementaFrame, ElementaFrame } from "./frame";
 
-export type ElementaEditorComponentStateModel = ReturnType<
-  typeof attachReactiveMap<ElementaEditorComponentStateData>
-> & {
-  component: Component;
-  frames: ReactiveListOf<y.Map<any>, ElementaFrameModel>;
-};
+export type ElementaEditorComponentState =
+  ReactiveMap<ElementaEditorComponentStateData> & {
+    component: Component;
+    frames: ReactiveList<ElementaFrame>;
+  };
 
-/**
- * Attach ElementaEditorComponentState behavior to a y.Map
- */
-export function withElementaEditorComponentStateBehavior(
+export function attachElementaEditorComponentState(
   ymap: y.Map<any>,
   component: Component
-): ElementaEditorComponentStateModel {
+): ElementaEditorComponentState {
   const state = attachReactiveMap<ElementaEditorComponentStateData>(
     ymap as Extendable<y.Map<any>>
-  ) as Extendable<ElementaEditorComponentStateModel>;
+  ) as Extendable<ElementaEditorComponentState>;
 
   state.component = component;
 
-  state.frames = attachListOfReactives(
-    state.getOrCreateArray("frames") as Extendable<y.Array<y.Map<any>>>,
-    (frameYMap) => withElementaFrameBehavior(frameYMap, state)
+  state.frames = createEnhancedReactiveList(
+    getOrCreateYArray<y.Map<any>>(state, "frames"),
+    attachElementaFrame,
+    (frameYMap) => attachElementaFrame(frameYMap, state)
   );
 
   const baseDispose = (state as any).dispose?.bind(state);
@@ -40,15 +40,13 @@ export function withElementaEditorComponentStateBehavior(
     if (baseDispose) baseDispose();
   };
 
-  return state as ElementaEditorComponentStateModel;
+  setEnhancer(state, attachElementaEditorComponentState);
+  return state as ElementaEditorComponentState;
 }
 
-/**
- * Create a new local ElementaEditorComponentState model
- */
-export function createElementaEditorComponentStateModel(
+export function createElementaEditorComponentState(
   component: Component
-): ElementaEditorComponentStateModel {
+): ElementaEditorComponentState {
   const ymap = new y.Map<any>();
-  return withElementaEditorComponentStateBehavior(ymap, component);
+  return attachElementaEditorComponentState(ymap, component);
 }

@@ -13,10 +13,10 @@ import * as y from "yjs";
 import { CssStyleSheet, StylesheetCssStyleSheet } from "../../css/_";
 import { Stylesheet } from "../../style/stylesheet";
 import { Component } from "../component";
-import { withIdentifiableModelBehavior } from "../identifiable";
+import { attachIdentifiable } from "../identifiable";
 
 export type ElementModel<D extends BaseElementData> = ReturnType<
-  typeof withIdentifiableModelBehavior<D>
+  typeof attachIdentifiable<D>
 > & {
   component: Component;
   cssStyleSheet: StylesheetCssStyleSheet;
@@ -76,7 +76,7 @@ export function withElementBehavior<D extends BaseElementData>(
   ymap: y.Map<any>,
   component: Component
 ): ElementModel<D> {
-  const element = withIdentifiableModelBehavior<BaseElementData>(
+  const element = attachIdentifiable<BaseElementData>(
     ymap as Extendable<y.Map<any>>
   ) as Extendable<ElementModel<D>>;
 

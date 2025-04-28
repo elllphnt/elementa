@@ -1,11 +1,14 @@
 import { ColorData, ColorThemeData } from "@elllphnt/elementa-base";
-import { Extendable, attachReactiveMap } from "@elllphnt/elementa-utils";
-import { Observable, map } from "rxjs";
+import {
+  ReactiveMap,
+  attachReactiveMap,
+  setEnhancer,
+  setModelFields,
+} from "@elllphnt/elementa-utils";
+import { Observable } from "rxjs";
 import * as y from "yjs";
 
-export type ColorThemeModel = ReturnType<
-  typeof attachReactiveMap<ColorThemeData>
-> & {
+export type ColorTheme = ReactiveMap<ColorThemeData> & {
   scheme: string;
   scheme$: Observable<string>;
 
@@ -16,39 +19,18 @@ export type ColorThemeModel = ReturnType<
   background$: Observable<ColorData>;
 };
 
-/**
- * Attach ColorTheme behavior to a y.Map
- */
-export function withColorThemeBehavior(ymap: y.Map<any>): ColorThemeModel {
+export function attachColorTheme(ymap: y.Map<any>): ColorTheme {
   const theme = attachReactiveMap<ColorThemeData>(
-    ymap as Extendable<y.Map<any>>
-  ) as Extendable<ColorThemeModel>;
+    ymap as y.Map<any>
+  ) as ColorTheme;
 
-  // Fields
-  const fields = ["scheme", "foreground", "background"] as const;
+  setModelFields(theme, ["scheme", "foreground", "background"]);
 
-  for (const field of fields) {
-    Object.defineProperty(theme, field, {
-      get() {
-        return theme.value[field];
-      },
-      set(value) {
-        theme.set(field, value);
-      },
-    });
-
-    (theme as any)[`${field}$`] = theme.observable$.pipe(
-      map((value) => value[field])
-    );
-  }
-
-  return theme as ColorThemeModel;
+  setEnhancer(theme, attachColorTheme);
+  return theme;
 }
 
-/**
- * Create a new local ColorTheme model
- */
-export function createColorThemeModel(): ColorThemeModel {
+export function createColorTheme(): ColorTheme {
   const ymap = new y.Map<any>();
-  return withColorThemeBehavior(ymap);
+  return attachColorTheme(ymap);
 }

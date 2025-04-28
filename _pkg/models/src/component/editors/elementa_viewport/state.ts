@@ -3,52 +3,46 @@ import {
   CornerName,
   ElementaViewerComponentStateData,
 } from "@elllphnt/elementa-base";
-import { attachReactiveMap, Extendable } from "@elllphnt/elementa-utils";
+import {
+  attachReactiveMap,
+  Extendable,
+  ReactiveMap,
+  setEnhancer,
+  setModelFields,
+} from "@elllphnt/elementa-utils";
 import { distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { Component } from "../../component";
 import {
-  RenderingContextModel,
-  withRenderingContextBehavior,
+  attachRenderingContext,
+  RenderingContext,
 } from "../elementa/rendering_context";
 
-export type ElementaViewerComponentStateModel = ReturnType<
-  typeof attachReactiveMap<ElementaViewerComponentStateData>
-> & {
-  renderingContext: RenderingContextModel;
+export type ElementaViewerComponentState =
+  ReactiveMap<ElementaViewerComponentStateData> & {
+    renderingContext: RenderingContext;
 
-  corners: CornerData<number> | undefined;
-  corners$: Observable<CornerData<number> | undefined>;
+    corners: CornerData<number> | undefined;
+    corners$: Observable<CornerData<number> | undefined>;
 
-  corner(name: CornerName): number | undefined;
-  corner$(name: CornerName): Observable<number | undefined>;
-
-  setCorner(name: CornerName, value: number | undefined): void;
-  setCorners(corners: CornerData<number> | undefined): void;
-};
+    corner(name: CornerName): number | undefined;
+    corner$(name: CornerName): Observable<number | undefined>;
+  };
 
 /**
  * Attach ElementaViewerComponentState behavior to a y.Map
  */
-export function withElementaViewerComponentStateBehavior(
+export function attachElementaViewerComponentState(
   ymap: y.Map<any>,
   component: Component
-): ElementaViewerComponentStateModel {
+): ElementaViewerComponentState {
   const state = attachReactiveMap<ElementaViewerComponentStateData>(
     ymap as Extendable<y.Map<any>>
-  ) as Extendable<ElementaViewerComponentStateModel>;
+  ) as Extendable<ElementaViewerComponentState>;
 
-  state.renderingContext = withRenderingContextBehavior(ymap, component);
+  state.renderingContext = attachRenderingContext(ymap, component);
 
-  // Corners accessor
-  Object.defineProperty(state, "corners", {
-    get() {
-      return state.value.corners;
-    },
-    set(value) {
-      state.set("corners", value);
-    },
-  });
+  setModelFields(state, ["corners"]);
 
   state.corners$ = state.observable$.pipe(
     map((value) => value.corners),
@@ -86,44 +80,19 @@ export function withElementaViewerComponentStateBehavior(
     );
   };
 
-  state.setCorner = (name: CornerName, value: number | undefined) => {
-    const newCorner = { ...(state.corners ?? {}) };
-    switch (name) {
-      case "top-left":
-        newCorner.topLeft = value;
-        break;
-      case "top-right":
-        newCorner.topRight = value;
-        break;
-      case "bottom-left":
-        newCorner.bottomLeft = value;
-        break;
-      case "bottom-right":
-        newCorner.bottomRight = value;
-        break;
-    }
-    state.set("corners", newCorner);
-  };
-
-  state.setCorners = (corners: CornerData<number> | undefined) => {
-    state.set("corners", corners);
-  };
-
   const baseDispose = (state as any).dispose?.bind(state);
   state.dispose = () => {
     state.renderingContext.dispose();
     if (baseDispose) baseDispose();
   };
 
-  return state as ElementaViewerComponentStateModel;
+  setEnhancer(state, attachElementaViewerComponentState);
+  return state as ElementaViewerComponentState;
 }
 
-/**
- * Create a new local ElementaViewerComponentState model
- */
-export function createElementaViewerComponentStateModel(
+export function createElementaViewerComponentState(
   component: Component
-): ElementaViewerComponentStateModel {
+): ElementaViewerComponentState {
   const ymap = new y.Map<any>();
-  return withElementaViewerComponentStateBehavior(ymap, component);
+  return attachElementaViewerComponentState(ymap, component);
 }

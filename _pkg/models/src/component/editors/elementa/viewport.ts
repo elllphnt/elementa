@@ -1,11 +1,15 @@
 import { OverflowValue, ViewportData } from "@elllphnt/elementa-base";
-import { attachReactiveMap, Extendable } from "@elllphnt/elementa-utils";
-import { map, Observable } from "rxjs";
+import {
+  attachReactiveMap,
+  Extendable,
+  ReactiveMap,
+  setEnhancer,
+  setModelFields,
+} from "@elllphnt/elementa-utils";
+import { Observable } from "rxjs";
 import * as y from "yjs";
 
-export type ViewportModel = ReturnType<
-  typeof attachReactiveMap<ViewportData>
-> & {
+export type Viewport = ReactiveMap<ViewportData> & {
   height: number;
   height$: Observable<number>;
 
@@ -14,58 +18,20 @@ export type ViewportModel = ReturnType<
 
   overflow: OverflowValue;
   overflow$: Observable<OverflowValue>;
-
-  setWidth(width: number): void;
-  setHeight(height: number): void;
-  setOverflow(overflow: OverflowValue): void;
 };
 
-/**
- * Attach Viewport behavior to a y.Map
- */
-export function withViewportBehavior(ymap: y.Map<any>): ViewportModel {
+export function attachViewport(ymap: y.Map<any>): Viewport {
   const viewport = attachReactiveMap<ViewportData>(
-    ymap as Extendable<y.Map<any>>
-  ) as Extendable<ViewportModel>;
+    ymap as y.Map<any>
+  ) as Viewport;
 
-  // Attach native property accessors
-  const fields = ["height", "width", "overflow"] as const;
+  setModelFields(viewport, ["height", "width", "overflow"]);
 
-  for (const field of fields) {
-    Object.defineProperty(viewport, field, {
-      get() {
-        return viewport.value[field];
-      },
-      set(value) {
-        viewport.set(field, value);
-      },
-    });
-
-    (viewport as any)[`${field}$`] = viewport.observable$.pipe(
-      map((value) => value[field])
-    );
-  }
-
-  // Attach field-specific methods
-  viewport.setWidth = (width: number) => {
-    viewport.set("width", Math.round(Math.max(0, width)));
-  };
-
-  viewport.setHeight = (height: number) => {
-    viewport.set("height", Math.round(Math.max(0, height)));
-  };
-
-  viewport.setOverflow = (overflow: OverflowValue) => {
-    viewport.set("overflow", overflow);
-  };
-
-  return viewport as ViewportModel;
+  setEnhancer(viewport, attachViewport);
+  return viewport as Viewport;
 }
 
-/**
- * Create a new local Viewport model
- */
-export function createViewportModel(): ViewportModel {
+export function createViewport(): Viewport {
   const ymap = new y.Map<any>();
-  return withViewportBehavior(ymap);
+  return attachViewport(ymap);
 }
