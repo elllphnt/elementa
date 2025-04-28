@@ -1,6 +1,6 @@
 import { test } from "uvu";
 import * as assert from "uvu/assert";
-import { Disposable } from "./disposable";
+import { Disposable } from "../src/core/disposable";
 
 // Test that disposers run in FIFO order
 test("calls disposers in order", () => {
@@ -32,7 +32,7 @@ test("aggregates errors from disposers", () => {
   assert.ok(Array.isArray((thrown as any).inner));
   assert.equal(
     (thrown as any).inner.map((e: any) => e.message),
-    ["first", "second"],
+    ["first", "second"]
   );
 });
 

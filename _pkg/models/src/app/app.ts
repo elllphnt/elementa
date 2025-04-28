@@ -1,103 +1,106 @@
 import { AppData } from "@elllphnt/elementa-base";
 import {
-  combineLatestOrEmpty,
-  CRDTModelList,
-  MapCRDTModel,
+  attachReactiveMap,
+  createEnhancedReactiveList,
+  getOrCreateYArray,
+  getOrCreateYMap,
+  ReactiveList,
+  ReactiveMap,
 } from "@elllphnt/elementa-utils";
-import { BehaviorSubject, distinctUntilChanged, map, switchMap } from "rxjs";
+import { setEnhancer } from "@elllphnt/elementa-utils/dist/core/enhancer";
+import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { Project } from "../project/_";
-import { Route } from "./route";
-import { AppVariable } from "./variable";
+import { attachRoute, Route } from "./route"; // make sure Route is updated too
+import { AppVariable, attachAppVariable } from "./variable"; // make sure Variable is updated too
 
-export class App extends MapCRDTModel<AppData> {
-  readonly project: Project;
+export type App = ReactiveMap<AppData> & {
+  project: Project;
+  routes: ReactiveList<Route>;
+  variables: ReactiveList<AppVariable>;
+  editors: ReactiveMap<y.AbstractType<any>>;
 
-  readonly routes: CRDTModelList<Route>;
-  readonly variables: CRDTModelList<AppVariable>;
-  readonly editors: MapCRDTModel<any>;
+  route(id: string): Route | undefined;
+  route$(id: string): Observable<Route | undefined>;
 
-  private readonly _routesById$ = new BehaviorSubject<Record<string, Route>>(
-    {}
+  variable(varName: string): AppVariable | undefined;
+  variable$(varName: string): Observable<AppVariable | undefined>;
+};
+
+export function attachApp(ymap: y.Map<any>, project: Project): App {
+  const rxMap = attachReactiveMap<AppData>(ymap);
+  const app = rxMap as App;
+
+  // initialization
+  app.project = project;
+  app.routes = createEnhancedReactiveList(
+    getOrCreateYArray<y.Map<any>>(rxMap, "routes"),
+    attachRoute,
+    (yMap) => attachRoute(yMap, app)
   );
-  private readonly _variablesByVarName$ = new BehaviorSubject<
-    Record<string, AppVariable>
-  >({});
+  app.variables = createEnhancedReactiveList(
+    getOrCreateYArray<y.Map<any>>(rxMap, "variables"),
+    attachAppVariable,
+    (yMap) => attachAppVariable(yMap, app)
+  );
+  app.editors = attachReactiveMap(getOrCreateYMap(rxMap, "editors"));
 
-  route(id: string) {
-    return this._routesById$.value[id];
-  }
-  route$(id: string) {
-    return this._routesById$.pipe(
+  const _routesById$ = new BehaviorSubject<Record<string, Route>>({});
+  app.route = (id: string) => _routesById$.value[id];
+  app.route$ = (id: string) =>
+    _routesById$.pipe(
       map((routes) => routes[id]),
       distinctUntilChanged()
     );
-  }
 
-  variable(varName: string) {
-    return this._variablesByVarName$.value[varName];
-  }
-  variable$(varName: string) {
-    return this._variablesByVarName$.pipe(
+  const _variablesByVarName$ = new BehaviorSubject<Record<string, AppVariable>>(
+    {}
+  );
+  app.variable = (varName: string) => _variablesByVarName$.value[varName];
+  app.variable$ = (varName: string) =>
+    _variablesByVarName$.pipe(
       map((variables) => variables[varName]),
       distinctUntilChanged()
     );
-  }
 
-  constructor({ project, ymap }: { ymap: y.Map<any>; project: Project }) {
-    super(ymap);
+  // subscriptions
 
-    this.project = project;
-
-    this.routes = new CRDTModelList<Route>(
-      this.getOrCreateArray("routes"),
-      (ymap) => {
-        return new Route({
-          ymap,
-          app: this,
-        });
-      }
+  const routesSubscription = app.routes.observable$.subscribe((routes) => {
+    _routesById$.next(
+      Object.fromEntries(routes.map((route) => [route.id, route]))
     );
-    const routesByIdSubscription = this.routes.items$.subscribe((routes) => {
-      this._routesById$.next(
-        Object.fromEntries(routes.map((route) => [route.id, route]))
-      );
-    });
-
-    this.variables = new CRDTModelList<AppVariable>(
-      this.getOrCreateArray("variables"),
-      (ymap) => {
-        return new AppVariable({
-          ymap,
-          app: this,
-        });
-      }
-    );
-    const variablesByIdentifierSubscription = this.variables.items$
-      .pipe(
-        switchMap((variables) =>
-          combineLatestOrEmpty(
-            variables.map((variable) =>
-              variable.varName$.pipe(
-                map((identifier) => [identifier, variable] as const)
-              )
-            )
-          )
+  });
+  const variablesSubscription = app.variables.observable$.subscribe(
+    (variables) => {
+      _variablesByVarName$.next(
+        Object.fromEntries(
+          variables.map((variable) => [variable.varName, variable])
         )
-      )
-      .subscribe((variables) => {
-        this._variablesByVarName$.next(Object.fromEntries(variables));
-      });
+      );
+    }
+  );
 
-    this.editors = new MapCRDTModel(this.getOrCreateMap("editors"));
+  // disposal
+  const disposeBase = rxMap.dispose.bind(rxMap);
+  rxMap.dispose = () => {
+    routesSubscription.unsubscribe();
+    _routesById$.complete();
 
-    this.addDisposer(() => {
-      this.routes.dispose();
-      this._routesById$.complete();
-      this.variables.dispose();
-      this._variablesByVarName$.complete();
-      routesByIdSubscription.unsubscribe();
-      variablesByIdentifierSubscription.unsubscribe();
-    });
-  }
+    variablesSubscription.unsubscribe();
+    _variablesByVarName$.complete();
+
+    app.routes.dispose();
+    app.variables.dispose();
+    app.editors.dispose();
+
+    disposeBase();
+  };
+
+  setEnhancer(app, attachApp);
+  return app;
+}
+
+export function createApp(project: Project): App {
+  const ymap = new y.Map<any>();
+  return attachApp(ymap, project);
 }

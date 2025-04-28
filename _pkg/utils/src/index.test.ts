@@ -1,3 +1,3 @@
 import { test } from "uvu";
-import "./core/_.test";
+import "../tests/_.test";
 test.run();

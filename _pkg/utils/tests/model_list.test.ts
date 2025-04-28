@@ -1,27 +1,26 @@
 import { test } from "uvu";
 import * as assert from "uvu/assert";
 import * as y from "yjs";
-import { MapCRDTModel } from "./map";
-import { CRDTModelList } from "./model_list";
+import { attachListOfReactives as createModelList } from "../src/crdt/model_list";
+import { Extendable } from "../src/types/extendable";
 
-class DummyModel extends MapCRDTModel<any> {
-  constructor(public ymap: y.Map<any>) {
-    super(ymap);
-  }
+function withDummy(ytype: Extendable<y.AbstractType<any>>) {
+  ytype.dispose = () => {};
+  return ytype as y.Map<any> & { dispose(): void };
 }
 
 function createList() {
   const doc = new y.Doc();
   const yarray = doc.getArray<y.Map<any>>("test");
-  return new CRDTModelList<DummyModel>(yarray, (ymap) => new DummyModel(ymap));
+  return createModelList(yarray as y.Array<y.Map<any>>, withDummy);
 }
 
 test("add items", () => {
   const list = createList();
   const maps = list.add({ foo: 1 }, { foo: 2 });
   assert.is(list.items.length, 2);
-  assert.is(list.items[0].ymap.get("foo"), 1);
-  assert.is(list.items[1].ymap.get("foo"), 2);
+  assert.is(list.items[0].get("foo"), 1);
+  assert.is(list.items[1].get("foo"), 2);
   assert.is(maps[0].get("foo"), 1);
   assert.is(maps[1].get("foo"), 2);
 });
@@ -32,14 +31,14 @@ test("insertAt items", () => {
   const maps = list.insertAt(1, { foo: 2 });
   assert.is(list.items.length, 3);
   assert.is(maps[0].get("foo"), 2);
-  assert.is(list.items.map((m) => m.ymap.get("foo")).join(","), "1,2,3");
+  assert.is(list.items.map((m) => m.get("foo")).join(","), "1,2,3");
 });
 
 test("removeAt removes items", () => {
   const list = createList();
   list.add({ foo: 1 }, { foo: 2 }, { foo: 3 });
   list.removeAt(1, 1);
-  assert.is(list.items.map((m) => m.ymap.get("foo")).join(","), "1,3");
+  assert.is(list.items.map((m) => m.get("foo")).join(","), "1,3");
 });
 
 test("clear removes all items", () => {
@@ -114,11 +113,8 @@ test("initializes with prepopulated array entries", () => {
   doc.transact(() => {
     yarray.push(maps);
   });
-  const list = new CRDTModelList<DummyModel>(
-    yarray,
-    (ymap) => new DummyModel(ymap)
-  );
+  const list = createModelList(yarray as any, withDummy);
   assert.is(list.items.length, 2);
-  assert.is(list.items[0].ymap.get("foo"), 3);
-  assert.is(list.items[1].ymap.get("bar"), 4);
+  assert.is(list.items[0].get("foo"), 3);
+  assert.is(list.items[1].get("bar"), 4);
 });

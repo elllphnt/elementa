@@ -1,53 +1,91 @@
 import { FragmentData } from "@elllphnt/elementa-base";
-import { CRDTModelList, getOrCreateYArray } from "@elllphnt/elementa-utils";
+import {
+  Extendable,
+  getOrCreateYArray,
+  ReactiveListOf,
+  withIdentifiableModelBehavior,
+} from "@elllphnt/elementa-utils";
 import * as y from "yjs";
 import { CssStyleSheet } from "../css/_";
 import { Component } from "./component";
-import { DataInput } from "./data_input";
-import { ElementList } from "./elements/_list";
-import { IdentifiableModel } from "./identifiable";
+import { DataInputModel, withDataInputBehavior } from "./data_input";
+import { ElementListModel, withElementListBehavior } from "./elements/_list";
 
 export enum FragmentVariant {
   Template = "template",
   Fragment = "fragment",
 }
 
-export class Fragment extends IdentifiableModel<FragmentData> {
-  readonly variant: FragmentVariant;
+export type FragmentModel = ReturnType<
+  typeof withIdentifiableModelBehavior<FragmentData>
+> & {
+  component: Component;
+  variant: FragmentVariant;
 
-  readonly content: ElementList;
-  readonly params: CRDTModelList<DataInput>;
+  content: ElementListModel;
+  params: ReactiveListOf<y.Map<any>, DataInputModel>;
 
-  get allCssStylesheets(): CssStyleSheet[] {
-    return this.content.allCssStylesheets;
-  }
-  get allCssStylesheets$() {
-    return this.content.allCssStylesheets$;
-  }
+  allCssStylesheets: CssStyleSheet[];
+  allCssStylesheets$: ReturnType<ElementListModel["allCssStylesheets$"]>;
 
-  constructor(
-    ymap: y.Map<any>,
-    readonly component: Component,
-    variant?: FragmentVariant
-  ) {
-    super(ymap);
+  cloneIds(clone: y.Map<any>): void;
+};
 
-    this.variant = variant ?? FragmentVariant.Fragment;
+/**
+ * Attach Fragment behavior to a y.Map
+ */
+export function withFragmentBehavior(
+  ymap: y.Map<any>,
+  component: Component,
+  variant: FragmentVariant = FragmentVariant.Fragment
+): FragmentModel {
+  const fragment = withIdentifiableModelBehavior<FragmentData>(
+    ymap as Extendable<y.Map<any>>
+  ) as Extendable<FragmentModel>;
 
-    this.content = new ElementList(this.getOrCreateArray("content"), component);
-    this.params = new CRDTModelList(
-      this.getOrCreateArray("params"),
-      (ymap) => new DataInput(ymap, this.component)
-    );
+  fragment.component = component;
+  fragment.variant = variant;
 
-    this.addDisposer(() => {
-      this.content.dispose();
-      this.params.dispose();
-    });
-  }
+  fragment.content = withElementListBehavior(
+    fragment.getOrCreateArray("content") as y.Array<y.Map<any>>,
+    component
+  );
 
-  cloneIds(clone: y.Map<any>): void {
-    this.cloneOwnId(clone);
-    this.content.cloneIds(getOrCreateYArray(clone, "content"));
-  }
+  fragment.params = new CRDTModelList(
+    fragment.getOrCreateArray("params"),
+    (ymap) => withDataInputBehavior(ymap, component)
+  );
+
+  Object.defineProperty(fragment, "allCssStylesheets", {
+    get() {
+      return fragment.content.allCssStylesheets;
+    },
+  });
+
+  fragment.allCssStylesheets$ = fragment.content.allCssStylesheets$;
+
+  fragment.cloneIds = (clone: y.Map<any>) => {
+    fragment.cloneOwnId(clone);
+    fragment.content.cloneIds(getOrCreateYArray(clone, "content"));
+  };
+
+  const baseDispose = (fragment as any).dispose?.bind(fragment);
+  fragment.dispose = () => {
+    fragment.content.dispose();
+    fragment.params.dispose();
+    if (baseDispose) baseDispose();
+  };
+
+  return fragment as FragmentModel;
+}
+
+/**
+ * Create a new local Fragment
+ */
+export function createFragmentModel(
+  component: Component,
+  variant: FragmentVariant = FragmentVariant.Fragment
+): FragmentModel {
+  const ymap = new y.Map<any>();
+  return withFragmentBehavior(ymap, component, variant);
 }

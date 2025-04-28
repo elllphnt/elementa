@@ -1,105 +1,86 @@
 import { RouteData } from "@elllphnt/elementa-base";
-import { MapCRDTModel } from "@elllphnt/elementa-utils";
-import { distinctUntilChanged, map } from "rxjs";
+import { attachReactiveMap, ReactiveMap } from "@elllphnt/elementa-utils";
+import { setEnhancer } from "@elllphnt/elementa-utils/dist/core/enhancer";
+import { distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { genId } from "../_lib/id";
 import { App } from "./app";
 
-export class Route extends MapCRDTModel<RouteData> {
-  readonly app: App;
+export type Route = ReactiveMap<RouteData> & {
+  app: App;
+  id: string;
 
-  get id() {
-    return this.state.id;
-  }
+  path: string;
+  path$: Observable<string>;
 
-  get path() {
-    return this.state.path;
+  parentId: string | undefined;
+  parentId$: Observable<string | undefined>;
+
+  mainViewUrl: string | undefined;
+  mainViewUrl$: Observable<string | undefined>;
+
+  errorViewUrl: string | undefined;
+  errorViewUrl$: Observable<string | undefined>;
+
+  pendingViewUrl: string | undefined;
+  pendingViewUrl$: Observable<string | undefined>;
+
+  notFoundViewUrl: string | undefined;
+  notFoundViewUrl$: Observable<string | undefined>;
+
+  loaderUrl: string | undefined;
+  loaderUrl$: Observable<string | undefined>;
+
+  handlerUrl: string | undefined;
+  handlerUrl$: Observable<string | undefined>;
+};
+
+export function attachRoute(ymap: y.Map<any>, app: App): Route {
+  const rxMap = attachReactiveMap<RouteData>(ymap);
+  const route = rxMap as Route;
+
+  // initialization
+  route.app = app;
+  if (!rxMap.doc) {
+    rxMap.set("id", genId());
   }
-  get path$() {
-    return this.state$.pipe(
-      map((data) => data.path),
+  Object.defineProperty(route, "id", {
+    get() {
+      return rxMap.get("id");
+    },
+  });
+
+  const fields = [
+    "path",
+    "parentId",
+    "mainViewUrl",
+    "errorViewUrl",
+    "pendingViewUrl",
+    "notFoundViewUrl",
+    "loaderUrl",
+    "handlerUrl",
+  ] as const;
+  for (const field of fields) {
+    Object.defineProperty(route, field, {
+      get() {
+        return rxMap.get(field);
+      },
+      set(value) {
+        rxMap.set(field, value);
+      },
+    });
+
+    route[`${field}$`] = rxMap.observable$.pipe(
+      map((v) => v[field]),
       distinctUntilChanged()
     );
   }
 
-  get parentId() {
-    return this.state.parentId;
-  }
-  get parentId$() {
-    return this.state$.pipe(
-      map((data) => data.parentId),
-      distinctUntilChanged()
-    );
-  }
+  setEnhancer(route, attachRoute);
+  return route;
+}
 
-  get mainViewUrl() {
-    return this.state.mainViewUrl;
-  }
-  get mainViewUrl$() {
-    return this.state$.pipe(
-      map((data) => data.mainViewUrl),
-      distinctUntilChanged()
-    );
-  }
-
-  get errorViewUrl() {
-    return this.state.errorViewUrl;
-  }
-  get errorViewUrl$() {
-    return this.state$.pipe(
-      map((data) => data.errorViewUrl),
-      distinctUntilChanged()
-    );
-  }
-
-  get pendingViewUrl() {
-    return this.state.pendingViewUrl;
-  }
-  get pendingViewUrl$() {
-    return this.state$.pipe(
-      map((data) => data.pendingViewUrl),
-      distinctUntilChanged()
-    );
-  }
-
-  get notFoundViewUrl() {
-    return this.state.notFoundViewUrl;
-  }
-  get notFoundViewUrl$() {
-    return this.state$.pipe(
-      map((data) => data.notFoundViewUrl),
-      distinctUntilChanged()
-    );
-  }
-
-  get loaderUrl() {
-    return this.state.loaderUrl;
-  }
-  get loaderUrl$() {
-    return this.state$.pipe(
-      map((data) => data.loaderUrl),
-      distinctUntilChanged()
-    );
-  }
-
-  get handlerUrl() {
-    return this.state.handlerUrl;
-  }
-  get handlerUrl$() {
-    return this.state$.pipe(
-      map((data) => data.handlerUrl),
-      distinctUntilChanged()
-    );
-  }
-
-  constructor({ ymap, app }: { ymap: y.Map<any>; app: App }) {
-    super(ymap);
-    if (!this.id) {
-      this.patch({
-        id: genId(),
-      });
-    }
-
-    this.app = app;
-  }
+export function createRoute(app: App): Route {
+  const ymap = new y.Map<any>();
+  return attachRoute(ymap, app);
 }

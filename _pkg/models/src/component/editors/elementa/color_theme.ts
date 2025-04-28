@@ -1,47 +1,54 @@
 import { ColorData, ColorThemeData } from "@elllphnt/elementa-base";
-import { MapCRDTModel } from "@elllphnt/elementa-utils";
-import { map } from "rxjs";
+import { Extendable, attachReactiveMap } from "@elllphnt/elementa-utils";
+import { Observable, map } from "rxjs";
 import * as y from "yjs";
 
-export class ColorTheme extends MapCRDTModel<ColorThemeData> {
-  get scheme() {
-    return this.state.scheme;
-  }
-  get scheme$() {
-    return this.state$.pipe(map((data) => data.scheme));
-  }
+export type ColorThemeModel = ReturnType<
+  typeof attachReactiveMap<ColorThemeData>
+> & {
+  scheme: string;
+  scheme$: Observable<string>;
 
-  get foreground() {
-    return this.state.foreground;
-  }
-  get foreground$() {
-    return this.state$.pipe(map((data) => data.foreground));
-  }
+  foreground: ColorData;
+  foreground$: Observable<ColorData>;
 
-  get background() {
-    return this.state.background;
-  }
-  get background$() {
-    return this.state$.pipe(map((data) => data.background));
-  }
+  background: ColorData;
+  background$: Observable<ColorData>;
+};
 
-  constructor(ymap: y.Map<any>) {
-    super(ymap);
-  }
+/**
+ * Attach ColorTheme behavior to a y.Map
+ */
+export function withColorThemeBehavior(ymap: y.Map<any>): ColorThemeModel {
+  const theme = attachReactiveMap<ColorThemeData>(
+    ymap as Extendable<y.Map<any>>
+  ) as Extendable<ColorThemeModel>;
 
-  setScheme(scheme: string) {
-    this.patch({
-      scheme,
+  // Fields
+  const fields = ["scheme", "foreground", "background"] as const;
+
+  for (const field of fields) {
+    Object.defineProperty(theme, field, {
+      get() {
+        return theme.value[field];
+      },
+      set(value) {
+        theme.set(field, value);
+      },
     });
+
+    (theme as any)[`${field}$`] = theme.observable$.pipe(
+      map((value) => value[field])
+    );
   }
-  setForeground(foreground: ColorData) {
-    this.patch({
-      foreground,
-    });
-  }
-  setBackground(background: ColorData) {
-    this.patch({
-      background,
-    });
-  }
+
+  return theme as ColorThemeModel;
+}
+
+/**
+ * Create a new local ColorTheme model
+ */
+export function createColorThemeModel(): ColorThemeModel {
+  const ymap = new y.Map<any>();
+  return withColorThemeBehavior(ymap);
 }

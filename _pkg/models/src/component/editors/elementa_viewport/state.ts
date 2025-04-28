@@ -3,69 +3,91 @@ import {
   CornerName,
   ElementaViewerComponentStateData,
 } from "@elllphnt/elementa-base";
-import { MapCRDTModel } from "@elllphnt/elementa-utils";
-import { distinctUntilChanged, map } from "rxjs";
+import { attachReactiveMap, Extendable } from "@elllphnt/elementa-utils";
+import { distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { Component } from "../../component";
-import { RenderingContext } from "../elementa/rendering_context";
+import {
+  RenderingContextModel,
+  withRenderingContextBehavior,
+} from "../elementa/rendering_context";
 
-export class ElementaViewerComponentState extends MapCRDTModel<ElementaViewerComponentStateData> {
-  readonly renderingContext: RenderingContext;
+export type ElementaViewerComponentStateModel = ReturnType<
+  typeof attachReactiveMap<ElementaViewerComponentStateData>
+> & {
+  renderingContext: RenderingContextModel;
 
-  get corners() {
-    return this.state.corners;
-  }
-  get corners$() {
-    return this.state$.pipe(
-      map((state) => state.corners),
-      distinctUntilChanged()
-    );
-  }
+  corners: CornerData<number> | undefined;
+  corners$: Observable<CornerData<number> | undefined>;
 
-  corner<C extends CornerName>(name: C) {
+  corner(name: CornerName): number | undefined;
+  corner$(name: CornerName): Observable<number | undefined>;
+
+  setCorner(name: CornerName, value: number | undefined): void;
+  setCorners(corners: CornerData<number> | undefined): void;
+};
+
+/**
+ * Attach ElementaViewerComponentState behavior to a y.Map
+ */
+export function withElementaViewerComponentStateBehavior(
+  ymap: y.Map<any>,
+  component: Component
+): ElementaViewerComponentStateModel {
+  const state = attachReactiveMap<ElementaViewerComponentStateData>(
+    ymap as Extendable<y.Map<any>>
+  ) as Extendable<ElementaViewerComponentStateModel>;
+
+  state.renderingContext = withRenderingContextBehavior(ymap, component);
+
+  // Corners accessor
+  Object.defineProperty(state, "corners", {
+    get() {
+      return state.value.corners;
+    },
+    set(value) {
+      state.set("corners", value);
+    },
+  });
+
+  state.corners$ = state.observable$.pipe(
+    map((value) => value.corners),
+    distinctUntilChanged()
+  );
+
+  state.corner = (name: CornerName) => {
+    const corners = state.corners;
     switch (name) {
       case "top-left":
-        return this.corners?.topLeft;
+        return corners?.topLeft;
       case "top-right":
-        return this.corners?.topRight;
+        return corners?.topRight;
       case "bottom-left":
-        return this.corners?.bottomLeft;
+        return corners?.bottomLeft;
       case "bottom-right":
-        return this.corners?.bottomRight;
+        return corners?.bottomRight;
     }
-  }
-  corner$<C extends CornerName>(name: C) {
-    return this.corners$.pipe(
-      map((corner) => {
+  };
+
+  state.corner$ = (name: CornerName) => {
+    return state.corners$.pipe(
+      map((corners) => {
         switch (name) {
           case "top-left":
-            return corner?.topLeft;
+            return corners?.topLeft;
           case "top-right":
-            return corner?.topRight;
+            return corners?.topRight;
           case "bottom-left":
-            return corner?.bottomLeft;
+            return corners?.bottomLeft;
           case "bottom-right":
-            return corner?.bottomRight;
+            return corners?.bottomRight;
         }
       })
     );
-  }
+  };
 
-  constructor(ymap: y.Map<any>, component: Component) {
-    super(ymap);
-
-    this.renderingContext = new RenderingContext(this.ymap, component);
-
-    this.addDisposer(() => {
-      this.renderingContext.dispose();
-    });
-  }
-
-  setCorner(name: CornerName, value: number | undefined) {
-    const newCorner = {
-      ...this.corners,
-    };
-
+  state.setCorner = (name: CornerName, value: number | undefined) => {
+    const newCorner = { ...(state.corners ?? {}) };
     switch (name) {
       case "top-left":
         newCorner.topLeft = value;
@@ -80,14 +102,28 @@ export class ElementaViewerComponentState extends MapCRDTModel<ElementaViewerCom
         newCorner.bottomRight = value;
         break;
     }
+    state.set("corners", newCorner);
+  };
 
-    this.patch({
-      corners: newCorner,
-    });
-  }
-  setCorners(corners: CornerData<number> | undefined) {
-    this.patch({
-      corners: corners,
-    });
-  }
+  state.setCorners = (corners: CornerData<number> | undefined) => {
+    state.set("corners", corners);
+  };
+
+  const baseDispose = (state as any).dispose?.bind(state);
+  state.dispose = () => {
+    state.renderingContext.dispose();
+    if (baseDispose) baseDispose();
+  };
+
+  return state as ElementaViewerComponentStateModel;
+}
+
+/**
+ * Create a new local ElementaViewerComponentState model
+ */
+export function createElementaViewerComponentStateModel(
+  component: Component
+): ElementaViewerComponentStateModel {
+  const ymap = new y.Map<any>();
+  return withElementaViewerComponentStateBehavior(ymap, component);
 }

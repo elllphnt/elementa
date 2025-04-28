@@ -1,11 +1,11 @@
 import { ElementData } from "@elllphnt/elementa-base";
 import * as y from "yjs";
 import { Component } from "../component";
-import { ComponentElement } from "./component";
+import { createComponentElementModel } from "./component/_";
 import { ContainerElement } from "./container";
 import { Element } from "./element";
 import { MediaElement } from "./media";
-import { PrimitiveElement } from "./primitive";
+import { PrimitiveElement } from "./primitive/primitive";
 import { SlotElement } from "./slot";
 import { TextElement } from "./text";
 import { VectorElement } from "./vector";
@@ -14,7 +14,7 @@ export function createElement(ymap: y.Map<any>, component: Component): Element {
   const type = ymap.get("type") as ElementData["type"];
   switch (type) {
     case "component":
-      return new ComponentElement(ymap, component);
+      return createComponentElementModel(component);
     case "container":
       return new ContainerElement(ymap, component);
     case "slot":

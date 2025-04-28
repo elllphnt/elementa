@@ -2,202 +2,220 @@ import {
   RenderingContextData,
   StyleModifierData,
 } from "@elllphnt/elementa-base";
-import { MapCRDTModel } from "@elllphnt/elementa-utils";
+import { attachReactiveMap, Extendable } from "@elllphnt/elementa-utils";
 import {
-  Observable,
   combineLatest,
   distinctUntilChanged,
   map,
+  Observable,
   of,
   switchMap,
 } from "rxjs";
 import * as y from "yjs";
 import { Component } from "../../component";
-import { ColorTheme } from "./color_theme";
-import { Viewport } from "./viewport";
+import { ColorThemeModel, withColorThemeBehavior } from "./color_theme";
+import { ViewportModel, withViewportBehavior } from "./viewport";
 
-export class RenderingContext extends MapCRDTModel<RenderingContextData> {
-  readonly component: Component;
-  readonly theme: ColorTheme;
-  readonly viewport: Viewport;
+export type RenderingContextModel = ReturnType<
+  typeof attachReactiveMap<RenderingContextData>
+> & {
+  component: Component;
+  theme: ColorThemeModel;
+  viewport: ViewportModel;
 
-  get props() {
-    return this.state.props;
-  }
-  get props$() {
-    return this.state$.pipe(
-      map((state) => state.props),
-      distinctUntilChanged()
-    );
-  }
+  props: Record<string, any>;
+  props$: Observable<Record<string, any>>;
 
-  prop(key: string) {
-    return this.props[key];
-  }
-  prop$(key: string) {
-    return this.props$.pipe(
-      map((props) => props[key]),
-      distinctUntilChanged()
-    );
-  }
+  viewportEnabled: boolean;
+  viewportEnabled$: Observable<boolean>;
 
-  get themeStyleModifiers() {
-    return this.theme.scheme
-      ? this.component.project.styleManager.colorSchemeModifiers({
-          colorScheme: this.theme.scheme,
-        })
-      : [];
-  }
-  get themeStyleModifiers$() {
-    return this.theme.scheme$.pipe(
-      switchMap((colorScheme) =>
-        colorScheme
-          ? this.component.project.styleManager.colorSchemeModifiers$({
-              colorScheme,
-            })
-          : of([])
-      )
-    );
-  }
+  styleModifierEnabled: boolean;
+  styleModifierEnabled$: Observable<boolean>;
 
-  get viewportStyleModifiers() {
-    return this.viewport
-      ? this.component.project.styleManager.viewportModifiers({
-          height: this.viewport.height,
-          width: this.viewport.width,
-        })
-      : [];
-  }
-  get viewportStyleModifiers$() {
-    return combineLatest([this.viewport.height$, this.viewport.width$]).pipe(
-      switchMap(([height, width]) => {
-        return this.component.project.styleManager.viewportModifiers$({
-          height,
-          width,
-        });
-      })
-    );
-  }
+  customStyleModifiers: StyleModifierData[];
+  customStyleModifiers$: Observable<StyleModifierData[]>;
 
-  get viewportEnabled() {
-    return this.state.viewportEnabled ?? false;
-  }
-  get viewportEnabled$() {
-    return this.state$.pipe(
-      map((state) => state.viewportEnabled ?? false),
-      distinctUntilChanged()
-    );
-  }
+  styleModifiers: StyleModifierData[];
+  styleModifiers$: Observable<StyleModifierData[]>;
 
-  get customStyleModifiers() {
-    return this.state.styleModifiers ?? [];
-  }
-  get customStyleModifiers$() {
-    return this.state$.pipe(
-      map((state) => state.styleModifiers ?? []),
-      distinctUntilChanged()
-    );
-  }
+  setProp(varName: string, value: any): void;
+  clearProp(varName: string): void;
+  setCustomStyleModifiers(styleModifiers: StyleModifierData[]): void;
+  enableStyleModifier(): void;
+  disableStyleModifier(): void;
+  enableViewport(): void;
+  disableViewport(): void;
+};
 
-  get styleModifierEnabled() {
-    return this.styleModifierEnabled;
-  }
-  get styleModifierEnabled$() {
-    return this.state$.pipe(
-      map((state) => state.styleModifierEnabled),
-      distinctUntilChanged()
-    );
-  }
+/**
+ * Attach RenderingContext behavior to a y.Map
+ */
+export function withRenderingContextBehavior(
+  ymap: y.Map<any>,
+  component: Component
+): RenderingContextModel {
+  const context = attachReactiveMap<RenderingContextData>(
+    ymap as Extendable<y.Map<any>>
+  ) as Extendable<RenderingContextModel>;
 
-  private get _styleModifiers(): StyleModifierData[] {
-    return [
-      ...this.viewportStyleModifiers,
-      ...this.themeStyleModifiers,
-      ...this.customStyleModifiers,
-    ];
-  }
-  private get _styleModifers$(): Observable<StyleModifierData[]> {
-    return combineLatest([
-      this.themeStyleModifiers$,
-      this.viewportStyleModifiers$,
-      this.customStyleModifiers$,
-    ]).pipe(
-      map(([colorSchemeModifiers, themeModifiers, customModifiers]) => {
-        return [...colorSchemeModifiers, ...themeModifiers, ...customModifiers];
-      })
-    );
-  }
+  context.component = component;
+  context.theme = withColorThemeBehavior(context.getOrCreateMap("theme"));
+  context.viewport = withViewportBehavior(context.getOrCreateMap("viewport"));
 
-  get styleModifiers() {
-    return this.styleModifierEnabled ? this._styleModifiers : [];
-  }
-  get styleModifiers$() {
-    return this.styleModifierEnabled$.pipe(
-      switchMap((enabled) => {
-        return enabled ? this._styleModifers$ : of([]);
-      })
-    );
-  }
+  // Properties
+  Object.defineProperty(context, "props", {
+    get() {
+      return context.value.props;
+    },
+    set(value) {
+      context.set("props", value);
+    },
+  });
+  context.props$ = context.observable$.pipe(
+    map((value) => value.props),
+    distinctUntilChanged()
+  );
 
-  constructor(ymap: y.Map<any>, component: Component) {
-    super(ymap);
-    this.component = component;
+  // Viewport enabled
+  Object.defineProperty(context, "viewportEnabled", {
+    get() {
+      return context.value.viewportEnabled ?? false;
+    },
+    set(value) {
+      context.set("viewportEnabled", value);
+    },
+  });
+  context.viewportEnabled$ = context.observable$.pipe(
+    map((value) => value.viewportEnabled ?? false),
+    distinctUntilChanged()
+  );
 
-    this.theme = new ColorTheme(this.getOrCreateMap("theme"));
-    this.viewport = new Viewport(this.getOrCreateMap("viewport"));
+  // Style modifier enabled
+  Object.defineProperty(context, "styleModifierEnabled", {
+    get() {
+      return context.value.styleModifierEnabled ?? false;
+    },
+    set(value) {
+      context.set("styleModifierEnabled", value);
+    },
+  });
+  context.styleModifierEnabled$ = context.observable$.pipe(
+    map((value) => value.styleModifierEnabled ?? false),
+    distinctUntilChanged()
+  );
 
-    this.addDisposer(() => {
-      this.viewport.dispose();
-      this.theme.dispose();
+  // Custom style modifiers
+  Object.defineProperty(context, "customStyleModifiers", {
+    get() {
+      return context.value.styleModifiers ?? [];
+    },
+    set(value) {
+      context.set("styleModifiers", value);
+    },
+  });
+  context.customStyleModifiers$ = context.observable$.pipe(
+    map((value) => value.styleModifiers ?? []),
+    distinctUntilChanged()
+  );
+
+  // Computed modifiers
+  const _themeStyleModifiers$ = context.theme.scheme$.pipe(
+    switchMap((colorScheme) =>
+      colorScheme
+        ? context.component.project.styleManager.colorSchemeModifiers$({
+            colorScheme,
+          })
+        : of([])
+    )
+  );
+
+  const _viewportStyleModifiers$ = combineLatest([
+    context.viewport.height$,
+    context.viewport.width$,
+  ]).pipe(
+    switchMap(([height, width]) => {
+      return context.component.project.styleManager.viewportModifiers$({
+        height,
+        width,
+      });
+    })
+  );
+
+  const _styleModifiers$ = combineLatest([
+    _themeStyleModifiers$,
+    _viewportStyleModifiers$,
+    context.customStyleModifiers$,
+  ]).pipe(
+    map(([themeMods, viewportMods, customMods]) => [
+      ...viewportMods,
+      ...themeMods,
+      ...customMods,
+    ])
+  );
+
+  // Final exposed styleModifiers
+  Object.defineProperty(context, "styleModifiers", {
+    get() {
+      if (!context.styleModifierEnabled) return [];
+      return [
+        ...context.component.project.styleManager.viewportModifiers({
+          width: context.viewport.width,
+          height: context.viewport.height,
+        }),
+        ...context.component.project.styleManager.colorSchemeModifiers({
+          colorScheme: context.theme.scheme,
+        }),
+        ...(context.customStyleModifiers ?? []),
+      ];
+    },
+  });
+  context.styleModifiers$ = context.styleModifierEnabled$.pipe(
+    switchMap((enabled) => (enabled ? _styleModifiers$ : of([])))
+  );
+
+  // Methods
+  context.setProp = (varName: string, value: any) => {
+    context.set("props", {
+      ...context.props,
+      [varName]: value,
     });
-  }
+  };
 
-  setProp(varName: string, value: any) {
-    const newProps = {
-      ...this.props,
-    };
-
-    newProps[varName] = value;
-    this.patch({
-      props: newProps,
-    });
-  }
-  clearProp(varName: string) {
-    const newProps = {
-      ...this.props,
-    };
-
+  context.clearProp = (varName: string) => {
+    const newProps = { ...context.props };
     delete newProps[varName];
-    this.patch({
-      props: newProps,
-    });
-  }
+    context.set("props", newProps);
+  };
 
-  setCustomStyleModifiers(styleModifiers: StyleModifierData[]): void {
-    this.patch({
-      styleModifiers: styleModifiers,
-    });
-  }
+  context.setCustomStyleModifiers = (styleModifiers: StyleModifierData[]) => {
+    context.set("styleModifiers", styleModifiers);
+  };
 
-  enableStyleModifier(): void {
-    this.patch({
-      styleModifierEnabled: true,
-    });
-  }
-  disableStyleModifier(): void {
-    this.patch({
-      styleModifierEnabled: false,
-    });
-  }
+  context.enableStyleModifier = () => {
+    context.set("styleModifierEnabled", true);
+  };
 
-  enableViewport(): void {
-    this.patch({
-      viewportEnabled: true,
-    });
-  }
-  disableViewport(): void {
-    this.patch({
-      viewportEnabled: false,
-    });
-  }
+  context.disableStyleModifier = () => {
+    context.set("styleModifierEnabled", false);
+  };
+
+  context.enableViewport = () => {
+    context.set("viewportEnabled", true);
+  };
+
+  context.disableViewport = () => {
+    context.set("viewportEnabled", false);
+  };
+
+  return context as RenderingContextModel;
+}
+
+/**
+ * Create a new local RenderingContext
+ */
+export function createRenderingContextModel(
+  component: Component
+): RenderingContextModel {
+  const ymap = new y.Map<any>();
+  return withRenderingContextBehavior(ymap, component);
 }

@@ -1,16 +1,44 @@
 import * as y from "yjs";
 import { Component } from "./component";
-import { Fragment, FragmentVariant } from "./fragment";
+import {
+  FragmentModel,
+  FragmentVariant,
+  withFragmentBehavior,
+} from "./fragment";
 
-export class Template extends Fragment {
-  get name() {
-    return this.component.name;
-  }
-  get name$() {
-    return this.component.name$;
-  }
+export type TemplateModel = FragmentModel & {
+  name: string;
+  name$: ReturnType<Component["name$"]>;
+};
 
-  constructor(ymap: y.Map<any>, component: Component) {
-    super(ymap, component, FragmentVariant.Template);
-  }
+/**
+ * Attach Template behavior to a y.Map
+ */
+export function withTemplateBehavior(
+  ymap: y.Map<any>,
+  component: Component
+): TemplateModel {
+  const template = withFragmentBehavior(
+    ymap,
+    component,
+    FragmentVariant.Template
+  ) as TemplateModel;
+
+  Object.defineProperty(template, "name", {
+    get() {
+      return template.component.name;
+    },
+  });
+
+  template.name$ = template.component.name$;
+
+  return template;
+}
+
+/**
+ * Create a new local Template
+ */
+export function createTemplateModel(component: Component): TemplateModel {
+  const ymap = new y.Map<any>();
+  return withTemplateBehavior(ymap, component);
 }

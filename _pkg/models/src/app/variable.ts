@@ -1,64 +1,64 @@
 import { AppVariableData } from "@elllphnt/elementa-base";
-import { MapCRDTModel } from "@elllphnt/elementa-utils";
-import { distinctUntilChanged, map } from "rxjs";
+import {
+  attachReactiveMap,
+  Extendable,
+  ReactiveMap,
+} from "@elllphnt/elementa-utils";
+import { setEnhancer } from "@elllphnt/elementa-utils/dist/core/enhancer";
+import { distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
-import { App } from "./app";
+import { App } from "./app"; // use updated App type
 
-export class AppVariable extends MapCRDTModel<AppVariableData> {
-  readonly app: App;
+export type AppVariable = ReactiveMap<AppVariableData> & {
+  app: App;
 
-  get varName() {
-    return this.state.varName;
-  }
-  get varName$() {
-    return this.state$.pipe(
-      map((data) => data.varName),
+  varName: string;
+  varName$: Observable<string>;
+
+  name: string;
+  name$: Observable<string>;
+
+  tsType: string;
+  tsType$: Observable<string>;
+
+  scope: string | undefined;
+  scope$: Observable<string | undefined>;
+
+  description: string | undefined;
+  description$: Observable<string | undefined>;
+};
+
+export function attachAppVariable(ymap: y.Map<any>, app: App): AppVariable {
+  const rxMap = attachReactiveMap<AppVariableData>(
+    ymap as Extendable<y.Map<any>>
+  );
+  const variable = rxMap as AppVariable;
+  variable.app = app;
+
+  // Create property accessors dynamically
+  const fields = ["varName", "name", "tsType", "scope", "description"] as const;
+
+  for (const field of fields) {
+    Object.defineProperty(rxMap, field, {
+      get() {
+        return rxMap.get(field);
+      },
+      set(value) {
+        rxMap.set(field, value);
+      },
+    });
+
+    variable[`${field}$`] = rxMap.observable$.pipe(
+      map((v) => v[field]),
       distinctUntilChanged()
     );
   }
 
-  get name() {
-    return this.state.name;
-  }
-  get name$() {
-    return this.state$.pipe(
-      map((data) => data.name),
-      distinctUntilChanged()
-    );
-  }
+  setEnhancer(variable, attachAppVariable);
+  return variable;
+}
 
-  get tsType() {
-    return this.state.tsType;
-  }
-  get tsType$() {
-    return this.state$.pipe(
-      map((data) => data.tsType),
-      distinctUntilChanged()
-    );
-  }
-
-  get scope() {
-    return this.state.scope;
-  }
-  get scope$() {
-    return this.state$.pipe(
-      map((data) => data.scope),
-      distinctUntilChanged()
-    );
-  }
-
-  get description() {
-    return this.state.description;
-  }
-  get description$() {
-    return this.state$.pipe(
-      map((data) => data.description),
-      distinctUntilChanged()
-    );
-  }
-
-  constructor({ ymap, app }: { ymap: y.Map<any>; app: App }) {
-    super(ymap);
-    this.app = app;
-  }
+export function createAppVariable(app: App): AppVariable {
+  const ymap = new y.Map<any>();
+  return attachAppVariable(ymap, app);
 }

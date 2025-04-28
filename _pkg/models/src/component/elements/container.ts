@@ -1,40 +1,74 @@
 import { ContainerElementData } from "@elllphnt/elementa-base";
 import {
   combineLatestOrEmpty,
+  Extendable,
   getOrCreateYArray,
 } from "@elllphnt/elementa-utils";
-import { map } from "rxjs";
+import { map, Observable } from "rxjs";
 import * as y from "yjs";
 import { Component } from "../component";
-import { ElementList } from "./_list";
-import { Element } from "./element";
+import { ElementListModel, withElementListBehavior } from "./_list";
+import { ElementModel, withElementBehavior } from "./element";
 
-export class ContainerElement extends Element<ContainerElementData> {
-  readonly content: ElementList;
+export type ContainerElementModel = ElementModel<ContainerElementData> & {
+  content: ElementListModel;
 
-  get allCssStylesheets() {
-    return [this.cssStyleSheet, ...this.content.allCssStylesheets];
-  }
-  get allCssStylesheets$() {
-    return combineLatestOrEmpty([this.content.allCssStylesheets$]).pipe(
-      map(([childrenStylesheets]) => [
-        this.cssStyleSheet,
-        ...childrenStylesheets.flat(),
-      ])
-    );
-  }
+  allCssStylesheets: any[];
+  allCssStylesheets$: Observable<any[]>;
 
-  constructor(ymap: y.Map<any>, component: Component) {
-    super(ymap, component);
-    this.content = new ElementList(this.getOrCreateArray("content"), component);
+  cloneIds(clone: y.Map<any>): void;
+};
 
-    this.addDisposer(() => {
-      this.content.dispose();
-    });
-  }
+/**
+ * Attach ContainerElement behavior to a y.Map
+ */
+export function withContainerElementBehavior(
+  ymap: y.Map<any>,
+  component: Component
+): ContainerElementModel {
+  const element = withElementBehavior(
+    ymap,
+    component
+  ) as Extendable<ContainerElementModel>;
 
-  cloneIds(clone: y.Map<any>): void {
-    this.cloneOwnId(clone);
-    this.content.cloneIds(getOrCreateYArray(clone, "content"));
-  }
+  element.content = withElementListBehavior(
+    element.getOrCreateArray("content") as y.Array<y.Map<any>>,
+    component
+  );
+
+  Object.defineProperty(element, "allCssStylesheets", {
+    get() {
+      return [element.cssStyleSheet, ...element.content.allCssStylesheets];
+    },
+  });
+
+  element.allCssStylesheets$ = combineLatestOrEmpty([
+    element.content.allCssStylesheets$,
+  ]).pipe(
+    map(([childrenSheets]) => [element.cssStyleSheet, ...childrenSheets.flat()])
+  );
+
+  element.cloneIds = (clone: y.Map<any>) => {
+    element.cloneOwnId(clone);
+    const contentClone = getOrCreateYArray(clone, "content");
+    element.content.cloneIds(contentClone as any);
+  };
+
+  const baseDispose = (element as any).dispose?.bind(element);
+  element.dispose = () => {
+    element.content.dispose();
+    if (baseDispose) baseDispose();
+  };
+
+  return element as ContainerElementModel;
+}
+
+/**
+ * Create a new local ContainerElement
+ */
+export function createContainerElementModel(
+  component: Component
+): ContainerElementModel {
+  const ymap = new y.Map<any>();
+  return withContainerElementBehavior(ymap, component);
 }

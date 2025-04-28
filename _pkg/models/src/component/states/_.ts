@@ -1,3 +1,3 @@
-export * from "./module";
+export * from "./hook";
 export * from "./state";
 export * from "./value";

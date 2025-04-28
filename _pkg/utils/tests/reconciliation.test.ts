@@ -1,6 +1,6 @@
 import { test } from "uvu";
 import * as assert from "uvu/assert";
-import { reconcileList } from "./reconciliation";
+import { reconcileList } from "../src/core/reconciliation";
 
 test("returns empty when both targets and sources are empty", () => {
   const result = reconcileList({

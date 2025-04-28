@@ -1,96 +1,126 @@
 import { ComponentData } from "@elllphnt/elementa-base";
-import { CRDTModelList, MapCRDTModel } from "@elllphnt/elementa-utils";
+import {
+  Extendable,
+  ReactiveListOf,
+  attachReactiveMap,
+} from "@elllphnt/elementa-utils";
 import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
 import * as y from "yjs";
 import { Project } from "../project/project";
-import { DataInput } from "./data_input";
-import { Fragment } from "./fragment";
-import { State } from "./states/_";
+import { DataInputModel, withDataInputBehavior } from "./data_input";
+import { FragmentModel, withFragmentBehavior } from "./fragment";
+import { StateModel } from "./states/_";
 import { createState } from "./states/_create";
-import { Template } from "./template";
+import { TemplateModel, withTemplateBehavior } from "./template";
 
-export abstract class Component extends MapCRDTModel<ComponentData> {
-  readonly project: Project;
+export type Component = ReturnType<typeof attachReactiveMap<ComponentData>> & {
+  project: Project;
 
-  readonly template: Template;
-  readonly editorStates: y.Map<y.Map<any>>;
+  template: TemplateModel;
+  editorStates: y.Map<y.Map<any>>;
 
-  readonly props: CRDTModelList<DataInput>;
-  readonly fragments: CRDTModelList<Fragment>;
-  readonly states: CRDTModelList<State>;
+  props: ReactiveListOf<y.Map<any>, DataInputModel>;
+  fragments: ReactiveListOf<y.Map<any>, FragmentModel>;
+  states: ReactiveListOf<y.Map<any>, StateModel>;
 
-  private readonly _fragmentsById$ = new BehaviorSubject<
-    Record<string, Fragment>
-  >({});
+  name: string;
+  name$: ReturnType<typeof map>;
 
-  abstract get url(): string;
+  fragment(id: string): FragmentModel | undefined;
+  fragment$(id: string): ReturnType<typeof map>;
 
-  get name() {
-    return this.state.name;
-  }
+  getEditorState(key: string): y.Map<any>;
+};
 
-  get name$() {
-    return this.state$.pipe(
-      map((v) => v.name ?? ""),
-      distinctUntilChanged()
+export function withComponentBehavior(
+  ymap: y.Map<any>,
+  project: Project
+): Component {
+  const component = attachReactiveMap<ComponentData>(
+    ymap as Extendable<y.Map<any>>
+  ) as Extendable<Component>;
+
+  component.project = project;
+
+  component.template = withTemplateBehavior(
+    component.getOrCreateMap("template"),
+    project.componentManager ? (component as any) : (component as any) // workaround to avoid cyclic
+  );
+
+  component.editorStates = component.getOrCreateMap("editors");
+
+  component.props = new CRDTModelList(
+    component.getOrCreateArray("props"),
+    (ymap) => withDataInputBehavior(ymap, component)
+  );
+
+  component.fragments = new CRDTModelList(
+    component.getOrCreateArray("fragments"),
+    (ymap) => withFragmentBehavior(ymap, component)
+  );
+
+  component.states = new CRDTModelList(
+    component.getOrCreateArray("states"),
+    (ymap) => createState(ymap, component)
+  );
+
+  Object.defineProperty(component, "name", {
+    get() {
+      return component.value.name ?? "";
+    },
+  });
+
+  component.name$ = component.observable$.pipe(
+    map((v) => v.name ?? ""),
+    distinctUntilChanged()
+  );
+
+  const _fragmentsById$ = new BehaviorSubject<Record<string, FragmentModel>>(
+    {}
+  );
+  const fragmentSub = component.fragments.items$.subscribe((fragments) => {
+    _fragmentsById$.next(
+      Object.fromEntries(fragments.map((fragment) => [fragment.id, fragment]))
     );
-  }
+  });
 
-  fragment(id: string) {
-    return this._fragmentsById$.value[id];
-  }
-  fragment$(id: string) {
-    return this._fragmentsById$.pipe(
+  component.fragment = (id: string) => {
+    return _fragmentsById$.value[id];
+  };
+
+  component.fragment$ = (id: string) => {
+    return _fragmentsById$.pipe(
       map((fragments) => fragments[id]),
       distinctUntilChanged()
     );
-  }
+  };
 
-  constructor(ymap: y.Map<any>, project: Project) {
-    super(ymap);
-
-    this.project = project;
-
-    this.template = new Template(this.getOrCreateMap("template"), this);
-    this.editorStates = this.getOrCreateMap("editors");
-
-    this.props = new CRDTModelList(
-      this.getOrCreateArray("props"),
-      (map) => new DataInput(map, this)
-    );
-    this.fragments = new CRDTModelList(
-      this.getOrCreateArray("fragments"),
-      (map) => new Fragment(map, this)
-    );
-    this.states = new CRDTModelList(this.getOrCreateArray("states"), (map) =>
-      createState(map, this)
-    );
-
-    const fragmentsByIdSubscription = this.fragments.items$.subscribe(
-      (fragments) => {
-        this._fragmentsById$.next(
-          Object.fromEntries(
-            fragments.map((fragment) => [fragment.id, fragment])
-          )
-        );
-      }
-    );
-
-    this.addDisposer(() => {
-      this.props.dispose();
-      this.fragments.dispose();
-      this.states.dispose();
-      this._fragmentsById$.complete();
-      fragmentsByIdSubscription.unsubscribe();
-    });
-  }
-
-  getEditorState(key: string): y.Map<any> {
-    let map = this.editorStates.get(key);
+  component.getEditorState = (key: string) => {
+    let map = component.editorStates.get(key);
     if (!map || !(map instanceof y.Map)) {
       map = new y.Map();
-      this.editorStates.set(key, map);
+      component.editorStates.set(key, map);
     }
     return map;
-  }
+  };
+
+  const baseDispose = (component as any).dispose?.bind(component);
+  component.dispose = () => {
+    component.props.dispose();
+    component.fragments.dispose();
+    component.states.dispose();
+    _fragmentsById$.complete();
+    fragmentSub.unsubscribe();
+    if (baseDispose) baseDispose();
+  };
+
+  return component as Component;
+}
+
+/**
+ * Create a new local Component
+ */
+export function createComponentModel(project: Project): Component {
+  const ymap = new y.Map<any>();
+  return withComponentBehavior(ymap, project);
 }

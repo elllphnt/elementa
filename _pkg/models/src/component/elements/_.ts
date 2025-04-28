@@ -4,7 +4,7 @@ export * from "./component";
 export * from "./container";
 export * from "./element";
 export * from "./media";
-export * from "./primitive";
+export * from "./primitive/primitive";
 export * from "./slot";
 export * from "./text";
 export * from "./vector";

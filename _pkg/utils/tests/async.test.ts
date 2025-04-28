@@ -1,6 +1,6 @@
 import { test } from "uvu";
 import * as assert from "uvu/assert";
-import { retryAsync, withTimeout } from "./async";
+import { retryAsync, withTimeout } from "../src/core/async";
 
 // withTimeout should resolve if inner promise settles before the timer
 test("withTimeout resolves before timeout", async () => {

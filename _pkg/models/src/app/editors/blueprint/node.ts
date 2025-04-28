@@ -1,26 +1,46 @@
 import { BlueprintNodeData } from "@elllphnt/elementa-base";
-import { MapCRDTModel, PointData } from "@elllphnt/elementa-utils";
-import { distinctUntilChanged, map } from "rxjs";
+import {
+  attachReactiveMap,
+  Extendable,
+  PointData,
+  ReactiveMap,
+} from "@elllphnt/elementa-utils";
+import { distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
 
-export class BlueprintNode extends MapCRDTModel<BlueprintNodeData> {
-  get position() {
-    return this.state.position;
-  }
-  get position$() {
-    return this.state$.pipe(
-      map((state) => state.position),
-      distinctUntilChanged()
-    );
-  }
+export type BlueprintNodeModel = ReactiveMap<BlueprintNodeData> & {
+  position: PointData;
+  position$: Observable<PointData>;
+  setPosition(position: PointData): void;
+};
 
-  constructor(ymap: y.Map<any>) {
-    super(ymap);
-  }
+export function withBlueprintNodeBehavior(
+  ymap: y.Map<any>
+): BlueprintNodeModel {
+  const node = attachReactiveMap<BlueprintNodeData>(ymap) as Extendable<
+    ReactiveMap<BlueprintNodeData>
+  >;
 
-  setPosition(position: PointData) {
-    this.patch({
-      position,
-    });
-  }
+  // Add methods and accessors
+  Object.defineProperty(node, "position", {
+    get() {
+      return node.value.position;
+    },
+  });
+
+  node.position$ = node.observable$.pipe(
+    map((state) => state.position),
+    distinctUntilChanged()
+  );
+
+  node.setPosition = (position: PointData) => {
+    node.patch({ position });
+  };
+
+  return node as BlueprintNodeModel;
+}
+
+export function createBlueprintNodeModel(): BlueprintNodeModel {
+  const ymap = new y.Map<any>();
+  return withBlueprintNodeBehavior(ymap);
 }

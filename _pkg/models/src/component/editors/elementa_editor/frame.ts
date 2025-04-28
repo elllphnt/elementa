@@ -3,211 +3,203 @@ import {
   CornerName,
   ElementaFrameData,
 } from "@elllphnt/elementa-base";
-import { distinctUntilChanged, map, of, switchMap } from "rxjs";
+import { Extendable } from "@elllphnt/elementa-utils";
+import { distinctUntilChanged, map, Observable, of, switchMap } from "rxjs";
 import * as y from "yjs";
-import { IdentifiableModel } from "../../identifiable";
-import { RenderingContext } from "../elementa/rendering_context";
-import { ElementaEditorComponentState } from "./state";
+import { withIdentifiableModelBehavior } from "../../identifiable";
+import {
+  RenderingContextModel,
+  withRenderingContextBehavior,
+} from "../elementa/rendering_context";
+import { ElementaEditorComponentStateModel } from "./state";
 
-export class ElementaFrame extends IdentifiableModel<ElementaFrameData> {
-  readonly componentState: ElementaEditorComponentState;
-  readonly renderingContext: RenderingContext;
+export type ElementaFrameModel = ReturnType<
+  typeof withIdentifiableModelBehavior<ElementaFrameData>
+> & {
+  componentState: ElementaEditorComponentStateModel;
+  renderingContext: RenderingContextModel;
 
-  get name() {
-    return this.state.name;
-  }
-  get name$() {
-    return this.state$.pipe(
-      map((state) => state.name),
+  name: string | undefined;
+  name$: Observable<string | undefined>;
+
+  fragmentId: string | undefined;
+  fragmentId$: Observable<string | undefined>;
+
+  fragment: any;
+  fragment$: Observable<any>;
+
+  x: number | undefined;
+  x$: Observable<number | undefined>;
+
+  y: number | undefined;
+  y$: Observable<number | undefined>;
+
+  height: number | undefined;
+  height$: Observable<number | undefined>;
+
+  width: number | undefined;
+  width$: Observable<number | undefined>;
+
+  corners: CornerData<number> | undefined;
+  corners$: Observable<CornerData<number> | undefined>;
+
+  setName(name: string | undefined): void;
+  setFragmentId(fragmentId: string | undefined): void;
+  setX(x: number | undefined): void;
+  setY(y: number | undefined): void;
+  setHeight(height: number | undefined): void;
+  setWidth(width: number | undefined): void;
+  setCorner(name: CornerName, value: number | undefined): void;
+  setCorners(corners: CornerData<number> | undefined): void;
+  remove(): void;
+  cloneIds(clone: y.Map<any>): void;
+};
+
+/**
+ * Attach ElementaFrame behavior to a y.Map
+ */
+export function withElementaFrameBehavior(
+  ymap: y.Map<any>,
+  componentState: ElementaEditorComponentStateModel
+): ElementaFrameModel {
+  const frame = withIdentifiableModelBehavior<ElementaFrameData>(
+    ymap as Extendable<y.Map<any>>
+  ) as Extendable<ElementaFrameModel>;
+
+  frame.componentState = componentState;
+  frame.renderingContext = withRenderingContextBehavior(
+    ymap,
+    componentState.component
+  );
+
+  // Name
+  Object.defineProperty(frame, "name", {
+    get() {
+      return frame.value.name;
+    },
+    set(value) {
+      frame.set("name", value);
+    },
+  });
+  frame.name$ = frame.observable$.pipe(
+    map((value) => value.name),
+    distinctUntilChanged()
+  );
+
+  // Fragment ID
+  Object.defineProperty(frame, "fragmentId", {
+    get() {
+      return frame.value.fragmentId;
+    },
+    set(value) {
+      frame.set("fragmentId", value);
+    },
+  });
+  frame.fragmentId$ = frame.observable$.pipe(
+    map((value) => value.fragmentId),
+    distinctUntilChanged()
+  );
+
+  // Fragment dynamic lookup
+  Object.defineProperty(frame, "fragment", {
+    get() {
+      return frame.fragmentId
+        ? frame.componentState.component.fragment(frame.fragmentId)
+        : frame.componentState.component.template;
+    },
+  });
+  frame.fragment$ = frame.fragmentId$.pipe(
+    switchMap((fragmentId) => {
+      return fragmentId
+        ? frame.componentState.component.fragment$(fragmentId)
+        : of(frame.componentState.component.template);
+    })
+  );
+
+  // Position & Size
+  const fields = ["x", "y", "height", "width", "corners"] as const;
+
+  for (const field of fields) {
+    Object.defineProperty(frame, field, {
+      get() {
+        return frame.value[field];
+      },
+      set(value) {
+        frame.set(field, value);
+      },
+    });
+
+    (frame as any)[`${field}$`] = frame.observable$.pipe(
+      map((value) => value[field]),
       distinctUntilChanged()
     );
   }
 
-  get fragmentId() {
-    return this.state.fragmentId;
-  }
-  get fragmentId$() {
-    return this.state$.pipe(
-      map((state) => state.fragmentId),
-      distinctUntilChanged()
-    );
-  }
+  // Methods
+  frame.setName = (name: string | undefined) => {
+    frame.set("name", name);
+  };
 
-  get fragment() {
-    return this.fragmentId
-      ? this.componentState.component.fragment(this.fragmentId)
-      : this.componentState.component.template;
-  }
-  get fragment$() {
-    return this.fragmentId$.pipe(
-      switchMap((fragmentId) => {
-        return fragmentId
-          ? this.componentState.component.fragment$(fragmentId)
-          : of(this.componentState.component.template);
-      })
-    );
-  }
+  frame.setFragmentId = (fragmentId: string | undefined) => {
+    frame.set("fragmentId", fragmentId);
+  };
 
-  get x() {
-    return this.state.x;
-  }
-  get x$() {
-    return this.state$.pipe(
-      map((state) => state.x),
-      distinctUntilChanged()
-    );
-  }
+  frame.setX = (x: number | undefined) => {
+    frame.set("x", x !== undefined ? Math.round(x) : undefined);
+  };
 
-  get y() {
-    return this.state.y;
-  }
-  get y$() {
-    return this.state$.pipe(
-      map((state) => state.y),
-      distinctUntilChanged()
-    );
-  }
+  frame.setY = (y: number | undefined) => {
+    frame.set("y", y !== undefined ? Math.round(y) : undefined);
+  };
 
-  get height() {
-    return this.state.height;
-  }
-  get height$() {
-    return this.state$.pipe(
-      map((state) => state.height),
-      distinctUntilChanged()
-    );
-  }
-  get width() {
-    return this.state.width;
-  }
-  get width$() {
-    return this.state$.pipe(
-      map((state) => state.width),
-      distinctUntilChanged()
-    );
-  }
+  frame.setHeight = (height: number | undefined) => {
+    frame.set("height", height !== undefined ? Math.round(height) : undefined);
+  };
 
-  get corners() {
-    return this.state.corners;
-  }
-  get corners$() {
-    return this.state$.pipe(
-      map((state) => state.corners),
-      distinctUntilChanged()
-    );
-  }
+  frame.setWidth = (width: number | undefined) => {
+    frame.set("width", width !== undefined ? Math.round(width) : undefined);
+  };
 
-  corner<C extends CornerName>(name: C) {
+  frame.setCorner = (name: CornerName, value: number | undefined) => {
+    const newCorners = { ...(frame.corners ?? {}) };
     switch (name) {
       case "top-left":
-        return this.corners?.topLeft;
-      case "top-right":
-        return this.corners?.topRight;
-      case "bottom-left":
-        return this.corners?.bottomLeft;
-      case "bottom-right":
-        return this.corners?.bottomRight;
-    }
-  }
-  corner$<C extends CornerName>(name: C) {
-    return this.corners$.pipe(
-      map((corner) => {
-        switch (name) {
-          case "top-left":
-            return corner?.topLeft;
-          case "top-right":
-            return corner?.topRight;
-          case "bottom-left":
-            return corner?.bottomLeft;
-          case "bottom-right":
-            return corner?.bottomRight;
-        }
-      })
-    );
-  }
-
-  constructor(ymap: y.Map<any>, componentState: ElementaEditorComponentState) {
-    super(ymap);
-
-    this.componentState = componentState;
-    this.renderingContext = new RenderingContext(
-      this.ymap,
-      componentState.component
-    );
-
-    this.addDisposer(() => {
-      this.renderingContext.dispose();
-    });
-  }
-
-  cloneIds(clone: y.Map<any>): void {
-    this.cloneOwnId(clone);
-  }
-
-  setName(name: string | undefined) {
-    this.patch({
-      name: name,
-    });
-  }
-
-  setFragmentId(fragmentId: string | undefined) {
-    this.patch({
-      fragmentId: fragmentId,
-    });
-  }
-
-  setX(x: number | undefined) {
-    this.patch({
-      x: x !== undefined ? Math.round(x) : undefined,
-    });
-  }
-  setY(y: number | undefined) {
-    this.patch({
-      y: y !== undefined ? Math.round(y) : undefined,
-    });
-  }
-  setHeight(height: number | undefined) {
-    this.patch({
-      height: height !== undefined ? Math.round(height) : undefined,
-    });
-  }
-  setWidth(width: number | undefined) {
-    this.patch({
-      width: width !== undefined ? Math.round(width) : undefined,
-    });
-  }
-
-  setCorner(name: CornerName, value: number | undefined) {
-    const newCorner = {
-      ...this.corners,
-    };
-
-    switch (name) {
-      case "top-left":
-        newCorner.topLeft = value;
+        newCorners.topLeft = value;
         break;
       case "top-right":
-        newCorner.topRight = value;
+        newCorners.topRight = value;
         break;
       case "bottom-left":
-        newCorner.bottomLeft = value;
+        newCorners.bottomLeft = value;
         break;
       case "bottom-right":
-        newCorner.bottomRight = value;
+        newCorners.bottomRight = value;
         break;
     }
+    frame.set("corners", newCorners);
+  };
 
-    this.patch({
-      corners: newCorner,
-    });
-  }
-  setCorners(corners: CornerData<number> | undefined) {
-    this.patch({
-      corners: corners,
-    });
-  }
+  frame.setCorners = (corners: CornerData<number> | undefined) => {
+    frame.set("corners", corners);
+  };
 
-  remove() {
-    this.componentState.frames.remove(this);
-  }
+  frame.cloneIds = (clone: y.Map<any>) => {
+    frame.cloneOwnId(clone);
+  };
+
+  frame.remove = () => {
+    frame.componentState.frames.remove(frame);
+  };
+
+  return frame as ElementaFrameModel;
+}
+
+/**
+ * Create a new local ElementaFrame model
+ */
+export function createElementaFrameModel(
+  componentState: ElementaEditorComponentStateModel
+): ElementaFrameModel {
+  const ymap = new y.Map<any>();
+  return withElementaFrameBehavior(ymap, componentState);
 }

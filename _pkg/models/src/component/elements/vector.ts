@@ -1,26 +1,61 @@
 import { VectorElementData, VectorNodeData } from "@elllphnt/elementa-base";
-import { map } from "rxjs";
+import { Extendable } from "@elllphnt/elementa-utils";
+import { distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { Component } from "../component";
-import { Element } from "./element";
+import { ElementModel, withElementBehavior } from "./element";
 
-export class VectorElement extends Element<VectorElementData> {
-  get content() {
-    return this.state.content;
-  }
-  get content$() {
-    return this.state$.pipe(map((s) => s.content));
-  }
+export type VectorElementModel = ElementModel<VectorElementData> & {
+  content: VectorNodeData[] | undefined;
+  content$: Observable<VectorNodeData[] | undefined>;
 
-  constructor(ymap: y.Map<any>, component: Component) {
-    super(ymap, component);
-  }
+  setContent(content: VectorNodeData[] | undefined): void;
+  cloneIds(clone: y.Map<any>): void;
+};
 
-  cloneIds(clone: y.Map<any>): void {
-    this.cloneOwnId(clone);
-  }
+/**
+ * Attach VectorElement behavior to a y.Map
+ */
+export function withVectorElementBehavior(
+  ymap: y.Map<any>,
+  component: Component
+): VectorElementModel {
+  const element = withElementBehavior(
+    ymap,
+    component
+  ) as Extendable<VectorElementModel>;
 
-  setContent(content: VectorNodeData[]) {
-    this.patch({ content });
-  }
+  Object.defineProperty(element, "content", {
+    get() {
+      return element.value.content;
+    },
+    set(value) {
+      element.set("content", value);
+    },
+  });
+
+  element.content$ = element.observable$.pipe(
+    map((v) => v.content),
+    distinctUntilChanged()
+  );
+
+  element.setContent = (content: VectorNodeData[] | undefined) => {
+    element.set("content", content);
+  };
+
+  element.cloneIds = (clone: y.Map<any>) => {
+    element.cloneOwnId(clone);
+  };
+
+  return element as VectorElementModel;
+}
+
+/**
+ * Create a new local VectorElement
+ */
+export function createVectorElementModel(
+  component: Component
+): VectorElementModel {
+  const ymap = new y.Map<any>();
+  return withVectorElementBehavior(ymap, component);
 }

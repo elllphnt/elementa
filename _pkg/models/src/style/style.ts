@@ -9,124 +9,153 @@ import {
   VarRef,
 } from "@elllphnt/elementa-base";
 import { CssStyleData, styleToCss } from "@elllphnt/elementa-css";
-import { MapCRDTModel } from "@elllphnt/elementa-utils";
+import { attachReactiveMap, Extendable } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, combineLatest, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { Project } from "../project/project";
-import { StyleFragmentRegistry } from "./style_fragment_registry";
+import { StyleFragmentRegistryModel } from "./style_fragment_registry";
 
-/**
- * A standalone modelization of an Elll StyleData object.
- * Can be used to store and manipulate style data.
- */
-export class Style extends MapCRDTModel<StyleData> {
-  readonly fragmentRegistry: StyleFragmentRegistry;
-  readonly project: Project;
+export type StyleModel = ReturnType<typeof attachReactiveMap<StyleData>> & {
+  project: Project;
+  fragmentRegistry: StyleFragmentRegistryModel;
 
-  private _settings$ = new BehaviorSubject<Record<string, any>>({});
-  private _css$ = new BehaviorSubject<CssStyleData>({});
+  className: string;
 
-  get className() {
-    return `elll-style-${this.key}`;
-  }
+  setting(key: string): any;
+  setting$(key: string): Observable<any>;
 
-  setting(key: string) {
-    return this._settings$.value[key];
-  }
-  setting$(key: string) {
-    return this._settings$.pipe(map((settings) => settings[key]));
-  }
+  css: CssStyleData;
+  css$: Observable<CssStyleData>;
 
-  get css() {
-    return this._css$.value;
-  }
-  get css$() {
-    return this._css$.asObservable();
-  }
+  propertyDefined(property: StylePropertyName): boolean;
+  propertyDefined$(property: StylePropertyName): Observable<boolean>;
 
-  propertyDefined(property: StylePropertyName) {
-    return this.state[property] !== undefined;
-  }
-  propertyDefined$(property: StylePropertyName) {
-    return this.state$.pipe(map((data) => data[property] !== undefined));
-  }
-
-  propertyValue<N extends StylePropertyName>(property: N): StyleData[N] {
-    return this.state[property];
-  }
+  propertyValue<N extends StylePropertyName>(property: N): StyleData[N];
   propertyValue$<N extends StylePropertyName>(
     property: N
-  ): Observable<StyleData[N]> {
-    return this.state$.pipe(map((data) => data[property]));
-  }
+  ): Observable<StyleData[N]>;
+
   propertyValueWithoutUnset<N extends StylePropertyName>(
     property: N
-  ): StyleData[N] {
-    const value = this.propertyValue(property) as any;
-    return (value === "unset" ? undefined : value) as any;
-  }
+  ): StyleData[N];
   propertyValueWithoutUnset$<N extends StylePropertyName>(
     property: N
-  ): Observable<StyleData[N]> {
-    return this.propertyValue$(property).pipe(
-      map((value) => (value === "unset" ? undefined : value))
-    ) as any;
-  }
-
-  constructor(
-    ymap: y.Map<any>,
-    project: Project,
-    fragmentRegistry: StyleFragmentRegistry
-  ) {
-    super(ymap);
-    this.project = project;
-    this.fragmentRegistry = fragmentRegistry;
-
-    const cssSubscription = combineLatest([
-      this.state$,
-      this.fragmentRegistry.allFragments$,
-    ]).subscribe(([data, fragments]) => {
-      const css = styleToCss(data, {
-        getFragment: (type, id) =>
-          fragments.find((f) => f.type === type && f.id === id) as any,
-      });
-      this._css$.next(css);
-    });
-
-    this.addDisposer(() => {
-      this._settings$.complete();
-      this._css$.complete();
-
-      cssSubscription.unsubscribe();
-    });
-  }
+  ): Observable<StyleData[N]>;
 
   setProperty<N extends StylePropertyName>(
     property: N,
     value: StyleData[N]
-  ): void {
-    const nextValue = isVarRef(value)
-      ? (value as VarRef)
-      : (this.normalizeValue as any)(property, value);
-    this.patch({
-      [property]: nextValue,
-    });
-  }
+  ): void;
+  setSetting(key: string, value: any): void;
 
-  setSetting(key: string, value: any): void {
-    this._settings$.next({
-      ...this._settings$.value,
-      [key]: value,
-    });
-  }
-
-  getPropertyConfig<N extends StylePropertyName>(property: N) {
-    return (stylePropertyConfigMap as any)[property] as StylePropertyConfig;
-  }
+  getPropertyConfig<N extends StylePropertyName>(
+    property: N
+  ): StylePropertyConfig;
   normalizeValue<N extends StylePropertyName>(
     property: N,
     value: StyleData[N]
-  ) {
+  ): any;
+};
+
+/**
+ * Attach Style behavior to a y.Map
+ */
+export function withStyleBehavior(
+  ymap: y.Map<any>,
+  project: Project,
+  fragmentRegistry: StyleFragmentRegistryModel
+): StyleModel {
+  const style = attachReactiveMap<StyleData>(
+    ymap as Extendable<y.Map<any>>
+  ) as Extendable<StyleModel>;
+
+  style.project = project;
+  style.fragmentRegistry = fragmentRegistry;
+
+  const _settings$ = new BehaviorSubject<Record<string, any>>({});
+  const _css$ = new BehaviorSubject<CssStyleData>({});
+
+  Object.defineProperty(style, "className", {
+    get() {
+      return `elll-style-${style.key}`;
+    },
+  });
+
+  style.setting = (key: string) => {
+    return _settings$.value[key];
+  };
+
+  style.setting$ = (key: string) => {
+    return _settings$.pipe(map((settings) => settings[key]));
+  };
+
+  Object.defineProperty(style, "css", {
+    get() {
+      return _css$.value;
+    },
+  });
+
+  style.css$ = _css$.asObservable();
+
+  style.propertyDefined = (property: StylePropertyName) => {
+    return style.value[property] !== undefined;
+  };
+
+  style.propertyDefined$ = (property: StylePropertyName) => {
+    return style.observable$.pipe(map((v) => v[property] !== undefined));
+  };
+
+  style.propertyValue = <N extends StylePropertyName>(property: N) => {
+    return style.value[property];
+  };
+
+  style.propertyValue$ = <N extends StylePropertyName>(property: N) => {
+    return style.observable$.pipe(map((v) => v[property]));
+  };
+
+  style.propertyValueWithoutUnset = <N extends StylePropertyName>(
+    property: N
+  ) => {
+    const value = style.propertyValue(property);
+    return (value === "unset" ? undefined : value) as any;
+  };
+
+  style.propertyValueWithoutUnset$ = <N extends StylePropertyName>(
+    property: N
+  ) => {
+    return style
+      .propertyValue$(property)
+      .pipe(map((value) => (value === "unset" ? undefined : value))) as any;
+  };
+
+  style.setProperty = <N extends StylePropertyName>(
+    property: N,
+    value: StyleData[N]
+  ) => {
+    const nextValue = isVarRef(value)
+      ? (value as VarRef)
+      : (style.normalizeValue as any)(property, value);
+
+    style.patch({
+      [property]: nextValue,
+    });
+  };
+
+  style.setSetting = (key: string, value: any) => {
+    _settings$.next({
+      ..._settings$.value,
+      [key]: value,
+    });
+  };
+
+  style.getPropertyConfig = <N extends StylePropertyName>(property: N) => {
+    return (stylePropertyConfigMap as any)[property] as StylePropertyConfig;
+  };
+
+  style.normalizeValue = <N extends StylePropertyName>(
+    property: N,
+    value: StyleData[N]
+  ) => {
     if (value === undefined || value === "unset") {
       return value;
     }
@@ -134,7 +163,39 @@ export class Style extends MapCRDTModel<StyleData> {
     if (!dataType) {
       throw Error(`Invalid value for property ${property}: ${value}`);
     }
-
     return normalizeStyleData(dataType, value);
-  }
+  };
+
+  // Compute live CSS
+  const cssSub = combineLatest([
+    style.observable$,
+    fragmentRegistry.allFragments$,
+  ]).subscribe(([value, fragments]) => {
+    const css = styleToCss(value, {
+      getFragment: (type, id) =>
+        fragments.find((f) => f.type === type && f.id === id) as any,
+    });
+    _css$.next(css);
+  });
+
+  const baseDispose = (style as any).dispose?.bind(style);
+  style.dispose = () => {
+    _settings$.complete();
+    _css$.complete();
+    cssSub.unsubscribe();
+    if (baseDispose) baseDispose();
+  };
+
+  return style as StyleModel;
+}
+
+/**
+ * Create a new local Style
+ */
+export function createStyleModel(
+  project: Project,
+  fragmentRegistry: StyleFragmentRegistryModel
+): StyleModel {
+  const ymap = new y.Map<any>();
+  return withStyleBehavior(ymap, project, fragmentRegistry);
 }

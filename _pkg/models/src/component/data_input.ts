@@ -1,85 +1,176 @@
 import { DataInputData } from "@elllphnt/elementa-base";
-import { MapCRDTModel } from "@elllphnt/elementa-utils";
-import { map } from "rxjs";
+import { attachReactiveMap, Extendable } from "@elllphnt/elementa-utils";
+import { distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { Component } from "./component";
 
-export class DataInput extends MapCRDTModel<DataInputData> {
-  readonly component: Component;
+export type DataInputModel = ReturnType<
+  typeof attachReactiveMap<DataInputData>
+> & {
+  component: Component;
 
-  constructor(ymap: y.Map<any>, component: Component) {
-    super(ymap);
-    this.component = component;
-  }
+  name: string;
+  name$: Observable<string>;
 
-  get name(): string {
-    return this.state.name ?? "";
-  }
-  get name$() {
-    return this.state$.pipe(map((s) => s.name ?? ""));
-  }
+  varName: string | undefined;
+  varName$: Observable<string | undefined>;
 
-  get varName(): string | undefined {
-    return this.state.varName;
-  }
-  get varName$() {
-    return this.state$.pipe(map((s) => s.varName));
-  }
+  tsType: string | undefined;
+  tsType$: Observable<string | undefined>;
 
-  get tsType(): string | undefined {
-    return this.state.tsType;
-  }
-  get tsType$() {
-    return this.state$.pipe(map((s) => s.tsType));
-  }
+  required: boolean;
+  required$: Observable<boolean>;
 
-  get required(): boolean {
-    return this.state.required ?? false;
-  }
-  get required$() {
-    return this.state$.pipe(map((s) => s.required ?? false));
-  }
+  defaultValue: any;
+  defaultValue$: Observable<any>;
 
-  get defaultValue() {
-    return this.state.default;
-  }
-  get defaultValue$() {
-    return this.state$.pipe(map((s) => s.default));
-  }
+  setName(name: string): void;
+  setVarName(varName: string | undefined): void;
+  setTsType(tsType: string | undefined): void;
+  setRequired(required: boolean): void;
+  setDefault(defaultValue: any): void;
 
-  setName(name: string) {
-    this.ymap.set("name", name);
-  }
+  remove(): void;
+};
 
-  setVarName(varName: string | undefined) {
+/**
+ * Attach DataInput behavior to a y.Map
+ */
+export function withDataInputBehavior(
+  ymap: y.Map<any>,
+  component: Component
+): DataInputModel {
+  const input = attachReactiveMap<DataInputData>(
+    ymap as Extendable<y.Map<any>>
+  ) as Extendable<DataInputModel>;
+
+  input.component = component;
+
+  Object.defineProperty(input, "name", {
+    get() {
+      return input.value.name ?? "";
+    },
+    set(value) {
+      input.set("name", value);
+    },
+  });
+
+  input.name$ = input.observable$.pipe(
+    map((v) => v.name ?? ""),
+    distinctUntilChanged()
+  );
+
+  Object.defineProperty(input, "varName", {
+    get() {
+      return input.value.varName;
+    },
+    set(value) {
+      if (value === undefined) {
+        input.delete("varName");
+      } else {
+        input.set("varName", value);
+      }
+    },
+  });
+
+  input.varName$ = input.observable$.pipe(
+    map((v) => v.varName),
+    distinctUntilChanged()
+  );
+
+  Object.defineProperty(input, "tsType", {
+    get() {
+      return input.value.tsType;
+    },
+    set(value) {
+      if (value === undefined) {
+        input.delete("tsType");
+      } else {
+        input.set("tsType", value);
+      }
+    },
+  });
+
+  input.tsType$ = input.observable$.pipe(
+    map((v) => v.tsType),
+    distinctUntilChanged()
+  );
+
+  Object.defineProperty(input, "required", {
+    get() {
+      return input.value.required ?? false;
+    },
+    set(value) {
+      input.set("required", value);
+    },
+  });
+
+  input.required$ = input.observable$.pipe(
+    map((v) => v.required ?? false),
+    distinctUntilChanged()
+  );
+
+  Object.defineProperty(input, "defaultValue", {
+    get() {
+      return input.value.default;
+    },
+    set(value) {
+      if (value === undefined) {
+        input.delete("default");
+      } else {
+        input.set("default", value);
+      }
+    },
+  });
+
+  input.defaultValue$ = input.observable$.pipe(
+    map((v) => v.default),
+    distinctUntilChanged()
+  );
+
+  input.setName = (name: string) => {
+    input.set("name", name);
+  };
+
+  input.setVarName = (varName: string | undefined) => {
     if (varName === undefined) {
-      this.ymap.delete("varName");
+      input.delete("varName");
     } else {
-      this.ymap.set("varName", varName);
+      input.set("varName", varName);
     }
-  }
+  };
 
-  setTsType(tsType: string | undefined) {
+  input.setTsType = (tsType: string | undefined) => {
     if (tsType === undefined) {
-      this.ymap.delete("tsType");
+      input.delete("tsType");
     } else {
-      this.ymap.set("tsType", tsType);
+      input.set("tsType", tsType);
     }
-  }
+  };
 
-  setRequired(required: boolean) {
-    this.ymap.set("required", required);
-  }
+  input.setRequired = (required: boolean) => {
+    input.set("required", required);
+  };
 
-  setDefault(defaultValue: any) {
+  input.setDefault = (defaultValue: any) => {
     if (defaultValue === undefined) {
-      this.ymap.delete("default");
+      input.delete("default");
     } else {
-      this.ymap.set("default", defaultValue);
+      input.set("default", defaultValue);
     }
-  }
+  };
 
-  remove() {
-    this.component.props.remove(this);
-  }
+  input.remove = () => {
+    input.component.props.remove(input);
+  };
+
+  return input as DataInputModel;
+}
+
+/**
+ * Create a new local DataInput
+ */
+export function createDataInputModel(component: Component): DataInputModel {
+  const ymap = new y.Map<any>();
+  return withDataInputBehavior(ymap, component);
 }

@@ -1,7 +1,7 @@
 import { StateData } from "@elllphnt/elementa-base";
 import * as y from "yjs";
 import { Component } from "../component";
-import { HookState } from "./module";
+import { HookState } from "./hook";
 import { State } from "./state";
 import { ValueState } from "./value";
 
