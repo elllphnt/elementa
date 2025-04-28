@@ -122,5 +122,3 @@ test("initializes with prepopulated array entries", () => {
   assert.is(list.items[0].ymap.get("foo"), 3);
   assert.is(list.items[1].ymap.get("bar"), 4);
 });
-
-test.run();

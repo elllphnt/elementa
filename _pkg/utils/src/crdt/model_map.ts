@@ -91,9 +91,13 @@ export class CRDTModelMap<M extends MapCRDTModel<any>> extends Disposable {
     this.ymap.doc.transact(fn);
   }
 
-  /** Set a new model */
-  set(key: string, init: y.Map<any>): void {
-    this.ymap.set(key, init);
+  /** Set a new model by key, accepts either a y.Map or plain data */
+  set(key: string, init: y.Map<any> | Record<string, any>): void {
+    this.transact(() => {
+      const map =
+        init instanceof y.Map ? init : new y.Map<any>(Object.entries(init));
+      this.ymap.set(key, map);
+    });
   }
 
   /** Delete an existing model */

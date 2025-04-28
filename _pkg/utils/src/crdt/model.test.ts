@@ -66,5 +66,3 @@ test("dispose unsubscribes observer and completes value$", () => {
   assert.ok(completed);
   assert.is(nextCount, 1); // only the initial emission
 });
-
-test.run();

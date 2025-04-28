@@ -87,17 +87,33 @@ export class CRDTModelList<M extends MapCRDTModel<any>> extends Disposable {
     this.yarray.doc.transact(fn);
   }
 
-  add(...items: y.Map<any>[]) {
+  add(...items: (y.Map<any> | Record<string, any>)[]): y.Map<any>[] {
     if (items.length === 0) {
       return [];
     }
-    this.yarray.push(items);
+    const maps = items.map((it) =>
+      it instanceof y.Map ? it : new y.Map<any>(Object.entries(it))
+    );
+    this.transact(() => {
+      this.yarray.push(maps);
+    });
+    return maps;
   }
-  insertAt(index: number, ...items: y.Map<any>[]) {
+
+  insertAt(
+    index: number,
+    ...items: (y.Map<any> | Record<string, any>)[]
+  ): y.Map<any>[] {
     if (items.length === 0) {
       return [];
     }
-    this.yarray.insert(index, items);
+    const maps = items.map((it) =>
+      it instanceof y.Map ? it : new y.Map<any>(Object.entries(it))
+    );
+    this.transact(() => {
+      this.yarray.insert(index, maps);
+    });
+    return maps;
   }
 
   removeAt(index: number, length?: number): void {

@@ -111,5 +111,3 @@ test("dispose completes items$ and disposes inner models", () => {
   assert.ok(completed);
   assert.is(nextCount, 2); // initial {} and after set
 });
-
-test.run();
