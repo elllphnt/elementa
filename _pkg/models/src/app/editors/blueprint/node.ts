@@ -4,42 +4,29 @@ import {
   Extendable,
   PointData,
   ReactiveMap,
+  setEnhancer,
+  setModelFields,
 } from "@elllphnt/elementa-utils";
-import { distinctUntilChanged, map, Observable } from "rxjs";
+import { Observable } from "rxjs";
 import * as y from "yjs";
 
-export type BlueprintNodeModel = ReactiveMap<BlueprintNodeData> & {
+export type BlueprintNode = ReactiveMap<BlueprintNodeData> & {
   position: PointData;
   position$: Observable<PointData>;
 };
 
-export function withBlueprintNodeBehavior(
-  ymap: y.Map<any>
-): BlueprintNodeModel {
+export function attachBlueprintNode(ymap: y.Map<any>): BlueprintNode {
   const node = attachReactiveMap<BlueprintNodeData>(ymap) as Extendable<
     ReactiveMap<BlueprintNodeData>
   >;
 
-  // Add methods and accessors
-  Object.defineProperty(node, "position", {
-    get() {
-      return node.value.position;
-    },
-  });
+  setModelFields(node, ["position"]);
 
-  node.position$ = node.observable$.pipe(
-    map((state) => state.position),
-    distinctUntilChanged()
-  );
-
-  node.setPosition = (position: PointData) => {
-    node.patch({ position });
-  };
-
-  return node as BlueprintNodeModel;
+  setEnhancer(node, attachBlueprintNode);
+  return node as BlueprintNode;
 }
 
-export function createBlueprintNodeModel(): BlueprintNodeModel {
+export function createBlueprintNode(): BlueprintNode {
   const ymap = new y.Map<any>();
-  return withBlueprintNodeBehavior(ymap);
+  return attachBlueprintNode(ymap);
 }

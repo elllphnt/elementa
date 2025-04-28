@@ -1,6 +1,12 @@
+import { AppData } from "@elllphnt/elementa-base";
 import { test } from "uvu";
 import * as assert from "uvu/assert";
 import * as y from "yjs";
+import {
+  blueprintEditorStateKey,
+  createBlueprintAppState,
+  createBlueprintNode,
+} from "../src";
 import { attachApp, createApp } from "../src/app/app";
 import { createRoute } from "../src/app/route";
 import { createAppVariable } from "../src/app/variable";
@@ -91,22 +97,19 @@ test("blueprint editor", () => {
   const variable = createAppVariable(app);
   app.variables.push([variable]);
 
-  assert.equal(app.variables.length, 1);
+  const editor = createBlueprintAppState(app);
 
-  variable.varName = "bar";
-  variable.name = "var";
-  variable.tsType = "string";
-  variable.scope = "local";
-  variable.description = "description";
+  const node = createBlueprintNode();
+  editor.nodes.push([node]);
 
-  const appJson = app.toJSON();
+  node.position = { x: 1, y: 2 };
 
-  assert.equal(appJson.variables.length, 1);
-  assert.equal(appJson.variables[0].varName, "bar");
-  assert.equal(appJson.variables[0].name, "var");
-  assert.equal(appJson.variables[0].tsType, "string");
-  assert.equal(appJson.variables[0].scope, "local");
-  assert.equal(appJson.variables[0].description, "description");
+  const appJson = app.toJSON() as AppData;
+  assert.equal(appJson.editors[blueprintEditorStateKey].nodes.length, 1);
+  assert.equal(appJson.editors[blueprintEditorStateKey].nodes[0].position, {
+    x: 1,
+    y: 2,
+  });
 });
 
 test("observable and dispose", () => {

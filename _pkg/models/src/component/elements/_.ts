@@ -1,6 +1,5 @@
 export * from "./_create";
 export * from "./_list";
-export * from "./component";
 export * from "./container";
 export * from "./element";
 export * from "./media";
