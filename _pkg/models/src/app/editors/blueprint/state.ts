@@ -1,23 +1,23 @@
 import { BlueprintAppStateData } from "@elllphnt/elementa-base";
 import {
   attachReactiveMap,
-  CRDTModelMap,
   Extendable,
+  ReactiveList,
   ReactiveMap,
-  withCRDTModelMapBehavior,
 } from "@elllphnt/elementa-utils";
 import * as y from "yjs";
+import { App } from "../../app";
 import { BlueprintNodeModel, withBlueprintNodeBehavior } from "./node";
 
-export type BlueprintAppStateModel = ReturnType<
+export type BlueprintAppState = ReturnType<
   typeof attachReactiveMap<BlueprintAppStateData>
 > & {
-  nodes: CRDTModelMap<y.Map<any>, BlueprintNodeModel>;
+  nodes: ReactiveList<BlueprintNodeModel>;
 };
 
 export function withBlueprintAppStateBehavior(
   ymap: y.Map<any>
-): BlueprintAppStateModel {
+): BlueprintAppState {
   const blueprint = attachReactiveMap<BlueprintAppStateData>(
     ymap
   ) as Extendable<ReactiveMap<BlueprintAppStateData>>;
@@ -27,10 +27,9 @@ export function withBlueprintAppStateBehavior(
     withBlueprintNodeBehavior
   );
 
-  return blueprint as BlueprintAppStateModel;
+  return blueprint as BlueprintAppState;
 }
 
-export function createBlueprintAppStateModel(): BlueprintAppStateModel {
-  const ymap = new y.Map<any>();
-  return withBlueprintAppStateBehavior(ymap);
+export function createBlueprintAppState(app: App): BlueprintAppState {
+  return withBlueprintAppStateBehavior(app.getMapEditorState("blueprint"));
 }

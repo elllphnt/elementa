@@ -1,12 +1,4 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./_pkg/base" },
-    { "path": "./_pkg/models" },
-    { "path": "./_pkg/renderer" },
-    { "path": "./_pkg/stager" },
-    { "path": "./_pkg/viewer" }
-  ],
   "compilerOptions": {
     "composite": true,
     "declaration": true,

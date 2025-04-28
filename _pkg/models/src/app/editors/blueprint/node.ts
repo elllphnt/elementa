@@ -11,7 +11,6 @@ import * as y from "yjs";
 export type BlueprintNodeModel = ReactiveMap<BlueprintNodeData> & {
   position: PointData;
   position$: Observable<PointData>;
-  setPosition(position: PointData): void;
 };
 
 export function withBlueprintNodeBehavior(

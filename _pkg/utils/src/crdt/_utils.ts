@@ -1,4 +1,7 @@
+import { distinctUntilChanged, map } from "rxjs";
 import * as y from "yjs";
+import { setEnhancer } from "../core/enhancer";
+import { ReactiveMap } from "./map";
 
 let keyCounter = Math.round(Math.random() * 100000);
 export function nextKey(): number {
@@ -41,4 +44,28 @@ export function getOrCreateYText(
     ymap.set(key as string, text);
   }
   return text;
+}
+
+export function setModelFields<T extends Record<string, any>>(
+  rxMap: ReactiveMap<T>,
+  fields: (keyof T)[]
+) {
+  for (const field of fields) {
+    Object.defineProperty(rxMap, field, {
+      get() {
+        return rxMap.get(field as any);
+      },
+      set(value) {
+        rxMap.set(field as any, value);
+      },
+    });
+
+    rxMap[`${field as string}$`] = rxMap.observable$.pipe(
+      map((v) => v[field]),
+      distinctUntilChanged()
+    );
+  }
+
+  setEnhancer(rxMap, setModelFields);
+  return rxMap;
 }

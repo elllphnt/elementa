@@ -1,6 +1,6 @@
 import { RouteData } from "@elllphnt/elementa-base";
-import { attachReactiveMap, ReactiveMap } from "@elllphnt/elementa-utils";
-import { setEnhancer } from "@elllphnt/elementa-utils/dist/core/enhancer";
+import { attachReactiveMap, ReactiveMap,setModelFields } from "@elllphnt/elementa-utils";
+import { setEnhancer } from "@elllphnt/elementa-utils";
 import { distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { genId } from "../_lib/id";
@@ -50,7 +50,7 @@ export function attachRoute(ymap: y.Map<any>, app: App): Route {
     },
   });
 
-  const fields = [
+  setModelFields(route, [
     "path",
     "parentId",
     "mainViewUrl",
@@ -59,14 +59,14 @@ export function attachRoute(ymap: y.Map<any>, app: App): Route {
     "notFoundViewUrl",
     "loaderUrl",
     "handlerUrl",
-  ] as const;
+  ] as const);
   for (const field of fields) {
     Object.defineProperty(route, field, {
       get() {
         return rxMap.get(field);
       },
       set(value) {
-        rxMap.set(field, value);
+        .set(field, value);
       },
     });
 

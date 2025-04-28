@@ -6,9 +6,9 @@
     "types": "dist/index.d.ts",
     "scripts": {
         "build": "tsc -p tsconfig.build.json",
-        "build:watch": "tsc -p tsconfig.build.json -w",
+        "build:watch": "tsc -wp tsconfig.build.json ",
         "watch": "tsc -w",
-        "test": "tsx src/index.test.ts"
+        "test": "tsx tests/_.test.ts"
     },
     "dependencies": {
         "rxjs": "^7.8.2",

@@ -25,6 +25,9 @@ export type App = ReactiveMap<AppData> & {
 
   variable(varName: string): AppVariable | undefined;
   variable$(varName: string): Observable<AppVariable | undefined>;
+
+  getMapEditorState(editorKey: string): y.Map<any>;
+  getArrayEditorState(editorKey: string): y.Array<any>;
 };
 
 export function attachApp(ymap: y.Map<any>, project: Project): App {
@@ -62,6 +65,13 @@ export function attachApp(ymap: y.Map<any>, project: Project): App {
       map((variables) => variables[varName]),
       distinctUntilChanged()
     );
+
+  app.getMapEditorState = (editorKey) => {
+    return getOrCreateYMap(app.editors, editorKey);
+  };
+  app.getArrayEditorState = (editorKey) => {
+    return getOrCreateYArray(app.editors, editorKey);
+  };
 
   // subscriptions
 
