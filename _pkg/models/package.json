@@ -5,8 +5,9 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
-        "build": "tsc",
-        "watch": "yarn build --watch"
+        "build": "tsc -p tsconfig.build.json",
+        "watch": "yarn build --watch -p tsconfig.build.json",
+        "test": "tsx tests/_.test.ts"
     },
     "dependencies": {
         "@elllphnt/elementa-base": "workspace:*",

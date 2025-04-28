@@ -1,6 +1,7 @@
 import { BehaviorSubject, Observable } from "rxjs";
 import * as y from "yjs";
 import { Disposable } from "../core/disposable";
+import { getOrCreateYArray, getOrCreateYMap, getOrCreateYText } from "./_utils";
 
 export class MapCRDTModel<S extends Record<string, any>> extends Disposable {
   static key = Math.round(Math.random() * 100000);
@@ -51,29 +52,14 @@ export class MapCRDTModel<S extends Record<string, any>> extends Disposable {
     });
   }
 
-  getOrCreateMap(key: keyof S): y.Map<any> {
-    let map = this.ymap.get(key as string);
-    if (!map) {
-      map = new y.Map();
-      this.ymap.set(key as string, map);
-    }
-    return map;
+  getOrCreateMap<T>(key: keyof S, init?: Record<string, T>): y.Map<T> {
+    return getOrCreateYMap(this.ymap, key as string, init);
   }
-  getOrCreateArray(key: keyof S): y.Array<any> {
-    let array = this.ymap.get(key as string);
-    if (!array) {
-      array = new y.Array();
-      this.ymap.set(key as string, array);
-    }
-    return array;
+  getOrCreateArray<T>(key: keyof S): y.Array<T> {
+    return getOrCreateYArray(this.ymap, key as string);
   }
-  getOrCreateText(key: keyof S): y.Text {
-    let text = this.ymap.get(key as string);
-    if (!text) {
-      text = new y.Text();
-      this.ymap.set(key as string, text);
-    }
-    return text;
+  getOrCreateText(key: keyof S, init?: string): y.Text {
+    return getOrCreateYText(this.ymap, key as string, init);
   }
 
   transact(fn: () => void): void {

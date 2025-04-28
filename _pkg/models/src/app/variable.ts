@@ -7,12 +7,12 @@ import { App } from "./app";
 export class AppVariable extends MapCRDTModel<AppVariableData> {
   readonly app: App;
 
-  get identifier() {
-    return this.state.identifier;
+  get varName() {
+    return this.state.varName;
   }
-  get identifier$() {
+  get varName$() {
     return this.state$.pipe(
-      map((data) => data.identifier),
+      map((data) => data.varName),
       distinctUntilChanged()
     );
   }

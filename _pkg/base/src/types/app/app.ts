@@ -1,7 +1,7 @@
 import { RouteData } from "./route.js";
 
 export type AppVariableData = {
-  identifier?: string;
+  varName?: string;
   name?: string;
   tsType?: string;
   scope?: "public" | "private";

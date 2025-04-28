@@ -15,11 +15,12 @@ export class App extends MapCRDTModel<AppData> {
 
   readonly routes: CRDTModelList<Route>;
   readonly variables: CRDTModelList<AppVariable>;
+  readonly editors: MapCRDTModel<any>;
 
   private readonly _routesById$ = new BehaviorSubject<Record<string, Route>>(
     {}
   );
-  private readonly _variablesByIdentifier$ = new BehaviorSubject<
+  private readonly _variablesByVarName$ = new BehaviorSubject<
     Record<string, AppVariable>
   >({});
 
@@ -33,12 +34,12 @@ export class App extends MapCRDTModel<AppData> {
     );
   }
 
-  variable(identifier: string) {
-    return this._variablesByIdentifier$.value[identifier];
+  variable(varName: string) {
+    return this._variablesByVarName$.value[varName];
   }
-  variable$(identifier: string) {
-    return this._variablesByIdentifier$.pipe(
-      map((variables) => variables[identifier]),
+  variable$(varName: string) {
+    return this._variablesByVarName$.pipe(
+      map((variables) => variables[varName]),
       distinctUntilChanged()
     );
   }
@@ -77,7 +78,7 @@ export class App extends MapCRDTModel<AppData> {
         switchMap((variables) =>
           combineLatestOrEmpty(
             variables.map((variable) =>
-              variable.identifier$.pipe(
+              variable.varName$.pipe(
                 map((identifier) => [identifier, variable] as const)
               )
             )
@@ -85,14 +86,16 @@ export class App extends MapCRDTModel<AppData> {
         )
       )
       .subscribe((variables) => {
-        this._variablesByIdentifier$.next(Object.fromEntries(variables));
+        this._variablesByVarName$.next(Object.fromEntries(variables));
       });
+
+    this.editors = new MapCRDTModel(this.getOrCreateMap("editors"));
 
     this.addDisposer(() => {
       this.routes.dispose();
       this._routesById$.complete();
       this.variables.dispose();
-      this._variablesByIdentifier$.complete();
+      this._variablesByVarName$.complete();
       routesByIdSubscription.unsubscribe();
       variablesByIdentifierSubscription.unsubscribe();
     });
