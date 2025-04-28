@@ -6,7 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "watch": "yarn build --watch"
+    "watch": "yarn build --watch",
+    "test": "tsx src/index.test.ts"
   },
   "dependencies": {
     "yup": "^1.4.0"

@@ -14,12 +14,18 @@ importers:
       esbuild:
         specifier: ^0.20.2
         version: 0.20.2
+      tsx:
+        specifier: ^4.19.3
+        version: 4.19.3
       turbo:
         specifier: ^2.5.2
         version: 2.5.2
       typescript:
-        specifier: ^5.2.2
+        specifier: ^5.8.3
         version: 5.8.3
+      uvu:
+        specifier: ^0.5.6
+        version: 0.5.6
 
   _dev/elementa-editor.dev:
     dependencies:
@@ -462,22 +468,6 @@ importers:
       yjs:
         specifier: ^13.6.26
         version: 13.6.26
-    devDependencies:
-      esbuild:
-        specifier: ^0.25.3
-        version: 0.25.3
-      tsc-watch:
-        specifier: ^6.2.0
-        version: 6.2.1(typescript@5.2.2)
-      tsx:
-        specifier: ^4.19.3
-        version: 4.19.3
-      typescript:
-        specifier: 5.2.2
-        version: 5.2.2
-      yarn:
-        specifier: ^1.22.22
-        version: 1.22.22
 
   _pkg/react-utils:
     dependencies:
@@ -487,13 +477,6 @@ importers:
       deep-object-diff:
         specifier: ^1.1.9
         version: 1.1.9
-    devDependencies:
-      tsx:
-        specifier: ^4.19.3
-        version: 4.19.3
-      uvu:
-        specifier: ^0.5.6
-        version: 0.5.6
 
   _pkg/renderer:
     dependencies:
@@ -610,13 +593,6 @@ importers:
       yjs:
         specifier: ^13.6.26
         version: 13.6.26
-    devDependencies:
-      tsx:
-        specifier: ^4.19.3
-        version: 4.19.3
-      uvu:
-        specifier: ^0.5.6
-        version: 0.5.6
 
   _pkg/viewer:
     dependencies:

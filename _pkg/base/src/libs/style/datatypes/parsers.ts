@@ -12,7 +12,7 @@ import {
 } from "../../../types/_primitives/style/datatypes.js";
 
 export function parseDimension<U extends string>(
-  input: string,
+  input: string
 ): ErrorTupple<DimensionData<U>> {
   const match = input.trim().match(/^(-?\d*\.?\d+)([a-zA-Z%]+)$/);
   if (match) {
@@ -51,7 +51,7 @@ export function parseAngle(input: string): ErrorTupple<AngleData> {
 // length
 export function parseLength(input: string): ErrorTupple<LengthData> {
   const [dimension, err] = parseDimension<"px" | "em" | "rem" | "vh" | "vw">(
-    input,
+    input
   );
   if (err) return [undefined, err];
   if (!["px", "em", "rem", "vh", "vw"].includes(dimension.unit)) {

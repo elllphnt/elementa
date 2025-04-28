@@ -172,12 +172,18 @@ export const stylePropertyConfigMap: {
   "letter-spacing": {
     types: [StyleDataType.Length],
     inherit: true,
-    init: 0,
+    init: {
+      value: 0,
+      unit: "em",
+    },
   },
   "line-height": {
-    types: [StyleDataType.Length],
+    types: [StyleDataType.Length, StyleDataType.Percent],
     inherit: true,
-    init: 1,
+    init: {
+      value: 1,
+      unit: "em",
+    },
   },
   "text-align": {
     types: [StyleDataType.String],
@@ -220,7 +226,10 @@ export const stylePropertyConfigMap: {
   },
   "border-bottom-width": {
     types: [StyleDataType.Length],
-    init: 1,
+    init: {
+      value: 1,
+      unit: "px",
+    },
   },
   "border-left-color": {
     types: [StyleDataType.Color],
@@ -231,7 +240,10 @@ export const stylePropertyConfigMap: {
   },
   "border-left-width": {
     types: [StyleDataType.Length],
-    init: 1,
+    init: {
+      value: 1,
+      unit: "px",
+    },
   },
   "border-right-color": {
     types: [StyleDataType.Color],
@@ -242,7 +254,10 @@ export const stylePropertyConfigMap: {
   },
   "border-right-width": {
     types: [StyleDataType.Length],
-    init: 1,
+    init: {
+      value: 1,
+      unit: "px",
+    },
   },
   "border-top-color": {
     types: [StyleDataType.Color],
@@ -253,7 +268,10 @@ export const stylePropertyConfigMap: {
   },
   "border-top-width": {
     types: [StyleDataType.Length],
-    init: 1,
+    init: {
+      value: 1,
+      unit: "px",
+    },
   },
   "outline-color": {
     types: [StyleDataType.Color],
@@ -264,7 +282,10 @@ export const stylePropertyConfigMap: {
   },
   "outline-width": {
     types: [StyleDataType.Length],
-    init: 1,
+    init: {
+      value: 1,
+      unit: "px",
+    },
   },
   "border-top-left-radius": {
     types: [StyleDataType.Length],

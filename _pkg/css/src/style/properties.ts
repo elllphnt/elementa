@@ -34,13 +34,16 @@ const elllTransformCss =
 
 export function applyDefaultCss(
   css: CssStyleData,
-  property: StylePropertyName,
+  property: string,
   value: any
 ) {
   if (value == undefined || value == "unset") {
     return;
   }
   const propertyConfig = stylePropertyConfigMap[property];
+  if (!propertyConfig) {
+    throw new Error(`Unknown property: ${property}`);
+  }
   css[property] = stringifyFlexibleStyleData(value, ...propertyConfig.types);
 }
 
@@ -174,7 +177,6 @@ export const styleToCssPropertyConfigMap: {
         validateStyleData(StyleDataType.Percent, v) ||
         validateStyleData(StyleDataType.Flex, v)
       ) {
-        console.log("is dimension", v);
         if (v.unit === "fr") {
           css["--height-grow"] = `${v.value}`;
           css["--height-shrink"] = "1";
@@ -230,7 +232,7 @@ export const styleToCssPropertyConfigMap: {
     applyCustomCss: (css, value) => {
       if (!value || value === "unset") return;
       const style = value.includes("italic") ? "italic" : "normal";
-      const weight = value.match(/\d+/)?.[0] ?? "400"; // Default to 400 if not specified
+      const weight = value.replace("italic", "").trim();
       css["font-weight"] = weight;
       css["font-style"] = style;
     },

@@ -30,18 +30,19 @@ function processProperty({
     return;
   }
   const config = styleToCssPropertyConfigMap[property as StylePropertyName];
-  if (config.applyCustomCss) {
+  if (config?.applyCustomCss) {
     config.applyCustomCss(css, value, context);
   } else {
-    applyDefaultCss(css, value, context);
+    applyDefaultCss(css, property, value);
   }
 }
 
 export function styleToCss(
   data: StyleData,
   context: StyleToCssContext
-): CssStyleData {
+): [CssStyleData, Error[]] {
   let css: HyphenCssStyle = {} as HyphenCssStyle;
+  const errors: Error[] = [];
 
   for (const property in data) {
     if (property === "__raw") {
@@ -60,10 +61,12 @@ export function styleToCss(
         context,
       });
     } catch (e) {
-      console.error(`Error processing property ${property}:`, e);
+      const error = new Error(`Error processing property "${property}"`);
+      error.cause = e;
+      errors.push(error);
       continue;
     }
   }
 
-  return stripUndefined(css);
+  return [stripUndefined(css), errors];
 }

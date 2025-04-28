@@ -8,13 +8,6 @@
         "build": "tsc",
         "watch": "yarn build --watch"
     },
-    "devDependencies": {
-        "esbuild": "^0.25.3",
-        "tsc-watch": "^6.2.0",
-        "tsx": "^4.19.3",
-        "typescript": "5.2.2",
-        "yarn": "^1.22.22"
-    },
     "dependencies": {
         "@elllphnt/elementa-base": "workspace:*",
         "@elllphnt/elementa-css": "workspace:*",

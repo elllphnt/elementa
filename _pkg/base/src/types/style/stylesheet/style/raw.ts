@@ -1,9 +1,11 @@
 import {
   AngleData,
   ColorData,
+  DurationData,
   LengthData,
   LengthOrFlexOrPercentData,
   LengthOrPercentData,
+  PercentData,
   RatioData,
 } from "../../../_primitives/style/datatypes.js";
 
@@ -57,10 +59,10 @@ export type UnsettableMap<T> = {
 export type RawStyleData = UnsettableMap<{
   // position
   "position"?: PositionValue;
-  "top"?: LengthData;
-  "left"?: LengthData;
-  "right"?: LengthData;
-  "bottom"?: LengthData;
+  "top"?: LengthOrPercentData;
+  "left"?: LengthOrPercentData;
+  "right"?: LengthOrPercentData;
+  "bottom"?: LengthOrPercentData;
 
   // size
   "width"?: LengthOrFlexOrPercentData | "fit";
@@ -96,10 +98,10 @@ export type RawStyleData = UnsettableMap<{
   "gap-y"?: LengthData;
 
   // padding
-  "padding-top"?: LengthData;
-  "padding-right"?: LengthData;
-  "padding-bottom"?: LengthData;
-  "padding-left"?: LengthData;
+  "padding-top"?: LengthOrPercentData;
+  "padding-right"?: LengthOrPercentData;
+  "padding-bottom"?: LengthOrPercentData;
+  "padding-left"?: LengthOrPercentData;
 
   // background
   "background-color"?: ColorData;
@@ -107,21 +109,21 @@ export type RawStyleData = UnsettableMap<{
 
   // border
   "border-top-style"?: string;
-  "border-top-width"?: number;
+  "border-top-width"?: LengthData;
   "border-top-color"?: ColorData;
   "border-right-style"?: string;
-  "border-right-width"?: number;
+  "border-right-width"?: LengthData;
   "border-right-color"?: ColorData;
   "border-bottom-style"?: string;
-  "border-bottom-width"?: number;
+  "border-bottom-width"?: LengthData;
   "border-bottom-color"?: ColorData;
   "border-left-style"?: string;
-  "border-left-width"?: number;
+  "border-left-width"?: LengthData;
   "border-left-color"?: ColorData;
 
   // outline
   "outline-style"?: string;
-  "outline-width"?: number;
+  "outline-width"?: LengthData;
   "outline-color"?: ColorData;
 
   // border radius
@@ -136,12 +138,12 @@ export type RawStyleData = UnsettableMap<{
   "font-size"?: LengthData;
   "text-transform"?: string;
   "text-decoration"?: string;
-  "letter-spacing"?: number;
+  "letter-spacing"?: LengthData;
   "text-overflow"?: string;
   "white-space"?: string;
   "word-break"?: string;
   "text-align"?: string;
-  "line-height"?: number;
+  "line-height"?: LengthData | PercentData;
 
   // transform
   "translate-x"?: LengthOrPercentData;
@@ -168,7 +170,7 @@ export type RawStyleData = UnsettableMap<{
   // animation
   "animations"?: string;
   "transition-property"?: string;
-  "transition-duration"?: number;
+  "transition-duration"?: DurationData;
   "transition-timing-function"?: string;
-  "transition-delay"?: number;
+  "transition-delay"?: DurationData;
 }>;

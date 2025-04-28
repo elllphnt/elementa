@@ -11,7 +11,7 @@ import { styleDataStringifiers } from "./stringifiers.js";
 
 export function parseStyleData(
   type: StyleDataType,
-  input: string,
+  input: string
 ): ErrorTupple<any> {
   const parse = styleDataParsers[type];
   return parse(input);
@@ -19,7 +19,7 @@ export function parseStyleData(
 
 export function getStyleDataType(
   data: any,
-  possibleTypes?: StyleDataType[],
+  possibleTypes?: StyleDataType[]
 ): StyleDataType | undefined {
   const types =
     possibleTypes || (Object.keys(styleDataSchemas) as StyleDataType[]);
@@ -33,7 +33,7 @@ export function getStyleDataType(
 
 export function stringifyStyleData<T extends StyleDataType>(
   type: T,
-  value: StyleDataTypeMap[T],
+  value: StyleDataTypeMap[T]
 ): string {
   const stringify = styleDataStringifiers[type];
   return stringify(value);
@@ -43,13 +43,18 @@ export function stringifyFlexibleStyleData<T extends StyleDataType[]>(
   value: StyleDataTypeMap[ArrayItem<T>],
   ...types: T
 ): string {
-  let electedType = getStyleDataType(value, types) || types[0];
+  const electedType = getStyleDataType(value, types);
+  if (!electedType) {
+    throw new Error(
+      `No matching type found for value: ${JSON.stringify(value)}`
+    );
+  }
   return stringifyStyleData(electedType, value);
 }
 
 export function validateStyleData<T extends StyleDataType>(
   type: T,
-  value: any,
+  value: any
 ): value is StyleDataTypeMap[T] {
   const schema = styleDataSchemas[type];
   return schema.isValidSync(value);
