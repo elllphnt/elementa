@@ -1,12 +1,14 @@
 import { DataInputData } from "@elllphnt/elementa-base";
-import { attachReactiveMap, Extendable } from "@elllphnt/elementa-utils";
+import {
+  attachReactiveMap,
+  Extendable,
+  setEnhancer,
+} from "@elllphnt/elementa-utils";
 import { distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { Component } from "./component";
 
-export type DataInputModel = ReturnType<
-  typeof attachReactiveMap<DataInputData>
-> & {
+export type DataInput = ReturnType<typeof attachReactiveMap<DataInputData>> & {
   component: Component;
 
   name: string;
@@ -36,13 +38,13 @@ export type DataInputModel = ReturnType<
 /**
  * Attach DataInput behavior to a y.Map
  */
-export function withDataInputBehavior(
+export function attachDataInput(
   ymap: y.Map<any>,
   component: Component
-): DataInputModel {
+): DataInput {
   const input = attachReactiveMap<DataInputData>(
     ymap as Extendable<y.Map<any>>
-  ) as Extendable<DataInputModel>;
+  ) as Extendable<DataInput>;
 
   input.component = component;
 
@@ -161,16 +163,18 @@ export function withDataInputBehavior(
   };
 
   input.remove = () => {
-    input.component.props.remove(input);
+    const index = input.component.props.toArray().indexOf(input);
+    input.component.props.delete(index);
   };
 
-  return input as DataInputModel;
+  setEnhancer(input, attachDataInput);
+  return input as DataInput;
 }
 
 /**
  * Create a new local DataInput
  */
-export function createDataInputModel(component: Component): DataInputModel {
+export function createDataInput(component: Component): DataInput {
   const ymap = new y.Map<any>();
-  return withDataInputBehavior(ymap, component);
+  return attachDataInput(ymap, component);
 }

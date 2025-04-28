@@ -9,15 +9,19 @@ import {
   VarRef,
 } from "@elllphnt/elementa-base";
 import { CssStyleData, styleToCss } from "@elllphnt/elementa-css";
-import { attachReactiveMap, Extendable } from "@elllphnt/elementa-utils";
+import {
+  attachReactiveMap,
+  Extendable,
+  setEnhancer,
+} from "@elllphnt/elementa-utils";
 import { BehaviorSubject, combineLatest, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { Project } from "../project/project";
-import { StyleFragmentRegistryModel } from "./style_fragment_registry";
+import { StyleFragmentRegistry } from "./style_fragment_registry";
 
-export type StyleModel = ReturnType<typeof attachReactiveMap<StyleData>> & {
+export type Style = ReturnType<typeof attachReactiveMap<StyleData>> & {
   project: Project;
-  fragmentRegistry: StyleFragmentRegistryModel;
+  fragmentRegistry: StyleFragmentRegistry;
 
   className: string;
 
@@ -60,14 +64,14 @@ export type StyleModel = ReturnType<typeof attachReactiveMap<StyleData>> & {
 /**
  * Attach Style behavior to a y.Map
  */
-export function withStyleBehavior(
+export function attachStyle(
   ymap: y.Map<any>,
   project: Project,
-  fragmentRegistry: StyleFragmentRegistryModel
-): StyleModel {
+  fragmentRegistry: StyleFragmentRegistry
+): Style {
   const style = attachReactiveMap<StyleData>(
     ymap as Extendable<y.Map<any>>
-  ) as Extendable<StyleModel>;
+  ) as Extendable<Style>;
 
   style.project = project;
   style.fragmentRegistry = fragmentRegistry;
@@ -75,26 +79,18 @@ export function withStyleBehavior(
   const _settings$ = new BehaviorSubject<Record<string, any>>({});
   const _css$ = new BehaviorSubject<CssStyleData>({});
 
-  Object.defineProperty(style, "className", {
-    get() {
-      return `elll-style-${style.key}`;
-    },
-  });
-
   style.setting = (key: string) => {
     return _settings$.value[key];
   };
-
   style.setting$ = (key: string) => {
     return _settings$.pipe(map((settings) => settings[key]));
   };
 
-  Object.defineProperty(style, "css", {
+  Object.defineProperty(style, "className", {
     get() {
-      return _css$.value;
+      return `style-${style.key}`;
     },
   });
-
   style.css$ = _css$.asObservable();
 
   style.propertyDefined = (property: StylePropertyName) => {
@@ -186,16 +182,17 @@ export function withStyleBehavior(
     if (baseDispose) baseDispose();
   };
 
-  return style as StyleModel;
+  setEnhancer(style, attachStyle);
+  return style as Style;
 }
 
 /**
  * Create a new local Style
  */
-export function createStyleModel(
+export function createStyle(
   project: Project,
-  fragmentRegistry: StyleFragmentRegistryModel
-): StyleModel {
+  fragmentRegistry: StyleFragmentRegistry
+): Style {
   const ymap = new y.Map<any>();
-  return withStyleBehavior(ymap, project, fragmentRegistry);
+  return attachStyle(ymap, project, fragmentRegistry);
 }

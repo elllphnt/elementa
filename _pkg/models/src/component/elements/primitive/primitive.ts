@@ -3,31 +3,26 @@ import {
   ResolvableOrEvaluable,
 } from "@elllphnt/elementa-base";
 import {
-  CRDTModelMap,
+  createEnhancedReactiveMap,
   Extendable,
-  withCRDTModelMapBehavior,
+  getOrCreateYMap,
+  ReactiveMap,
+  setEnhancer,
+  setModelFields,
 } from "@elllphnt/elementa-utils";
-import {
-  distinctUntilChanged,
-  filter,
-  map,
-  Observable,
-  of,
-  switchMap,
-  tap,
-} from "rxjs";
+import { filter, map, Observable, of, switchMap, tap } from "rxjs";
 import * as y from "yjs";
 import { ResolvableRecord } from "../../../_lib/resolvable";
 import { Component } from "../../component";
-import { ElementModel, withElementBehavior } from "../element";
+import { attachBaseElement, Element } from "../element";
 import {
-  createPrimitiveSubElementModel,
-  PrimitiveSubElementModel,
-  withPrimitiveSubElementBehavior,
+  attachPrimitiveSubElement,
+  createPrimitiveSubElement,
+  PrimitiveSubElement,
 } from "./sub_element";
 
-export type PrimitiveElementModel = ElementModel<PrimitiveElementData> & {
-  elements: CRDTModelMap<y.Map<any>, PrimitiveSubElementModel>;
+export type PrimitiveElement = Element<PrimitiveElementData> & {
+  elements: ReactiveMap<Record<string, PrimitiveSubElement>>;
 
   primitiveUrl: string | undefined;
   primitiveUrl$: Observable<string | undefined>;
@@ -47,24 +42,25 @@ export type PrimitiveElementModel = ElementModel<PrimitiveElementData> & {
   setPrimitiveUrl(url: string | undefined): void;
   setProp(key: string, value: ResolvableOrEvaluable<any> | undefined): void;
 
-  element(name: string, create?: true): PrimitiveSubElementModel;
-  element$(name: string, create?: true): Observable<PrimitiveSubElementModel>;
+  element(name: string, create?: true): PrimitiveSubElement;
+  element$(name: string, create?: true): Observable<PrimitiveSubElement>;
 
   cloneIds(clone: y.Map<any>): void;
 };
 
-export function withPrimitiveElementBehavior(
+export function attachPrimitiveElement(
   ymap: y.Map<any>,
   component: Component
-): PrimitiveElementModel {
-  const element = withElementBehavior(
+): PrimitiveElement {
+  const element = attachBaseElement(
     ymap,
     component
-  ) as Extendable<PrimitiveElementModel>;
+  ) as Extendable<PrimitiveElement>;
 
-  element.elements = withCRDTModelMapBehavior(
-    element.getOrCreateMap("elements") as y.Map<y.Map<any>>,
-    (ymap) => withPrimitiveSubElementBehavior(ymap, component)
+  element.elements = createEnhancedReactiveMap(
+    getOrCreateYMap<y.Map<any>>(element, "elements"),
+    attachPrimitiveSubElement,
+    (ymap) => attachPrimitiveSubElement(ymap, component)
   );
 
   const _props = new ResolvableRecord(
@@ -76,19 +72,7 @@ export function withPrimitiveElementBehavior(
     element.observable$.pipe(map((v) => v.props ?? {}))
   );
 
-  Object.defineProperty(element, "primitiveUrl", {
-    get() {
-      return element.value.primitiveUrl;
-    },
-    set(value) {
-      element.set("primitiveUrl", value);
-    },
-  });
-
-  element.primitiveUrl$ = element.observable$.pipe(
-    map((v) => v.primitiveUrl),
-    distinctUntilChanged()
-  );
+  setModelFields(element, ["primitiveUrl", "props"]);
 
   Object.defineProperty(element, "absoluteModuleUrl", {
     get() {
@@ -130,24 +114,12 @@ export function withPrimitiveElementBehavior(
     })
   );
 
-  Object.defineProperty(element, "props", {
-    get() {
-      return _props.value;
-    },
-  });
-
-  element.props$ = _props.value$;
-
   element.prop = (key: string) => {
     return element.props[key];
   };
 
   element.prop$ = (key: string) => {
     return element.props$.pipe(map((props) => props[key]));
-  };
-
-  element.setPrimitiveUrl = (url: string | undefined) => {
-    element.set("primitiveUrl", url);
   };
 
   element.setProp = (
@@ -164,19 +136,20 @@ export function withPrimitiveElementBehavior(
   };
 
   element.element = (name: string, create?: true) => {
-    let el = element.elements.item(name);
+    let el = element.elements.get(name);
     if (!el && create) {
-      element.elements.set(name, createPrimitiveSubElementModel(component));
-      el = element.elements.item(name);
+      element.elements.set(name, createPrimitiveSubElement(component));
+      el = element.elements.get(name);
     }
     return el!;
   };
 
   element.element$ = (name: string, create?: true) => {
-    return element.elements.item$(name).pipe(
+    return element.elements.observable$.pipe(
+      map((elements) => elements[name]),
       tap((el) => {
         if (!el && create) {
-          element.elements.set(name, createPrimitiveSubElementModel(component));
+          element.elements.set(name, createPrimitiveSubElement(component));
         }
       }),
       filter((el) => !!el || !create)
@@ -195,12 +168,11 @@ export function withPrimitiveElementBehavior(
     element.cloneOwnId(clone);
   };
 
-  return element as PrimitiveElementModel;
+  setEnhancer(element, attachPrimitiveElement);
+  return element as PrimitiveElement;
 }
 
-export function createPrimitiveElementModel(
-  component: Component
-): PrimitiveElementModel {
+export function createPrimitiveElement(component: Component): PrimitiveElement {
   const ymap = new y.Map<any>();
-  return withPrimitiveElementBehavior(ymap, component);
+  return attachPrimitiveElement(ymap, component);
 }

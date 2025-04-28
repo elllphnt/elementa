@@ -2,11 +2,11 @@ import { SlotElementData } from "@elllphnt/elementa-base";
 import { Extendable, getOrCreateYArray } from "@elllphnt/elementa-utils";
 import * as y from "yjs";
 import { Component } from "../component";
-import { ElementListModel, withElementListBehavior } from "./_list";
-import { ElementModel, withElementBehavior } from "./element";
+import { attachElementList, ElementList } from "./_list";
+import { attachBaseElement, Element } from "./element";
 
-export type SlotElementModel = ElementModel<SlotElementData> & {
-  placeholder: ElementListModel;
+export type SlotElement = Element<SlotElementData> & {
+  placeholder: ElementList;
 
   cloneIds(clone: y.Map<any>): void;
 };
@@ -14,17 +14,14 @@ export type SlotElementModel = ElementModel<SlotElementData> & {
 /**
  * Attach SlotElement behavior to a y.Map
  */
-export function withSlotElementBehavior(
+export function attachSlotElement(
   ymap: y.Map<any>,
   component: Component
-): SlotElementModel {
-  const element = withElementBehavior(
-    ymap,
-    component
-  ) as Extendable<SlotElementModel>;
+): SlotElement {
+  const element = attachBaseElement(ymap, component) as Extendable<SlotElement>;
 
-  element.placeholder = withElementListBehavior(
-    element.getOrCreateArray("placeholder") as y.Array<y.Map<any>>,
+  element.placeholder = attachElementList(
+    getOrCreateYArray(element, "placeholder"),
     component
   );
 
@@ -39,13 +36,10 @@ export function withSlotElementBehavior(
     if (baseDispose) baseDispose();
   };
 
-  return element as SlotElementModel;
+  return element as SlotElement;
 }
 
-/**
- * Create a new local SlotElement
- */
-export function createSlotElementModel(component: Component): SlotElementModel {
+export function createSlotElement(component: Component): SlotElement {
   const ymap = new y.Map<any>();
-  return withSlotElementBehavior(ymap, component);
+  return attachSlotElement(ymap, component);
 }

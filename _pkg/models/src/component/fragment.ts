@@ -1,59 +1,59 @@
 import { FragmentData } from "@elllphnt/elementa-base";
 import {
+  createEnhancedReactiveList,
   Extendable,
   getOrCreateYArray,
-  ReactiveListOf,
-  withIdentifiableModelBehavior,
+  ReactiveList,
+  setEnhancer,
 } from "@elllphnt/elementa-utils";
+import { Observable } from "rxjs";
 import * as y from "yjs";
 import { CssStyleSheet } from "../css/_";
 import { Component } from "./component";
-import { DataInputModel, withDataInputBehavior } from "./data_input";
-import { ElementListModel, withElementListBehavior } from "./elements/_list";
+import { attachDataInput, DataInput } from "./data_input";
+import { attachElementList, ElementList } from "./elements/_list";
+import { attachIdentifiable, Identifiable } from "./identifiable";
 
 export enum FragmentVariant {
   Template = "template",
   Fragment = "fragment",
 }
 
-export type FragmentModel = ReturnType<
-  typeof withIdentifiableModelBehavior<FragmentData>
-> & {
+export type Fragment = Identifiable<FragmentData> & {
   component: Component;
   variant: FragmentVariant;
 
-  content: ElementListModel;
-  params: ReactiveListOf<y.Map<any>, DataInputModel>;
+  content: ElementList;
+  params: ReactiveList<DataInput>;
 
   allCssStylesheets: CssStyleSheet[];
-  allCssStylesheets$: ReturnType<ElementListModel["allCssStylesheets$"]>;
-
-  cloneIds(clone: y.Map<any>): void;
+  allCssStylesheets$: Observable<CssStyleSheet[]>;
 };
 
 /**
  * Attach Fragment behavior to a y.Map
  */
-export function withFragmentBehavior(
+export function attachFragment(
   ymap: y.Map<any>,
   component: Component,
   variant: FragmentVariant = FragmentVariant.Fragment
-): FragmentModel {
-  const fragment = withIdentifiableModelBehavior<FragmentData>(
+): Fragment {
+  const fragment = attachIdentifiable<FragmentData>(
     ymap as Extendable<y.Map<any>>
-  ) as Extendable<FragmentModel>;
+  ) as Extendable<Fragment>;
 
   fragment.component = component;
   fragment.variant = variant;
 
-  fragment.content = withElementListBehavior(
+  fragment.content = attachElementList(
     fragment.getOrCreateArray("content") as y.Array<y.Map<any>>,
     component
   );
 
-  fragment.params = new CRDTModelList(
-    fragment.getOrCreateArray("params"),
-    (ymap) => withDataInputBehavior(ymap, component)
+  fragment.params = createEnhancedReactiveList(
+    getOrCreateYArray<y.Map<any>>(ymap, "params"),
+    attachDataInput,
+    (ymap) => attachDataInput(ymap, component)
   );
 
   Object.defineProperty(fragment, "allCssStylesheets", {
@@ -76,16 +76,17 @@ export function withFragmentBehavior(
     if (baseDispose) baseDispose();
   };
 
-  return fragment as FragmentModel;
+  setEnhancer(fragment, attachFragment);
+  return fragment as Fragment;
 }
 
 /**
  * Create a new local Fragment
  */
-export function createFragmentModel(
+export function createFragment(
   component: Component,
   variant: FragmentVariant = FragmentVariant.Fragment
-): FragmentModel {
+): Fragment {
   const ymap = new y.Map<any>();
-  return withFragmentBehavior(ymap, component, variant);
+  return attachFragment(ymap, component, variant);
 }

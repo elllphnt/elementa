@@ -4,32 +4,22 @@ import {
 } from "@elllphnt/elementa-base";
 import {
   combineLatestOrEmpty,
-  CRDTModelMap,
-  Extendable,
+  createEnhancedReactiveMap,
   getOrCreateYMap,
-  withCRDTModelMapBehavior,
+  ReactiveMap,
+  setEnhancer,
+  setModelFields,
 } from "@elllphnt/elementa-utils";
-import {
-  distinctUntilChanged,
-  filter,
-  map,
-  Observable,
-  switchMap,
-  tap,
-} from "rxjs";
+import { filter, map, Observable, switchMap, tap } from "rxjs";
 import * as y from "yjs";
 import { ResolvableRecord } from "../../../_lib/resolvable";
 import { Component } from "../../component";
-import { IdentifiableModel } from "../../identifiable";
-import { ElementModel, withElementBehavior } from "../element";
-import {
-  createSlotFillModel,
-  SlotFillModel,
-  withSlotFillBehavior,
-} from "./slot_fill";
+import { Identifiable } from "../../identifiable";
+import { attachBaseElement, Element } from "../element";
+import { attachSlotFill, createSlotFill, SlotFill } from "./slot_fill";
 
-export type ComponentElementModel = ElementModel<ComponentElementData> & {
-  fills: CRDTModelMap<y.Map<any>, SlotFillModel>;
+export type ComponentElement = Element<ComponentElementData> & {
+  fills: ReactiveMap<Record<string, SlotFill>>;
 
   allCssStylesheets: any[];
   allCssStylesheets$: Observable<any[]>;
@@ -52,46 +42,44 @@ export type ComponentElementModel = ElementModel<ComponentElementData> & {
   prop(key: string): any;
   prop$(key: string): Observable<any>;
 
-  fill(id: string, create?: true): SlotFillModel;
-  fill$(id: string, create?: true): Observable<SlotFillModel>;
+  fill(id: string, create?: true): SlotFill;
+  fill$(id: string, create?: true): Observable<SlotFill>;
 
-  setComponentUrl(url: string | undefined): void;
   setProp(key: string, value: ResolvableOrEvaluable<any> | undefined): void;
-
-  cloneIds(clone: y.Map<any>): void;
 };
 
 /**
  * Attach ComponentElement behavior to a y.Map
  */
-export function withComponentElementBehavior(
+export function attachComponentElement(
   ymap: y.Map<any>,
   component: Component
-): ComponentElementModel {
-  const element = withElementBehavior(
-    ymap,
-    component
-  ) as Extendable<ComponentElementModel>;
+): ComponentElement {
+  const element = attachBaseElement(ymap, component);
+  const componentElement = element as ComponentElement;
 
-  element.fills = withCRDTModelMapBehavior(
-    element.getOrCreateMap("fills") as Extendable<y.Map<y.Map<any>>>,
-    (ymap) => withSlotFillBehavior(ymap, component)
+  componentElement.fills = createEnhancedReactiveMap(
+    getOrCreateYMap<y.Map<any>>(element, "fills"),
+    attachSlotFill,
+    (ymap) => attachSlotFill(ymap, component)
   );
 
+  setModelFields(componentElement, ["componentUrl"]);
+
   const _props = new ResolvableRecord(
-    element.value.props ?? {},
+    (componentElement.get("props") as {}) ?? {},
     component.project.infrastructure
   );
 
   const propsSubscription = _props.subscribe(
-    element.observable$.pipe(map((v) => v.props ?? {}))
+    componentElement.observable$.pipe(map((v) => v.props ?? {}))
   );
 
-  Object.defineProperty(element, "allCssStylesheets", {
+  Object.defineProperty(componentElement, "allCssStylesheets", {
     get() {
       return [
-        ...element.allCssStylesheets,
-        ...Object.values(element.fills.items).flatMap(
+        ...componentElement.allCssStylesheets,
+        ...Object.values([...componentElement.fills.values()]).flatMap(
           (s) => s.allCssStylesheets
         ),
       ];
@@ -100,7 +88,7 @@ export function withComponentElementBehavior(
 
   element.allCssStylesheets$ = combineLatestOrEmpty([
     element.allCssStylesheets$,
-    element.fills.items$.pipe(
+    componentElement.fills.observable$.pipe(
       switchMap((slots) =>
         combineLatestOrEmpty(
           Object.values(slots).map((slot) => slot.allCssStylesheets$)
@@ -111,105 +99,83 @@ export function withComponentElementBehavior(
     map(([selfSheets, slotSheets]) => [...selfSheets, ...slotSheets.flat()])
   );
 
-  Object.defineProperty(element, "componentUrl", {
+  Object.defineProperty(componentElement, "absoluteComponentUrl", {
     get() {
-      return element.value.componentUrl;
-    },
-    set(value) {
-      element.set("componentUrl", value);
-    },
-  });
-
-  element.componentUrl$ = element.observable$.pipe(
-    map((v) => v.componentUrl),
-    distinctUntilChanged()
-  );
-
-  Object.defineProperty(element, "absoluteComponentUrl", {
-    get() {
-      return element.componentUrl
-        ? element.component.project.infrastructure.fileSystem.getAbsoluteFileUrl(
-            element.component.url,
-            element.componentUrl
+      return componentElement.componentUrl
+        ? componentElement.component.project.infrastructure.fileSystem.getAbsoluteFileUrl(
+            componentElement.component.url,
+            componentElement.componentUrl
           )
         : undefined;
     },
   });
 
-  element.absoluteComponentUrl$ = element.componentUrl$.pipe(
+  componentElement.absoluteComponentUrl$ = componentElement.componentUrl$.pipe(
     map((url) => {
       return url
-        ? element.component.project.infrastructure.fileSystem.getAbsoluteFileUrl(
-            element.component.url,
+        ? componentElement.component.project.infrastructure.fileSystem.getAbsoluteFileUrl(
+            componentElement.component.url,
             url
           )
         : undefined;
     })
   );
 
-  Object.defineProperty(element, "localComponent", {
+  Object.defineProperty(componentElement, "localComponent", {
     get() {
-      return element.absoluteComponentUrl
-        ? element.component.project.componentManager.component(
-            element.absoluteComponentUrl
+      return componentElement.absoluteComponentUrl
+        ? componentElement.component.project.componentManager.component(
+            componentElement.absoluteComponentUrl
           )
         : undefined;
     },
   });
 
-  element.localComponent$ = element.absoluteComponentUrl$.pipe(
-    map((url) => {
-      return url
-        ? element.component.project.componentManager.component(url)
-        : undefined;
-    })
-  );
+  componentElement.localComponent$ =
+    componentElement.absoluteComponentUrl$.pipe(
+      map((url) => {
+        return url
+          ? componentElement.component.project.componentManager.component(url)
+          : undefined;
+      })
+    );
 
-  Object.defineProperty(element, "componentName", {
+  Object.defineProperty(componentElement, "componentName", {
     get() {
-      return element.localComponent?.name;
+      return componentElement.localComponent?.name;
     },
   });
 
-  element.componentName$ = element.localComponent$.pipe(
+  componentElement.componentName$ = componentElement.localComponent$.pipe(
     map((local) => local?.name)
   );
-
-  Object.defineProperty(element, "template", {
+  Object.defineProperty(componentElement, "template", {
     get() {
-      return element.localComponent?.template ?? [];
+      return componentElement.localComponent?.template ?? [];
     },
   });
 
-  element.template$ = element.localComponent$.pipe(
-    map((local) => local?.template ?? [])
-  );
-
-  Object.defineProperty(element, "props", {
+  Object.defineProperty(componentElement, "props", {
     get() {
       return _props.value;
     },
   });
 
-  element.props$ = _props.value$;
+  componentElement.props$ = _props.value$;
 
-  element.prop = (key: string) => {
-    return element.props[key];
+  componentElement.prop = (key: string) => {
+    return componentElement.props[key];
   };
 
-  element.prop$ = (key: string) => {
-    return element.props$.pipe(map((props) => props[key]));
+  componentElement.prop$ = (key: string) => {
+    return componentElement.props$.pipe(map((props) => props[key]));
   };
 
-  element.setComponentUrl = (url: string | undefined) => {
-    element.set("componentUrl", url);
-  };
-
-  element.setProp = (
+  componentElement.setProp = (
     key: string,
     value: ResolvableOrEvaluable<any> | undefined
   ) => {
-    const newProps = { ...element.value.props };
+    const newProps = { ...componentElement.props };
     if (value === undefined) {
       delete newProps[key];
     } else {
@@ -218,20 +184,21 @@ export function withComponentElementBehavior(
     element.set("props", newProps);
   };
 
-  element.fill = (id: string, create?: true) => {
-    let item = element.fills.get(id);
+  componentElement.fill = (id: string, create?: true) => {
+    let item = componentElement.fills.get(id);
     if (!item && create) {
-      element.fills.set(id, createSlotFillModel(component));
-      item = element.fills.get(id);
+      componentElement.fills.set(id, createSlotFill(component));
+      item = componentElement.fills.get(id);
     }
     return item!;
   };
 
-  element.fill$ = (id: string, create?: true) => {
-    return element.fills.item$(id).pipe(
+  componentElement.fill$ = (id: string, create?: true) => {
+    return componentElement.fills.observable$.pipe(
+      map((fills) => fills[id]),
       tap((item) => {
         if (!item && create) {
-          element.fills.set(id, createSlotFillModel(component));
+          componentElement.fills.set(id, createSlotFill(component));
         }
       }),
       filter((item) => !!item || !create)
@@ -242,28 +209,27 @@ export function withComponentElementBehavior(
   element.dispose = () => {
     propsSubscription.unsubscribe();
     _props.dispose();
-    element.fills.dispose();
+    componentElement.fills.dispose();
     if (baseDispose) baseDispose();
   };
 
-  element.cloneIds = (clone: y.Map<any>) => {
-    element.cloneOwnId(clone);
+  componentElement.cloneIds = (clone: y.Map<any>) => {
+    componentElement.cloneOwnId(clone);
     const fillsClone = getOrCreateYMap(clone, "fills");
-    IdentifiableModel.cloneIdentifiableMapIds(
-      element.fills.items,
+    Identifiable.cloneIdentifiableMapIds(
+      Object.fromEntries(componentElement.fills.entries()),
       fillsClone as any
     );
   };
 
-  return element as ComponentElementModel;
+  setEnhancer(element, attachComponentElement);
+  return element as ComponentElement;
 }
 
 /**
  * Create a new local ComponentElement model
  */
-export function createComponentElementModel(
-  component: Component
-): ComponentElementModel {
+export function createComponentElement(component: Component): ComponentElement {
   const ymap = new y.Map<any>();
-  return withComponentElementBehavior(ymap, component);
+  return attachComponentElement(ymap, component);
 }

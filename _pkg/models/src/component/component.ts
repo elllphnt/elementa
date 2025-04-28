@@ -6,46 +6,53 @@ import {
   getOrCreateYMap,
   ReactiveList,
   ReactiveMap,
+  setEnhancer,
   setModelFields,
 } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { Project } from "../project/project";
-import { DataInputModel, withDataInputBehavior } from "./data_input";
-import { FragmentModel, withFragmentBehavior } from "./fragment";
-import { StateModel } from "./states/_";
-import { createState } from "./states/_create";
-import { TemplateModel, withTemplateBehavior } from "./template";
+import { attachDataInput, DataInput } from "./data_input";
+import { attachFragment, Fragment } from "./fragment";
+import { attachState, State } from "./states/_";
+import { attachTemplate, Template } from "./template";
 
 export type Component = ReactiveMap<ComponentData> & {
   project: Project;
+  url: string;
 
-  template: TemplateModel;
+  template: Template;
   editorStates: y.Map<y.Map<any>>;
 
-  props: ReactiveList<DataInputModel>;
-  fragments: ReactiveList<FragmentModel>;
-  states: ReactiveList<StateModel>;
+  props: ReactiveList<DataInput>;
+  fragments: ReactiveList<Fragment>;
+  states: ReactiveList<State>;
 
   name: string;
   name$: Observable<string>;
 
-  fragment(id: string): FragmentModel | undefined;
-  fragment$(id: string): Observable<FragmentModel | undefined>;
+  fragment(id: string): Fragment | undefined;
+  fragment$(id: string): Observable<Fragment | undefined>;
 
   getEditorState(key: string): y.Map<any>;
 };
 
-export function withComponentBehavior(
+export function attachComponent(
   ymap: y.Map<any>,
-  project: Project
+  project: Project,
+  {
+    url,
+  }: {
+    url: string;
+  }
 ): Component {
   const rxMap = attachReactiveMap<ComponentData>(ymap as y.Map<any>);
   const component = rxMap as Component;
 
   component.project = project;
+  component.url = url;
 
-  component.template = withTemplateBehavior(
+  component.template = attachTemplate(
     getOrCreateYMap(rxMap, "template"),
     component
   );
@@ -54,27 +61,25 @@ export function withComponentBehavior(
 
   component.props = createEnhancedReactiveList(
     getOrCreateYArray<y.Map<any>>(rxMap, "props"),
-    withDataInputBehavior,
-    (ymap) => withDataInputBehavior(ymap, component)
+    attachDataInput,
+    (ymap) => attachDataInput(ymap, component)
   );
 
   component.fragments = createEnhancedReactiveList(
     getOrCreateYArray<y.Map<any>>(rxMap, "fragments"),
-    withFragmentBehavior,
-    (ymap) => withFragmentBehavior(ymap, component)
+    attachFragment,
+    (ymap) => attachFragment(ymap, component)
   );
 
   component.states = createEnhancedReactiveList(
     getOrCreateYArray<y.Map<any>>(rxMap, "states"),
-    createState,
-    (ymap) => createState(ymap, component)
+    attachState,
+    (ymap) => attachState(ymap, component)
   );
 
   setModelFields(component, ["name"]);
 
-  const _fragmentsById$ = new BehaviorSubject<Record<string, FragmentModel>>(
-    {}
-  );
+  const _fragmentsById$ = new BehaviorSubject<Record<string, Fragment>>({});
   const fragmentSub = component.fragments.observable$.subscribe((fragments) => {
     _fragmentsById$.next(
       Object.fromEntries(fragments.map((fragment) => [fragment.id, fragment]))
@@ -111,10 +116,18 @@ export function withComponentBehavior(
     if (baseDispose) baseDispose();
   };
 
+  setEnhancer(component, attachComponent);
   return component;
 }
 
-export function createComponentModel(project: Project): Component {
+export function createComponent(
+  project: Project,
+  {
+    url,
+  }: {
+    url: string;
+  }
+): Component {
   const ymap = new y.Map<any>();
-  return withComponentBehavior(ymap, project);
+  return attachComponent(ymap, project, { url });
 }

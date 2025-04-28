@@ -1,28 +1,23 @@
+import { setEnhancer } from "@elllphnt/elementa-utils";
+import { Observable } from "rxjs";
 import * as y from "yjs";
 import { Component } from "./component";
-import {
-  FragmentModel,
-  FragmentVariant,
-  withFragmentBehavior,
-} from "./fragment";
+import { Fragment, FragmentVariant, attachFragment } from "./fragment";
 
-export type TemplateModel = FragmentModel & {
+export type Template = Fragment & {
   name: string;
-  name$: ReturnType<Component["name$"]>;
+  name$: Observable<string>;
 };
 
-/**
- * Attach Template behavior to a y.Map
- */
-export function withTemplateBehavior(
+export function attachTemplate(
   ymap: y.Map<any>,
   component: Component
-): TemplateModel {
-  const template = withFragmentBehavior(
+): Template {
+  const template = attachFragment(
     ymap,
     component,
     FragmentVariant.Template
-  ) as TemplateModel;
+  ) as Template;
 
   Object.defineProperty(template, "name", {
     get() {
@@ -32,13 +27,11 @@ export function withTemplateBehavior(
 
   template.name$ = template.component.name$;
 
+  setEnhancer(template, attachTemplate);
   return template;
 }
 
-/**
- * Create a new local Template
- */
-export function createTemplateModel(component: Component): TemplateModel {
+export function createTemplate(component: Component): Template {
   const ymap = new y.Map<any>();
-  return withTemplateBehavior(ymap, component);
+  return attachTemplate(ymap, component);
 }

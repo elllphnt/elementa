@@ -2,61 +2,27 @@ import {
   ResolvableOrEvaluable,
   TextElementData,
 } from "@elllphnt/elementa-base";
-import { Extendable } from "@elllphnt/elementa-utils";
-import { distinctUntilChanged, map, Observable } from "rxjs";
+import { Extendable, setModelFields } from "@elllphnt/elementa-utils";
+import { Observable } from "rxjs";
 import * as y from "yjs";
 import { Component } from "../component";
-import { ElementModel, withElementBehavior } from "./element";
+import { attachBaseElement, Element } from "./element";
 
-export type TextElementModel = ElementModel<TextElementData> & {
+export type TextElement = Element<TextElementData> & {
   text: ResolvableOrEvaluable<string> | undefined;
   text$: Observable<ResolvableOrEvaluable<string> | undefined>;
-
-  setText(text: ResolvableOrEvaluable<string> | undefined): void;
-  cloneIds(clone: y.Map<any>): void;
 };
 
-/**
- * Attach TextElement behavior to a y.Map
- */
-export function withTextElementBehavior(
+export function attachTextElement(
   ymap: y.Map<any>,
   component: Component
-): TextElementModel {
-  const element = withElementBehavior(
-    ymap,
-    component
-  ) as Extendable<TextElementModel>;
-
-  Object.defineProperty(element, "text", {
-    get() {
-      return element.value.text;
-    },
-    set(value) {
-      element.set("text", value);
-    },
-  });
-
-  element.text$ = element.observable$.pipe(
-    map((v) => v.text),
-    distinctUntilChanged()
-  );
-
-  element.setText = (text: string | undefined) => {
-    element.set("text", text);
-  };
-
-  element.cloneIds = (clone: y.Map<any>) => {
-    element.cloneOwnId(clone);
-  };
-
-  return element as TextElementModel;
+): TextElement {
+  const element = attachBaseElement(ymap, component) as Extendable<TextElement>;
+  setModelFields(element, ["text"]);
+  return element as TextElement;
 }
 
-/**
- * Create a new local TextElement
- */
-export function createTextElementModel(component: Component): TextElementModel {
+export function createTextElement(component: Component): TextElement {
   const ymap = new y.Map<any>();
-  return withTextElementBehavior(ymap, component);
+  return attachTextElement(ymap, component);
 }

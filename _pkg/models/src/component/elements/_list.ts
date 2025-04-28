@@ -1,44 +1,41 @@
 import {
-  attachListOfReactives,
   combineLatestOrEmpty,
-  Extendable,
-  ReactiveListOf,
+  createEnhancedReactiveList,
+  ReactiveList,
+  setEnhancer,
 } from "@elllphnt/elementa-utils";
 import * as _ from "lodash";
 import { map, Observable, switchMap } from "rxjs";
 import * as y from "yjs";
+import { CssStyleSheet } from "../../css/_";
 import { Component } from "../component";
-import { IdentifiableModel } from "../identifiable";
+import { Identifiable } from "../identifiable";
 import { createElement } from "./_create";
-import { ElementModel } from "./element";
+import { Element } from "./element";
 
-export type ElementListModel = ReactiveListOf<y.Map<any>, ElementModel<any>> & {
-  allCssStylesheets: any[];
-  allCssStylesheets$: Observable<any[]>;
-
+export type ElementList = ReactiveList<Element<any>> & {
+  allCssStylesheets: CssStyleSheet[];
+  allCssStylesheets$: Observable<CssStyleSheet[]>;
   cloneIds(yarray: y.Array<y.Map<any>>): void;
 };
 
-/**
- * Attach ElementList behavior to a y.Array
- */
-export function withElementListBehavior(
+export function attachElementList(
   yarray: y.Array<y.Map<any>>,
   component: Component
-): ElementListModel {
-  const list = attachListOfReactives(
-    yarray as Extendable<y.Array<y.Map<any>>>,
+): ElementList {
+  const rxList = createEnhancedReactiveList(
+    yarray as y.Array<y.Map<any>>,
+    createElement,
     (ymap) => createElement(ymap, component)
-  ) as Extendable<ElementListModel>;
+  );
+  const list = rxList as ElementList;
 
-  // allCssStylesheets (live computed field)
-  Object.defineProperty(list, "allCssStylesheets", {
+  Object.defineProperty(rxList, "allCssStylesheets", {
     get() {
-      return [...list.items.flatMap((e) => e.allCssStylesheets)];
+      return [...rxList.toArray().flatMap((e) => e.allCssStylesheets)];
     },
   });
-
-  list.allCssStylesheets$ = list.items$.pipe(
+  list.allCssStylesheets$ = rxList.observable$.pipe(
     switchMap((elements) =>
       combineLatestOrEmpty(
         elements.map((element) => element.allCssStylesheets$)
@@ -47,18 +44,15 @@ export function withElementListBehavior(
     map((sheets) => _.flatten(sheets))
   );
 
-  // Clone IDs across array
   list.cloneIds = (yarray: y.Array<y.Map<any>>) => {
-    IdentifiableModel.cloneIdentifiableListIds(list.items, yarray);
+    Identifiable.cloneIdentifiableListIds(list.toArray(), yarray);
   };
 
-  return list as ElementListModel;
+  setEnhancer(list, attachElementList);
+  return list;
 }
 
-/**
- * Create a new local ElementList model
- */
-export function createElementListModel(component: Component): ElementListModel {
+export function createElementList(component: Component): ElementList {
   const yarray = new y.Array<y.Map<any>>();
-  return withElementListBehavior(yarray, component);
+  return attachElementList(yarray, component);
 }

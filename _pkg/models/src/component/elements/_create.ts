@@ -1,32 +1,34 @@
 import { ElementData } from "@elllphnt/elementa-base";
 import * as y from "yjs";
 import { Component } from "../component";
-import { createComponentElementModel } from "./component/_";
-import { ContainerElement } from "./container";
+import { attachPrimitiveElement } from "./_";
+import { attachComponentElement } from "./component/_";
 import { Element } from "./element";
-import { MediaElement } from "./media";
-import { PrimitiveElement } from "./primitive/primitive";
-import { SlotElement } from "./slot";
-import { TextElement } from "./text";
-import { VectorElement } from "./vector";
+import { attachMediaElement } from "./media";
+import { attachSlotElement } from "./slot";
+import { attachTextElement } from "./text";
+import { attachVectorElement } from "./vector";
 
-export function createElement(ymap: y.Map<any>, component: Component): Element {
+export function createElement(
+  ymap: y.Map<any>,
+  component: Component
+): Element<any> {
   const type = ymap.get("type") as ElementData["type"];
   switch (type) {
     case "component":
-      return createComponentElementModel(component);
+      return attachComponentElement(ymap, component);
     case "container":
-      return new ContainerElement(ymap, component);
+      return attachComponentElement(ymap, component);
     case "slot":
-      return new SlotElement(ymap, component);
+      return attachSlotElement(ymap, component);
     case "text":
-      return new TextElement(ymap, component);
+      return attachTextElement(ymap, component);
     case "vector":
-      return new VectorElement(ymap, component);
+      return attachVectorElement(ymap, component);
     case "media":
-      return new MediaElement(ymap, component);
+      return attachMediaElement(ymap, component);
     case "primitive":
-      return new PrimitiveElement(ymap, component);
+      return attachPrimitiveElement(ymap, component);
     default:
       throw new Error(`Unknown element type: ${type}`);
   }

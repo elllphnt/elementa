@@ -1,11 +1,15 @@
 import { MediaData, MediaElementData } from "@elllphnt/elementa-base";
-import { Extendable } from "@elllphnt/elementa-utils";
-import { distinctUntilChanged, map, Observable } from "rxjs";
+import {
+  Extendable,
+  setEnhancer,
+  setModelFields,
+} from "@elllphnt/elementa-utils";
+import { Observable } from "rxjs";
 import * as y from "yjs";
 import { Component } from "../component";
-import { ElementModel, withElementBehavior } from "./element";
+import { attachBaseElement, Element } from "./element";
 
-export type MediaElementModel = ElementModel<MediaElementData> & {
+export type MediaElement = Element<MediaElementData> & {
   media: MediaData | undefined;
   media$: Observable<MediaData | undefined>;
 
@@ -14,95 +18,24 @@ export type MediaElementModel = ElementModel<MediaElementData> & {
 
   position: MediaElementData["position"] | undefined;
   position$: Observable<MediaElementData["position"] | undefined>;
-
-  setMedia(media: MediaData | undefined): void;
-  setFit(fit: MediaElementData["fit"] | undefined): void;
-  setPosition(position: MediaElementData["position"] | undefined): void;
-
-  cloneIds(clone: y.Map<any>): void;
 };
 
-/**
- * Attach MediaElement behavior to a y.Map
- */
-export function withMediaElementBehavior(
+export function attachMediaElement(
   ymap: y.Map<any>,
   component: Component
-): MediaElementModel {
-  const element = withElementBehavior(
+): MediaElement {
+  const element = attachBaseElement(
     ymap,
     component
-  ) as Extendable<MediaElementModel>;
+  ) as Extendable<MediaElement>;
 
-  Object.defineProperty(element, "media", {
-    get() {
-      return element.value.media;
-    },
-    set(value) {
-      element.set("media", value);
-    },
-  });
+  setModelFields(element, ["media", "fit", "position"]);
 
-  element.media$ = element.observable$.pipe(
-    map((v) => v.media),
-    distinctUntilChanged()
-  );
-
-  Object.defineProperty(element, "fit", {
-    get() {
-      return element.value.fit;
-    },
-    set(value) {
-      element.set("fit", value);
-    },
-  });
-
-  element.fit$ = element.observable$.pipe(
-    map((v) => v.fit),
-    distinctUntilChanged()
-  );
-
-  Object.defineProperty(element, "position", {
-    get() {
-      return element.value.position;
-    },
-    set(value) {
-      element.set("position", value);
-    },
-  });
-
-  element.position$ = element.observable$.pipe(
-    map((v) => v.position),
-    distinctUntilChanged()
-  );
-
-  element.setMedia = (media: MediaData | undefined) => {
-    element.set("media", media);
-  };
-
-  element.setFit = (fit: MediaElementData["fit"] | undefined) => {
-    element.set("fit", fit);
-  };
-
-  element.setPosition = (
-    position: MediaElementData["position"] | undefined
-  ) => {
-    element.set("position", position);
-  };
-
-  element.cloneIds = (clone: y.Map<any>) => {
-    element.cloneOwnId(clone);
-  };
-
-  return element as MediaElementModel;
+  setEnhancer(element, attachMediaElement);
+  return element as MediaElement;
 }
 
-/**
- * Create a new local MediaElement model
- */
-export function createMediaElementModel(
-  component: Component
-): MediaElementModel {
+export function createMediaElement(component: Component): MediaElement {
   const ymap = new y.Map<any>();
-  return withMediaElementBehavior(ymap, component);
+  return attachMediaElement(ymap, component);
 }

@@ -3,6 +3,7 @@ import {
   Extendable,
   ReactiveMap,
   attachReactiveMap,
+  setEnhancer,
 } from "@elllphnt/elementa-utils";
 import { init } from "@paralleldrive/cuid2";
 import * as y from "yjs";
@@ -22,7 +23,7 @@ export function attachIdentifiable<S extends IdentifiableData>(
   ) as Extendable<Identifiable<S>>;
 
   if (!identifiable.value.id) {
-    identifiable.set("id", IdentifiableModel.createId() as any);
+    identifiable.set("id", Identifiable.createId() as any);
   }
 
   Object.defineProperty(identifiable, "id", {
@@ -39,17 +40,18 @@ export function attachIdentifiable<S extends IdentifiableData>(
     clone.set("id", identifiable.id);
   };
 
+  setEnhancer(identifiable, attachIdentifiable);
   return identifiable as Identifiable<S>;
 }
 
-export function createIdentifiableModel<
+export function createIdentifiable<
   S extends IdentifiableData
 >(): Identifiable<S> {
   const ymap = new y.Map<any>();
   return attachIdentifiable<S>(ymap);
 }
 
-export namespace IdentifiableModel {
+export namespace Identifiable {
   export const createId = init();
 
   export function cloneIdentifiableListIds(

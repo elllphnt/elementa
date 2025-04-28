@@ -1,12 +1,17 @@
 import { Expression, PrimitiveSubElementData } from "@elllphnt/elementa-base";
-import { attachReactiveMap, Extendable } from "@elllphnt/elementa-utils";
+import {
+  attachReactiveMap,
+  Extendable,
+  getOrCreateYMap,
+  setEnhancer,
+} from "@elllphnt/elementa-utils";
 import { distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { StylesheetCssStyleSheet } from "../../../css/_";
-import { Stylesheet } from "../../../style/stylesheet";
+import { attachStylesheet } from "../../../style/stylesheet";
 import { Component } from "../../component";
 
-export type PrimitiveSubElementModel = ReturnType<
+export type PrimitiveSubElement = ReturnType<
   typeof attachReactiveMap<PrimitiveSubElementData>
 > & {
   component: Component;
@@ -22,20 +27,20 @@ export type PrimitiveSubElementModel = ReturnType<
   clearInteractions(): void;
 };
 
-export function withPrimitiveSubElementBehavior(
+export function attachPrimitiveSubElement(
   ymap: y.Map<any>,
   component: Component
-): PrimitiveSubElementModel {
+): PrimitiveSubElement {
   const subElement = attachReactiveMap<PrimitiveSubElementData>(
     ymap as Extendable<y.Map<any>>
-  ) as Extendable<PrimitiveSubElementModel>;
+  ) as Extendable<PrimitiveSubElement>;
 
   subElement.component = component;
 
   subElement.cssStyleSheet = new StylesheetCssStyleSheet({
     target: `primitive-sub-element`,
-    stylesheet: new Stylesheet(
-      subElement.getOrCreateMap("stylesheet"),
+    stylesheet: attachStylesheet(
+      getOrCreateYMap(subElement, "stylesheet"),
       component.project
     ),
   });
@@ -80,12 +85,13 @@ export function withPrimitiveSubElementBehavior(
     if (baseDispose) baseDispose();
   };
 
-  return subElement as PrimitiveSubElementModel;
+  setEnhancer(subElement, attachPrimitiveSubElement);
+  return subElement as PrimitiveSubElement;
 }
 
-export function createPrimitiveSubElementModel(
+export function createPrimitiveSubElement(
   component: Component
-): PrimitiveSubElementModel {
+): PrimitiveSubElement {
   const ymap = new y.Map<any>();
-  return withPrimitiveSubElementBehavior(ymap, component);
+  return attachPrimitiveSubElement(ymap, component);
 }

@@ -58,7 +58,7 @@ export class StylesheetCssStyleSheet extends RuleCssStyleSheet {
     this.stylesheet = stylesheet;
     this.layer = layer;
 
-    const rulesSubscription = this.stylesheet.styles.items$.subscribe(
+    const rulesSubscription = this.stylesheet.styles.observable$.subscribe(
       (styles) => {
         const toRemove = { ...this._rules$.value };
         const newRules: Record<string, StylesheetCssStyleRule> = {};

@@ -1,38 +1,33 @@
 import { ContainerElementData } from "@elllphnt/elementa-base";
 import {
   combineLatestOrEmpty,
-  Extendable,
   getOrCreateYArray,
+  setEnhancer,
 } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
 import * as y from "yjs";
 import { Component } from "../component";
-import { ElementListModel, withElementListBehavior } from "./_list";
-import { ElementModel, withElementBehavior } from "./element";
+import { attachElementList, ElementList } from "./_list";
+import { attachBaseElement, Element } from "./element";
 
-export type ContainerElementModel = ElementModel<ContainerElementData> & {
-  content: ElementListModel;
+export type ContainerElement = Element<ContainerElementData> & {
+  content: ElementList;
 
   allCssStylesheets: any[];
   allCssStylesheets$: Observable<any[]>;
-
-  cloneIds(clone: y.Map<any>): void;
 };
 
 /**
  * Attach ContainerElement behavior to a y.Map
  */
-export function withContainerElementBehavior(
+export function attachContainerElement(
   ymap: y.Map<any>,
   component: Component
-): ContainerElementModel {
-  const element = withElementBehavior(
-    ymap,
-    component
-  ) as Extendable<ContainerElementModel>;
+): ContainerElement {
+  const element = attachBaseElement(ymap, component) as ContainerElement;
 
-  element.content = withElementListBehavior(
-    element.getOrCreateArray("content") as y.Array<y.Map<any>>,
+  element.content = attachElementList(
+    getOrCreateYArray(ymap, "content"),
     component
   );
 
@@ -60,15 +55,11 @@ export function withContainerElementBehavior(
     if (baseDispose) baseDispose();
   };
 
-  return element as ContainerElementModel;
+  setEnhancer(element, attachContainerElement);
+  return element as ContainerElement;
 }
 
-/**
- * Create a new local ContainerElement
- */
-export function createContainerElementModel(
-  component: Component
-): ContainerElementModel {
+export function createContainerElement(component: Component): ContainerElement {
   const ymap = new y.Map<any>();
-  return withContainerElementBehavior(ymap, component);
+  return attachContainerElement(ymap, component);
 }

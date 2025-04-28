@@ -1,31 +1,22 @@
 import { StateData } from "@elllphnt/elementa-base";
-import {
-  Extendable,
-  withIdentifiableModelBehavior,
-} from "@elllphnt/elementa-utils";
+import { Extendable } from "@elllphnt/elementa-utils";
 import * as y from "yjs";
 import { Component } from "../component";
+import { attachIdentifiable, Identifiable } from "../identifiable";
 
-export type StateModel<D extends StateData = StateData> = ReturnType<
-  typeof withIdentifiableModelBehavior<D>
-> & {
+export type State<D extends StateData = StateData> = Identifiable<D> & {
   component: Component;
-
   type: string;
-
   remove(): void;
 };
 
 /**
  * Attach State behavior to a y.Map
  */
-export function withStateBehavior(
-  ymap: y.Map<any>,
-  component: Component
-): StateModel {
-  const state = withIdentifiableModelBehavior<StateData>(
+export function attachState(ymap: y.Map<any>, component: Component): State {
+  const state = attachIdentifiable<StateData>(
     ymap as Extendable<y.Map<any>>
-  ) as Extendable<StateModel>;
+  ) as Extendable<State>;
 
   state.component = component;
 
@@ -36,16 +27,18 @@ export function withStateBehavior(
   });
 
   state.remove = () => {
-    state.component.states.remove(state);
+    state.component.states.delete(
+      state.component.states.toArray().indexOf(state)
+    );
   };
 
-  return state as StateModel;
+  return state as State;
 }
 
 /**
  * Create a new local State
  */
-export function createStateModel(component: Component): StateModel {
+export function createState(component: Component): State {
   const ymap = new y.Map<any>();
-  return withStateBehavior(ymap, component);
+  return attachState(ymap, component);
 }

@@ -1,55 +1,53 @@
 import { baseSelector, StyleSheetData } from "@elllphnt/elementa-base";
 import {
   attachReactiveMap,
-  CRDTModelMap,
+  createEnhancedReactiveMap,
   Extendable,
+  getOrCreateYMap,
+  ReactiveMap,
+  setEnhancer,
+  setModelFields,
 } from "@elllphnt/elementa-utils";
 import { filter, map, Observable, tap } from "rxjs";
 import * as y from "yjs";
 import { Project } from "../project/project";
-import { StyleModel, withStyleBehavior } from "./style";
+import { attachStyle, createStyle, Style } from "./style";
 import {
-  StyleFragmentRegistryModel,
-  withStyleFragmentRegistryBehavior,
+  attachStyleFragmentRegistry,
+  StyleFragmentRegistry,
 } from "./style_fragment_registry";
 
-export type StylesheetModel = ReturnType<
-  typeof attachReactiveMap<StyleSheetData>
-> & {
+export type Stylesheet = ReactiveMap<StyleSheetData> & {
   project: Project;
-  fragmentRegistry: StyleFragmentRegistryModel;
-  styles: CRDTModelMap<y.Map<any>, StyleModel>;
+  fragmentRegistry: StyleFragmentRegistry;
+  styles: ReactiveMap<Record<string, Style>>;
 
   className: string;
 
   style<C extends true | undefined>(
     selector: string,
     create?: C
-  ): C extends true ? StyleModel : StyleModel | undefined;
+  ): C extends true ? Style : Style | undefined;
   style$<C extends true | undefined>(
     selector: string,
     create?: C
-  ): C extends true
-    ? Observable<StyleModel>
-    : Observable<StyleModel | undefined>;
+  ): C extends true ? Observable<Style> : Observable<Style | undefined>;
 
-  get conditions(): Record<string, string>;
-  get conditions$(): Observable<Record<string, string>>;
+  conditions: Record<string, string>;
+  conditions$: Observable<Record<string, string>>;
 
   condition(id: string): string | undefined;
   condition$(id: string): Observable<string | undefined>;
 
-  get selectors(): string[];
-  get selectors$(): Observable<string[]>;
+  selectors: string[];
+  selectors$: Observable<string[]>;
 
   baseStyle<C extends true | undefined>(
     create?: C
-  ): C extends true ? StyleModel : StyleModel | undefined;
+  ): C extends true ? Style : Style | undefined;
   baseStyle$<C extends true | undefined>(
     create?: C
-  ): C extends true
-    ? Observable<StyleModel>
-    : Observable<StyleModel | undefined>;
+  ): C extends true ? Observable<Style> : Observable<Style | undefined>;
 
   addStyle(selector: string): void;
   removeStyle(selector: string): void;
@@ -61,37 +59,35 @@ export type StylesheetModel = ReturnType<
 /**
  * Attach Stylesheet behavior to a y.Map
  */
-export function withStylesheetBehavior(
+export function attachStylesheet(
   ymap: y.Map<any>,
   project: Project
-): StylesheetModel {
+): Stylesheet {
   const sheet = attachReactiveMap<StyleSheetData>(
     ymap as Extendable<y.Map<any>>
-  ) as Extendable<StylesheetModel>;
+  ) as Extendable<Stylesheet>;
 
   sheet.project = project;
-  sheet.fragmentRegistry = withStyleFragmentRegistryBehavior(
+  sheet.fragmentRegistry = attachStyleFragmentRegistry(
     sheet.getOrCreateArray("fragments")
   );
 
-  sheet.styles = new CRDTModelMap(sheet.getOrCreateMap("styles"), (ymap) =>
-    withStyleBehavior(ymap, project, sheet.fragmentRegistry)
+  sheet.styles = createEnhancedReactiveMap(
+    getOrCreateYMap<y.Map<any>>(sheet, "styles"),
+    attachStyle,
+    (ymap) => attachStyle(ymap, project, sheet.fragmentRegistry)
   );
 
-  Object.defineProperty(sheet, "className", {
-    get() {
-      return `elll-stylesheet-${sheet.key}`;
-    },
-  });
+  setModelFields(sheet, ["conditions"]);
 
   sheet.style = function <C extends true | undefined>(
     selector: string,
     create?: C
   ) {
-    let style = sheet.styles.item(selector);
+    let style = sheet.styles.get(selector);
     if (!style && create) {
       sheet.addStyle(selector);
-      style = sheet.styles.item(selector);
+      style = sheet.styles.get(selector);
     }
     return style as any;
   };
@@ -100,7 +96,8 @@ export function withStylesheetBehavior(
     selector: string,
     create?: C
   ) {
-    return sheet.styles.item$(selector).pipe(
+    return sheet.styles.observable$.pipe(
+      map((styles) => styles[selector]),
       tap((style) => {
         if (!style && create) {
           sheet.addStyle(selector);
@@ -110,14 +107,6 @@ export function withStylesheetBehavior(
     ) as any;
   };
 
-  Object.defineProperty(sheet, "conditions", {
-    get() {
-      return sheet.value.conditions ?? {};
-    },
-  });
-
-  sheet.conditions$ = sheet.observable$.pipe(map((v) => v.conditions ?? {}));
-
   sheet.condition = (id: string) => {
     return sheet.conditions[id];
   };
@@ -126,13 +115,7 @@ export function withStylesheetBehavior(
     return sheet.conditions$.pipe(map((conds) => conds[id]));
   };
 
-  Object.defineProperty(sheet, "selectors", {
-    get() {
-      return Object.keys(sheet.styles.items);
-    },
-  });
-
-  sheet.selectors$ = sheet.styles.items$.pipe(
+  sheet.selectors$ = sheet.styles.observable$.pipe(
     map((styles) => Object.keys(styles))
   );
 
@@ -145,13 +128,13 @@ export function withStylesheetBehavior(
   };
 
   sheet.addStyle = (selector: string) => {
-    if (!sheet.styles.item(selector)) {
-      sheet.styles.set(selector, new y.Map());
+    if (!sheet.styles.get(selector)) {
+      sheet.styles.set(selector, createStyle(project, sheet.fragmentRegistry));
     }
   };
 
   sheet.removeStyle = (selector: string) => {
-    if (sheet.styles.item(selector)) {
+    if (sheet.styles.get(selector)) {
       sheet.styles.delete(selector);
     }
   };
@@ -175,13 +158,14 @@ export function withStylesheetBehavior(
     if (baseDispose) baseDispose();
   };
 
-  return sheet as StylesheetModel;
+  setEnhancer(sheet, attachStylesheet);
+  return sheet as Stylesheet;
 }
 
 /**
  * Create a new local Stylesheet
  */
-export function createStylesheetModel(project: Project): StylesheetModel {
+export function createStylesheet(project: Project): Stylesheet {
   const ymap = new y.Map<any>();
-  return withStylesheetBehavior(ymap, project);
+  return attachStylesheet(ymap, project);
 }

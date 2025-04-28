@@ -4,23 +4,22 @@ import {
   combineLatestOrEmpty,
   Extendable,
   getOrCreateYArray,
+  getOrCreateYMap,
 } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
 import * as y from "yjs";
-import { StylesheetCssStyleSheet } from "../../../css/_";
-import { Stylesheet } from "../../../style/stylesheet";
+import { CssStyleSheet, StylesheetCssStyleSheet } from "../../../css/_";
+import { attachStylesheet } from "../../../style/stylesheet";
 import { Component } from "../../component";
-import { ElementListModel, withElementListBehavior } from "../_list";
+import { attachElementList, ElementList } from "../_list";
 
-export type SlotFillModel = ReturnType<
-  typeof attachReactiveMap<SlotFillData>
-> & {
+export type SlotFill = ReturnType<typeof attachReactiveMap<SlotFillData>> & {
   component: Component;
   cssStyleSheet: StylesheetCssStyleSheet;
-  content: ElementListModel;
+  content: ElementList;
 
-  allCssStylesheets: any[];
-  allCssStylesheets$: Observable<any[]>;
+  allCssStylesheets: CssStyleSheet[];
+  allCssStylesheets$: Observable<CssStyleSheet[]>;
 
   interactions: Record<string, Expression>;
   interactions$: Observable<Record<string, Expression>>;
@@ -34,25 +33,25 @@ export type SlotFillModel = ReturnType<
   cloneIds(clone: y.Map<any>): void;
 };
 
-export function withSlotFillBehavior(
+export function attachSlotFill(
   ymap: y.Map<any>,
   component: Component
-): SlotFillModel {
+): SlotFill {
   const slot = attachReactiveMap<SlotFillData>(
     ymap as Extendable<y.Map<any>>
-  ) as Extendable<SlotFillModel>;
+  ) as Extendable<SlotFill>;
 
   slot.component = component;
 
   slot.cssStyleSheet = new StylesheetCssStyleSheet({
     target: `slot-fill`,
-    stylesheet: new Stylesheet(
-      slot.getOrCreateMap("stylesheet"),
+    stylesheet: attachStylesheet(
+      getOrCreateYMap(slot, "stylesheet"),
       component.project
     ),
   });
 
-  slot.content = withElementListBehavior(
+  slot.content = attachElementList(
     slot.getOrCreateArray("content") as y.Array<y.Map<any>>,
     component
   );
@@ -107,10 +106,10 @@ export function withSlotFillBehavior(
     if (baseDispose) baseDispose();
   };
 
-  return slot as SlotFillModel;
+  return slot as SlotFill;
 }
 
-export function createSlotFillModel(component: Component): SlotFillModel {
+export function createSlotFill(component: Component): SlotFill {
   const ymap = new y.Map<any>();
-  return withSlotFillBehavior(ymap, component);
+  return attachSlotFill(ymap, component);
 }

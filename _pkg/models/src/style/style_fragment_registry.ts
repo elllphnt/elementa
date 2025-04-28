@@ -3,12 +3,17 @@ import {
   StyleFragmentDataTypeMap,
   StyleFragmentType,
 } from "@elllphnt/elementa-base";
-import { attachReactiveList, Extendable } from "@elllphnt/elementa-utils";
+import {
+  attachReactiveList,
+  Extendable,
+  setModelFields,
+  setEnhancer,
+} from "@elllphnt/elementa-utils";
 import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { genId } from "../_lib/id";
 
-export type StyleFragmentRegistryModel = ReturnType<
+export type StyleFragmentRegistry = ReturnType<
   typeof attachReactiveList<StyleFragmentData>
 > & {
   fragment<T extends StyleFragmentType>(
@@ -46,12 +51,12 @@ export type StyleFragmentRegistryModel = ReturnType<
 /**
  * Attach StyleFragmentRegistry behavior to a y.Array
  */
-export function withStyleFragmentRegistryBehavior(
+export function attachStyleFragmentRegistry(
   yarray: y.Array<any>
-): StyleFragmentRegistryModel {
+): StyleFragmentRegistry {
   const registry = attachReactiveList<StyleFragmentData>(
     yarray as Extendable<y.Array<StyleFragmentData>>
-  ) as Extendable<StyleFragmentRegistryModel>;
+  ) as Extendable<StyleFragmentRegistry>;
 
   const _fragmentsById$ = new BehaviorSubject<
     Record<string, StyleFragmentData>
@@ -94,12 +99,6 @@ export function withStyleFragmentRegistryBehavior(
     );
   };
 
-  Object.defineProperty(registry, "allFragments", {
-    get() {
-      return registry.state;
-    },
-  });
-
   registry.allFragments$ = registry.observable$;
 
   registry.addFragment = function <T extends StyleFragmentType>(
@@ -107,7 +106,7 @@ export function withStyleFragmentRegistryBehavior(
     data: StyleFragmentDataTypeMap[T]
   ) {
     const fragment: StyleFragmentData<T> = { id: genId(), type, data };
-    registry.push(fragment);
+    registry.push([fragment]);
     return fragment;
   };
 
@@ -142,13 +141,14 @@ export function withStyleFragmentRegistryBehavior(
     if (baseDispose) baseDispose();
   };
 
-  return registry as StyleFragmentRegistryModel;
+  setEnhancer(registry, attachStyleFragmentRegistry);
+  return registry as StyleFragmentRegistry;
 }
 
 /**
  * Create a new local StyleFragmentRegistry
  */
-export function createStyleFragmentRegistryModel(): StyleFragmentRegistryModel {
+export function createStyleFragmentRegistry(): StyleFragmentRegistry {
   const yarray = new y.Array<any>();
-  return withStyleFragmentRegistryBehavior(yarray);
+  return attachStyleFragmentRegistry(yarray);
 }

@@ -1,23 +1,24 @@
 import {
   BaseElementData,
-  ElementData,
   ElementRepeatData,
   Evaluable,
   Expression,
   LinkData,
   ResolvableOrEvaluable,
 } from "@elllphnt/elementa-base";
-import { Extendable } from "@elllphnt/elementa-utils";
-import { distinctUntilChanged, map, Observable, of } from "rxjs";
+import {
+  getOrCreateYMap,
+  setEnhancer,
+  setModelFields,
+} from "@elllphnt/elementa-utils";
+import { Observable, of } from "rxjs";
 import * as y from "yjs";
 import { CssStyleSheet, StylesheetCssStyleSheet } from "../../css/_";
-import { Stylesheet } from "../../style/stylesheet";
+import { attachStylesheet } from "../../style/stylesheet";
 import { Component } from "../component";
-import { attachIdentifiable } from "../identifiable";
+import { attachIdentifiable, Identifiable } from "../identifiable";
 
-export type ElementModel<D extends BaseElementData> = ReturnType<
-  typeof attachIdentifiable<D>
-> & {
+export type Element<D extends BaseElementData> = Identifiable<D> & {
   component: Component;
   cssStyleSheet: StylesheetCssStyleSheet;
 
@@ -55,58 +56,39 @@ export type ElementModel<D extends BaseElementData> = ReturnType<
 
   tabIndex: ResolvableOrEvaluable<number> | undefined;
   tabIndex$: Observable<ResolvableOrEvaluable<number> | undefined>;
-
-  setLink(link: LinkData | undefined): void;
-  setName(name: string): void;
-  setTag(tag: string): void;
-  setRepeat(repeat: ElementRepeatData): void;
-  setCondition(condition: Evaluable<boolean>): void;
-  setInteraction(key: string, interaction: Expression): void;
-  clearInteractions(): void;
-  setAriaLabel(label: ResolvableOrEvaluable<string>): void;
-  setAriaHidden(hidden: ResolvableOrEvaluable<boolean>): void;
-  setAriaRole(role: ResolvableOrEvaluable<string>): void;
-  setTabIndex(tabIndex: ResolvableOrEvaluable<number>): void;
 };
 
-/**
- * Attach Element behavior to a y.Map
- */
-export function withElementBehavior<D extends BaseElementData>(
+export function attachBaseElement<D extends BaseElementData>(
   ymap: y.Map<any>,
   component: Component
-): ElementModel<D> {
-  const element = attachIdentifiable<BaseElementData>(
-    ymap as Extendable<y.Map<any>>
-  ) as Extendable<ElementModel<D>>;
+): Element<D> {
+  const identifiable = attachIdentifiable<BaseElementData>(ymap);
+  const element = identifiable as unknown as Element<D>;
 
   element.component = component;
 
   element.cssStyleSheet = new StylesheetCssStyleSheet({
-    target: `${element.value.type}:${element.id}`,
-    stylesheet: new Stylesheet(
-      element.getOrCreateMap("stylesheet"),
+    target: `${element.type}:${element.key}`,
+    stylesheet: attachStylesheet(
+      getOrCreateYMap(element, "stylesheet"),
       component.project
     ),
   });
 
-  // Native computed fields
-  Object.defineProperty(element, "allCssStylesheets", {
+  Object.defineProperty(identifiable, "allCssStylesheets", {
     get() {
       return [element.cssStyleSheet];
     },
   });
-
   element.allCssStylesheets$ = of([element.cssStyleSheet]);
 
   Object.defineProperty(element, "type", {
     get() {
-      return element.value.type;
+      return element.type;
     },
   });
 
-  // Field mappings
-  const fields = [
+  setModelFields(element, [
     "name",
     "tag",
     "repeat",
@@ -117,86 +99,14 @@ export function withElementBehavior<D extends BaseElementData>(
     "ariaHidden",
     "ariaRole",
     "tabIndex",
-  ] as const;
+  ]);
 
-  for (const field of fields) {
-    Object.defineProperty(element, field, {
-      get() {
-        return element.value[field];
-      },
-      set(value) {
-        element.set(field, value);
-      },
-    });
-
-    (element as any)[`${field}$`] = element.observable$.pipe(
-      map((v) => v[field]),
-      distinctUntilChanged()
-    );
-  }
-
-  // Methods
-  element.setLink = (link: LinkData | undefined) => {
-    element.set("link", link as any);
-  };
-
-  element.setName = (name: string) => {
-    element.set("name", name as any);
-  };
-
-  element.setTag = (tag: string) => {
-    element.set("tag", tag as any);
-  };
-
-  element.setRepeat = (repeat: ElementRepeatData) => {
-    element.set("repeat", repeat as any);
-  };
-
-  element.setCondition = (condition: Evaluable<boolean>) => {
-    element.set("condition", condition as any);
-  };
-
-  element.setInteraction = (key: string, interaction: Expression) => {
-    const interactions = { ...(element.interactions ?? {}) };
-    interactions[key] = interaction;
-    element.set("interactions", interactions as any);
-  };
-
-  element.clearInteractions = () => {
-    element.set("interactions", {} as any);
-  };
-
-  element.setAriaLabel = (ariaLabel: ResolvableOrEvaluable<string>) => {
-    element.set("ariaLabel", ariaLabel as any);
-  };
-
-  element.setAriaHidden = (ariaHidden: ResolvableOrEvaluable<boolean>) => {
-    element.set("ariaHidden", ariaHidden as any);
-  };
-
-  element.setAriaRole = (ariaRole: ResolvableOrEvaluable<string>) => {
-    element.set("ariaRole", ariaRole as any);
-  };
-
-  element.setTabIndex = (tabIndex: ResolvableOrEvaluable<number>) => {
-    element.set("tabIndex", tabIndex as any);
-  };
-
-  const baseDispose = (element as any).dispose?.bind(element);
+  const baseDispose = element.dispose.bind(element);
   element.dispose = () => {
     element.cssStyleSheet.dispose();
     if (baseDispose) baseDispose();
   };
 
-  return element as any;
-}
-
-/**
- * Create a new local Element model
- */
-export function createElementModel<D extends ElementData>(
-  component: Component
-): ElementModel<D> {
-  const ymap = new y.Map<any>();
-  return withElementBehavior(ymap, component);
+  setEnhancer(element, attachBaseElement);
+  return element;
 }

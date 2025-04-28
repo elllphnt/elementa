@@ -6,8 +6,8 @@ export function createEnhancedReactiveMap<T, I>(
   ymap: y.Map<I>,
   enhancer: Enhancer<T>,
   enhance: (input: I) => void
-): ReactiveMap<T> {
-  const map = attachReactiveMap<T>(ymap as unknown as y.Map<T[keyof T]>);
+): ReactiveMap<Record<string, T>> {
+  const map = attachReactiveMap<Record<string, T>>(ymap as unknown as y.Map<T>);
 
   // Enhance existing entries
   if (map.doc) {
