@@ -1,0 +1,27 @@
+{
+    "name": "@repo/elementa",
+    "private": true,
+    "version": "0.1.0",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsx scripts/build",
+        "watch:tsc": "tsc-watch --project tsconfig.build.json --onSuccess \"tscpaths -p tsconfig.build.json -s ./src -o ./dist\" --onFailure \"tscpaths -p tsconfig.build.json -s ./src -o ./dist\"",
+        "watch:babel": "babel src -d dist -x .ts,.tsx --watch",
+        "watch": "yarn watch:tsc & yarn watch:babel"
+    },
+    "devDependencies": {
+        "@elllphnt/elementa-models": "workspace:*",
+        "@types/babel__standalone": "^7.1.9",
+        "eslint-plugin-import": "^2.29.1",
+        "typescript": "5.2.2"
+    },
+    "dependencies": {
+        "@babel/standalone": "^7.26.9",
+        "@elllphnt/elementa-base": "workspace:*",
+        "@elllphnt/elementa-utils": "workspace:*",
+        "rxjs": "^7.8.1",
+        "tsc-watch": "^6.2.0",
+        "yarn": "^1.22.22"
+    }
+}
