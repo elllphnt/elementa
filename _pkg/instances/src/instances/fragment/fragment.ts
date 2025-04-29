@@ -1,12 +1,13 @@
 import { Fragment } from "@elllphnt/elementa-models";
+import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, combineLatest, Observable } from "rxjs";
-import { updateInstanceList } from "~/src/_lib/instances";
-import { makeElementInstance } from "~/src/_lib/make_element_instance";
+import { makeElementInstance } from "~/src/instances/elements/_create";
 import { ElementInstance } from "../elements/element";
 import { Instance } from "../instance";
-import { FragmentEnvironment } from "./environment";
+import { FragmentEnvironment } from "./environment/environment";
 
-export class FragmentInstance extends Instance<Fragment> {
+export class FragmentInstance extends Instance {
+  readonly fragment: Fragment;
   readonly environment: FragmentEnvironment;
 
   private _content$ = new BehaviorSubject<ElementInstance[]>([]);
@@ -27,35 +28,33 @@ export class FragmentInstance extends Instance<Fragment> {
   }
 
   constructor({
+    fragment,
     environment,
-    entity,
-    parent,
   }: {
+    fragment: Fragment;
     environment: FragmentEnvironment;
-    entity: Fragment;
-    parent: Instance | null;
   }) {
-    super({
-      entity,
-      elementa: environment.elementa,
-      parent,
-    });
+    super(environment.elementa);
+    this.fragment = fragment;
     this.environment = environment;
 
     const contentSubscription = combineLatest([
-      this.entity.content$,
+      this.fragment.content.observable$,
       this.environment.componentStack$,
     ]).subscribe(([content, componentStack]) => {
       const recursion = this.resolveRecursion(componentStack);
-      const newContent = updateInstanceList({
-        instances: this.content,
-        entities: recursion ? [] : content,
-        createInstance: (element) =>
+      const newContent = reconcileList({
+        sources: recursion ? [] : content,
+        targets: this.content,
+        sourceRef: (e) => e,
+        targetRef: (i) => i.element,
+        create: (element) =>
           makeElementInstance({
             element,
             environment: this.environment,
             parent: this,
           }),
+        dispose: (i) => i.dispose(),
       }) as ElementInstance[];
 
       this._content$.next(newContent);
@@ -81,6 +80,4 @@ export class FragmentInstance extends Instance<Fragment> {
 
     return undefined;
   }
-
-  protected watchContent(): void {}
 }

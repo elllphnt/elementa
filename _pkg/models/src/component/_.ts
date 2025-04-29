@@ -1,3 +1,4 @@
+export * from "./component";
 export * from "./data_input";
 export * from "./editors/_";
 export * from "./elements/_";

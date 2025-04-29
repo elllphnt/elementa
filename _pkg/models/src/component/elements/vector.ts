@@ -14,6 +14,7 @@ export function attachVectorElement(
   ymap: y.Map<any>,
   component: Component
 ): VectorElement {
+  ymap.set("type", "vector");
   const element = attachBaseElement(
     ymap,
     component

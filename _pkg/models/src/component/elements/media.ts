@@ -24,6 +24,7 @@ export function attachMediaElement(
   ymap: y.Map<any>,
   component: Component
 ): MediaElement {
+  ymap.set("type", "media");
   const element = attachBaseElement(
     ymap,
     component

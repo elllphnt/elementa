@@ -52,6 +52,7 @@ export function attachPrimitiveElement(
   ymap: y.Map<any>,
   component: Component
 ): PrimitiveElement {
+  ymap.set("type", "primitive");
   const element = attachBaseElement(
     ymap,
     component
@@ -64,7 +65,7 @@ export function attachPrimitiveElement(
   );
 
   const _props = new ResolvableRecord(
-    element.value.props ?? {},
+    element.props ?? {},
     component.project.infrastructure
   );
 

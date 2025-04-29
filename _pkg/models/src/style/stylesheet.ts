@@ -3,6 +3,7 @@ import {
   attachReactiveMap,
   createEnhancedReactiveMap,
   Extendable,
+  getOrCreateYArray,
   getOrCreateYMap,
   ReactiveMap,
   setEnhancer,
@@ -69,7 +70,7 @@ export function attachStylesheet(
 
   sheet.project = project;
   sheet.fragmentRegistry = attachStyleFragmentRegistry(
-    sheet.getOrCreateArray("fragments")
+    getOrCreateYArray(sheet, "fragments")
   );
 
   sheet.styles = createEnhancedReactiveMap(

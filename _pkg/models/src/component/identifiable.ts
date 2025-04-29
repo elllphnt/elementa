@@ -8,7 +8,7 @@ import {
 import { init } from "@paralleldrive/cuid2";
 import * as y from "yjs";
 
-export type Identifiable<S extends IdentifiableData> = ReactiveMap<S> & {
+export type Identifiable<S extends IdentifiableData> = ReactiveMap<any> & {
   id: string;
   cloneIds(clone: y.Map<any>): void;
   cloneOwnId(clone: y.Map<any>): void;
@@ -22,13 +22,13 @@ export function attachIdentifiable<S extends IdentifiableData>(
     ymap as Extendable<y.Map<any>>
   ) as Extendable<Identifiable<S>>;
 
-  if (!identifiable.value.id) {
+  if (!identifiable.doc || (identifiable.doc && !identifiable.get("id"))) {
     identifiable.set("id", Identifiable.createId() as any);
   }
 
   Object.defineProperty(identifiable, "id", {
     get() {
-      return identifiable.value.id;
+      return identifiable.get("id");
     },
   });
 
@@ -37,7 +37,7 @@ export function attachIdentifiable<S extends IdentifiableData>(
   };
 
   identifiable.cloneOwnId = (clone: y.Map<any>) => {
-    clone.set("id", identifiable.id);
+    clone.set("id", Identifiable.createId());
   };
 
   setEnhancer(identifiable, attachIdentifiable);

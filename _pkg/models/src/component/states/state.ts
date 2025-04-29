@@ -1,10 +1,11 @@
 import { StateData } from "@elllphnt/elementa-base";
-import { Extendable } from "@elllphnt/elementa-utils";
+import { BaseStateData } from "@elllphnt/elementa-base/dist/types/component/states/_base";
+import { Extendable, setEnhancer } from "@elllphnt/elementa-utils";
 import * as y from "yjs";
 import { Component } from "../component";
 import { attachIdentifiable, Identifiable } from "../identifiable";
 
-export type State<D extends StateData = StateData> = Identifiable<D> & {
+export type State<D extends BaseStateData = BaseStateData> = Identifiable<D> & {
   component: Component;
   type: string;
   remove(): void;
@@ -32,6 +33,7 @@ export function attachState(ymap: y.Map<any>, component: Component): State {
     );
   };
 
+  setEnhancer(state, attachState);
   return state as State;
 }
 

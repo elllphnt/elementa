@@ -1,14 +1,10 @@
 import { App } from "@elllphnt/elementa-models";
-import { Disposable, updateMapList } from "@elllphnt/elementa-utils";
+import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject } from "rxjs";
-import { FragmentEnvironment } from "../_";
+import { FragmentEnvironment, Instance } from "../_";
 import { RouteInstance } from "./route";
 
-export class AppInstance extends Disposable {
-  static key = 0;
-  static keySeed = Math.floor(Math.random() * 1000);
-  readonly key = `${AppInstance.keySeed}-${AppInstance.key++}`;
-
+export class AppInstance extends Instance {
   readonly app: App;
 
   private _routes$ = new BehaviorSubject<RouteInstance[]>([]);
@@ -27,19 +23,22 @@ export class AppInstance extends Disposable {
     environment: FragmentEnvironment;
     app: App;
   }) {
-    super();
+    super(environment.elementa);
     this.app = app;
 
-    const routeSubscription = this.app.routes$.subscribe((routes) => {
-      const nextRoutes = updateMapList({
-        targets: this.routes,
-        sources: routes,
-        ref: (r) => r.route,
-        create: (route) => new RouteInstance({ environment, route }),
-        dispose: (route) => route.dispose(),
-      });
-      this._routes$.next(nextRoutes);
-    });
+    const routeSubscription = this.app.routes.observable$.subscribe(
+      (routes) => {
+        const nextRoutes = reconcileList({
+          targets: this.routes,
+          sources: routes,
+          sourceRef: (r) => r,
+          targetRef: (r) => r.route,
+          create: (route) => new RouteInstance({ environment, route }),
+          dispose: (route) => route.dispose(),
+        });
+        this._routes$.next(nextRoutes);
+      }
+    );
 
     this.addDisposer(() => {
       this._routes$.complete();

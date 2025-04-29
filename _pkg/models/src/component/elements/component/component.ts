@@ -55,6 +55,8 @@ export function attachComponentElement(
   ymap: y.Map<any>,
   component: Component
 ): ComponentElement {
+  ymap.set("type", "component");
+
   const element = attachBaseElement(ymap, component);
   const componentElement = element as ComponentElement;
 
@@ -84,6 +86,7 @@ export function attachComponentElement(
         ),
       ];
     },
+    configurable: true,
   });
 
   element.allCssStylesheets$ = combineLatestOrEmpty([

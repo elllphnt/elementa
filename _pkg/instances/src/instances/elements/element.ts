@@ -1,23 +1,16 @@
 import { Element } from "@elllphnt/elementa-models";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-utils";
 import { map } from "rxjs";
-import { FragmentEnvironment } from "../fragment/environment";
+import { FragmentEnvironment } from "../fragment/environment/environment";
 import { Instance } from "../instance";
 import { ElementInstanceStyle } from "./_common/style";
 
 export abstract class ElementInstance<
   E extends Element = Element
-> extends Instance<E> {
+> extends Instance {
   readonly environment: FragmentEnvironment;
+  readonly element: E;
   private _styles: Map<string, ElementInstanceStyle> = new Map();
-
-  get elementParent(): ElementInstance | null {
-    if (this.parent instanceof ElementInstance) {
-      return this.parent;
-    } else {
-      return null;
-    }
-  }
 
   style(selector: string): ElementInstanceStyle {
     let style = this._styles.get(selector);

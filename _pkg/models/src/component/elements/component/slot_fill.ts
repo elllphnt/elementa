@@ -52,7 +52,7 @@ export function attachSlotFill(
   });
 
   slot.content = attachElementList(
-    slot.getOrCreateArray("content") as y.Array<y.Map<any>>,
+    getOrCreateYArray(slot, "content"),
     component
   );
 
@@ -60,6 +60,7 @@ export function attachSlotFill(
     get() {
       return [slot.cssStyleSheet, ...slot.content.allCssStylesheets];
     },
+    configurable: true,
   });
 
   slot.allCssStylesheets$ = combineLatestOrEmpty([

@@ -17,6 +17,7 @@ export function attachTextElement(
   ymap: y.Map<any>,
   component: Component
 ): TextElement {
+  ymap.set("type", "text");
   const element = attachBaseElement(ymap, component) as Extendable<TextElement>;
   setModelFields(element, ["text"]);
   return element as TextElement;

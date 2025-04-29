@@ -1,34 +1,14 @@
-import {
-  FragmentParam,
-  Prop,
-  Route,
-  SlotFill,
-} from "@elllphnt/elementa-models";
-import { Disposable } from "@elllphnt/elementa-utils";
-import { BehaviorSubject, Observable, of } from "rxjs";
-import { FragmentEnvironment } from "../_";
-import {
-  ComponentInstance,
-  ComponentPropResolver,
-} from "../component/component";
+import { Route, SlotFill } from "@elllphnt/elementa-models";
+import { BehaviorSubject, Observable, of, switchMap } from "rxjs";
+import { FragmentEnvironment, Instance } from "../_";
+import { ComponentInstance } from "../component/component";
+import { ComponentPropResolver } from "../component/prop_resolver";
 
 export class RouteComponentPropResolver extends ComponentPropResolver {
-  get paged(): boolean {
-    return false;
-  }
-  get paged$(): Observable<boolean> {
-    return of(false);
-  }
-  propValue(prop: Prop) {
+  propValue() {
     return undefined;
   }
-  propValue$(prop: Prop): Observable<any> {
-    return of(undefined);
-  }
-  paramValue(param: FragmentParam) {
-    return undefined;
-  }
-  paramValue$(param: FragmentParam): Observable<any> {
+  propValue$() {
     return of(undefined);
   }
   slotFill(id: string): SlotFill | undefined {
@@ -39,31 +19,72 @@ export class RouteComponentPropResolver extends ComponentPropResolver {
   }
 }
 
-export class RouteInstance extends Disposable {
-  static key = 0;
-  static keySeed = Math.floor(Math.random() * 1000);
-  readonly key = `${RouteInstance.keySeed}-${RouteInstance.key++}`;
+export class RouteInstance extends Instance {
   readonly route: Route;
 
-  private _view$ = new BehaviorSubject<ComponentInstance | undefined>(
+  private _mainView$ = new BehaviorSubject<ComponentInstance | undefined>(
     undefined
   );
-  private _layout$ = new BehaviorSubject<ComponentInstance | undefined>(
+  private _pendingView$ = new BehaviorSubject<ComponentInstance | undefined>(
+    undefined
+  );
+  private _errorView$ = new BehaviorSubject<ComponentInstance | undefined>(
+    undefined
+  );
+  private _notFoundView$ = new BehaviorSubject<ComponentInstance | undefined>(
     undefined
   );
 
-  get view$(): Observable<ComponentInstance | undefined> {
-    return this._view$;
+  get mainView$(): Observable<ComponentInstance | undefined> {
+    return this._mainView$;
   }
-  get view(): ComponentInstance | undefined {
-    return this._view$.value;
+  get mainView(): ComponentInstance | undefined {
+    return this._mainView$.value;
   }
 
-  get layout$(): Observable<ComponentInstance | undefined> {
-    return this._layout$;
+  get pendingView$(): Observable<ComponentInstance | undefined> {
+    return this._pendingView$;
   }
-  get layout(): ComponentInstance | undefined {
-    return this._layout$.value;
+  get pendingView(): ComponentInstance | undefined {
+    return this._pendingView$.value;
+  }
+
+  get errorView$(): Observable<ComponentInstance | undefined> {
+    return this._errorView$;
+  }
+  get errorView(): ComponentInstance | undefined {
+    return this._errorView$.value;
+  }
+
+  get notFoundView$(): Observable<ComponentInstance | undefined> {
+    return this._notFoundView$;
+  }
+  get notFoundView(): ComponentInstance | undefined {
+    return this._notFoundView$.value;
+  }
+
+  get loaderModule() {
+    const url = this.route.absoluteLoaderUrl;
+    return url ? this.elementa.moduleManager.module(url) : undefined;
+  }
+  get loaderModule$() {
+    return this.route.absoluteLoaderUrl$.pipe(
+      switchMap((url) => {
+        return url ? this.elementa.moduleManager.module$(url) : of(undefined);
+      })
+    );
+  }
+
+  get handlerModule() {
+    const url = this.route.absoluteHandlerUrl;
+    return url ? this.elementa.moduleManager.module(url) : undefined;
+  }
+  get handlerModule$() {
+    return this.route.absoluteHandlerUrl$.pipe(
+      switchMap((url) => {
+        return url ? this.elementa.moduleManager.module$(url) : of(undefined);
+      })
+    );
   }
 
   constructor({
@@ -73,37 +94,36 @@ export class RouteInstance extends Disposable {
     environment: FragmentEnvironment;
     route: Route;
   }) {
-    super();
+    super(environment.elementa);
     this.route = route;
 
-    const viewSubscription = this.route.view$.subscribe((view) => {
-      if (view) {
-        this._view$.next(
-          new ComponentInstance({
-            component: view,
-            propResolver: new RouteComponentPropResolver({ environment }),
-          })
-        );
-      } else {
-        this._view$.next(undefined);
-      }
-    });
-    const layoutSubscription = this.route.layout$.subscribe((layout) => {
-      if (layout) {
-        this._layout$.next(
-          new ComponentInstance({
-            component: layout,
-            propResolver: new RouteComponentPropResolver({ environment }),
-          })
-        );
-      } else {
-        this._layout$.next(undefined);
-      }
+    const viewSubscriptions = (
+      ["mainView", "errorView", "pendingView", "notFoundView"] as const
+    ).map((viewKey) => {
+      const subscription = this.route[`${viewKey}Component$`].subscribe(
+        (view) => {
+          if (view) {
+            this[`_${viewKey}$`].next(
+              new ComponentInstance({
+                component: view,
+                propResolver: new RouteComponentPropResolver({ environment }),
+              })
+            );
+          } else {
+            this[`_${viewKey}$`].next(undefined);
+          }
+        }
+      );
+
+      return subscription;
     });
 
     this.addDisposer(() => {
-      viewSubscription.unsubscribe();
-      layoutSubscription.unsubscribe();
+      viewSubscriptions.forEach((subscription) => subscription.unsubscribe());
+      this._mainView$.complete();
+      this._pendingView$.complete();
+      this._errorView$.complete();
+      this._notFoundView$.complete();
     });
   }
 }

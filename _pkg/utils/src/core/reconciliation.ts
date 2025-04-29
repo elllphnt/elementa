@@ -29,7 +29,7 @@ export function reconcileList<S, T, R>(params: {
   sourceRef: (source: S) => R;
   targetRef: (target: T) => R;
   create: (source: S) => T;
-  reconcile: (target: T, source: S) => void;
+  reconcile?: (target: T, source: S) => void;
   dispose?: (target: T) => void;
 }): T[] {
   const { targets, sources, sourceRef, targetRef, create, reconcile, dispose } =
@@ -49,13 +49,13 @@ export function reconcileList<S, T, R>(params: {
 
     if (existing !== undefined) {
       // reconcile existing
-      reconcile(existing, src);
+      reconcile?.(existing, src);
       newTargets[i] = existing;
       map.delete(key);
     } else {
       // create + reconcile new
       const next = create(src);
-      reconcile(next, src);
+      reconcile?.(next, src);
       newTargets[i] = next;
     }
   }
@@ -73,7 +73,7 @@ export function reconcileMap<S, T>(params: {
   targets: Record<string, T>;
   sources: Record<string, S>;
   create: (source: S) => T;
-  reconcile: (target: T, source: S) => void;
+  reconcile?: (target: T, source: S) => void;
   dispose?: (target: T) => void;
 }): Record<string, T> {
   const { targets, sources, create, reconcile, dispose } = params;
@@ -85,12 +85,12 @@ export function reconcileMap<S, T>(params: {
     const src = sources[key];
     const existing = targets[key];
     if (existing !== undefined) {
-      reconcile(existing, src);
+      reconcile?.(existing, src);
       result[key] = existing;
       delete leftovers[key];
     } else {
       const next = create(src);
-      reconcile(next, src);
+      reconcile?.(next, src);
       result[key] = next;
     }
   }

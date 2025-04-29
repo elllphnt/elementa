@@ -18,6 +18,7 @@ export function attachSlotElement(
   ymap: y.Map<any>,
   component: Component
 ): SlotElement {
+  ymap.set("type", "slot");
   const element = attachBaseElement(ymap, component) as Extendable<SlotElement>;
 
   element.placeholder = attachElementList(

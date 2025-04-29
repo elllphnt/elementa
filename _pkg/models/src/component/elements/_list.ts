@@ -11,7 +11,7 @@ import { CssStyleSheet } from "../../css/_";
 import { Component } from "../component";
 import { Identifiable } from "../identifiable";
 import { createElement } from "./_create";
-import { Element } from "./element";
+import { attachBaseElement, Element } from "./element";
 
 export type ElementList = ReactiveList<Element<any>> & {
   allCssStylesheets: CssStyleSheet[];
@@ -25,7 +25,7 @@ export function attachElementList(
 ): ElementList {
   const rxList = createEnhancedReactiveList(
     yarray as y.Array<y.Map<any>>,
-    createElement,
+    attachBaseElement,
     (ymap) => createElement(ymap, component)
   );
   const list = rxList as ElementList;
@@ -34,6 +34,7 @@ export function attachElementList(
     get() {
       return [...rxList.toArray().flatMap((e) => e.allCssStylesheets)];
     },
+    configurable: true,
   });
   list.allCssStylesheets$ = rxList.observable$.pipe(
     switchMap((elements) =>

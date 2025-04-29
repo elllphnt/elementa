@@ -2,8 +2,8 @@ import { ContainerElement } from "@elllphnt/elementa-models";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable } from "rxjs";
 import { updateInstanceList } from "~/src/_lib/instances";
-import { makeElementInstance } from "~/src/_lib/make_element_instance";
-import { FragmentEnvironment } from "../fragment/environment";
+import { makeElementInstance } from "~/src/instances/elements/_create";
+import { FragmentEnvironment } from "../fragment/environment/environment";
 import { Instance } from "../instance";
 import { ElementInstance } from "./element";
 

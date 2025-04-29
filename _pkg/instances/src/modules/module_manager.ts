@@ -1,6 +1,5 @@
-import { Infrastructure } from "@elllphnt/elementa-models";
+import { Infrastructure, PackageData } from "@elllphnt/elementa-models";
 import { combineLatestOrEmpty, Disposable } from "@elllphnt/elementa-utils";
-import { PackageData } from "@repo/elementa-models/src/project/package_manager";
 import { BehaviorSubject, map, Observable } from "rxjs";
 import { JsxEmit, ScriptTarget, transpileModule } from "typescript";
 

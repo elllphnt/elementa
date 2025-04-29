@@ -20,7 +20,7 @@ import {
   TextElementInstance,
   VectorElementInstance,
 } from "~/src/instances/_";
-import { FragmentEnvironment } from "../instances/fragment/environment";
+import { FragmentEnvironment } from "../fragment/environment/environment";
 
 export function makeElementInstance({
   element,

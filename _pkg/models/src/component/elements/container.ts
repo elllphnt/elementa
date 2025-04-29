@@ -24,6 +24,7 @@ export function attachContainerElement(
   ymap: y.Map<any>,
   component: Component
 ): ContainerElement {
+  ymap.set("type", "container");
   const element = attachBaseElement(ymap, component) as ContainerElement;
 
   element.content = attachElementList(
@@ -35,6 +36,7 @@ export function attachContainerElement(
     get() {
       return [element.cssStyleSheet, ...element.content.allCssStylesheets];
     },
+    configurable: true,
   });
 
   element.allCssStylesheets$ = combineLatestOrEmpty([

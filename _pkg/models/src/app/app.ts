@@ -15,6 +15,8 @@ import { attachRoute, Route } from "./route"; // make sure Route is updated too
 import { AppVariable, attachAppVariable } from "./variable"; // make sure Variable is updated too
 
 export type App = ReactiveMap<AppData> & {
+  url: string;
+
   project: Project;
   routes: ReactiveList<Route>;
   variables: ReactiveList<AppVariable>;
@@ -30,11 +32,18 @@ export type App = ReactiveMap<AppData> & {
   getArrayEditorState(editorKey: string): y.Array<any>;
 };
 
-export function attachApp(ymap: y.Map<any>, project: Project): App {
+export function attachApp(
+  ymap: y.Map<any>,
+  project: Project,
+  { url }: { url: string }
+): App {
   const rxMap = attachReactiveMap<AppData>(ymap);
   const app = rxMap as App;
 
   // initialization
+  Object.defineProperty(app, "url", {
+    get: () => url,
+  });
   app.project = project;
   app.routes = createEnhancedReactiveList(
     getOrCreateYArray<y.Map<any>>(rxMap, "routes"),
@@ -110,7 +119,7 @@ export function attachApp(ymap: y.Map<any>, project: Project): App {
   return app;
 }
 
-export function createApp(project: Project): App {
+export function createApp(project: Project, { url }: { url: string }): App {
   const ymap = new y.Map<any>();
-  return attachApp(ymap, project);
+  return attachApp(ymap, project, { url });
 }

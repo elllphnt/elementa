@@ -12,7 +12,7 @@ import { SlotInstance, StateInstance } from "../_";
 import {
   ChildFragmentEnvironment,
   FragmentEnvironment,
-} from "../fragment/environment";
+} from "../fragment/environment/environment";
 import { FragmentInstance } from "../fragment/fragment";
 import { Instance } from "../instance";
 import { WidgetInstance } from "./widget";

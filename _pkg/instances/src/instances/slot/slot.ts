@@ -2,7 +2,7 @@ import { SlotElement } from "@elllphnt/elementa-models";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
 import { updateInstanceList } from "~/src/_lib/instances";
-import { makeElementInstance } from "~/src/_lib/make_element_instance";
+import { makeElementInstance } from "~/src/instances/elements/_create";
 import { ElementInstance, FragmentEnvironment } from "../_";
 import { Instance } from "../instance";
 import { SlotInstanceStyle } from "./style";

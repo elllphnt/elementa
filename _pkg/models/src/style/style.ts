@@ -167,10 +167,16 @@ export function attachStyle(
     style.observable$,
     fragmentRegistry.allFragments$,
   ]).subscribe(([value, fragments]) => {
-    const css = styleToCss(value, {
+    const [css, errors] = styleToCss(value, {
       getFragment: (type, id) =>
         fragments.find((f) => f.type === type && f.id === id) as any,
     });
+    if (errors) {
+      console.error(
+        "The following errors occurred while generating CSS:",
+        ...errors
+      );
+    }
     _css$.next(css);
   });
 

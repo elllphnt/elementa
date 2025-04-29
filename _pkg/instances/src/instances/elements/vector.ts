@@ -1,5 +1,5 @@
 import { VectorElement } from "@elllphnt/elementa-models";
-import { FragmentEnvironment } from "../fragment/environment";
+import { FragmentEnvironment } from "../fragment/environment/environment";
 import { Instance } from "../instance";
 import { ElementInstance } from "./element";
 

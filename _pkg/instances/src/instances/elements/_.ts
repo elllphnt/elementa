@@ -1,4 +1,4 @@
-export * from "./component";
+export * from "./component/component";
 export * from "./container";
 export * from "./element";
 export * from "./media";

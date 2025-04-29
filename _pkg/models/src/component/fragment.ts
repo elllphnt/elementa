@@ -46,7 +46,7 @@ export function attachFragment(
   fragment.variant = variant;
 
   fragment.content = attachElementList(
-    fragment.getOrCreateArray("content") as y.Array<y.Map<any>>,
+    getOrCreateYArray(ymap, "content"),
     component
   );
 
@@ -60,6 +60,7 @@ export function attachFragment(
     get() {
       return fragment.content.allCssStylesheets;
     },
+    configurable: true,
   });
 
   fragment.allCssStylesheets$ = fragment.content.allCssStylesheets$;
