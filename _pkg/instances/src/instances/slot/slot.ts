@@ -1,35 +1,38 @@
-import { SlotElement } from "@elllphnt/elementa-models";
-import { combineLatestOrEmpty } from "@elllphnt/elementa-utils";
-import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
-import { updateInstanceList } from "~/src/_lib/instances";
+import { reconcileList } from "@elllphnt/elementa-utils";
+import {
+  BehaviorSubject,
+  distinctUntilChanged,
+  map,
+  Observable,
+  of,
+  switchMap,
+} from "rxjs";
 import { makeElementInstance } from "~/src/instances/elements/_create";
 import { ElementInstance, FragmentEnvironment } from "../_";
-import { Instance } from "../instance";
-import { SlotInstanceStyle } from "./style";
+import { Instance, InstanceType } from "../instance";
+import { StyleSheetInstance } from "../stylesheet/stylesheet";
 
-export class SlotInstance extends Instance<SlotElement> {
+export class SlotInstance extends Instance {
   readonly environment: FragmentEnvironment;
-  private _styles: Map<string, SlotInstanceStyle> = new Map();
+  readonly slotId: string;
 
   private _content$ = new BehaviorSubject<ElementInstance[]>([]);
-
-  style(selector: string): SlotInstanceStyle {
-    let style = this._styles.get(selector);
-    if (!style) {
-      style = new SlotInstanceStyle({
-        slot: this,
-        selector,
-      });
-      this._styles.set(selector, style);
-    }
-    return style;
-  }
+  private _stylesheet$ = new BehaviorSubject<StyleSheetInstance | undefined>(
+    undefined
+  );
 
   get content$(): Observable<ElementInstance[]> {
     return this._content$;
   }
   get content(): ElementInstance[] {
     return this._content$.value;
+  }
+
+  get stylesheet$(): Observable<StyleSheetInstance | undefined> {
+    return this._stylesheet$;
+  }
+  get stylesheet(): StyleSheetInstance | undefined {
+    return this._stylesheet$.value;
   }
 
   get selector() {
@@ -42,53 +45,88 @@ export class SlotInstance extends Instance<SlotElement> {
   }
 
   get fill() {
-    return this.environment.slotFill(this.entity.id);
+    return this.environment.slotFill(this.slotId);
   }
   get fill$() {
-    return this.environment.slotFill$(this.entity.id);
+    return this.environment.slotFill$(this.slotId);
   }
 
   constructor({
-    element,
+    slotId,
     environment,
+    parent,
   }: {
-    element: SlotElement;
+    slotId: string;
     environment: FragmentEnvironment;
+    parent?: Instance;
   }) {
     super({
-      entity: element,
-      elementa: environment.elementa,
-      parent: null,
+      type: InstanceType.Slot,
+      runtime: environment.runtime,
+      parent,
     });
+    this.slotId = slotId;
     this.environment = environment;
 
-    const contentSubscription = combineLatestOrEmpty([
-      this.fill$.pipe(switchMap((slot) => slot?.content$ ?? of([]))),
-      this.fill$.pipe(
-        switchMap((slot) => slot?.contentExpression$ ?? of(undefined))
-      ),
-    ]).subscribe(([_content, contentExpression]) => {
-      const content = contentExpression ? [] : _content;
-      const newContent = updateInstanceList({
-        instances: this.content,
-        entities: content,
-        createInstance: (element) =>
-          makeElementInstance({
-            element,
-            environment: this.environment,
-            parent: this,
-          }),
+    const contentSubscription = this.fill$
+      .pipe(switchMap((fill) => fill?.content.observable$ ?? of([])))
+      .subscribe((content) => {
+        const [newContent, removed] = reconcileList({
+          sources: content,
+          targets: this.content,
+          sourceRef: (e) => e,
+          targetRef: (i) => i.element,
+          create: (element) =>
+            makeElementInstance({
+              element,
+              environment: this.environment,
+              parent: this,
+            }),
+        });
+        this._content$.next(newContent);
+        removed.forEach((instance) => {
+          instance.dispose();
+        });
       });
-      this._content$.next(newContent);
-    });
+
+    const stylesheetSubscription = this.fill$
+      .pipe(
+        map((fill) => fill?.cssStyleSheet.stylesheet),
+        distinctUntilChanged()
+      )
+      .subscribe((stylesheet) => {
+        const currentStylesheet = this.stylesheet;
+        if (stylesheet) {
+          this._stylesheet$.next(
+            new StyleSheetInstance({
+              stylesheet,
+              parent: this,
+              runtime: this.runtime,
+              cascadeResolver: {
+                getParentStylesheetInstance: () => undefined,
+              },
+            })
+          );
+        } else {
+          this._stylesheet$.next(undefined);
+        }
+
+        if (currentStylesheet) {
+          currentStylesheet.dispose();
+        }
+      });
 
     this.addDisposer(() => {
       contentSubscription.unsubscribe();
+      stylesheetSubscription.unsubscribe();
+
       this.content.forEach((instance) => instance.dispose());
       this._content$.next([]);
       this._content$.complete();
 
-      this._styles.forEach((style) => style.dispose());
+      this.stylesheet?.dispose();
+      this._stylesheet$.next(undefined);
+      this._stylesheet$.complete();
     });
   }
 }

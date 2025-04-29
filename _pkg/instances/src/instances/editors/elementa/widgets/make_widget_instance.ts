@@ -1,7 +1,7 @@
 import { entityTypes, switchEntityType } from "@elllphnt/elementa-base";
 import { FrameWidget, Widget } from "@elllphnt/elementa-models";
-import { Elementa } from "../elementa";
-import { FrameWidgetInstance, Instance, WidgetInstance } from "../instances/_";
+import { Runtime } from "../../../../runtime/runtime";
+import { FrameWidgetInstance, Instance, WidgetInstance } from "../../../_";
 
 export function makeWidgetInstance({
   widget,
@@ -9,7 +9,7 @@ export function makeWidgetInstance({
   parent,
 }: {
   widget: Widget;
-  elementa: Elementa;
+  elementa: Runtime;
   parent: Instance | null;
 }): WidgetInstance {
   return switchEntityType<WidgetInstance>(widget.type, {

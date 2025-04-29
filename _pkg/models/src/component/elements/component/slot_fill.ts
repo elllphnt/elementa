@@ -11,6 +11,7 @@ import * as y from "yjs";
 import { CssStyleSheet, StylesheetCssStyleSheet } from "../../../css/_";
 import { attachStylesheet } from "../../../style/stylesheet";
 import { Component } from "../../component";
+import { Fragment } from "../../fragment";
 import { attachElementList, ElementList } from "../_list";
 
 export type SlotFill = ReturnType<typeof attachReactiveMap<SlotFillData>> & {
@@ -33,27 +34,24 @@ export type SlotFill = ReturnType<typeof attachReactiveMap<SlotFillData>> & {
   cloneIds(clone: y.Map<any>): void;
 };
 
-export function attachSlotFill(
-  ymap: y.Map<any>,
-  component: Component
-): SlotFill {
+export function attachSlotFill(ymap: y.Map<any>, fragment: Fragment): SlotFill {
   const slot = attachReactiveMap<SlotFillData>(
     ymap as Extendable<y.Map<any>>
   ) as Extendable<SlotFill>;
 
-  slot.component = component;
+  slot.component = fragment.component;
 
   slot.cssStyleSheet = new StylesheetCssStyleSheet({
     target: `slot-fill`,
     stylesheet: attachStylesheet(
       getOrCreateYMap(slot, "stylesheet"),
-      component.project
+      fragment.component.project
     ),
   });
 
   slot.content = attachElementList(
     getOrCreateYArray(slot, "content"),
-    component
+    fragment
   );
 
   Object.defineProperty(slot, "allCssStylesheets", {
@@ -110,7 +108,7 @@ export function attachSlotFill(
   return slot as SlotFill;
 }
 
-export function createSlotFill(component: Component): SlotFill {
+export function createSlotFill(fragment: Fragment): SlotFill {
   const ymap = new y.Map<any>();
-  return attachSlotFill(ymap, component);
+  return attachSlotFill(ymap, fragment);
 }

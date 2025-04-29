@@ -1,28 +1,35 @@
 import { Component } from "@elllphnt/elementa-models";
-import { FragmentInstance, Instance } from "../_";
-import { FragmentEnvironment } from "../fragment/environment/environment";
+import { FragmentInstance, Instance, InstanceType } from "../_";
 import { ComponentInstanceFragmentEnvironment } from "./fragment_environment";
 import { ComponentPropResolver } from "./prop_resolver";
 
 export class ComponentInstance extends Instance {
-  readonly environment: FragmentEnvironment;
+  readonly component: Component;
+  readonly fragmentEnvironment: ComponentInstanceFragmentEnvironment;
   readonly template: FragmentInstance;
 
   constructor({
     component,
     propResolver,
+    parent,
   }: {
     component: Component;
     propResolver: ComponentPropResolver;
+    parent?: Instance;
   }) {
-    super(propResolver.environment.elementa);
-    this.environment = new ComponentInstanceFragmentEnvironment({
-      component,
+    super({
+      type: InstanceType.Component,
+      runtime: propResolver.environment.runtime,
+      parent,
+    });
+    this.component = component;
+    this.fragmentEnvironment = new ComponentInstanceFragmentEnvironment({
+      componentInstance: this,
       propResolver,
     });
 
     this.template = new FragmentInstance({
-      environment: this.environment,
+      environment: this.fragmentEnvironment,
       fragment: component.template,
     });
   }

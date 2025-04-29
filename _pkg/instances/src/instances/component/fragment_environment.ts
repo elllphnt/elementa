@@ -1,26 +1,18 @@
 import { StateData, StyleModifierData } from "@elllphnt/elementa-base";
-import {
-  Component,
-  DataInput,
-  SlotFill,
-  State,
-} from "@elllphnt/elementa-models";
+import { DataInput, SlotFill, State } from "@elllphnt/elementa-models";
+import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, map, Observable, of } from "rxjs";
-import { FragmentInstance, SlotInstance, StateInstance } from "../_";
+import { ComponentInstance, FragmentInstance, StateInstance } from "../_";
 import { FragmentEnvironment } from "../fragment/environment/environment";
+import { createStateInstance } from "../states/_create";
 import { ComponentPropResolver } from "./prop_resolver";
 
 export class ComponentInstanceFragmentEnvironment extends FragmentEnvironment {
   readonly propResolver: ComponentPropResolver;
-  readonly component: Component;
+  readonly componentInstance: ComponentInstance;
 
   private _states$ = new BehaviorSubject<StateInstance[]>([]);
   private _fragments$ = new BehaviorSubject<FragmentInstance[]>([]);
-  private _slots$ = new BehaviorSubject<SlotInstance[]>([]);
-
-  get id(): string {
-    return `component-instance-fragment-environment-${this.component.url}`;
-  }
 
   slotFill(id: string): SlotFill | undefined {
     return this.propResolver.slotFill(id);
@@ -46,12 +38,12 @@ export class ComponentInstanceFragmentEnvironment extends FragmentEnvironment {
   get componentStack(): string[] {
     return [
       ...this.propResolver.environment.componentStack,
-      this.component.url,
+      this.componentInstance.component.url,
     ];
   }
   get componentStack$(): Observable<string[]> {
     return this.propResolver.environment.componentStack$.pipe(
-      map((stack) => [...stack, this.component.url])
+      map((stack) => [...stack, this.componentInstance.component.url])
     );
   }
   get styleModifiers(): StyleModifierData[] {
@@ -69,16 +61,10 @@ export class ComponentInstanceFragmentEnvironment extends FragmentEnvironment {
     return this._states$.asObservable();
   }
   get props(): DataInput[] {
-    return this.component.props.toArray();
+    return this.componentInstance.component.props.toArray();
   }
   get props$(): Observable<DataInput[]> {
-    return this.component.props.observable$;
-  }
-  get slots(): SlotInstance[] {
-    return this._slots$.value;
-  }
-  get slots$(): Observable<SlotInstance[]> {
-    return this._slots$.asObservable();
+    return this.componentInstance.component.props.observable$;
   }
   get fragments(): FragmentInstance[] {
     return this._fragments$.value;
@@ -88,17 +74,71 @@ export class ComponentInstanceFragmentEnvironment extends FragmentEnvironment {
   }
 
   constructor({
-    component,
+    componentInstance,
     propResolver,
   }: {
-    component: Component;
+    componentInstance: ComponentInstance;
     propResolver: ComponentPropResolver;
   }) {
-    super({
-      elementa: propResolver.environment.elementa,
-    });
+    super({ runtime: propResolver.environment.runtime });
+    this.componentInstance = componentInstance;
 
-    this.component = component;
     this.propResolver = propResolver;
+
+    const statesSubscription =
+      this.componentInstance.component.states.observable$.subscribe(
+        (states) => {
+          const [newStates, removed] = reconcileList({
+            targets: this.states,
+            sources: states,
+            sourceRef: (s) => s,
+            targetRef: (i) => i.state,
+            create: (state) =>
+              createStateInstance({
+                state,
+                parent: this.componentInstance,
+                runtime: this.runtime,
+              }),
+          });
+
+          this._states$.next(newStates);
+          removed.forEach((s) => s.dispose());
+        }
+      );
+
+    // --- Reconcile fragments ---
+    const fragmentsSubscription =
+      this.componentInstance.component.fragments.observable$.subscribe(
+        (fragments) => {
+          const [newFragments, removed] = reconcileList({
+            targets: this.fragments,
+            sources: fragments,
+            sourceRef: (f) => f,
+            targetRef: (i) => i.fragment,
+            create: (fragment) =>
+              new FragmentInstance({
+                fragment,
+                environment: this,
+                parent: undefined,
+              }),
+          });
+
+          this._fragments$.next(newFragments);
+          removed.forEach((f) => f.dispose());
+        }
+      );
+
+    this.addDisposer(() => {
+      statesSubscription.unsubscribe();
+      fragmentsSubscription.unsubscribe();
+
+      this._states$.value.forEach((s) => s.dispose());
+      this._states$.next([]);
+      this._states$.complete();
+
+      this._fragments$.value.forEach((f) => f.dispose());
+      this._fragments$.next([]);
+      this._fragments$.complete();
+    });
   }
 }

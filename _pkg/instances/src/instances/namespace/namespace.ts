@@ -1,8 +1,7 @@
 import { Expression, isExpression } from "@elllphnt/elementa-base";
-import _ from "lodash";
+import { get, set } from "./utils";
 
 const expressionRegex = /\{\{([^}]*\}?[^}]*)\}\}/;
-const twoSlashRegex = /^(\/\/\w+:\w+)/;
 
 export function evaluateExpressionSafely(
   expression: string,
@@ -27,70 +26,52 @@ export class Namespace {
   key = Namespace.key++;
 
   content: object;
-  twoSlashMap: Record<string, string> = {};
 
-  constructor(content?: object, twoSlashMap?: Record<string, string>) {
+  constructor(content?: object) {
     this.content = {
       Math,
       JSON,
-
       ...content,
-    };
-    this.twoSlashMap = {
-      ...twoSlashMap,
     };
   }
 
   get<T>(key: string | string[]) {
-    return _.get(this.content, key) as T | undefined;
+    return get(this.content, key) as T | undefined;
   }
+
   set(key: string | string[], value: any) {
-    _.set(this.content, key, value);
+    set(this.content, key, value);
   }
+
   setContent(content: object) {
-    this.content = content;
-  }
-  setTwoSlash(pattern: string, name: string) {
-    this.twoSlashMap[pattern] = name;
+    this.content = {
+      Math,
+      JSON,
+      ...content,
+    };
   }
 
   static extractExpressionsFromString(str: string): string[] {
-    const expressions =
+    return (
       str.match(expressionRegex)?.map((match) => match.slice(2, -2).trim()) ??
-      [];
-    return expressions;
+      []
+    );
   }
+
   resolveString(str: string, missingValue?: string): string {
     const result = str.replace(expressionRegex, (match, expression) => {
       const value = this.resolveExpression({
         __expression: expression,
       });
-      if (value !== undefined && value !== null) {
-        return value.toString();
-      } else {
-        return missingValue ?? "";
-      }
+      return value != null ? value.toString() : missingValue ?? "";
     });
 
-    // clean up escaped brackets
     return result.replace(/\\{/g, "{").replace(/\\}/g, "}");
-  }
-
-  resolveTwoSlash(str: string): any {
-    const pattern = str.match(twoSlashRegex)?.[0];
-    if (!pattern) {
-      return undefined;
-    }
-    const name = this.twoSlashMap[pattern];
-    const path = str.replace(pattern, name);
-    return this.get(path);
   }
 
   resolveExpression(expression: Expression) {
     if (!expression.__expression) return undefined;
-    if (twoSlashRegex.test(expression.__expression)) {
-      return this.resolveTwoSlash(expression.__expression);
-    }
+
     try {
       return evaluateExpressionSafely(expression.__expression, this.content);
     } catch (e) {

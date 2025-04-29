@@ -226,4 +226,7 @@ export class ModuleManager extends Disposable {
       }
     }
   }
+  async getModule<T>(url: string): Promise<T | undefined> {
+    throw new Error("getModule is not implemented.");
+  }
 }

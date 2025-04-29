@@ -7,10 +7,6 @@ import { FragmentEnvironment } from "./environment";
  * or default values.
  */
 export class DefaultFragmentEnvironment extends FragmentEnvironment {
-  get id() {
-    return "default";
-  }
-
   get componentStack() {
     return [];
   }
@@ -36,13 +32,6 @@ export class DefaultFragmentEnvironment extends FragmentEnvironment {
     return [];
   }
   get props$() {
-    return of([]);
-  }
-
-  get slots() {
-    return [];
-  }
-  get slots$() {
     return of([]);
   }
 

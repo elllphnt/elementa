@@ -1,4 +1,3 @@
-import { entityTypes, switchEntityType } from "@elllphnt/elementa-base";
 import {
   ComponentElement,
   ContainerElement,
@@ -9,6 +8,7 @@ import {
   TextElement,
   VectorElement,
 } from "@elllphnt/elementa-models";
+
 import {
   ComponentElementInstance,
   ContainerElementInstance,
@@ -20,6 +20,7 @@ import {
   TextElementInstance,
   VectorElementInstance,
 } from "~/src/instances/_";
+
 import { FragmentEnvironment } from "../fragment/environment/environment";
 
 export function makeElementInstance({
@@ -29,50 +30,59 @@ export function makeElementInstance({
 }: {
   element: Element;
   environment: FragmentEnvironment;
-  parent: Instance | null;
+  parent?: Instance;
 }): ElementInstance {
-  return switchEntityType(element.type, {
-    [entityTypes.elements.component]: () =>
-      new ComponentElementInstance({
-        element: element as ComponentElement,
-        environment,
-        parent,
-      }) as ElementInstance,
-    [entityTypes.elements.primitive]: () =>
-      new PrimitiveElementInstance({
-        element: element as PrimitiveElement,
-        environment,
-        parent,
-      }) as ElementInstance,
-    [entityTypes.elements.container]: () =>
-      new ContainerElementInstance({
+  switch (element.type) {
+    case "container":
+      return new ContainerElementInstance({
         element: element as ContainerElement,
         environment,
         parent,
-      }),
-    [entityTypes.elements.slot]: () =>
-      new SlotElementInstance({
-        element: element as SlotElement,
+      });
+
+    case "component":
+      return new ComponentElementInstance({
+        element: element as ComponentElement,
         environment,
         parent,
-      }),
-    [entityTypes.elements.media]: () =>
-      new MediaElementInstance({
+      });
+
+    case "media":
+      return new MediaElementInstance({
         element: element as MediaElement,
         environment,
         parent,
-      }),
-    [entityTypes.elements.text]: () =>
-      new TextElementInstance({
+      });
+
+    case "primitive":
+      return new PrimitiveElementInstance({
+        element: element as PrimitiveElement,
+        environment,
+        parent,
+      });
+
+    case "slot":
+      return new SlotElementInstance({
+        element: element as SlotElement,
+        environment,
+        parent,
+      });
+
+    case "text":
+      return new TextElementInstance({
         element: element as TextElement,
         environment,
         parent,
-      }),
-    [entityTypes.elements.vector]: () =>
-      new VectorElementInstance({
+      });
+
+    case "vector":
+      return new VectorElementInstance({
         element: element as VectorElement,
         environment,
         parent,
-      }),
-  });
+      });
+
+    default:
+      throw new Error(`Unknown element type: ${(element as any).type}`);
+  }
 }

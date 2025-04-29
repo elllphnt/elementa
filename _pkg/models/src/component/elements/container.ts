@@ -6,7 +6,7 @@ import {
 } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
 import * as y from "yjs";
-import { Component } from "../component";
+import { Fragment } from "../fragment";
 import { attachElementList, ElementList } from "./_list";
 import { attachBaseElement, Element } from "./element";
 
@@ -22,14 +22,14 @@ export type ContainerElement = Element<ContainerElementData> & {
  */
 export function attachContainerElement(
   ymap: y.Map<any>,
-  component: Component
+  fragment: Fragment
 ): ContainerElement {
   ymap.set("type", "container");
-  const element = attachBaseElement(ymap, component) as ContainerElement;
+  const element = attachBaseElement(ymap, fragment) as ContainerElement;
 
   element.content = attachElementList(
     getOrCreateYArray(ymap, "content"),
-    component
+    fragment
   );
 
   Object.defineProperty(element, "allCssStylesheets", {
@@ -38,7 +38,6 @@ export function attachContainerElement(
     },
     configurable: true,
   });
-
   element.allCssStylesheets$ = combineLatestOrEmpty([
     element.content.allCssStylesheets$,
   ]).pipe(
@@ -61,7 +60,7 @@ export function attachContainerElement(
   return element as ContainerElement;
 }
 
-export function createContainerElement(component: Component): ContainerElement {
+export function createContainerElement(fragment: Fragment): ContainerElement {
   const ymap = new y.Map<any>();
-  return attachContainerElement(ymap, component);
+  return attachContainerElement(ymap, fragment);
 }

@@ -1,5 +1,3 @@
-// utils.pkg/src/core/reconciliation.ts
-
 /**
  * Synchronize a list of target items with a new list of source items.
  *
@@ -19,9 +17,9 @@
  * @param params.targetRef  - Function mapping a target to its reference key
  * @param params.create     - Factory to create a target from a source
  * @param params.reconcile  - Function to reconcile an existing or new target with a source
- * @param params.dispose?   - Optional callback to dispose an unmatched target
  *
- * @returns The updated list of targets, in the same order as `sources`.
+ * @returns The updated list of targets and a list of removed targets
+ * @returns [newTargets, removedTargets]
  */
 export function reconcileList<S, T, R>(params: {
   targets: T[];
@@ -30,10 +28,8 @@ export function reconcileList<S, T, R>(params: {
   targetRef: (target: T) => R;
   create: (source: S) => T;
   reconcile?: (target: T, source: S) => void;
-  dispose?: (target: T) => void;
-}): T[] {
-  const { targets, sources, sourceRef, targetRef, create, reconcile, dispose } =
-    params;
+}): [T[], T[]] {
+  const { targets, sources, sourceRef, targetRef, create, reconcile } = params;
 
   const map = new Map<R, T>();
   for (const t of targets) {
@@ -60,11 +56,9 @@ export function reconcileList<S, T, R>(params: {
     }
   }
 
-  if (dispose) {
-    map.forEach(dispose);
-  }
+  const removedTargets = Array.from(map.values());
 
-  return newTargets;
+  return [newTargets, removedTargets];
 }
 
 /* reconcileMap remains unchanged, but for reference: */
@@ -72,11 +66,10 @@ export function reconcileList<S, T, R>(params: {
 export function reconcileMap<S, T>(params: {
   targets: Record<string, T>;
   sources: Record<string, S>;
-  create: (source: S) => T;
+  create: (source: S, key: string) => T;
   reconcile?: (target: T, source: S) => void;
-  dispose?: (target: T) => void;
-}): Record<string, T> {
-  const { targets, sources, create, reconcile, dispose } = params;
+}): [Record<string, T>, Record<string, T>] {
+  const { targets, sources, create, reconcile } = params;
 
   const leftovers: Record<string, T> = { ...targets };
   const result: Record<string, T> = {} as Record<string, T>;
@@ -89,17 +82,11 @@ export function reconcileMap<S, T>(params: {
       result[key] = existing;
       delete leftovers[key];
     } else {
-      const next = create(src);
+      const next = create(src, key);
       reconcile?.(next, src);
       result[key] = next;
     }
   }
 
-  if (dispose) {
-    for (const key in leftovers) {
-      dispose(leftovers[key]);
-    }
-  }
-
-  return result;
+  return [result, leftovers];
 }

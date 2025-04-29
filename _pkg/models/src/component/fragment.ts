@@ -6,7 +6,7 @@ import {
   ReactiveList,
   setEnhancer,
 } from "@elllphnt/elementa-utils";
-import { Observable } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import * as y from "yjs";
 import { CssStyleSheet } from "../css/_";
 import { Component } from "./component";
@@ -28,6 +28,12 @@ export type Fragment = Identifiable<FragmentData> & {
 
   allCssStylesheets: CssStyleSheet[];
   allCssStylesheets$: Observable<CssStyleSheet[]>;
+
+  slotIds: string[];
+  slotIds$: Observable<string[]>;
+
+  registerSlotId: (id: string) => void;
+  unregisterSlotId: (id: string) => void;
 };
 
 /**
@@ -47,7 +53,7 @@ export function attachFragment(
 
   fragment.content = attachElementList(
     getOrCreateYArray(ymap, "content"),
-    component
+    fragment
   );
 
   fragment.params = createEnhancedReactiveList(
@@ -65,13 +71,35 @@ export function attachFragment(
 
   fragment.allCssStylesheets$ = fragment.content.allCssStylesheets$;
 
-  fragment.cloneIds = (clone: y.Map<any>) => {
-    fragment.cloneOwnId(clone);
-    fragment.content.cloneIds(getOrCreateYArray(clone, "content"));
+  // --- Slot Registry ---
+
+  const slotIdSet = new Set<string>();
+  const _slotIds$ = new BehaviorSubject<string[]>([]);
+
+  fragment.slotIds$ = _slotIds$.asObservable();
+  Object.defineProperty(fragment, "slotIds", {
+    get() {
+      return _slotIds$.value;
+    },
+  });
+
+  fragment.registerSlotId = (id: string) => {
+    if (!slotIdSet.has(id)) {
+      slotIdSet.add(id);
+      _slotIds$.next(Array.from(slotIdSet));
+    }
   };
 
+  fragment.unregisterSlotId = (id: string) => {
+    if (slotIdSet.delete(id)) {
+      _slotIds$.next(Array.from(slotIdSet));
+    }
+  };
+
+  // --- Disposal ---
   const baseDispose = (fragment as any).dispose?.bind(fragment);
   fragment.dispose = () => {
+    _slotIds$.complete();
     fragment.content.dispose();
     fragment.params.dispose();
     if (baseDispose) baseDispose();

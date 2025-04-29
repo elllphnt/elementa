@@ -14,6 +14,7 @@ import { filter, map, Observable, switchMap, tap } from "rxjs";
 import * as y from "yjs";
 import { ResolvableRecord } from "../../../_lib/resolvable";
 import { Component } from "../../component";
+import { Fragment } from "../../fragment";
 import { Identifiable } from "../../identifiable";
 import { attachBaseElement, Element } from "../element";
 import { attachSlotFill, createSlotFill, SlotFill } from "./slot_fill";
@@ -53,24 +54,24 @@ export type ComponentElement = Element<ComponentElementData> & {
  */
 export function attachComponentElement(
   ymap: y.Map<any>,
-  component: Component
+  fragment: Fragment
 ): ComponentElement {
   ymap.set("type", "component");
 
-  const element = attachBaseElement(ymap, component);
+  const element = attachBaseElement(ymap, fragment);
   const componentElement = element as ComponentElement;
 
   componentElement.fills = createEnhancedReactiveMap(
     getOrCreateYMap<y.Map<any>>(element, "fills"),
     attachSlotFill,
-    (ymap) => attachSlotFill(ymap, component)
+    (ymap) => attachSlotFill(ymap, fragment)
   );
 
   setModelFields(componentElement, ["componentUrl"]);
 
   const _props = new ResolvableRecord(
     (componentElement.get("props") as {}) ?? {},
-    component.project.infrastructure
+    fragment.component.project.infrastructure
   );
 
   const propsSubscription = _props.subscribe(
@@ -105,8 +106,8 @@ export function attachComponentElement(
   Object.defineProperty(componentElement, "absoluteComponentUrl", {
     get() {
       return componentElement.componentUrl
-        ? componentElement.component.project.infrastructure.fileSystem.getAbsoluteFileUrl(
-            componentElement.component.url,
+        ? fragment.component.project.infrastructure.fileSystem.getAbsoluteFileUrl(
+            fragment.component.url,
             componentElement.componentUrl
           )
         : undefined;
@@ -116,8 +117,8 @@ export function attachComponentElement(
   componentElement.absoluteComponentUrl$ = componentElement.componentUrl$.pipe(
     map((url) => {
       return url
-        ? componentElement.component.project.infrastructure.fileSystem.getAbsoluteFileUrl(
-            componentElement.component.url,
+        ? fragment.component.project.infrastructure.fileSystem.getAbsoluteFileUrl(
+            fragment.component.url,
             url
           )
         : undefined;
@@ -127,7 +128,7 @@ export function attachComponentElement(
   Object.defineProperty(componentElement, "localComponent", {
     get() {
       return componentElement.absoluteComponentUrl
-        ? componentElement.component.project.componentManager.component(
+        ? fragment.component.project.componentManager.component(
             componentElement.absoluteComponentUrl
           )
         : undefined;
@@ -138,7 +139,7 @@ export function attachComponentElement(
     componentElement.absoluteComponentUrl$.pipe(
       map((url) => {
         return url
-          ? componentElement.component.project.componentManager.component(url)
+          ? fragment.component.project.componentManager.component(url)
           : undefined;
       })
     );
@@ -190,7 +191,7 @@ export function attachComponentElement(
   componentElement.fill = (id: string, create?: true) => {
     let item = componentElement.fills.get(id);
     if (!item && create) {
-      componentElement.fills.set(id, createSlotFill(component));
+      componentElement.fills.set(id, createSlotFill(fragment));
       item = componentElement.fills.get(id);
     }
     return item!;
@@ -201,7 +202,7 @@ export function attachComponentElement(
       map((fills) => fills[id]),
       tap((item) => {
         if (!item && create) {
-          componentElement.fills.set(id, createSlotFill(component));
+          componentElement.fills.set(id, createSlotFill(fragment));
         }
       }),
       filter((item) => !!item || !create)
@@ -232,7 +233,7 @@ export function attachComponentElement(
 /**
  * Create a new local ComponentElement model
  */
-export function createComponentElement(component: Component): ComponentElement {
+export function createComponentElement(fragment: Fragment): ComponentElement {
   const ymap = new y.Map<any>();
-  return attachComponentElement(ymap, component);
+  return attachComponentElement(ymap, fragment);
 }

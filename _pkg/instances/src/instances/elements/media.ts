@@ -13,14 +13,12 @@ export class MediaElementInstance<
   }: {
     element: E;
     environment: FragmentEnvironment;
-    parent: Instance | null;
+    parent?: Instance;
   }) {
     super({
       element,
       environment,
       parent,
     });
-
-    this.addDisposer(() => {});
   }
 }

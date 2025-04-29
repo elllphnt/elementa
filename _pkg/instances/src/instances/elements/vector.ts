@@ -11,14 +11,12 @@ export class VectorElementInstance extends ElementInstance<VectorElement> {
   }: {
     element: VectorElement;
     environment: FragmentEnvironment;
-    parent: Instance | null;
+    parent?: Instance;
   }) {
     super({
       element,
       environment,
       parent,
     });
-
-    this.addDisposer(() => {});
   }
 }

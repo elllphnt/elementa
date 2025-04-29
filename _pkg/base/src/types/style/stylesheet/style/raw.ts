@@ -56,7 +56,7 @@ export type UnsettableMap<T> = {
 /**
  * A style data object that contains completely resolved values without any references.
  */
-export type RawStyleData = UnsettableMap<{
+export type RawStyleData = {
   // position
   "position"?: PositionValue;
   "top"?: LengthOrPercentData;
@@ -173,4 +173,4 @@ export type RawStyleData = UnsettableMap<{
   "transition-duration"?: DurationData;
   "transition-timing-function"?: string;
   "transition-delay"?: DurationData;
-}>;
+};

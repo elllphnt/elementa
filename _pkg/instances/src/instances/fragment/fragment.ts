@@ -3,7 +3,8 @@ import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, combineLatest, Observable } from "rxjs";
 import { makeElementInstance } from "~/src/instances/elements/_create";
 import { ElementInstance } from "../elements/element";
-import { Instance } from "../instance";
+import { Instance, InstanceType } from "../instance";
+import { SlotInstance } from "../slot/slot";
 import { FragmentEnvironment } from "./environment/environment";
 
 export class FragmentInstance extends Instance {
@@ -11,6 +12,7 @@ export class FragmentInstance extends Instance {
   readonly environment: FragmentEnvironment;
 
   private _content$ = new BehaviorSubject<ElementInstance[]>([]);
+  private _slots$ = new BehaviorSubject<SlotInstance[]>([]);
   private _recursion$ = new BehaviorSubject<string | undefined>(undefined);
 
   get content$(): Observable<ElementInstance[]> {
@@ -18,6 +20,13 @@ export class FragmentInstance extends Instance {
   }
   get content(): ElementInstance[] {
     return this._content$.value;
+  }
+
+  get slots$(): Observable<SlotInstance[]> {
+    return this._slots$.asObservable();
+  }
+  get slots(): SlotInstance[] {
+    return this._slots$.value;
   }
 
   get recursion$() {
@@ -30,11 +39,17 @@ export class FragmentInstance extends Instance {
   constructor({
     fragment,
     environment,
+    parent,
   }: {
     fragment: Fragment;
     environment: FragmentEnvironment;
+    parent?: Instance;
   }) {
-    super(environment.elementa);
+    super({
+      type: InstanceType.Fragment,
+      runtime: environment.runtime,
+      parent,
+    });
     this.fragment = fragment;
     this.environment = environment;
 
@@ -43,7 +58,7 @@ export class FragmentInstance extends Instance {
       this.environment.componentStack$,
     ]).subscribe(([content, componentStack]) => {
       const recursion = this.resolveRecursion(componentStack);
-      const newContent = reconcileList({
+      const [newContent, removed] = reconcileList({
         sources: recursion ? [] : content,
         targets: this.content,
         sourceRef: (e) => e,
@@ -54,11 +69,32 @@ export class FragmentInstance extends Instance {
             environment: this.environment,
             parent: this,
           }),
-        dispose: (i) => i.dispose(),
-      }) as ElementInstance[];
+      });
 
       this._content$.next(newContent);
       this._recursion$.next(recursion);
+      removed.forEach((instance) => {
+        instance.dispose();
+      });
+    });
+
+    const slotsSubscription = this.fragment.slotIds$.subscribe((slots) => {
+      const [newSlots, removed] = reconcileList({
+        targets: this.slots,
+        sources: slots,
+        sourceRef: (s) => s,
+        targetRef: (s) => s.slotId,
+        create: (slot) =>
+          new SlotInstance({
+            slotId: slot,
+            environment: this.environment,
+            parent: this,
+          }),
+      });
+      this._slots$.next(newSlots);
+      removed.forEach((instance) => {
+        instance.dispose();
+      });
     });
 
     this.addDisposer(() => {
@@ -66,6 +102,11 @@ export class FragmentInstance extends Instance {
       this.content.forEach((instance) => instance.dispose());
       this._content$.next([]);
       this._content$.complete();
+
+      slotsSubscription.unsubscribe();
+      this.slots.forEach((instance) => instance.dispose());
+      this._slots$.next([]);
+      this._slots$.complete();
     });
   }
 

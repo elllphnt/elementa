@@ -1,6 +1,6 @@
 import { Route, SlotFill } from "@elllphnt/elementa-models";
 import { BehaviorSubject, Observable, of, switchMap } from "rxjs";
-import { FragmentEnvironment, Instance } from "../_";
+import { FragmentEnvironment, Instance, InstanceType } from "../_";
 import { ComponentInstance } from "../component/component";
 import { ComponentPropResolver } from "../component/prop_resolver";
 
@@ -65,24 +65,24 @@ export class RouteInstance extends Instance {
 
   get loaderModule() {
     const url = this.route.absoluteLoaderUrl;
-    return url ? this.elementa.moduleManager.module(url) : undefined;
+    return url ? this.runtime.moduleManager.module(url) : undefined;
   }
   get loaderModule$() {
     return this.route.absoluteLoaderUrl$.pipe(
       switchMap((url) => {
-        return url ? this.elementa.moduleManager.module$(url) : of(undefined);
+        return url ? this.runtime.moduleManager.module$(url) : of(undefined);
       })
     );
   }
 
   get handlerModule() {
     const url = this.route.absoluteHandlerUrl;
-    return url ? this.elementa.moduleManager.module(url) : undefined;
+    return url ? this.runtime.moduleManager.module(url) : undefined;
   }
   get handlerModule$() {
     return this.route.absoluteHandlerUrl$.pipe(
       switchMap((url) => {
-        return url ? this.elementa.moduleManager.module$(url) : of(undefined);
+        return url ? this.runtime.moduleManager.module$(url) : of(undefined);
       })
     );
   }
@@ -90,11 +90,17 @@ export class RouteInstance extends Instance {
   constructor({
     environment,
     route,
+    parent,
   }: {
     environment: FragmentEnvironment;
     route: Route;
+    parent?: Instance;
   }) {
-    super(environment.elementa);
+    super({
+      type: InstanceType.Route,
+      runtime: environment.runtime,
+      parent,
+    });
     this.route = route;
 
     const viewSubscriptions = (

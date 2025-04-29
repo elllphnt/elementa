@@ -1,6 +1,6 @@
 import { ElementData } from "@elllphnt/elementa-base";
 import * as y from "yjs";
-import { Component } from "../component";
+import { Fragment } from "../fragment";
 import { attachPrimitiveElement } from "./_";
 import { attachComponentElement } from "./component/_";
 import { Element } from "./element";
@@ -11,24 +11,24 @@ import { attachVectorElement } from "./vector";
 
 export function createElement(
   ymap: y.Map<any>,
-  component: Component
+  fragment: Fragment
 ): Element<any> {
   const type = ymap.get("type") as ElementData["type"];
   switch (type) {
     case "component":
-      return attachComponentElement(ymap, component);
+      return attachComponentElement(ymap, fragment);
     case "container":
-      return attachComponentElement(ymap, component);
+      return attachComponentElement(ymap, fragment);
     case "slot":
-      return attachSlotElement(ymap, component);
+      return attachSlotElement(ymap, fragment);
     case "text":
-      return attachTextElement(ymap, component);
+      return attachTextElement(ymap, fragment);
     case "vector":
-      return attachVectorElement(ymap, component);
+      return attachVectorElement(ymap, fragment);
     case "media":
-      return attachMediaElement(ymap, component);
+      return attachMediaElement(ymap, fragment);
     case "primitive":
-      return attachPrimitiveElement(ymap, component);
+      return attachPrimitiveElement(ymap, fragment);
     default:
       throw new Error(`Unknown element type: ${type}`);
   }

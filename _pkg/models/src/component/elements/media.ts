@@ -6,7 +6,7 @@ import {
 } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import * as y from "yjs";
-import { Component } from "../component";
+import { Fragment } from "../fragment";
 import { attachBaseElement, Element } from "./element";
 
 export type MediaElement = Element<MediaElementData> & {
@@ -22,13 +22,10 @@ export type MediaElement = Element<MediaElementData> & {
 
 export function attachMediaElement(
   ymap: y.Map<any>,
-  component: Component
+  fragment: Fragment
 ): MediaElement {
   ymap.set("type", "media");
-  const element = attachBaseElement(
-    ymap,
-    component
-  ) as Extendable<MediaElement>;
+  const element = attachBaseElement(ymap, fragment) as Extendable<MediaElement>;
 
   setModelFields(element, ["media", "fit", "position"]);
 
@@ -36,7 +33,7 @@ export function attachMediaElement(
   return element as MediaElement;
 }
 
-export function createMediaElement(component: Component): MediaElement {
+export function createMediaElement(fragment: Fragment): MediaElement {
   const ymap = new y.Map<any>();
-  return attachMediaElement(ymap, component);
+  return attachMediaElement(ymap, fragment);
 }

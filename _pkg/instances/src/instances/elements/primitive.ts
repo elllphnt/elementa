@@ -1,16 +1,14 @@
-import { PrimitiveConfig } from "@elllphnt/elementa-base";
+import { PrimitiveConfig, PrimitiveElementData } from "@elllphnt/elementa-base";
 import { PrimitiveElement } from "@elllphnt/elementa-models";
+import { reconcileList } from "@elllphnt/elementa-utils";
 import {
   BehaviorSubject,
   combineLatest,
-  filter,
-  first,
   map,
   Observable,
   of,
   switchMap,
 } from "rxjs";
-import { updateInstanceList } from "~/src/_lib/instances";
 import { makeElementInstance } from "~/src/instances/elements/_create";
 import { FragmentEnvironment } from "../fragment/environment/environment";
 import { Instance } from "../instance";
@@ -27,13 +25,13 @@ export class PrimitiveElementInstance extends ElementInstance<PrimitiveElement> 
   }
 
   get module() {
-    if (!this.entity.absoluteModuleUrl) return undefined;
-    return this.elementa.moduleManager.module(this.entity.absoluteModuleUrl);
+    if (!this.element.absoluteModuleUrl) return undefined;
+    return this.runtime.moduleManager.module(this.element.absoluteModuleUrl);
   }
   get module$() {
-    return this.entity.absoluteModuleUrl$.pipe(
+    return this.element.absoluteModuleUrl$.pipe(
       switchMap((url) => {
-        return url ? this.elementa.moduleManager.module$(url) : of(undefined);
+        return url ? this.runtime.moduleManager.module$(url) : of(undefined);
       })
     );
   }
@@ -61,12 +59,12 @@ export class PrimitiveElementInstance extends ElementInstance<PrimitiveElement> 
   }
 
   get isContainer() {
-    return this.config?.container ?? false;
+    return this.config?.isContainer ?? false;
   }
   get isContainer$() {
     return this.config$.pipe(
       map((config) => {
-        return config?.container ?? false;
+        return config?.isContainer ?? false;
       })
     );
   }
@@ -78,7 +76,7 @@ export class PrimitiveElementInstance extends ElementInstance<PrimitiveElement> 
   }: {
     element: PrimitiveElement;
     environment: FragmentEnvironment;
-    parent: Instance | null;
+    parent?: Instance;
   }) {
     super({
       element,
@@ -86,35 +84,18 @@ export class PrimitiveElementInstance extends ElementInstance<PrimitiveElement> 
       parent,
     });
 
-    // on config ready, if not already initialized, initialize with config
-    const configSubscription = this.config$
-      .pipe(
-        map((config) => config?.initializer),
-        filter(Boolean),
-        first()
-      )
-      .subscribe((init) => {
-        if (!this.entity.initialized) {
-          this.entity.restore({
-            ...this.entity.data,
-            ...init,
-            initialized: true,
-            moduleUrl: this.entity.moduleUrl,
-          });
-        }
-      });
-
     const contentSubscription = combineLatest([
-      this.entity.content$,
-      this.entity.contentExpression$,
+      this.element.content.observable$,
       this.isContainer$,
-    ]).subscribe(([_content, contentExpression, isContainer]) => {
-      let content = isContainer ? (contentExpression ? [] : _content) : [];
+    ]).subscribe(([_content, isContainer]) => {
+      let content = isContainer ? _content : [];
 
-      const newContent = updateInstanceList({
-        instances: this.content,
-        entities: content,
-        createInstance: (element) =>
+      const [newContent, removed] = reconcileList({
+        sources: content,
+        targets: this.content,
+        sourceRef: (e) => e,
+        targetRef: (i) => i.element,
+        create: (element) =>
           makeElementInstance({
             element,
             environment: this.environment,
@@ -122,15 +103,35 @@ export class PrimitiveElementInstance extends ElementInstance<PrimitiveElement> 
           }),
       });
       this._content$.next(newContent);
+      removed.forEach((instance) => {
+        instance.dispose();
+      });
     });
 
     this.addDisposer(() => {
-      configSubscription.unsubscribe();
       contentSubscription.unsubscribe();
 
       this.content.forEach((instance) => instance.dispose());
-      this._content$.next([]);
       this._content$.complete();
+      this._content$.next([]);
     });
+  }
+
+  async initialize() {
+    const moduleUrl = this.element.absoluteModuleUrl;
+    if (!moduleUrl) return;
+    const module = await this.runtime.moduleManager.getModule<{
+      config?: PrimitiveConfig;
+    }>(moduleUrl);
+    const init = module?.config?.init;
+    if (init) {
+      const data = this.element.toJSON() as PrimitiveElementData;
+      this.element.restore({
+        ...data,
+        ...init,
+        id: this.element.id,
+        type: this.element.type,
+      });
+    }
   }
 }

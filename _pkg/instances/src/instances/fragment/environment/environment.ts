@@ -2,9 +2,8 @@ import { StyleModifierData } from "@elllphnt/elementa-base";
 import { DataInput, SlotFill } from "@elllphnt/elementa-models";
 import { Disposable } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable } from "rxjs";
-import { Namespace } from "~/src/namespace/_";
-import { Elementa } from "../../../elementa";
-import { SlotInstance } from "../../_";
+import { Namespace } from "~/src/instances/namespace/_";
+import { Runtime } from "../../../runtime/runtime";
 import { StateInstance } from "../../states/state";
 import { FragmentInstance } from "../fragment";
 
@@ -18,13 +17,11 @@ import { FragmentInstance } from "../fragment";
  * bindings into a single context, enabling declarative and reactive rendering.
  */
 export abstract class FragmentEnvironment extends Disposable {
-  readonly elementa: Elementa;
+  readonly runtime: Runtime;
 
   // Namespace represents the final resolved variable context used
   // for evaluating expressions at runtime (e.g., var:*, if:*, etc.)
   private _namespace$ = new BehaviorSubject<Namespace>(new Namespace());
-
-  abstract get id(): string;
 
   // Tracks the component stack to support recursion detection and introspection.
   abstract get componentStack(): string[];
@@ -41,10 +38,6 @@ export abstract class FragmentEnvironment extends Disposable {
   // Props declared by the parent component and visible in this environment.
   abstract get props(): DataInput[];
   abstract get props$(): Observable<DataInput[]>;
-
-  // All slots declared in the component, available for fill resolution.
-  abstract get slots(): SlotInstance[];
-  abstract get slots$(): Observable<SlotInstance[]>;
 
   // Resolve a slot fill for a given slot ID.
   abstract slotFill(id: string): SlotFill | undefined;
@@ -70,9 +63,9 @@ export abstract class FragmentEnvironment extends Disposable {
     return this._namespace$.value;
   }
 
-  constructor({ elementa }: { elementa: Elementa }) {
+  constructor({ runtime }: { runtime: Runtime }) {
     super();
-    this.elementa = elementa;
+    this.runtime = runtime;
     this.addDisposer(() => {
       this._namespace$.complete();
     });

@@ -15,12 +15,12 @@ import { Observable, of } from "rxjs";
 import * as y from "yjs";
 import { CssStyleSheet, StylesheetCssStyleSheet } from "../../css/_";
 import { attachStylesheet } from "../../style/stylesheet";
-import { Component } from "../component";
+import { Fragment } from "../fragment";
 import { attachIdentifiable, Identifiable } from "../identifiable";
 
 export type Element<D extends BaseElementData = BaseElementData> =
   Identifiable<D> & {
-    component: Component;
+    fragment: Fragment;
     cssStyleSheet: StylesheetCssStyleSheet;
 
     allCssStylesheets: CssStyleSheet[];
@@ -61,12 +61,12 @@ export type Element<D extends BaseElementData = BaseElementData> =
 
 export function attachBaseElement<D extends BaseElementData>(
   ymap: y.Map<any>,
-  component: Component
+  fragment: Fragment
 ): Element<D> {
   const identifiable = attachIdentifiable<BaseElementData>(ymap);
   const element = identifiable as unknown as Element<D>;
 
-  element.component = component;
+  element.fragment = fragment;
 
   Object.defineProperty(identifiable, "allCssStylesheets", {
     get() {
@@ -86,7 +86,7 @@ export function attachBaseElement<D extends BaseElementData>(
     target: `${element.type}:${element.key}`,
     stylesheet: attachStylesheet(
       getOrCreateYMap(element, "stylesheet"),
-      component.project
+      fragment.component.project
     ),
   });
 

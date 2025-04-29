@@ -1,4 +1,4 @@
-import { RawStyleData, StyleData } from "@elllphnt/elementa-base";
+import { StyleData, UnsettableRawStyleData } from "@elllphnt/elementa-base";
 import { test } from "uvu";
 import * as assert from "uvu/assert";
 import { styleToCss } from "./style";
@@ -20,7 +20,7 @@ test("default undefined and unset", () => {
 
 test("handles all RawStyleData properties", () => {
   // assign a dummy value for each RawStyleData key
-  const data: Partial<RawStyleData> = {
+  const data: Partial<UnsettableRawStyleData> = {
     // position
     "position": "static",
     "top": { value: 1, unit: "px" },
@@ -147,7 +147,7 @@ test("handles all RawStyleData properties", () => {
     },
   };
 
-  const [css, errors] = styleToCss(data as RawStyleData, {
+  const [css, errors] = styleToCss(data as UnsettableRawStyleData, {
     getFragment: () => undefined,
   });
 

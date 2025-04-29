@@ -17,6 +17,9 @@ export abstract class StyleManager {
   abstract cssSelectorOf(selector: ElllSelectorData): CssSelector;
   abstract cssSelectorOf$(selector: ElllSelectorData): Observable<CssSelector>;
 
+  abstract variableValue(name: string): any;
+  abstract variableValue$(name: string): Observable<any>;
+
   abstract colorSchemeModifiers({
     colorScheme,
   }: {

@@ -1,7 +1,7 @@
 import { Widget } from "@elllphnt/elementa-models";
 import { of } from "rxjs";
-import { Elementa } from "../../elementa";
-import { Instance } from "../instance";
+import { Runtime } from "../../../../runtime/runtime";
+import { Instance } from "../../../instance";
 
 export abstract class WidgetInstance<
   W extends Widget = Widget
@@ -26,7 +26,7 @@ export abstract class WidgetInstance<
     parent,
   }: {
     widget: W;
-    elementa: Elementa;
+    elementa: Runtime;
     parent: Instance | null;
   }) {
     super({

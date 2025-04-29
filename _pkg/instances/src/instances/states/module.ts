@@ -1,18 +1,19 @@
-import { ModuleState } from "@elllphnt/elementa-models";
+import { HookConfig } from "@elllphnt/elementa-base";
+import { HookState } from "@elllphnt/elementa-models";
 import { map, of, switchMap } from "rxjs";
-import { Elementa } from "../../elementa";
+import { Runtime } from "../../runtime/runtime";
 import { Instance } from "../instance";
 import { StateInstance } from "./state";
 
-export class ModuleStateInstance extends StateInstance<ModuleState> {
+export class HookStateInstance extends StateInstance<HookState> {
   get module() {
-    const url = this.entity.absoluteModuleUrl;
-    return url ? this.elementa.moduleManager.module(url) : undefined;
+    const url = this.state.absoluteHookUrl;
+    return url ? this.runtime.moduleManager.module(url) : undefined;
   }
   get module$() {
-    return this.entity.absoluteModuleUrl$.pipe(
+    return this.state.absoluteHookUrl$.pipe(
       switchMap((url) => {
-        return url ? this.elementa.moduleManager.module$(url) : of(undefined);
+        return url ? this.runtime.moduleManager.module$(url) : of(undefined);
       })
     );
   }
@@ -28,26 +29,26 @@ export class ModuleStateInstance extends StateInstance<ModuleState> {
     );
   }
 
-  get properties() {
-    return this.module?.properties;
+  get config() {
+    return this.module?.config as HookConfig | undefined;
   }
-  get properties$() {
+  get config$() {
     return this.module$.pipe(
       map((module) => {
-        return module?.properties;
+        return module?.config as HookConfig | undefined;
       })
     );
   }
 
   constructor({
-    entity,
-    elementa,
+    state,
+    runtime,
     parent,
   }: {
-    entity: ModuleState;
-    elementa: Elementa;
-    parent: Instance | null;
+    state: HookState;
+    runtime: Runtime;
+    parent?: Instance;
   }) {
-    super({ entity, elementa, parent });
+    super({ state, runtime, parent });
   }
 }

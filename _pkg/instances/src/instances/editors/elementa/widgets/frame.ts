@@ -7,14 +7,14 @@ import {
 } from "@elllphnt/elementa-models";
 import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
 import { updateInstanceList } from "~/src/_lib/instances";
-import { Elementa } from "../../elementa";
-import { SlotInstance, StateInstance } from "../_";
+import { Runtime } from "../../../../runtime/runtime";
+import { StateInstance } from "../../../_";
 import {
   ChildFragmentEnvironment,
   FragmentEnvironment,
-} from "../fragment/environment/environment";
-import { FragmentInstance } from "../fragment/fragment";
-import { Instance } from "../instance";
+} from "../../../fragment/environment/environment";
+import { FragmentInstance } from "../../../fragment/fragment";
+import { Instance } from "../../../instance";
 import { WidgetInstance } from "./widget";
 
 export class FrameFragmentEnvironment extends FragmentEnvironment {
@@ -66,13 +66,6 @@ export class FrameFragmentEnvironment extends FragmentEnvironment {
   }
   get props$(): Observable<Prop[]> {
     return this.frame.entity.component.props$;
-  }
-
-  get slots(): SlotInstance[] {
-    return [];
-  }
-  get slots$(): Observable<SlotInstance[]> {
-    return of([]);
   }
 
   slotFill(id: string): SlotFill | undefined {
@@ -170,7 +163,7 @@ export class FrameWidgetInstance extends WidgetInstance<FrameWidget> {
     parent,
   }: {
     widget: FrameWidget;
-    elementa: Elementa;
+    elementa: Runtime;
     parent: Instance | null;
   }) {
     super({

@@ -8,7 +8,7 @@ import * as _ from "lodash";
 import { map, Observable, switchMap } from "rxjs";
 import * as y from "yjs";
 import { CssStyleSheet } from "../../css/_";
-import { Component } from "../component";
+import { Fragment } from "../fragment";
 import { Identifiable } from "../identifiable";
 import { createElement } from "./_create";
 import { attachBaseElement, Element } from "./element";
@@ -21,12 +21,12 @@ export type ElementList = ReactiveList<Element<any>> & {
 
 export function attachElementList(
   yarray: y.Array<y.Map<any>>,
-  component: Component
+  fragment: Fragment
 ): ElementList {
   const rxList = createEnhancedReactiveList(
     yarray as y.Array<y.Map<any>>,
     attachBaseElement,
-    (ymap) => createElement(ymap, component)
+    (ymap) => createElement(ymap, fragment)
   );
   const list = rxList as ElementList;
 
@@ -53,7 +53,7 @@ export function attachElementList(
   return list;
 }
 
-export function createElementList(component: Component): ElementList {
+export function createElementList(fragment: Fragment): ElementList {
   const yarray = new y.Array<y.Map<any>>();
-  return attachElementList(yarray, component);
+  return attachElementList(yarray, fragment);
 }

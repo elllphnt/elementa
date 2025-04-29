@@ -14,6 +14,13 @@ export class ComponentElementInstance<
     undefined
   );
 
+  get component$() {
+    return this._component$.asObservable();
+  }
+  get component() {
+    return this._component$.value;
+  }
+
   constructor({
     element,
     environment,
@@ -21,7 +28,7 @@ export class ComponentElementInstance<
   }: {
     element: E;
     environment: FragmentEnvironment;
-    parent: Instance | null;
+    parent?: Instance;
   }) {
     super({
       element,
@@ -36,11 +43,15 @@ export class ComponentElementInstance<
     const componentSubscription = this.element.localComponent$.subscribe(
       (component) => {
         if (component) {
+          const currentComponent = this.component;
           const componentInstance = new ComponentInstance({
             component,
             propResolver: this.componentPropsResolver,
           });
           this._component$.next(componentInstance);
+          if (currentComponent) {
+            currentComponent.dispose();
+          }
         } else {
           this._component$.next(undefined);
         }

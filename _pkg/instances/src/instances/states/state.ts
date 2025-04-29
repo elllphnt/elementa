@@ -1,23 +1,24 @@
 import { State } from "@elllphnt/elementa-models";
-import { Elementa } from "../../elementa";
-import { Instance } from "../instance";
+import { Runtime } from "../../runtime/runtime";
+import { Instance, InstanceType } from "../instance";
 
-export abstract class StateInstance<
-  E extends State = State
-> extends Instance<E> {
+export abstract class StateInstance<S extends State = State> extends Instance {
+  readonly state: S;
+
   get namespaceKey() {
     return `!!state-${this.key}`;
   }
 
   constructor({
-    entity,
-    elementa,
+    state,
+    runtime,
     parent,
   }: {
-    entity: E;
-    elementa: Elementa;
-    parent: Instance | null;
+    state: S;
+    runtime: Runtime;
+    parent?: Instance;
   }) {
-    super({ entity, elementa, parent });
+    super({ type: InstanceType.State, runtime, parent });
+    this.state = state;
   }
 }

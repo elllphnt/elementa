@@ -10,6 +10,7 @@ import * as y from "yjs";
 import { StylesheetCssStyleSheet } from "../../../css/_";
 import { attachStylesheet } from "../../../style/stylesheet";
 import { Component } from "../../component";
+import { Fragment } from "../../fragment";
 
 export type PrimitiveSubElement = ReturnType<
   typeof attachReactiveMap<PrimitiveSubElementData>
@@ -29,19 +30,19 @@ export type PrimitiveSubElement = ReturnType<
 
 export function attachPrimitiveSubElement(
   ymap: y.Map<any>,
-  component: Component
+  fragment: Fragment
 ): PrimitiveSubElement {
   const subElement = attachReactiveMap<PrimitiveSubElementData>(
     ymap as Extendable<y.Map<any>>
   ) as Extendable<PrimitiveSubElement>;
 
-  subElement.component = component;
+  subElement.component = fragment.component;
 
   subElement.cssStyleSheet = new StylesheetCssStyleSheet({
     target: `primitive-sub-element`,
     stylesheet: attachStylesheet(
       getOrCreateYMap(subElement, "stylesheet"),
-      component.project
+      fragment.component.project
     ),
   });
 
@@ -90,8 +91,8 @@ export function attachPrimitiveSubElement(
 }
 
 export function createPrimitiveSubElement(
-  component: Component
+  fragment: Fragment
 ): PrimitiveSubElement {
   const ymap = new y.Map<any>();
-  return attachPrimitiveSubElement(ymap, component);
+  return attachPrimitiveSubElement(ymap, fragment);
 }

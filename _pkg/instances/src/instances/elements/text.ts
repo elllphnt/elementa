@@ -11,14 +11,12 @@ export class TextElementInstance extends ElementInstance<TextElement> {
   }: {
     element: TextElement;
     environment: FragmentEnvironment;
-    parent: Instance | null;
+    parent?: Instance;
   }) {
     super({
       element,
       environment,
       parent,
     });
-
-    this.addDisposer(() => {});
   }
 }

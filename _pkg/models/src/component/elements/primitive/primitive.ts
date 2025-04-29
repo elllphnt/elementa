@@ -3,8 +3,10 @@ import {
   ResolvableOrEvaluable,
 } from "@elllphnt/elementa-base";
 import {
+  combineLatestOrEmpty,
   createEnhancedReactiveMap,
   Extendable,
+  getOrCreateYArray,
   getOrCreateYMap,
   ReactiveMap,
   setEnhancer,
@@ -13,7 +15,8 @@ import {
 import { filter, map, Observable, of, switchMap, tap } from "rxjs";
 import * as y from "yjs";
 import { ResolvableRecord } from "../../../_lib/resolvable";
-import { Component } from "../../component";
+import { Fragment } from "../../fragment";
+import { attachElementList, ElementList } from "../_";
 import { attachBaseElement, Element } from "../element";
 import {
   attachPrimitiveSubElement,
@@ -22,7 +25,11 @@ import {
 } from "./sub_element";
 
 export type PrimitiveElement = Element<PrimitiveElementData> & {
+  content: ElementList;
   elements: ReactiveMap<Record<string, PrimitiveSubElement>>;
+
+  allCssStylesheets: any[];
+  allCssStylesheets$: Observable<any[]>;
 
   primitiveUrl: string | undefined;
   primitiveUrl$: Observable<string | undefined>;
@@ -50,23 +57,40 @@ export type PrimitiveElement = Element<PrimitiveElementData> & {
 
 export function attachPrimitiveElement(
   ymap: y.Map<any>,
-  component: Component
+  fragment: Fragment
 ): PrimitiveElement {
   ymap.set("type", "primitive");
   const element = attachBaseElement(
     ymap,
-    component
+    fragment
   ) as Extendable<PrimitiveElement>;
+
+  element.content = attachElementList(
+    getOrCreateYArray(ymap, "content"),
+    fragment
+  );
 
   element.elements = createEnhancedReactiveMap(
     getOrCreateYMap<y.Map<any>>(element, "elements"),
     attachPrimitiveSubElement,
-    (ymap) => attachPrimitiveSubElement(ymap, component)
+    (ymap) => attachPrimitiveSubElement(ymap, fragment)
+  );
+
+  Object.defineProperty(element, "allCssStylesheets", {
+    get() {
+      return [element.cssStyleSheet, ...element.content.allCssStylesheets];
+    },
+    configurable: true,
+  });
+  element.allCssStylesheets$ = combineLatestOrEmpty([
+    element.content.allCssStylesheets$,
+  ]).pipe(
+    map(([childrenSheets]) => [element.cssStyleSheet, ...childrenSheets.flat()])
   );
 
   const _props = new ResolvableRecord(
     element.props ?? {},
-    component.project.infrastructure
+    fragment.component.project.infrastructure
   );
 
   const propsSubscription = _props.subscribe(
@@ -78,8 +102,8 @@ export function attachPrimitiveElement(
   Object.defineProperty(element, "absoluteModuleUrl", {
     get() {
       return element.primitiveUrl
-        ? element.component.project.infrastructure.fileSystem.getAbsoluteFileUrl(
-            element.component.url,
+        ? fragment.component.project.infrastructure.fileSystem.getAbsoluteFileUrl(
+            fragment.component.url,
             element.primitiveUrl
           )
         : undefined;
@@ -89,8 +113,8 @@ export function attachPrimitiveElement(
   element.absoluteModuleUrl$ = element.primitiveUrl$.pipe(
     map((url) => {
       return url
-        ? element.component.project.infrastructure.fileSystem.getAbsoluteFileUrl(
-            element.component.url,
+        ? fragment.component.project.infrastructure.fileSystem.getAbsoluteFileUrl(
+            fragment.component.url,
             url
           )
         : undefined;
@@ -100,7 +124,7 @@ export function attachPrimitiveElement(
   Object.defineProperty(element, "moduleName", {
     get() {
       return element.absoluteModuleUrl
-        ? element.component.project.infrastructure.fileSystem.fileName(
+        ? fragment.component.project.infrastructure.fileSystem.fileName(
             element.absoluteModuleUrl
           )
         : undefined;
@@ -110,7 +134,7 @@ export function attachPrimitiveElement(
   element.moduleName$ = element.absoluteModuleUrl$.pipe(
     switchMap((url) => {
       return url
-        ? element.component.project.infrastructure.fileSystem.fileName$(url)
+        ? fragment.component.project.infrastructure.fileSystem.fileName$(url)
         : of(undefined);
     })
   );
@@ -139,7 +163,7 @@ export function attachPrimitiveElement(
   element.element = (name: string, create?: true) => {
     let el = element.elements.get(name);
     if (!el && create) {
-      element.elements.set(name, createPrimitiveSubElement(component));
+      element.elements.set(name, createPrimitiveSubElement(fragment));
       el = element.elements.get(name);
     }
     return el!;
@@ -150,7 +174,7 @@ export function attachPrimitiveElement(
       map((elements) => elements[name]),
       tap((el) => {
         if (!el && create) {
-          element.elements.set(name, createPrimitiveSubElement(component));
+          element.elements.set(name, createPrimitiveSubElement(fragment));
         }
       }),
       filter((el) => !!el || !create)
@@ -173,7 +197,7 @@ export function attachPrimitiveElement(
   return element as PrimitiveElement;
 }
 
-export function createPrimitiveElement(component: Component): PrimitiveElement {
+export function createPrimitiveElement(fragment: Fragment): PrimitiveElement {
   const ymap = new y.Map<any>();
-  return attachPrimitiveElement(ymap, component);
+  return attachPrimitiveElement(ymap, fragment);
 }

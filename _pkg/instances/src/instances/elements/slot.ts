@@ -1,7 +1,6 @@
 import { SlotElement } from "@elllphnt/elementa-models";
-import { combineLatestOrEmpty } from "@elllphnt/elementa-utils";
+import { combineLatestOrEmpty, reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable } from "rxjs";
-import { updateInstanceList } from "~/src/_lib/instances";
 import { makeElementInstance } from "~/src/instances/elements/_create";
 import { FragmentEnvironment } from "../fragment/environment/environment";
 import { Instance } from "../instance";
@@ -24,7 +23,7 @@ export class SlotElementInstance extends ElementInstance<SlotElement> {
   }: {
     element: SlotElement;
     environment: FragmentEnvironment;
-    parent: Instance | null;
+    parent?: Instance;
   }) {
     super({
       element,
@@ -33,12 +32,14 @@ export class SlotElementInstance extends ElementInstance<SlotElement> {
     });
 
     const contentSubscription = combineLatestOrEmpty([
-      this.entity.placeholder$,
+      this.element.placeholder.observable$,
     ]).subscribe(([placeholder]) => {
-      const newContent = updateInstanceList({
-        instances: this.placeholder,
-        entities: placeholder,
-        createInstance: (element) =>
+      const [newContent, removed] = reconcileList({
+        targets: this.placeholder,
+        sources: placeholder,
+        sourceRef: (e) => e,
+        targetRef: (e) => e.element,
+        create: (element) =>
           makeElementInstance({
             element,
             environment: this.environment,
@@ -46,6 +47,9 @@ export class SlotElementInstance extends ElementInstance<SlotElement> {
           }),
       });
       this._placeholder$.next(newContent);
+      removed.forEach((instance) => {
+        instance.dispose();
+      });
     });
 
     this.addDisposer(() => {

@@ -1,7 +1,6 @@
 import { ContainerElement } from "@elllphnt/elementa-models";
-import { combineLatestOrEmpty } from "@elllphnt/elementa-utils";
+import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable } from "rxjs";
-import { updateInstanceList } from "~/src/_lib/instances";
 import { makeElementInstance } from "~/src/instances/elements/_create";
 import { FragmentEnvironment } from "../fragment/environment/environment";
 import { Instance } from "../instance";
@@ -24,7 +23,7 @@ export class ContainerElementInstance extends ElementInstance<ContainerElement> 
   }: {
     element: ContainerElement;
     environment: FragmentEnvironment;
-    parent: Instance | null;
+    parent?: Instance;
   }) {
     super({
       element,
@@ -32,23 +31,28 @@ export class ContainerElementInstance extends ElementInstance<ContainerElement> 
       parent,
     });
 
-    const contentSubscription = combineLatestOrEmpty([
-      this.entity.content$,
-      this.entity.contentExpression$,
-    ]).subscribe(([_content, contentExpression]) => {
-      const content = contentExpression ? [] : _content;
-      const newContent = updateInstanceList({
-        instances: this.content,
-        entities: content,
-        createInstance: (element) =>
-          makeElementInstance({
-            element,
-            environment: this.environment,
-            parent: this,
-          }),
-      });
-      this._content$.next(newContent);
-    });
+    const contentSubscription = this.element.content.observable$.subscribe(
+      (content) => {
+        const [newContent, removed] = reconcileList({
+          targets: this.content,
+          sources: content,
+          sourceRef: (c) => c,
+          targetRef: (c) => c.element,
+          create: (content) => {
+            const instance = makeElementInstance({
+              element: content,
+              environment: this.environment,
+              parent: this,
+            });
+            return instance;
+          },
+        });
+        this._content$.next(newContent);
+        removed.forEach((instance) => {
+          instance.dispose();
+        });
+      }
+    );
 
     this.addDisposer(() => {
       contentSubscription.unsubscribe();

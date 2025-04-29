@@ -1,12 +1,12 @@
-// @core/map_crdt_model.ts
 import { BehaviorSubject, Observable } from "rxjs";
 import * as y from "yjs";
 import { setEnhancer } from "../core/enhancer";
-import { nextKey } from "./_utils";
+import { nextKey, updateYMap } from "./_utils";
 
 export type ReactiveMap<T extends Record<string, any>> = y.Map<T[keyof T]> & {
   key: number;
   observable$: Observable<T>;
+  restore(data: T): void;
   dispose(): void;
 };
 
@@ -45,6 +45,10 @@ export function attachReactiveMap<T extends Record<string, any>>(
     ymap.unobserve(observer);
     subject$.complete();
     originalDispose?.();
+  };
+
+  rxMap.restore = (data: T): void => {
+    updateYMap(ymap, data);
   };
 
   setEnhancer(rxMap, attachReactiveMap);

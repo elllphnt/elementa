@@ -5,7 +5,7 @@ import {
 import { Extendable, setModelFields } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import * as y from "yjs";
-import { Component } from "../component";
+import { Fragment } from "../fragment";
 import { attachBaseElement, Element } from "./element";
 
 export type TextElement = Element<TextElementData> & {
@@ -15,15 +15,15 @@ export type TextElement = Element<TextElementData> & {
 
 export function attachTextElement(
   ymap: y.Map<any>,
-  component: Component
+  fragment: Fragment
 ): TextElement {
   ymap.set("type", "text");
-  const element = attachBaseElement(ymap, component) as Extendable<TextElement>;
+  const element = attachBaseElement(ymap, fragment) as Extendable<TextElement>;
   setModelFields(element, ["text"]);
   return element as TextElement;
 }
 
-export function createTextElement(component: Component): TextElement {
+export function createTextElement(fragment: Fragment): TextElement {
   const ymap = new y.Map<any>();
-  return attachTextElement(ymap, component);
+  return attachTextElement(ymap, fragment);
 }
