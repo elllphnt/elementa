@@ -10,7 +10,7 @@ import {
   SlotElementRenderable,
   TextElementRenderable,
   VectorElementRenderable,
-} from "@repo/elementa-renderer";
+} from "@elllphnt/elementa-scene";
 import { IElementaInteractor } from "../_types/_";
 import {
   ComponentElementHandle,

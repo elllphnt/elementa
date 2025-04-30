@@ -1,11 +1,11 @@
 import { Fragment } from "@elllphnt/elementa-models";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, combineLatest, Observable } from "rxjs";
-import { makeElementInstance } from "~/src/instances/elements/_create";
 import { ElementInstance } from "../elements/element";
 import { Instance, InstanceType } from "../instance";
 import { SlotInstance } from "../slot/slot";
 import { FragmentEnvironment } from "./environment/environment";
+import { createElementInstance } from "../elements/_create";
 
 export class FragmentInstance extends Instance {
   readonly fragment: Fragment;
@@ -64,7 +64,7 @@ export class FragmentInstance extends Instance {
         sourceRef: (e) => e,
         targetRef: (i) => i.element,
         create: (element) =>
-          makeElementInstance({
+          createElementInstance({
             element,
             environment: this.environment,
             parent: this,

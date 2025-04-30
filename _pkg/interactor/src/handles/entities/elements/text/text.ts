@@ -1,5 +1,5 @@
-import { Namespace } from "@repo/elementa";
-import { TextElementRenderable } from "@repo/elementa-renderer";
+import { Namespace } from "@elllphnt/elementa-runtime";
+import { TextElementRenderable } from "@elllphnt/elementa-scene";
 import { IHandle } from "~/src/_types/_";
 import { IFragmentHandle } from "~/src/_types/handles/entity/fragment";
 import { ElementHandle } from "../element";
@@ -45,7 +45,7 @@ export class TextElementHandle extends ElementHandle<TextElementRenderable> {
     const textContent = this.entity.text || "";
     const expressions = Namespace.extractExpressionsFromString(textContent);
     const propExpressions = expressions.filter((expr) =>
-      expr.startsWith("props."),
+      expr.startsWith("props.")
     );
     const propNames = propExpressions
       .map((expr) => {

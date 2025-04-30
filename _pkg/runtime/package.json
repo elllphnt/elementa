@@ -1,14 +1,12 @@
 {
-    "name": "@repo/elementa",
+    "name": "@elllphnt/elementa-runtime",
     "private": true,
     "version": "0.1.0",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
-        "build": "tsx scripts/build",
-        "watch:tsc": "tsc-watch --project tsconfig.build.json --onSuccess \"tscpaths -p tsconfig.build.json -s ./src -o ./dist\" --onFailure \"tscpaths -p tsconfig.build.json -s ./src -o ./dist\"",
-        "watch:babel": "babel src -d dist -x .ts,.tsx --watch",
-        "watch": "yarn watch:tsc & yarn watch:babel"
+        "build": "tsc -p tsconfig.build.json",
+        "watch": "yarn build --watch -p tsconfig.build.json"
     },
     "devDependencies": {
         "@elllphnt/elementa-models": "workspace:*",

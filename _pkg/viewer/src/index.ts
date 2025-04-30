@@ -1,5 +1,5 @@
 export * from "@elllphnt/elementa-models";
-export * from "@repo/elementa";
-export * from "@repo/elementa-renderer";
+export * from "@elllphnt/elementa-runtime";
+export * from "@elllphnt/elementa-scene";
 export * from "./components/_";
 export * from "./elementa_viewer";

@@ -1,6 +1,9 @@
 import { Entity } from "@elllphnt/elementa-models";
 import { Disposable } from "@elllphnt/elementa-utils";
-import { ElementRenderable, InstanceRenderable } from "@repo/elementa-renderer";
+import {
+  ElementRenderable,
+  InstanceRenderable,
+} from "@elllphnt/elementa-scene";
 import { ElementaStager } from "@repo/elementa-stager";
 import { Observable } from "rxjs";
 import { FrameWidgetHandle } from "../handles/_";

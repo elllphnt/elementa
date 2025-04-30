@@ -1,10 +1,10 @@
-import { MediaElementRenderable } from "@repo/elementa-renderer";
+import { MediaElementRenderable } from "@elllphnt/elementa-scene";
 import { IHandle } from "~/src/_types/_";
 import { IFragmentHandle } from "~/src/_types/handles/entity/fragment";
 import { ElementHandle } from "./element";
 
 export class MediaElementHandle<
-  R extends MediaElementRenderable = MediaElementRenderable,
+  R extends MediaElementRenderable = MediaElementRenderable
 > extends ElementHandle<R> {
   constructor({
     renderable,

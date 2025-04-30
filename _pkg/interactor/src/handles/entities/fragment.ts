@@ -1,6 +1,6 @@
 import { Entity } from "@elllphnt/elementa-models";
 import { updateMapList } from "@elllphnt/elementa-utils";
-import { FragmentRenderable } from "@repo/elementa-renderer";
+import { FragmentRenderable } from "@elllphnt/elementa-scene";
 import { BehaviorSubject, Observable } from "rxjs";
 import { DropOptions, IHandle, ILayoutUpdatePropagation } from "~/src/_types/_";
 import { IElementHandle } from "~/src/_types/handles/entity/elements/element";

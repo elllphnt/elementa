@@ -1,5 +1,5 @@
 import { entityTypes, switchEntityType } from "@elllphnt/elementa-base";
-import { PrimitiveElementRenderable } from "@repo/elementa-renderer";
+import { PrimitiveElementRenderable } from "@elllphnt/elementa-scene";
 import { Element, Entity } from "@repo/elementa-stager";
 import { BehaviorSubject, Observable } from "rxjs";
 import { makeEntityDropType } from "~/src/_lib/droptypes";

@@ -1,4 +1,4 @@
-import { Elementa, ModuleManager } from "@repo/elementa";
+import { Elementa, ModuleManager } from "@elllphnt/elementa-runtime";
 import { DomStyleSheetManager } from "@repo/elementa-renderer/dist/style/dom/manager";
 import { ElementaStager } from "./elementa_stager";
 import { css, Theme } from "./stylesheet";

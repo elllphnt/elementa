@@ -1,5 +1,5 @@
 import { combineLatestOrEmpty, PointData } from "@elllphnt/elementa-utils";
-import { WidgetRenderable } from "@repo/elementa-renderer";
+import { WidgetRenderable } from "@elllphnt/elementa-scene";
 import { IHandle } from "~/src/_types/_";
 import { IElementaInteractor } from "~/src/_types/interactor";
 import { IMovableHandle } from "../../../_types/handles/properties/movable";

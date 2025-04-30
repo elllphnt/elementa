@@ -1,6 +1,6 @@
 import { CornerName, EdgeName, PositionValue } from "@elllphnt/elementa-base";
 import { PointData, RectData } from "@elllphnt/elementa-utils";
-import { ElementRenderable } from "@repo/elementa-renderer";
+import { ElementRenderable } from "@elllphnt/elementa-scene";
 import { Observable } from "rxjs";
 import { IHandle } from "../../handle";
 import { ICornerHandle } from "../../properties/corner";

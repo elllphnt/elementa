@@ -1,5 +1,5 @@
 import { useObservable } from "@elllphnt/elementa-utils";
-import { AppComponent } from "@repo/elementa-renderer";
+import { AppComponent } from "@elllphnt/elementa-scene";
 import { ElementaViewer } from "../elementa_viewer";
 
 export function AppContent({ viewer }: { viewer: ElementaViewer }) {

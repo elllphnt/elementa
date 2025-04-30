@@ -1,4 +1,4 @@
-import { InstanceRenderable } from "@repo/elementa-renderer";
+import { InstanceRenderable } from "@elllphnt/elementa-scene";
 import { Observable } from "rxjs";
 import { IElementHandle } from "./elements/element";
 import { IEntityHandle } from "./entity";

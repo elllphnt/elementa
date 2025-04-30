@@ -1,12 +1,12 @@
 import { entityTypes } from "@elllphnt/elementa-base";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-utils";
-import { Elementa, WidgetInstance } from "@repo/elementa";
+import { Elementa, WidgetInstance } from "@elllphnt/elementa-runtime";
 import {
   ElementaRenderer,
   FrameWidgetRenderable,
   WidgetRenderable,
   updateInstanceRenderableList,
-} from "@repo/elementa-renderer";
+} from "@elllphnt/elementa-scene";
 import { DomStyleSheetManager } from "@repo/elementa-renderer/dist/style/dom/manager";
 import { createElement } from "react";
 import { Root, createRoot } from "react-dom/client";

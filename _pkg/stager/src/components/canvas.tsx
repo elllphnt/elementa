@@ -1,5 +1,5 @@
 import { useObservable } from "@elllphnt/elementa-utils";
-import { WidgetComponent } from "@repo/elementa-renderer";
+import { WidgetComponent } from "@elllphnt/elementa-scene";
 import { ElementaStager } from "../elementa_stager";
 
 export function Canvas({ renderer }: { renderer: ElementaStager }) {

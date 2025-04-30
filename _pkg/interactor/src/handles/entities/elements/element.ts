@@ -1,5 +1,5 @@
 import { EdgeName } from "@elllphnt/elementa-base";
-import { ElementRenderable, Renderable } from "@repo/elementa-renderer";
+import { ElementRenderable, Renderable } from "@elllphnt/elementa-scene";
 import { Stylesheet, StylesheetCssStyleSheet } from "@repo/elementa-stager";
 import { map, Observable, of, switchMap } from "rxjs";
 import { IElementHandle } from "~/src/_types/handles/entity/elements/element";

@@ -1,0 +1,37 @@
+{
+    "name": "@elllphnt/elementa-scene",
+    "private": true,
+    "version": "0.1.0",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc -p tsconfig.build.json",
+        "watch": "yarn build --watch -p tsconfig.build.json"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.12.0",
+        "@babel/plugin-transform-react-jsx": "^7.23.4",
+        "@babel/plugin-transform-typescript": "^7.23.6",
+        "@types/react": "^19.1.2",
+        "babel-cli": "^6.26.0",
+        "babel-plugin-module-resolver": "^5.0.0",
+        "eslint-plugin-import": "^2.29.1",
+        "react": "^19.0.0",
+        "tscpaths": "^0.0.9",
+        "typescript": "5.2.2"
+    },
+    "dependencies": {
+        "@elllphnt/elementa-base": "workspace:*",
+        "@elllphnt/elementa-css": "workspace:*",
+        "@elllphnt/elementa-models": "workspace:*",
+        "@elllphnt/elementa-runtime": "workspace:*",
+        "@elllphnt/elementa-utils": "workspace:*",
+        "@types/react-dom": "^19.1.2",
+        "deep-object-diff": "^1.1.9",
+        "lodash": "^4.17.21",
+        "react-router": "^7.5.0",
+        "rxjs": "^7.8.1",
+        "tsc-watch": "^6.2.0",
+        "yarn": "^1.22.22"
+    }
+}

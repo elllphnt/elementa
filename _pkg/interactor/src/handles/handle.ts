@@ -5,7 +5,7 @@ import {
   Rect,
   combineLatestOrEmpty,
 } from "@elllphnt/elementa-utils";
-import { Renderable } from "@repo/elementa-renderer";
+import { Renderable } from "@elllphnt/elementa-scene";
 import {
   BehaviorSubject,
   Observable,

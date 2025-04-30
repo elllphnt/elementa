@@ -2,10 +2,10 @@
 
 import { Stylesheet } from "@elllphnt/elementa-models";
 import { BehaviorSubject } from "rxjs";
-import { Runtime } from "~/src/runtime/runtime";
 import { Instance, InstanceType } from "../instance";
 import { StyleCascadeResolver } from "./cascade";
 import { StyleInstance } from "./style";
+import { Runtime } from "../../runtime/runtime";
 
 export class StyleSheetInstance extends Instance {
   readonly stylesheet: Stylesheet;

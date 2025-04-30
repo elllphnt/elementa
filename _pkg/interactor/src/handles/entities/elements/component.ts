@@ -1,5 +1,5 @@
 import { updateMapList } from "@elllphnt/elementa-utils";
-import { ComponentElementRenderable } from "@repo/elementa-renderer";
+import { ComponentElementRenderable } from "@elllphnt/elementa-scene";
 import { BehaviorSubject } from "rxjs";
 import { IHandle, ILayoutUpdatePropagation } from "~/src/_types/_";
 import { IFragmentHandle } from "~/src/_types/handles/entity/fragment";

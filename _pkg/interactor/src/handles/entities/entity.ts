@@ -2,7 +2,7 @@ import {
   combineLatestOrEmpty,
   pairwiseOrEmpty,
 } from "@elllphnt/elementa-utils";
-import { InstanceRenderable } from "@repo/elementa-renderer";
+import { InstanceRenderable } from "@elllphnt/elementa-scene";
 import _ from "lodash";
 import { Observable } from "rxjs";
 import { IElementaInteractor, IEntityHandle, IHandle } from "~/src/_types/_";

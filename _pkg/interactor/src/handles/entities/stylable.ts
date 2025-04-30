@@ -20,7 +20,7 @@ import {
   InstanceRenderable,
   RuleDomStyleSheetAdaptor,
   StyleRuleDomAdaptor,
-} from "@repo/elementa-renderer";
+} from "@elllphnt/elementa-scene";
 import { InstanceStyle } from "@repo/elementa-stager";
 import {
   animationFrameScheduler,

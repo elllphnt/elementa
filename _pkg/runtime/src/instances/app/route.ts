@@ -67,24 +67,10 @@ export class RouteInstance extends Instance {
     const url = this.route.absoluteLoaderUrl;
     return url ? this.runtime.moduleManager.module(url) : undefined;
   }
-  get loaderModule$() {
-    return this.route.absoluteLoaderUrl$.pipe(
-      switchMap((url) => {
-        return url ? this.runtime.moduleManager.module$(url) : of(undefined);
-      })
-    );
-  }
 
   get handlerModule() {
     const url = this.route.absoluteHandlerUrl;
     return url ? this.runtime.moduleManager.module(url) : undefined;
-  }
-  get handlerModule$() {
-    return this.route.absoluteHandlerUrl$.pipe(
-      switchMap((url) => {
-        return url ? this.runtime.moduleManager.module$(url) : of(undefined);
-      })
-    );
   }
 
   constructor({

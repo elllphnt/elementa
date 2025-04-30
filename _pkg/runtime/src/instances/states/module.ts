@@ -1,6 +1,6 @@
 import { HookConfig } from "@elllphnt/elementa-base";
 import { HookState } from "@elllphnt/elementa-models";
-import { map, of, switchMap } from "rxjs";
+import { map, of } from "rxjs";
 import { Runtime } from "../../runtime/runtime";
 import { Instance } from "../instance";
 import { StateInstance } from "./state";
@@ -10,33 +10,30 @@ export class HookStateInstance extends StateInstance<HookState> {
     const url = this.state.absoluteHookUrl;
     return url ? this.runtime.moduleManager.module(url) : undefined;
   }
-  get module$() {
-    return this.state.absoluteHookUrl$.pipe(
-      switchMap((url) => {
-        return url ? this.runtime.moduleManager.module$(url) : of(undefined);
-      })
-    );
-  }
 
   get use() {
-    return this.module?.default;
+    return this.module?.value.default;
   }
   get use$() {
-    return this.module$.pipe(
-      map((module) => {
-        return module?.default;
-      })
+    return (
+      this.module?.value$.pipe(
+        map((module) => {
+          return module?.default;
+        })
+      ) ?? of(undefined)
     );
   }
 
   get config() {
-    return this.module?.config as HookConfig | undefined;
+    return this.module?.value.config as HookConfig | undefined;
   }
   get config$() {
-    return this.module$.pipe(
-      map((module) => {
-        return module?.config as HookConfig | undefined;
-      })
+    return (
+      this.module?.value$.pipe(
+        map((value) => {
+          return value?.config as HookConfig | undefined;
+        })
+      ) ?? of(undefined)
     );
   }
 

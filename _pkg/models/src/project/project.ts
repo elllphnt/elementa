@@ -20,12 +20,9 @@ export abstract class Project extends Disposable {
   }
 
   getAbsoluteFileUrl(url: string) {
-    return this.infrastructure.fileSystem.getAbsoluteDriveFileUrl(
-      this.url,
-      url
-    );
+    return this.infrastructure.fileSystem.getAbsoluteFileUrl(this.url, url);
   }
   getRelativeFileUrl(url: string) {
-    return this.infrastructure.fileSystem.getRelativeDriveFileUrl(url);
+    return this.infrastructure.fileSystem.getRelativeFileUrl(url);
   }
 }

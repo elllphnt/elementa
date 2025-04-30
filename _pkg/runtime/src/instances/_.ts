@@ -1,6 +1,5 @@
 export * from "./app/_";
 export * from "./component/_";
-export * from "./editors/elementa/widgets/_";
 export * from "./elements/_";
 export * from "./fragment/environment/environment";
 export * from "./fragment/fragment";

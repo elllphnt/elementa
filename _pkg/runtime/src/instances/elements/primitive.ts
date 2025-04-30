@@ -1,18 +1,11 @@
 import { PrimitiveConfig, PrimitiveElementData } from "@elllphnt/elementa-base";
 import { PrimitiveElement } from "@elllphnt/elementa-models";
 import { reconcileList } from "@elllphnt/elementa-utils";
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  Observable,
-  of,
-  switchMap,
-} from "rxjs";
-import { makeElementInstance } from "~/src/instances/elements/_create";
+import { BehaviorSubject, combineLatest, map, Observable, of } from "rxjs";
 import { FragmentEnvironment } from "../fragment/environment/environment";
 import { Instance } from "../instance";
 import { ElementInstance } from "./element";
+import { createElementInstance } from "./_create";
 
 export class PrimitiveElementInstance extends ElementInstance<PrimitiveElement> {
   private _content$ = new BehaviorSubject<ElementInstance[]>([]);
@@ -28,33 +21,30 @@ export class PrimitiveElementInstance extends ElementInstance<PrimitiveElement> 
     if (!this.element.absoluteModuleUrl) return undefined;
     return this.runtime.moduleManager.module(this.element.absoluteModuleUrl);
   }
-  get module$() {
-    return this.element.absoluteModuleUrl$.pipe(
-      switchMap((url) => {
-        return url ? this.runtime.moduleManager.module$(url) : of(undefined);
-      })
-    );
-  }
 
   get localComponent() {
-    return this.module?.default;
+    return this.module?.value.default;
   }
   get localComponent$() {
-    return this.module$.pipe(
-      map((module) => {
-        return module?.default;
-      })
+    return (
+      this.module?.value$.pipe(
+        map((module) => {
+          return module?.default;
+        })
+      ) ?? of(undefined)
     );
   }
 
   get config(): PrimitiveConfig | undefined {
-    return this.module?.config;
+    return this.module?.value.config;
   }
   get config$(): Observable<PrimitiveConfig | undefined> {
-    return this.module$.pipe(
-      map((module) => {
-        return module?.config;
-      })
+    return (
+      this.module?.value$.pipe(
+        map((value) => {
+          return value.config;
+        })
+      ) ?? of(undefined)
     );
   }
 
@@ -96,7 +86,7 @@ export class PrimitiveElementInstance extends ElementInstance<PrimitiveElement> 
         sourceRef: (e) => e,
         targetRef: (i) => i.element,
         create: (element) =>
-          makeElementInstance({
+          createElementInstance({
             element,
             environment: this.environment,
             parent: this,

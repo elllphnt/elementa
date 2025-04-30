@@ -1,10 +1,10 @@
 import { ContainerElement } from "@elllphnt/elementa-models";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable } from "rxjs";
-import { makeElementInstance } from "~/src/instances/elements/_create";
 import { FragmentEnvironment } from "../fragment/environment/environment";
 import { Instance } from "../instance";
 import { ElementInstance } from "./element";
+import { createElementInstance } from "./_create";
 
 export class ContainerElementInstance extends ElementInstance<ContainerElement> {
   private _content$ = new BehaviorSubject<ElementInstance[]>([]);
@@ -39,7 +39,7 @@ export class ContainerElementInstance extends ElementInstance<ContainerElement> 
           sourceRef: (c) => c,
           targetRef: (c) => c.element,
           create: (content) => {
-            const instance = makeElementInstance({
+            const instance = createElementInstance({
               element: content,
               environment: this.environment,
               parent: this,

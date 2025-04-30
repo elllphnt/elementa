@@ -1,7 +1,7 @@
 import { resetCss } from "@elllphnt/elementa-base";
 import { Infrastructure } from "@elllphnt/elementa-models";
-import { AppInstance, Elementa } from "@repo/elementa";
-import { AppRenderable, ElementaRenderer } from "@repo/elementa-renderer";
+import { AppInstance, Elementa } from "@elllphnt/elementa-runtime";
+import { AppRenderable, ElementaRenderer } from "@elllphnt/elementa-scene";
 import { DomStyleSheetManager } from "@repo/elementa-renderer/dist/style/dom/manager";
 import { createElement } from "react";
 import { createRoot, Root } from "react-dom/client";

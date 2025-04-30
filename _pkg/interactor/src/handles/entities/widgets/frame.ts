@@ -7,7 +7,7 @@ import {
 } from "@elllphnt/elementa-base";
 import { Element, Entity } from "@elllphnt/elementa-models";
 import { RectData } from "@elllphnt/elementa-utils";
-import { FrameWidgetRenderable } from "@repo/elementa-renderer";
+import { FrameWidgetRenderable } from "@elllphnt/elementa-scene";
 import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
 import { makeEntityDropType } from "~/src/_lib/droptypes";
 import {

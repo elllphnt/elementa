@@ -1,10 +1,10 @@
 import { SlotElement } from "@elllphnt/elementa-models";
 import { combineLatestOrEmpty, reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable } from "rxjs";
-import { makeElementInstance } from "~/src/instances/elements/_create";
 import { FragmentEnvironment } from "../fragment/environment/environment";
 import { Instance } from "../instance";
 import { ElementInstance } from "./element";
+import { createElementInstance } from "./_create";
 
 export class SlotElementInstance extends ElementInstance<SlotElement> {
   private _placeholder$ = new BehaviorSubject<ElementInstance[]>([]);
@@ -40,7 +40,7 @@ export class SlotElementInstance extends ElementInstance<SlotElement> {
         sourceRef: (e) => e,
         targetRef: (e) => e.element,
         create: (element) =>
-          makeElementInstance({
+          createElementInstance({
             element,
             environment: this.environment,
             parent: this,

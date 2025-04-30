@@ -11,6 +11,7 @@ import {
 } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
+import { CssStyleSheet } from "../css/_";
 import { Project } from "../project/project";
 import { attachDataInput, DataInput } from "./data_input";
 import { attachFragment, Fragment } from "./fragment";
@@ -33,6 +34,9 @@ export type Component = ReactiveMap<ComponentData> & {
 
   fragment(id: string): Fragment | undefined;
   fragment$(id: string): Observable<Fragment | undefined>;
+
+  allStylesheets$: Observable<CssStyleSheet[]>;
+  allStylesheets: CssStyleSheet[];
 
   getEditorState(key: string): y.Map<any>;
 };

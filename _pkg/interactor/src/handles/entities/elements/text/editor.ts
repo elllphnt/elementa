@@ -1,7 +1,7 @@
 import {
   ITextElementEditor,
   TextElementRenderable,
-} from "@repo/elementa-renderer";
+} from "@elllphnt/elementa-scene";
 import { baseKeymap } from "prosemirror-commands";
 import { history, redo, undo } from "prosemirror-history";
 import { keymap } from "prosemirror-keymap";
@@ -76,9 +76,7 @@ export class ProseMirrorTextElementEditor implements ITextElementEditor {
 
   selectAll(): void {
     this.editor?.dispatch(
-      this.editor.state.tr.setSelection(
-        new AllSelection(this.editor.state.doc),
-      ),
+      this.editor.state.tr.setSelection(new AllSelection(this.editor.state.doc))
     );
   }
 }

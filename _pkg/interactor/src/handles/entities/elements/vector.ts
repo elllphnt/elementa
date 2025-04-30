@@ -1,4 +1,4 @@
-import { VectorElementRenderable } from "@repo/elementa-renderer";
+import { VectorElementRenderable } from "@elllphnt/elementa-scene";
 import { IHandle } from "~/src/_types/_";
 import { IFragmentHandle } from "~/src/_types/handles/entity/fragment";
 import { ElementHandle } from "./element";

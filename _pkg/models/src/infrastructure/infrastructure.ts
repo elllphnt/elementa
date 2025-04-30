@@ -1,12 +1,7 @@
-import { StaticReference } from "@elllphnt/elementa-base";
-import { Observable } from "rxjs";
-import { Project } from "../project/project";
-import { FileSystem } from "./file_system";
+import { FileSystem } from "./file_system/file_system";
+import { ReferenceResolver } from "./reference_resolver";
 
-export abstract class Infrastructure {
-  abstract get defaultProject(): Project | undefined;
-  abstract get defaultProject$(): Observable<Project | undefined>;
-
-  abstract get fileSystem(): FileSystem;
-  abstract resolveReference(ref: StaticReference): Promise<any>;
+export interface Infrastructure {
+  fileSystem: FileSystem;
+  referenceResolver: ReferenceResolver;
 }

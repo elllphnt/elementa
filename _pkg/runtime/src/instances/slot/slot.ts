@@ -7,8 +7,8 @@ import {
   of,
   switchMap,
 } from "rxjs";
-import { makeElementInstance } from "~/src/instances/elements/_create";
 import { ElementInstance, FragmentEnvironment } from "../_";
+import { createElementInstance } from "../elements/_create";
 import { Instance, InstanceType } from "../instance";
 import { StyleSheetInstance } from "../stylesheet/stylesheet";
 
@@ -77,7 +77,7 @@ export class SlotInstance extends Instance {
           sourceRef: (e) => e,
           targetRef: (i) => i.element,
           create: (element) =>
-            makeElementInstance({
+            createElementInstance({
               element,
               environment: this.environment,
               parent: this,
