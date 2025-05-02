@@ -9,7 +9,9 @@ export type ReactiveList<T> = y.Array<T> & {
   dispose(): void;
 };
 
-export function attachReactiveList<T>(yArray: y.Array<T>): ReactiveList<T> {
+export function attachReactiveList<T>(
+  yArray: y.Array<T>
+): yArray is ReactiveList<T> {
   const rxlist = yArray as ReactiveList<T>;
   const subject$ = new BehaviorSubject<T[]>(yArray.doc ? yArray.toArray() : []);
 
@@ -28,10 +30,14 @@ export function attachReactiveList<T>(yArray: y.Array<T>): ReactiveList<T> {
     subject$.complete();
   };
 
-  return rxlist;
+  return true;
 }
 
 export function createReactiveList<T>(): ReactiveList<T> {
-  const list = attachReactiveList(new y.Array<T>());
-  return list;
+  const yarray = new y.Array<T>();
+  if (attachReactiveList(yarray)) {
+    return yarray;
+  } else {
+    throw new Error("Failed to attach reactive list");
+  }
 }

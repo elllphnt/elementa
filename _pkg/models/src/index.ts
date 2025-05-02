@@ -3,5 +3,4 @@ export * from "./app/_";
 export * from "./component/_";
 export * from "./css/_";
 export * from "./infrastructure/_";
-export * from "./project/_";
 export * from "./style/_";

@@ -2,17 +2,20 @@ import * as y from "yjs";
 import { Enhancer, isFromEnhancer } from "../core/enhancer";
 import { attachReactiveList, ReactiveList } from "./list";
 
-export function createEnhancedReactiveList<T, I>(
+export function createEnhancedReactiveList<I, T extends y.Array<I>>(
   yarray: y.Array<I>,
-  enhancer: Enhancer<T>,
-  enhance: (input: I) => void
+  enhancer: Enhancer<y.Array<I>, T>,
+  enhance: Enhancer<y.Array<I>, T>
 ): ReactiveList<T> {
-  const list = attachReactiveList<T>(yarray as unknown as y.Array<T>);
+  if (!attachReactiveList(yarray)) {
+    throw new Error("Failed to attach reactive list");
+  }
+  const list = yarray as unknown as ReactiveList<T>;
 
   if (list.doc) {
     list.forEach((item) => {
       if (!isFromEnhancer(item, enhancer)) {
-        enhance(item as I);
+        enhance(item);
       }
     });
   }
@@ -20,7 +23,7 @@ export function createEnhancedReactiveList<T, I>(
   list.observable$.subscribe((items) => {
     items.forEach((item) => {
       if (!isFromEnhancer(item, enhancer)) {
-        enhance(item as I);
+        enhance(item);
       }
     });
   });

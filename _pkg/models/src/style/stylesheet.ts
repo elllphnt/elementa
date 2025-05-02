@@ -11,7 +11,7 @@ import {
 } from "@elllphnt/elementa-utils";
 import { filter, map, Observable, tap } from "rxjs";
 import * as y from "yjs";
-import { Project } from "../project/project";
+import { Project } from "../infrastructure/project/project";
 import { attachStyle, createStyle, Style } from "./style";
 import {
   attachStyleFragmentRegistry,

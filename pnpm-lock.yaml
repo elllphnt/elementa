@@ -136,6 +136,12 @@ importers:
 
   _dev/renderer.dev:
     dependencies:
+      '@elllphnt/elementa-models':
+        specifier: workspace:*
+        version: link:../../_pkg/models
+      '@elllphnt/elementa-runtime':
+        specifier: workspace:*
+        version: link:../../_pkg/runtime
       '@elllphnt/elementa-scene':
         specifier: workspace:*
         version: link:../../_pkg/scene

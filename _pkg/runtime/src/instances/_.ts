@@ -1,6 +1,7 @@
 export * from "./app/_";
 export * from "./component/_";
 export * from "./elements/_";
+export * from "./fragment/_";
 export * from "./fragment/environment/environment";
 export * from "./fragment/fragment";
 export * from "./instance";

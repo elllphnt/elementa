@@ -22,7 +22,7 @@ import {
   switchMap,
 } from "rxjs";
 import * as y from "yjs";
-import { Project } from "../project/project";
+import { Project } from "../infrastructure/project/project";
 import { StyleFragmentRegistry } from "./style_fragment_registry";
 
 export type Style = ReactiveMap<StyleData> & {

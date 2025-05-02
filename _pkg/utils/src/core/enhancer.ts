@@ -1,8 +1,11 @@
 const enhancerSymbol = Symbol("enhancer");
 
-export type Enhancer<T> = (...args: any[]) => T;
+export type Enhancer<I, T extends I> = (input: I, ...args: any[]) => input is T;
 
-export function setEnhancer<I>(instance: I, enhancer: Enhancer<I>) {
+export function setEnhancer<I, T extends I>(
+  instance: I,
+  enhancer: Enhancer<I, T>
+): void {
   let _set = (instance as any)[enhancerSymbol];
   if (!_set) {
     _set = new Set();
@@ -11,7 +14,7 @@ export function setEnhancer<I>(instance: I, enhancer: Enhancer<I>) {
   _set.add(enhancer);
 }
 
-export function getEnhancers<T>(instance: T): Enhancer<T>[] {
+export function getEnhancers<I, T extends I>(instance: I): Enhancer<I, T>[] {
   const enhancers = (instance as any)[enhancerSymbol];
   if (enhancers) {
     return Array.from(enhancers);
@@ -19,9 +22,9 @@ export function getEnhancers<T>(instance: T): Enhancer<T>[] {
   return [];
 }
 
-export function isFromEnhancer<T>(
-  instance: T,
-  enhancer: Enhancer<T>
+export function isFromEnhancer<I, T extends I>(
+  instance: I,
+  enhancer: Enhancer<I, T>
 ): instance is T {
   return (instance as any)[enhancerSymbol]?.has(enhancer) ?? false;
 }

@@ -10,4 +10,9 @@ export type PackageData = {
 export abstract class PackageManager extends Disposable {
   abstract get packages(): PackageData[];
   abstract get packages$(): Observable<PackageData[]>;
+
+  abstract getPackages(): Promise<PackageData[]>;
+  abstract installPackages(
+    packages: Array<Pick<PackageData, "name"> & Partial<PackageData>>
+  ): Promise<PackageData[]>;
 }

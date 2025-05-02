@@ -15,6 +15,7 @@ import {
 import { filter, map, Observable, of, switchMap, tap } from "rxjs";
 import * as y from "yjs";
 import { ResolvableRecord } from "../../../_lib/resolvable";
+import { File } from "../../../infrastructure/file/file";
 import { Fragment } from "../../fragment";
 import { attachElementList, ElementList } from "../_";
 import { attachBaseElement, Element } from "../element";
@@ -34,11 +35,11 @@ export type PrimitiveElement = Element<PrimitiveElementData> & {
   primitiveUrl: string | undefined;
   primitiveUrl$: Observable<string | undefined>;
 
-  absoluteModuleUrl: string | undefined;
-  absoluteModuleUrl$: Observable<string | undefined>;
+  primitiveAbsoluteUrl: string | undefined;
+  primitiveAbsoluteUrl$: Observable<string | undefined>;
 
-  moduleName: string | undefined;
-  moduleName$: Observable<string | undefined>;
+  primitiveFile: File | undefined;
+  primitiveFile$: Observable<File | undefined>;
 
   props: Record<string, any>;
   props$: Observable<Record<string, any>>;
@@ -102,36 +103,30 @@ export function attachPrimitiveElement(
   Object.defineProperty(element, "absoluteModuleUrl", {
     get() {
       return element.primitiveUrl
-        ? fragment.component.project.infrastructure.fileSystem.getAbsoluteFileUrl(
-            fragment.component.url,
-            element.primitiveUrl
-          )
+        ? fragment.component.project.resolveAbsoluteUrl(element.primitiveUrl)
         : undefined;
     },
   });
 
-  element.absoluteModuleUrl$ = element.primitiveUrl$.pipe(
+  element.primitiveAbsoluteUrl$ = element.primitiveUrl$.pipe(
     map((url) => {
       return url
-        ? fragment.component.project.infrastructure.fileSystem.getAbsoluteFileUrl(
-            fragment.component.url,
-            url
-          )
+        ? fragment.component.project.resolveAbsoluteUrl(url)
         : undefined;
     })
   );
 
   Object.defineProperty(element, "moduleName", {
     get() {
-      return element.absoluteModuleUrl
+      return element.primitiveAbsoluteUrl
         ? fragment.component.project.infrastructure.fileSystem.fileName(
-            element.absoluteModuleUrl
+            element.primitiveAbsoluteUrl
           )
         : undefined;
     },
   });
 
-  element.moduleName$ = element.absoluteModuleUrl$.pipe(
+  element.moduleName$ = element.primitiveAbsoluteUrl$.pipe(
     switchMap((url) => {
       return url
         ? fragment.component.project.infrastructure.fileSystem.fileName$(url)

@@ -107,12 +107,7 @@ export function attachRoute(ymap: y.Map<any>, app: App): Route {
     Object.defineProperty(route, absoluteUrlKey, {
       get() {
         const url = route[urlKey];
-        return url
-          ? route.app.project.infrastructure.fileSystem.getAbsoluteFileUrl(
-              route.app.url,
-              url
-            )
-          : undefined;
+        return url ? route.app.project.resolveAbsoluteUrl(url) : undefined;
       },
     });
     Object.defineProperty(route, `${absoluteUrlKey}$`, {
@@ -120,12 +115,7 @@ export function attachRoute(ymap: y.Map<any>, app: App): Route {
         const url$: Observable<string | undefined> = route[`${urlKey}$`];
         return url$.pipe(
           map((url) =>
-            url
-              ? route.app.project.infrastructure.fileSystem.getAbsoluteFileUrl(
-                  route.app.url,
-                  url
-                )
-              : undefined
+            url ? route.app.project.resolveAbsoluteUrl(url) : undefined
           )
         );
       },

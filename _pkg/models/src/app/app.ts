@@ -10,13 +10,11 @@ import {
 import { setEnhancer } from "@elllphnt/elementa-utils/dist/core/enhancer";
 import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
-import { Project } from "../project/_";
+import { Project } from "../infrastructure/project/_";
 import { attachRoute, Route } from "./route"; // make sure Route is updated too
 import { AppVariable, attachAppVariable } from "./variable"; // make sure Variable is updated too
 
 export type App = ReactiveMap<AppData> & {
-  url: string;
-
   project: Project;
   routes: ReactiveList<Route>;
   variables: ReactiveList<AppVariable>;

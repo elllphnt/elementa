@@ -2,10 +2,11 @@ import { PrimitiveConfig, PrimitiveElementData } from "@elllphnt/elementa-base";
 import { PrimitiveElement } from "@elllphnt/elementa-models";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, combineLatest, map, Observable, of } from "rxjs";
+import { Module } from "../../runtime/module_manager/_";
 import { FragmentEnvironment } from "../fragment/environment/environment";
 import { Instance } from "../instance";
-import { ElementInstance } from "./element";
 import { createElementInstance } from "./_create";
+import { ElementInstance } from "./element";
 
 export class PrimitiveElementInstance extends ElementInstance<PrimitiveElement> {
   private _content$ = new BehaviorSubject<ElementInstance[]>([]);
@@ -17,9 +18,14 @@ export class PrimitiveElementInstance extends ElementInstance<PrimitiveElement> 
     return this._content$.value;
   }
 
-  get module() {
-    if (!this.element.absoluteModuleUrl) return undefined;
-    return this.runtime.moduleManager.module(this.element.absoluteModuleUrl);
+  get module(): Module | undefined {
+    if (!this.element.primitiveAbsoluteUrl) return undefined;
+    return this.runtime.moduleManager.module(this.element.primitiveAbsoluteUrl);
+  }
+  get module$(): Observable<Module | undefined> {
+    return this.element.primitiveAbsoluteUrl$.pipe(
+      map((url) => (url ? this.runtime.moduleManager.module(url) : undefined))
+    );
   }
 
   get localComponent() {
@@ -108,17 +114,14 @@ export class PrimitiveElementInstance extends ElementInstance<PrimitiveElement> 
   }
 
   async initialize() {
-    const moduleUrl = this.element.absoluteModuleUrl;
-    if (!moduleUrl) return;
-    const module = await this.runtime.moduleManager.getModule<{
+    const module = (await this.module.getValue()) as {
       config?: PrimitiveConfig;
-    }>(moduleUrl);
-    const init = module?.config?.init;
-    if (init) {
+    };
+    if (module?.config?.init) {
       const data = this.element.toJSON() as PrimitiveElementData;
       this.element.restore({
         ...data,
-        ...init,
+        ...module?.config?.init,
         id: this.element.id,
         type: this.element.type,
       });

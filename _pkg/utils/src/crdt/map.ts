@@ -12,7 +12,7 @@ export type ReactiveMap<T extends Record<string, any>> = y.Map<T[keyof T]> & {
 
 export function attachReactiveMap<T extends Record<string, any>>(
   ymap: y.Map<T[keyof T]>
-): ReactiveMap<T> {
+): ymap is ReactiveMap<T> {
   const rxMap = ymap as ReactiveMap<T>;
   // initialize subject
   const initial: any = {};
@@ -52,13 +52,16 @@ export function attachReactiveMap<T extends Record<string, any>>(
   };
 
   setEnhancer(rxMap, attachReactiveMap);
-  return rxMap;
+  return true;
 }
 
 export function createReactiveMap<T extends Record<string, any>>(
   init?: T
 ): ReactiveMap<T> {
-  return attachReactiveMap(
-    new y.Map<T[keyof T]>(init ? Object.entries(init) : undefined)
-  );
+  const ymap = new y.Map<T[keyof T]>(Object.entries(init || {}));
+  if (attachReactiveMap(ymap)) {
+    return ymap;
+  } else {
+    throw new Error("Failed to attach reactive map");
+  }
 }

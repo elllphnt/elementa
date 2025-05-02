@@ -106,8 +106,7 @@ export function attachComponentElement(
   Object.defineProperty(componentElement, "absoluteComponentUrl", {
     get() {
       return componentElement.componentUrl
-        ? fragment.component.project.infrastructure.fileSystem.getAbsoluteFileUrl(
-            fragment.component.url,
+        ? fragment.component.project.resolveAbsoluteUrl(
             componentElement.componentUrl
           )
         : undefined;
@@ -117,10 +116,7 @@ export function attachComponentElement(
   componentElement.absoluteComponentUrl$ = componentElement.componentUrl$.pipe(
     map((url) => {
       return url
-        ? fragment.component.project.infrastructure.fileSystem.getAbsoluteFileUrl(
-            fragment.component.url,
-            url
-          )
+        ? fragment.component.project.resolveAbsoluteUrl(url)
         : undefined;
     })
   );

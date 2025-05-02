@@ -10,7 +10,7 @@ import {
 import { attachApp, createApp } from "../src/app/app";
 import { createRoute } from "../src/app/route";
 import { createAppVariable } from "../src/app/variable";
-import { Project } from "../src/project/project";
+import { Project } from "../src/infrastructure/project/project";
 
 test("initial state", () => {
   const app = createApp({} as Project);

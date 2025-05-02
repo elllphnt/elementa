@@ -1,7 +1,23 @@
-import { FileSystem } from "./file_system/file_system";
-import { ReferenceResolver } from "./reference_resolver";
+import { StaticReference } from "@elllphnt/elementa-base";
+import { Project } from "./project/project";
+import { File } from "./file/_";
 
 export interface Infrastructure {
-  fileSystem: FileSystem;
-  referenceResolver: ReferenceResolver;
+  // Resources
+
+  file(url: string): File;
+  project(url: string): Project;
+
+  // URLs
+
+  resolveAbsoluteUrl(
+    projectUrl: string,
+    relativeUrl: string
+  ): string | undefined;
+  resolveRelativeUrl(fileUrl: string): string | undefined;
+  resolveProjectUrl(fileUrl: string): string | undefined;
+
+  // References
+
+  resolveStaticReference(ref: StaticReference): Promise<any>;
 }

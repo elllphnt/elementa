@@ -1,4 +1,4 @@
-import { of } from "rxjs";
+import { Observable, of } from "rxjs";
 import { FragmentEnvironment } from "./environment";
 
 /**
@@ -39,7 +39,7 @@ export class DefaultFragmentEnvironment extends FragmentEnvironment {
     return undefined;
   }
   slotFill$() {
-    return of(undefined);
+    return of(undefined) as Observable<undefined>;
   }
 
   get fragments() {

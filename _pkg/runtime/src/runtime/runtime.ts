@@ -1,7 +1,7 @@
 import { Disposable, keyManager } from "@elllphnt/elementa-utils";
 import { FragmentEnvironment } from "../instances/_";
 import { DefaultFragmentEnvironment } from "../instances/fragment/environment/default_environment";
-import { ModuleManager } from "./module_manager";
+import { ModuleManager } from "./module_manager/module_manager";
 
 export class Runtime extends Disposable {
   key = keyManager.next("runtime");

@@ -1,6 +1,5 @@
 import { distinctUntilChanged, map } from "rxjs";
 import * as y from "yjs";
-import { setEnhancer } from "../core/enhancer";
 import { ReactiveMap } from "./map";
 
 let keyCounter = Math.round(Math.random() * 100000);
@@ -66,7 +65,6 @@ export function setModelFields<T extends Record<string, any>>(
     );
   }
 
-  setEnhancer(rxMap, setModelFields);
   return rxMap;
 }
 

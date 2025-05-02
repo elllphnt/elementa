@@ -4,8 +4,8 @@ import {
   StyleModifierData,
 } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
-import { CssStyleSheet } from "../css/_";
-import { Stylesheet } from "../style/stylesheet";
+import { CssStyleSheet } from "../../../css/_";
+import { Stylesheet } from "../../../style/stylesheet";
 
 export abstract class StyleManager {
   abstract rootStylesheet: Stylesheet;

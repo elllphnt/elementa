@@ -12,6 +12,8 @@
   "dependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "@elllphnt/elementa-models": "workspace:*",
+    "@elllphnt/elementa-runtime": "workspace:*",
     "@elllphnt/elementa-scene": "workspace:*"
   },
   "devDependencies": {

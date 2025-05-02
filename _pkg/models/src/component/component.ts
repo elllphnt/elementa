@@ -12,7 +12,7 @@ import {
 import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { CssStyleSheet } from "../css/_";
-import { Project } from "../project/project";
+import { Project } from "../infrastructure/project/project";
 import { attachDataInput, DataInput } from "./data_input";
 import { attachFragment, Fragment } from "./fragment";
 import { attachState, State } from "./states/_";
