@@ -1,7 +1,6 @@
 import { AppVariableData } from "@elllphnt/elementa-base";
 import {
   attachReactiveMap,
-  Extendable,
   ReactiveMap,
   setModelFields,
 } from "@elllphnt/elementa-utils";
@@ -29,11 +28,16 @@ export type AppVariable = ReactiveMap<AppVariableData> & {
   description$: Observable<string | undefined>;
 };
 
-export function attachAppVariable(ymap: y.Map<any>, app: App): AppVariable {
-  const rxMap = attachReactiveMap<AppVariableData>(
-    ymap as Extendable<y.Map<any>>
-  );
+export function attachAppVariable(
+  ymap: y.Map<any>,
+  app: App
+): ymap is AppVariable {
+  if (!attachReactiveMap<AppVariableData>(ymap)) {
+    throw new Error("Failed to attach reactive map to ymap");
+  }
+  const rxMap = ymap;
   const variable = rxMap as AppVariable;
+
   variable.app = app;
 
   setModelFields(variable, [
@@ -45,10 +49,13 @@ export function attachAppVariable(ymap: y.Map<any>, app: App): AppVariable {
   ]);
 
   setEnhancer(variable, attachAppVariable);
-  return variable;
+  return true;
 }
 
 export function createAppVariable(app: App): AppVariable {
   const ymap = new y.Map<any>();
-  return attachAppVariable(ymap, app);
+  if (!attachAppVariable(ymap, app)) {
+    throw new Error("Failed to attach app variable");
+  }
+  return ymap;
 }

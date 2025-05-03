@@ -1,5 +1,6 @@
 import { Component } from "@elllphnt/elementa-models";
-import { FragmentInstance, Instance, InstanceType } from "../_";
+import { FragmentInstance } from "../fragment/_";
+import { Instance, InstanceType } from "../instance";
 import { ComponentInstanceFragmentEnvironment } from "./fragment_environment";
 import { ComponentPropResolver } from "./prop_resolver";
 

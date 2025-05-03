@@ -23,14 +23,16 @@ export type ContainerElement = Element<ContainerElementData> & {
 export function attachContainerElement(
   ymap: y.Map<any>,
   fragment: Fragment
-): ContainerElement {
+): ymap is ContainerElement {
   ymap.set("type", "container");
-  const element = attachBaseElement(ymap, fragment) as ContainerElement;
+  if (!attachBaseElement(ymap, fragment)) {
+    throw new Error("Failed to attach base element to ymap");
+  }
+  const element = ymap as ContainerElement;
 
-  element.content = attachElementList(
-    getOrCreateYArray(ymap, "content"),
-    fragment
-  );
+  const content = getOrCreateYArray(ymap, "content");
+  attachElementList(getOrCreateYArray(ymap, "content"), fragment);
+  element.content = content as ElementList;
 
   Object.defineProperty(element, "allCssStylesheets", {
     get() {
@@ -57,10 +59,13 @@ export function attachContainerElement(
   };
 
   setEnhancer(element, attachContainerElement);
-  return element as ContainerElement;
+  return true;
 }
 
 export function createContainerElement(fragment: Fragment): ContainerElement {
   const ymap = new y.Map<any>();
-  return attachContainerElement(ymap, fragment);
+  if (!attachContainerElement(ymap, fragment)) {
+    throw new Error("Failed to create ContainerElement");
+  }
+  return ymap as ContainerElement;
 }

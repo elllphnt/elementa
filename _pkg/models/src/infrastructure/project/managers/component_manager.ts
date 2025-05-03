@@ -1,7 +1,7 @@
 import { Component } from "../../../component/component";
-import { ModelFile } from "../../file/model_file";
+import { FileModel } from "../../file/model_file";
 
 export abstract class ComponentManager {
-  abstract component(url: string): ModelFile<Component>;
-  abstract createComponent(): Promise<ModelFile<Component>>;
+  abstract component(url: string): FileModel<Component>;
+  abstract createComponent(): Promise<FileModel<Component>>;
 }

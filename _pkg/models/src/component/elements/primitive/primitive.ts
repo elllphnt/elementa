@@ -5,14 +5,13 @@ import {
 import {
   combineLatestOrEmpty,
   createEnhancedReactiveMap,
-  Extendable,
   getOrCreateYArray,
   getOrCreateYMap,
   ReactiveMap,
   setEnhancer,
   setModelFields,
 } from "@elllphnt/elementa-utils";
-import { filter, map, Observable, of, switchMap, tap } from "rxjs";
+import { filter, map, Observable, tap } from "rxjs";
 import * as y from "yjs";
 import { ResolvableRecord } from "../../../_lib/resolvable";
 import { File } from "../../../infrastructure/file/file";
@@ -59,17 +58,16 @@ export type PrimitiveElement = Element<PrimitiveElementData> & {
 export function attachPrimitiveElement(
   ymap: y.Map<any>,
   fragment: Fragment
-): PrimitiveElement {
+): ymap is PrimitiveElement {
   ymap.set("type", "primitive");
-  const element = attachBaseElement(
-    ymap,
-    fragment
-  ) as Extendable<PrimitiveElement>;
+  if (!attachBaseElement(ymap, fragment)) {
+    throw new Error("Failed to attach base element to ymap");
+  }
+  const element = ymap as PrimitiveElement;
 
-  element.content = attachElementList(
-    getOrCreateYArray(ymap, "content"),
-    fragment
-  );
+  const content = getOrCreateYArray(ymap, "content");
+  attachElementList(getOrCreateYArray(ymap, "content"), fragment);
+  element.content = content as ElementList;
 
   element.elements = createEnhancedReactiveMap(
     getOrCreateYMap<y.Map<any>>(element, "elements"),
@@ -116,24 +114,6 @@ export function attachPrimitiveElement(
     })
   );
 
-  Object.defineProperty(element, "moduleName", {
-    get() {
-      return element.primitiveAbsoluteUrl
-        ? fragment.component.project.infrastructure.fileSystem.fileName(
-            element.primitiveAbsoluteUrl
-          )
-        : undefined;
-    },
-  });
-
-  element.moduleName$ = element.primitiveAbsoluteUrl$.pipe(
-    switchMap((url) => {
-      return url
-        ? fragment.component.project.infrastructure.fileSystem.fileName$(url)
-        : of(undefined);
-    })
-  );
-
   element.prop = (key: string) => {
     return element.props[key];
   };
@@ -146,7 +126,7 @@ export function attachPrimitiveElement(
     key: string,
     value: ResolvableOrEvaluable<any> | undefined
   ) => {
-    const props = { ...element.value.props };
+    const props = { ...element.get("props") };
     if (value === undefined) {
       delete props[key];
     } else {
@@ -189,10 +169,13 @@ export function attachPrimitiveElement(
   };
 
   setEnhancer(element, attachPrimitiveElement);
-  return element as PrimitiveElement;
+  return true;
 }
 
 export function createPrimitiveElement(fragment: Fragment): PrimitiveElement {
   const ymap = new y.Map<any>();
-  return attachPrimitiveElement(ymap, fragment);
+  if (!attachPrimitiveElement(ymap, fragment)) {
+    throw new Error("Failed to create PrimitiveElement");
+  }
+  return ymap as PrimitiveElement;
 }

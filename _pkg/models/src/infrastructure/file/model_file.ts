@@ -1,4 +1,5 @@
 import {
+  Disposable,
   Enhancer,
   isFromEnhancer,
   ReactiveMap,
@@ -7,7 +8,9 @@ import { BehaviorSubject } from "rxjs";
 import * as y from "yjs";
 import { File } from "./file";
 
-export abstract class ModelFile<M extends ReactiveMap<any>> extends File {
+export abstract class FileModel<M extends ReactiveMap<any>> extends Disposable {
+  readonly file: File;
+
   private _model$: BehaviorSubject<M | undefined> = new BehaviorSubject<
     M | undefined
   >(undefined);
@@ -21,13 +24,16 @@ export abstract class ModelFile<M extends ReactiveMap<any>> extends File {
   }
 
   constructor({
+    file,
     enhancer,
     enhance,
   }: {
+    file: File;
     enhancer: Enhancer<y.Map<any>, M>;
     enhance: Enhancer<y.Map<any>, M>;
   }) {
     super();
+    this.file = file;
     this._enhancer = enhancer;
     this._enhance = enhance;
 

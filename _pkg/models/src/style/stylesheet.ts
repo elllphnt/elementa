@@ -2,7 +2,6 @@ import { baseSelector, StyleSheetData } from "@elllphnt/elementa-base";
 import {
   attachReactiveMap,
   createEnhancedReactiveMap,
-  Extendable,
   getOrCreateYArray,
   getOrCreateYMap,
   ReactiveMap,
@@ -63,15 +62,19 @@ export type Stylesheet = ReactiveMap<StyleSheetData> & {
 export function attachStylesheet(
   ymap: y.Map<any>,
   project: Project
-): Stylesheet {
-  const sheet = attachReactiveMap<StyleSheetData>(
-    ymap as Extendable<y.Map<any>>
-  ) as Extendable<Stylesheet>;
+): ymap is Stylesheet {
+  if (!attachReactiveMap<StyleSheetData>(ymap)) {
+    throw new Error("Failed to attach reactive map to ymap");
+  }
+  const sheet = ymap as Stylesheet;
 
   sheet.project = project;
-  sheet.fragmentRegistry = attachStyleFragmentRegistry(
-    getOrCreateYArray(sheet, "fragments")
-  );
+  const fragmentRegistry = getOrCreateYArray(
+    sheet,
+    "fragments"
+  ) as StyleFragmentRegistry;
+  attachStyleFragmentRegistry(getOrCreateYArray(sheet, "fragments"));
+  sheet.fragmentRegistry = fragmentRegistry;
 
   sheet.styles = createEnhancedReactiveMap(
     getOrCreateYMap<y.Map<any>>(sheet, "styles"),
@@ -143,13 +146,13 @@ export function attachStylesheet(
   sheet.setCondition = (id: string, expression: string) => {
     const conds = { ...sheet.conditions };
     conds[id] = expression;
-    sheet.patch({ conditions: conds });
+    sheet.set("conditions", conds);
   };
 
   sheet.removeCondition = (id: string) => {
     const conds = { ...sheet.conditions };
     delete conds[id];
-    sheet.patch({ conditions: conds });
+    sheet.set("conditions", conds);
   };
 
   const baseDispose = (sheet as any).dispose?.bind(sheet);
@@ -160,7 +163,7 @@ export function attachStylesheet(
   };
 
   setEnhancer(sheet, attachStylesheet);
-  return sheet as Stylesheet;
+  return true;
 }
 
 /**
@@ -168,5 +171,8 @@ export function attachStylesheet(
  */
 export function createStylesheet(project: Project): Stylesheet {
   const ymap = new y.Map<any>();
-  return attachStylesheet(ymap, project);
+  if (!attachStylesheet(ymap, project)) {
+    throw new Error("Failed to create Stylesheet");
+  }
+  return ymap as Stylesheet;
 }

@@ -19,11 +19,14 @@ export type ValueState = State<ValueStateData> & {
 export function attachValueState(
   ymap: y.Map<any>,
   component: Component
-): ValueState {
-  const state = attachState(ymap, component);
+): ymap is ValueState {
+  if (!attachState(ymap, component)) {
+    throw new Error("Failed to attach state to ymap");
+  }
+  const state = ymap as State;
   const valueState = state as ValueState;
   setModelFields(valueState, ["init", "tsType"]);
-  return state as ValueState;
+  return true;
 }
 
 /**
@@ -31,5 +34,8 @@ export function attachValueState(
  */
 export function createValueState(component: Component): ValueState {
   const ymap = new y.Map<any>();
-  return attachValueState(ymap, component);
+  if (!attachValueState(ymap, component)) {
+    throw new Error("Failed to create ValueState");
+  }
+  return ymap as ValueState;
 }

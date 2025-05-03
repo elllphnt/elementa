@@ -43,18 +43,18 @@ export function attachFragment(
   ymap: y.Map<any>,
   component: Component,
   variant: FragmentVariant = FragmentVariant.Fragment
-): Fragment {
-  const fragment = attachIdentifiable<FragmentData>(
-    ymap as Extendable<y.Map<any>>
-  ) as Extendable<Fragment>;
+): ymap is Fragment {
+  if (!attachIdentifiable<FragmentData>(ymap as Extendable<y.Map<any>>)) {
+    throw new Error("Failed to attach identifiable to ymap");
+  }
+  const fragment = ymap as Fragment;
 
   fragment.component = component;
   fragment.variant = variant;
 
-  fragment.content = attachElementList(
-    getOrCreateYArray(ymap, "content"),
-    fragment
-  );
+  const content = getOrCreateYArray(ymap, "content");
+  attachElementList(getOrCreateYArray(ymap, "content"), fragment);
+  fragment.content = content as ElementList;
 
   fragment.params = createEnhancedReactiveList(
     getOrCreateYArray<y.Map<any>>(ymap, "params"),
@@ -72,7 +72,6 @@ export function attachFragment(
   fragment.allCssStylesheets$ = fragment.content.allCssStylesheets$;
 
   // --- Slot Registry ---
-
   const slotIdSet = new Set<string>();
   const _slotIds$ = new BehaviorSubject<string[]>([]);
 
@@ -106,7 +105,7 @@ export function attachFragment(
   };
 
   setEnhancer(fragment, attachFragment);
-  return fragment as Fragment;
+  return true;
 }
 
 /**
@@ -117,5 +116,8 @@ export function createFragment(
   variant: FragmentVariant = FragmentVariant.Fragment
 ): Fragment {
   const ymap = new y.Map<any>();
-  return attachFragment(ymap, component, variant);
+  if (!attachFragment(ymap, component, variant)) {
+    throw new Error("Failed to create Fragment");
+  }
+  return ymap as Fragment;
 }

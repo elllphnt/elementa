@@ -62,7 +62,7 @@ export type Element<D extends BaseElementData = BaseElementData> =
 export function attachBaseElement<D extends BaseElementData>(
   ymap: y.Map<any>,
   fragment: Fragment
-): Element<D> {
+): ymap is Element<D> {
   const identifiable = attachIdentifiable<BaseElementData>(ymap);
   const element = identifiable as unknown as Element<D>;
 
@@ -110,5 +110,5 @@ export function attachBaseElement<D extends BaseElementData>(
   };
 
   setEnhancer(element, attachBaseElement);
-  return element;
+  return true;
 }

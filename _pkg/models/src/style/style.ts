@@ -9,7 +9,6 @@ import {
 import { CssStyleData, styleToCss } from "@elllphnt/elementa-css";
 import {
   attachReactiveMap,
-  Extendable,
   ReactiveMap,
   setEnhancer,
 } from "@elllphnt/elementa-utils";
@@ -88,10 +87,11 @@ export function attachStyle(
   ymap: y.Map<any>,
   project: Project,
   fragmentRegistry: StyleFragmentRegistry
-) {
-  const style = attachReactiveMap<StyleData>(
-    ymap as Extendable<y.Map<any>>
-  ) as Extendable<Style>;
+): ymap is Style {
+  if (!attachReactiveMap<StyleData>(ymap)) {
+    throw new Error("Failed to attach reactive map to ymap");
+  }
+  const style = ymap as Style;
 
   style.project = project;
   style.fragmentRegistry = fragmentRegistry;
@@ -111,7 +111,7 @@ export function attachStyle(
   // --- Property Logic ---
 
   style.propertyValue = <N extends StylePropertyName>(property: N) => {
-    return style.value[property];
+    return style.get(property) as UnsettableStyleData[N];
   };
 
   style.propertyValue$ = <N extends StylePropertyName>(property: N) => {
@@ -149,7 +149,7 @@ export function attachStyle(
   };
 
   style.hasProperty = (property: StylePropertyName) => {
-    return style.value[property] !== undefined;
+    return style.get(property) !== undefined;
   };
 
   style.hasProperty$ = (property: StylePropertyName) => {
@@ -160,15 +160,22 @@ export function attachStyle(
     property: N,
     value: StyleData[N]
   ) => {
-    style.patch({
-      [property]: value,
-    });
+    style.set(property, value);
   };
 
   // --- Raw field (__raw in StyleData) ---
 
-  style.raw = style.value.__raw ?? {};
-
+  Object.defineProperty(style, "raw", {
+    get() {
+      const raw: Record<string, string> = {};
+      for (const [key, value] of Object.entries(style)) {
+        if (key.startsWith("__")) {
+          raw[key.slice(2)] = value;
+        }
+      }
+      return raw;
+    },
+  });
   style.raw$ = style.observable$.pipe(map((v) => v.__raw ?? {}));
 
   // --- CSS generation ---
@@ -200,7 +207,7 @@ export function attachStyle(
   };
 
   setEnhancer(style, attachStyle);
-  return style as Style;
+  return true;
 }
 
 export function createStyle(
@@ -208,5 +215,8 @@ export function createStyle(
   fragmentRegistry: StyleFragmentRegistry
 ): Style {
   const ymap = new y.Map<any>();
-  return attachStyle(ymap, project, fragmentRegistry);
+  if (!attachStyle(ymap, project, fragmentRegistry)) {
+    throw new Error("Failed to create Style");
+  }
+  return ymap as Style;
 }

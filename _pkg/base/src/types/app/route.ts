@@ -9,3 +9,7 @@ export type RouteData = {
   pendingViewUrl?: string;
   notFoundViewUrl?: string;
 };
+
+export type RouteTreeData = RouteData & {
+  children?: RouteTreeData[];
+};

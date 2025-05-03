@@ -1,18 +1,34 @@
 import { AppInstance } from "@elllphnt/elementa-runtime";
-import { reconcileList } from "@elllphnt/elementa-utils";
+import { debounce, reconcileList } from "@elllphnt/elementa-utils";
+import {
+  createRootRoute,
+  RootRoute,
+  RouterHistory,
+} from "@tanstack/react-router";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Scene } from "../../scene/scene";
 import { Renderable } from "../_";
-import { RouteRenderable } from "./route";
+import { RouteTreeRenderable } from "./route";
 
 export class AppRenderable extends Renderable {
-  private _routes$ = new BehaviorSubject<RouteRenderable[]>([]);
+  readonly instance: AppInstance;
+  readonly history: RouterHistory;
 
-  get routes$(): Observable<RouteRenderable[]> {
+  private _routes$ = new BehaviorSubject<RouteTreeRenderable[]>([]);
+  private _tsRootRoute$ = new BehaviorSubject<RootRoute>(createRootRoute());
+
+  get routes$(): Observable<RouteTreeRenderable[]> {
     return this._routes$;
   }
-  get routes(): RouteRenderable[] {
+  get routes(): RouteTreeRenderable[] {
     return this._routes$.value;
+  }
+
+  get tsRootRoute$(): Observable<RootRoute> {
+    return this._tsRootRoute$;
+  }
+  get tsRootRoute(): RootRoute {
+    return this._tsRootRoute$.value;
   }
 
   get renderables(): Renderable[] {
@@ -22,19 +38,34 @@ export class AppRenderable extends Renderable {
     return this.routes$;
   }
 
-  constructor({ scene, instance }: { scene: Scene; instance: AppInstance }) {
+  constructor({
+    scene,
+    instance,
+    history,
+  }: {
+    scene: Scene;
+    instance: AppInstance;
+    history: RouterHistory;
+  }) {
     super({ scene });
+    this.instance = instance;
+    this.history = history;
 
-    const routesSubscription = instance.routes$.subscribe((routes) => {
+    const onStructure = debounce(() => {
+      this.handleStructureChange();
+    }, 100);
+
+    const routesSubscription = this.instance.routes$.subscribe((routes) => {
       const [nextRoutes, removed] = reconcileList({
         sources: routes,
         targets: this.routes,
         sourceRef: (r) => r,
-        targetRef: (r) => r.route,
+        targetRef: (r) => r.instance,
         create: (route) =>
-          new RouteRenderable({
+          new RouteTreeRenderable({
             scene,
             route,
+            onStructure,
           }),
       });
 
@@ -42,8 +73,17 @@ export class AppRenderable extends Renderable {
       removed.forEach((r) => r.dispose());
     });
 
+    onStructure();
+
     this.addDisposer(() => {
       routesSubscription.unsubscribe();
     });
+  }
+
+  handleStructureChange() {
+    const rootRoute = createRootRoute();
+    const routes = this.routes.map((route) => route.createTsRoute(rootRoute));
+    rootRoute.addChildren(routes);
+    this._tsRootRoute$.next(rootRoute);
   }
 }

@@ -12,7 +12,7 @@ import { attachVectorElement } from "./vector";
 export function createElement(
   ymap: y.Map<any>,
   fragment: Fragment
-): Element<any> {
+): ymap is Element {
   const type = ymap.get("type") as ElementData["type"];
   switch (type) {
     case "component":

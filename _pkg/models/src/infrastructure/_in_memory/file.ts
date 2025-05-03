@@ -1,6 +1,8 @@
 import { BehaviorSubject, map, Observable } from "rxjs";
-import { File, ResourceStatus } from "../_";
+import { File } from "../file/_";
+import { ResourceStatus } from "../resource";
 import { InMemoryProject } from "./project";
+import { InMemoryInfrastructure } from "./infrastructure";
 
 export type InMemoryFileState = {
   name: string;
@@ -9,7 +11,12 @@ export type InMemoryFileState = {
 };
 
 export class InMemoryFile extends File {
+  readonly id: string;
   readonly project: InMemoryProject;
+
+  get url(): string {
+    return InMemoryInfrastructure.makeAbsoluteFileUrl(this.project.id, this.id);
+  }
 
   private _state$: BehaviorSubject<InMemoryFileState>;
 
@@ -33,9 +40,11 @@ export class InMemoryFile extends File {
   }
 
   constructor({
+    id,
     initialState,
     project,
   }: {
+    id: string;
     initialState: InMemoryFileState;
     project: InMemoryProject;
   }) {

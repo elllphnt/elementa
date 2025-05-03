@@ -20,7 +20,6 @@ import { attachTemplate, Template } from "./template";
 
 export type Component = ReactiveMap<ComponentData> & {
   project: Project;
-  url: string;
 
   template: Template;
   editorStates: y.Map<y.Map<any>>;
@@ -43,23 +42,19 @@ export type Component = ReactiveMap<ComponentData> & {
 
 export function attachComponent(
   ymap: y.Map<any>,
-  project: Project,
-  {
-    url,
-  }: {
-    url: string;
+  project: Project
+): ymap is Component {
+  if (!attachReactiveMap<ComponentData>(ymap as y.Map<any>)) {
+    throw new Error("Failed to attach reactive map to ymap");
   }
-): Component {
-  const rxMap = attachReactiveMap<ComponentData>(ymap as y.Map<any>);
+  const rxMap = ymap;
   const component = rxMap as Component;
 
   component.project = project;
-  component.url = url;
 
-  component.template = attachTemplate(
-    getOrCreateYMap(rxMap, "template"),
-    component
-  );
+  const template = getOrCreateYMap(rxMap, "template");
+  attachTemplate(getOrCreateYMap(rxMap, "template"), component);
+  component.template = template as Template;
 
   component.editorStates = getOrCreateYMap(rxMap, "editors");
 
@@ -121,17 +116,13 @@ export function attachComponent(
   };
 
   setEnhancer(component, attachComponent);
-  return component;
+  return true;
 }
 
-export function createComponent(
-  project: Project,
-  {
-    url,
-  }: {
-    url: string;
-  }
-): Component {
+export function createComponent(project: Project): Component {
   const ymap = new y.Map<any>();
-  return attachComponent(ymap, project, { url });
+  if (!attachComponent(ymap, project)) {
+    throw new Error("Failed to attach component to ymap");
+  }
+  return ymap;
 }

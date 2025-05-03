@@ -2,9 +2,9 @@ import { Expression, SlotFillData } from "@elllphnt/elementa-base";
 import {
   attachReactiveMap,
   combineLatestOrEmpty,
-  Extendable,
   getOrCreateYArray,
   getOrCreateYMap,
+  ReactiveMap,
 } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
 import * as y from "yjs";
@@ -14,7 +14,7 @@ import { Component } from "../../component";
 import { Fragment } from "../../fragment";
 import { attachElementList, ElementList } from "../_list";
 
-export type SlotFill = ReturnType<typeof attachReactiveMap<SlotFillData>> & {
+export type SlotFill = ReactiveMap<SlotFillData> & {
   component: Component;
   cssStyleSheet: StylesheetCssStyleSheet;
   content: ElementList;
@@ -34,25 +34,29 @@ export type SlotFill = ReturnType<typeof attachReactiveMap<SlotFillData>> & {
   cloneIds(clone: y.Map<any>): void;
 };
 
-export function attachSlotFill(ymap: y.Map<any>, fragment: Fragment): SlotFill {
-  const slot = attachReactiveMap<SlotFillData>(
-    ymap as Extendable<y.Map<any>>
-  ) as Extendable<SlotFill>;
+export function attachSlotFill(
+  ymap: y.Map<any>,
+  fragment: Fragment
+): ymap is SlotFill {
+  if (!attachReactiveMap<SlotFillData>(ymap as y.Map<any>)) {
+    throw new Error("Failed to attach reactive map to ymap");
+  }
+  const slot = ymap as SlotFill;
 
   slot.component = fragment.component;
 
+  const stylesheet = getOrCreateYMap(slot, "stylesheet");
+  if (!attachStylesheet(stylesheet, fragment.component.project)) {
+    throw new Error("Failed to attach stylesheet to ymap");
+  }
   slot.cssStyleSheet = new StylesheetCssStyleSheet({
     target: `slot-fill`,
-    stylesheet: attachStylesheet(
-      getOrCreateYMap(slot, "stylesheet"),
-      fragment.component.project
-    ),
+    stylesheet,
   });
 
-  slot.content = attachElementList(
-    getOrCreateYArray(slot, "content"),
-    fragment
-  );
+  const content = getOrCreateYArray(slot, "content");
+  attachElementList(getOrCreateYArray(slot, "content"), fragment);
+  slot.content = content as ElementList;
 
   Object.defineProperty(slot, "allCssStylesheets", {
     get() {
@@ -67,7 +71,7 @@ export function attachSlotFill(ymap: y.Map<any>, fragment: Fragment): SlotFill {
 
   Object.defineProperty(slot, "interactions", {
     get() {
-      return slot.value.interactions ?? {};
+      return slot.get("interactions") ?? {};
     },
     set(value) {
       slot.set("interactions", value);
@@ -105,10 +109,13 @@ export function attachSlotFill(ymap: y.Map<any>, fragment: Fragment): SlotFill {
     if (baseDispose) baseDispose();
   };
 
-  return slot as SlotFill;
+  return true;
 }
 
 export function createSlotFill(fragment: Fragment): SlotFill {
   const ymap = new y.Map<any>();
-  return attachSlotFill(ymap, fragment);
+  if (!attachSlotFill(ymap, fragment)) {
+    throw new Error("Failed to create SlotFill");
+  }
+  return ymap as SlotFill;
 }

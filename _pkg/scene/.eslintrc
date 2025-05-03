@@ -1,6 +1,12 @@
 {
   "plugins": ["import"],
   "rules": {
-    "import/no-cycle": [2, { "maxDepth": "∞" }],
-  },
+    "import/no-cycle": ["error"],
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": ["../_"]
+      }
+    ]
+  }
 }

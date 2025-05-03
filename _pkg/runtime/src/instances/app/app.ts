@@ -2,12 +2,12 @@ import { App } from "@elllphnt/elementa-models";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject } from "rxjs";
 import { FragmentEnvironment, Instance, InstanceType } from "../_";
-import { RouteInstance } from "./route";
+import { RouteTreeInstance } from "./route_tree";
 
 export class AppInstance extends Instance {
   readonly app: App;
 
-  private _routes$ = new BehaviorSubject<RouteInstance[]>([]);
+  private _routes$ = new BehaviorSubject<RouteTreeInstance[]>([]);
 
   get routes() {
     return this._routes$.value;
@@ -38,9 +38,13 @@ export class AppInstance extends Instance {
           targets: this.routes,
           sources: routes,
           sourceRef: (r) => r,
-          targetRef: (r) => r.route,
+          targetRef: (r) => r.model,
           create: (route) =>
-            new RouteInstance({ environment, route, parent: this }),
+            new RouteTreeInstance({
+              environment,
+              routeTree: route,
+              parent: this,
+            }),
         });
         this._routes$.next(nextRoutes);
         removed.forEach((route) => {

@@ -4,7 +4,7 @@
 export function withTimeout<T>(
   promise: Promise<T>,
   ms: number,
-  errorMessage?: string,
+  errorMessage?: string
 ): Promise<T> {
   let timeoutId: ReturnType<typeof setTimeout>;
   const timeoutPromise = new Promise<never>((_, reject) => {
@@ -24,7 +24,7 @@ export function withTimeout<T>(
 export async function retryAsync<T>(
   fn: () => Promise<T>,
   retries: number = 3,
-  delayMs: number = 1000,
+  delayMs: number = 1000
 ): Promise<T> {
   let lastError: unknown;
   for (let attempt = 0; attempt < retries; attempt++) {
@@ -38,4 +38,21 @@ export async function retryAsync<T>(
     }
   }
   throw lastError;
+}
+
+export function debounce<T extends (...args: any[]) => void>(
+  fn: T,
+  delay: number
+): (...args: Parameters<T>) => void {
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+
+  return (...args: Parameters<T>) => {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(() => {
+      fn(...args);
+      timeout = null;
+    }, delay);
+  };
 }

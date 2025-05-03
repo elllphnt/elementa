@@ -1,4 +1,7 @@
-import { JSX, memo } from "react";
+import { useObservable } from "@elllphnt/elementa-react-utils";
+import { createRouter, Outlet, RouterProvider } from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { JSX, memo, useMemo } from "react";
 import { AppRenderable } from "../../renderables/app/app";
 
 export const AppComponent = memo(function ({
@@ -6,7 +9,20 @@ export const AppComponent = memo(function ({
 }: {
   app: AppRenderable;
 }): JSX.Element {
-  return <>App : {app.key}</>;
+  const routeTree = useObservable(app.tsRootRoute$, app.tsRootRoute);
+  const router = useMemo(() => {
+    routeTree.update({
+      component: () => (
+        <>
+          <Outlet />
+          <TanStackRouterDevtools />
+        </>
+      ),
+    });
+    const router = createRouter({ routeTree, history: app.history });
+    return router;
+  }, [routeTree]);
+  return <RouterProvider router={router} />;
 });
 
 export default AppComponent;

@@ -1,14 +1,15 @@
 import { DataInputData } from "@elllphnt/elementa-base";
 import {
   attachReactiveMap,
-  Extendable,
+  ReactiveMap,
   setEnhancer,
+  setModelFields,
 } from "@elllphnt/elementa-utils";
-import { distinctUntilChanged, map, Observable } from "rxjs";
+import { Observable } from "rxjs";
 import * as y from "yjs";
 import { Component } from "./component";
 
-export type DataInput = ReturnType<typeof attachReactiveMap<DataInputData>> & {
+export type DataInput = ReactiveMap<DataInputData> & {
   component: Component;
 
   name: string;
@@ -25,14 +26,6 @@ export type DataInput = ReturnType<typeof attachReactiveMap<DataInputData>> & {
 
   defaultValue: any;
   defaultValue$: Observable<any>;
-
-  setName(name: string): void;
-  setVarName(varName: string | undefined): void;
-  setTsType(tsType: string | undefined): void;
-  setRequired(required: boolean): void;
-  setDefault(defaultValue: any): void;
-
-  remove(): void;
 };
 
 /**
@@ -41,134 +34,17 @@ export type DataInput = ReturnType<typeof attachReactiveMap<DataInputData>> & {
 export function attachDataInput(
   ymap: y.Map<any>,
   component: Component
-): DataInput {
-  const input = attachReactiveMap<DataInputData>(
-    ymap as Extendable<y.Map<any>>
-  ) as Extendable<DataInput>;
-
+): ymap is DataInput {
+  if (!attachReactiveMap<DataInputData>(ymap)) {
+    throw new Error("Failed to attach reactive map to ymap");
+  }
+  const input = ymap as DataInput;
   input.component = component;
 
-  Object.defineProperty(input, "name", {
-    get() {
-      return input.value.name ?? "";
-    },
-    set(value) {
-      input.set("name", value);
-    },
-  });
-
-  input.name$ = input.observable$.pipe(
-    map((v) => v.name ?? ""),
-    distinctUntilChanged()
-  );
-
-  Object.defineProperty(input, "varName", {
-    get() {
-      return input.value.varName;
-    },
-    set(value) {
-      if (value === undefined) {
-        input.delete("varName");
-      } else {
-        input.set("varName", value);
-      }
-    },
-  });
-
-  input.varName$ = input.observable$.pipe(
-    map((v) => v.varName),
-    distinctUntilChanged()
-  );
-
-  Object.defineProperty(input, "tsType", {
-    get() {
-      return input.value.tsType;
-    },
-    set(value) {
-      if (value === undefined) {
-        input.delete("tsType");
-      } else {
-        input.set("tsType", value);
-      }
-    },
-  });
-
-  input.tsType$ = input.observable$.pipe(
-    map((v) => v.tsType),
-    distinctUntilChanged()
-  );
-
-  Object.defineProperty(input, "required", {
-    get() {
-      return input.value.required ?? false;
-    },
-    set(value) {
-      input.set("required", value);
-    },
-  });
-
-  input.required$ = input.observable$.pipe(
-    map((v) => v.required ?? false),
-    distinctUntilChanged()
-  );
-
-  Object.defineProperty(input, "defaultValue", {
-    get() {
-      return input.value.default;
-    },
-    set(value) {
-      if (value === undefined) {
-        input.delete("default");
-      } else {
-        input.set("default", value);
-      }
-    },
-  });
-
-  input.defaultValue$ = input.observable$.pipe(
-    map((v) => v.default),
-    distinctUntilChanged()
-  );
-
-  input.setName = (name: string) => {
-    input.set("name", name);
-  };
-
-  input.setVarName = (varName: string | undefined) => {
-    if (varName === undefined) {
-      input.delete("varName");
-    } else {
-      input.set("varName", varName);
-    }
-  };
-
-  input.setTsType = (tsType: string | undefined) => {
-    if (tsType === undefined) {
-      input.delete("tsType");
-    } else {
-      input.set("tsType", tsType);
-    }
-  };
-
-  input.setRequired = (required: boolean) => {
-    input.set("required", required);
-  };
-
-  input.setDefault = (defaultValue: any) => {
-    if (defaultValue === undefined) {
-      input.delete("default");
-    } else {
-      input.set("default", defaultValue);
-    }
-  };
-
-  input.remove = () => {
-    const index = input.component.props.toArray().indexOf(input);
-    input.component.props.delete(index);
-  };
+  setModelFields(input, ["name", "varName", "tsType", "required", "default"]);
 
   setEnhancer(input, attachDataInput);
-  return input as DataInput;
+  return true;
 }
 
 /**
@@ -176,5 +52,8 @@ export function attachDataInput(
  */
 export function createDataInput(component: Component): DataInput {
   const ymap = new y.Map<any>();
-  return attachDataInput(ymap, component);
+  if (!attachDataInput(ymap, component)) {
+    throw new Error("Failed to create DataInput");
+  }
+  return ymap as DataInput;
 }

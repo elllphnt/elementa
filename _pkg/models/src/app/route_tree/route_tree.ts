@@ -1,25 +1,27 @@
 import { RouteData } from "@elllphnt/elementa-base";
 import {
   attachReactiveMap,
+  getOrCreateYArray,
+  ReactiveList,
   ReactiveMap,
   setEnhancer,
   setModelFields,
 } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
 import * as y from "yjs";
-import { genId } from "../_lib/id";
-import { Component } from "../component/component";
-import { App } from "./app";
+import { genId } from "../../_lib/id";
+import { Component } from "../../component/component";
+import { FileModel } from "../../infrastructure/_";
+import { App } from "../app";
+import { attachRouteTreeList } from "./_list";
 
-export type Route = ReactiveMap<RouteData> & {
+export type RouteTree = ReactiveMap<RouteData> & {
   app: App;
   id: string;
+  children: ReactiveList<RouteTree>;
 
-  path: string;
-  path$: Observable<string>;
-
-  parentId: string | undefined;
-  parentId$: Observable<string | undefined>;
+  path: string | undefined;
+  path$: Observable<string | undefined>;
 
   mainViewUrl: string | undefined;
   mainViewUrl$: Observable<string | undefined>;
@@ -57,24 +59,32 @@ export type Route = ReactiveMap<RouteData> & {
   absoluteHandlerUrl: string | undefined;
   absoluteHandlerUrl$: Observable<string | undefined>;
 
-  mainViewComponent: Component | undefined;
-  mainViewComponent$: Observable<Component | undefined>;
+  mainViewComponent: FileModel<Component> | undefined;
+  mainViewComponent$: Observable<FileModel<Component> | undefined>;
 
-  errorViewComponent: Component | undefined;
-  errorViewComponent$: Observable<Component | undefined>;
+  errorViewComponent: FileModel<Component> | undefined;
+  errorViewComponent$: Observable<FileModel<Component> | undefined>;
 
-  pendingViewComponent: Component | undefined;
-  pendingViewComponent$: Observable<Component | undefined>;
+  pendingViewComponent: FileModel<Component> | undefined;
+  pendingViewComponent$: Observable<FileModel<Component> | undefined>;
 
-  notFoundViewComponent: Component | undefined;
-  notFoundViewComponent$: Observable<Component | undefined>;
+  notFoundViewComponent: FileModel<Component> | undefined;
+  notFoundViewComponent$: Observable<FileModel<Component> | undefined>;
 };
 
-export function attachRoute(ymap: y.Map<any>, app: App): Route {
-  const rxMap = attachReactiveMap<RouteData>(ymap);
-  const route = rxMap as Route;
+export function attachRouteTree(ymap: y.Map<any>, app: App): ymap is RouteTree {
+  if (!attachReactiveMap<RouteData>(ymap)) {
+    throw new Error("Failed to attach reactive map to ymap");
+  }
+  const rxMap = ymap;
+  const route = rxMap as RouteTree;
 
-  // initialization
+  const children = getOrCreateYArray<y.Map<any>>(rxMap, "children");
+  if (!attachRouteTreeList(children, app)) {
+    throw new Error("Failed to attach route tree list");
+  }
+  route.children = children;
+
   route.app = app;
   if (!rxMap.doc) {
     rxMap.set("id", genId());
@@ -128,7 +138,7 @@ export function attachRoute(ymap: y.Map<any>, app: App): Route {
     ["absolutePendingViewUrl", "pendingView"],
     ["absoluteNotFoundViewUrl", "notFoundView"],
   ].forEach(([urlKey, key]) => {
-    Object.defineProperty(route, key, {
+    Object.defineProperty(route, `${key}Component`, {
       get() {
         const url = route[urlKey];
         return url
@@ -136,7 +146,7 @@ export function attachRoute(ymap: y.Map<any>, app: App): Route {
           : undefined;
       },
     });
-    Object.defineProperty(route, `${key}$`, {
+    Object.defineProperty(route, `${key}Component$`, {
       get() {
         const url$: Observable<string | undefined> = route[`${urlKey}$`];
         return url$.pipe(
@@ -148,11 +158,14 @@ export function attachRoute(ymap: y.Map<any>, app: App): Route {
     });
   });
 
-  setEnhancer(route, attachRoute);
-  return route;
+  setEnhancer(route, attachRouteTree);
+  return true;
 }
 
-export function createRoute(app: App): Route {
+export function createRoute(app: App): RouteTree {
   const ymap = new y.Map<any>();
-  return attachRoute(ymap, app);
+  if (!attachRouteTree(ymap, app)) {
+    throw new Error("Failed to attach route");
+  }
+  return ymap;
 }

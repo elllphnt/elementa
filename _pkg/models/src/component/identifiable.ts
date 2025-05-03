@@ -17,10 +17,11 @@ export type Identifiable<S extends IdentifiableData> = ReactiveMap<any> & {
 
 export function attachIdentifiable<S extends IdentifiableData>(
   ymap: y.Map<any>
-): Identifiable<S> {
-  const identifiable = attachReactiveMap<S>(
-    ymap as Extendable<y.Map<any>>
-  ) as Extendable<Identifiable<S>>;
+): ymap is Identifiable<S> {
+  if (!attachReactiveMap<S>(ymap as Extendable<y.Map<any>>)) {
+    throw new Error("Failed to attach reactive map to ymap");
+  }
+  const identifiable = ymap as Identifiable<S>;
 
   if (!identifiable.doc || (identifiable.doc && !identifiable.get("id"))) {
     identifiable.set("id", Identifiable.createId() as any);
@@ -41,14 +42,17 @@ export function attachIdentifiable<S extends IdentifiableData>(
   };
 
   setEnhancer(identifiable, attachIdentifiable);
-  return identifiable as Identifiable<S>;
+  return true;
 }
 
 export function createIdentifiable<
   S extends IdentifiableData
 >(): Identifiable<S> {
   const ymap = new y.Map<any>();
-  return attachIdentifiable<S>(ymap);
+  if (!attachIdentifiable<S>(ymap)) {
+    throw new Error("Failed to create Identifiable");
+  }
+  return ymap as Identifiable<S>;
 }
 
 export namespace Identifiable {

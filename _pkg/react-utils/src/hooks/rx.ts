@@ -19,7 +19,7 @@ export function useObservable<T, O extends Observable<T> | undefined>(
     init = args[1];
     key = args[2];
   }
-  const subscriptionRef = useRef<Subscription>();
+  const subscriptionRef = useRef<Subscription>(undefined);
   const keyRef = useRef(key);
   const valueRef = useRef(init);
   const [, update] = useReducer((s) => s + 1, 0);
@@ -56,7 +56,7 @@ export function useObservable<T, O extends Observable<T> | undefined>(
 export function useManyObservables<T, O extends Observable<T> | undefined>(
   observables: O[],
   init: T[],
-  key?: any,
+  key?: any
 ): O extends undefined ? (T | undefined)[] : T[] {
   const observablesRef = useRef(observables);
   observablesRef.current = observables;

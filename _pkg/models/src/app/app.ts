@@ -11,17 +11,18 @@ import { setEnhancer } from "@elllphnt/elementa-utils/dist/core/enhancer";
 import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { Project } from "../infrastructure/project/_";
-import { attachRoute, Route } from "./route"; // make sure Route is updated too
+import { attachRouteTreeList } from "./route_tree/_list";
+import { attachRouteTree, RouteTree } from "./route_tree/route_tree"; // make sure Route is updated too
 import { AppVariable, attachAppVariable } from "./variable"; // make sure Variable is updated too
 
 export type App = ReactiveMap<AppData> & {
   project: Project;
-  routes: ReactiveList<Route>;
+  routes: ReactiveList<RouteTree>;
   variables: ReactiveList<AppVariable>;
   editors: ReactiveMap<y.AbstractType<any>>;
 
-  route(id: string): Route | undefined;
-  route$(id: string): Observable<Route | undefined>;
+  route(id: string): RouteTree | undefined;
+  route$(id: string): Observable<RouteTree | undefined>;
 
   variable(varName: string): AppVariable | undefined;
   variable$(varName: string): Observable<AppVariable | undefined>;
@@ -30,38 +31,37 @@ export type App = ReactiveMap<AppData> & {
   getArrayEditorState(editorKey: string): y.Array<any>;
 };
 
-export function attachApp(
-  ymap: y.Map<any>,
-  project: Project,
-  { url }: { url: string }
-): App {
-  const rxMap = attachReactiveMap<AppData>(ymap);
+export function attachApp(ymap: y.Map<any>, project: Project): ymap is App {
+  if (!attachReactiveMap<AppData>(ymap)) {
+    throw new Error("Failed to attach reactive map to ymap");
+  }
+  const rxMap = ymap;
   const app = rxMap as App;
 
   // initialization
-  Object.defineProperty(app, "url", {
-    get: () => url,
-  });
+
+  const routes = getOrCreateYArray<y.Map<any>>(rxMap, "routes");
+  if (!attachRouteTreeList(routes, app)) {
+    throw new Error("Failed to attach route tree list");
+  }
+  app.routes = routes;
+
   app.project = project;
   app.routes = createEnhancedReactiveList(
     getOrCreateYArray<y.Map<any>>(rxMap, "routes"),
-    attachRoute,
-    (yMap) => attachRoute(yMap, app)
+    attachRouteTree,
+    (yMap) => attachRouteTree(yMap, app)
   );
   app.variables = createEnhancedReactiveList(
     getOrCreateYArray<y.Map<any>>(rxMap, "variables"),
     attachAppVariable,
     (yMap) => attachAppVariable(yMap, app)
   );
-  app.editors = attachReactiveMap(getOrCreateYMap(rxMap, "editors"));
-
-  const _routesById$ = new BehaviorSubject<Record<string, Route>>({});
-  app.route = (id: string) => _routesById$.value[id];
-  app.route$ = (id: string) =>
-    _routesById$.pipe(
-      map((routes) => routes[id]),
-      distinctUntilChanged()
-    );
+  const editors = getOrCreateYMap(rxMap, "editors");
+  if (!attachReactiveMap(editors)) {
+    throw new Error("Failed to attach reactive map to editors");
+  }
+  app.editors = editors as ReactiveMap<y.AbstractType<any>>;
 
   const _variablesByVarName$ = new BehaviorSubject<Record<string, AppVariable>>(
     {}
@@ -81,12 +81,6 @@ export function attachApp(
   };
 
   // subscriptions
-
-  const routesSubscription = app.routes.observable$.subscribe((routes) => {
-    _routesById$.next(
-      Object.fromEntries(routes.map((route) => [route.id, route]))
-    );
-  });
   const variablesSubscription = app.variables.observable$.subscribe(
     (variables) => {
       _variablesByVarName$.next(
@@ -100,9 +94,6 @@ export function attachApp(
   // disposal
   const disposeBase = rxMap.dispose.bind(rxMap);
   rxMap.dispose = () => {
-    routesSubscription.unsubscribe();
-    _routesById$.complete();
-
     variablesSubscription.unsubscribe();
     _variablesByVarName$.complete();
 
@@ -114,10 +105,13 @@ export function attachApp(
   };
 
   setEnhancer(app, attachApp);
-  return app;
+  return true;
 }
 
-export function createApp(project: Project, { url }: { url: string }): App {
+export function createApp(project: Project): App {
   const ymap = new y.Map<any>();
-  return attachApp(ymap, project, { url });
+  if (!attachApp(ymap, project)) {
+    throw new Error("Failed to attach app");
+  }
+  return ymap;
 }

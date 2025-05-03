@@ -1,8 +1,10 @@
-import { Route, SlotFill } from "@elllphnt/elementa-models";
+import { RouteTree, SlotFill } from "@elllphnt/elementa-models";
+import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable, of, switchMap } from "rxjs";
-import { FragmentEnvironment, Instance, InstanceType } from "../_";
 import { ComponentInstance } from "../component/component";
 import { ComponentPropResolver } from "../component/prop_resolver";
+import { FragmentEnvironment } from "../fragment/_";
+import { Instance, InstanceType } from "../instance";
 
 export class RouteComponentPropResolver extends ComponentPropResolver {
   propValue() {
@@ -19,8 +21,8 @@ export class RouteComponentPropResolver extends ComponentPropResolver {
   }
 }
 
-export class RouteInstance extends Instance {
-  readonly route: Route;
+export class RouteTreeInstance extends Instance {
+  readonly model: RouteTree;
 
   private _mainView$ = new BehaviorSubject<ComponentInstance | undefined>(
     undefined
@@ -34,6 +36,7 @@ export class RouteInstance extends Instance {
   private _notFoundView$ = new BehaviorSubject<ComponentInstance | undefined>(
     undefined
   );
+  private _children$ = new BehaviorSubject<RouteTreeInstance[]>([]);
 
   get mainView$(): Observable<ComponentInstance | undefined> {
     return this._mainView$;
@@ -63,23 +66,30 @@ export class RouteInstance extends Instance {
     return this._notFoundView$.value;
   }
 
+  get children$(): Observable<RouteTreeInstance[]> {
+    return this._children$.asObservable();
+  }
+  get children(): RouteTreeInstance[] {
+    return this._children$.value;
+  }
+
   get loaderModule() {
-    const url = this.route.absoluteLoaderUrl;
+    const url = this.model.absoluteLoaderUrl;
     return url ? this.runtime.moduleManager.module(url) : undefined;
   }
 
   get handlerModule() {
-    const url = this.route.absoluteHandlerUrl;
+    const url = this.model.absoluteHandlerUrl;
     return url ? this.runtime.moduleManager.module(url) : undefined;
   }
 
   constructor({
     environment,
-    route,
+    routeTree,
     parent,
   }: {
     environment: FragmentEnvironment;
-    route: Route;
+    routeTree: RouteTree;
     parent?: Instance;
   }) {
     super({
@@ -87,13 +97,14 @@ export class RouteInstance extends Instance {
       runtime: environment.runtime,
       parent,
     });
-    this.route = route;
+    this.model = routeTree;
 
     const viewSubscriptions = (
       ["mainView", "errorView", "pendingView", "notFoundView"] as const
     ).map((viewKey) => {
-      const subscription = this.route[`${viewKey}Component$`].subscribe(
-        (view) => {
+      const subscription = this.model[`${viewKey}Component$`]
+        .pipe(switchMap((c) => c?.model$ ?? of(undefined)))
+        .subscribe((view) => {
           if (view) {
             this[`_${viewKey}$`].next(
               new ComponentInstance({
@@ -104,18 +115,40 @@ export class RouteInstance extends Instance {
           } else {
             this[`_${viewKey}$`].next(undefined);
           }
-        }
-      );
+        });
 
       return subscription;
     });
 
+    const childrenSubscription = this.model.children.observable$.subscribe(
+      (children) => {
+        const [nextChildren, removed] = reconcileList({
+          targets: this._children$.value,
+          sources: children,
+          sourceRef: (r) => r,
+          targetRef: (r) => r.model,
+          create: (route) =>
+            new RouteTreeInstance({
+              environment,
+              routeTree: route,
+              parent: this,
+            }),
+        });
+        this._children$.next(nextChildren);
+        removed.forEach((route) => {
+          route.dispose();
+        });
+      }
+    );
+
     this.addDisposer(() => {
       viewSubscriptions.forEach((subscription) => subscription.unsubscribe());
+      childrenSubscription.unsubscribe();
       this._mainView$.complete();
       this._pendingView$.complete();
       this._errorView$.complete();
       this._notFoundView$.complete();
+      this._children$.complete();
     });
   }
 }

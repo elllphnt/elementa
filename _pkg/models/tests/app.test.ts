@@ -8,7 +8,7 @@ import {
   createBlueprintNode,
 } from "../src";
 import { attachApp, createApp } from "../src/app/app";
-import { createRoute } from "../src/app/route";
+import { createRoute } from "../src/app/route_tree/route_tree";
 import { createAppVariable } from "../src/app/variable";
 import { Project } from "../src/infrastructure/project/project";
 

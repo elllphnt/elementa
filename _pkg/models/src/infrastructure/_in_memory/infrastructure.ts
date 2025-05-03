@@ -1,5 +1,4 @@
 import { StaticReference } from "@elllphnt/elementa-base";
-import { Project } from "../_";
 import { Infrastructure } from "../infrastructure";
 import { InMemoryFile } from "./file";
 import { InMemoryProject } from "./project";
@@ -15,7 +14,7 @@ export class InMemoryInfrastructure implements Infrastructure {
     return `project:${projectId}`;
   }
 
-  private projects: Map<string, Project> = new Map();
+  private projects: Map<string, InMemoryProject> = new Map();
 
   file(url: string): InMemoryFile {
     const parts = url.split(":");
@@ -34,14 +33,14 @@ export class InMemoryInfrastructure implements Infrastructure {
     return file;
   }
 
-  project(url: string): Project {
+  project(url: string): InMemoryProject {
     const [prefix, id] = url.split(":");
     if (prefix !== "project" || !id) {
       throw new Error(`Invalid project url: ${url}`);
     }
     let proj = this.projects.get(id);
     if (!proj) {
-      proj = new InMemoryProject({ infrastructure: this });
+      proj = new InMemoryProject({ id, infrastructure: this });
       this.projects.set(id, proj);
     }
     return proj;

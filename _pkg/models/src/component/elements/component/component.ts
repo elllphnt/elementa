@@ -13,6 +13,7 @@ import {
 import { filter, map, Observable, switchMap, tap } from "rxjs";
 import * as y from "yjs";
 import { ResolvableRecord } from "../../../_lib/resolvable";
+import { FileModel } from "../../../infrastructure/_";
 import { Component } from "../../component";
 import { Fragment } from "../../fragment";
 import { Identifiable } from "../../identifiable";
@@ -31,8 +32,8 @@ export type ComponentElement = Element<ComponentElementData> & {
   absoluteComponentUrl: string | undefined;
   absoluteComponentUrl$: Observable<string | undefined>;
 
-  localComponent: Component | undefined;
-  localComponent$: Observable<Component | undefined>;
+  localComponent: FileModel<Component> | undefined;
+  localComponent$: Observable<FileModel<Component> | undefined>;
 
   componentName: string | undefined;
   componentName$: Observable<string | undefined>;
@@ -55,10 +56,13 @@ export type ComponentElement = Element<ComponentElementData> & {
 export function attachComponentElement(
   ymap: y.Map<any>,
   fragment: Fragment
-): ComponentElement {
+): ymap is ComponentElement {
   ymap.set("type", "component");
 
-  const element = attachBaseElement(ymap, fragment);
+  if (!attachBaseElement(ymap, fragment)) {
+    throw new Error("Failed to attach base element to ymap");
+  }
+  const element = ymap;
   const componentElement = element as ComponentElement;
 
   componentElement.fills = createEnhancedReactiveMap(
@@ -140,21 +144,6 @@ export function attachComponentElement(
       })
     );
 
-  Object.defineProperty(componentElement, "componentName", {
-    get() {
-      return componentElement.localComponent?.name;
-    },
-  });
-
-  componentElement.componentName$ = componentElement.localComponent$.pipe(
-    map((local) => local?.name)
-  );
-  Object.defineProperty(componentElement, "template", {
-    get() {
-      return componentElement.localComponent?.template ?? [];
-    },
-  });
-
   Object.defineProperty(componentElement, "props", {
     get() {
       return _props.value;
@@ -223,7 +212,7 @@ export function attachComponentElement(
   };
 
   setEnhancer(element, attachComponentElement);
-  return element as ComponentElement;
+  return true;
 }
 
 /**
@@ -231,5 +220,8 @@ export function attachComponentElement(
  */
 export function createComponentElement(fragment: Fragment): ComponentElement {
   const ymap = new y.Map<any>();
-  return attachComponentElement(ymap, fragment);
+  if (!attachComponentElement(ymap, fragment)) {
+    throw new Error("Failed to create ComponentElement");
+  }
+  return ymap as ComponentElement;
 }

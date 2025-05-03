@@ -1,8 +1,8 @@
 import { Expression, PrimitiveSubElementData } from "@elllphnt/elementa-base";
 import {
   attachReactiveMap,
-  Extendable,
   getOrCreateYMap,
+  ReactiveMap,
   setEnhancer,
 } from "@elllphnt/elementa-utils";
 import { distinctUntilChanged, map, Observable } from "rxjs";
@@ -12,9 +12,7 @@ import { attachStylesheet } from "../../../style/stylesheet";
 import { Component } from "../../component";
 import { Fragment } from "../../fragment";
 
-export type PrimitiveSubElement = ReturnType<
-  typeof attachReactiveMap<PrimitiveSubElementData>
-> & {
+export type PrimitiveSubElement = ReactiveMap<PrimitiveSubElementData> & {
   component: Component;
   cssStyleSheet: StylesheetCssStyleSheet;
 
@@ -31,24 +29,26 @@ export type PrimitiveSubElement = ReturnType<
 export function attachPrimitiveSubElement(
   ymap: y.Map<any>,
   fragment: Fragment
-): PrimitiveSubElement {
-  const subElement = attachReactiveMap<PrimitiveSubElementData>(
-    ymap as Extendable<y.Map<any>>
-  ) as Extendable<PrimitiveSubElement>;
+): ymap is PrimitiveSubElement {
+  if (!attachReactiveMap(ymap)) {
+    throw new Error("Failed to attach reactive map to ymap");
+  }
+  const subElement = ymap as PrimitiveSubElement;
 
   subElement.component = fragment.component;
 
+  const stylesheet = getOrCreateYMap(subElement, "stylesheet");
+  if (!attachStylesheet(stylesheet, fragment.component.project)) {
+    throw new Error("Failed to attach stylesheet to ymap");
+  }
   subElement.cssStyleSheet = new StylesheetCssStyleSheet({
     target: `primitive-sub-element`,
-    stylesheet: attachStylesheet(
-      getOrCreateYMap(subElement, "stylesheet"),
-      fragment.component.project
-    ),
+    stylesheet,
   });
 
   Object.defineProperty(subElement, "interactions", {
     get() {
-      return subElement.value.interactions ?? {};
+      return subElement.get("interactions") ?? {};
     },
     set(value) {
       subElement.set("interactions", value);
@@ -87,12 +87,15 @@ export function attachPrimitiveSubElement(
   };
 
   setEnhancer(subElement, attachPrimitiveSubElement);
-  return subElement as PrimitiveSubElement;
+  return true;
 }
 
 export function createPrimitiveSubElement(
   fragment: Fragment
 ): PrimitiveSubElement {
   const ymap = new y.Map<any>();
-  return attachPrimitiveSubElement(ymap, fragment);
+  if (!attachPrimitiveSubElement(ymap, fragment)) {
+    throw new Error("Failed to attach primitive sub-element to ymap");
+  }
+  return ymap;
 }

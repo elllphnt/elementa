@@ -1,4 +1,4 @@
-import { RouteData } from "./route.js";
+import { RouteTreeData } from "./route";
 
 export type AppVariableData = {
   varName?: string;
@@ -9,7 +9,7 @@ export type AppVariableData = {
 };
 
 export type AppData = {
-  routes?: RouteData[];
+  routes?: RouteTreeData[];
   variables?: AppVariableData[];
   editors?: Record<string, Record<string, any>>;
 };

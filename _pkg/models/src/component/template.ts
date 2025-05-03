@@ -12,12 +12,11 @@ export type Template = Fragment & {
 export function attachTemplate(
   ymap: y.Map<any>,
   component: Component
-): Template {
-  const template = attachFragment(
-    ymap,
-    component,
-    FragmentVariant.Template
-  ) as Template;
+): ymap is Template {
+  if (!attachFragment(ymap, component, FragmentVariant.Template)) {
+    throw new Error("Failed to attach fragment to ymap");
+  }
+  const template = ymap as Template;
 
   Object.defineProperty(template, "name", {
     get() {
@@ -28,10 +27,13 @@ export function attachTemplate(
   template.name$ = template.component.name$;
 
   setEnhancer(template, attachTemplate);
-  return template;
+  return true;
 }
 
 export function createTemplate(component: Component): Template {
   const ymap = new y.Map<any>();
-  return attachTemplate(ymap, component);
+  if (!attachTemplate(ymap, component)) {
+    throw new Error("Failed to create Template");
+  }
+  return ymap as Template;
 }

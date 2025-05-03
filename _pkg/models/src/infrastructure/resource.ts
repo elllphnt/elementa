@@ -9,7 +9,7 @@ export enum ResourceStatus {
 }
 
 export abstract class Resource extends Disposable {
-  url: string;
+  abstract get url(): string;
 
   private _status$ = new BehaviorSubject<ResourceStatus>(
     ResourceStatus.Pending

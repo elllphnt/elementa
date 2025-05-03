@@ -1,9 +1,5 @@
 import { MediaData, MediaElementData } from "@elllphnt/elementa-base";
-import {
-  Extendable,
-  setEnhancer,
-  setModelFields,
-} from "@elllphnt/elementa-utils";
+import { setEnhancer, setModelFields } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import * as y from "yjs";
 import { Fragment } from "../fragment";
@@ -23,17 +19,23 @@ export type MediaElement = Element<MediaElementData> & {
 export function attachMediaElement(
   ymap: y.Map<any>,
   fragment: Fragment
-): MediaElement {
+): ymap is MediaElement {
   ymap.set("type", "media");
-  const element = attachBaseElement(ymap, fragment) as Extendable<MediaElement>;
+  if (!attachBaseElement(ymap, fragment)) {
+    throw new Error("Failed to attach base element to ymap");
+  }
+  const element = ymap as MediaElement;
 
   setModelFields(element, ["media", "fit", "position"]);
 
   setEnhancer(element, attachMediaElement);
-  return element as MediaElement;
+  return true;
 }
 
 export function createMediaElement(fragment: Fragment): MediaElement {
   const ymap = new y.Map<any>();
-  return attachMediaElement(ymap, fragment);
+  if (!attachMediaElement(ymap, fragment)) {
+    throw new Error("Failed to create MediaElement");
+  }
+  return ymap as MediaElement;
 }

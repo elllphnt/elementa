@@ -22,7 +22,7 @@ export type ElementList = ReactiveList<Element<any>> & {
 export function attachElementList(
   yarray: y.Array<y.Map<any>>,
   fragment: Fragment
-): ElementList {
+): yarray is ElementList {
   const rxList = createEnhancedReactiveList(
     yarray as y.Array<y.Map<any>>,
     attachBaseElement,
@@ -50,10 +50,13 @@ export function attachElementList(
   };
 
   setEnhancer(list, attachElementList);
-  return list;
+  return true;
 }
 
 export function createElementList(fragment: Fragment): ElementList {
   const yarray = new y.Array<y.Map<any>>();
-  return attachElementList(yarray, fragment);
+  if (!attachElementList(yarray, fragment)) {
+    throw new Error("Failed to create ElementList");
+  }
+  return yarray as ElementList;
 }
