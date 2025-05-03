@@ -52,8 +52,8 @@ export function attachFragment(
   fragment.component = component;
   fragment.variant = variant;
 
-  const content = getOrCreateYArray(ymap, "content");
-  attachElementList(getOrCreateYArray(ymap, "content"), fragment);
+  const content = getOrCreateYArray<y.Map<any>>(ymap, "content");
+  attachElementList(content, fragment);
   fragment.content = content as ElementList;
 
   fragment.params = createEnhancedReactiveList(

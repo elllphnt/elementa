@@ -63,7 +63,10 @@ export function attachBaseElement<D extends BaseElementData>(
   ymap: y.Map<any>,
   fragment: Fragment
 ): ymap is Element<D> {
-  const identifiable = attachIdentifiable<BaseElementData>(ymap);
+  if (!attachIdentifiable<BaseElementData>(ymap)) {
+    throw Error("Failed to attach identifiable");
+  }
+  const identifiable = ymap;
   const element = identifiable as unknown as Element<D>;
 
   element.fragment = fragment;
@@ -82,12 +85,13 @@ export function attachBaseElement<D extends BaseElementData>(
     },
   });
 
+  const stylesheet = getOrCreateYMap(element, "stylesheet");
+  if (!attachStylesheet(stylesheet, fragment.component.project)) {
+    throw Error("Failed to attach stylesheet");
+  }
   element.cssStyleSheet = new StylesheetCssStyleSheet({
     target: `${element.type}:${element.key}`,
-    stylesheet: attachStylesheet(
-      getOrCreateYMap(element, "stylesheet"),
-      fragment.component.project
-    ),
+    stylesheet,
   });
 
   setModelFields(element, [

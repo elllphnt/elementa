@@ -1,11 +1,11 @@
 import { Fragment } from "@elllphnt/elementa-models";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, combineLatest, Observable } from "rxjs";
+import { createElementInstance } from "../elements/_create";
 import { ElementInstance } from "../elements/element";
 import { Instance, InstanceType } from "../instance";
 import { SlotInstance } from "../slot/slot";
 import { FragmentEnvironment } from "./environment/environment";
-import { createElementInstance } from "../elements/_create";
 
 export class FragmentInstance extends Instance {
   readonly fragment: Fragment;
@@ -57,6 +57,7 @@ export class FragmentInstance extends Instance {
       this.fragment.content.observable$,
       this.environment.componentStack$,
     ]).subscribe(([content, componentStack]) => {
+      console.log({ content, componentStack });
       const recursion = this.resolveRecursion(componentStack);
       const [newContent, removed] = reconcileList({
         sources: recursion ? [] : content,

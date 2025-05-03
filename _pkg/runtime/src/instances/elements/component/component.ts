@@ -1,5 +1,5 @@
 import { ComponentElement } from "@elllphnt/elementa-models";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, of, switchMap } from "rxjs";
 import { ComponentInstance } from "../../_";
 import { FragmentEnvironment } from "../../fragment/environment/environment";
 import { Instance } from "../../instance";
@@ -40,8 +40,9 @@ export class ComponentElementInstance<
       this
     );
 
-    const componentSubscription = this.element.localComponent$.subscribe(
-      (component) => {
+    const componentSubscription = this.element.localComponent$
+      .pipe(switchMap((c) => c?.model$ ?? of(undefined)))
+      .subscribe((component) => {
         if (component) {
           const currentComponent = this.component;
           const componentInstance = new ComponentInstance({
@@ -55,8 +56,7 @@ export class ComponentElementInstance<
         } else {
           this._component$.next(undefined);
         }
-      }
-    );
+      });
 
     this.addDisposer(() => {
       componentSubscription.unsubscribe();

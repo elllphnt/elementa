@@ -26,7 +26,9 @@ export function attachElementList(
   const rxList = createEnhancedReactiveList(
     yarray as y.Array<y.Map<any>>,
     attachBaseElement,
-    (ymap) => createElement(ymap, fragment)
+    (ymap) => {
+      return createElement(ymap, fragment);
+    }
   );
   const list = rxList as ElementList;
 

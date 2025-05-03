@@ -43,18 +43,18 @@ const homePageFile = project.addFile("file_1", {
           stylesheet: {
             styles: {
               [baseSelector]: {
-                "height": {
-                  value: 100,
-                  unit: "px",
-                },
-                "width": {
-                  value: 100,
-                  unit: "px",
-                },
-                "background-color": {
-                  model: "rgb",
-                  value: [0, 255, 0],
-                },
+                // "height": {
+                //   value: 100,
+                //   unit: "px",
+                // },
+                // "width": {
+                //   value: 100,
+                //   unit: "px",
+                // },
+                // "background-color": {
+                //   model: "rgb",
+                //   value: [0, 255, 0],
+                // },
               },
             },
           },
@@ -106,7 +106,11 @@ const appRenderable = new AppRenderable({
   history,
 });
 
-console.log("app", homePageFile.url, app, app.toJSON());
+console.log(
+  "component",
+  homePageFile.url,
+  project.componentManager.component(homePageFile.url)
+);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

@@ -158,6 +158,10 @@ export function attachRouteTree(ymap: y.Map<any>, app: App): ymap is RouteTree {
     });
   });
 
+  route.mainViewComponent$.subscribe((component) => {
+    console.log("mainViewComponent", component);
+  });
+
   setEnhancer(route, attachRouteTree);
   return true;
 }

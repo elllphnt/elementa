@@ -188,7 +188,7 @@ export function attachStyle(
       getFragment: (type, id) =>
         fragments.find((f) => f.type === type && f.id === id) as any,
     });
-    if (errors) {
+    if (errors.length) {
       console.error(
         "The following errors occurred while generating CSS:",
         ...errors

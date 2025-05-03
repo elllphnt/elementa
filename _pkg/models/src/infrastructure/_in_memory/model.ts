@@ -1,4 +1,5 @@
 import { Enhancer, ReactiveMap, updateYMap } from "@elllphnt/elementa-utils";
+import { combineLatest } from "rxjs";
 import * as y from "yjs";
 import { FileModel } from "../file/_";
 import { InMemoryFile } from "./file";
@@ -7,7 +8,6 @@ export class InMemoryFileModel<
   M extends ReactiveMap<any>
 > extends FileModel<M> {
   doc: y.Doc;
-  map: y.Map<any>;
 
   constructor({
     file,
@@ -26,16 +26,25 @@ export class InMemoryFileModel<
       enhance,
     });
     this.doc = doc;
-    this.map = this.doc.getMap();
-    const contentSubscription = this.file.content$.subscribe((content) => {
-      let data: any;
-      try {
-        data = JSON.parse(content);
-      } catch (error) {
-        data = {};
+    const contentSubscription = combineLatest([
+      this.file.content$,
+      this.file.isResolved$,
+    ]).subscribe(([content, isResolved]) => {
+      if (isResolved) {
+        console.log("File resolved", this.file.url, content);
+        const map = this.doc.getMap("" + Math.random());
+        let data: any;
+        try {
+          data = JSON.parse(content);
+        } catch (error) {
+          data = {};
+        }
+
+        updateYMap(map, data);
+        this.setModel(map);
+      } else {
+        this.clearModel();
       }
-      updateYMap(this.map, data);
-      this.setModel(this.map);
     });
 
     this.addDisposer(() => {

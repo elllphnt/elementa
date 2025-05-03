@@ -24,6 +24,10 @@ export class InMemoryProject extends Project {
     return this._files.get(fileId);
   }
   addFile(fileId: string, state: InMemoryFileState): InMemoryFile {
+    console.log(
+      `Adding file ${fileId} to project ${this.id} with state:`,
+      state
+    );
     const file = new InMemoryFile({
       initialState: state,
       project: this,

@@ -99,26 +99,69 @@ export class RouteTreeInstance extends Instance {
     });
     this.model = routeTree;
 
-    const viewSubscriptions = (
-      ["mainView", "errorView", "pendingView", "notFoundView"] as const
-    ).map((viewKey) => {
-      const subscription = this.model[`${viewKey}Component$`]
-        .pipe(switchMap((c) => c?.model$ ?? of(undefined)))
-        .subscribe((view) => {
-          if (view) {
-            this[`_${viewKey}$`].next(
-              new ComponentInstance({
-                component: view,
-                propResolver: new RouteComponentPropResolver({ environment }),
-              })
-            );
-          } else {
-            this[`_${viewKey}$`].next(undefined);
-          }
-        });
+    const mainViewSubscription = this.model.mainViewComponent$
+      .pipe(switchMap((c) => c?.model$ ?? of(undefined)))
+      .subscribe((view) => {
+        if (view) {
+          console.log("view", "mainView", this.model);
+          this._mainView$.next(
+            new ComponentInstance({
+              component: view,
+              propResolver: new RouteComponentPropResolver({ environment }),
+            })
+          );
+        } else {
+          this._mainView$.next(undefined);
+        }
+      });
 
-      return subscription;
-    });
+    const errorViewSubscription = this.model.errorViewComponent$
+      .pipe(switchMap((c) => c?.model$ ?? of(undefined)))
+      .subscribe((view) => {
+        if (view) {
+          console.log("view", "errorView", this.model);
+          this._errorView$.next(
+            new ComponentInstance({
+              component: view,
+              propResolver: new RouteComponentPropResolver({ environment }),
+            })
+          );
+        } else {
+          this._errorView$.next(undefined);
+        }
+      });
+
+    const pendingViewSubscription = this.model.pendingViewComponent$
+      .pipe(switchMap((c) => c?.model$ ?? of(undefined)))
+      .subscribe((view) => {
+        if (view) {
+          console.log("view", "pendingView", this.model);
+          this._pendingView$.next(
+            new ComponentInstance({
+              component: view,
+              propResolver: new RouteComponentPropResolver({ environment }),
+            })
+          );
+        } else {
+          this._pendingView$.next(undefined);
+        }
+      });
+
+    const notFoundViewSubscription = this.model.notFoundViewComponent$
+      .pipe(switchMap((c) => c?.model$ ?? of(undefined)))
+      .subscribe((view) => {
+        if (view) {
+          console.log("view", "notFoundView", this.model);
+          this._notFoundView$.next(
+            new ComponentInstance({
+              component: view,
+              propResolver: new RouteComponentPropResolver({ environment }),
+            })
+          );
+        } else {
+          this._notFoundView$.next(undefined);
+        }
+      });
 
     const childrenSubscription = this.model.children.observable$.subscribe(
       (children) => {
@@ -142,7 +185,10 @@ export class RouteTreeInstance extends Instance {
     );
 
     this.addDisposer(() => {
-      viewSubscriptions.forEach((subscription) => subscription.unsubscribe());
+      mainViewSubscription.unsubscribe();
+      errorViewSubscription.unsubscribe();
+      pendingViewSubscription.unsubscribe();
+      notFoundViewSubscription.unsubscribe();
       childrenSubscription.unsubscribe();
       this._mainView$.complete();
       this._pendingView$.complete();

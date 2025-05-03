@@ -1,8 +1,8 @@
 import { BehaviorSubject, map, Observable } from "rxjs";
 import { File } from "../file/_";
 import { ResourceStatus } from "../resource";
-import { InMemoryProject } from "./project";
 import { InMemoryInfrastructure } from "./infrastructure";
+import { InMemoryProject } from "./project";
 
 export type InMemoryFileState = {
   name: string;
@@ -49,6 +49,7 @@ export class InMemoryFile extends File {
     project: InMemoryProject;
   }) {
     super();
+    this.id = id;
     this.project = project;
     this._state$ = new BehaviorSubject<InMemoryFileState>(initialState);
     this.setStatus(ResourceStatus.Resolved);

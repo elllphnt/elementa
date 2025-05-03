@@ -5,5 +5,6 @@ export * from "./fragment/_";
 export * from "./fragment/environment/environment";
 export * from "./fragment/fragment";
 export * from "./instance";
+export * from "./namespace/_";
 export * from "./slot/_";
 export * from "./states/_";

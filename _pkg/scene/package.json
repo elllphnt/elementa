@@ -30,6 +30,7 @@
         "@tanstack/react-router": "^1.119.0",
         "@tanstack/react-router-devtools": "^1.119.1",
         "@types/react-dom": "^19.1.2",
+        "classnames": "^2.5.1",
         "deep-object-diff": "^1.1.9",
         "lodash": "^4.17.21",
         "react-router": "^7.5.0",

@@ -1,7 +1,7 @@
 import { ElementData } from "@elllphnt/elementa-base";
 import * as y from "yjs";
 import { Fragment } from "../fragment";
-import { attachPrimitiveElement } from "./_";
+import { attachContainerElement, attachPrimitiveElement } from "./_";
 import { attachComponentElement } from "./component/_";
 import { Element } from "./element";
 import { attachMediaElement } from "./media";
@@ -18,7 +18,7 @@ export function createElement(
     case "component":
       return attachComponentElement(ymap, fragment);
     case "container":
-      return attachComponentElement(ymap, fragment);
+      return attachContainerElement(ymap, fragment);
     case "slot":
       return attachSlotElement(ymap, fragment);
     case "text":

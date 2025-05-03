@@ -50,11 +50,13 @@ export class InMemoryInfrastructure implements Infrastructure {
     projectUrl: string,
     relativeUrl: string
   ): string | undefined {
-    const [, projectId] = projectUrl.split(":");
-    const rel = relativeUrl.startsWith("file:")
-      ? relativeUrl.split(":")[1]
-      : relativeUrl;
-    return InMemoryInfrastructure.makeAbsoluteFileUrl(projectId, rel);
+    const fileParts = relativeUrl.split(":");
+    if (fileParts[0] === "file" && fileParts.length == 3) {
+      return relativeUrl;
+    }
+    const [_, projectId] = projectUrl.split(":");
+    const fileId = fileParts[1];
+    return InMemoryInfrastructure.makeAbsoluteFileUrl(projectId, fileId);
   }
 
   resolveRelativeUrl(fileUrl: string): string | undefined {
