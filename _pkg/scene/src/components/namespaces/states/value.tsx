@@ -1,5 +1,7 @@
+import { useObservable } from "@elllphnt/elementa-react-utils";
 import { ValueStateInstance } from "@elllphnt/elementa-runtime";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useState } from "react";
+import { NamespaceContext } from "../../../contexts/namespace";
 import { useNamespace } from "../../../hooks/namespace";
 
 export function ValueStateNamespaceProvider({
@@ -9,28 +11,23 @@ export function ValueStateNamespaceProvider({
   state: ValueStateInstance;
 }>) {
   const namespace = useNamespace({ clone: true });
-  // const initialValue = useObservable(
-  //   state.entity.initialValue$,
-  //   state.entity.initialValue
-  // );
-  // const name = useObservable(state.entity.name$, state.entity.name);
-  // const resolvedInitialValue = namespace.resolveValue(initialValue);
-  // const [value, setValue] = useState(resolvedInitialValue);
+  const initialValue = useObservable(state.model.init$, state.model.init);
+  const varName = useObservable(state.model.varName$, state.model.varName);
+  const resolvedInitialValue = namespace.resolveValue(initialValue);
+  const [value, setValue] = useState(resolvedInitialValue);
 
-  // const namespaceValue = {
-  //   value,
-  //   setValue,
-  // };
-  // namespace.set(state.namespaceKey, namespaceValue);
-  // if (name) {
-  //   namespace.set(["hooks", name], namespaceValue);
-  // }
+  const namespaceValue = {
+    value,
+    setValue,
+  };
+  namespace.set(state.namespaceKey, namespaceValue);
+  if (varName) {
+    namespace.set(["states", varName], namespaceValue);
+  }
 
-  // return (
-  //   <NamespaceContext.Provider value={namespace}>
-  //     {children}
-  //   </NamespaceContext.Provider>
-  // );
-
-  return <></>;
+  return (
+    <NamespaceContext.Provider value={namespace}>
+      {children}
+    </NamespaceContext.Provider>
+  );
 }

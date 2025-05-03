@@ -3,19 +3,19 @@ import * as y from "yjs";
 import { setEnhancer } from "../core/enhancer";
 import { nextKey, updateYMap } from "./_utils";
 
-export type ReactiveMap<T extends Record<string, any>> = y.Map<T[keyof T]> & {
+export type ReactiveMap<T extends object = object> = y.Map<unknown> & {
   key: number;
   observable$: Observable<T>;
   restore(data: T): void;
   dispose(): void;
 };
 
-export function attachReactiveMap<T extends Record<string, any>>(
-  ymap: y.Map<T[keyof T]>
+export function attachReactiveMap<T extends object>(
+  ymap: y.Map<unknown>
 ): ymap is ReactiveMap<T> {
   const rxMap = ymap as ReactiveMap<T>;
   // initialize subject
-  const initial: any = {};
+  const initial: Record<string, unknown> = {};
   if (ymap.doc) {
     for (const [key, value] of ymap.entries()) {
       initial[key] = value;
@@ -24,11 +24,11 @@ export function attachReactiveMap<T extends Record<string, any>>(
   const subject$ = new BehaviorSubject<T>(initial as T);
 
   // observe crdt
-  const observer = (event: y.YMapEvent<any>) => {
+  const observer = (event: y.YMapEvent<unknown>) => {
     const current = { ...subject$.value };
     for (const [key, change] of event.changes.keys.entries()) {
       if (change.action === "add" || change.action === "update") {
-        (current as any)[key] = ymap.get(key);
+        (current as Record<string, unknown>)[key] = ymap.get(key);
       } else if (change.action === "delete") {
         delete current[key];
       }
@@ -40,11 +40,9 @@ export function attachReactiveMap<T extends Record<string, any>>(
   // attach API
   rxMap.key = nextKey();
   rxMap.observable$ = subject$.asObservable();
-  const originalDispose = (ymap as any).dispose?.bind(ymap);
   rxMap.dispose = () => {
     ymap.unobserve(observer);
     subject$.complete();
-    originalDispose?.();
   };
 
   rxMap.restore = (data: T): void => {
@@ -55,11 +53,11 @@ export function attachReactiveMap<T extends Record<string, any>>(
   return true;
 }
 
-export function createReactiveMap<T extends Record<string, any>>(
+export function createReactiveMap<T extends Record<string, unknown>>(
   init?: T
 ): ReactiveMap<T> {
-  const ymap = new y.Map<T[keyof T]>(Object.entries(init || {}));
-  if (attachReactiveMap(ymap)) {
+  const ymap = new y.Map<unknown>(Object.entries(init || {}));
+  if (attachReactiveMap<T>(ymap)) {
     return ymap;
   } else {
     throw new Error("Failed to attach reactive map");

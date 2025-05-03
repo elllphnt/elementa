@@ -3,7 +3,7 @@ import { Runtime } from "../../runtime/runtime";
 import { Instance, InstanceType } from "../instance";
 
 export abstract class StateInstance<S extends State = State> extends Instance {
-  readonly state: S;
+  readonly model: S;
 
   get namespaceKey() {
     return `!!state-${this.key}`;
@@ -19,6 +19,6 @@ export abstract class StateInstance<S extends State = State> extends Instance {
     parent?: Instance;
   }) {
     super({ type: InstanceType.State, runtime, parent });
-    this.state = state;
+    this.model = state;
   }
 }

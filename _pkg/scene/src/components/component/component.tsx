@@ -10,9 +10,7 @@ export const ComponentComponent = memo(function ({
   onRef?: (element: HTMLElement | null, key?: string) => void;
 }): JSX.Element {
   return (
-    <>
-      <FragmentComponent fragment={component.template} onRef={onRef} />
-    </>
+    <FragmentComponent fragment={component.template} onRef={onRef} isolated />
   );
 });
 

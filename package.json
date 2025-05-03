@@ -5,7 +5,7 @@
         "build": "turbo run build",
         "dev": "turbo run dev",
         "clean": "turbo run clean",
-        "lint": "turbo run lint",
+        "lint": "eslint .",
         "typecheck": "turbo run typecheck"
     },
     "workspaces": [
@@ -23,8 +23,10 @@
         "typescript": "^5.8.3",
         "uvu": "^0.5.6",
         "@types/react": "^19.0.10",
-        "eslint": "^9.22.0",
         "typescript-eslint": "^8.26.1",
+        "@eslint/js": "^9.26.0",
+        "eslint": "^9.26.0",
+        "eslint-plugin-import": "^2.29.1",
         "@types/react-dom": "^19.0.4"
     }
 }

@@ -11,16 +11,16 @@ import {
 } from "@elllphnt/elementa-base";
 import { Stylesheet, StylesheetCssStyleSheet } from "@elllphnt/elementa-models";
 import {
+  InstanceRenderable,
+  RuleDomStyleSheetAdaptor,
+  StyleRuleDomAdaptor,
+} from "@elllphnt/elementa-scene";
+import {
   combineLatestOrEmpty,
   pairwiseOrEmpty,
   PointData,
   RectData,
 } from "@elllphnt/elementa-utils";
-import {
-  InstanceRenderable,
-  RuleDomStyleSheetAdaptor,
-  StyleRuleDomAdaptor,
-} from "@elllphnt/elementa-scene";
 import { InstanceStyle } from "@repo/elementa-stager";
 import {
   animationFrameScheduler,
@@ -392,8 +392,6 @@ export abstract class StylableHandle<
             "border-bottom-right-radius",
           ].includes(property)
         ) {
-          console.log("FGH5");
-
           const element = this.getStyledHtmlElement();
           if (!element) return;
           const parentWidth = element.parentElement?.clientWidth;
@@ -412,8 +410,6 @@ export abstract class StylableHandle<
     value: LengthOrFlexOrPercentData;
     property: StylePropertyName;
   }) {
-    console.log("FGH4");
-
     const fromValue = value.value;
     const fromUnitPixelValue = this.getLengthUnitPixelValue(
       property,
@@ -422,7 +418,6 @@ export abstract class StylableHandle<
     const toUnitPixelValue = this.getLengthUnitPixelValue(property, unit);
     if (!fromUnitPixelValue || !toUnitPixelValue) return;
 
-    console.log("FGH", { fromUnitPixelValue, toUnitPixelValue });
     const toValue = (fromValue * fromUnitPixelValue) / toUnitPixelValue;
 
     return {
@@ -440,7 +435,6 @@ export abstract class StylableHandle<
     value: DimensionData<string>;
     property: StylePropertyName;
   }) {
-    console.log("FGH3.5");
     if (["px", "%", "em", "rem", "vh", "vw", "fr"].includes(unit)) {
       return this.convertLengthUnit({
         unit: unit as LengthOrFlexOrPercentData["unit"],
@@ -454,7 +448,6 @@ export abstract class StylableHandle<
     property: N,
     value: StyleData[N]
   ) {
-    console.log("FGH3");
     const unit = this.getPropertyUnit(property);
     if (unit && typeof value === "object" && "unit" in value) {
       this.style.setProperty(
@@ -480,8 +473,8 @@ export abstract class StylableHandle<
       y?: boolean;
     } = { x: true, y: true }
   ): void {
-    let width = rect.width;
-    let height = rect.height;
+    const width = rect.width;
+    const height = rect.height;
 
     const position = this.style.resolvedPropertyValue("position");
     if (position === "absolute" || position === "fixed") {
@@ -490,8 +483,8 @@ export abstract class StylableHandle<
         const containerRect = containingHandle.contentRect;
 
         if (x) {
-          let left = rect.x - containerRect.x;
-          let right =
+          const left = rect.x - containerRect.x;
+          const right =
             containerRect.x + containerRect.width - (rect.x + rect.width);
           const xSingle =
             !this.style.resolvedPropertyValue("left") ||
@@ -512,8 +505,8 @@ export abstract class StylableHandle<
           }
         }
         if (y) {
-          let top = rect.y - containerRect.y;
-          let bottom =
+          const top = rect.y - containerRect.y;
+          const bottom =
             containerRect.y + containerRect.height - (rect.y + rect.height);
           const ySingle =
             !this.style.resolvedPropertyValue("top") ||
@@ -612,11 +605,11 @@ export abstract class StylableHandle<
     const positionType = style.resolvedPropertyValue("position");
 
     if (positionType === "absolute" || positionType === "fixed") {
-      let top = position.y - containerRect.y;
-      let left = position.x - containerRect.x;
-      let bottom =
+      const top = position.y - containerRect.y;
+      const left = position.x - containerRect.x;
+      const bottom =
         containerRect.y + containerRect.height - (position.y + rect.height);
-      let right =
+      const right =
         containerRect.x + containerRect.width - (position.x + rect.width);
 
       const xSingle =

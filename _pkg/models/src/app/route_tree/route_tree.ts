@@ -72,14 +72,17 @@ export type RouteTree = ReactiveMap<RouteData> & {
   notFoundViewComponent$: Observable<FileModel<Component> | undefined>;
 };
 
-export function attachRouteTree(ymap: y.Map<any>, app: App): ymap is RouteTree {
+export function attachRouteTree(
+  ymap: y.Map<unknown>,
+  app: App
+): ymap is RouteTree {
   if (!attachReactiveMap<RouteData>(ymap)) {
     throw new Error("Failed to attach reactive map to ymap");
   }
   const rxMap = ymap;
   const route = rxMap as RouteTree;
 
-  const children = getOrCreateYArray<y.Map<any>>(rxMap, "children");
+  const children = getOrCreateYArray<y.Map<unknown>>(rxMap, "children");
   if (!attachRouteTreeList(children, app)) {
     throw new Error("Failed to attach route tree list");
   }
@@ -158,16 +161,12 @@ export function attachRouteTree(ymap: y.Map<any>, app: App): ymap is RouteTree {
     });
   });
 
-  route.mainViewComponent$.subscribe((component) => {
-    console.log("mainViewComponent", component);
-  });
-
   setEnhancer(route, attachRouteTree);
   return true;
 }
 
 export function createRoute(app: App): RouteTree {
-  const ymap = new y.Map<any>();
+  const ymap = new y.Map<unknown>();
   if (!attachRouteTree(ymap, app)) {
     throw new Error("Failed to attach route");
   }

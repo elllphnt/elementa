@@ -142,8 +142,8 @@ export class InteractionManager
       // -> filter out children
       let i = 1;
       while (i < sortedPaths.length) {
-        let previousPath = sortedPaths[i - 1];
-        let currentPath = sortedPaths[i];
+        const previousPath = sortedPaths[i - 1];
+        const currentPath = sortedPaths[i];
         if (currentPath.startsWith(previousPath)) {
           sortedPaths.splice(i, 1);
         } else {
@@ -172,8 +172,6 @@ export class InteractionManager
       newSelection = this._normalizeSelection(handles);
     }
     this._selection$.next(newSelection);
-
-    console.log("newSelection", newSelection);
   }
   deselect(handles: IHandle[]) {
     this._selection$.next(

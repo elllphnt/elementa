@@ -4,22 +4,22 @@ import { PropsWithChildren } from "react";
 import { NamespaceContext } from "../../../contexts/namespace";
 import { useNamespace } from "../../../hooks/namespace";
 
-function UseModuleStateNamespaceProvider({
+function UseHookStateNamespaceProvider({
   children,
   state,
   use,
 }: PropsWithChildren<{
   state: HookStateInstance;
-  use?: (...args: any[]) => any;
+  use?: (...args: unknown[]) => unknown;
 }>) {
   const args = useObservable(state.state.args$, state.state.args);
-  // const name = useObservable(state.state.name$, state.state.name);
+  const varName = useObservable(state.state.varName$, state.state.varName);
   const namespace = useNamespace({ clone: true });
 
   const resolvedArgs = args.map((arg) => {
     return namespace.resolveValue(arg);
   });
-  let value: any;
+  let value: unknown;
 
   try {
     value = use?.(...resolvedArgs);
@@ -28,9 +28,9 @@ function UseModuleStateNamespaceProvider({
   }
 
   namespace.set(state.namespaceKey, value);
-  // if (name) {
-  //   namespace.set(["hooks", name], value);
-  // }
+  if (varName) {
+    namespace.set(["states", varName], value);
+  }
 
   return (
     <NamespaceContext.Provider value={namespace}>
@@ -39,7 +39,7 @@ function UseModuleStateNamespaceProvider({
   );
 }
 
-export function ModuleStateNamespaceProvider({
+export function HookStateNamespaceProvider({
   children,
   state,
 }: PropsWithChildren<{
@@ -48,12 +48,12 @@ export function ModuleStateNamespaceProvider({
   const use = useObservable(state.use$, state.use);
 
   return (
-    <UseModuleStateNamespaceProvider
+    <UseHookStateNamespaceProvider
       state={state}
       use={use}
       key={use ? "use" : "no_use"}
     >
       {children}
-    </UseModuleStateNamespaceProvider>
+    </UseHookStateNamespaceProvider>
   );
 }

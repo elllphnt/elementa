@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-router";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Scene } from "../../scene/scene";
-import { Renderable } from "../_";
+import { Renderable } from "../renderable";
 import { RouteTreeRenderable } from "./route";
 
 export class AppRenderable extends Renderable {

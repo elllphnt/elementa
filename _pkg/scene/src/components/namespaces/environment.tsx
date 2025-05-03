@@ -27,7 +27,7 @@ export const FragmentNamespaceProvider = memo(function ({
   root,
 }: PropsWithChildren<{
   fragment: FragmentRenderable;
-  data?: any;
+  data?: unknown;
   root?: boolean;
 }>) {
   const environment = fragment.instance.environment;

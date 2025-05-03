@@ -1,6 +1,6 @@
 import { SlotFill } from "@elllphnt/elementa-models";
 import { Observable } from "rxjs";
-import { FragmentEnvironment } from "../fragment/environment/environment";
+import { FragmentEnvironment } from "../../fragment/environment/environment";
 
 /**
  * A binding layer for resolving props and slots during component rendering.
@@ -17,12 +17,12 @@ export abstract class ComponentPropResolver {
   /**
    * Resolve the current value of a named prop.
    */
-  abstract propValue(varName: string): any;
+  abstract propValue(varName: string): unknown;
 
   /**
    * Observable stream for reactivity based on a named prop.
    */
-  abstract propValue$(varName: string): Observable<any>;
+  abstract propValue$(varName: string): Observable<unknown>;
 
   /**
    * Resolve the current slot fill for a given slot ID.

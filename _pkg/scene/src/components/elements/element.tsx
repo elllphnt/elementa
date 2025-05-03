@@ -27,7 +27,6 @@ function RawElement({
   element: ElementRenderable;
   onRef?: (element: HTMLElement | null, key?: string) => void;
 }) {
-  console.log("RawElement", element.instance.element.toJSON());
   switch (element.instance.element.type) {
     case "component": {
       const componentElement = element as ComponentElementRenderable;

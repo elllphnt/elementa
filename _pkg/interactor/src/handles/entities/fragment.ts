@@ -132,7 +132,6 @@ export class FragmentHandle
   handleLayoutUpdate({
     propagation,
   }: { propagation?: ILayoutUpdatePropagation } = {}): void {
-    console.log("FragmentHandle.handleLayoutUpdate", { propagation });
     super.handleLayoutUpdate({ propagation });
 
     if (propagation) {

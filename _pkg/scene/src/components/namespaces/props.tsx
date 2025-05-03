@@ -14,7 +14,7 @@ export function PropsNamespaceProvider({
   isolated,
 }: PropsWithChildren<{
   environment: FragmentEnvironment;
-  data?: any;
+  data?: unknown;
   isolated?: boolean;
 }>) {
   const upstreamNamespace = useNamespace();
@@ -58,11 +58,6 @@ export function PropsNamespaceProvider({
 
   return (
     <NamespaceContext.Provider value={downstreamNamespace}>
-      {/* {JSON.stringify({
-        props: "props",
-        upstream: upstreamNamespace.content.$,
-        downstream: downstreamNamespace.content.$,
-      })} */}
       {children}
     </NamespaceContext.Provider>
   );

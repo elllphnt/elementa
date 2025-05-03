@@ -23,7 +23,7 @@ export type HookState = State<HookStateData> & {
  * Attach HookState behavior to a y.Map
  */
 export function attachHookState(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   component: Component
 ): ymap is HookState {
   if (!attachState(ymap, component)) {
@@ -55,7 +55,7 @@ export function attachHookState(
     return state.args$.pipe(map((args) => args[index]));
   };
 
-  state.cloneIds = (clone: y.Map<any>) => {
+  state.cloneIds = (clone: y.Map<unknown>) => {
     state.cloneOwnId(clone);
   };
 
@@ -66,7 +66,7 @@ export function attachHookState(
  * Create a new local HookState
  */
 export function createHookState(component: Component): HookState {
-  const ymap = new y.Map<any>();
+  const ymap = new y.Map<unknown>();
   if (!attachHookState(ymap, component)) {
     throw new Error("Failed to create HookState");
   }

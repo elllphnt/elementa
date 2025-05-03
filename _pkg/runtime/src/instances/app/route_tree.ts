@@ -2,7 +2,7 @@ import { RouteTree, SlotFill } from "@elllphnt/elementa-models";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable, of, switchMap } from "rxjs";
 import { ComponentInstance } from "../component/component";
-import { ComponentPropResolver } from "../component/prop_resolver";
+import { ComponentPropResolver } from "../component/prop_resolver/prop_resolver";
 import { FragmentEnvironment } from "../fragment/_";
 import { Instance, InstanceType } from "../instance";
 
@@ -13,10 +13,10 @@ export class RouteComponentPropResolver extends ComponentPropResolver {
   propValue$() {
     return of(undefined);
   }
-  slotFill(id: string): SlotFill | undefined {
+  slotFill(): SlotFill | undefined {
     return undefined;
   }
-  slotFill$(id: string): Observable<SlotFill | undefined> {
+  slotFill$(): Observable<SlotFill | undefined> {
     return of(undefined);
   }
 }
@@ -103,7 +103,6 @@ export class RouteTreeInstance extends Instance {
       .pipe(switchMap((c) => c?.model$ ?? of(undefined)))
       .subscribe((view) => {
         if (view) {
-          console.log("view", "mainView", this.model);
           this._mainView$.next(
             new ComponentInstance({
               component: view,
@@ -119,7 +118,6 @@ export class RouteTreeInstance extends Instance {
       .pipe(switchMap((c) => c?.model$ ?? of(undefined)))
       .subscribe((view) => {
         if (view) {
-          console.log("view", "errorView", this.model);
           this._errorView$.next(
             new ComponentInstance({
               component: view,
@@ -135,7 +133,6 @@ export class RouteTreeInstance extends Instance {
       .pipe(switchMap((c) => c?.model$ ?? of(undefined)))
       .subscribe((view) => {
         if (view) {
-          console.log("view", "pendingView", this.model);
           this._pendingView$.next(
             new ComponentInstance({
               component: view,
@@ -151,7 +148,6 @@ export class RouteTreeInstance extends Instance {
       .pipe(switchMap((c) => c?.model$ ?? of(undefined)))
       .subscribe((view) => {
         if (view) {
-          console.log("view", "notFoundView", this.model);
           this._notFoundView$.next(
             new ComponentInstance({
               component: view,

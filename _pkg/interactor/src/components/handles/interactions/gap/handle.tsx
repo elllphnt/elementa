@@ -18,7 +18,6 @@ export const GapHandleHandle = forwardRef<
     e.preventDefault();
     e.stopPropagation();
 
-    console.log(e.currentTarget);
     const direction = (e.currentTarget as HTMLElement).dataset.gapDirection;
 
     const mouseInteraction = new MouseInteraction();
@@ -55,7 +54,7 @@ export const GapHandleHandle = forwardRef<
           deltaGapValue = delta.y / editor.stager.viewport.scale;
         }
 
-        let newGap = {
+        const newGap = {
           x: _.clamp(
             lengthToPixels(initialGap.x, "x") + deltaGapValue,
             0,

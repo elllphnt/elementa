@@ -1,7 +1,8 @@
 import { App } from "@elllphnt/elementa-models";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject } from "rxjs";
-import { FragmentEnvironment, Instance, InstanceType } from "../_";
+import { FragmentEnvironment } from "../fragment/_";
+import { Instance, InstanceType } from "../instance";
 import { RouteTreeInstance } from "./route_tree";
 
 export class AppInstance extends Instance {

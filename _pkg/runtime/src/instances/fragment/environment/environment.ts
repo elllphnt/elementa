@@ -3,9 +3,9 @@ import { DataInput, SlotFill } from "@elllphnt/elementa-models";
 import { Disposable } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Runtime } from "../../../runtime/runtime";
+import { Namespace } from "../../namespace/namespace";
 import { StateInstance } from "../../states/state";
 import { FragmentInstance } from "../fragment";
-import { Namespace } from "../../namespace/namespace";
 
 /**
  * FragmentEnvironment defines the runtime context used during rendering
@@ -48,12 +48,12 @@ export abstract class FragmentEnvironment extends Disposable {
   abstract get fragments$(): Observable<FragmentInstance[]>;
 
   // Prop value resolution (component-level).
-  abstract propValue(varName: string): any;
-  abstract propValue$(varName: string): Observable<any>;
+  abstract propValue(varName: string): unknown;
+  abstract propValue$(varName: string): Observable<unknown>;
 
   // Param value resolution (fragment-level).
-  abstract paramValue(varName: string): any;
-  abstract paramValue$(varName: string): Observable<any>;
+  abstract paramValue(varName: string): unknown;
+  abstract paramValue$(varName: string): Observable<unknown>;
 
   // Namespace access (resolved variable map used for expression evaluation).
   get namespace$() {

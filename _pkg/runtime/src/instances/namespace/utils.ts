@@ -42,13 +42,13 @@ function castPath(path: string | string[]): string[] {
  * @returns {any} Returns the resolved value or defaultValue.
  */
 export function get(
-  object: Record<string, any>,
+  object: Record<string, unknown>,
   path: string | string[],
-  defaultValue?: any
-): any {
+  defaultValue?: unknown
+): unknown {
   const keys = castPath(path);
   let index = 0;
-  let current: any = object;
+  let current: unknown = object;
 
   while (current != null && index < keys.length) {
     current = current[keys[index++]];
@@ -76,15 +76,15 @@ function isIndex(key: string): boolean {
  * @returns {Record<string, any>} Returns the mutated `object`.
  */
 export function set(
-  object: Record<string, any>,
+  object: Record<string, unknown>,
   path: string | string[],
-  value: any
-): Record<string, any> {
+  value: unknown
+): Record<string, unknown> {
   if (object == null) {
     return object;
   }
   const keys = castPath(path);
-  let nested: Record<string, any> = object;
+  let nested: Record<string, unknown> = object;
 
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
@@ -97,7 +97,7 @@ export function set(
         // determine whether to create an array or object
         nested[key] = isIndex(keys[i + 1]) ? [] : {};
       }
-      nested = nested[key];
+      nested = nested[key] as Record<string, unknown>;
     }
   }
 

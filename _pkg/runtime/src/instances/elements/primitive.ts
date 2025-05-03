@@ -84,7 +84,7 @@ export class PrimitiveElementInstance extends ElementInstance<PrimitiveElement> 
       this.element.content.observable$,
       this.isContainer$,
     ]).subscribe(([_content, isContainer]) => {
-      let content = isContainer ? _content : [];
+      const content = isContainer ? _content : [];
 
       const [newContent, removed] = reconcileList({
         sources: content,
@@ -114,7 +114,7 @@ export class PrimitiveElementInstance extends ElementInstance<PrimitiveElement> 
   }
 
   async initialize() {
-    const module = (await this.module.getValue()) as {
+    const module = (await this.module?.getValue()) as {
       config?: PrimitiveConfig;
     };
     if (module?.config?.init) {

@@ -2,7 +2,7 @@ import { Component } from "@elllphnt/elementa-models";
 import { FragmentInstance } from "../fragment/_";
 import { Instance, InstanceType } from "../instance";
 import { ComponentInstanceFragmentEnvironment } from "./fragment_environment";
-import { ComponentPropResolver } from "./prop_resolver";
+import { ComponentPropResolver } from "./prop_resolver/prop_resolver";
 
 export class ComponentInstance extends Instance {
   readonly component: Component;

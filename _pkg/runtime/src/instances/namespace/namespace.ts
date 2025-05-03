@@ -5,18 +5,18 @@ const expressionRegex = /\{\{([^}]*\}?[^}]*)\}\}/;
 
 export function evaluateExpressionSafely(
   expression: string,
-  context: Record<string, any>
-): any {
+  context: Record<string, unknown>
+): unknown {
   const code = `
     "use strict";
-    const {hooks, props, item, index} = context;
+    const {states, props, item, index} = context;
     return (${expression});
   `;
 
   try {
     const fn = new Function("context", code);
     return fn(context);
-  } catch (error: any) {
+  } catch {
     return undefined;
   }
 }
@@ -25,7 +25,7 @@ export class Namespace {
   static key = 0;
   key = Namespace.key++;
 
-  content: object;
+  content: Record<string, unknown>;
 
   constructor(content?: object) {
     this.content = {
@@ -39,7 +39,7 @@ export class Namespace {
     return get(this.content, key) as T | undefined;
   }
 
-  set(key: string | string[], value: any) {
+  set(key: string | string[], value: unknown) {
     set(this.content, key, value);
   }
 
@@ -80,26 +80,26 @@ export class Namespace {
     }
   }
 
-  resolveValue<T = any>(input: any): T | undefined {
+  resolveValue<T>(input: unknown): T | undefined {
     if (typeof input === "string") {
-      return this.resolveString(input) as any;
+      return this.resolveString(input) as T;
     } else if (Array.isArray(input)) {
-      return input.map((value) => this.resolveValue(value)) as any;
+      return input.map((value) => this.resolveValue(value)) as T;
     } else if (typeof input === "object") {
       if (isExpression(input)) {
-        return this.resolveExpression(input);
+        return this.resolveExpression(input) as T;
       } else if (input !== null) {
         return Object.fromEntries(
           Object.entries(input).map(([key, value]) => [
             key,
             this.resolveValue(value),
           ])
-        ) as any;
+        ) as T;
       } else {
-        return input;
+        return input as T;
       }
     } else {
-      return input;
+      return input as T;
     }
   }
 }

@@ -12,12 +12,6 @@ export function FragmentHandleComponent({
   const content = useObservable(fragment.content$, fragment.content);
   const slots = useObservable(fragment.slots$, fragment.slots);
 
-  console.log(
-    "FragmentHandleComponent",
-    fragment,
-    fragment.instance.environment
-  );
-
   return (
     <>
       {content.map((element) => (

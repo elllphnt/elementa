@@ -31,12 +31,11 @@ export class InMemoryFileModel<
       this.file.isResolved$,
     ]).subscribe(([content, isResolved]) => {
       if (isResolved) {
-        console.log("File resolved", this.file.url, content);
         const map = this.doc.getMap("" + Math.random());
-        let data: any;
+        let data: unknown;
         try {
           data = JSON.parse(content);
-        } catch (error) {
+        } catch {
           data = {};
         }
 

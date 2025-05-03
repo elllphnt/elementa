@@ -3,7 +3,7 @@ import { Disposable } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, debounceTime, map } from "rxjs";
 
 export type ModuleState = {
-  value: any;
+  value: unknown;
   evaluationNumber: number;
   dependencies: string[];
   error?: Error;

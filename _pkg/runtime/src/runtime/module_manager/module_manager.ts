@@ -51,9 +51,11 @@ export class ModuleManager extends Disposable {
     try {
       // 1) Fetch raw content
       const content = await this.module(url).file.getContent();
-      const project = this.infrastructure.project(
-        this.infrastructure.resolveProjectUrl(url)
-      );
+      const projectUrl = this.infrastructure.resolveProjectUrl(url);
+      if (!projectUrl) {
+        throw new Error(`Failed to resolve project URL for ${url}`);
+      }
+      const project = this.infrastructure.project(projectUrl);
 
       // 2) Transpile TSX/JSX → ESNext JS
       const jsCode = transpileTsToJs(content);
@@ -66,6 +68,9 @@ export class ModuleManager extends Disposable {
           externals: this.externals,
           resolveLocalImport: (src) => {
             const absoluteUrl = project.resolveAbsoluteUrl(src);
+            if (!absoluteUrl) {
+              throw new Error(`Failed to resolve absolute URL for ${src}`);
+            }
             const importUrl = this.moduleHost.resolveImportUrl(absoluteUrl);
             dependencies.add(absoluteUrl);
             return importUrl;
@@ -120,9 +125,11 @@ export class ModuleManager extends Disposable {
     }
 
     try {
-      const project = this.infrastructure.project(
-        this.infrastructure.resolveProjectUrl(url)
-      );
+      const projectUrl = this.infrastructure.resolveProjectUrl(url);
+      if (!projectUrl) {
+        throw new Error(`Failed to resolve project URL for ${url}`);
+      }
+      const project = this.infrastructure.project(projectUrl);
       const packages = await project.packageManager.getPackages();
 
       // 1) Load module to host (including dependencies)

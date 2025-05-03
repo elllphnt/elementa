@@ -1,6 +1,6 @@
 import { ComponentElement } from "@elllphnt/elementa-models";
 import { BehaviorSubject, of, switchMap } from "rxjs";
-import { ComponentInstance } from "../../_";
+import { ComponentInstance } from "../../component/_";
 import { FragmentEnvironment } from "../../fragment/environment/environment";
 import { Instance } from "../../instance";
 import { ElementInstance } from "../element";

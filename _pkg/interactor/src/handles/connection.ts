@@ -23,8 +23,8 @@ export function generateSvgPath(start: DirectedPoint, end: DirectedPoint) {
   const { x: x1, y: y1, direction: dir1 } = start;
   const { x: x2, y: y2, direction: dir2 } = end;
 
-  let dx = Math.abs(x2 - x1) / 2;
-  let dy = Math.abs(y2 - y1) / 2;
+  const dx = Math.abs(x2 - x1) / 2;
+  const dy = Math.abs(y2 - y1) / 2;
 
   let cp1x, cp1y, cp2x, cp2y;
 
@@ -286,12 +286,6 @@ export class ConnectionHandle extends Handle {
     startOptions: PartialDirectedPoint[],
     endOptions: PartialDirectedPoint[]
   ): [PartialDirectedPoint, PartialDirectedPoint] {
-    console.log("resolveVertexPointsFromOptions", {
-      startOptions,
-      endOptions,
-      b: this.start,
-      c: this.end,
-    });
     let minDistance = Infinity;
     let minPair: [PartialDirectedPoint, PartialDirectedPoint] = [
       startOptions[0] ?? { x: 0, y: 0, direction: "right" },

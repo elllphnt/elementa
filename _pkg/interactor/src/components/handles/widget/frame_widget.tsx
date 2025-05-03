@@ -247,7 +247,6 @@ export function FrameWidgetHandleComponent({
       if (!root) return;
 
       if (dropping || entityTool) {
-        console.log("pointereventsauto", { dropping, entityTool });
         root.style.pointerEvents = "auto";
       } else {
         root.style.pointerEvents = "none";

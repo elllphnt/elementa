@@ -7,5 +7,5 @@ export type ComponentData = {
   template?: FragmentData;
   fragments?: FragmentData[];
   states?: StateData[];
-  editors?: Record<string, Record<string, any>>;
+  editors?: Record<string, Record<string, unknown>>;
 };

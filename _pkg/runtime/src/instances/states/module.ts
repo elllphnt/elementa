@@ -7,7 +7,7 @@ import { StateInstance } from "./state";
 
 export class HookStateInstance extends StateInstance<HookState> {
   get module() {
-    const url = this.state.absoluteHookUrl;
+    const url = this.model.absoluteHookUrl;
     return url ? this.runtime.moduleManager.module(url) : undefined;
   }
 

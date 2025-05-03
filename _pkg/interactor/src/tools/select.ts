@@ -29,7 +29,7 @@ export class SelectTool extends Tool {
   startSelection(event: PointerEvent) {
     const { interactor, position } = event;
 
-    let handles = interactor.handles;
+    const handles = interactor.handles;
     const initialSelection = interactor.interactionManager.selection;
 
     const interaction = createRectDrawInteraction({
@@ -79,7 +79,7 @@ export class SelectTool extends Tool {
   startMove(event: PointerEvent, handles: (IMovableHandle & IEntityHandle)[]) {
     const initialRects = new Map<IHandle, Rect>();
     let isCloning = false;
-    let clones = new Map<IHandle, HTMLElement[] | undefined>();
+    const clones = new Map<IHandle, HTMLElement[] | undefined>();
     let delta: VectorData = {
       x: 0,
       y: 0,
@@ -240,9 +240,9 @@ export class SelectTool extends Tool {
     container: Handle,
     draggables: ElementHandle[]
   ) {
-    let initialChildren = container.children as ElementHandle[];
-    let centers: PointData[] = [];
-    let edges: PointData[] = [];
+    const initialChildren = container.children as ElementHandle[];
+    const centers: PointData[] = [];
+    const edges: PointData[] = [];
     let lastBottomRight: PointData | undefined = undefined;
     let outOfContainer = false;
 
@@ -321,7 +321,7 @@ export class SelectTool extends Tool {
 
       const position =
         event.interactor.stager.viewport.viewportToContent(interfacePosition);
-      let nearestIndex = nearestPointIndex(position, clone ? edges : centers);
+      const nearestIndex = nearestPointIndex(position, clone ? edges : centers);
 
       if (nearestIndex !== latestIndex) {
         container.handleEntityDrop(entities, {
@@ -342,7 +342,6 @@ export class SelectTool extends Tool {
         if (keys.ctrl) {
           const hovered = event.interactor.interactionManager.hovered;
           let target: IHandle;
-          console.log(hovered);
           if (
             hovered &&
             !(

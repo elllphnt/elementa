@@ -71,7 +71,7 @@ export function rewriteImports({
     plugins: [
       {
         visitor: {
-          ImportDeclaration(path: any) {
+          ImportDeclaration(path) {
             const source = path.node.source.value as string;
             if (isLocalImport(source)) {
               path.node.source.value = resolveLocalImport(source);
@@ -97,7 +97,7 @@ export function rewriteImports({
     ],
   });
 
-  if (result.code === undefined) {
+  if (result.code == undefined) {
     throw new Error("Failed to rewrite imports");
   }
 

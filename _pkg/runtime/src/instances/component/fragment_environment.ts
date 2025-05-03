@@ -2,10 +2,12 @@ import { StateData, StyleModifierData } from "@elllphnt/elementa-base";
 import { DataInput, SlotFill, State } from "@elllphnt/elementa-models";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, map, Observable, of } from "rxjs";
-import { ComponentInstance, FragmentInstance, StateInstance } from "../_";
+import { FragmentInstance } from "../fragment/_";
 import { FragmentEnvironment } from "../fragment/environment/environment";
+import { StateInstance } from "../states/_";
 import { createStateInstance } from "../states/_create";
-import { ComponentPropResolver } from "./prop_resolver";
+import { ComponentInstance } from "./component";
+import { ComponentPropResolver } from "./prop_resolver/prop_resolver";
 
 export class ComponentInstanceFragmentEnvironment extends FragmentEnvironment {
   readonly propResolver: ComponentPropResolver;
@@ -24,7 +26,7 @@ export class ComponentInstanceFragmentEnvironment extends FragmentEnvironment {
   propValue(varName: string) {
     return this.propResolver.propValue(varName);
   }
-  propValue$(varName: string): Observable<any> {
+  propValue$(varName: string) {
     return this.propResolver.propValue$(varName);
   }
 
@@ -38,12 +40,12 @@ export class ComponentInstanceFragmentEnvironment extends FragmentEnvironment {
   get componentStack(): string[] {
     return [
       ...this.propResolver.environment.componentStack,
-      this.componentInstance.component.url,
+      this.componentInstance.component.key + "",
     ];
   }
   get componentStack$(): Observable<string[]> {
     return this.propResolver.environment.componentStack$.pipe(
-      map((stack) => [...stack, this.componentInstance.component.url])
+      map((stack) => [...stack, this.componentInstance.component.key + ""])
     );
   }
   get styleModifiers(): StyleModifierData[] {
@@ -92,7 +94,7 @@ export class ComponentInstanceFragmentEnvironment extends FragmentEnvironment {
             targets: this.states,
             sources: states,
             sourceRef: (s) => s,
-            targetRef: (i) => i.state,
+            targetRef: (i) => i.model,
             create: (state) =>
               createStateInstance({
                 state,

@@ -11,7 +11,7 @@ import {
 
 import { FragmentEnvironment } from "../fragment/environment/environment";
 import { Instance } from "../instance";
-import { ComponentElementInstance } from "./_";
+import { ComponentElementInstance } from "./component/component";
 import { ContainerElementInstance } from "./container";
 import { ElementInstance } from "./element";
 import { MediaElementInstance } from "./media";
@@ -80,6 +80,6 @@ export function createElementInstance({
       });
 
     default:
-      throw new Error(`Unknown element type: ${(element as any).type}`);
+      throw new Error(`Unknown element type: ${element.type}`);
   }
 }

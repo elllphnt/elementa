@@ -841,16 +841,6 @@ export class Viewport extends Disposable {
   contentRect(element: HTMLElement) {
     const viewportRect = this.viewportRect(element);
     const contentRect = this.rectViewportToContent(viewportRect);
-    console.log(element.dataset.entity, {
-      windowRect: this.windowRect(element).data,
-      viewportRect: viewportRect.data,
-      contentRect: contentRect.data,
-      x: this.x,
-      y: this.y,
-      scale: this.scale,
-      pan: this.pan,
-      origin: this.initialContentOrigin,
-    });
     return contentRect;
   }
   viewportRect(element: HTMLElement) {

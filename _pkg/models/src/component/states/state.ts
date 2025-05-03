@@ -1,5 +1,6 @@
 import { BaseStateData } from "@elllphnt/elementa-base/dist/types/component/states/_base";
-import { setEnhancer } from "@elllphnt/elementa-utils";
+import { setEnhancer, setModelFields } from "@elllphnt/elementa-utils";
+import { Observable } from "rxjs";
 import * as y from "yjs";
 import { Component } from "../component";
 import { attachIdentifiable, Identifiable } from "../identifiable";
@@ -7,6 +8,10 @@ import { attachIdentifiable, Identifiable } from "../identifiable";
 export type State<D extends BaseStateData = BaseStateData> = Identifiable<D> & {
   component: Component;
   type: string;
+  name: string | undefined;
+  name$: Observable<string | undefined>;
+  varName: string | undefined;
+  varName$: Observable<string | undefined>;
   remove(): void;
 };
 
@@ -14,7 +19,7 @@ export type State<D extends BaseStateData = BaseStateData> = Identifiable<D> & {
  * Attach State behavior to a y.Map
  */
 export function attachState(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   component: Component
 ): ymap is State {
   if (!attachIdentifiable<BaseStateData>(ymap)) {
@@ -30,6 +35,8 @@ export function attachState(
     },
   });
 
+  setModelFields(state, ["name", "varName"]);
+
   state.remove = () => {
     state.component.states.delete(
       state.component.states.toArray().indexOf(state)
@@ -44,7 +51,7 @@ export function attachState(
  * Create a new local State
  */
 export function createState(component: Component): State {
-  const ymap = new y.Map<any>();
+  const ymap = new y.Map<unknown>();
   if (!attachState(ymap, component)) {
     throw new Error("Failed to create State");
   }

@@ -1,6 +1,6 @@
 import { SlotFill } from "@elllphnt/elementa-models";
 import { Observable } from "rxjs";
-import { ComponentPropResolver } from "../../component/prop_resolver";
+import { ComponentPropResolver } from "../../component/prop_resolver/prop_resolver";
 import { ComponentElementInstance } from "./component";
 
 /**
@@ -13,7 +13,7 @@ export class ComponentElementComponentPropResolver extends ComponentPropResolver
   propValue(varName: string) {
     return this.componentElementInstance.element.prop(varName);
   }
-  propValue$(varName: string): Observable<any> {
+  propValue$(varName: string) {
     return this.componentElementInstance.element.prop$(varName);
   }
 

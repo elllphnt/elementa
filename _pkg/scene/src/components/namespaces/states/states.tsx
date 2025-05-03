@@ -1,6 +1,12 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { FragmentEnvironment } from "@elllphnt/elementa-runtime";
+import {
+  FragmentEnvironment,
+  HookStateInstance,
+  ValueStateInstance,
+} from "@elllphnt/elementa-runtime";
 import { PropsWithChildren } from "react";
+import { HookStateNamespaceProvider } from "./hook";
+import { ValueStateNamespaceProvider } from "./value";
 
 export function StatesNamespaceProvider({
   children,
@@ -13,36 +19,32 @@ export function StatesNamespaceProvider({
 
   // reverse the states order so that the first state becomes the outermost provider
   const reversedStates = [...states].reverse();
-  // for (const state of reversedStates) {
-  //   switchEntityType(
-  //     state.entity.type,
-  //     {
-  //       [entityTypes.states.value]: () => {
-  //         content = (
-  //           <ValueStateNamespaceProvider
-  //             key={state.key}
-  //             state={state as ValueStateInstance}
-  //           >
-  //             {content}
-  //           </ValueStateNamespaceProvider>
-  //         );
-  //       },
-  //       [entityTypes.states.module]: () => {
-  //         content = (
-  //           <ModuleStateNamespaceProvider
-  //             key={state.key}
-  //             state={state as ModuleStateInstance}
-  //           >
-  //             {content}
-  //           </ModuleStateNamespaceProvider>
-  //         );
-  //       },
-  //     },
-  //     () => {
-  //       console.error(`Unknown state type: ${state.entity.type}`);
-  //     }
-  //   );
-  // }
+  for (const state of reversedStates) {
+    switch (state.model.type) {
+      case "value": {
+        content = (
+          <ValueStateNamespaceProvider
+            key={state.key}
+            state={state as ValueStateInstance}
+          >
+            {content}
+          </ValueStateNamespaceProvider>
+        );
+        break;
+      }
+      case "hook": {
+        content = (
+          <HookStateNamespaceProvider
+            key={state.key}
+            state={state as HookStateInstance}
+          >
+            {content}
+          </HookStateNamespaceProvider>
+        );
+        break;
+      }
+    }
+  }
 
   return content;
 }

@@ -97,7 +97,7 @@ export class StyleRuleDomAdaptor extends Disposable {
     return styleRules;
   }
   updateCssStyleRules(cssStyleSheet: CSSStyleSheet) {
-    let toDelete = new Set(this._cssStyleRule.get(cssStyleSheet));
+    const toDelete = new Set(this._cssStyleRule.get(cssStyleSheet));
     const newRules = this.getCSSStyleRulesFromCssStylesheet({
       styleSheet: cssStyleSheet,
     });

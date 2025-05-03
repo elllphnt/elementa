@@ -19,7 +19,7 @@ export type App = ReactiveMap<AppData> & {
   project: Project;
   routes: ReactiveList<RouteTree>;
   variables: ReactiveList<AppVariable>;
-  editors: ReactiveMap<y.AbstractType<any>>;
+  editors: ReactiveMap<y.AbstractType<unknown>>;
 
   route(id: string): RouteTree | undefined;
   route$(id: string): Observable<RouteTree | undefined>;
@@ -27,11 +27,11 @@ export type App = ReactiveMap<AppData> & {
   variable(varName: string): AppVariable | undefined;
   variable$(varName: string): Observable<AppVariable | undefined>;
 
-  getMapEditorState(editorKey: string): y.Map<any>;
-  getArrayEditorState(editorKey: string): y.Array<any>;
+  getMapEditorState(editorKey: string): y.Map<unknown>;
+  getArrayEditorState(editorKey: string): y.Array<unknown>;
 };
 
-export function attachApp(ymap: y.Map<any>, project: Project): ymap is App {
+export function attachApp(ymap: y.Map<unknown>, project: Project): ymap is App {
   if (!attachReactiveMap<AppData>(ymap)) {
     throw new Error("Failed to attach reactive map to ymap");
   }
@@ -39,29 +39,30 @@ export function attachApp(ymap: y.Map<any>, project: Project): ymap is App {
   const app = rxMap as App;
 
   // initialization
+  app.project = project;
 
-  const routes = getOrCreateYArray<y.Map<any>>(rxMap, "routes");
+  const routes = getOrCreateYArray<y.Map<unknown>>(rxMap, "routes");
   if (!attachRouteTreeList(routes, app)) {
     throw new Error("Failed to attach route tree list");
   }
   app.routes = routes;
 
-  app.project = project;
-  app.routes = createEnhancedReactiveList(
-    getOrCreateYArray<y.Map<any>>(rxMap, "routes"),
-    attachRouteTree,
-    (yMap) => attachRouteTree(yMap, app)
-  );
-  app.variables = createEnhancedReactiveList(
-    getOrCreateYArray<y.Map<any>>(rxMap, "variables"),
-    attachAppVariable,
-    (yMap) => attachAppVariable(yMap, app)
-  );
   const editors = getOrCreateYMap(rxMap, "editors");
   if (!attachReactiveMap(editors)) {
     throw new Error("Failed to attach reactive map to editors");
   }
-  app.editors = editors as ReactiveMap<y.AbstractType<any>>;
+  app.editors = editors as ReactiveMap<y.AbstractType<unknown>>;
+
+  app.routes = createEnhancedReactiveList(
+    getOrCreateYArray<y.Map<unknown>>(rxMap, "routes"),
+    attachRouteTree,
+    (yMap) => attachRouteTree(yMap, app)
+  );
+  app.variables = createEnhancedReactiveList(
+    getOrCreateYArray<y.Map<unknown>>(rxMap, "variables"),
+    attachAppVariable,
+    (yMap) => attachAppVariable(yMap, app)
+  );
 
   const _variablesByVarName$ = new BehaviorSubject<Record<string, AppVariable>>(
     {}
@@ -109,7 +110,7 @@ export function attachApp(ymap: y.Map<any>, project: Project): ymap is App {
 }
 
 export function createApp(project: Project): App {
-  const ymap = new y.Map<any>();
+  const ymap = new y.Map<unknown>();
   if (!attachApp(ymap, project)) {
     throw new Error("Failed to attach app");
   }

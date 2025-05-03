@@ -1,7 +1,9 @@
 import * as y from "yjs";
 import { attachComponent, Component } from "../../component/component";
-import { ComponentManager, FileModel, InMemoryProject } from "../_";
+import { FileModel } from "../file/_";
+import { ComponentManager } from "../project/_";
 import { InMemoryFileModel } from "./model";
+import { InMemoryProject } from "./project";
 
 export class InMemoryComponentManager extends ComponentManager {
   project: InMemoryProject;
