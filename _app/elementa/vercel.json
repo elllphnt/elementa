@@ -1,5 +1,17 @@
 {
     "buildCommand": "pnpm build",
     "outputDirectory": "dist",
-    "framework": null
+    "framework": null,
+    "rewrites": [
+        {
+            "source": "/editor",
+            "destination": "/editor.html"
+        },
+        {
+            "source": "/viewer",
+            "destination": "/viewer.html"
+        }
+    ],
+    "cleanUrls": true,
+    "trailingSlash": false
 }
