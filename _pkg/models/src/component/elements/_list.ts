@@ -13,18 +13,18 @@ import { Identifiable } from "../identifiable";
 import { createElement } from "./_create";
 import { attachBaseElement, Element } from "./element";
 
-export type ElementList = ReactiveList<Element<any>> & {
+export type ElementList = ReactiveList<Element<unknown>> & {
   allCssStylesheets: CssStyleSheet[];
   allCssStylesheets$: Observable<CssStyleSheet[]>;
-  cloneIds(yarray: y.Array<y.Map<any>>): void;
+  cloneIds(yarray: y.Array<y.Map<unknown>>): void;
 };
 
 export function attachElementList(
-  yarray: y.Array<y.Map<any>>,
+  yarray: y.Array<y.Map<unknown>>,
   fragment: Fragment
 ): yarray is ElementList {
   const rxList = createEnhancedReactiveList(
-    yarray as y.Array<y.Map<any>>,
+    yarray as y.Array<y.Map<unknown>>,
     attachBaseElement,
     (ymap) => {
       return createElement(ymap, fragment);
@@ -47,7 +47,7 @@ export function attachElementList(
     map((sheets) => _.flatten(sheets))
   );
 
-  list.cloneIds = (yarray: y.Array<y.Map<any>>) => {
+  list.cloneIds = (yarray: y.Array<y.Map<unknown>>) => {
     Identifiable.cloneIdentifiableListIds(list.toArray(), yarray);
   };
 
@@ -56,7 +56,7 @@ export function attachElementList(
 }
 
 export function createElementList(fragment: Fragment): ElementList {
-  const yarray = new y.Array<y.Map<any>>();
+  const yarray = new y.Array<y.Map<unknown>>();
   if (!attachElementList(yarray, fragment)) {
     throw new Error("Failed to create ElementList");
   }

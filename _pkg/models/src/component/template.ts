@@ -10,7 +10,7 @@ export type Template = Fragment & {
 };
 
 export function attachTemplate(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   component: Component
 ): ymap is Template {
   if (!attachFragment(ymap, component, FragmentVariant.Template)) {
@@ -31,7 +31,7 @@ export function attachTemplate(
 }
 
 export function createTemplate(component: Component): Template {
-  const ymap = new y.Map<any>();
+  const ymap = new y.Map<unknown>();
   if (!attachTemplate(ymap, component)) {
     throw new Error("Failed to create Template");
   }

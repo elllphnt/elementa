@@ -31,14 +31,14 @@ export type SlotFill = ReactiveMap<SlotFillData> & {
   setInteraction(event: string, interaction: Expression): void;
   clearInteractions(): void;
 
-  cloneIds(clone: y.Map<any>): void;
+  cloneIds(clone: y.Map<unknown>): void;
 };
 
 export function attachSlotFill(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   fragment: Fragment
 ): ymap is SlotFill {
-  if (!attachReactiveMap<SlotFillData>(ymap as y.Map<any>)) {
+  if (!attachReactiveMap<SlotFillData>(ymap as y.Map<unknown>)) {
     throw new Error("Failed to attach reactive map to ymap");
   }
   const slot = ymap as SlotFill;
@@ -98,11 +98,11 @@ export function attachSlotFill(
     slot.set("interactions", {});
   };
 
-  slot.cloneIds = (clone: y.Map<any>) => {
+  slot.cloneIds = (clone: y.Map<unknown>) => {
     slot.content.cloneIds(getOrCreateYArray(clone, "content"));
   };
 
-  const baseDispose = (slot as any).dispose?.bind(slot);
+  const baseDispose = (slot as unknown).dispose?.bind(slot);
   slot.dispose = () => {
     slot.content.dispose();
     slot.cssStyleSheet.dispose();
@@ -113,7 +113,7 @@ export function attachSlotFill(
 }
 
 export function createSlotFill(fragment: Fragment): SlotFill {
-  const ymap = new y.Map<any>();
+  const ymap = new y.Map<unknown>();
   if (!attachSlotFill(ymap, fragment)) {
     throw new Error("Failed to create SlotFill");
   }

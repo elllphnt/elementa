@@ -1,7 +1,7 @@
 import { OverflowValue, ViewportData } from "@elllphnt/elementa-base";
 import {
+  assert,
   attachReactiveMap,
-  Extendable,
   ReactiveMap,
   setEnhancer,
   setModelFields,
@@ -20,18 +20,18 @@ export type Viewport = ReactiveMap<ViewportData> & {
   overflow$: Observable<OverflowValue>;
 };
 
-export function attachViewport(ymap: y.Map<any>): Viewport {
-  const viewport = attachReactiveMap<ViewportData>(
-    ymap as y.Map<any>
-  ) as Viewport;
+export function attachViewport(ymap: y.Map<unknown>): ymap is Viewport {
+  assert(attachReactiveMap<ViewportData>(ymap as y.Map<unknown>));
+  const viewport = ymap as Viewport;
 
   setModelFields(viewport, ["height", "width", "overflow"]);
 
   setEnhancer(viewport, attachViewport);
-  return viewport as Viewport;
+  return true;
 }
 
 export function createViewport(): Viewport {
-  const ymap = new y.Map<any>();
-  return attachViewport(ymap);
+  const ymap = new y.Map<unknown>();
+  assert(attachViewport(ymap));
+  return ymap;
 }

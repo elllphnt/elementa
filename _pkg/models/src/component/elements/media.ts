@@ -17,7 +17,7 @@ export type MediaElement = Element<MediaElementData> & {
 };
 
 export function attachMediaElement(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   fragment: Fragment
 ): ymap is MediaElement {
   ymap.set("type", "media");
@@ -33,7 +33,7 @@ export function attachMediaElement(
 }
 
 export function createMediaElement(fragment: Fragment): MediaElement {
-  const ymap = new y.Map<any>();
+  const ymap = new y.Map<unknown>();
   if (!attachMediaElement(ymap, fragment)) {
     throw new Error("Failed to create MediaElement");
   }

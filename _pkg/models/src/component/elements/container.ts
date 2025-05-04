@@ -13,15 +13,15 @@ import { attachBaseElement, Element } from "./element";
 export type ContainerElement = Element<ContainerElementData> & {
   content: ElementList;
 
-  allCssStylesheets: any[];
-  allCssStylesheets$: Observable<any[]>;
+  allCssStylesheets: unknown[];
+  allCssStylesheets$: Observable<unknown[]>;
 };
 
 /**
  * Attach ContainerElement behavior to a y.Map
  */
 export function attachContainerElement(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   fragment: Fragment
 ): ymap is ContainerElement {
   ymap.set("type", "container");
@@ -46,13 +46,13 @@ export function attachContainerElement(
     map(([childrenSheets]) => [element.cssStyleSheet, ...childrenSheets.flat()])
   );
 
-  element.cloneIds = (clone: y.Map<any>) => {
+  element.cloneIds = (clone: y.Map<unknown>) => {
     element.cloneOwnId(clone);
     const contentClone = getOrCreateYArray(clone, "content");
-    element.content.cloneIds(contentClone as any);
+    element.content.cloneIds(contentClone as unknown);
   };
 
-  const baseDispose = (element as any).dispose?.bind(element);
+  const baseDispose = (element as unknown).dispose?.bind(element);
   element.dispose = () => {
     element.content.dispose();
     if (baseDispose) baseDispose();
@@ -63,7 +63,7 @@ export function attachContainerElement(
 }
 
 export function createContainerElement(fragment: Fragment): ContainerElement {
-  const ymap = new y.Map<any>();
+  const ymap = new y.Map<unknown>();
   if (!attachContainerElement(ymap, fragment)) {
     throw new Error("Failed to create ContainerElement");
   }

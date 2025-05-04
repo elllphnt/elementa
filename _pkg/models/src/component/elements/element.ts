@@ -60,7 +60,7 @@ export type Element<D extends BaseElementData = BaseElementData> =
   };
 
 export function attachBaseElement<D extends BaseElementData>(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   fragment: Fragment
 ): ymap is Element<D> {
   if (!attachIdentifiable<BaseElementData>(ymap)) {

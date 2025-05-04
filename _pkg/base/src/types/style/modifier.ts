@@ -16,7 +16,7 @@ export type StyleModifierDefinitionData = {
 
 export type StyleModifierData = {
   name: string;
-  args?: any[];
+  args?: unknown[];
 };
 
 export type ElllSelectorData = StyleModifierData[];

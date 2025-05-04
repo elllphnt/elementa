@@ -29,7 +29,7 @@ export type AppVariable = ReactiveMap<AppVariableData> & {
 };
 
 export function attachAppVariable(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   app: App
 ): ymap is AppVariable {
   if (!attachReactiveMap<AppVariableData>(ymap)) {
@@ -53,7 +53,7 @@ export function attachAppVariable(
 }
 
 export function createAppVariable(app: App): AppVariable {
-  const ymap = new y.Map<any>();
+  const ymap = new y.Map<unknown>();
   if (!attachAppVariable(ymap, app)) {
     throw new Error("Failed to attach app variable");
   }

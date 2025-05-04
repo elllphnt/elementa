@@ -12,7 +12,7 @@ export default defineConfig({
         "editor": fileURLToPath(new URL("./editor.html", import.meta.url)),
         "viewer": fileURLToPath(new URL("./viewer.html", import.meta.url)),
         "module-host": fileURLToPath(
-          new URL("./src/workers/module_host/main.ts", import.meta.url)
+          new URL("./src/service_workers/module_host/main.ts", import.meta.url)
         ),
       },
       output: {

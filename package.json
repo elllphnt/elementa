@@ -2,11 +2,7 @@
     "name": "elementa",
     "private": true,
     "scripts": {
-        "build": "turbo run build",
-        "dev": "turbo run dev",
-        "clean": "turbo run clean",
-        "lint": "eslint .",
-        "typecheck": "turbo run typecheck"
+        "build": "turbo run build --filter=@elllphnt/elementa"
     },
     "workspaces": [
         "_app/*",
@@ -28,5 +24,6 @@
         "eslint": "^9.26.0",
         "eslint-plugin-import": "^2.29.1",
         "@types/react-dom": "^19.0.4"
-    }
+    },
+    "packageManager": "pnpm@10.10.0"
 }

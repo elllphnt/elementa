@@ -10,7 +10,7 @@ import { attachTextElement } from "./text";
 import { attachVectorElement } from "./vector";
 
 export function createElement(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   fragment: Fragment
 ): ymap is Element {
   const type = ymap.get("type") as ElementData["type"];

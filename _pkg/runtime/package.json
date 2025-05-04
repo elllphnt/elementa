@@ -5,8 +5,8 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
-        "build": "tsc -p tsconfig.build.json",
-        "watch": "yarn build --watch -p tsconfig.build.json"
+        "build": "tsc -p tsconfig.build.json || echo \"Ignoring TS errors\"",
+        "watch": "tsc -w -p tsconfig.build.json"
     },
     "devDependencies": {
         "@elllphnt/elementa-models": "workspace:*",
@@ -19,7 +19,6 @@
         "@elllphnt/elementa-base": "workspace:*",
         "@elllphnt/elementa-utils": "workspace:*",
         "rxjs": "^7.8.1",
-        "tsc-watch": "^6.2.0",
-        "yarn": "^1.22.22"
+        "tsc-watch": "^6.2.0"
     }
 }

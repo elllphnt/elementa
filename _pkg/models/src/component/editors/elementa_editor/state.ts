@@ -19,22 +19,22 @@ export type ElementaEditorComponentState =
   };
 
 export function attachElementaEditorComponentState(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   component: Component
 ): ElementaEditorComponentState {
   const state = attachReactiveMap<ElementaEditorComponentStateData>(
-    ymap as Extendable<y.Map<any>>
+    ymap as Extendable<y.Map<unknown>>
   ) as Extendable<ElementaEditorComponentState>;
 
   state.component = component;
 
   state.frames = createEnhancedReactiveList(
-    getOrCreateYArray<y.Map<any>>(state, "frames"),
+    getOrCreateYArray<y.Map<unknown>>(state, "frames"),
     attachElementaFrame,
     (frameYMap) => attachElementaFrame(frameYMap, state)
   );
 
-  const baseDispose = (state as any).dispose?.bind(state);
+  const baseDispose = (state as unknown).dispose?.bind(state);
   state.dispose = () => {
     state.frames.dispose();
     if (baseDispose) baseDispose();
@@ -47,6 +47,6 @@ export function attachElementaEditorComponentState(
 export function createElementaEditorComponentState(
   component: Component
 ): ElementaEditorComponentState {
-  const ymap = new y.Map<any>();
+  const ymap = new y.Map<unknown>();
   return attachElementaEditorComponentState(ymap, component);
 }

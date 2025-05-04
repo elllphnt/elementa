@@ -14,11 +14,11 @@ export type TextElement = Element<TextElementData> & {
 };
 
 export function attachTextElement(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   fragment: Fragment
 ): ymap is TextElement {
   ymap.set("type", "text");
-  if (!attachBaseElement(ymap as y.Map<any>, fragment)) {
+  if (!attachBaseElement(ymap as y.Map<unknown>, fragment)) {
     throw new Error("Failed to attach base element to ymap");
   }
   const element = ymap as TextElement;
@@ -27,7 +27,7 @@ export function attachTextElement(
 }
 
 export function createTextElement(fragment: Fragment): TextElement {
-  const ymap = new y.Map<any>();
+  const ymap = new y.Map<unknown>();
   if (!attachTextElement(ymap, fragment)) {
     throw new Error("Failed to create TextElement");
   }

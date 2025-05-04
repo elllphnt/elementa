@@ -16,19 +16,19 @@ test("initial state", () => {
   const app = createApp({} as Project);
 
   assert.is(app.route("foo"), undefined);
-  let rVal: any;
+  let rVal: unknown;
   app.route$("foo").subscribe((v) => (rVal = v));
   assert.is(rVal, undefined);
 
   assert.is(app.variable("bar"), undefined);
-  let vVal: any;
+  let vVal: unknown;
   app.variable$("bar").subscribe((v) => (vVal = v));
   assert.is(vVal, undefined);
 });
 
 test("add route", () => {
   const doc = new y.Doc();
-  const ymap = doc.getMap<any>("app");
+  const ymap = doc.getMap<unknown>("app");
   const app = attachApp(ymap, {} as Project);
 
   assert.equal(app.routes.length, 0);
@@ -63,7 +63,7 @@ test("add route", () => {
 
 test("add variable", () => {
   const doc = new y.Doc();
-  const ymap = doc.getMap<any>("app");
+  const ymap = doc.getMap<unknown>("app");
   const app = attachApp(ymap, {} as Project);
 
   assert.equal(app.variables.length, 0);
@@ -91,7 +91,7 @@ test("add variable", () => {
 
 test("blueprint editor", () => {
   const doc = new y.Doc();
-  const ymap = doc.getMap<any>("app");
+  const ymap = doc.getMap<unknown>("app");
   const app = attachApp(ymap, {} as Project);
 
   const variable = createAppVariable(app);
@@ -114,16 +114,16 @@ test("blueprint editor", () => {
 
 test("observable and dispose", () => {
   const doc = new y.Doc();
-  const ymap = doc.getMap<any>("app");
+  const ymap = doc.getMap<unknown>("app");
   const app = attachApp(ymap, {} as Project);
-  const appEvents: any[] = [];
-  const routesEvents: any[] = [];
+  const appEvents: unknown[] = [];
+  const routesEvents: unknown[] = [];
   app.observable$.subscribe((e) => appEvents.push(e));
   app.routes.observable$.subscribe((e) => routesEvents.push(e));
   assert.equal(appEvents.length, 1);
   assert.equal(routesEvents.length, 1);
 
-  const routeEvents: any[] = [];
+  const routeEvents: unknown[] = [];
   const route = createRoute(app);
   route.observable$.subscribe((e) => routeEvents.push(e));
   assert.equal(routeEvents.length, 1);
@@ -148,8 +148,8 @@ test("app sync", () => {
     y.applyUpdate(doc2, update);
   });
 
-  const ymap1 = doc1.getMap<any>("app");
-  const ymap2 = doc2.getMap<any>("app");
+  const ymap1 = doc1.getMap<unknown>("app");
+  const ymap2 = doc2.getMap<unknown>("app");
   const app1 = attachApp(ymap1, {} as Project);
   const app2 = attachApp(ymap2, {} as Project);
 

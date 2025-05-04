@@ -49,7 +49,7 @@ export type StyleFragmentRegistry = ReactiveList<StyleFragmentData> & {
  * Attach StyleFragmentRegistry behavior to a y.Array
  */
 export function attachStyleFragmentRegistry(
-  yarray: y.Array<any>
+  yarray: y.Array<unknown>
 ): yarray is StyleFragmentRegistry {
   if (!attachReactiveList<StyleFragmentData>(yarray)) {
     throw new Error("Failed to attach reactive list to yarray");
@@ -129,7 +129,7 @@ export function attachStyleFragmentRegistry(
     }
   };
 
-  const baseDispose = (registry as any).dispose?.bind(registry);
+  const baseDispose = (registry as unknown).dispose?.bind(registry);
   registry.dispose = () => {
     sub.unsubscribe();
     if (baseDispose) baseDispose();
@@ -143,7 +143,7 @@ export function attachStyleFragmentRegistry(
  * Create a new local StyleFragmentRegistry
  */
 export function createStyleFragmentRegistry(): StyleFragmentRegistry {
-  const yarray = new y.Array<any>();
+  const yarray = new y.Array<unknown>();
   if (!attachStyleFragmentRegistry(yarray)) {
     throw new Error("Failed to create StyleFragmentRegistry");
   }

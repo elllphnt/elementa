@@ -28,8 +28,8 @@ export type PrimitiveElement = Element<PrimitiveElementData> & {
   content: ElementList;
   elements: ReactiveMap<Record<string, PrimitiveSubElement>>;
 
-  allCssStylesheets: any[];
-  allCssStylesheets$: Observable<any[]>;
+  allCssStylesheets: unknown[];
+  allCssStylesheets$: Observable<unknown[]>;
 
   primitiveUrl: string | undefined;
   primitiveUrl$: Observable<string | undefined>;
@@ -40,23 +40,23 @@ export type PrimitiveElement = Element<PrimitiveElementData> & {
   primitiveFile: File | undefined;
   primitiveFile$: Observable<File | undefined>;
 
-  props: Record<string, any>;
-  props$: Observable<Record<string, any>>;
+  props: Record<string, unknown>;
+  props$: Observable<Record<string, unknown>>;
 
-  prop(key: string): any;
-  prop$(key: string): Observable<any>;
+  prop(key: string): unknown;
+  prop$(key: string): Observable<unknown>;
 
   setPrimitiveUrl(url: string | undefined): void;
-  setProp(key: string, value: ResolvableOrEvaluable<any> | undefined): void;
+  setProp(key: string, value: ResolvableOrEvaluable<unknown> | undefined): void;
 
   element(name: string, create?: true): PrimitiveSubElement;
   element$(name: string, create?: true): Observable<PrimitiveSubElement>;
 
-  cloneIds(clone: y.Map<any>): void;
+  cloneIds(clone: y.Map<unknown>): void;
 };
 
 export function attachPrimitiveElement(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   fragment: Fragment
 ): ymap is PrimitiveElement {
   ymap.set("type", "primitive");
@@ -70,7 +70,7 @@ export function attachPrimitiveElement(
   element.content = content as ElementList;
 
   element.elements = createEnhancedReactiveMap(
-    getOrCreateYMap<y.Map<any>>(element, "elements"),
+    getOrCreateYMap<y.Map<unknown>>(element, "elements"),
     attachPrimitiveSubElement,
     (ymap) => attachPrimitiveSubElement(ymap, fragment)
   );
@@ -124,7 +124,7 @@ export function attachPrimitiveElement(
 
   element.setProp = (
     key: string,
-    value: ResolvableOrEvaluable<any> | undefined
+    value: ResolvableOrEvaluable<unknown> | undefined
   ) => {
     const props = { ...element.get("props") };
     if (value === undefined) {
@@ -153,10 +153,10 @@ export function attachPrimitiveElement(
         }
       }),
       filter((el) => !!el || !create)
-    ) as any;
+    ) as unknown;
   };
 
-  const baseDispose = (element as any).dispose?.bind(element);
+  const baseDispose = (element as unknown).dispose?.bind(element);
   element.dispose = () => {
     propsSubscription.unsubscribe();
     _props.dispose();
@@ -164,7 +164,7 @@ export function attachPrimitiveElement(
     if (baseDispose) baseDispose();
   };
 
-  element.cloneIds = (clone: y.Map<any>) => {
+  element.cloneIds = (clone: y.Map<unknown>) => {
     element.cloneOwnId(clone);
   };
 
@@ -173,7 +173,7 @@ export function attachPrimitiveElement(
 }
 
 export function createPrimitiveElement(fragment: Fragment): PrimitiveElement {
-  const ymap = new y.Map<any>();
+  const ymap = new y.Map<unknown>();
   if (!attachPrimitiveElement(ymap, fragment)) {
     throw new Error("Failed to create PrimitiveElement");
   }

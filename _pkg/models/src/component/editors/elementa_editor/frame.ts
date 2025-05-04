@@ -19,8 +19,8 @@ export type ElementaFrame = Identifiable<ElementaFrameData> & {
   fragmentId: string | undefined;
   fragmentId$: Observable<string | undefined>;
 
-  fragment: any;
-  fragment$: Observable<any>;
+  fragment: unknown;
+  fragment$: Observable<unknown>;
 
   x: number | undefined;
   x$: Observable<number | undefined>;
@@ -38,18 +38,18 @@ export type ElementaFrame = Identifiable<ElementaFrameData> & {
   corners$: Observable<CornerData<number> | undefined>;
 
   remove(): void;
-  cloneIds(clone: y.Map<any>): void;
+  cloneIds(clone: y.Map<unknown>): void;
 };
 
 /**
  * Attach ElementaFrame behavior to a y.Map
  */
 export function attachElementaFrame(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   componentState: ElementaEditorComponentState
 ): ElementaFrame {
   const identifiable = attachIdentifiable<ElementaFrameData>(
-    ymap as y.Map<any>
+    ymap as y.Map<unknown>
   );
   const frame = identifiable as ElementaFrame;
 
@@ -86,7 +86,7 @@ export function attachElementaFrame(
   );
 
   // Methods
-  frame.cloneIds = (clone: y.Map<any>) => {
+  frame.cloneIds = (clone: y.Map<unknown>) => {
     frame.cloneOwnId(clone);
   };
 
@@ -102,6 +102,6 @@ export function attachElementaFrame(
 export function createElementaFrame(
   componentState: ElementaEditorComponentState
 ): ElementaFrame {
-  const ymap = new y.Map<any>();
+  const ymap = new y.Map<unknown>();
   return attachElementaFrame(ymap, componentState);
 }

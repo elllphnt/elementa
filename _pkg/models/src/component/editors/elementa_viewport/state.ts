@@ -33,11 +33,11 @@ export type ElementaViewerComponentState =
  * Attach ElementaViewerComponentState behavior to a y.Map
  */
 export function attachElementaViewerComponentState(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   component: Component
 ): ElementaViewerComponentState {
   const state = attachReactiveMap<ElementaViewerComponentStateData>(
-    ymap as Extendable<y.Map<any>>
+    ymap as Extendable<y.Map<unknown>>
   ) as Extendable<ElementaViewerComponentState>;
 
   state.renderingContext = attachRenderingContext(ymap, component);
@@ -80,7 +80,7 @@ export function attachElementaViewerComponentState(
     );
   };
 
-  const baseDispose = (state as any).dispose?.bind(state);
+  const baseDispose = (state as unknown).dispose?.bind(state);
   state.dispose = () => {
     state.renderingContext.dispose();
     if (baseDispose) baseDispose();
@@ -93,6 +93,6 @@ export function attachElementaViewerComponentState(
 export function createElementaViewerComponentState(
   component: Component
 ): ElementaViewerComponentState {
-  const ymap = new y.Map<any>();
+  const ymap = new y.Map<unknown>();
   return attachElementaViewerComponentState(ymap, component);
 }

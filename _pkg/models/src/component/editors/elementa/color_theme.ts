@@ -1,6 +1,7 @@
 import { ColorData, ColorThemeData } from "@elllphnt/elementa-base";
 import {
   ReactiveMap,
+  assert,
   attachReactiveMap,
   setEnhancer,
   setModelFields,
@@ -19,18 +20,21 @@ export type ColorTheme = ReactiveMap<ColorThemeData> & {
   background$: Observable<ColorData>;
 };
 
-export function attachColorTheme(ymap: y.Map<any>): ColorTheme {
-  const theme = attachReactiveMap<ColorThemeData>(
-    ymap as y.Map<any>
-  ) as ColorTheme;
+export function attachColorTheme(ymap: y.Map<unknown>): ymap is ColorTheme {
+  assert(
+    attachReactiveMap<ColorThemeData>(ymap as y.Map<unknown>),
+    "Failed to attach reactive map to ymap"
+  );
+  const theme = ymap as ColorTheme;
 
   setModelFields(theme, ["scheme", "foreground", "background"]);
 
   setEnhancer(theme, attachColorTheme);
-  return theme;
+  return true;
 }
 
 export function createColorTheme(): ColorTheme {
-  const ymap = new y.Map<any>();
-  return attachColorTheme(ymap);
+  const ymap = new y.Map<unknown>();
+  assert(attachColorTheme(ymap), "Failed to attach reactive map to ymap");
+  return ymap;
 }

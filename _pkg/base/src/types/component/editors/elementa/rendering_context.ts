@@ -14,9 +14,9 @@ export type ViewportData = {
 
 export type RenderingContextData = {
   theme?: ColorThemeData;
-  props?: Record<string, any>;
+  props?: Record<string, unknown>;
   viewport?: ViewportData;
   viewportEnabled?: boolean;
-  styleModifiers?: StyleModifierData[];
   styleModifierEnabled?: boolean;
+  styleModifiers?: StyleModifierData[];
 };

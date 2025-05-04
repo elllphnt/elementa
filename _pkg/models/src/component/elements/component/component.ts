@@ -13,6 +13,7 @@ import {
 import { filter, map, Observable, switchMap, tap } from "rxjs";
 import * as y from "yjs";
 import { ResolvableRecord } from "../../../_lib/resolvable";
+import { CssStyleSheet } from "../../../css/_";
 import { FileModel } from "../../../infrastructure/_";
 import { Component } from "../../component";
 import { Fragment } from "../../fragment";
@@ -23,8 +24,8 @@ import { attachSlotFill, createSlotFill, SlotFill } from "./slot_fill";
 export type ComponentElement = Element<ComponentElementData> & {
   fills: ReactiveMap<Record<string, SlotFill>>;
 
-  allCssStylesheets: any[];
-  allCssStylesheets$: Observable<any[]>;
+  allCssStylesheets: CssStyleSheet[];
+  allCssStylesheets$: Observable<CssStyleSheet[]>;
 
   componentUrl: string | undefined;
   componentUrl$: Observable<string | undefined>;
@@ -38,23 +39,23 @@ export type ComponentElement = Element<ComponentElementData> & {
   componentName: string | undefined;
   componentName$: Observable<string | undefined>;
 
-  props: Record<string, any>;
-  props$: Observable<Record<string, any>>;
+  props: Record<string, unknown>;
+  props$: Observable<Record<string, unknown>>;
 
-  prop(key: string): any;
-  prop$(key: string): Observable<any>;
+  prop(key: string): unknown;
+  prop$(key: string): Observable<unknown>;
 
   fill(id: string, create?: true): SlotFill;
   fill$(id: string, create?: true): Observable<SlotFill>;
 
-  setProp(key: string, value: ResolvableOrEvaluable<any> | undefined): void;
+  setProp(key: string, value: ResolvableOrEvaluable<unknown> | undefined): void;
 };
 
 /**
  * Attach ComponentElement behavior to a y.Map
  */
 export function attachComponentElement(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   fragment: Fragment
 ): ymap is ComponentElement {
   ymap.set("type", "component");
@@ -66,7 +67,7 @@ export function attachComponentElement(
   const componentElement = element as ComponentElement;
 
   componentElement.fills = createEnhancedReactiveMap(
-    getOrCreateYMap<y.Map<any>>(element, "fills"),
+    getOrCreateYMap<y.Map<unknown>>(element, "fills"),
     attachSlotFill,
     (ymap) => attachSlotFill(ymap, fragment)
   );
@@ -74,7 +75,7 @@ export function attachComponentElement(
   setModelFields(componentElement, ["componentUrl"]);
 
   const _props = new ResolvableRecord(
-    (componentElement.get("props") as {}) ?? {},
+    (componentElement.get("props") as Record<string, unknown>) ?? {},
     fragment.component.project.infrastructure
   );
 
@@ -87,7 +88,7 @@ export function attachComponentElement(
       return [
         ...componentElement.allCssStylesheets,
         ...Object.values([...componentElement.fills.values()]).flatMap(
-          (s) => s.allCssStylesheets
+          (s: SlotFill) => s.allCssStylesheets
         ),
       ];
     },
@@ -162,7 +163,7 @@ export function attachComponentElement(
 
   componentElement.setProp = (
     key: string,
-    value: ResolvableOrEvaluable<any> | undefined
+    value: ResolvableOrEvaluable<unknown> | undefined
   ) => {
     const newProps = { ...componentElement.props };
     if (value === undefined) {
@@ -191,10 +192,10 @@ export function attachComponentElement(
         }
       }),
       filter((item) => !!item || !create)
-    ) as any;
+    ) as unknown;
   };
 
-  const baseDispose = (element as any).dispose?.bind(element);
+  const baseDispose = (element as unknown).dispose?.bind(element);
   element.dispose = () => {
     propsSubscription.unsubscribe();
     _props.dispose();
@@ -202,12 +203,12 @@ export function attachComponentElement(
     if (baseDispose) baseDispose();
   };
 
-  componentElement.cloneIds = (clone: y.Map<any>) => {
+  componentElement.cloneIds = (clone: y.Map<unknown>) => {
     componentElement.cloneOwnId(clone);
     const fillsClone = getOrCreateYMap(clone, "fills");
     Identifiable.cloneIdentifiableMapIds(
       Object.fromEntries(componentElement.fills.entries()),
-      fillsClone as any
+      fillsClone as unknown
     );
   };
 
@@ -219,7 +220,7 @@ export function attachComponentElement(
  * Create a new local ComponentElement model
  */
 export function createComponentElement(fragment: Fragment): ComponentElement {
-  const ymap = new y.Map<any>();
+  const ymap = new y.Map<unknown>();
   if (!attachComponentElement(ymap, fragment)) {
     throw new Error("Failed to create ComponentElement");
   }

@@ -1,7 +1,7 @@
 import { BlueprintNodeData } from "@elllphnt/elementa-base";
 import {
+  assert,
   attachReactiveMap,
-  Extendable,
   PointData,
   ReactiveMap,
   setEnhancer,
@@ -15,18 +15,23 @@ export type BlueprintNode = ReactiveMap<BlueprintNodeData> & {
   position$: Observable<PointData>;
 };
 
-export function attachBlueprintNode(ymap: y.Map<any>): BlueprintNode {
-  const node = attachReactiveMap<BlueprintNodeData>(ymap) as Extendable<
-    ReactiveMap<BlueprintNodeData>
-  >;
+export function attachBlueprintNode(
+  ymap: y.Map<unknown>
+): ymap is BlueprintNode {
+  assert(
+    attachReactiveMap<BlueprintNodeData>(ymap),
+    "Failed to attach reactive map to ymap"
+  );
+  const node = ymap as BlueprintNode;
 
   setModelFields(node, ["position"]);
 
   setEnhancer(node, attachBlueprintNode);
-  return node as BlueprintNode;
+  return true;
 }
 
 export function createBlueprintNode(): BlueprintNode {
-  const ymap = new y.Map<any>();
-  return attachBlueprintNode(ymap);
+  const ymap = new y.Map<unknown>();
+  assert(attachBlueprintNode(ymap), "Failed to attach reactive map to ymap");
+  return ymap;
 }

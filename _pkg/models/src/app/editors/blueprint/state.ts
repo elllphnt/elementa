@@ -1,8 +1,8 @@
 import { BlueprintAppStateData } from "@elllphnt/elementa-base";
 import {
+  assert,
   attachReactiveMap,
   createEnhancedReactiveList,
-  Extendable,
   getOrCreateYArray,
   ReactiveList,
   ReactiveMap,
@@ -14,29 +14,28 @@ import { attachBlueprintNode, BlueprintNode } from "./node";
 
 export const blueprintEditorStateKey = "blueprint";
 
-export type BlueprintAppState = ReturnType<
-  typeof attachReactiveMap<BlueprintAppStateData>
-> & {
+export type BlueprintAppState = ReactiveMap<BlueprintAppStateData> & {
   nodes: ReactiveList<BlueprintNode>;
 };
 
-export function attachBlueprintAppState(ymap: y.Map<any>): BlueprintAppState {
-  const blueprint = attachReactiveMap<BlueprintAppStateData>(
-    ymap
-  ) as Extendable<ReactiveMap<BlueprintAppStateData>>;
+export function attachBlueprintAppState(
+  ymap: y.Map<unknown>
+): ymap is BlueprintAppState {
+  assert(attachReactiveMap<BlueprintAppStateData>(ymap));
+  const blueprint = ymap as BlueprintAppState;
 
   blueprint.nodes = createEnhancedReactiveList(
-    getOrCreateYArray<y.Map<any>>(ymap, "nodes"),
+    getOrCreateYArray<y.Map<unknown>>(ymap, "nodes"),
     attachBlueprintNode,
     (yMap) => attachBlueprintNode(yMap)
   );
 
   setEnhancer(blueprint, attachBlueprintAppState);
-  return blueprint as BlueprintAppState;
+  return true;
 }
 
 export function createBlueprintAppState(app: App): BlueprintAppState {
-  return attachBlueprintAppState(
-    app.getMapEditorState(blueprintEditorStateKey)
-  );
+  const blueprint = app.getMapEditorState(blueprintEditorStateKey);
+  assert(attachBlueprintAppState(blueprint));
+  return blueprint;
 }

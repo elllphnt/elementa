@@ -24,15 +24,15 @@ export type DataInput = ReactiveMap<DataInputData> & {
   required: boolean;
   required$: Observable<boolean>;
 
-  defaultValue: any;
-  defaultValue$: Observable<any>;
+  defaultValue: unknown;
+  defaultValue$: Observable<unknown>;
 };
 
 /**
  * Attach DataInput behavior to a y.Map
  */
 export function attachDataInput(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   component: Component
 ): ymap is DataInput {
   if (!attachReactiveMap<DataInputData>(ymap)) {
@@ -51,7 +51,7 @@ export function attachDataInput(
  * Create a new local DataInput
  */
 export function createDataInput(component: Component): DataInput {
-  const ymap = new y.Map<any>();
+  const ymap = new y.Map<unknown>();
   if (!attachDataInput(ymap, component)) {
     throw new Error("Failed to create DataInput");
   }

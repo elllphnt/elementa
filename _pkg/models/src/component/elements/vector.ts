@@ -11,11 +11,11 @@ export type VectorElement = Element<VectorElementData> & {
 };
 
 export function attachVectorElement(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   fragment: Fragment
 ): ymap is VectorElement {
   ymap.set("type", "vector");
-  if (!attachBaseElement(ymap as y.Map<any>, fragment)) {
+  if (!attachBaseElement(ymap as y.Map<unknown>, fragment)) {
     throw new Error("Failed to attach base element to ymap");
   }
   const element = ymap as VectorElement;
@@ -24,7 +24,7 @@ export function attachVectorElement(
 }
 
 export function createVectorElement(fragment: Fragment): VectorElement {
-  const ymap = new y.Map<any>();
+  const ymap = new y.Map<unknown>();
   if (!attachVectorElement(ymap, fragment)) {
     throw new Error("Failed to create VectorElement");
   }

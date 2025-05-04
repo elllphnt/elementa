@@ -72,7 +72,7 @@ export class InMemoryInfrastructure implements Infrastructure {
     return InMemoryInfrastructure.makeProjectUrl(parts[1]);
   }
 
-  async resolveStaticReference(ref: StaticReference): Promise<any> {
-    return undefined;
+  async resolveStaticReference<T>(ref: StaticReference): Promise<T> {
+    return undefined as unknown as T;
   }
 }

@@ -10,11 +10,11 @@ import { attachRouteTree, RouteTree } from "./route_tree";
 export type RouteTreeList = ReactiveList<RouteTree> & {};
 
 export function attachRouteTreeList(
-  yarray: y.Array<y.Map<any>>,
+  yarray: y.Array<y.Map<unknown>>,
   app: App
 ): yarray is RouteTreeList {
   const rxList = createEnhancedReactiveList(
-    yarray as y.Array<y.Map<any>>,
+    yarray as y.Array<y.Map<unknown>>,
     attachRouteTree,
     (ymap) => attachRouteTree(ymap, app)
   );
@@ -25,7 +25,7 @@ export function attachRouteTreeList(
 }
 
 export function createRouteTreeList(app: App): RouteTreeList {
-  const yarray = new y.Array<y.Map<any>>();
+  const yarray = new y.Array<y.Map<unknown>>();
   if (!attachRouteTreeList(yarray, app)) {
     throw new Error("Failed to attach route tree list");
   }

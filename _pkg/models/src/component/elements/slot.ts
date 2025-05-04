@@ -13,12 +13,12 @@ export type SlotElement = Element<SlotElementData> & {
  * Attach SlotElement behavior to a y.Map
  */
 export function attachSlotElement(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   fragment: Fragment
 ): ymap is SlotElement {
   ymap.set("type", "slot");
 
-  if (!attachBaseElement(ymap as Extendable<y.Map<any>>, fragment)) {
+  if (!attachBaseElement(ymap as Extendable<y.Map<unknown>>, fragment)) {
     throw new Error("Failed to attach base element to ymap");
   }
   const element = ymap as SlotElement;
@@ -27,7 +27,7 @@ export function attachSlotElement(
   attachElementList(getOrCreateYArray(element, "placeholder"), fragment);
   element.placeholder = placeholder as ElementList;
 
-  element.cloneIds = (clone: y.Map<any>) => {
+  element.cloneIds = (clone: y.Map<unknown>) => {
     element.cloneOwnId(clone);
     element.placeholder.cloneIds(getOrCreateYArray(clone, "placeholder"));
   };
@@ -35,7 +35,7 @@ export function attachSlotElement(
   // --- Slot registration at runtime ---
   fragment.registerSlotId(element.id);
 
-  const baseDispose = (element as any).dispose?.bind(element);
+  const baseDispose = (element as unknown).dispose?.bind(element);
   element.dispose = () => {
     fragment.unregisterSlotId(element.id); // Unregister on disposal
     element.placeholder.dispose();
@@ -46,7 +46,7 @@ export function attachSlotElement(
 }
 
 export function createSlotElement(fragment: Fragment): SlotElement {
-  const ymap = new y.Map<any>();
+  const ymap = new y.Map<unknown>();
   if (!attachSlotElement(ymap, fragment)) {
     throw new Error("Failed to create SlotElement");
   }

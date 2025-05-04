@@ -40,11 +40,11 @@ export type Fragment = Identifiable<FragmentData> & {
  * Attach Fragment behavior to a y.Map
  */
 export function attachFragment(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   component: Component,
   variant: FragmentVariant = FragmentVariant.Fragment
 ): ymap is Fragment {
-  if (!attachIdentifiable<FragmentData>(ymap as Extendable<y.Map<any>>)) {
+  if (!attachIdentifiable<FragmentData>(ymap as Extendable<y.Map<unknown>>)) {
     throw new Error("Failed to attach identifiable to ymap");
   }
   const fragment = ymap as Fragment;
@@ -52,12 +52,12 @@ export function attachFragment(
   fragment.component = component;
   fragment.variant = variant;
 
-  const content = getOrCreateYArray<y.Map<any>>(ymap, "content");
+  const content = getOrCreateYArray<y.Map<unknown>>(ymap, "content");
   attachElementList(content, fragment);
   fragment.content = content as ElementList;
 
   fragment.params = createEnhancedReactiveList(
-    getOrCreateYArray<y.Map<any>>(ymap, "params"),
+    getOrCreateYArray<y.Map<unknown>>(ymap, "params"),
     attachDataInput,
     (ymap) => attachDataInput(ymap, component)
   );
@@ -96,7 +96,7 @@ export function attachFragment(
   };
 
   // --- Disposal ---
-  const baseDispose = (fragment as any).dispose?.bind(fragment);
+  const baseDispose = (fragment as unknown).dispose?.bind(fragment);
   fragment.dispose = () => {
     _slotIds$.complete();
     fragment.content.dispose();
@@ -115,7 +115,7 @@ export function createFragment(
   component: Component,
   variant: FragmentVariant = FragmentVariant.Fragment
 ): Fragment {
-  const ymap = new y.Map<any>();
+  const ymap = new y.Map<unknown>();
   if (!attachFragment(ymap, component, variant)) {
     throw new Error("Failed to create Fragment");
   }

@@ -3,8 +3,9 @@ import {
   StyleModifierData,
 } from "@elllphnt/elementa-base";
 import {
+  assert,
   attachReactiveMap,
-  Extendable,
+  getOrCreateYMap,
   ReactiveMap,
   setEnhancer,
   setModelFields,
@@ -27,8 +28,8 @@ export type RenderingContext = ReactiveMap<RenderingContextData> & {
   theme: ColorTheme;
   viewport: Viewport;
 
-  props: Record<string, any>;
-  props$: Observable<Record<string, any>>;
+  props: Record<string, unknown>;
+  props$: Observable<Record<string, unknown>>;
 
   viewportEnabled: boolean;
   viewportEnabled$: Observable<boolean>;
@@ -41,22 +42,30 @@ export type RenderingContext = ReactiveMap<RenderingContextData> & {
 
   styleModifiers: StyleModifierData[];
   styleModifiers$: Observable<StyleModifierData[]>;
+
+  setProp: (varName: string, value: unknown) => void;
+  clearProp: (varName: string) => void;
 };
 
 /**
  * Attach RenderingContext behavior to a y.Map
  */
 export function attachRenderingContext(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   component: Component
-): RenderingContext {
-  const context = attachReactiveMap<RenderingContextData>(
-    ymap as Extendable<y.Map<any>>
-  ) as Extendable<RenderingContext>;
+): ymap is RenderingContext {
+  assert(attachReactiveMap<RenderingContextData>(ymap));
+  const context = ymap as RenderingContext;
 
   context.component = component;
-  context.theme = attachColorTheme(context.getOrCreateMap("theme"));
-  context.viewport = attachViewport(context.getOrCreateMap("viewport"));
+
+  const theme = getOrCreateYMap(context, "theme");
+  assert(attachColorTheme(theme));
+  context.theme = theme;
+
+  const viewport = getOrCreateYMap(context, "viewport");
+  assert(attachViewport(viewport));
+  context.viewport = viewport;
 
   setModelFields(context, [
     "props",
@@ -65,38 +74,12 @@ export function attachRenderingContext(
     "styleModifiers",
   ]);
 
-  // Viewport enabled
-  Object.defineProperty(context, "viewportEnabled", {
-    get() {
-      return context.value.viewportEnabled ?? false;
-    },
-    set(value) {
-      context.set("viewportEnabled", value);
-    },
-  });
-  context.viewportEnabled$ = context.observable$.pipe(
-    map((value) => value.viewportEnabled ?? false),
-    distinctUntilChanged()
-  );
-
-  // Style modifier enabled
-  Object.defineProperty(context, "styleModifierEnabled", {
-    get() {
-      return context.value.styleModifierEnabled ?? false;
-    },
-    set(value) {
-      context.set("styleModifierEnabled", value);
-    },
-  });
-  context.styleModifierEnabled$ = context.observable$.pipe(
-    map((value) => value.styleModifierEnabled ?? false),
-    distinctUntilChanged()
-  );
+  setModelFields(context, ["viewportEnabled", "styleModifierEnabled"]);
 
   // Custom style modifiers
   Object.defineProperty(context, "customStyleModifiers", {
     get() {
-      return context.value.styleModifiers ?? [];
+      return context.get("styleModifiers") ?? [];
     },
     set(value) {
       context.set("styleModifiers", value);
@@ -163,7 +146,7 @@ export function attachRenderingContext(
   );
 
   // Methods
-  context.setProp = (varName: string, value: any) => {
+  context.setProp = (varName: string, value: unknown) => {
     context.set("props", {
       ...context.props,
       [varName]: value,
@@ -176,34 +159,15 @@ export function attachRenderingContext(
     context.set("props", newProps);
   };
 
-  context.setCustomStyleModifiers = (styleModifiers: StyleModifierData[]) => {
-    context.set("styleModifiers", styleModifiers);
-  };
-
-  context.enableStyleModifier = () => {
-    context.set("styleModifierEnabled", true);
-  };
-
-  context.disableStyleModifier = () => {
-    context.set("styleModifierEnabled", false);
-  };
-
-  context.enableViewport = () => {
-    context.set("viewportEnabled", true);
-  };
-
-  context.disableViewport = () => {
-    context.set("viewportEnabled", false);
-  };
-
   setEnhancer(context, attachRenderingContext);
-  return context as RenderingContext;
+  return true;
 }
 
 /**
  * Create a new local RenderingContext
  */
 export function createRenderingContext(component: Component): RenderingContext {
-  const ymap = new y.Map<any>();
-  return attachRenderingContext(ymap, component);
+  const ymap = new y.Map<unknown>();
+  assert(attachRenderingContext(ymap, component));
+  return ymap;
 }

@@ -26,7 +26,7 @@ export class InMemoryStyleManager extends StyleManager {
   variableValue(name: string) {
     throw new Error("Method not implemented.");
   }
-  variableValue$(name: string): Observable<any> {
+  variableValue$(name: string): Observable<unknown> {
     throw new Error("Method not implemented.");
   }
   colorSchemeModifiers({

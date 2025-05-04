@@ -60,7 +60,7 @@ export type Stylesheet = ReactiveMap<StyleSheetData> & {
  * Attach Stylesheet behavior to a y.Map
  */
 export function attachStylesheet(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   project: Project
 ): ymap is Stylesheet {
   if (!attachReactiveMap<StyleSheetData>(ymap)) {
@@ -77,7 +77,7 @@ export function attachStylesheet(
   sheet.fragmentRegistry = fragmentRegistry;
 
   sheet.styles = createEnhancedReactiveMap(
-    getOrCreateYMap<y.Map<any>>(sheet, "styles"),
+    getOrCreateYMap<y.Map<unknown>>(sheet, "styles"),
     attachStyle,
     (ymap) => attachStyle(ymap, project, sheet.fragmentRegistry)
   );
@@ -93,7 +93,7 @@ export function attachStylesheet(
       sheet.addStyle(selector);
       style = sheet.styles.get(selector);
     }
-    return style as any;
+    return style as unknown;
   };
 
   sheet.style$ = function <C extends true | undefined>(
@@ -108,7 +108,7 @@ export function attachStylesheet(
         }
       }),
       filter((style) => !!style || !create)
-    ) as any;
+    ) as unknown;
   };
 
   sheet.condition = (id: string) => {
@@ -124,11 +124,11 @@ export function attachStylesheet(
   );
 
   sheet.baseStyle = function <C extends true | undefined>(create?: C) {
-    return sheet.style(baseSelector, create) as any;
+    return sheet.style(baseSelector, create) as unknown;
   };
 
   sheet.baseStyle$ = function <C extends true | undefined>(create?: C) {
-    return sheet.style$(baseSelector, create) as any;
+    return sheet.style$(baseSelector, create) as unknown;
   };
 
   sheet.addStyle = (selector: string) => {
@@ -155,7 +155,7 @@ export function attachStylesheet(
     sheet.set("conditions", conds);
   };
 
-  const baseDispose = (sheet as any).dispose?.bind(sheet);
+  const baseDispose = sheet.dispose?.bind(sheet);
   sheet.dispose = () => {
     sheet.styles.dispose();
     sheet.fragmentRegistry.dispose();
@@ -170,7 +170,7 @@ export function attachStylesheet(
  * Create a new local Stylesheet
  */
 export function createStylesheet(project: Project): Stylesheet {
-  const ymap = new y.Map<any>();
+  const ymap = new y.Map<unknown>();
   if (!attachStylesheet(ymap, project)) {
     throw new Error("Failed to create Stylesheet");
   }

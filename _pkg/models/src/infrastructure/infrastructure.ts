@@ -19,5 +19,5 @@ export interface Infrastructure {
 
   // References
 
-  resolveStaticReference(ref: StaticReference): Promise<any>;
+  resolveStaticReference<T>(ref: StaticReference): Promise<T>;
 }

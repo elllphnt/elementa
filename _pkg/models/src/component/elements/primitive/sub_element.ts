@@ -27,7 +27,7 @@ export type PrimitiveSubElement = ReactiveMap<PrimitiveSubElementData> & {
 };
 
 export function attachPrimitiveSubElement(
-  ymap: y.Map<any>,
+  ymap: y.Map<unknown>,
   fragment: Fragment
 ): ymap is PrimitiveSubElement {
   if (!attachReactiveMap(ymap)) {
@@ -80,7 +80,7 @@ export function attachPrimitiveSubElement(
     subElement.set("interactions", {});
   };
 
-  const baseDispose = (subElement as any).dispose?.bind(subElement);
+  const baseDispose = (subElement as unknown).dispose?.bind(subElement);
   subElement.dispose = () => {
     subElement.cssStyleSheet.dispose();
     if (baseDispose) baseDispose();
@@ -93,7 +93,7 @@ export function attachPrimitiveSubElement(
 export function createPrimitiveSubElement(
   fragment: Fragment
 ): PrimitiveSubElement {
-  const ymap = new y.Map<any>();
+  const ymap = new y.Map<unknown>();
   if (!attachPrimitiveSubElement(ymap, fragment)) {
     throw new Error("Failed to attach primitive sub-element to ymap");
   }

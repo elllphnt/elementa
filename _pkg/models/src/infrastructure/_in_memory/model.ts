@@ -5,7 +5,7 @@ import { FileModel } from "../file/_";
 import { InMemoryFile } from "./file";
 
 export class InMemoryFileModel<
-  M extends ReactiveMap<any>
+  M extends ReactiveMap<unknown>
 > extends FileModel<M> {
   doc: y.Doc;
 
@@ -16,8 +16,8 @@ export class InMemoryFileModel<
     doc,
   }: {
     file: InMemoryFile;
-    enhancer: Enhancer<y.Map<any>, M>;
-    enhance: Enhancer<y.Map<any>, M>;
+    enhancer: Enhancer<y.Map<unknown>, M>;
+    enhance: Enhancer<y.Map<unknown>, M>;
     doc: y.Doc;
   }) {
     super({
