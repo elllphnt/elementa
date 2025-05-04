@@ -60,3 +60,6 @@ __snapshots__/
 # Storybook (if you use it later)
 storybook-static/
 out/
+
+# Turbo local cache
+.turbo/
