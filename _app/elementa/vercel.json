@@ -1,7 +1,6 @@
 {
-    "buildCommand": "pnpm build",
+    "buildCommand": "pnpm turbo run build --filter=@elllphnt/elementa",
     "outputDirectory": "dist",
-    "framework": null,
     "rewrites": [
         {
             "source": "/editor",

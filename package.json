@@ -2,7 +2,7 @@
     "name": "elementa",
     "private": true,
     "scripts": {
-        "build": "turbo run build --filter=@elllphnt/elementa"
+        "build": ""
     },
     "workspaces": [
         "_app/*",
