@@ -1,8 +1,8 @@
-import { useObservable } from "@elllphnt/elementa-utils";
 import { AppComponent } from "@elllphnt/elementa-scene";
-import { ElementaViewer } from "../elementa_viewer";
+import { useObservable } from "@elllphnt/elementa-utils";
+import { Viewer } from "../viewer";
 
-export function AppContent({ viewer }: { viewer: ElementaViewer }) {
+export function AppContent({ viewer }: { viewer: Viewer }) {
   const app = useObservable(viewer.app$, viewer.app);
 
   if (!app) {

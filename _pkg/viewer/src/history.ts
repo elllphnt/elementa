@@ -1,48 +1,20 @@
-import { Action, Location } from "history";
+import { Disposable } from "@elllphnt/elementa-utils";
+import { Action } from "history";
 import { BehaviorSubject, Observable } from "rxjs";
 import { map } from "rxjs/operators";
-
-export function locationFromString(
-  url: string,
-  state: any = null,
-  key: string = Math.random().toString(36).substr(2, 8),
-): Location {
-  let parsed: URL;
-
-  try {
-    parsed = new URL(url);
-  } catch {
-    parsed = new URL(url, "http://fallback");
-  }
-
-  return {
-    pathname: parsed.pathname,
-    search: parsed.search,
-    hash: parsed.hash,
-    state: {
-      ...state,
-      originalUrl: url,
-      scheme: parsed.protocol.replace(":", ""),
-    },
-    key,
-  };
-}
-
-export function locationToString(location: Location): string {
-  return `${location.pathname}${location.search ?? ""}${location.hash ?? ""}`;
-}
 
 type HistoryState = {
   urls: string[];
   index: number;
-  state: any[];
+  state: unknown[];
 };
 
-export class History {
+export class History extends Disposable {
   private _state$: BehaviorSubject<HistoryState>;
   private _action: Action = Action.Pop;
 
   constructor(initialUrl: string = "/") {
+    super();
     const initialState: HistoryState = {
       urls: [initialUrl],
       index: 0,
@@ -63,23 +35,7 @@ export class History {
     return this._state$.pipe(map(({ urls, index }) => urls[index]));
   }
 
-  get location(): Location {
-    const { urls, index, state } = this._state$.value;
-    return locationFromString(urls[index], state[index]);
-  }
-  get location$(): Observable<Location> {
-    return this._state$.pipe(
-      map(({ urls, index, state }) =>
-        locationFromString(urls[index], state[index]),
-      ),
-    );
-  }
-
-  get state$(): Observable<HistoryState> {
-    return this._state$.asObservable();
-  }
-
-  push(to: string, state?: any) {
+  push(to: string, state?: unknown) {
     this._action = Action.Push;
     const { urls, index, state: states } = this._state$.value;
     const newUrls = [...urls.slice(0, index + 1), to];
@@ -91,7 +47,7 @@ export class History {
     });
   }
 
-  replace(to: string, state?: any) {
+  replace(to: string, state?: unknown) {
     this._action = Action.Replace;
     const { urls, index, state: states } = this._state$.value;
     const newUrls = [...urls];

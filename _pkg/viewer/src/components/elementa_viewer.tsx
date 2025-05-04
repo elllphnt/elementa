@@ -1,12 +1,12 @@
 import { useObservable } from "@elllphnt/elementa-utils";
-import { ElementaViewer } from "../elementa_viewer";
+import { Viewer } from "../viewer";
 import { AppContent } from "./app_content";
 import { ComponentContent } from "./component_content";
 
 export function ElementaViewerComponent({
   viewer,
 }: {
-  viewer: ElementaViewer;
+  viewer: Viewer;
 }): JSX.Element {
   const url = useObservable(viewer.history.url$, viewer.history.url);
 

@@ -12,8 +12,8 @@ function UseHookStateNamespaceProvider({
   state: HookStateInstance;
   use?: (...args: unknown[]) => unknown;
 }>) {
-  const args = useObservable(state.state.args$, state.state.args);
-  const varName = useObservable(state.state.varName$, state.state.varName);
+  const args = useObservable(state.model.args$, state.model.args);
+  const varName = useObservable(state.model.varName$, state.model.varName);
   const namespace = useNamespace({ clone: true });
 
   const resolvedArgs = args.map((arg) => {
