@@ -1,57 +1,93 @@
-import { AppData } from "@elllphnt/elementa-base";
-import { attachApp } from "@elllphnt/elementa-models";
-import { AppComponent } from "@elllphnt/elementa-react";
+import { App, FileModel } from "@elllphnt/elementa-models";
+import { AppInstance } from "@elllphnt/elementa-runtime";
 import { AppRenderable } from "@elllphnt/elementa-scene";
-import { updateYMap } from "@elllphnt/elementa-utils";
-import { createElement } from "react";
-import * as y from "yjs";
+import { createMemoryHistory } from "@tanstack/react-router";
+import { BehaviorSubject, of, switchMap } from "rxjs";
 import { ViewerContext } from "../_context";
+import { createSubViewerController } from "./_controller";
+import { viewerIds } from "./_ids";
 import { SubViewer } from "./sub_viewer";
 
 export class AppViewer extends SubViewer {
-  private renderable?: AppRenderable;
+  private _model$ = new BehaviorSubject<FileModel<App> | undefined>(undefined);
+  private _renderable$ = new BehaviorSubject<AppRenderable | undefined>(
+    undefined
+  );
 
-  constructor(
-    readonly context: ViewerContext,
-    { id }: { id: string } = { id: "app-viewer" }
-  ) {
-    super({ id });
+  model$ = this._model$.asObservable();
+  get model() {
+    return this._model$.value;
+  }
 
-    this.url$.subscribe((url) => {
-      if (!url) return;
-      const appId = url.replace(/^app:/, "").split("?")[0];
-      this._loadApp(appId);
+  renderable$ = this._renderable$.asObservable();
+  get renderable() {
+    return this._renderable$.value;
+  }
+
+  constructor(readonly context: ViewerContext) {
+    super({ id: viewerIds.app });
+
+    const urlSubscription = this.url$.subscribe((url) => {
+      if (url) {
+        const appUrl = decodeURIComponent(url.replace(/^app:/, ""));
+        this._model$.next(this._getModel(appUrl));
+      } else {
+        this._model$.next(undefined);
+      }
+    });
+
+    const modelSubscription = this.model$
+      .pipe(switchMap((model) => model?.model$ ?? of(undefined)))
+      .subscribe((model) => {
+        const current = this.renderable;
+        if (model) {
+          this._renderable$.next(this._getRenderable(model));
+        } else {
+          this._renderable$.next(undefined);
+        }
+        current?.dispose();
+      });
+
+    this.addDisposer(() => {
+      urlSubscription.unsubscribe();
+      modelSubscription.unsubscribe();
+      this._renderable$.complete();
+      this._model$.complete();
     });
   }
 
-  private _loadApp(appId: string) {
-    const data = this.context.infrastructure.get("app", appId) as AppData;
-    if (!data) return;
-
-    const ydoc = new y.Doc();
-    const ymap = ydoc.getMap("app");
-    updateYMap(ymap, data);
-
-    const app = attachApp(ymap, this.context.infrastructure.project);
-    if (!app) return;
-
-    this.renderable?.dispose();
-    this.renderable = new AppRenderable({
+  private _getModel(appUrl: string): FileModel<App> {
+    const projectUrl = this.context.infrastructure.resolveProjectUrl(appUrl);
+    if (!projectUrl) {
+      throw Error("Failed to extract project url from app url.");
+    }
+    const project = this.context.infrastructure.project(projectUrl);
+    return project.appManager.app(appUrl);
+  }
+  private _getRenderable(app: App): AppRenderable {
+    const instance = new AppInstance({
+      app,
+      environment: this.context.environment,
+    });
+    const renderable = new AppRenderable({
+      instance,
       scene: this.context.scene,
-      instance: app,
+      history: createMemoryHistory({
+        initialEntries: ["/"],
+      }),
     });
-
-    this.context.scene.render(this.renderable);
-  }
-
-  render() {
-    return this.renderable
-      ? createElement(AppComponent, { app: this.renderable })
-      : null;
+    return renderable;
   }
 
   override dispose(): void {
     super.dispose();
     this.renderable?.dispose();
   }
+}
+
+export function createAppSubViewer() {
+  return createSubViewerController({
+    pattern: /^app:/,
+    create: (context) => new AppViewer(context),
+  });
 }

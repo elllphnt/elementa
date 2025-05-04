@@ -19,16 +19,10 @@ export function ImageMediaElementComponent({
     element.instance.element.fit$,
     element.instance.element.fit
   );
-  const position = useObservable(
-    element.instance.element.position$,
-    element.instance.element.position
-  );
 
-  const fitValue = namespace.resolveValue(fit);
-  const positionValue = {
-    x: namespace.resolveValue(position?.x),
-    y: namespace.resolveValue(position?.y),
-  };
+  const fitValue = namespace.resolveValue<
+    "contain" | "cover" | "fill" | "none" | "scale-down" | undefined
+  >(fit);
   const srcValue = namespace.resolveValue(src);
 
   if (!srcValue) {
@@ -40,7 +34,6 @@ export function ImageMediaElementComponent({
       element={element}
       style={{
         objectFit: fitValue,
-        objectPosition: ``, // todo,
       }}
       component="img"
       {...{

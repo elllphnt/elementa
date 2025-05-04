@@ -5,22 +5,16 @@ import { NamespaceContext } from "../../../contexts/namespace";
 import { useNamespace } from "../../../hooks/namespace";
 import { ElementRenderable } from "../../../renderables/element/element";
 
-function Test() {
-  const namespace = useNamespace();
-
-  return <>I{namespace.key}I</>;
-}
-
 function RepeatedComponentItem({
   data,
   index,
   Component,
   props,
 }: {
-  data?: any;
+  data?: unknown;
   index: number;
-  props: any;
-  Component: ComponentType<any>;
+  props: unknown;
+  Component: ComponentType<unknown>;
 }) {
   const namespace = useNamespace({ clone: true });
   namespace.set("$", {
@@ -43,13 +37,13 @@ function FixedRepeatedComponent({
   props,
 }: {
   count: Evaluable<number>;
-  Component: ComponentType<any>;
-  props: any;
+  Component: ComponentType<unknown>;
+  props: Record<string, unknown>;
 }) {
   const namespace = useNamespace();
-  const resolvedCount = namespace.resolveValue(count) ?? 1;
+  const resolvedCount = namespace.resolveValue<number | undefined>(count) ?? 1;
 
-  const children = new Array(resolvedCount).fill(null).map((_, index) => {
+  const children = new Array<null>(resolvedCount).fill(null).map((_, index) => {
     return (
       <>
         <RepeatedComponentItem

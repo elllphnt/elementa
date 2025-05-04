@@ -12,7 +12,7 @@ export function VideoMediaElementComponent({
   media: VideoMediaData;
 }) {
   const namespace = useNamespace();
-  const srcValue = namespace.resolveValue(media.src);
+  const srcValue = namespace.resolveValue<string | undefined>(media.src);
 
   if (!srcValue) {
     return <MediaElementFallback element={element} />;

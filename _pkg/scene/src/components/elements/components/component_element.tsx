@@ -23,11 +23,10 @@ export function ComponentElementComponentContent({
 
 export function ComponentElementComponent({
   element,
-  data,
   onRef,
 }: {
   element: ComponentElementRenderable;
-  data?: any;
+  data?: unknown;
   onRef?: (element: HTMLElement | null) => void;
 }): JSX.Element {
   const model = useObservable(

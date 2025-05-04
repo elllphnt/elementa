@@ -1,42 +1,29 @@
-import { useObservable } from "@elllphnt/elementa-utils";
+import { useObservable } from "@elllphnt/elementa-react-utils";
+import { viewerIds } from "../sub_viewers/_ids";
+import { AppViewer } from "../sub_viewers/app";
+import { ComponentViewer } from "../sub_viewers/component";
 import { Viewer } from "../viewer";
-import { AppContent } from "./app_content";
-import { ComponentContent } from "./component_content";
+import { AppViewerComponent } from "./sub_viewers/app";
+import { ComponentViewerComponent } from "./sub_viewers/component";
 
-export function ElementaViewerComponent({
-  viewer,
-}: {
-  viewer: Viewer;
-}): JSX.Element {
-  const url = useObservable(viewer.history.url$, viewer.history.url);
+export function ElementaViewerComponent({ viewer }: { viewer: Viewer }) {
+  const subViewer = useObservable(
+    viewer.activeSubViewer$,
+    viewer.activeSubViewer
+  );
 
-  if (!url) {
-    return (
-      <div
-        style={{
-          width: "calc(100 * var(--vw-unit))",
-          height: "calc(100 * var(--vh-unit))",
-          display: "flex",
-          flexDirection: "column",
-          gap: "0.5em",
-          alignItems: "center",
-          justifyContent: "center",
-          pointerEvents: "none",
-        }}
-      >
-        <div>No address provided.</div>
-        <div>Enter an address to get started.</div>
-      </div>
-    );
+  if (!subViewer) {
+    return <>No Viewer</>;
   }
 
-  if (url?.startsWith("elll:")) {
-    return <ComponentContent viewer={viewer} componentUrl={url} />;
-  } else if (url?.startsWith("app:")) {
-    return <AppContent viewer={viewer} />;
+  switch (subViewer.id) {
+    case viewerIds.app:
+      return <AppViewerComponent viewer={subViewer as AppViewer} />;
+    case viewerIds.component:
+      return <ComponentViewerComponent viewer={subViewer as ComponentViewer} />;
+    default:
+      return <>Unknown Viewer {subViewer.id}</>;
   }
-
-  return <>{url}</>;
 }
 
 export default ElementaViewerComponent;

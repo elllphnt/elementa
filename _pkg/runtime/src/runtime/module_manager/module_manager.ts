@@ -136,7 +136,9 @@ export class ModuleManager extends Disposable {
       const dependencies = await this.loadModuleToHost(url, packages);
 
       // 2) Evaluate the module
-      const value = await import(this.moduleHost.resolveImportUrl(url));
+      const value = await import(
+        /* @vite-ignore */ this.moduleHost.resolveImportUrl(url)
+      );
 
       // 3) Update state
       module.setState({

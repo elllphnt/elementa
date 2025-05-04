@@ -9,7 +9,7 @@
         "typecheck": "turbo run typecheck"
     },
     "workspaces": [
-        "_cli/*",
+        "_app/*",
         "_dev/*",
         "_pkg/*"
     ],

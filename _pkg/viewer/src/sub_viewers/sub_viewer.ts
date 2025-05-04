@@ -1,5 +1,4 @@
 import { Disposable, keyManager } from "@elllphnt/elementa-utils";
-import { JSX } from "react";
 import { BehaviorSubject } from "rxjs";
 
 export abstract class SubViewer extends Disposable {
@@ -25,6 +24,4 @@ export abstract class SubViewer extends Disposable {
   setUrl(url: string) {
     this._url$.next(url);
   }
-
-  abstract render(): JSX.Element | null;
 }

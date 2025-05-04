@@ -18,6 +18,7 @@ export abstract class FileModel<M extends ReactiveMap> extends Disposable {
   private _enhance: Enhancer<y.Map<unknown>, M>;
   private _enhancer: Enhancer<y.Map<unknown>, M>;
 
+  model$ = this._model$.asObservable();
   get model(): M | undefined {
     return this._model$.getValue();
   }

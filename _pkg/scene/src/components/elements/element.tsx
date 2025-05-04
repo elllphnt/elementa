@@ -73,7 +73,7 @@ function RepeatedElementItem({
   element,
   onRef,
 }: {
-  data?: any;
+  data?: unknown;
   index: number;
   element: ElementRenderable;
   onRef?: (element: HTMLElement | null, key?: string) => void;
@@ -110,9 +110,9 @@ function FixedRepeatedElement({
   onRef?: (element: HTMLElement | null, key?: string) => void;
 }) {
   const namespace = useNamespace();
-  const resolvedCount = namespace.resolveValue(count) ?? 1;
+  const resolvedCount = namespace.resolveValue<number | undefined>(count) ?? 1;
 
-  const children = new Array(resolvedCount).fill(null).map((_, index) => {
+  const children = new Array<null>(resolvedCount).fill(null).map((_, index) => {
     return (
       <>
         <RepeatedElementItem
@@ -133,7 +133,7 @@ function DynamicRepeatedElement({
   element,
   onRef,
 }: {
-  dataset?: Evaluable<any[]>;
+  dataset?: Evaluable<unknown[]>;
   element: ElementRenderable;
   onRef?: (element: HTMLElement | null, key?: string) => void;
 }) {

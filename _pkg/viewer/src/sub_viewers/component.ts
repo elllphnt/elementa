@@ -1,65 +1,91 @@
-import { ComponentData } from "@elllphnt/elementa-base";
-import { attachComponent } from "@elllphnt/elementa-models";
+import { Component, FileModel } from "@elllphnt/elementa-models";
 import {
   ComponentInstance,
+  ComponentPropResolver,
   StaticComponentPropResolver,
 } from "@elllphnt/elementa-runtime";
-import { updateYMap } from "@elllphnt/elementa-utils";
-import { createElement } from "react";
+import { ComponentRenderable } from "@elllphnt/elementa-scene";
+import { BehaviorSubject, of, switchMap } from "rxjs";
 import { ViewerContext } from "../_context";
 import { createSubViewerController } from "./_controller";
+import { viewerIds } from "./_ids";
 import { SubViewer } from "./sub_viewer";
 
 export class ComponentViewer extends SubViewer {
-  private renderable?: ComponentRenderable;
+  private _model$ = new BehaviorSubject<FileModel<Component> | undefined>(
+    undefined
+  );
+  private _renderable$ = new BehaviorSubject<ComponentRenderable | undefined>(
+    undefined
+  );
 
-  constructor(
-    readonly context: ViewerContext,
-    { id }: { id: string } = { id: "component-viewer" }
-  ) {
-    super({ id });
+  readonly propResolver: ComponentPropResolver;
 
-    this.url$.subscribe((url) => {
-      if (!url) return;
-      const componentId = url.replace(/^component:/, "");
-      this._loadComponent(componentId);
+  model$ = this._model$.asObservable();
+  get model() {
+    return this._model$.value;
+  }
+
+  renderable$ = this._renderable$.asObservable();
+  get renderable() {
+    return this._renderable$.value;
+  }
+
+  constructor(readonly context: ViewerContext) {
+    super({ id: viewerIds.component });
+
+    this.propResolver = new StaticComponentPropResolver({
+      environment: this.context.environment,
+    });
+
+    const urlSubscription = this.url$.subscribe((url) => {
+      if (url) {
+        const componentUrl = decodeURIComponent(url.replace(/^component:/, ""));
+        this._model$.next(this._getModel(componentUrl));
+      } else {
+        this._model$.next(undefined);
+      }
+    });
+
+    const modelSubscription = this.model$
+      .pipe(switchMap((model) => model?.model$ ?? of(undefined)))
+      .subscribe((model) => {
+        const current = this.renderable;
+        if (model) {
+          this._renderable$.next(this._getRenderable(model));
+        } else {
+          this._renderable$.next(undefined);
+        }
+        current?.dispose();
+      });
+
+    this.addDisposer(() => {
+      urlSubscription.unsubscribe();
+      modelSubscription.unsubscribe();
+      this._renderable$.complete();
+      this._model$.complete();
     });
   }
 
-  private _loadComponent(componentId: string) {
-    const data = this.context.infrastructure.get(
-      "component",
-      componentId
-    ) as ComponentData;
-    if (!data) return;
-
-    const ydoc = new y.Doc();
-    const ymap = ydoc.getMap("component");
-    updateYMap(ymap, data);
-
-    const attached = attachComponent(ymap, this.context.infrastructure.project);
-    if (!attached) return;
-
+  private _getModel(componentUrl: string): FileModel<Component> {
+    const projectUrl =
+      this.context.infrastructure.resolveProjectUrl(componentUrl);
+    if (!projectUrl) {
+      throw Error("Failed to extract project url from component url.");
+    }
+    const project = this.context.infrastructure.project(projectUrl);
+    return project.componentManager.component(componentUrl);
+  }
+  private _getRenderable(component: Component): ComponentRenderable {
     const instance = new ComponentInstance({
-      component: ymap,
-      propResolver: new StaticComponentPropResolver({
-        environment: this.context.environment,
-      }),
+      component,
+      propResolver: this.propResolver,
     });
-
-    this.renderable?.dispose();
-    this.renderable = new ComponentRenderable({
-      scene: this.context.scene,
+    const renderable = new ComponentRenderable({
       instance,
+      scene: this.context.scene,
     });
-
-    this.context.scene.render(this.renderable);
-  }
-
-  render() {
-    return this.renderable
-      ? createElement(ComponentComponent, { component: this.renderable })
-      : null;
+    return renderable;
   }
 
   override dispose(): void {
