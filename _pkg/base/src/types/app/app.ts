@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { routeTreeDataSchema } from "./route";
+import { RouteTreeData, routeTreeDataSchema } from "./route";
 
 // Types
 
@@ -19,7 +19,7 @@ export type AppData = {
 
 // Schemas
 
-export const appVariableDataSchema = z.object({
+export const appVariableSchema = z.object({
   varName: z.string().optional(),
   name: z.string().optional(),
   tsType: z.string().optional(),
@@ -27,8 +27,8 @@ export const appVariableDataSchema = z.object({
   description: z.string().optional(),
 });
 
-export const appDataSchema = z.object({
+export const appSchema = z.object({
   routes: z.array(routeTreeDataSchema).optional(),
-  variables: z.array(appVariableDataSchema).optional(),
+  variables: z.array(appVariableSchema).optional(),
   editors: z.record(z.record(z.unknown())).optional(),
 });

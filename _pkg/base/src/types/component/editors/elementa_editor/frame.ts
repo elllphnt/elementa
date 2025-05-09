@@ -1,5 +1,12 @@
-import { CornerData, IdentifiableData } from "../../../_";
-import { RenderingContextData } from "../elementa/rendering_context";
+import { z } from "zod";
+import {
+  CornerData,
+  cornerDataSchema,
+} from "../../../_primitives/_";
+import { RenderingContextData, renderingContextDataSchema } from "../elementa/rendering_context";
+import { IdentifiableData, identifiableDataSchema } from "../../../_shared/_";
+
+// Types
 
 export type ElementaFrameData = IdentifiableData &
   RenderingContextData & {
@@ -11,3 +18,17 @@ export type ElementaFrameData = IdentifiableData &
     width?: number;
     corners?: CornerData<number>;
   };
+
+// Schemas
+
+export const elementaFrameDataSchema = identifiableDataSchema
+  .merge(renderingContextDataSchema)
+  .extend({
+    name: z.string().optional(),
+    fragmentId: z.string().optional(),
+    x: z.number().optional(),
+    y: z.number().optional(),
+    height: z.number().optional(),
+    width: z.number().optional(),
+    corners: cornerDataSchema(z.number()).optional(),
+  });

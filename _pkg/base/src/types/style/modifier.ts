@@ -14,7 +14,7 @@ export type StyleModifierDefinitionData = {
   type: StyleModifierType;
   signature?: StyleDataType[];
   predecence?: number;
-  selector?: string; // Using string for CssSelector representation
+  selector?: string[];
 };
 
 export type StyleModifierData = {

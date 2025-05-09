@@ -13,7 +13,7 @@ import {
 
 // dimension
 export function stringifyDimension<U extends string>(
-  dimension: DimensionData<U>,
+  dimension: DimensionData<U>
 ): string {
   if (dimension.unit === "vh") {
     return `calc(${dimension.value} * var(--vh-unit))`;
@@ -103,7 +103,7 @@ export function stringifyString(str: string): string {
 
 export const styleDataStringifiers: Record<
   StyleDataType,
-  (data: any) => string
+  (data: unknown) => string
 > = {
   [StyleDataType.Boolean]: stringifyBoolean,
   [StyleDataType.Number]: stringifyNumber,

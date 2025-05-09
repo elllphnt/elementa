@@ -66,7 +66,7 @@ export function normalizePercent(percent: PercentData): PercentData {
 
 // Add styleDataNormalizers mapping with explicit Record type
 export const styleDataNormalizers: Partial<
-  Record<StyleDataType, (data: any) => any>
+  Record<StyleDataType, (data: unknown) => unknown>
 > = {
   [StyleDataType.Duration]: normalizeDuration,
   [StyleDataType.Length]: normalizeLength,

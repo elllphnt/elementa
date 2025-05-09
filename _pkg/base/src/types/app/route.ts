@@ -20,7 +20,7 @@ export type RouteTreeData = RouteData & {
 
 // Schemas
 
-export const routeDataSchema: z.ZodType<RouteData> = z.object({
+export const routeDataSchema = z.object({
   id: z.string(),
   path: z.string().optional(),
   parentId: z.string().optional(),

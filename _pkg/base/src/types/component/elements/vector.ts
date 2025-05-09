@@ -1,5 +1,8 @@
 import { Evaluable } from "../../_.js";
 import { BaseElementData } from "./_base.js";
+import { z } from "zod";
+import { evaluableSchema } from "../../_.js";
+import { baseElementDataSchema } from "./_base.js";
 
 export type VectorTextNodeData = {
   type: "text";
@@ -9,7 +12,7 @@ export type VectorTextNodeData = {
 export type VectorElementNodeData = {
   type: "element";
   tagName: string;
-  properties?: Record<string, any>;
+  properties?: Record<string, unknown>;
   children: VectorNodeData[];
 };
 
@@ -23,3 +26,31 @@ export type VectorElementData = BaseElementData & {
   preserveAspectRatio?: Evaluable<string>;
   content?: VectorNodeData[];
 };
+
+// Schemas
+
+export const vectorTextNodeDataSchema = z.object({
+  type: z.literal("text"),
+  value: z.string(),
+});
+
+export const vectorElementNodeDataSchema = z.object({
+  type: z.literal("element"),
+  tagName: z.string(),
+  properties: z.record(z.unknown()).optional(),
+  children: z.lazy(() => z.array(vectorNodeDataSchema)),
+});
+
+export const vectorNodeDataSchema = z.union([
+  vectorTextNodeDataSchema,
+  vectorElementNodeDataSchema,
+]);
+
+export const vectorElementDataSchema = baseElementDataSchema.extend({
+  type: z.literal("vector"),
+  width: evaluableSchema(z.union([z.string(), z.number()])).optional(),
+  height: evaluableSchema(z.union([z.string(), z.number()])).optional(),
+  viewBox: evaluableSchema(z.string()).optional(),
+  preserveAspectRatio: evaluableSchema(z.string()).optional(),
+  content: z.array(vectorNodeDataSchema).optional(),
+});

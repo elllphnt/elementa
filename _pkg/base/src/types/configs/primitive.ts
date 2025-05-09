@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { PrimitiveElementData } from "../_.js";
-import { DataInputConfig } from "./_shared/data_input.js";
+import { DataInputConfig, dataInputConfigSchema } from "./_shared/data_input.js";
 
 // Types
 
@@ -24,7 +24,7 @@ export const primitiveElementConfigSchema = z.object({
 });
 
 export const primitiveConfigSchema = z.object({
-  props: z.record(z.any()).optional(),
+  props: z.record(dataInputConfigSchema).optional(),
   isContainer: z.boolean().optional(),
   init: z.record(z.any()).optional(),
   elements: z.record(primitiveElementConfigSchema).optional(),

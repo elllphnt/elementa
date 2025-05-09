@@ -1,8 +1,20 @@
-import { ResolvableOrEvaluable } from "../../_.js";
-import { BaseElementData } from "./_base.js";
-import { ElementContainerData } from "./_common/container.js";
-import { InteractiveData } from "./_common/interactive.js";
-import { StylableData } from "./_common/stylable.js";
+import { z } from "zod";
+import {
+  ResolvableOrEvaluable,
+  resolvableOrEvaluableSchema,
+} from "../../_primitives/_";
+import { BaseElementData, baseElementDataSchema } from "./_base.js";
+import {
+  ElementContainerData,
+  elementContainerDataSchema,
+} from "./_common/container.js";
+import {
+  InteractiveData,
+  interactiveDataSchema,
+} from "./_common/interactive.js";
+import { StylableData, stylableDataSchema } from "./_common/stylable.js";
+
+// Types
 
 export type SlotFillData = StylableData &
   InteractiveData &
@@ -11,6 +23,19 @@ export type SlotFillData = StylableData &
 export type ComponentElementData = BaseElementData & {
   type: "component";
   componentUrl?: string;
-  props?: Record<string, ResolvableOrEvaluable<any>>;
+  props?: Record<string, ResolvableOrEvaluable<unknown>>;
   fills?: Record<string, SlotFillData>;
 };
+
+// Schemas
+
+export const slotFillDataSchema = stylableDataSchema
+  .merge(interactiveDataSchema)
+  .merge(elementContainerDataSchema);
+
+export const componentElementDataSchema = baseElementDataSchema.extend({
+  type: z.literal("component"),
+  componentUrl: z.string().optional(),
+  props: z.record(resolvableOrEvaluableSchema(z.unknown())).optional(),
+  fills: z.record(slotFillDataSchema).optional(),
+});

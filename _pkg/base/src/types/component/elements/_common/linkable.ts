@@ -1,9 +1,16 @@
-import { ResolvableOrEvaluable } from "../../../_.js";
+import { z } from "zod";
+import {
+  ResolvableOrEvaluable,
+  resolvableOrEvaluableSchema,
+} from "../../../_primitives/_";
+
+// Types
 
 export type RouteLinkData = {
   type: "route";
   routeUrl?: string;
 };
+
 export type HrefLinkData = {
   type: "href";
   href?: ResolvableOrEvaluable<string>;
@@ -13,8 +20,35 @@ export type HrefLinkData = {
   rel?: ResolvableOrEvaluable<string>;
   target?: ResolvableOrEvaluable<string>;
 };
+
 export type LinkData = RouteLinkData | HrefLinkData;
 
 export type LinkableData = {
   link?: LinkData;
 };
+
+// Schemas
+
+const routeLinkDataSchema = z.object({
+  type: z.literal("route"),
+  routeUrl: z.string().optional(),
+});
+
+const hrefLinkDataSchema = z.object({
+  type: z.literal("href"),
+  href: resolvableOrEvaluableSchema(z.string()).optional(),
+  hreflang: resolvableOrEvaluableSchema(z.string()).optional(),
+  ping: resolvableOrEvaluableSchema(z.array(z.string())).optional(),
+  referrerPolicy: resolvableOrEvaluableSchema(z.string()).optional(),
+  rel: resolvableOrEvaluableSchema(z.string()).optional(),
+  target: resolvableOrEvaluableSchema(z.string()).optional(),
+});
+
+export const linkDataSchema = z.union([
+  routeLinkDataSchema,
+  hrefLinkDataSchema,
+]);
+
+export const linkableDataSchema = z.object({
+  link: linkDataSchema.optional(),
+});

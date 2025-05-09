@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DataInputConfig } from "./_shared/data_input";
+import { DataInputConfig, dataInputConfigSchema } from "./_shared/data_input";
 
 // Types
 
@@ -10,5 +10,5 @@ export type HookConfig = {
 // Schemas
 
 export const hookConfigSchema = z.object({
-  parameters: z.array(z.any()).optional(),
+  parameters: z.array(dataInputConfigSchema).optional(),
 });

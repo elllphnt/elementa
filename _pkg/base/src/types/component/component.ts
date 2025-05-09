@@ -1,5 +1,11 @@
-import { FragmentData, StateData } from "../_.js";
-import { DataInputData } from "../_shared/data_input.js";
+import { z } from "zod";
+import {
+  FragmentData,
+  fragmentDataSchema,
+  StateData,
+  stateDataSchema,
+} from "../_.js";
+import { DataInputData, dataInputDataSchema } from "../_shared/data_input.js";
 
 export type ComponentData = {
   name?: string;
@@ -9,3 +15,14 @@ export type ComponentData = {
   states?: StateData[];
   editors?: Record<string, Record<string, unknown>>;
 };
+
+// Schemas
+
+export const componentSchema = z.object({
+  name: z.string().optional(),
+  props: z.array(dataInputDataSchema).optional(),
+  template: fragmentDataSchema.optional(),
+  fragments: z.array(fragmentDataSchema).optional(),
+  states: z.array(stateDataSchema).optional(),
+  editors: z.record(z.record(z.unknown())).optional(),
+});

@@ -3,11 +3,13 @@ import {
   Expression,
 } from "../../types/_primitives/dynamic/evaluable.js";
 
-export function isExpression(value: any): value is Expression {
-  return value && typeof value === "object" && "__expression" in value;
+export function isExpression(value: unknown): value is Expression {
+  return (value &&
+    typeof value === "object" &&
+    "__expression" in value) as boolean;
 }
 export function splitEvaluable<T>(
-  evaluable?: Evaluable<T>,
+  evaluable?: Evaluable<T>
 ): [Evaluable<T> | undefined, T | undefined] {
   if (isExpression(evaluable)) {
     return [evaluable, undefined];
@@ -16,7 +18,7 @@ export function splitEvaluable<T>(
   }
 }
 export function expressionOf<T>(
-  evaluable: Evaluable<T>,
+  evaluable: Evaluable<T>
 ): Expression | undefined {
   return isExpression(evaluable) ? evaluable : undefined;
 }

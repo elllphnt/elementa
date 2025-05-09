@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { StyleData } from "./stylesheet/_";
 import {
   StyleFragmentData,
   styleFragmentDataSchema,

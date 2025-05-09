@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import {
   ComponentElementData,
   ContainerElementData,
@@ -6,7 +8,16 @@ import {
   SlotElementData,
   TextElementData,
   VectorElementData,
+  componentElementDataSchema,
+  containerElementDataSchema,
+  mediaElementDataSchema,
+  primitiveElementDataSchema,
+  slotElementDataSchema,
+  textElementDataSchema,
+  vectorElementDataSchema,
 } from "./_.js";
+
+// Types
 
 export type ElementData =
   | ComponentElementData
@@ -16,3 +27,15 @@ export type ElementData =
   | SlotElementData
   | TextElementData
   | VectorElementData;
+
+// Schemas
+
+export const elementDataSchema = z.discriminatedUnion("type", [
+  componentElementDataSchema,
+  containerElementDataSchema,
+  mediaElementDataSchema,
+  primitiveElementDataSchema,
+  slotElementDataSchema,
+  textElementDataSchema,
+  vectorElementDataSchema,
+]);

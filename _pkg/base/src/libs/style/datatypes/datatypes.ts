@@ -1,24 +1,14 @@
-import { ErrorTupple } from "../../../types/_.js";
 import { ArrayItem } from "../../../types/_primitives/array.js";
 import {
   StyleDataType,
   StyleDataTypeMap,
 } from "../../../types/_primitives/style/datatypes.js";
 import { styleDataNormalizers } from "./nomalizers.js";
-import { styleDataParsers } from "./parsers.js";
 import { styleDataSchemas } from "./schemas.js";
 import { styleDataStringifiers } from "./stringifiers.js";
 
-export function parseStyleData(
-  type: StyleDataType,
-  input: string
-): ErrorTupple<any> {
-  const parse = styleDataParsers[type];
-  return parse(input);
-}
-
 export function getStyleDataType(
-  data: any,
+  data: unknown,
   possibleTypes?: StyleDataType[]
 ): StyleDataType | undefined {
   const types =
@@ -54,7 +44,7 @@ export function stringifyFlexibleStyleData<T extends StyleDataType[]>(
 
 export function validateStyleData<T extends StyleDataType>(
   type: T,
-  value: any
+  value: unknown
 ): value is StyleDataTypeMap[T] {
   const schema = styleDataSchemas[type];
   return schema.isValidSync(value);
@@ -63,7 +53,7 @@ export function validateStyleData<T extends StyleDataType>(
 export function normalizeStyleData<T>(type: StyleDataType, value: T): T {
   const normalize = styleDataNormalizers[type];
   if (normalize) {
-    return normalize(value);
+    return normalize(value) as T;
   } else {
     return value;
   }

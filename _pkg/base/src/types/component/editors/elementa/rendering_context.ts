@@ -1,4 +1,12 @@
-import { ColorData, OverflowValue, StyleModifierData } from "../../../_";
+import { z } from "zod";
+import { ColorData } from "../../../_primitives/_";
+import {
+  OverflowValue,
+  StyleModifierData,
+  styleModifierDataSchema,
+} from "../../../style/_";
+
+// Types
 
 export type ColorThemeData = {
   scheme?: string;
@@ -20,3 +28,26 @@ export type RenderingContextData = {
   styleModifierEnabled?: boolean;
   styleModifiers?: StyleModifierData[];
 };
+
+// Schemas
+
+export const colorThemeDataSchema = z.object({
+  scheme: z.string().optional(),
+  foreground: z.any().optional(),
+  background: z.any().optional(),
+});
+
+export const viewportDataSchema = z.object({
+  height: z.number().optional(),
+  width: z.number().optional(),
+  overflow: z.string().optional(),
+});
+
+export const renderingContextDataSchema = z.object({
+  theme: colorThemeDataSchema.optional(),
+  props: z.record(z.unknown()).optional(),
+  viewport: viewportDataSchema.optional(),
+  viewportEnabled: z.boolean().optional(),
+  styleModifierEnabled: z.boolean().optional(),
+  styleModifiers: z.array(styleModifierDataSchema).optional(),
+});

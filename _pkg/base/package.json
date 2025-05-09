@@ -5,9 +5,11 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "watch": "yarn build --watch",
-    "test": "tsx src/index.test.ts"
+    "clean": "rm -rf build && rm -rf dist",
+    "build": "tsc -p tsconfig.build.json",
+    "watch": "tsc -w -p tsconfig.build.json",
+    "packup": "tsx scripts/packup.ts",
+    "pub": "npm run clean && npm run build && npm run packup && cd dist && npm publish"
   },
   "dependencies": {
     "yup": "^1.4.0",

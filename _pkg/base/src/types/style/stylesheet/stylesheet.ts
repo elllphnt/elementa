@@ -1,9 +1,11 @@
 import { z } from "zod";
-import { styleFragmentDataSchema } from "./fragments/fragment.js";
+import {
+  StyleFragmentData,
+  styleFragmentDataSchema,
+} from "./fragments/fragment.js";
+import { StyleData } from "./style/_.js";
 
 // Types
-
-export type StyleData = Record<string, unknown>;
 
 export type StyleSheetData = {
   styles?: Record<string, StyleData>;
