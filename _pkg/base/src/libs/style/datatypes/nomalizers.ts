@@ -66,7 +66,8 @@ export function normalizePercent(percent: PercentData): PercentData {
 
 // Add styleDataNormalizers mapping with explicit Record type
 export const styleDataNormalizers: Partial<
-  Record<StyleDataType, (data: unknown) => unknown>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Record<StyleDataType, (data: any) => any>
 > = {
   [StyleDataType.Duration]: normalizeDuration,
   [StyleDataType.Length]: normalizeLength,

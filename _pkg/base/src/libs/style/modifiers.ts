@@ -2,7 +2,7 @@ import {
   StyleDataType,
   StyleModifierDefinitionData,
   StyleModifierType,
-} from "../../types/_";
+} from "../../types/_.js";
 
 export const systemModifiers = {
   condition: {

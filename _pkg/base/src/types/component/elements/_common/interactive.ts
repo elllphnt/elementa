@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Expression, expressionSchema } from "../../../_primitives/_";
+import { Expression, expressionSchema } from "../../../_primitives/_.js";
 
 // Types
 

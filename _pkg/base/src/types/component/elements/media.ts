@@ -4,7 +4,7 @@ import {
   PercentData,
   ResolvableOrEvaluable,
   resolvableOrEvaluableSchema,
-} from "../../_primitives/_";
+} from "../../_primitives/_.js";
 import {
   Evaluable,
   evaluableSchema,

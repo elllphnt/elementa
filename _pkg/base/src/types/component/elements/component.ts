@@ -1,8 +1,8 @@
 import { z } from "zod";
 import {
-  ResolvableOrEvaluable,
+  type ResolvableOrEvaluable,
   resolvableOrEvaluableSchema,
-} from "../../_primitives/_";
+} from "../../_primitives/_.js";
 import { BaseElementData, baseElementDataSchema } from "./_base.js";
 import {
   ElementContainerData,

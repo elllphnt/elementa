@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { StyleData } from "./stylesheet/_";
+import type { StyleData } from "./stylesheet/_.js";
 import {
   StyleFragmentData,
   styleFragmentDataSchema,

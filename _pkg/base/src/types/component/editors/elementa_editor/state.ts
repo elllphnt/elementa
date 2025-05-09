@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ElementaFrameData, elementaFrameDataSchema } from "./frame";
+import { ElementaFrameData, elementaFrameDataSchema } from "./frame.js";
 
 // Types
 

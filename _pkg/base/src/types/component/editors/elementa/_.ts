@@ -1,1 +1,1 @@
-export * from "./rendering_context";
+export * from "./rendering_context.js";

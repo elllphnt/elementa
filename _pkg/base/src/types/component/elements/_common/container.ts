@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { ProviderData, providerDataSchema } from "../../provider/_";
-import { ElementData } from "../element";
-import { elementRepeatDataSchema } from "./repeatable";
+import { ProviderData, providerDataSchema } from "../../provider/_.js";
+import { ElementData } from "../element.js";
+import { elementRepeatDataSchema } from "./repeatable.js";
 
 // Types
 

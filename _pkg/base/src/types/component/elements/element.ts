@@ -30,12 +30,14 @@ export type ElementData =
 
 // Schemas
 
-export const elementDataSchema = z.discriminatedUnion("type", [
-  componentElementDataSchema,
-  containerElementDataSchema,
-  mediaElementDataSchema,
-  primitiveElementDataSchema,
-  slotElementDataSchema,
-  textElementDataSchema,
-  vectorElementDataSchema,
-]);
+export const elementDataSchema: z.ZodType<ElementData> = z.lazy(() =>
+  z.discriminatedUnion("type", [
+    componentElementDataSchema,
+    containerElementDataSchema,
+    mediaElementDataSchema,
+    primitiveElementDataSchema,
+    slotElementDataSchema,
+    textElementDataSchema,
+    vectorElementDataSchema,
+  ])
+) as unknown as z.ZodType<ElementData>;

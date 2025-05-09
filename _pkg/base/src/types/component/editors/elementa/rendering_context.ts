@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { ColorData } from "../../../_primitives/_";
+import { ColorData } from "../../../_primitives/_.js";
 import {
   OverflowValue,
   StyleModifierData,
   styleModifierDataSchema,
-} from "../../../style/_";
+} from "../../../style/_.js";
 
 // Types
 

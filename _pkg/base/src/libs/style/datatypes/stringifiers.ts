@@ -103,7 +103,8 @@ export function stringifyString(str: string): string {
 
 export const styleDataStringifiers: Record<
   StyleDataType,
-  (data: unknown) => string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (data: any) => string
 > = {
   [StyleDataType.Boolean]: stringifyBoolean,
   [StyleDataType.Number]: stringifyNumber,

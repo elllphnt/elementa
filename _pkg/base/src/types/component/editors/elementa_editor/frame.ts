@@ -1,10 +1,13 @@
 import { z } from "zod";
+import { CornerData, cornerDataSchema } from "../../../_primitives/_.js";
 import {
-  CornerData,
-  cornerDataSchema,
-} from "../../../_primitives/_";
-import { RenderingContextData, renderingContextDataSchema } from "../elementa/rendering_context";
-import { IdentifiableData, identifiableDataSchema } from "../../../_shared/_";
+  RenderingContextData,
+  renderingContextDataSchema,
+} from "../elementa/rendering_context.js";
+import {
+  IdentifiableData,
+  identifiableDataSchema,
+} from "../../../_shared/_.js";
 
 // Types
 

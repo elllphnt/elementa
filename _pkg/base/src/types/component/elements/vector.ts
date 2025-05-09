@@ -1,8 +1,6 @@
-import { Evaluable } from "../../_.js";
-import { BaseElementData } from "./_base.js";
 import { z } from "zod";
-import { evaluableSchema } from "../../_.js";
-import { baseElementDataSchema } from "./_base.js";
+import { Evaluable, evaluableSchema } from "../../_.js";
+import { BaseElementData, baseElementDataSchema } from "./_base.js";
 
 export type VectorTextNodeData = {
   type: "text";
@@ -41,10 +39,9 @@ export const vectorElementNodeDataSchema = z.object({
   children: z.lazy(() => z.array(vectorNodeDataSchema)),
 });
 
-export const vectorNodeDataSchema = z.union([
-  vectorTextNodeDataSchema,
-  vectorElementNodeDataSchema,
-]);
+export const vectorNodeDataSchema: z.ZodType<VectorNodeData> = z.lazy(() =>
+  z.union([vectorTextNodeDataSchema, vectorElementNodeDataSchema])
+);
 
 export const vectorElementDataSchema = baseElementDataSchema.extend({
   type: z.literal("vector"),
