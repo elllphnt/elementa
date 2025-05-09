@@ -1,3 +1,7 @@
+import { z } from "zod";
+
+// Types
+
 export type BlueprintNodeData = {
   position: {
     x: number;
@@ -8,3 +12,16 @@ export type BlueprintNodeData = {
 export type BlueprintAppStateData = {
   nodes: Record<string, BlueprintNodeData>;
 };
+
+// Schemas
+
+export const blueprintNodeDataSchema = z.object({
+  position: z.object({
+    x: z.number(),
+    y: z.number(),
+  }),
+});
+
+export const blueprintAppStateDataSchema = z.object({
+  nodes: z.record(blueprintNodeDataSchema),
+});

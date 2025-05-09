@@ -1,3 +1,7 @@
+import { z } from "zod";
+
+// Types
+
 export enum StyleDataType {
   Boolean = "boolean",
   Number = "number",
@@ -11,7 +15,7 @@ export enum StyleDataType {
   Ratio = "ratio",
 }
 
-// dimension
+// === Dimensions ===
 
 export type DimensionData<U extends string> = {
   value: number;
@@ -29,19 +33,15 @@ export type LengthOrFlexData = LengthData | FlexData;
 export type LengthOrFlexOrPercentData = LengthData | PercentData | FlexData;
 export type AngleOrPercentData = AngleData | PercentData;
 
-// color
+// === Color ===
 
-export type ColorData = {
-  model: "rgb" | "hsl" | "hwb" | "lab" | "lch" | "oklab" | "oklch";
-  value: number[];
-  alpha?: number;
-};
+export type ColorData = z.infer<typeof colorSchema>;
 
-// ratio
+// === Ratio ===
 
-export type RatioData = [number, number];
+export type RatioData = z.infer<typeof ratioSchema>;
 
-// map
+// === Map ===
 
 export type StyleDataTypeMap = {
   [StyleDataType.Boolean]: boolean;
@@ -55,3 +55,49 @@ export type StyleDataTypeMap = {
   [StyleDataType.Percent]: PercentData;
   [StyleDataType.Ratio]: RatioData;
 };
+
+// Schemas
+
+const dimensionSchema = <U extends string>(units: readonly U[]) =>
+  z.object({
+    value: z.number(),
+    unit: z.enum(units as [U, ...U[]]),
+  });
+
+export const lengthSchema = dimensionSchema([
+  "px",
+  "em",
+  "rem",
+  "vh",
+  "vw",
+] as const);
+export const percentSchema = dimensionSchema(["%"] as const);
+export const flexSchema = dimensionSchema(["fr"] as const);
+export const durationSchema = dimensionSchema(["s", "ms"] as const);
+export const angleSchema = dimensionSchema([
+  "deg",
+  "rad",
+  "grad",
+  "turn",
+] as const);
+
+export const colorSchema = z.object({
+  model: z.enum(["rgb", "hsl", "hwb", "lab", "lch", "oklab", "oklch"]),
+  value: z.array(z.number()),
+  alpha: z.number().optional(),
+});
+
+export const ratioSchema = z.tuple([z.number(), z.number()]);
+
+export const styleDataTypeSchemas = {
+  [StyleDataType.Boolean]: z.boolean(),
+  [StyleDataType.Number]: z.number(),
+  [StyleDataType.String]: z.string(),
+  [StyleDataType.Angle]: angleSchema,
+  [StyleDataType.Color]: colorSchema,
+  [StyleDataType.Duration]: durationSchema,
+  [StyleDataType.Flex]: flexSchema,
+  [StyleDataType.Length]: lengthSchema,
+  [StyleDataType.Percent]: percentSchema,
+  [StyleDataType.Ratio]: ratioSchema,
+} as const;

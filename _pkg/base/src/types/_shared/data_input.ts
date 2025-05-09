@@ -1,9 +1,25 @@
-import { Resolvable } from "../_primitives/dynamic/resolvable.js";
+import { z } from "zod";
+import {
+  Resolvable,
+  resolvableSchema,
+} from "../_primitives/dynamic/resolvable.js";
+
+// Types
 
 export type DataInputData = {
   name: string;
   varName?: string;
   tsType?: string;
   required?: boolean;
-  default?: Resolvable<any>;
+  default?: Resolvable<unknown>;
 };
+
+// Schemas
+
+export const dataInputDataSchema = z.object({
+  name: z.string(),
+  varName: z.string().optional(),
+  tsType: z.string().optional(),
+  required: z.boolean().optional(),
+  default: resolvableSchema(z.unknown()).optional(),
+});
