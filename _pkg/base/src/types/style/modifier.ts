@@ -1,17 +1,20 @@
-import { CssSelector, StyleDataType } from "../_primitives/_.js";
+import { z } from "zod";
+import { StyleDataType } from "../_primitives/_.js";
+
+// Types
 
 export enum StyleModifierType {
-  Context = "context", // a context modifier is a modifier that is applied to the context of the element
-  Element = "element", // an element modifier is a modifier that is applied to the element itself
+  Context = "context",
+  Element = "element",
 }
 
 export type StyleModifierDefinitionData = {
   id: string;
   name: string;
   type: StyleModifierType;
-  signature?: StyleDataType[]; // a sorted list of the argument types
+  signature?: StyleDataType[];
   predecence?: number;
-  selector?: CssSelector;
+  selector?: string; // Using string for CssSelector representation
 };
 
 export type StyleModifierData = {
@@ -20,3 +23,21 @@ export type StyleModifierData = {
 };
 
 export type ElllSelectorData = StyleModifierData[];
+
+// Schemas
+
+export const styleModifierDefinitionDataSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  type: z.enum([StyleModifierType.Context, StyleModifierType.Element]),
+  signature: z.array(z.nativeEnum(StyleDataType)).optional(),
+  predecence: z.number().optional(),
+  selector: z.string().optional(), // loosely typed
+});
+
+export const styleModifierDataSchema = z.object({
+  name: z.string(),
+  args: z.array(z.unknown()).optional(),
+});
+
+export const elllSelectorDataSchema = z.array(styleModifierDataSchema);

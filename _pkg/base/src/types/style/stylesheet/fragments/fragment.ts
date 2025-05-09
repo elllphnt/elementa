@@ -1,6 +1,6 @@
-import { AnimationData } from "./animation.js";
-import { BackgroundLayerData } from "./background_layer.js";
-import { FilterData } from "./filter.js";
+import { z } from "zod";
+
+// Types
 
 export enum StyleFragmentType {
   Animation = "animation",
@@ -9,14 +9,22 @@ export enum StyleFragmentType {
 }
 
 export type StyleFragmentDataTypeMap = {
-  [StyleFragmentType.Animation]: AnimationData;
-  [StyleFragmentType.BackgroundLayer]: BackgroundLayerData;
-  [StyleFragmentType.Filter]: FilterData;
+  [StyleFragmentType.Animation]: unknown;
+  [StyleFragmentType.BackgroundLayer]: unknown;
+  [StyleFragmentType.Filter]: unknown;
 };
 
 export type StyleFragmentData<T extends StyleFragmentType = StyleFragmentType> =
   {
     id: string;
-    type: string;
+    type: T;
     data: StyleFragmentDataTypeMap[T];
   };
+
+// Schemas
+
+export const styleFragmentDataSchema = z.object({
+  id: z.string(),
+  type: z.string(), // loose check, not strict enum
+  data: z.unknown(),
+});
