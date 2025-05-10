@@ -25,7 +25,7 @@ export type KeyframeSetData = {
 export const keyFrameDataSchema = z.object({
   key: z.string().optional(),
   offset: z.number().optional(),
-  style: z.record(z.unknown()).optional(),
+  style: z.record(z.any()).optional(),
 });
 
 export const keyframeSetDataSchema = z.object({

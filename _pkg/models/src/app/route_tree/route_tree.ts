@@ -9,11 +9,11 @@ import {
 } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
 import * as y from "yjs";
-import { genId } from "../../_lib/id";
-import { Component } from "../../component/component";
-import { FileModel } from "../../infrastructure/_";
-import { App } from "../app";
-import { attachRouteTreeList } from "./_list";
+import { genId } from "../../_lib/id.js";
+import { Component } from "../../component/component.js";
+import { FileModel } from "../../infrastructure/_.js";
+import { App } from "../app.js";
+import { attachRouteTreeList } from "./_list.js";
 
 export type RouteTree = ReactiveMap<RouteData> & {
   app: App;
@@ -72,17 +72,14 @@ export type RouteTree = ReactiveMap<RouteData> & {
   notFoundViewComponent$: Observable<FileModel<Component> | undefined>;
 };
 
-export function attachRouteTree(
-  ymap: y.Map<unknown>,
-  app: App
-): ymap is RouteTree {
+export function attachRouteTree(ymap: y.Map<any>, app: App): ymap is RouteTree {
   if (!attachReactiveMap<RouteData>(ymap)) {
     throw new Error("Failed to attach reactive map to ymap");
   }
   const rxMap = ymap;
   const route = rxMap as RouteTree;
 
-  const children = getOrCreateYArray<y.Map<unknown>>(rxMap, "children");
+  const children = getOrCreateYArray<y.Map<any>>(rxMap, "children");
   if (!attachRouteTreeList(children, app)) {
     throw new Error("Failed to attach route tree list");
   }
@@ -120,7 +117,7 @@ export function attachRouteTree(
     Object.defineProperty(route, absoluteUrlKey, {
       get() {
         const url = route[urlKey];
-        return url ? route.app.project.resolveAbsoluteUrl(url) : undefined;
+        return url ? route.app.project.absoluteFileUrl(url) : undefined;
       },
     });
     Object.defineProperty(route, `${absoluteUrlKey}$`, {
@@ -128,7 +125,7 @@ export function attachRouteTree(
         const url$: Observable<string | undefined> = route[`${urlKey}$`];
         return url$.pipe(
           map((url) =>
-            url ? route.app.project.resolveAbsoluteUrl(url) : undefined
+            url ? route.app.project.absoluteFileUrl(url) : undefined
           )
         );
       },
@@ -166,7 +163,7 @@ export function attachRouteTree(
 }
 
 export function createRoute(app: App): RouteTree {
-  const ymap = new y.Map<unknown>();
+  const ymap = new y.Map<any>();
   if (!attachRouteTree(ymap, app)) {
     throw new Error("Failed to attach route");
   }

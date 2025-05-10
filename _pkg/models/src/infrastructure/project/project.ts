@@ -1,10 +1,10 @@
-import { toAbsoluteFileUrl } from "../file/url";
-import { Infrastructure } from "../infrastructure";
-import { Resource } from "../resource";
-import { AppManager } from "./managers/app_manager";
-import { ComponentManager } from "./managers/component_manager";
-import { PackageManager } from "./managers/package_manager";
-import { StyleManager } from "./managers/style_manager";
+import { toAbsoluteFileUrl } from "../file/url.js";
+import { Infrastructure } from "../infrastructure.js";
+import { Resource } from "../resource.js";
+import { AppManager } from "./managers/app_manager.js";
+import { ComponentManager } from "./managers/component_manager.js";
+import { PackageManager } from "./managers/package_manager.js";
+import { StyleManager } from "./managers/style_manager.js";
 
 export abstract class Project extends Resource {
   readonly infrastructure: Infrastructure;

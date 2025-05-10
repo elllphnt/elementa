@@ -13,10 +13,10 @@ import {
 } from "@elllphnt/elementa-utils";
 import { Observable, of } from "rxjs";
 import * as y from "yjs";
-import { CssStyleSheet, StylesheetCssStyleSheet } from "../../css/_";
-import { attachStylesheet } from "../../style/stylesheet";
-import { Fragment } from "../fragment";
-import { attachIdentifiable, Identifiable } from "../identifiable";
+import { CssStyleSheet, StylesheetCssStyleSheet } from "../../css/_.js";
+import { attachStylesheet } from "../../style/stylesheet.js";
+import { Fragment } from "../fragment.js";
+import { attachIdentifiable, Identifiable } from "../identifiable.js";
 
 export type Element<D extends BaseElementData = BaseElementData> =
   Identifiable<D> & {
@@ -60,14 +60,14 @@ export type Element<D extends BaseElementData = BaseElementData> =
   };
 
 export function attachBaseElement<D extends BaseElementData>(
-  ymap: y.Map<unknown>,
+  ymap: y.Map<any>,
   fragment: Fragment
 ): ymap is Element<D> {
   if (!attachIdentifiable<BaseElementData>(ymap)) {
     throw Error("Failed to attach identifiable");
   }
   const identifiable = ymap;
-  const element = identifiable as unknown as Element<D>;
+  const element = identifiable as any as Element<D>;
 
   element.fragment = fragment;
 

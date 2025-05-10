@@ -1,7 +1,7 @@
 import { BehaviorSubject, map } from "rxjs";
-import { Stylesheet } from "../../../style/stylesheet";
-import { RuleCssStyleSheet } from "../../lib/rule/rule";
-import { StylesheetCssStyleRule } from "./rule";
+import { Stylesheet } from "../../../style/stylesheet.js";
+import { RuleCssStyleSheet } from "../../lib/rule/rule.js";
+import { StylesheetCssStyleRule } from "./rule.js";
 
 /**
  * Represents a CSS stylesheet that is composed of CSS style rules.

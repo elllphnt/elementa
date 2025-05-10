@@ -12,14 +12,14 @@ import {
 } from "@elllphnt/elementa-utils";
 import { filter, map, Observable, switchMap, tap } from "rxjs";
 import * as y from "yjs";
-import { ResolvableRecord } from "../../../_lib/resolvable";
-import { CssStyleSheet } from "../../../css/_";
-import { FileModel } from "../../../infrastructure/_";
-import { Component } from "../../component";
-import { Fragment } from "../../fragment";
-import { Identifiable } from "../../identifiable";
-import { attachBaseElement, Element } from "../element";
-import { attachSlotFill, createSlotFill, SlotFill } from "./slot_fill";
+import { ResolvableRecord } from "../../../_lib/resolvable.js";
+import { CssStyleSheet } from "../../../css/_.js";
+import { FileModel } from "../../../infrastructure/_.js";
+import { Component } from "../../component.js";
+import { Fragment } from "../../fragment.js";
+import { Identifiable } from "../../identifiable.js";
+import { attachBaseElement, Element } from "../element.js";
+import { attachSlotFill, createSlotFill, SlotFill } from "./slot_fill.js";
 
 export type ComponentElement = Element<ComponentElementData> & {
   fills: ReactiveMap<Record<string, SlotFill>>;
@@ -39,23 +39,23 @@ export type ComponentElement = Element<ComponentElementData> & {
   componentName: string | undefined;
   componentName$: Observable<string | undefined>;
 
-  props: Record<string, unknown>;
-  props$: Observable<Record<string, unknown>>;
+  props: Record<string, any>;
+  props$: Observable<Record<string, any>>;
 
-  prop(key: string): unknown;
-  prop$(key: string): Observable<unknown>;
+  prop(key: string): any;
+  prop$(key: string): Observable<any>;
 
   fill(id: string, create?: true): SlotFill;
   fill$(id: string, create?: true): Observable<SlotFill>;
 
-  setProp(key: string, value: ResolvableOrEvaluable<unknown> | undefined): void;
+  setProp(key: string, value: ResolvableOrEvaluable<any> | undefined): void;
 };
 
 /**
  * Attach ComponentElement behavior to a y.Map
  */
 export function attachComponentElement(
-  ymap: y.Map<unknown>,
+  ymap: y.Map<any>,
   fragment: Fragment
 ): ymap is ComponentElement {
   ymap.set("type", "component");
@@ -67,7 +67,7 @@ export function attachComponentElement(
   const componentElement = element as ComponentElement;
 
   componentElement.fills = createEnhancedReactiveMap(
-    getOrCreateYMap<y.Map<unknown>>(element, "fills"),
+    getOrCreateYMap<y.Map<any>>(element, "fills"),
     attachSlotFill,
     (ymap) => attachSlotFill(ymap, fragment)
   );
@@ -75,7 +75,7 @@ export function attachComponentElement(
   setModelFields(componentElement, ["componentUrl"]);
 
   const _props = new ResolvableRecord(
-    (componentElement.get("props") as Record<string, unknown>) ?? {},
+    (componentElement.get("props") as Record<string, any>) ?? {},
     fragment.component.project.infrastructure
   );
 
@@ -111,7 +111,7 @@ export function attachComponentElement(
   Object.defineProperty(componentElement, "absoluteComponentUrl", {
     get() {
       return componentElement.componentUrl
-        ? fragment.component.project.resolveAbsoluteUrl(
+        ? fragment.component.project.absoluteFileUrl(
             componentElement.componentUrl
           )
         : undefined;
@@ -120,9 +120,7 @@ export function attachComponentElement(
 
   componentElement.absoluteComponentUrl$ = componentElement.componentUrl$.pipe(
     map((url) => {
-      return url
-        ? fragment.component.project.resolveAbsoluteUrl(url)
-        : undefined;
+      return url ? fragment.component.project.absoluteFileUrl(url) : undefined;
     })
   );
 
@@ -163,7 +161,7 @@ export function attachComponentElement(
 
   componentElement.setProp = (
     key: string,
-    value: ResolvableOrEvaluable<unknown> | undefined
+    value: ResolvableOrEvaluable<any> | undefined
   ) => {
     const newProps = { ...componentElement.props };
     if (value === undefined) {
@@ -192,10 +190,10 @@ export function attachComponentElement(
         }
       }),
       filter((item) => !!item || !create)
-    ) as unknown;
+    ) as any;
   };
 
-  const baseDispose = (element as unknown).dispose?.bind(element);
+  const baseDispose = (element as any).dispose?.bind(element);
   element.dispose = () => {
     propsSubscription.unsubscribe();
     _props.dispose();
@@ -203,12 +201,12 @@ export function attachComponentElement(
     if (baseDispose) baseDispose();
   };
 
-  componentElement.cloneIds = (clone: y.Map<unknown>) => {
+  componentElement.cloneIds = (clone: y.Map<any>) => {
     componentElement.cloneOwnId(clone);
     const fillsClone = getOrCreateYMap(clone, "fills");
     Identifiable.cloneIdentifiableMapIds(
       Object.fromEntries(componentElement.fills.entries()),
-      fillsClone as unknown
+      fillsClone as any
     );
   };
 
@@ -220,7 +218,7 @@ export function attachComponentElement(
  * Create a new local ComponentElement model
  */
 export function createComponentElement(fragment: Fragment): ComponentElement {
-  const ymap = new y.Map<unknown>();
+  const ymap = new y.Map<any>();
   if (!attachComponentElement(ymap, fragment)) {
     throw new Error("Failed to create ComponentElement");
   }

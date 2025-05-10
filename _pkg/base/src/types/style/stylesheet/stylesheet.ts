@@ -16,7 +16,7 @@ export type StyleSheetData = {
 // Schemas
 
 export const styleSheetDataSchema = z.object({
-  styles: z.record(z.record(z.unknown())).optional(),
+  styles: z.record(z.record(z.any())).optional(),
   fragments: z.array(styleFragmentDataSchema).optional(),
   conditions: z.record(z.string()).optional(),
 });

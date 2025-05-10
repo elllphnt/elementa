@@ -7,7 +7,7 @@ import {
 } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import * as y from "yjs";
-import { Component } from "./component";
+import { Component } from "./component.js";
 
 export type DataInput = ReactiveMap<DataInputData> & {
   component: Component;
@@ -24,15 +24,15 @@ export type DataInput = ReactiveMap<DataInputData> & {
   required: boolean;
   required$: Observable<boolean>;
 
-  defaultValue: unknown;
-  defaultValue$: Observable<unknown>;
+  defaultValue: any;
+  defaultValue$: Observable<any>;
 };
 
 /**
  * Attach DataInput behavior to a y.Map
  */
 export function attachDataInput(
-  ymap: y.Map<unknown>,
+  ymap: y.Map<any>,
   component: Component
 ): ymap is DataInput {
   if (!attachReactiveMap<DataInputData>(ymap)) {
@@ -51,7 +51,7 @@ export function attachDataInput(
  * Create a new local DataInput
  */
 export function createDataInput(component: Component): DataInput {
-  const ymap = new y.Map<unknown>();
+  const ymap = new y.Map<any>();
   if (!attachDataInput(ymap, component)) {
     throw new Error("Failed to create DataInput");
   }

@@ -15,9 +15,7 @@ export type BlueprintNode = ReactiveMap<BlueprintNodeData> & {
   position$: Observable<PointData>;
 };
 
-export function attachBlueprintNode(
-  ymap: y.Map<unknown>
-): ymap is BlueprintNode {
+export function attachBlueprintNode(ymap: y.Map<any>): ymap is BlueprintNode {
   assert(
     attachReactiveMap<BlueprintNodeData>(ymap),
     "Failed to attach reactive map to ymap"
@@ -31,7 +29,7 @@ export function attachBlueprintNode(
 }
 
 export function createBlueprintNode(): BlueprintNode {
-  const ymap = new y.Map<unknown>();
+  const ymap = new y.Map<any>();
   assert(attachBlueprintNode(ymap), "Failed to attach reactive map to ymap");
   return ymap;
 }

@@ -5,18 +5,18 @@ import {
 } from "@elllphnt/elementa-base";
 import {
   attachReactiveMap,
-  Extendable,
   ReactiveMap,
   setEnhancer,
   setModelFields,
 } from "@elllphnt/elementa-utils";
+import { assert } from "console";
 import { distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
-import { Component } from "../../component";
+import { Component } from "../../component.js";
 import {
   attachRenderingContext,
   RenderingContext,
-} from "../elementa/rendering_context";
+} from "../elementa/rendering_context.js";
 
 export type ElementaViewerComponentState =
   ReactiveMap<ElementaViewerComponentStateData> & {
@@ -33,14 +33,14 @@ export type ElementaViewerComponentState =
  * Attach ElementaViewerComponentState behavior to a y.Map
  */
 export function attachElementaViewerComponentState(
-  ymap: y.Map<unknown>,
+  ymap: y.Map<any>,
   component: Component
-): ElementaViewerComponentState {
-  const state = attachReactiveMap<ElementaViewerComponentStateData>(
-    ymap as Extendable<y.Map<unknown>>
-  ) as Extendable<ElementaViewerComponentState>;
+): ymap is ElementaViewerComponentState {
+  const state = attachReactiveMap(
+    ymap
+  ) as unknown as ElementaViewerComponentState;
 
-  state.renderingContext = attachRenderingContext(ymap, component);
+  assert(attachRenderingContext(ymap, component));
 
   setModelFields(state, ["corners"]);
 
@@ -80,19 +80,20 @@ export function attachElementaViewerComponentState(
     );
   };
 
-  const baseDispose = (state as unknown).dispose?.bind(state);
+  const baseDispose = (state as any).dispose?.bind(state);
   state.dispose = () => {
     state.renderingContext.dispose();
     if (baseDispose) baseDispose();
   };
 
   setEnhancer(state, attachElementaViewerComponentState);
-  return state as ElementaViewerComponentState;
+  return true;
 }
 
 export function createElementaViewerComponentState(
   component: Component
 ): ElementaViewerComponentState {
-  const ymap = new y.Map<unknown>();
-  return attachElementaViewerComponentState(ymap, component);
+  const ymap = new y.Map<any>();
+  assert(attachElementaViewerComponentState(ymap, component));
+  return ymap as ElementaViewerComponentState;
 }

@@ -9,9 +9,9 @@ export enum StyleFragmentType {
 }
 
 export type StyleFragmentDataTypeMap = {
-  [StyleFragmentType.Animation]: unknown;
-  [StyleFragmentType.BackgroundLayer]: unknown;
-  [StyleFragmentType.Filter]: unknown;
+  [StyleFragmentType.Animation]: any;
+  [StyleFragmentType.BackgroundLayer]: any;
+  [StyleFragmentType.Filter]: any;
 };
 
 export type StyleFragmentData<T extends StyleFragmentType = StyleFragmentType> =
@@ -26,5 +26,5 @@ export type StyleFragmentData<T extends StyleFragmentType = StyleFragmentType> =
 export const styleFragmentDataSchema = z.object({
   id: z.string(),
   type: z.string(), // loose check, not strict enum
-  data: z.unknown(),
+  data: z.any(),
 });

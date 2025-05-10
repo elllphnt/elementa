@@ -5,7 +5,7 @@ import { Observable } from "rxjs";
 
 /**
  * Represents a CSS style rule.
- * This class does not implement unknown logic, but defines the
+ * This class does not implement any logic, but defines the
  * interface for consuming CSS style rules in a reactive manner.
  */
 export abstract class CssStyleRule extends Disposable {

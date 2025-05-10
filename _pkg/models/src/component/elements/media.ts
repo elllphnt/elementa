@@ -2,8 +2,8 @@ import { MediaData, MediaElementData } from "@elllphnt/elementa-base";
 import { setEnhancer, setModelFields } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import * as y from "yjs";
-import { Fragment } from "../fragment";
-import { attachBaseElement, Element } from "./element";
+import { Fragment } from "../fragment.js";
+import { attachBaseElement, Element } from "./element.js";
 
 export type MediaElement = Element<MediaElementData> & {
   media: MediaData | undefined;
@@ -17,7 +17,7 @@ export type MediaElement = Element<MediaElementData> & {
 };
 
 export function attachMediaElement(
-  ymap: y.Map<unknown>,
+  ymap: y.Map<any>,
   fragment: Fragment
 ): ymap is MediaElement {
   ymap.set("type", "media");
@@ -33,7 +33,7 @@ export function attachMediaElement(
 }
 
 export function createMediaElement(fragment: Fragment): MediaElement {
-  const ymap = new y.Map<unknown>();
+  const ymap = new y.Map<any>();
   if (!attachMediaElement(ymap, fragment)) {
     throw new Error("Failed to create MediaElement");
   }

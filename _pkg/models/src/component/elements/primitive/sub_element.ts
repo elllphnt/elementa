@@ -7,10 +7,10 @@ import {
 } from "@elllphnt/elementa-utils";
 import { distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
-import { StylesheetCssStyleSheet } from "../../../css/_";
-import { attachStylesheet } from "../../../style/stylesheet";
-import { Component } from "../../component";
-import { Fragment } from "../../fragment";
+import { StylesheetCssStyleSheet } from "../../../css/_.js";
+import { attachStylesheet } from "../../../style/stylesheet.js";
+import { Component } from "../../component.js";
+import { Fragment } from "../../fragment.js";
 
 export type PrimitiveSubElement = ReactiveMap<PrimitiveSubElementData> & {
   component: Component;
@@ -27,7 +27,7 @@ export type PrimitiveSubElement = ReactiveMap<PrimitiveSubElementData> & {
 };
 
 export function attachPrimitiveSubElement(
-  ymap: y.Map<unknown>,
+  ymap: y.Map<any>,
   fragment: Fragment
 ): ymap is PrimitiveSubElement {
   if (!attachReactiveMap(ymap)) {
@@ -80,7 +80,7 @@ export function attachPrimitiveSubElement(
     subElement.set("interactions", {});
   };
 
-  const baseDispose = (subElement as unknown).dispose?.bind(subElement);
+  const baseDispose = (subElement as any).dispose?.bind(subElement);
   subElement.dispose = () => {
     subElement.cssStyleSheet.dispose();
     if (baseDispose) baseDispose();
@@ -93,7 +93,7 @@ export function attachPrimitiveSubElement(
 export function createPrimitiveSubElement(
   fragment: Fragment
 ): PrimitiveSubElement {
-  const ymap = new y.Map<unknown>();
+  const ymap = new y.Map<any>();
   if (!attachPrimitiveSubElement(ymap, fragment)) {
     throw new Error("Failed to attach primitive sub-element to ymap");
   }

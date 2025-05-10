@@ -2,12 +2,12 @@ import { CornerData, ElementaFrameData } from "@elllphnt/elementa-base";
 import { setEnhancer, setModelFields } from "@elllphnt/elementa-utils";
 import { Observable, of, switchMap } from "rxjs";
 import * as y from "yjs";
-import { attachIdentifiable, Identifiable } from "../../identifiable";
+import { attachIdentifiable, Identifiable } from "../../identifiable.js";
 import {
   attachRenderingContext,
   RenderingContext,
-} from "../elementa/rendering_context";
-import { ElementaEditorComponentState } from "./state";
+} from "../elementa/rendering_context.js";
+import { ElementaEditorComponentState } from "./state.js";
 
 export type ElementaFrame = Identifiable<ElementaFrameData> & {
   componentState: ElementaEditorComponentState;
@@ -19,8 +19,8 @@ export type ElementaFrame = Identifiable<ElementaFrameData> & {
   fragmentId: string | undefined;
   fragmentId$: Observable<string | undefined>;
 
-  fragment: unknown;
-  fragment$: Observable<unknown>;
+  fragment: any;
+  fragment$: Observable<any>;
 
   x: number | undefined;
   x$: Observable<number | undefined>;
@@ -38,28 +38,23 @@ export type ElementaFrame = Identifiable<ElementaFrameData> & {
   corners$: Observable<CornerData<number> | undefined>;
 
   remove(): void;
-  cloneIds(clone: y.Map<unknown>): void;
+  cloneIds(clone: y.Map<any>): void;
 };
 
 /**
  * Attach ElementaFrame behavior to a y.Map
  */
 export function attachElementaFrame(
-  ymap: y.Map<unknown>,
+  ymap: y.Map<any>,
   componentState: ElementaEditorComponentState
-): ElementaFrame {
-  const identifiable = attachIdentifiable<ElementaFrameData>(
-    ymap as y.Map<unknown>
-  );
-  const frame = identifiable as ElementaFrame;
+): ymap is ElementaFrame {
+  attachIdentifiable<ElementaFrameData>(ymap as y.Map<any>);
+  const frame = ymap as ElementaFrame;
 
   frame.componentState = componentState;
-  frame.renderingContext = attachRenderingContext(
-    ymap,
-    componentState.component
-  );
+  attachRenderingContext(ymap, componentState.component);
 
-  setModelFields(identifiable, [
+  setModelFields(frame, [
     "name",
     "fragmentId",
     "x",
@@ -86,7 +81,7 @@ export function attachElementaFrame(
   );
 
   // Methods
-  frame.cloneIds = (clone: y.Map<unknown>) => {
+  frame.cloneIds = (clone: y.Map<any>) => {
     frame.cloneOwnId(clone);
   };
 
@@ -96,12 +91,13 @@ export function attachElementaFrame(
   };
 
   setEnhancer(frame, attachElementaFrame);
-  return frame;
+  return true;
 }
 
 export function createElementaFrame(
   componentState: ElementaEditorComponentState
 ): ElementaFrame {
-  const ymap = new y.Map<unknown>();
-  return attachElementaFrame(ymap, componentState);
+  const ymap = new y.Map<any>();
+  attachElementaFrame(ymap, componentState);
+  return ymap as ElementaFrame;
 }

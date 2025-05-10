@@ -19,17 +19,17 @@ import {
   switchMap,
 } from "rxjs";
 import * as y from "yjs";
-import { Component } from "../../component";
-import { attachColorTheme, ColorTheme } from "./color_theme";
-import { attachViewport, Viewport } from "./viewport";
+import { Component } from "../../component.js";
+import { attachColorTheme, ColorTheme } from "./color_theme.js";
+import { attachViewport, Viewport } from "./viewport.js";
 
 export type RenderingContext = ReactiveMap<RenderingContextData> & {
   component: Component;
   theme: ColorTheme;
   viewport: Viewport;
 
-  props: Record<string, unknown>;
-  props$: Observable<Record<string, unknown>>;
+  props: Record<string, any>;
+  props$: Observable<Record<string, any>>;
 
   viewportEnabled: boolean;
   viewportEnabled$: Observable<boolean>;
@@ -43,7 +43,7 @@ export type RenderingContext = ReactiveMap<RenderingContextData> & {
   styleModifiers: StyleModifierData[];
   styleModifiers$: Observable<StyleModifierData[]>;
 
-  setProp: (varName: string, value: unknown) => void;
+  setProp: (varName: string, value: any) => void;
   clearProp: (varName: string) => void;
 };
 
@@ -51,7 +51,7 @@ export type RenderingContext = ReactiveMap<RenderingContextData> & {
  * Attach RenderingContext behavior to a y.Map
  */
 export function attachRenderingContext(
-  ymap: y.Map<unknown>,
+  ymap: y.Map<any>,
   component: Component
 ): ymap is RenderingContext {
   assert(attachReactiveMap<RenderingContextData>(ymap));
@@ -146,7 +146,7 @@ export function attachRenderingContext(
   );
 
   // Methods
-  context.setProp = (varName: string, value: unknown) => {
+  context.setProp = (varName: string, value: any) => {
     context.set("props", {
       ...context.props,
       [varName]: value,
@@ -167,7 +167,7 @@ export function attachRenderingContext(
  * Create a new local RenderingContext
  */
 export function createRenderingContext(component: Component): RenderingContext {
-  const ymap = new y.Map<unknown>();
+  const ymap = new y.Map<any>();
   assert(attachRenderingContext(ymap, component));
   return ymap;
 }

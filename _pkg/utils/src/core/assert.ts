@@ -4,8 +4,8 @@ import { isProd } from "./env";
  * Assert a condition: throws in dev, logs in prod.
  */
 export function assert(
-  condition: unknown,
-  message: string = "Invariant violation",
+  condition: any,
+  message: string = "Invariant violation"
 ): asserts condition {
   if (!condition) {
     const errorMsg = `Invariant failed: ${message}`;

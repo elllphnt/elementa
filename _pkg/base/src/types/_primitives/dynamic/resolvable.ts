@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // Types
 
-export type StaticReference<T = unknown> = {
+export type StaticReference<T = any> = {
   __reference: {
     type: string;
   };

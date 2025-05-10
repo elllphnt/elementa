@@ -59,7 +59,7 @@ export function setModelFields<T extends Record<string, any>>(
       },
     });
 
-    rxMap[`${field as string}$`] = rxMap.observable$.pipe(
+    (rxMap as any)[`${field as string}$`] = rxMap.observable$.pipe(
       map((v) => v[field]),
       distinctUntilChanged()
     );
@@ -121,8 +121,8 @@ export function updateYArray<T>(array: y.Array<T>, data: any[]) {
 }
 
 export function updateYMap(map: y.Map<any>, data: any) {
-  let deletedKey = new Set(map.keys());
-  for (let key in data) {
+  const deletedKey = new Set(map.keys());
+  for (const key in data) {
     const value = data[key];
     deletedKey.delete(key);
 
@@ -135,7 +135,7 @@ export function updateYMap(map: y.Map<any>, data: any) {
     });
   }
 
-  for (let key of deletedKey) {
+  for (const key of deletedKey) {
     map.delete(key);
   }
 }

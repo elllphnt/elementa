@@ -10,12 +10,12 @@ import {
 } from "@elllphnt/elementa-utils";
 import { filter, map, Observable, tap } from "rxjs";
 import * as y from "yjs";
-import { Project } from "../infrastructure/project/project";
-import { attachStyle, createStyle, Style } from "./style";
+import { Project } from "../infrastructure/project/project.js";
+import { attachStyle, createStyle, Style } from "./style.js";
 import {
   attachStyleFragmentRegistry,
   StyleFragmentRegistry,
-} from "./style_fragment_registry";
+} from "./style_fragment_registry.js";
 
 export type Stylesheet = ReactiveMap<StyleSheetData> & {
   project: Project;
@@ -60,7 +60,7 @@ export type Stylesheet = ReactiveMap<StyleSheetData> & {
  * Attach Stylesheet behavior to a y.Map
  */
 export function attachStylesheet(
-  ymap: y.Map<unknown>,
+  ymap: y.Map<any>,
   project: Project
 ): ymap is Stylesheet {
   if (!attachReactiveMap<StyleSheetData>(ymap)) {
@@ -77,7 +77,7 @@ export function attachStylesheet(
   sheet.fragmentRegistry = fragmentRegistry;
 
   sheet.styles = createEnhancedReactiveMap(
-    getOrCreateYMap<y.Map<unknown>>(sheet, "styles"),
+    getOrCreateYMap<y.Map<any>>(sheet, "styles"),
     attachStyle,
     (ymap) => attachStyle(ymap, project, sheet.fragmentRegistry)
   );
@@ -93,7 +93,7 @@ export function attachStylesheet(
       sheet.addStyle(selector);
       style = sheet.styles.get(selector);
     }
-    return style as unknown;
+    return style as any;
   };
 
   sheet.style$ = function <C extends true | undefined>(
@@ -108,7 +108,7 @@ export function attachStylesheet(
         }
       }),
       filter((style) => !!style || !create)
-    ) as unknown;
+    ) as any;
   };
 
   sheet.condition = (id: string) => {
@@ -124,11 +124,11 @@ export function attachStylesheet(
   );
 
   sheet.baseStyle = function <C extends true | undefined>(create?: C) {
-    return sheet.style(baseSelector, create) as unknown;
+    return sheet.style(baseSelector, create) as any;
   };
 
   sheet.baseStyle$ = function <C extends true | undefined>(create?: C) {
-    return sheet.style$(baseSelector, create) as unknown;
+    return sheet.style$(baseSelector, create) as any;
   };
 
   sheet.addStyle = (selector: string) => {
@@ -170,7 +170,7 @@ export function attachStylesheet(
  * Create a new local Stylesheet
  */
 export function createStylesheet(project: Project): Stylesheet {
-  const ymap = new y.Map<unknown>();
+  const ymap = new y.Map<any>();
   if (!attachStylesheet(ymap, project)) {
     throw new Error("Failed to create Stylesheet");
   }

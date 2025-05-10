@@ -1,3 +1,3 @@
-export * from "./elementa/_";
-export * from "./elementa_editor/_";
-export * from "./elementa_viewport/_";
+export * from "./elementa/_.js";
+export * from "./elementa_editor/_.js";
+export * from "./elementa_viewport/_.js";

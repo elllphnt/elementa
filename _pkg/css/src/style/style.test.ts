@@ -1,7 +1,7 @@
 import { RawStyleData, StyleData } from "@elllphnt/elementa-base";
 import { test } from "uvu";
 import * as assert from "uvu/assert";
-import { styleToCss } from "./style";
+import { styleToCss } from "./style.js";
 
 test("raw property merges into CSS", () => {
   const data = { __raw: { "raw-prop": "rawValue" } };

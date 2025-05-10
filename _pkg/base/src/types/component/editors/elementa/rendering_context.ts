@@ -22,7 +22,7 @@ export type ViewportData = {
 
 export type RenderingContextData = {
   theme?: ColorThemeData;
-  props?: Record<string, unknown>;
+  props?: Record<string, any>;
   viewport?: ViewportData;
   viewportEnabled?: boolean;
   styleModifierEnabled?: boolean;
@@ -45,7 +45,7 @@ export const viewportDataSchema = z.object({
 
 export const renderingContextDataSchema = z.object({
   theme: colorThemeDataSchema.optional(),
-  props: z.record(z.unknown()).optional(),
+  props: z.record(z.any()).optional(),
   viewport: viewportDataSchema.optional(),
   viewportEnabled: z.boolean().optional(),
   styleModifierEnabled: z.boolean().optional(),

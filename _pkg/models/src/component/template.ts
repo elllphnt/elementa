@@ -1,8 +1,8 @@
 import { setEnhancer } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import * as y from "yjs";
-import { Component } from "./component";
-import { Fragment, FragmentVariant, attachFragment } from "./fragment";
+import { Component } from "./component.js";
+import { Fragment, FragmentVariant, attachFragment } from "./fragment.js";
 
 export type Template = Fragment & {
   name: string;
@@ -10,7 +10,7 @@ export type Template = Fragment & {
 };
 
 export function attachTemplate(
-  ymap: y.Map<unknown>,
+  ymap: y.Map<any>,
   component: Component
 ): ymap is Template {
   if (!attachFragment(ymap, component, FragmentVariant.Template)) {
@@ -31,7 +31,7 @@ export function attachTemplate(
 }
 
 export function createTemplate(component: Component): Template {
-  const ymap = new y.Map<unknown>();
+  const ymap = new y.Map<any>();
   if (!attachTemplate(ymap, component)) {
     throw new Error("Failed to create Template");
   }

@@ -67,7 +67,7 @@ export class ModuleManager extends Disposable {
           packages,
           externals: this.externals,
           resolveLocalImport: (src) => {
-            const absoluteUrl = project.resolveAbsoluteUrl(src);
+            const absoluteUrl = project.absoluteFileUrl(src);
             if (!absoluteUrl) {
               throw new Error(`Failed to resolve absolute URL for ${src}`);
             }

@@ -1,2 +1,2 @@
-export * from "./component";
-export * from "./slot_fill";
+export * from "./component.js";
+export * from "./slot_fill.js";

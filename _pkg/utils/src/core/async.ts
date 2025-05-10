@@ -26,7 +26,7 @@ export async function retryAsync<T>(
   retries: number = 3,
   delayMs: number = 1000
 ): Promise<T> {
-  let lastError: unknown;
+  let lastError: any;
   for (let attempt = 0; attempt < retries; attempt++) {
     try {
       return await fn();

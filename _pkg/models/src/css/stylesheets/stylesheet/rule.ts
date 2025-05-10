@@ -1,9 +1,9 @@
 import { CssSelector } from "@elllphnt/elementa-base";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-utils";
 import { combineLatest, map, Observable, switchMap } from "rxjs";
-import { Style } from "../../../style/style";
-import { Stylesheet } from "../../../style/stylesheet";
-import { CssStyleRule } from "../../lib/rule/stylerule";
+import { Style } from "../../../style/style.js";
+import { Stylesheet } from "../../../style/stylesheet.js";
+import { CssStyleRule } from "../../lib/rule/stylerule.js";
 
 /**
  * An implementation of the `CssStyleRule` for a single style in a `Stylesheet` object.

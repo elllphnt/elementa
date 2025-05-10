@@ -8,7 +8,7 @@ import { styleDataSchemas } from "./schemas.js";
 import { styleDataStringifiers } from "./stringifiers.js";
 
 export function getStyleDataType(
-  data: unknown,
+  data: any,
   possibleTypes?: StyleDataType[]
 ): StyleDataType | undefined {
   const types =
@@ -44,7 +44,7 @@ export function stringifyFlexibleStyleData<T extends StyleDataType[]>(
 
 export function validateStyleData<T extends StyleDataType>(
   type: T,
-  value: unknown
+  value: any
 ): value is StyleDataTypeMap[T] {
   const schema = styleDataSchemas[type];
   return schema.isValidSync(value);

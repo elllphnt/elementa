@@ -8,11 +8,11 @@ import {
 } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable } from "rxjs";
 import * as y from "yjs";
-import { CssStyleSheet } from "../css/_";
-import { Component } from "./component";
-import { attachDataInput, DataInput } from "./data_input";
-import { attachElementList, ElementList } from "./elements/_list";
-import { attachIdentifiable, Identifiable } from "./identifiable";
+import { CssStyleSheet } from "../css/_.js";
+import { Component } from "./component.js";
+import { attachDataInput, DataInput } from "./data_input.js";
+import { attachElementList, ElementList } from "./elements/_list.js";
+import { attachIdentifiable, Identifiable } from "./identifiable.js";
 
 export enum FragmentVariant {
   Template = "template",
@@ -40,11 +40,11 @@ export type Fragment = Identifiable<FragmentData> & {
  * Attach Fragment behavior to a y.Map
  */
 export function attachFragment(
-  ymap: y.Map<unknown>,
+  ymap: y.Map<any>,
   component: Component,
   variant: FragmentVariant = FragmentVariant.Fragment
 ): ymap is Fragment {
-  if (!attachIdentifiable<FragmentData>(ymap as Extendable<y.Map<unknown>>)) {
+  if (!attachIdentifiable<FragmentData>(ymap as Extendable<y.Map<any>>)) {
     throw new Error("Failed to attach identifiable to ymap");
   }
   const fragment = ymap as Fragment;
@@ -52,12 +52,12 @@ export function attachFragment(
   fragment.component = component;
   fragment.variant = variant;
 
-  const content = getOrCreateYArray<y.Map<unknown>>(ymap, "content");
+  const content = getOrCreateYArray<y.Map<any>>(ymap, "content");
   attachElementList(content, fragment);
   fragment.content = content as ElementList;
 
   fragment.params = createEnhancedReactiveList(
-    getOrCreateYArray<y.Map<unknown>>(ymap, "params"),
+    getOrCreateYArray<y.Map<any>>(ymap, "params"),
     attachDataInput,
     (ymap) => attachDataInput(ymap, component)
   );
@@ -96,7 +96,7 @@ export function attachFragment(
   };
 
   // --- Disposal ---
-  const baseDispose = (fragment as unknown).dispose?.bind(fragment);
+  const baseDispose = (fragment as any).dispose?.bind(fragment);
   fragment.dispose = () => {
     _slotIds$.complete();
     fragment.content.dispose();
@@ -115,7 +115,7 @@ export function createFragment(
   component: Component,
   variant: FragmentVariant = FragmentVariant.Fragment
 ): Fragment {
-  const ymap = new y.Map<unknown>();
+  const ymap = new y.Map<any>();
   if (!attachFragment(ymap, component, variant)) {
     throw new Error("Failed to create Fragment");
   }

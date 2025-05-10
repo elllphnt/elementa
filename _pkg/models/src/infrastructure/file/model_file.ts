@@ -6,7 +6,7 @@ import {
 } from "@elllphnt/elementa-utils";
 import { BehaviorSubject } from "rxjs";
 import * as y from "yjs";
-import { File } from "./file";
+import { File } from "./file.js";
 
 export abstract class FileModel<M extends ReactiveMap> extends Disposable {
   readonly file: File;
@@ -15,8 +15,8 @@ export abstract class FileModel<M extends ReactiveMap> extends Disposable {
     M | undefined
   >(undefined);
 
-  private _enhance: Enhancer<y.Map<unknown>, M>;
-  private _enhancer: Enhancer<y.Map<unknown>, M>;
+  private _enhance: Enhancer<y.Map<any>, M>;
+  private _enhancer: Enhancer<y.Map<any>, M>;
 
   model$ = this._model$.asObservable();
   get model(): M | undefined {
@@ -29,8 +29,8 @@ export abstract class FileModel<M extends ReactiveMap> extends Disposable {
     enhance,
   }: {
     file: File;
-    enhancer: Enhancer<y.Map<unknown>, M>;
-    enhance: Enhancer<y.Map<unknown>, M>;
+    enhancer: Enhancer<y.Map<any>, M>;
+    enhance: Enhancer<y.Map<any>, M>;
   }) {
     super();
     this.file = file;
@@ -43,7 +43,7 @@ export abstract class FileModel<M extends ReactiveMap> extends Disposable {
     });
   }
 
-  protected setModel(map: y.Map<unknown>): void {
+  protected setModel(map: y.Map<any>): void {
     if (!isFromEnhancer(map, this._enhancer)) {
       if (!this._enhance(map)) {
         throw new Error("Failed to enhance yMap");

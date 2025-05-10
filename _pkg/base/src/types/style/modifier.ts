@@ -19,7 +19,7 @@ export type StyleModifierDefinitionData = {
 
 export type StyleModifierData = {
   name: string;
-  args?: unknown[];
+  args?: any[];
 };
 
 export type ElllSelectorData = StyleModifierData[];
@@ -37,7 +37,7 @@ export const styleModifierDefinitionDataSchema = z.object({
 
 export const styleModifierDataSchema = z.object({
   name: z.string(),
-  args: z.array(z.unknown()).optional(),
+  args: z.array(z.any()).optional(),
 });
 
 export const elllSelectorDataSchema = z.array(styleModifierDataSchema);

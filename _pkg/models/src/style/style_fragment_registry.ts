@@ -10,7 +10,7 @@ import {
 } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
-import { genId } from "../_lib/id";
+import { genId } from "../_lib/id.js";
 
 export type StyleFragmentRegistry = ReactiveList<StyleFragmentData> & {
   fragment<T extends StyleFragmentType>(
@@ -49,7 +49,7 @@ export type StyleFragmentRegistry = ReactiveList<StyleFragmentData> & {
  * Attach StyleFragmentRegistry behavior to a y.Array
  */
 export function attachStyleFragmentRegistry(
-  yarray: y.Array<unknown>
+  yarray: y.Array<any>
 ): yarray is StyleFragmentRegistry {
   if (!attachReactiveList<StyleFragmentData>(yarray)) {
     throw new Error("Failed to attach reactive list to yarray");
@@ -129,7 +129,7 @@ export function attachStyleFragmentRegistry(
     }
   };
 
-  const baseDispose = (registry as unknown).dispose?.bind(registry);
+  const baseDispose = (registry as any).dispose?.bind(registry);
   registry.dispose = () => {
     sub.unsubscribe();
     if (baseDispose) baseDispose();
@@ -143,7 +143,7 @@ export function attachStyleFragmentRegistry(
  * Create a new local StyleFragmentRegistry
  */
 export function createStyleFragmentRegistry(): StyleFragmentRegistry {
-  const yarray = new y.Array<unknown>();
+  const yarray = new y.Array<any>();
   if (!attachStyleFragmentRegistry(yarray)) {
     throw new Error("Failed to create StyleFragmentRegistry");
   }

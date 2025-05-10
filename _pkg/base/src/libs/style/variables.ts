@@ -1,6 +1,6 @@
 import { VarRef } from "../../types/_.js";
 
-export function isVarRef(value: unknown): value is VarRef {
+export function isVarRef(value: any): value is VarRef {
   return (value &&
     typeof value === "object" &&
     "__var" in value &&

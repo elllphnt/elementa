@@ -20,8 +20,8 @@ export type Viewport = ReactiveMap<ViewportData> & {
   overflow$: Observable<OverflowValue>;
 };
 
-export function attachViewport(ymap: y.Map<unknown>): ymap is Viewport {
-  assert(attachReactiveMap<ViewportData>(ymap as y.Map<unknown>));
+export function attachViewport(ymap: y.Map<any>): ymap is Viewport {
+  assert(attachReactiveMap<ViewportData>(ymap as y.Map<any>));
   const viewport = ymap as Viewport;
 
   setModelFields(viewport, ["height", "width", "overflow"]);
@@ -31,7 +31,7 @@ export function attachViewport(ymap: y.Map<unknown>): ymap is Viewport {
 }
 
 export function createViewport(): Viewport {
-  const ymap = new y.Map<unknown>();
+  const ymap = new y.Map<any>();
   assert(attachViewport(ymap));
   return ymap;
 }

@@ -1,16 +1,16 @@
 import { ElementData } from "@elllphnt/elementa-base";
 import * as y from "yjs";
-import { Fragment } from "../fragment";
-import { attachContainerElement, attachPrimitiveElement } from "./_";
-import { attachComponentElement } from "./component/_";
-import { Element } from "./element";
-import { attachMediaElement } from "./media";
-import { attachSlotElement } from "./slot";
-import { attachTextElement } from "./text";
-import { attachVectorElement } from "./vector";
+import { Fragment } from "../fragment.js";
+import { attachContainerElement, attachPrimitiveElement } from "./_.js";
+import { attachComponentElement } from "./component/_.js";
+import { Element } from "./element.js";
+import { attachMediaElement } from "./media.js";
+import { attachSlotElement } from "./slot.js";
+import { attachTextElement } from "./text.js";
+import { attachVectorElement } from "./vector.js";
 
 export function createElement(
-  ymap: y.Map<unknown>,
+  ymap: y.Map<any>,
   fragment: Fragment
 ): ymap is Element {
   const type = ymap.get("type") as ElementData["type"];

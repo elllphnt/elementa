@@ -8,11 +8,11 @@ import {
 } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
 import * as y from "yjs";
-import { CssStyleSheet, StylesheetCssStyleSheet } from "../../../css/_";
-import { attachStylesheet } from "../../../style/stylesheet";
-import { Component } from "../../component";
-import { Fragment } from "../../fragment";
-import { attachElementList, ElementList } from "../_list";
+import { CssStyleSheet, StylesheetCssStyleSheet } from "../../../css/_.js";
+import { attachStylesheet } from "../../../style/stylesheet.js";
+import { Component } from "../../component.js";
+import { Fragment } from "../../fragment.js";
+import { attachElementList, ElementList } from "../_list.js";
 
 export type SlotFill = ReactiveMap<SlotFillData> & {
   component: Component;
@@ -31,14 +31,14 @@ export type SlotFill = ReactiveMap<SlotFillData> & {
   setInteraction(event: string, interaction: Expression): void;
   clearInteractions(): void;
 
-  cloneIds(clone: y.Map<unknown>): void;
+  cloneIds(clone: y.Map<any>): void;
 };
 
 export function attachSlotFill(
-  ymap: y.Map<unknown>,
+  ymap: y.Map<any>,
   fragment: Fragment
 ): ymap is SlotFill {
-  if (!attachReactiveMap<SlotFillData>(ymap as y.Map<unknown>)) {
+  if (!attachReactiveMap<SlotFillData>(ymap as y.Map<any>)) {
     throw new Error("Failed to attach reactive map to ymap");
   }
   const slot = ymap as SlotFill;
@@ -98,11 +98,11 @@ export function attachSlotFill(
     slot.set("interactions", {});
   };
 
-  slot.cloneIds = (clone: y.Map<unknown>) => {
+  slot.cloneIds = (clone: y.Map<any>) => {
     slot.content.cloneIds(getOrCreateYArray(clone, "content"));
   };
 
-  const baseDispose = (slot as unknown).dispose?.bind(slot);
+  const baseDispose = (slot as any).dispose?.bind(slot);
   slot.dispose = () => {
     slot.content.dispose();
     slot.cssStyleSheet.dispose();
@@ -113,7 +113,7 @@ export function attachSlotFill(
 }
 
 export function createSlotFill(fragment: Fragment): SlotFill {
-  const ymap = new y.Map<unknown>();
+  const ymap = new y.Map<any>();
   if (!attachSlotFill(ymap, fragment)) {
     throw new Error("Failed to create SlotFill");
   }

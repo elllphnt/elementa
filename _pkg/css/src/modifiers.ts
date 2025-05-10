@@ -7,12 +7,12 @@ import {
   StyleModifierDefinitionData,
   systemModifiers,
 } from "@elllphnt/elementa-base";
-import { populateTemplateString } from "./utils/string";
+import { populateTemplateString } from "./utils/string.js";
 
 function getSystemModifierDefinition(
   name: string
 ): StyleModifierDefinitionData | undefined {
-  return systemModifiers[name];
+  return (systemModifiers as any)[name];
 }
 
 export function styleModifierToCssSelector({

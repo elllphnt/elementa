@@ -11,19 +11,19 @@ import {
 } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
-import { CssStyleSheet } from "../css/_";
-import { Project } from "../infrastructure/project/project";
-import { attachDataInput, DataInput } from "./data_input";
-import { attachFragment, Fragment } from "./fragment";
-import { attachState, State } from "./states/_";
-import { createState } from "./states/_create";
-import { attachTemplate, Template } from "./template";
+import { CssStyleSheet } from "../css/_.js";
+import { Project } from "../infrastructure/project/project.js";
+import { attachDataInput, DataInput } from "./data_input.js";
+import { attachFragment, Fragment } from "./fragment.js";
+import { attachState, State } from "./states/_.js";
+import { createState } from "./states/_create.js";
+import { attachTemplate, Template } from "./template.js";
 
 export type Component = ReactiveMap<ComponentData> & {
   project: Project;
 
   template: Template;
-  editorStates: y.Map<y.Map<unknown>>;
+  editorStates: y.Map<y.Map<any>>;
 
   props: ReactiveList<DataInput>;
   fragments: ReactiveList<Fragment>;
@@ -38,14 +38,14 @@ export type Component = ReactiveMap<ComponentData> & {
   allStylesheets$: Observable<CssStyleSheet[]>;
   allStylesheets: CssStyleSheet[];
 
-  getEditorState(key: string): y.Map<unknown>;
+  getEditorState(key: string): y.Map<any>;
 };
 
 export function attachComponent(
-  ymap: y.Map<unknown>,
+  ymap: y.Map<any>,
   project: Project
 ): ymap is Component {
-  if (!attachReactiveMap<ComponentData>(ymap as y.Map<unknown>)) {
+  if (!attachReactiveMap<ComponentData>(ymap as y.Map<any>)) {
     throw new Error("Failed to attach reactive map to ymap");
   }
   const rxMap = ymap;
@@ -60,19 +60,19 @@ export function attachComponent(
   component.editorStates = getOrCreateYMap(rxMap, "editors");
 
   component.props = createEnhancedReactiveList(
-    getOrCreateYArray<y.Map<unknown>>(rxMap, "props"),
+    getOrCreateYArray<y.Map<any>>(rxMap, "props"),
     attachDataInput,
     (ymap) => attachDataInput(ymap, component)
   );
 
   component.fragments = createEnhancedReactiveList(
-    getOrCreateYArray<y.Map<unknown>>(rxMap, "fragments"),
+    getOrCreateYArray<y.Map<any>>(rxMap, "fragments"),
     attachFragment,
     (ymap) => attachFragment(ymap, component)
   );
 
   component.states = createEnhancedReactiveList(
-    getOrCreateYArray<y.Map<unknown>>(rxMap, "states"),
+    getOrCreateYArray<y.Map<any>>(rxMap, "states"),
     attachState,
     (ymap) => createState(ymap, component)
   );
@@ -121,7 +121,7 @@ export function attachComponent(
 }
 
 export function createComponent(project: Project): Component {
-  const ymap = new y.Map<unknown>();
+  const ymap = new y.Map<any>();
   if (!attachComponent(ymap, project)) {
     throw new Error("Failed to attach component to ymap");
   }

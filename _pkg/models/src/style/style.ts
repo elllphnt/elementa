@@ -21,8 +21,8 @@ import {
   switchMap,
 } from "rxjs";
 import * as y from "yjs";
-import { Project } from "../infrastructure/project/project";
-import { StyleFragmentRegistry } from "./style_fragment_registry";
+import { Project } from "../infrastructure/project/project.js";
+import { StyleFragmentRegistry } from "./style_fragment_registry.js";
 
 export type Style = ReactiveMap<StyleData> & {
   project: Project;
@@ -84,7 +84,7 @@ export type Style = ReactiveMap<StyleData> & {
  * Attaches a reactive Style object to a Y.Map, enhancing it with Style-specific methods.
  */
 export function attachStyle(
-  ymap: y.Map<unknown>,
+  ymap: y.Map<any>,
   project: Project,
   fragmentRegistry: StyleFragmentRegistry
 ): ymap is Style {
@@ -118,12 +118,12 @@ export function attachStyle(
     return style.observable$.pipe(map((v) => v[property]));
   };
 
-  style.propertyValueOrUndefined = (property: unknown) => {
+  style.propertyValueOrUndefined = (property: any) => {
     const value = style.propertyValue(property);
     return value === "unset" ? undefined : value;
   };
 
-  style.propertyValueOrUndefined$ = (property: unknown) => {
+  style.propertyValueOrUndefined$ = (property: any) => {
     return style
       .propertyValue$(property)
       .pipe(map((value) => (value === "unset" ? undefined : value)));
@@ -132,20 +132,18 @@ export function attachStyle(
   style.resolvedPropertyValue = <N extends StylePropertyName>(property: N) => {
     const value = style.propertyValueOrUndefined(property);
     if (value && isVarRef(value)) {
-      return style.project.styleManager.variableValue(value.__var) as unknown;
+      return style.project.styleManager.variableValue(value.__var) as any;
     }
-    return value as unknown;
+    return value as any;
   };
 
   style.resolvedPropertyValue$ = <N extends StylePropertyName>(property: N) => {
     return style.propertyValueOrUndefined$(property).pipe(
       switchMap((value) => {
         if (value && isVarRef(value)) {
-          return style.project.styleManager.variableValue$(
-            value.__var
-          ) as unknown;
+          return style.project.styleManager.variableValue$(value.__var) as any;
         }
-        return of(value) as unknown;
+        return of(value) as any;
       })
     ) as Observable<RawStyleData[N]>;
   };
@@ -188,7 +186,7 @@ export function attachStyle(
   ]).subscribe(([value, fragments]) => {
     const [css, errors] = styleToCss(value, {
       getFragment: (type, id) =>
-        fragments.find((f) => f.type === type && f.id === id) as unknown,
+        fragments.find((f) => f.type === type && f.id === id) as any,
     });
     if (errors.length) {
       console.error(
@@ -201,7 +199,7 @@ export function attachStyle(
 
   // --- Cleanup ---
 
-  const baseDispose = (style as unknown).dispose?.bind(style);
+  const baseDispose = (style as any).dispose?.bind(style);
   style.dispose = () => {
     _css$.complete();
     cssSub.unsubscribe();
@@ -216,7 +214,7 @@ export function createStyle(
   project: Project,
   fragmentRegistry: StyleFragmentRegistry
 ): Style {
-  const ymap = new y.Map<unknown>();
+  const ymap = new y.Map<any>();
   if (!attachStyle(ymap, project, fragmentRegistry)) {
     throw new Error("Failed to create Style");
   }

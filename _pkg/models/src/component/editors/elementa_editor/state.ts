@@ -2,15 +2,14 @@ import { ElementaEditorComponentStateData } from "@elllphnt/elementa-base";
 import {
   attachReactiveMap,
   createEnhancedReactiveList,
-  Extendable,
   getOrCreateYArray,
   ReactiveList,
   ReactiveMap,
   setEnhancer,
 } from "@elllphnt/elementa-utils";
 import * as y from "yjs";
-import { Component } from "../../component";
-import { attachElementaFrame, ElementaFrame } from "./frame";
+import { Component } from "../../component.js";
+import { attachElementaFrame, ElementaFrame } from "./frame.js";
 
 export type ElementaEditorComponentState =
   ReactiveMap<ElementaEditorComponentStateData> & {
@@ -19,34 +18,35 @@ export type ElementaEditorComponentState =
   };
 
 export function attachElementaEditorComponentState(
-  ymap: y.Map<unknown>,
+  ymap: y.Map<any>,
   component: Component
-): ElementaEditorComponentState {
-  const state = attachReactiveMap<ElementaEditorComponentStateData>(
-    ymap as Extendable<y.Map<unknown>>
-  ) as Extendable<ElementaEditorComponentState>;
+): ymap is ElementaEditorComponentState {
+  const state = attachReactiveMap(
+    ymap
+  ) as unknown as ElementaEditorComponentState;
 
   state.component = component;
 
   state.frames = createEnhancedReactiveList(
-    getOrCreateYArray<y.Map<unknown>>(state, "frames"),
+    getOrCreateYArray<y.Map<any>>(state, "frames"),
     attachElementaFrame,
     (frameYMap) => attachElementaFrame(frameYMap, state)
   );
 
-  const baseDispose = (state as unknown).dispose?.bind(state);
+  const baseDispose = (state as any).dispose?.bind(state);
   state.dispose = () => {
     state.frames.dispose();
     if (baseDispose) baseDispose();
   };
 
   setEnhancer(state, attachElementaEditorComponentState);
-  return state as ElementaEditorComponentState;
+  return true;
 }
 
 export function createElementaEditorComponentState(
   component: Component
 ): ElementaEditorComponentState {
-  const ymap = new y.Map<unknown>();
-  return attachElementaEditorComponentState(ymap, component);
+  const ymap = new y.Map<any>();
+  attachElementaEditorComponentState(ymap, component);
+  return ymap as ElementaEditorComponentState;
 }

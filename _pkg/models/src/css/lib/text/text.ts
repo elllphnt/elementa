@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
-import { CssStyleSheet } from "../stylesheet";
-import { cssStyleSheetTypes } from "../types";
+import { CssStyleSheet } from "../stylesheet.js";
+import { cssStyleSheetTypes } from "../types.js";
 
 /**
  * A TextCssStyleSheet represents a CSS stylesheet that is composed of

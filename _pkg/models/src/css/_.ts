@@ -1,2 +1,2 @@
-export * from "./lib/_";
-export * from "./stylesheets/_";
+export * from "./lib/_.js";
+export * from "./stylesheets/_.js";

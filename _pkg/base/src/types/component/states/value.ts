@@ -8,7 +8,7 @@ import { BaseStateData, baseStateDataSchema } from "./_base.js";
 
 export type ValueStateData = BaseStateData & {
   type: "value";
-  init?: Evaluable<unknown> | Resolvable<unknown>;
+  init?: Evaluable<any> | Resolvable<any>;
   tsType?: string;
 };
 

@@ -9,8 +9,8 @@ import {
   setEnhancer,
 } from "@elllphnt/elementa-utils";
 import * as y from "yjs";
-import { App } from "../../app";
-import { attachBlueprintNode, BlueprintNode } from "./node";
+import { App } from "../../app.js";
+import { attachBlueprintNode, BlueprintNode } from "./node.js";
 
 export const blueprintEditorStateKey = "blueprint";
 
@@ -19,13 +19,13 @@ export type BlueprintAppState = ReactiveMap<BlueprintAppStateData> & {
 };
 
 export function attachBlueprintAppState(
-  ymap: y.Map<unknown>
+  ymap: y.Map<any>
 ): ymap is BlueprintAppState {
   assert(attachReactiveMap<BlueprintAppStateData>(ymap));
   const blueprint = ymap as BlueprintAppState;
 
   blueprint.nodes = createEnhancedReactiveList(
-    getOrCreateYArray<y.Map<unknown>>(ymap, "nodes"),
+    getOrCreateYArray<y.Map<any>>(ymap, "nodes"),
     attachBlueprintNode,
     (yMap) => attachBlueprintNode(yMap)
   );

@@ -1,11 +1,9 @@
 const enhancerSymbol = Symbol("enhancer");
 
 export type Enhancer<I, T extends I> = (input: I, ...args: any[]) => input is T;
+export type LooseEnhancer = (input: any, ...args: any[]) => boolean;
 
-export function setEnhancer<I, T extends I>(
-  instance: I,
-  enhancer: Enhancer<I, T>
-): void {
+export function setEnhancer<I>(instance: I, enhancer: LooseEnhancer): void {
   let _set = (instance as any)[enhancerSymbol];
   if (!_set) {
     _set = new Set();

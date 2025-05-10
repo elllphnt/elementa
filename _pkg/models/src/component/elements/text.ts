@@ -5,8 +5,8 @@ import {
 import { setModelFields } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import * as y from "yjs";
-import { Fragment } from "../fragment";
-import { attachBaseElement, Element } from "./element";
+import { Fragment } from "../fragment.js";
+import { attachBaseElement, Element } from "./element.js";
 
 export type TextElement = Element<TextElementData> & {
   text: ResolvableOrEvaluable<string> | undefined;
@@ -14,11 +14,11 @@ export type TextElement = Element<TextElementData> & {
 };
 
 export function attachTextElement(
-  ymap: y.Map<unknown>,
+  ymap: y.Map<any>,
   fragment: Fragment
 ): ymap is TextElement {
   ymap.set("type", "text");
-  if (!attachBaseElement(ymap as y.Map<unknown>, fragment)) {
+  if (!attachBaseElement(ymap as y.Map<any>, fragment)) {
     throw new Error("Failed to attach base element to ymap");
   }
   const element = ymap as TextElement;
@@ -27,7 +27,7 @@ export function attachTextElement(
 }
 
 export function createTextElement(fragment: Fragment): TextElement {
-  const ymap = new y.Map<unknown>();
+  const ymap = new y.Map<any>();
   if (!attachTextElement(ymap, fragment)) {
     throw new Error("Failed to create TextElement");
   }

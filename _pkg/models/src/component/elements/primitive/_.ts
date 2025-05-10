@@ -1,2 +1,2 @@
-export * from "./primitive";
-export * from "./sub_element";
+export * from "./primitive.js";
+export * from "./sub_element.js";

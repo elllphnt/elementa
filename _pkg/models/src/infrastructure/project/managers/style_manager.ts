@@ -4,8 +4,8 @@ import {
   StyleModifierData,
 } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
-import { CssStyleSheet } from "../../../css/_";
-import { Stylesheet } from "../../../style/stylesheet";
+import { CssStyleSheet } from "../../../css/_.js";
+import { Stylesheet } from "../../../style/stylesheet.js";
 
 export abstract class StyleManager {
   abstract rootStylesheet: Stylesheet;
@@ -17,8 +17,8 @@ export abstract class StyleManager {
   abstract cssSelectorOf(selector: ElllSelectorData): CssSelector;
   abstract cssSelectorOf$(selector: ElllSelectorData): Observable<CssSelector>;
 
-  abstract variableValue(name: string): unknown;
-  abstract variableValue$(name: string): Observable<unknown>;
+  abstract variableValue(name: string): any;
+  abstract variableValue$(name: string): Observable<any>;
 
   abstract colorSchemeModifiers({
     colorScheme,

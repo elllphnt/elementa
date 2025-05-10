@@ -9,7 +9,7 @@ export type ComponentData = {
   template?: FragmentData;
   fragments?: FragmentData[];
   states?: StateData[];
-  editors?: Record<string, Record<string, unknown>>;
+  editors?: Record<string, Record<string, any>>;
 };
 
 // Schemas
@@ -20,5 +20,5 @@ export const componentSchema = z.object({
   template: fragmentDataSchema.optional(),
   fragments: z.array(fragmentDataSchema).optional(),
   states: z.array(stateDataSchema).optional(),
-  editors: z.record(z.record(z.unknown())).optional(),
+  editors: z.record(z.record(z.any())).optional(),
 });

@@ -16,7 +16,7 @@ import {
   switchMap,
   tap,
 } from "rxjs/operators";
-import { Infrastructure } from "../infrastructure/infrastructure";
+import { Infrastructure } from "../infrastructure/infrastructure.js";
 
 export interface ResolvableValueState<T> {
   value?: T;
@@ -55,7 +55,7 @@ export class ResolvableValue<T> extends Disposable {
         switchMap((resolvable) =>
           (isStaticReference(resolvable)
             ? from(this.infra.resolveStaticReference<T>(resolvable))
-            : of(resolvable as unknown as T)
+            : of(resolvable as any as T)
           ).pipe(
             tap((resolved) => {
               const prev = this._state$.getValue();
@@ -158,7 +158,7 @@ export class ResolvableRecord<V> extends Disposable {
             observables[key] = (
               isStaticReference(value)
                 ? from(this.infra.resolveStaticReference<V>(value))
-                : of(value as unknown as V)
+                : of(value as any as V)
             ).pipe(
               catchError((error) => {
                 console.error(
@@ -263,7 +263,7 @@ export class ResolvableList<V> extends Disposable {
           const observables = list.map((item) =>
             (isStaticReference(item)
               ? from(this.infra.resolveStaticReference<V>(item))
-              : of(item as unknown as V)
+              : of(item as any as V)
             ).pipe(
               catchError((error) => {
                 console.error("ResolvableList: error resolving item", error);
@@ -324,10 +324,7 @@ export class ResolvableList<V> extends Disposable {
   }
 }
 
-function shallowEqual(
-  a: Record<string, unknown>,
-  b: Record<string, unknown>
-): boolean {
+function shallowEqual(a: Record<string, any>, b: Record<string, any>): boolean {
   const keysA = Object.keys(a);
   const keysB = Object.keys(b);
   if (keysA.length !== keysB.length) return false;
@@ -337,7 +334,7 @@ function shallowEqual(
   return true;
 }
 
-function shallowArrayEqual(a: Array<unknown>, b: Array<unknown>): boolean {
+function shallowArrayEqual(a: Array<any>, b: Array<any>): boolean {
   if (a.length !== b.length) return false;
   for (let i = 0; i < a.length; i++) {
     if (a[i] !== b[i]) return false;

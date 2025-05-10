@@ -1,3 +1,3 @@
-export * from "./color_theme";
-export * from "./rendering_context";
-export * from "./viewport";
+export * from "./color_theme.js";
+export * from "./rendering_context.js";
+export * from "./viewport.js";

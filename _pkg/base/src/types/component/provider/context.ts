@@ -9,7 +9,7 @@ import { BaseProviderData, baseProviderDataSchema } from "./_base.js";
 
 export type ContextProviderData = BaseProviderData & {
   contextUrl?: string;
-  value?: Evaluable<unknown> | Resolvable<unknown>;
+  value?: Evaluable<any> | Resolvable<any>;
 };
 
 // Schemas

@@ -1,2 +1,2 @@
-export * from "./frame";
-export * from "./state";
+export * from "./frame.js";
+export * from "./state.js";

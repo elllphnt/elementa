@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // Types
 
-export type Expression<T = unknown> = {
+export type Expression<T = any> = {
   __expression: string;
   fallback?: T;
 };

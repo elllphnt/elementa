@@ -3,7 +3,7 @@ import {
   Expression,
 } from "../../types/_primitives/dynamic/evaluable.js";
 
-export function isExpression(value: unknown): value is Expression {
+export function isExpression(value: any): value is Expression {
   return (value &&
     typeof value === "object" &&
     "__expression" in value) as boolean;

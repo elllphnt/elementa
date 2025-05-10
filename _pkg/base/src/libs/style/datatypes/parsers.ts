@@ -118,7 +118,7 @@ export function parseColor(input: string): ErrorTupple<ColorData> {
 
 export const styleDataParsers: Record<
   StyleDataType,
-  (input: string) => ReturnType<typeof parseString> | unknown
+  (input: string) => ReturnType<typeof parseString> | any
 > = {
   [StyleDataType.Boolean]: parseBoolean,
   [StyleDataType.Number]: parseNumber,

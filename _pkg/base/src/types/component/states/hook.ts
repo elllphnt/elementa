@@ -9,7 +9,7 @@ import { BaseStateData, baseStateDataSchema } from "./_base.js";
 export type HookStateData = BaseStateData & {
   type: "hook";
   hookUrl?: string;
-  args?: (Evaluable<unknown> | Resolvable<unknown>)[];
+  args?: (Evaluable<any> | Resolvable<any>)[];
 };
 
 // Schemas

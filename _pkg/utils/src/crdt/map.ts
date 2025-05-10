@@ -3,7 +3,7 @@ import * as y from "yjs";
 import { setEnhancer } from "../core/enhancer";
 import { nextKey, updateYMap } from "./_utils";
 
-export type ReactiveMap<T extends object = object> = y.Map<unknown> & {
+export type ReactiveMap<T extends object = object> = y.Map<any> & {
   key: number;
   observable$: Observable<T>;
   restore(data: T): void;
@@ -11,11 +11,11 @@ export type ReactiveMap<T extends object = object> = y.Map<unknown> & {
 };
 
 export function attachReactiveMap<T extends object>(
-  ymap: y.Map<unknown>
+  ymap: y.Map<any>
 ): ymap is ReactiveMap<T> {
   const rxMap = ymap as ReactiveMap<T>;
   // initialize subject
-  const initial: Record<string, unknown> = {};
+  const initial: Record<string, any> = {};
   if (ymap.doc) {
     for (const [key, value] of ymap.entries()) {
       initial[key] = value;
@@ -24,13 +24,13 @@ export function attachReactiveMap<T extends object>(
   const subject$ = new BehaviorSubject<T>(initial as T);
 
   // observe crdt
-  const observer = (event: y.YMapEvent<unknown>) => {
+  const observer = (event: y.YMapEvent<any>) => {
     const current = { ...subject$.value };
     for (const [key, change] of event.changes.keys.entries()) {
       if (change.action === "add" || change.action === "update") {
-        (current as Record<string, unknown>)[key] = ymap.get(key);
+        (current as Record<string, any>)[key] = ymap.get(key);
       } else if (change.action === "delete") {
-        delete current[key];
+        delete (current as any)[key];
       }
     }
     subject$.next(current as T);
@@ -53,10 +53,10 @@ export function attachReactiveMap<T extends object>(
   return true;
 }
 
-export function createReactiveMap<T extends Record<string, unknown>>(
+export function createReactiveMap<T extends Record<string, any>>(
   init?: T
 ): ReactiveMap<T> {
-  const ymap = new y.Map<unknown>(Object.entries(init || {}));
+  const ymap = new y.Map<any>(Object.entries(init || {}));
   if (attachReactiveMap<T>(ymap)) {
     return ymap;
   } else {

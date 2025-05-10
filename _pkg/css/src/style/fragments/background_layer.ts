@@ -12,7 +12,7 @@ import {
 import {
   variableFlexibleStyleDataToCss,
   variableStyleDataToCss,
-} from "../variable";
+} from "../variable.js";
 
 export function linearGradientStopToCss(stop: LinearGradientStopData): string {
   return [

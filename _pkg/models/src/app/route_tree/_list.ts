@@ -4,17 +4,17 @@ import {
   setEnhancer,
 } from "@elllphnt/elementa-utils";
 import * as y from "yjs";
-import { App } from "../app";
-import { attachRouteTree, RouteTree } from "./route_tree";
+import { App } from "../app.js";
+import { attachRouteTree, RouteTree } from "./route_tree.js";
 
 export type RouteTreeList = ReactiveList<RouteTree> & {};
 
 export function attachRouteTreeList(
-  yarray: y.Array<y.Map<unknown>>,
+  yarray: y.Array<y.Map<any>>,
   app: App
 ): yarray is RouteTreeList {
   const rxList = createEnhancedReactiveList(
-    yarray as y.Array<y.Map<unknown>>,
+    yarray as y.Array<y.Map<any>>,
     attachRouteTree,
     (ymap) => attachRouteTree(ymap, app)
   );
@@ -25,7 +25,7 @@ export function attachRouteTreeList(
 }
 
 export function createRouteTreeList(app: App): RouteTreeList {
-  const yarray = new y.Array<y.Map<unknown>>();
+  const yarray = new y.Array<y.Map<any>>();
   if (!attachRouteTreeList(yarray, app)) {
     throw new Error("Failed to attach route tree list");
   }

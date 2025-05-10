@@ -6,7 +6,7 @@ import { type ElllSelectorData, elllSelectorDataSchema } from "./modifier.js";
 
 export type StyleVariableData = {
   name?: string;
-  values?: Record<string, unknown>;
+  values?: Record<string, any>;
 };
 
 export type StyleVariableSetData = {
@@ -21,7 +21,7 @@ export type StyleVariableSetData = {
 
 export const styleVariableDataSchema = z.object({
   name: z.string().optional(),
-  values: z.record(z.unknown()).optional(),
+  values: z.record(z.any()).optional(),
 });
 
 export const styleVariableSetDataSchema = z.object({

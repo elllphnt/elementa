@@ -11,7 +11,7 @@ export type DataInputData = {
   varName?: string;
   tsType?: string;
   required?: boolean;
-  default?: Resolvable<unknown>;
+  default?: Resolvable<any>;
 };
 
 // Schemas
@@ -21,5 +21,5 @@ export const dataInputDataSchema = z.object({
   varName: z.string().optional(),
   tsType: z.string().optional(),
   required: z.boolean().optional(),
-  default: resolvableSchema(z.unknown()).optional(),
+  default: resolvableSchema(z.any()).optional(),
 });

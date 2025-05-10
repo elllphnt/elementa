@@ -39,4 +39,4 @@ export const elementDataSchema: z.ZodType<ElementData> = z.lazy(() =>
     textElementDataSchema,
     vectorElementDataSchema,
   ])
-) as unknown as z.ZodType<ElementData>;
+) as any as z.ZodType<ElementData>;

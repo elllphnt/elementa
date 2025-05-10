@@ -14,7 +14,7 @@ export type AppVariableData = {
 export type AppData = {
   routes?: RouteTreeData[];
   variables?: AppVariableData[];
-  editors?: Record<string, Record<string, unknown>>;
+  editors?: Record<string, Record<string, any>>;
 };
 
 // Schemas
@@ -30,5 +30,5 @@ export const appVariableSchema = z.object({
 export const appSchema = z.object({
   routes: z.array(routeTreeDataSchema).optional(),
   variables: z.array(appVariableSchema).optional(),
-  editors: z.record(z.record(z.unknown())).optional(),
+  editors: z.record(z.record(z.any())).optional(),
 });

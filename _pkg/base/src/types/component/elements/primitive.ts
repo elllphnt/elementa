@@ -18,7 +18,7 @@ export type PrimitiveElementData = BaseElementData &
   ElementContainerData & {
     type: "primitive";
     primitiveUrl?: string;
-    props?: Record<string, ResolvableOrEvaluable<unknown>>;
+    props?: Record<string, ResolvableOrEvaluable<any>>;
     elements?: Record<string, PrimitiveSubElementData>;
   };
 
@@ -33,6 +33,6 @@ export const primitiveElementDataSchema = baseElementDataSchema
   .extend({
     type: z.literal("primitive"),
     primitiveUrl: z.string().optional(),
-    props: z.record(z.unknown()).optional(),
+    props: z.record(z.any()).optional(),
     elements: z.record(primitiveSubElementDataSchema).optional(),
   });

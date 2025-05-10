@@ -10,5 +10,5 @@ export type InteractiveData = {
 // Schemas
 
 export const interactiveDataSchema = z.object({
-  interactions: z.record(expressionSchema(z.unknown())).optional(),
+  interactions: z.record(expressionSchema(z.any())).optional(),
 });

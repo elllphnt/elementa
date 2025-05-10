@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
-import { Project } from "../project/project";
-import { Resource } from "../resource";
+import { Project } from "../project/project.js";
+import { Resource } from "../resource.js";
 
 export abstract class File extends Resource {
   abstract get project(): Project;

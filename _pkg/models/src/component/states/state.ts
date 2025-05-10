@@ -1,9 +1,9 @@
-import { BaseStateData } from "@elllphnt/elementa-base/dist/types/component/states/_base";
+import { BaseStateData } from "@elllphnt/elementa-base";
 import { setEnhancer, setModelFields } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import * as y from "yjs";
-import { Component } from "../component";
-import { attachIdentifiable, Identifiable } from "../identifiable";
+import { Component } from "../component.js";
+import { attachIdentifiable, Identifiable } from "../identifiable.js";
 
 export type State<D extends BaseStateData = BaseStateData> = Identifiable<D> & {
   component: Component;
@@ -19,7 +19,7 @@ export type State<D extends BaseStateData = BaseStateData> = Identifiable<D> & {
  * Attach State behavior to a y.Map
  */
 export function attachState(
-  ymap: y.Map<unknown>,
+  ymap: y.Map<any>,
   component: Component
 ): ymap is State {
   if (!attachIdentifiable<BaseStateData>(ymap)) {
@@ -51,7 +51,7 @@ export function attachState(
  * Create a new local State
  */
 export function createState(component: Component): State {
-  const ymap = new y.Map<unknown>();
+  const ymap = new y.Map<any>();
   if (!attachState(ymap, component)) {
     throw new Error("Failed to create State");
   }

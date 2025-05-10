@@ -13,14 +13,14 @@ import {
   TextShadowFilterData,
   validateStyleData,
 } from "@elllphnt/elementa-base";
-import { applySelectedCssStyle, CssStyleData } from "../base/_";
-import { animationToCss } from "./fragments/animation";
-import { backgroundLayerToCss } from "./fragments/background_layer";
+import { applySelectedCssStyle, CssStyleData } from "../base/_.js";
+import { animationToCss } from "./fragments/animation.js";
+import { backgroundLayerToCss } from "./fragments/background_layer.js";
 import {
   dropShadowFilterToCss,
   filterToCss,
   textShadowFilterToCss,
-} from "./fragments/filter";
+} from "./fragments/filter.js";
 
 const elllTranslateCss =
   "translateX(var(--elll-translate-x, 0)) translateY(var(--elll-translate-y, 0)) translateZ(var(--elll-translate-z, 0))";
@@ -40,7 +40,7 @@ export function applyDefaultCss(
   if (value == undefined || value == "unset") {
     return;
   }
-  const propertyConfig = stylePropertyConfigMap[property];
+  const propertyConfig = stylePropertyConfigMap[property as StylePropertyName];
   if (!propertyConfig) {
     throw new Error(`Unknown property: ${property}`);
   }
@@ -249,10 +249,10 @@ export const styleToCssPropertyConfigMap: {
   "background-layers": {
     applyCustomCss: (css, value, context) => {
       if (!value || value === "unset") return;
-      const layerIds = value.split(",").map((id) => id.trim());
+      const layerIds = value.split(",").map((id: string) => id.trim());
       const layers = layerIds
         .map(
-          (id) =>
+          (id: string) =>
             context.getFragment(StyleFragmentType.BackgroundLayer, id)?.data
         )
         .filter(Boolean) as BackgroundLayerData[];
@@ -269,7 +269,7 @@ export const styleToCssPropertyConfigMap: {
   "filters": {
     applyCustomCss: (css, value, context) => {
       if (!value || value === "unset") return;
-      const filterIds = value.split(",").map((id) => id.trim());
+      const filterIds = value.split(",").map((id: string) => id.trim());
       const filters: FilterData[] = [];
       const dropShadows: DropShadowFilterData[] = [];
       const textShadows: TextShadowFilterData[] = [];
@@ -388,7 +388,7 @@ export const styleToCssPropertyConfigMap: {
   "animations": {
     applyCustomCss: (css, value, context) => {
       if (!value || value === "unset") return;
-      const animationIds = value.split(",").map((id) => id.trim());
+      const animationIds = value.split(",").map((id: string) => id.trim());
       const animations: AnimationData[] = [];
 
       for (const id of animationIds) {

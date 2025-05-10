@@ -10,7 +10,7 @@ export type VectorTextNodeData = {
 export type VectorElementNodeData = {
   type: "element";
   tagName: string;
-  properties?: Record<string, unknown>;
+  properties?: Record<string, any>;
   children: VectorNodeData[];
 };
 
@@ -35,7 +35,7 @@ export const vectorTextNodeDataSchema = z.object({
 export const vectorElementNodeDataSchema = z.object({
   type: z.literal("element"),
   tagName: z.string(),
-  properties: z.record(z.unknown()).optional(),
+  properties: z.record(z.any()).optional(),
   children: z.lazy(() => z.array(vectorNodeDataSchema)),
 });
 

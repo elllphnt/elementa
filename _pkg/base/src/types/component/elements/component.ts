@@ -23,7 +23,7 @@ export type SlotFillData = StylableData &
 export type ComponentElementData = BaseElementData & {
   type: "component";
   componentUrl?: string;
-  props?: Record<string, ResolvableOrEvaluable<unknown>>;
+  props?: Record<string, ResolvableOrEvaluable<any>>;
   fills?: Record<string, SlotFillData>;
 };
 
@@ -36,6 +36,6 @@ export const slotFillDataSchema = stylableDataSchema
 export const componentElementDataSchema = baseElementDataSchema.extend({
   type: z.literal("component"),
   componentUrl: z.string().optional(),
-  props: z.record(resolvableOrEvaluableSchema(z.unknown())).optional(),
+  props: z.record(resolvableOrEvaluableSchema(z.any())).optional(),
   fills: z.record(slotFillDataSchema).optional(),
 });

@@ -6,22 +6,22 @@ import {
 } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
 import * as y from "yjs";
-import { Fragment } from "../fragment";
-import { attachElementList, ElementList } from "./_list";
-import { attachBaseElement, Element } from "./element";
+import { Fragment } from "../fragment.js";
+import { attachElementList, ElementList } from "./_list.js";
+import { attachBaseElement, Element } from "./element.js";
 
 export type ContainerElement = Element<ContainerElementData> & {
   content: ElementList;
 
-  allCssStylesheets: unknown[];
-  allCssStylesheets$: Observable<unknown[]>;
+  allCssStylesheets: any[];
+  allCssStylesheets$: Observable<any[]>;
 };
 
 /**
  * Attach ContainerElement behavior to a y.Map
  */
 export function attachContainerElement(
-  ymap: y.Map<unknown>,
+  ymap: y.Map<any>,
   fragment: Fragment
 ): ymap is ContainerElement {
   ymap.set("type", "container");
@@ -46,13 +46,13 @@ export function attachContainerElement(
     map(([childrenSheets]) => [element.cssStyleSheet, ...childrenSheets.flat()])
   );
 
-  element.cloneIds = (clone: y.Map<unknown>) => {
+  element.cloneIds = (clone: y.Map<any>) => {
     element.cloneOwnId(clone);
     const contentClone = getOrCreateYArray(clone, "content");
-    element.content.cloneIds(contentClone as unknown);
+    element.content.cloneIds(contentClone as any);
   };
 
-  const baseDispose = (element as unknown).dispose?.bind(element);
+  const baseDispose = (element as any).dispose?.bind(element);
   element.dispose = () => {
     element.content.dispose();
     if (baseDispose) baseDispose();
@@ -63,7 +63,7 @@ export function attachContainerElement(
 }
 
 export function createContainerElement(fragment: Fragment): ContainerElement {
-  const ymap = new y.Map<unknown>();
+  const ymap = new y.Map<any>();
   if (!attachContainerElement(ymap, fragment)) {
     throw new Error("Failed to create ContainerElement");
   }

@@ -1,6 +1,6 @@
 import { StaticReference } from "@elllphnt/elementa-base";
-import { File } from "./file/_";
-import { Project } from "./project/project";
+import { File } from "./file/_.js";
+import { Project } from "./project/project.js";
 
 export interface Infrastructure {
   // Resources

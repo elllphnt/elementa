@@ -17,7 +17,7 @@ import {
 import {
   variableFlexibleStyleDataToCss,
   variableStyleDataToCss,
-} from "../variable";
+} from "../variable.js";
 
 export function blurFilterToCss(filter: BlurFilterData): string {
   return `blur(${variableFlexibleStyleDataToCss(

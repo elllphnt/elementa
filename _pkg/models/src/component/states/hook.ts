@@ -2,8 +2,8 @@ import { Expression, HookStateData } from "@elllphnt/elementa-base";
 import { setModelFields } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
 import * as y from "yjs";
-import { Component } from "../component";
-import { attachState, State } from "./state";
+import { Component } from "../component.js";
+import { attachState, State } from "./state.js";
 
 export type HookState = State<HookStateData> & {
   hookUrl: string | undefined;
@@ -23,7 +23,7 @@ export type HookState = State<HookStateData> & {
  * Attach HookState behavior to a y.Map
  */
 export function attachHookState(
-  ymap: y.Map<unknown>,
+  ymap: y.Map<any>,
   component: Component
 ): ymap is HookState {
   if (!attachState(ymap, component)) {
@@ -36,14 +36,14 @@ export function attachHookState(
   Object.defineProperty(state, "absoluteHookUrl", {
     get() {
       return state.hookUrl
-        ? state.component.project.resolveAbsoluteUrl(state.hookUrl)
+        ? state.component.project.absoluteFileUrl(state.hookUrl)
         : undefined;
     },
   });
 
   state.absoluteHookUrl$ = state.hookUrl$.pipe(
     map((url) => {
-      return url ? state.component.project.resolveAbsoluteUrl(url) : undefined;
+      return url ? state.component.project.absoluteFileUrl(url) : undefined;
     })
   );
 
@@ -55,7 +55,7 @@ export function attachHookState(
     return state.args$.pipe(map((args) => args[index]));
   };
 
-  state.cloneIds = (clone: y.Map<unknown>) => {
+  state.cloneIds = (clone: y.Map<any>) => {
     state.cloneOwnId(clone);
   };
 
@@ -66,7 +66,7 @@ export function attachHookState(
  * Create a new local HookState
  */
 export function createHookState(component: Component): HookState {
-  const ymap = new y.Map<unknown>();
+  const ymap = new y.Map<any>();
   if (!attachHookState(ymap, component)) {
     throw new Error("Failed to create HookState");
   }
