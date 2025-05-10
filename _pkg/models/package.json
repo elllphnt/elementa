@@ -4,9 +4,10 @@
     "version": "0.1.0",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
+    "type": "module",
     "scripts": {
-        "build": "tsc -p tsconfig.build.json || echo \"Ignoring TS errors\"",
-        "watch": "yarn build --watch -p tsconfig.build.json",
+        "build": "tsc -p tsconfig.build.json",
+        "watch": "tsc -p tsconfig.build.json --watch",
         "test": "tsx tests/_.test.ts"
     },
     "dependencies": {

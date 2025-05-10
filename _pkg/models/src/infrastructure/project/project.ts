@@ -1,3 +1,4 @@
+import { toAbsoluteFileUrl } from "../file/url";
 import { Infrastructure } from "../infrastructure";
 import { Resource } from "../resource";
 import { AppManager } from "./managers/app_manager";
@@ -13,15 +14,21 @@ export abstract class Project extends Resource {
   abstract get componentManager(): ComponentManager;
   abstract get appManager(): AppManager;
 
-  constructor({ infrastructure }: { infrastructure: Infrastructure }) {
-    super();
+  constructor({
+    infrastructure,
+    id,
+  }: {
+    id: string;
+    infrastructure: Infrastructure;
+  }) {
+    super({ id });
     this.infrastructure = infrastructure;
   }
 
-  resolveAbsoluteUrl(url: string) {
-    return this.infrastructure.resolveAbsoluteUrl(this.url, url);
-  }
-  resolveRelativeUrl(url: string) {
-    return this.infrastructure.resolveRelativeUrl(url);
+  absoluteFileUrl(url: string) {
+    return toAbsoluteFileUrl({
+      projectId: this.id,
+      url,
+    });
   }
 }

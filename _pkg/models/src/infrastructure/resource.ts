@@ -9,7 +9,7 @@ export enum ResourceStatus {
 }
 
 export abstract class Resource extends Disposable {
-  abstract get url(): string;
+  readonly id: string;
 
   private _status$ = new BehaviorSubject<ResourceStatus>(
     ResourceStatus.Pending
@@ -59,6 +59,11 @@ export abstract class Resource extends Disposable {
   );
   get isResolved(): boolean {
     return this.status === ResourceStatus.Resolved;
+  }
+
+  constructor({ id }: { id: string }) {
+    super();
+    this.id = id;
   }
 
   protected setStatus(status: ResourceStatus): void {
