@@ -8,7 +8,9 @@ export default tseslint.config(
   tseslint.configs.recommended,
   {
     files: ["**/*.js", "**/*.ts", "**/*.tsx"],
+
     rules: {
+      "@typescript-eslint/no-explicit-any": "off",
       "no-restricted-imports": [
         "error",
         {
