@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { StyleDataType } from "../_.js";
+import { StyleDataType } from "../_primitives/_.js";
 import { type ElllSelectorData, elllSelectorDataSchema } from "./modifier.js";
 
 // Types

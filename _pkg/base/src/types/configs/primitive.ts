@@ -1,6 +1,9 @@
 import { z } from "zod";
-import { PrimitiveElementData } from "../_.js";
-import { DataInputConfig, dataInputConfigSchema } from "./_shared/data_input.js";
+import { PrimitiveElementData } from "../component/_.js";
+import {
+  DataInputConfig,
+  dataInputConfigSchema,
+} from "./_shared/data_input.js";
 
 // Types
 

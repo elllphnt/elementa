@@ -1,7 +1,6 @@
 import { Disposable } from "@elllphnt/elementa-utils";
 import { Action } from "history";
-import { BehaviorSubject, Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { BehaviorSubject, map, Observable } from "rxjs";
 
 type HistoryState = {
   urls: string[];

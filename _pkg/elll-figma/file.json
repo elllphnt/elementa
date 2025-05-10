@@ -1,0 +1,1351 @@
+{
+  "document": {
+    "id": "0:0",
+    "name": "Document",
+    "type": "DOCUMENT",
+    "scrollBehavior": "SCROLLS",
+    "children": [
+      {
+        "id": "2368:52",
+        "name": "Style Guide",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "1320:45",
+        "name": "Welcome",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "1919:1544",
+        "name": "Changelog ✨ NEW",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "40:1498",
+        "name": "Thumbnail",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "1320:43",
+        "name": "––––––––––",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8941176533699036,
+          "g": 0.886274516582489,
+          "b": 0.8745098114013672,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "1320:44",
+        "name": "MARKETING COMPONENTS",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "129:13658",
+        "name": "    ↳  Navbars",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "136:5239",
+        "name": "    ↳  Footers",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "519:5759",
+        "name": "    ↳  Hero Headers ✨ NEW",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "519:5701",
+        "name": "    ↳  Headers",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "507:5360",
+        "name": "    ↳  Features ✨ NEW",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "1161:5815",
+        "name": "    ↳  Careers",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "1161:5816",
+        "name": "    ↳  Gallery",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "509:5386",
+        "name": "    ↳  Contact",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "513:5486",
+        "name": "    ↳  FAQ",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "515:5518",
+        "name": "    ↳  Pricing",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "515:5576",
+        "name": "    ↳  Testimonials",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "518:5640",
+        "name": "    ↳  Logos ",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "518:5644",
+        "name": "    ↳  Team ",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:58971",
+        "name": "    ↳  Timelines",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "509:5308",
+        "name": "    ↳  CTA",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4175:49580",
+        "name": "    ↳  Cookie Consent",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "521:5775",
+        "name": "    ↳  Blog Headers",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "522:5848",
+        "name": "    ↳  Blog Sections",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "521:5760",
+        "name": "    ↳  Blog Posts",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "3501:6972",
+        "name": "    ↳  Blog Post Headers",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "1919:275",
+        "name": "    ↳  Banners",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "1919:1293",
+        "name": "    ↳  Contact Modals",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "2927:6675",
+        "name": "    ↳  Portfolio Sections",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "3283:6839",
+        "name": "    ↳  Portfolio Headers",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:80292",
+        "name": "    ↳  Event Sections",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:85846",
+        "name": "    ↳  Event Headers",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:87306",
+        "name": "    ↳  Event Item Headers",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:88105",
+        "name": "    ↳  Stats Sections",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:91107",
+        "name": "    ↳  Multi-step Forms",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "3284:8359",
+        "name": "    ↳  Long Form Content Sections",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "3629:6984",
+        "name": "    ↳  Loaders",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4578:7185",
+        "name": "    ↳  Links pages ✨ NEW",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:80291",
+        "name": "---",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:111169",
+        "name": "ECOMMERCE COMPONENTS",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "2004:6",
+        "name": "    ↳  Product Headers",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "2005:808",
+        "name": "    ↳  Product List Sections",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "2110:248",
+        "name": "    ↳  Category Filters",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:116702",
+        "name": "---",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:116703",
+        "name": "APPLICATION COMPONENTS",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:116704",
+        "name": "    ↳  Application Shells",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:121341",
+        "name": "    ↳  Sidebars",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:122640",
+        "name": "    ↳  Topbars",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:122818",
+        "name": "    ↳  Page Headers",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:123110",
+        "name": "    ↳  Section Headers",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:123252",
+        "name": "    ↳  Card Headers",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "1919:420",
+        "name": "    ↳  Sign Up and Log In Pages",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "1919:1146",
+        "name": "    ↳  Sign Up and Log In Modals",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:125085",
+        "name": "    ↳  Onboarding Forms",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "2322:52",
+        "name": "    ↳  Tables",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:133785",
+        "name": "    ↳  Stacked Lists",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:135105",
+        "name": "    ↳  Grid Lists",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:138040",
+        "name": "    ↳  Stat Cards",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:139087",
+        "name": "    ↳  Forms",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "4174:142227",
+        "name": "    ↳  Description Lists",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "2008:7",
+        "name": "––––––––––",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8941176533699036,
+          "g": 0.886274516582489,
+          "b": 0.8745098114013672,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "2006:6",
+        "name": "PAGE TEMPLATES",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "2006:7",
+        "name": "    ↳  Home Pages",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "2006:2882",
+        "name": "    ↳  Pricing Pages",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "2006:5147",
+        "name": "    ↳  About Pages",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "2006:6713",
+        "name": "    ↳  Contact Pages",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "2006:7515",
+        "name": "    ↳  Blog Pages",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "2006:7516",
+        "name": "    ↳  Blog Post Pages",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "3284:7061",
+        "name": "    ↳  Portfolio Pages",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      },
+      {
+        "id": "3501:8750",
+        "name": "    ↳  Legal Pages",
+        "type": "CANVAS",
+        "scrollBehavior": "SCROLLS",
+        "children": [],
+        "backgroundColor": {
+          "r": 0.8470588326454163,
+          "g": 0.8392156958580017,
+          "b": 0.8274509906768799,
+          "a": 1
+        },
+        "prototypeStartNodeID": null,
+        "flowStartingPoints": [],
+        "prototypeDevice": {
+          "type": "NONE",
+          "rotation": "NONE"
+        }
+      }
+    ]
+  },
+  "components": {},
+  "componentSets": {},
+  "schemaVersion": 0,
+  "styles": {},
+  "name": "Relume Figma Kit (v2.5) (Community)",
+  "lastModified": "2024-08-26T01:42:44Z",
+  "thumbnailUrl": "https://s3-alpha.figma.com/thumbnails/7483b5fc-cccd-491d-b602-01a1be49ec17?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQ4GOSFWCVSZCBJ2W%2F20240829%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240829T000000Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=b775c62e5456820e217f780ed545a06dfafaffa7f41eff80afb4499bb5a3432b",
+  "version": "6494076856",
+  "role": "owner",
+  "editorType": "figma",
+  "linkAccess": "view"
+}

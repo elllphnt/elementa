@@ -1,0 +1,42 @@
+{
+  "name": "@elllphnt/elll-compiler",
+  "type": "module",
+  "version": "0.20.4",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "packup": "node ./scripts/packup.js",
+    "pub": "npm run build && npm run packup && cd dist && npm publish",
+    "build:esbuild": "esbuild src/elll.ts --bundle --format=esm --outfile=es_dist/index.js --minify --analyze"
+  },
+  "dependencies": {
+    "@elllphnt/utils": "^0.2.1",
+    "@jsep-plugin/new": "^1.0.3",
+    "@jsep-plugin/numbers": "^1.0.1",
+    "@jsep-plugin/object": "^1.2.1",
+    "@jsep-plugin/spread": "^1.0.2",
+    "@jsep-plugin/template": "^1.0.4",
+    "@jsep-plugin/ternary": "^1.1.3",
+    "csstype": "^3.1.3",
+    "fast-xml-parser": "^4.3.6",
+    "jsep": "^1.3.8",
+    "json-refs": "^3.0.15",
+    "lodash": "^4.17.21",
+    "lodash.camelcase": "^4.3.0",
+    "rxjs": "^7.8.1",
+    "xml2js": "^0.6.2",
+    "yup": "^1.4.0"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.201",
+    "@types/lodash.camelcase": "^4.3.9",
+    "@types/node": "^20.8.4",
+    "@types/react": "^18.3.1",
+    "@types/xml2js": "^0.4.14",
+    "esbuild": "^0.20.2",
+    "react": "^18.3.1",
+    "typescript": "^5.2.2"
+  },
+  "peerDependencies": {}
+}

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Evaluable, evaluableSchema } from "../../_.js";
+import { Evaluable, evaluableSchema } from "../../_primitives/_.js";
 import { BaseElementData, baseElementDataSchema } from "./_base.js";
 
 export type VectorTextNodeData = {

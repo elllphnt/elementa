@@ -14,7 +14,7 @@ export default tseslint.config(
         {
           patterns: [
             {
-              regex: "(^|/)\\./_$",
+              regex: "\\./_(\\.js)?$",
               message:
                 "Avoid '../_': it creates an implicit cyclic import. Use a specific folder like '../foo/_' instead.",
             },

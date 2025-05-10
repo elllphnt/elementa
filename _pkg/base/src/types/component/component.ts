@@ -1,11 +1,7 @@
 import { z } from "zod";
-import {
-  FragmentData,
-  fragmentDataSchema,
-  StateData,
-  stateDataSchema,
-} from "../_.js";
 import { DataInputData, dataInputDataSchema } from "../_shared/data_input.js";
+import { FragmentData, fragmentDataSchema } from "./fragment.js";
+import { StateData, stateDataSchema } from "./states/_.js";
 
 export type ComponentData = {
   name?: string;

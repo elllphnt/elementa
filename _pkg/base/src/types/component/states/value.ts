@@ -1,14 +1,14 @@
-import { Resolvable } from "../../_.js";
-import { Evaluable } from "../../_primitives/dynamic/evaluable.js";
-import { BaseStateData } from "./_base.js";
 import { z } from "zod";
-import { evaluableSchema } from "../../_primitives/dynamic/evaluable.js";
-import { resolvableSchema } from "../../_.js";
-import { baseStateDataSchema } from "./_base.js";
+import { Resolvable, resolvableSchema } from "../../_primitives/_.js";
+import {
+  Evaluable,
+  evaluableSchema,
+} from "../../_primitives/dynamic/evaluable.js";
+import { BaseStateData, baseStateDataSchema } from "./_base.js";
 
 export type ValueStateData = BaseStateData & {
   type: "value";
-  init?: Evaluable<any> | Resolvable<any>;
+  init?: Evaluable<unknown> | Resolvable<unknown>;
   tsType?: string;
 };
 

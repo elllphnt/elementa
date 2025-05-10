@@ -4,7 +4,7 @@ import {
   evaluableSchema,
   Resolvable,
   resolvableSchema,
-} from "../../_.js";
+} from "../../_primitives/_.js";
 import { BaseProviderData, baseProviderDataSchema } from "./_base.js";
 
 export type ContextProviderData = BaseProviderData & {

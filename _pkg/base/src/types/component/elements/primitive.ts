@@ -1,15 +1,16 @@
+import { z } from "zod";
+import { ResolvableOrEvaluable } from "../../_primitives/_.js";
+import { BaseElementData, baseElementDataSchema } from "./_base.js";
 import {
   InteractiveData,
-  ResolvableOrEvaluable,
+  interactiveDataSchema,
   StylableData,
-} from "../../_.js";
-import { BaseElementData } from "./_base.js";
-import { ElementContainerData } from "./_common/container.js";
-
-import { z } from "zod";
-import { interactiveDataSchema, stylableDataSchema } from "../../_.js";
-import { baseElementDataSchema } from "./_base.js";
-import { elementContainerDataSchema } from "./_common/container.js";
+  stylableDataSchema,
+} from "./_common/_.js";
+import {
+  ElementContainerData,
+  elementContainerDataSchema,
+} from "./_common/container.js";
 
 export type PrimitiveSubElementData = StylableData & InteractiveData & {};
 

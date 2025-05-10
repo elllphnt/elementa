@@ -1,15 +1,17 @@
 import { z } from "zod";
 import {
+  ResolvableOrEvaluable,
+  resolvableOrEvaluableSchema,
+} from "../../_primitives/_.js";
+import { BaseElementData, baseElementDataSchema } from "./_base.js";
+import {
   InteractiveData,
   interactiveDataSchema,
   LinkableData,
   linkableDataSchema,
-  ResolvableOrEvaluable,
-  resolvableOrEvaluableSchema,
   StylableData,
   stylableDataSchema,
-} from "../../_.js";
-import { BaseElementData, baseElementDataSchema } from "./_base.js";
+} from "./_common/_.js";
 
 export type TextMarkData = StylableData &
   LinkableData &

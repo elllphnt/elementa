@@ -1,10 +1,13 @@
-import { DataInputData } from "../_shared/data_input.js";
-import { IdentifiableData } from "../_shared/identifiable.js";
-import { ElementContainerData } from "./_.js";
 import { z } from "zod";
-import { dataInputDataSchema } from "../_shared/data_input.js";
-import { identifiableDataSchema } from "../_shared/identifiable.js";
-import { elementContainerDataSchema } from "./_.js";
+import { DataInputData, dataInputDataSchema } from "../_shared/data_input.js";
+import {
+  IdentifiableData,
+  identifiableDataSchema,
+} from "../_shared/identifiable.js";
+import {
+  ElementContainerData,
+  elementContainerDataSchema,
+} from "./elements/_.js";
 
 export type FragmentData = IdentifiableData &
   ElementContainerData & {

@@ -1,15 +1,15 @@
-import { Resolvable } from "../../_.js";
-import { Evaluable } from "../../_primitives/dynamic/evaluable.js";
-import { BaseStateData } from "./_base.js";
 import { z } from "zod";
-import { evaluableSchema } from "../../_primitives/dynamic/evaluable.js";
-import { resolvableSchema } from "../../_.js";
-import { baseStateDataSchema } from "./_base.js";
+import { Resolvable, resolvableSchema } from "../../_primitives/_.js";
+import {
+  Evaluable,
+  evaluableSchema,
+} from "../../_primitives/dynamic/evaluable.js";
+import { BaseStateData, baseStateDataSchema } from "./_base.js";
 
 export type HookStateData = BaseStateData & {
   type: "hook";
   hookUrl?: string;
-  args?: (Evaluable<any> | Resolvable<any>)[];
+  args?: (Evaluable<unknown> | Resolvable<unknown>)[];
 };
 
 // Schemas

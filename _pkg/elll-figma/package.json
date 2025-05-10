@@ -1,0 +1,22 @@
+{
+    "name": "@elllphnt/elll-figma",
+    "version": "0.1.0",
+    "type": "module",
+    "scripts": {
+        "build": "tsc",
+        "packup": "node ./scripts/packup.js",
+        "pub": "npm run build && npm run packup && cd dist && npm publish",
+        "test": "node tests/index.js"
+    },
+    "devDependencies": {
+        "@types/node": "^20.8.7",
+        "typescript": "^5.2.2"
+    },
+    "dependencies": {
+        "@elllphnt/elll-element": "*",
+        "@elllphnt/identity-service-client": "^0.1.4",
+        "@elllphnt/repository-service-client": "^0.3.5",
+        "@figma/plugin-typings": "^1.99.0",
+        "figma-api": "^1.11.0"
+    }
+}
