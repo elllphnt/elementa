@@ -6,9 +6,9 @@ import {
   RouterHistory,
 } from "@tanstack/react-router";
 import { BehaviorSubject, Observable } from "rxjs";
-import { Scene } from "../../scene/scene";
-import { Renderable } from "../renderable";
-import { RouteTreeRenderable } from "./route";
+import { Scene } from "../../scene/scene.js";
+import { Renderable } from "../renderable.js";
+import { RouteTreeRenderable } from "./route.js";
 
 export class AppRenderable extends Renderable {
   readonly instance: AppInstance;

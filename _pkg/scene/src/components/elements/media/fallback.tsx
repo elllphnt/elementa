@@ -1,6 +1,6 @@
 import { JSX } from "react";
-import { MediaElementRenderable } from "../../../renderables/element/media";
-import { BaseElementComponent } from "../_/_base_element";
+import { MediaElementRenderable } from "../../../renderables/element/media.js";
+import { BaseElementComponent } from "../_/_base_element.js";
 
 const svgString = `
 <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">

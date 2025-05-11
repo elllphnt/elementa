@@ -1,7 +1,7 @@
 import { CssStyleSheet } from "@elllphnt/elementa-models";
 import { Disposable } from "@elllphnt/elementa-utils";
-import { createDomStyleSheetAdaptor } from "./_lib";
-import { DomStyleSheetAdaptor } from "./adaptors/stylesheet";
+import { createDomStyleSheetAdaptor } from "./_lib.js";
+import { DomStyleSheetAdaptor } from "./adaptors/stylesheet.js";
 
 export class DomStyleSheetManager extends Disposable {
   private _stylesheetAdaptorMap = new WeakMap<

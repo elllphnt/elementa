@@ -1,9 +1,9 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { JSX } from "react";
-import { ComponentElementRenderable } from "../../../renderables/element/component";
-import { Renderable } from "../../../renderables/renderable";
-import ComponentComponent from "../../component/component";
-import { ComponentPlaceHolder } from "./placeholder";
+import { ComponentElementRenderable } from "../../../renderables/element/component.js";
+import { Renderable } from "../../../renderables/renderable.js";
+import ComponentComponent from "../../component/component.js";
+import { ComponentPlaceHolder } from "./placeholder.js";
 
 export function ComponentElementComponentContent({
   element,

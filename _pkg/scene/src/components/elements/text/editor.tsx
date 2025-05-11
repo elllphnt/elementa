@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import { BaseElementComponent } from "../_/_base_element";
-import { TextElementRenderable } from "../../../renderables/element/text";
+import { BaseElementComponent } from "../_/_base_element.js";
+import { TextElementRenderable } from "../../../renderables/element/text.js";
 
 export function TextElementEditor({
   element,

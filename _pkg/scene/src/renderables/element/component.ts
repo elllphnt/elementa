@@ -1,9 +1,9 @@
 import { ComponentElementInstance } from "@elllphnt/elementa-runtime";
 import { BehaviorSubject, map } from "rxjs";
-import { Scene } from "../../scene/scene";
-import { ComponentRenderable } from "../component/component";
-import { Renderable } from "../renderable";
-import { ElementRenderable } from "./element";
+import { Scene } from "../../scene/scene.js";
+import { ComponentRenderable } from "../component/component.js";
+import { Renderable } from "../renderable.js";
+import { ElementRenderable } from "./element.js";
 
 export class ComponentElementRenderable extends ElementRenderable<ComponentElementInstance> {
   private _component$ = new BehaviorSubject<ComponentRenderable | undefined>(

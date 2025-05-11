@@ -1,9 +1,9 @@
 import { ImageMediaData } from "@elllphnt/elementa-base";
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { useNamespace } from "../../../hooks/namespace";
-import { MediaElementRenderable } from "../../../renderables/element/media";
-import { BaseElementComponent } from "../_/_base_element";
-import MediaElementFallback from "./fallback";
+import { useNamespace } from "../../../hooks/namespace.js";
+import { MediaElementRenderable } from "../../../renderables/element/media.js";
+import { BaseElementComponent } from "../_/_base_element.js";
+import MediaElementFallback from "./fallback.js";
 
 export function ImageMediaElementComponent({
   element,

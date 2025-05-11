@@ -1,6 +1,6 @@
 import { TextCssStyleSheet } from "@elllphnt/elementa-models";
 import { combineLatest } from "rxjs";
-import { DomStyleSheetAdaptor } from "./stylesheet";
+import { DomStyleSheetAdaptor } from "./stylesheet.js";
 
 export class TextDomStyleSheetAdaptor extends DomStyleSheetAdaptor {
   readonly styleSheet: TextCssStyleSheet;

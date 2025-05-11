@@ -1,11 +1,11 @@
 import { FragmentInstance } from "@elllphnt/elementa-runtime";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable } from "rxjs";
-import { Scene } from "../scene/scene";
-import { ElementRenderable } from "./element/_";
-import { createElementRenderable } from "./element/_create";
-import { InstanceRenderable } from "./instance";
-import { SlotRenderable } from "./slot";
+import { Scene } from "../scene/scene.js";
+import { ElementRenderable } from "./element/_.js";
+import { createElementRenderable } from "./element/_create.js";
+import { InstanceRenderable } from "./instance.js";
+import { SlotRenderable } from "./slot.js";
 
 export class FragmentRenderable extends InstanceRenderable<FragmentInstance> {
   private _content$ = new BehaviorSubject<ElementRenderable[]>([]);

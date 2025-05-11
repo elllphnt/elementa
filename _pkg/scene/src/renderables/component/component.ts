@@ -1,9 +1,9 @@
 import { ComponentInstance } from "@elllphnt/elementa-runtime";
 import { Observable, of } from "rxjs";
-import { Scene } from "../../scene/scene";
-import { FragmentRenderable } from "../fragment";
-import { InstanceRenderable } from "../instance";
-import { Renderable } from "../renderable";
+import { Scene } from "../../scene/scene.js";
+import { FragmentRenderable } from "../fragment.js";
+import { InstanceRenderable } from "../instance.js";
+import { Renderable } from "../renderable.js";
 
 export class ComponentRenderable extends InstanceRenderable<ComponentInstance> {
   readonly template: FragmentRenderable;

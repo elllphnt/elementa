@@ -1,7 +1,7 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { ComponentType } from "react";
-import { useNamespace } from "../../../hooks/namespace";
-import { ElementRenderable } from "../../../renderables/element/element";
+import { useNamespace } from "../../../hooks/namespace.js";
+import { ElementRenderable } from "../../../renderables/element/element.js";
 
 export function HideableElementComponent<
   P extends { element: ElementRenderable }

@@ -1,11 +1,11 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import cx from "classnames";
 import { JSX, PropsWithChildren, useEffect, useRef } from "react";
-import { useNamespace } from "../../../hooks/namespace";
-import { ElementRenderable } from "../../../renderables/element/element";
-import { HideableElementComponent } from "./_hideable_element";
-import { InteractiveElementComponent } from "./_interactive_element";
-import { LinkableElementComponent } from "./_linkable_element";
+import { useNamespace } from "../../../hooks/namespace.js";
+import { ElementRenderable } from "../../../renderables/element/element.js";
+import { HideableElementComponent } from "./_hideable_element.js";
+import { InteractiveElementComponent } from "./_interactive_element.js";
+import { LinkableElementComponent } from "./_linkable_element.js";
 
 function RawBaseElementComponent({
   element,

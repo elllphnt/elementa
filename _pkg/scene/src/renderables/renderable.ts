@@ -1,6 +1,6 @@
 import { Disposable, keyManager } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, combineLatest, map } from "rxjs";
-import { Scene } from "../scene/scene";
+import { Scene } from "../scene/scene.js";
 
 export abstract class Renderable extends Disposable {
   static defaultHtmlElementKey = "__default__";

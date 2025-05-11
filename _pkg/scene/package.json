@@ -1,12 +1,13 @@
 {
     "name": "@elllphnt/elementa-scene",
     "private": true,
+    "type": "module",
     "version": "0.1.0",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
         "build": "tsc -p tsconfig.build.json",
-        "watch": "yarn build --watch -p tsconfig.build.json",
+        "watch": "tsc --watch -p tsconfig.build.json",
         "test": "vitest --ui",
         "lint": "eslint --ext .ts,.tsx src"
     },

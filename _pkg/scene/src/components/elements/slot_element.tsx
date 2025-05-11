@@ -1,11 +1,11 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { useNamespace } from "../../hooks/namespace";
-import { useSlot } from "../../hooks/slot";
-import { ElementRenderable } from "../../renderables/element/element";
-import { SlotElementRenderable } from "../../renderables/element/slot";
-import { BaseElementComponent } from "./_/_base_element";
-import ElementComponent from "./element";
-// import ElementView from "./element";
+import { useNamespace } from "../../hooks/namespace.js";
+import { useSlot } from "../../hooks/slot.js";
+import { ElementRenderable } from "../../renderables/element/element.js";
+import { SlotElementRenderable } from "../../renderables/element/slot.js";
+import { BaseElementComponent } from "./_/_base_element.js";
+import ElementComponent from "./element.js";
+// import ElementView from "./element.js";
 
 export function SlotElementComponent({
   element,

@@ -1,6 +1,6 @@
 import { JSX, memo } from "react";
-import { ComponentRenderable } from "../../renderables/component/component";
-import { FragmentComponent } from "../fragment/fragment";
+import { ComponentRenderable } from "../../renderables/component/component.js";
+import { FragmentComponent } from "../fragment/fragment.js";
 
 export const ComponentComponent = memo(function ({
   component,

@@ -1,9 +1,9 @@
 import { SlotElementInstance } from "@elllphnt/elementa-runtime";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, distinctUntilChanged, Observable } from "rxjs";
-import { Scene } from "../../scene/scene";
-import { createElementRenderable } from "./_create";
-import { ElementRenderable } from "./element";
+import { Scene } from "../../scene/scene.js";
+import { createElementRenderable } from "./_create.js";
+import { ElementRenderable } from "./element.js";
 
 export class SlotElementRenderable extends ElementRenderable<SlotElementInstance> {
   private _placeholder$ = new BehaviorSubject<ElementRenderable[]>([]);

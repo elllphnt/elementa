@@ -8,15 +8,15 @@ import {
   TextElementInstance,
   VectorElementInstance,
 } from "@elllphnt/elementa-runtime";
-import element from "../../components/elements/element";
-import { Scene } from "../../scene/scene";
-import { ComponentElementRenderable } from "./component";
-import { ContainerElementRenderable } from "./container";
-import { MediaElementRenderable } from "./media";
-import { PrimitiveElementRenderable } from "./primitive";
-import { SlotElementRenderable } from "./slot";
-import { TextElementRenderable } from "./text";
-import { VectorElementRenderable } from "./vector";
+import element from "../../components/elements/element.js";
+import { Scene } from "../../scene/scene.js";
+import { ComponentElementRenderable } from "./component.js";
+import { ContainerElementRenderable } from "./container.js";
+import { MediaElementRenderable } from "./media.js";
+import { PrimitiveElementRenderable } from "./primitive.js";
+import { SlotElementRenderable } from "./slot.js";
+import { TextElementRenderable } from "./text.js";
+import { VectorElementRenderable } from "./vector.js";
 
 export function createElementRenderable({
   scene,

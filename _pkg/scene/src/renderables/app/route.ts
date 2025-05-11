@@ -3,10 +3,10 @@ import { reconcileList } from "@elllphnt/elementa-utils";
 import { createRoute, RootRoute, Route } from "@tanstack/react-router";
 import { createElement } from "react";
 import { BehaviorSubject } from "rxjs";
-import ComponentComponent from "../../components/component/component";
-import { Scene } from "../../scene/scene";
-import { ComponentRenderable } from "../component/component";
-import { Renderable } from "../renderable";
+import ComponentComponent from "../../components/component/component.js";
+import { Scene } from "../../scene/scene.js";
+import { ComponentRenderable } from "../component/component.js";
+import { Renderable } from "../renderable.js";
 
 export class RouteTreeRenderable extends Renderable {
   readonly instance: RouteTreeInstance;

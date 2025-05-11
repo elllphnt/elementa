@@ -1,9 +1,9 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { useNamespace } from "../../../hooks/namespace";
-import { MediaElementRenderable } from "../../../renderables/element/media";
-import MediaElementFallback from "./fallback";
-import ImageMediaElementComponent from "./image_content_element";
-import VideoMediaElementComponent from "./video_content_element";
+import { useNamespace } from "../../../hooks/namespace.js";
+import { MediaElementRenderable } from "../../../renderables/element/media.js";
+import MediaElementFallback from "./fallback.js";
+import ImageMediaElementComponent from "./image_content_element.js";
+import VideoMediaElementComponent from "./video_content_element.js";
 
 export function MediaElementComponent({
   element,

@@ -1,6 +1,6 @@
 import { Component } from "@elllphnt/elementa-models";
-import { ComponentElementRenderable } from "../../../renderables/element/component";
-import { Renderable } from "../../../renderables/renderable";
+import { ComponentElementRenderable } from "../../../renderables/element/component.js";
+import { Renderable } from "../../../renderables/renderable.js";
 
 export function ComponentPlaceHolder({
   element,

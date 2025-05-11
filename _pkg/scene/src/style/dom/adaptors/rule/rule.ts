@@ -1,7 +1,7 @@
 import { CssStyleRule, RuleCssStyleSheet } from "@elllphnt/elementa-models";
 import { BehaviorSubject, map } from "rxjs";
-import { DomStyleSheetAdaptor } from "../stylesheet";
-import { StyleRuleDomAdaptor } from "./stylerule";
+import { DomStyleSheetAdaptor } from "../stylesheet.js";
+import { StyleRuleDomAdaptor } from "./stylerule.js";
 
 export class RuleDomStyleSheetAdaptor extends DomStyleSheetAdaptor {
   readonly styleSheet: RuleCssStyleSheet;

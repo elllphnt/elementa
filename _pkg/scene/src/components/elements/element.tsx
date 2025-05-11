@@ -1,24 +1,24 @@
 import { Evaluable } from "@elllphnt/elementa-base";
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { memo } from "react";
-import { NamespaceContext } from "../../contexts/namespace";
-import { useNamespace } from "../../hooks/namespace";
-import { ComponentElementRenderable } from "../../renderables/element/component";
-import { ContainerElementRenderable } from "../../renderables/element/container";
-import { ElementRenderable } from "../../renderables/element/element";
-import { MediaElementRenderable } from "../../renderables/element/media";
-import { PrimitiveElementRenderable } from "../../renderables/element/primitive";
-import { SlotElementRenderable } from "../../renderables/element/slot";
-import { TextElementRenderable } from "../../renderables/element/text";
-import { VectorElementRenderable } from "../../renderables/element/vector";
-import { ElementErrorBoundary } from "./_/_error_boundary";
-import ComponentElementComponent from "./components/component_element";
-import { ContainerElementComponent } from "./container_element";
-import { MediaElementComponent } from "./media/media_element";
-import PrimitiveElementComponent from "./primitive_element";
-import { SlotElementComponent } from "./slot_element";
-import TextElementComponent from "./text/text_element";
-import VectorElementComponent from "./vector/vector_element";
+import { NamespaceContext } from "../../contexts/namespace.js";
+import { useNamespace } from "../../hooks/namespace.js";
+import { ComponentElementRenderable } from "../../renderables/element/component.js";
+import { ContainerElementRenderable } from "../../renderables/element/container.js";
+import { ElementRenderable } from "../../renderables/element/element.js";
+import { MediaElementRenderable } from "../../renderables/element/media.js";
+import { PrimitiveElementRenderable } from "../../renderables/element/primitive.js";
+import { SlotElementRenderable } from "../../renderables/element/slot.js";
+import { TextElementRenderable } from "../../renderables/element/text.js";
+import { VectorElementRenderable } from "../../renderables/element/vector.js";
+import { ElementErrorBoundary } from "./_/_error_boundary.js";
+import ComponentElementComponent from "./components/component_element.js";
+import { ContainerElementComponent } from "./container_element.js";
+import { MediaElementComponent } from "./media/media_element.js";
+import PrimitiveElementComponent from "./primitive_element.js";
+import { SlotElementComponent } from "./slot_element.js";
+import TextElementComponent from "./text/text_element.js";
+import VectorElementComponent from "./vector/vector_element.js";
 
 function RawElement({
   element,

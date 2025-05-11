@@ -1,9 +1,9 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { forwardRef } from "react";
-import { useNamespace } from "../../hooks/namespace";
-import { PrimitiveElementRenderable } from "../../renderables/element/primitive";
-import { BaseElementComponent } from "./_/_base_element";
-import ElementComponent from "./element";
+import { useNamespace } from "../../hooks/namespace.js";
+import { PrimitiveElementRenderable } from "../../renderables/element/primitive.js";
+import { BaseElementComponent } from "./_/_base_element.js";
+import ElementComponent from "./element.js";
 
 function useContent({ element }: { element: PrimitiveElementRenderable }) {
   const children = useObservable(element.children$, element.children);

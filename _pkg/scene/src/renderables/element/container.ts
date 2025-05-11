@@ -1,9 +1,9 @@
 import { ContainerElementInstance } from "@elllphnt/elementa-runtime";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable } from "rxjs";
-import { Scene } from "../../scene/scene";
-import { ElementRenderable } from "./element";
-import { createElementRenderable } from "./_create";
+import { Scene } from "../../scene/scene.js";
+import { ElementRenderable } from "./element.js";
+import { createElementRenderable } from "./_create.js";
 
 export class ContainerElementRenderable extends ElementRenderable<ContainerElementInstance> {
   private _children$ = new BehaviorSubject<ElementRenderable[]>([]);

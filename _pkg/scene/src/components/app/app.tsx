@@ -2,7 +2,7 @@ import { useObservable } from "@elllphnt/elementa-react-utils";
 import { createRouter, Outlet, RouterProvider } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { JSX, memo, useMemo } from "react";
-import { AppRenderable } from "../../renderables/app/app";
+import { AppRenderable } from "../../renderables/app/app.js";
 
 export const AppComponent = memo(function ({
   app,

@@ -2,9 +2,9 @@ import { useObservable } from "@elllphnt/elementa-react-utils";
 import { Namespace } from "@elllphnt/elementa-runtime";
 import React, { PropsWithChildren, useEffect } from "react";
 import { combineLatest, Subscription } from "rxjs";
-import { useNamespace } from "../../../hooks/namespace";
-import { ElementRenderable } from "../../../renderables/element/element";
-import { Renderable } from "../../../renderables/renderable";
+import { useNamespace } from "../../../hooks/namespace.js";
+import { ElementRenderable } from "../../../renderables/element/element.js";
+import { Renderable } from "../../../renderables/renderable.js";
 
 function ElementErrorFallback({ element }: { element: ElementRenderable }) {
   const name = useObservable(

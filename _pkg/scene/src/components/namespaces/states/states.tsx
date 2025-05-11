@@ -5,8 +5,8 @@ import {
   ValueStateInstance,
 } from "@elllphnt/elementa-runtime";
 import { PropsWithChildren } from "react";
-import { HookStateNamespaceProvider } from "./hook";
-import { ValueStateNamespaceProvider } from "./value";
+import { HookStateNamespaceProvider } from "./hook.js";
+import { ValueStateNamespaceProvider } from "./value.js";
 
 export function StatesNamespaceProvider({
   children,

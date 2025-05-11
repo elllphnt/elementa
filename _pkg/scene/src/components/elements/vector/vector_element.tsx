@@ -1,7 +1,7 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { useNamespace } from "../../../hooks/namespace";
-import { VectorElementRenderable } from "../../../renderables/element/vector";
-import { BaseElementComponent } from "../_/_base_element";
+import { useNamespace } from "../../../hooks/namespace.js";
+import { VectorElementRenderable } from "../../../renderables/element/vector.js";
+import { BaseElementComponent } from "../_/_base_element.js";
 
 export function VectorElementComponent({
   element,

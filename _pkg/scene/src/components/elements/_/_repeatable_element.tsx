@@ -1,9 +1,9 @@
 import { Evaluable } from "@elllphnt/elementa-base";
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { ComponentType } from "react";
-import { NamespaceContext } from "../../../contexts/namespace";
-import { useNamespace } from "../../../hooks/namespace";
-import { ElementRenderable } from "../../../renderables/element/element";
+import { NamespaceContext } from "../../../contexts/namespace.js";
+import { useNamespace } from "../../../hooks/namespace.js";
+import { ElementRenderable } from "../../../renderables/element/element.js";
 
 function RepeatedComponentItem({
   data,
@@ -11,10 +11,10 @@ function RepeatedComponentItem({
   Component,
   props,
 }: {
-  data?: unknown;
+  data?: any;
   index: number;
-  props: unknown;
-  Component: ComponentType<unknown>;
+  props: any;
+  Component: ComponentType<any>;
 }) {
   const namespace = useNamespace({ clone: true });
   namespace.set("$", {
@@ -37,8 +37,8 @@ function FixedRepeatedComponent({
   props,
 }: {
   count: Evaluable<number>;
-  Component: ComponentType<unknown>;
-  props: Record<string, unknown>;
+  Component: ComponentType<any>;
+  props: Record<string, any>;
 }) {
   const namespace = useNamespace();
   const resolvedCount = namespace.resolveValue<number | undefined>(count) ?? 1;

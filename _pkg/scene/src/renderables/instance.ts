@@ -1,6 +1,6 @@
 import { Instance } from "@elllphnt/elementa-runtime";
-import { Scene } from "../scene/scene";
-import { Renderable } from "./renderable";
+import { Scene } from "../scene/scene.js";
+import { Renderable } from "./renderable.js";
 
 export abstract class InstanceRenderable<
   I extends Instance

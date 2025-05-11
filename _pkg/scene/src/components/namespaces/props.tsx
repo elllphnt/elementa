@@ -4,8 +4,8 @@ import {
 } from "@elllphnt/elementa-react-utils";
 import { FragmentEnvironment, Namespace } from "@elllphnt/elementa-runtime";
 import { PropsWithChildren } from "react";
-import { NamespaceContext } from "../../contexts/namespace";
-import { useNamespace } from "../../hooks/namespace";
+import { NamespaceContext } from "../../contexts/namespace.js";
+import { useNamespace } from "../../hooks/namespace.js";
 
 export function PropsNamespaceProvider({
   children,

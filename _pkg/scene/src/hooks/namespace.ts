@@ -1,6 +1,6 @@
 import { Namespace } from "@elllphnt/elementa-runtime";
 import { useContext } from "react";
-import { NamespaceContext } from "../contexts/namespace";
+import { NamespaceContext } from "../contexts/namespace.js";
 
 export function useNamespace({
   clone,

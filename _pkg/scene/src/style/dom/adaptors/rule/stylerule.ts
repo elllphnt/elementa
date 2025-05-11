@@ -7,8 +7,8 @@ import {
 } from "@elllphnt/elementa-utils";
 import { diff } from "deep-object-diff";
 import { Subject } from "rxjs";
-import { getCssStyleRuleFromStylesheet } from "./_lib";
-import { RuleDomStyleSheetAdaptor } from "./rule";
+import { getCssStyleRuleFromStylesheet } from "./_lib.js";
+import { RuleDomStyleSheetAdaptor } from "./rule.js";
 
 export class StyleRuleDomAdaptor extends Disposable {
   readonly styleSheetAdaptor: RuleDomStyleSheetAdaptor;

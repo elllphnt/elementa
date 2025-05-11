@@ -1,7 +1,7 @@
 import { Component, Project } from "@elllphnt/elementa-models";
 import { Disposable, pairwiseOrEmpty } from "@elllphnt/elementa-utils";
 import { Subscription } from "rxjs";
-import { DomStyleSheetManager } from "../style/_";
+import { DomStyleSheetManager } from "../style/_.js";
 
 type RefCountedSubscription = {
   refCount: number;

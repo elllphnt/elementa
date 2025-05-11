@@ -1,9 +1,9 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { PropsWithChildren } from "react";
-import { NamespaceContext } from "../../contexts/namespace";
-import { useNamespace } from "../../hooks/namespace";
-import { FragmentRenderable } from "../../renderables/fragment";
-import { FragmentComponent } from "../fragment/fragment";
+import { NamespaceContext } from "../../contexts/namespace.js";
+import { useNamespace } from "../../hooks/namespace.js";
+import { FragmentRenderable } from "../../renderables/fragment.js";
+import { FragmentComponent } from "../fragment/fragment.js";
 
 export function FragmentFragmentsNamespaceProvider({
   children,

@@ -1,7 +1,7 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { TextElementRenderable } from "../../../renderables/element/text";
-import { TextElementEditor } from "./editor";
-import { TextElementViewer } from "./viewer";
+import { TextElementRenderable } from "../../../renderables/element/text.js";
+import { TextElementEditor } from "./editor.js";
+import { TextElementViewer } from "./viewer.js";
 
 export function TextElementComponent({
   element,

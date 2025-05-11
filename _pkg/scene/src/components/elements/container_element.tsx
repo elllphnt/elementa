@@ -1,9 +1,9 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { useNamespace } from "../../hooks/namespace";
-import { ContainerElementRenderable } from "../../renderables/element/container";
-import { BaseElementComponent } from "./_/_base_element";
-import ElementComponent from "./element";
-// import ElementView from "./element";
+import { useNamespace } from "../../hooks/namespace.js";
+import { ContainerElementRenderable } from "../../renderables/element/container.js";
+import { BaseElementComponent } from "./_/_base_element.js";
+import ElementComponent from "./element.js";
+// import ElementView from "./element.js";
 
 export function ContainerElementComponent({
   element,

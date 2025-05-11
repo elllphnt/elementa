@@ -1,9 +1,9 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { SlotsContext } from "../../contexts/slot";
-import { FragmentRenderable } from "../../renderables/fragment";
-import { SlotRenderable } from "../../renderables/slot";
-import ElementComponent from "../elements/element";
-import { FragmentNamespaceProvider } from "../namespaces/environment";
+import { SlotsContext } from "../../contexts/slot.js";
+import { FragmentRenderable } from "../../renderables/fragment.js";
+import { SlotRenderable } from "../../renderables/slot.js";
+import ElementComponent from "../elements/element.js";
+import { FragmentNamespaceProvider } from "../namespaces/environment.js";
 
 function RecursionAlert({
   fragment,

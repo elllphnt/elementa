@@ -1,4 +1,4 @@
 import { createContext } from "react";
-import { SlotRenderable } from "../renderables/slot";
+import { SlotRenderable } from "../renderables/slot.js";
 
 export const SlotsContext = createContext<Record<string, SlotRenderable>>({});

@@ -4,9 +4,9 @@ import {
   RuleCssStyleSheet,
   TextCssStyleSheet,
 } from "@elllphnt/elementa-models";
-import { RuleDomStyleSheetAdaptor } from "./adaptors/rule/rule";
-import { DomStyleSheetAdaptor } from "./adaptors/stylesheet";
-import { TextDomStyleSheetAdaptor } from "./adaptors/text";
+import { RuleDomStyleSheetAdaptor } from "./adaptors/rule/rule.js";
+import { DomStyleSheetAdaptor } from "./adaptors/stylesheet.js";
+import { TextDomStyleSheetAdaptor } from "./adaptors/text.js";
 
 export function createDomStyleSheetAdaptor({
   stylesheet,

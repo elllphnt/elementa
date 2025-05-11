@@ -1,8 +1,8 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { ValueStateInstance } from "@elllphnt/elementa-runtime";
 import { PropsWithChildren, useState } from "react";
-import { NamespaceContext } from "../../../contexts/namespace";
-import { useNamespace } from "../../../hooks/namespace";
+import { NamespaceContext } from "../../../contexts/namespace.js";
+import { useNamespace } from "../../../hooks/namespace.js";
 
 export function ValueStateNamespaceProvider({
   children,
