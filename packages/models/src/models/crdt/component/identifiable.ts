@@ -5,6 +5,7 @@ import {
   ReactiveMap,
   setEnhancer,
   setObjectGetter,
+  setObjectProperty,
 } from "@elllphnt/elementa-utils";
 import * as y from "yjs";
 import { genId } from "../../../_lib/id.js";
@@ -20,6 +21,17 @@ export function attachIdentifiable<S extends IdentifiableData>(
   }
 
   assert(setObjectGetter(identifiable, "id", () => identifiable.get("id")));
+
+  assert(
+    setObjectProperty(identifiable, "cloneOwnId", (clone: y.Map<any>) => {
+      clone.set("id", identifiable.id);
+    })
+  );
+
+  const baseDispose = (identifiable as any).dispose?.bind(identifiable);
+  (identifiable as any).dispose = () => {
+    baseDispose?.();
+  };
 
   return setEnhancer<Identifiable>(identifiable, attachIdentifiable);
 }

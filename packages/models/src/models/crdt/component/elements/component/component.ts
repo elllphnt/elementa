@@ -18,8 +18,7 @@ import {
 } from "rxjs";
 import * as y from "yjs";
 import { ResolvableRecord } from "../../../../../_lib/resolvable.js";
-import { ComponentElement, SlotFill } from "../../../../_interfaces/_.js";
-import { Fragment } from "../../fragment.js";
+import { ComponentElement, Fragment, SlotFill } from "../../../../_interfaces/_.js";
 import { attachBaseElement } from "../element.js";
 import { attachSlotFill } from "./slot_fill.js";
 

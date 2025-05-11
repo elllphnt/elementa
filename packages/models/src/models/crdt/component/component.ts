@@ -36,17 +36,16 @@ export function attachComponent(
   const editorsYMap = getOrCreateYMap(component, "editors");
   const stage = getOrCreateYMap(editorsYMap, "stage");
   assert(attachReactiveMap(stage));
-  // We're setting this as any for now because we'll need to implement proper stage handling
   assert(setObjectGetter(component, "stage", () => stage as any));
 
-  // Setup preview editor (placeholder for now)
+  // Setup preview editor
   const preview = getOrCreateYMap(editorsYMap, "preview");
   assert(attachReactiveMap(preview));
   assert(setObjectGetter(component, "preview", () => preview as any));
 
   // Setup template
   const templateYMap = getOrCreateYMap(component, "template");
-  attachTemplate(templateYMap, component as unknown as Component);
+  assert(attachTemplate(templateYMap, component as unknown as Component));
   assert(
     setObjectGetter(
       component,
@@ -114,7 +113,7 @@ export function attachComponent(
 
   // Setup fragment lookup by ID
   const _fragmentsById$ = new BehaviorSubject<Record<string, Fragment>>({});
-  fragmentsList.items$.subscribe((fragments) => {
+  const fragmentByIdSub = fragmentsList.items$.subscribe((fragments) => {
     _fragmentsById$.next(
       Object.fromEntries(fragments.map((fragment) => [fragment.id, fragment]))
     );
@@ -150,18 +149,19 @@ export function attachComponent(
   );
 
   // Setup cleanup
-  const disposeBase = component.dispose || (() => {});
-  component.dispose = () => {
+  const baseDispose = (component as any).dispose?.bind(component);
+  (component as any).dispose = () => {
     _fragmentsById$.complete();
     _allStylesheets$.complete();
     _nameSubject.complete();
+    fragmentByIdSub.unsubscribe();
     propsList.dispose?.();
     fragmentsList.dispose?.();
     statesList.dispose?.();
     (stage as unknown as { dispose?: () => void }).dispose?.();
     (preview as unknown as { dispose?: () => void }).dispose?.();
     (templateYMap as unknown as { dispose?: () => void }).dispose?.();
-    disposeBase();
+    baseDispose?.();
   };
 
   return setEnhancer<Component>(component, attachComponent);

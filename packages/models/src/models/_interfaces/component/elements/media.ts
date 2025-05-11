@@ -1,5 +1,6 @@
 import { MediaData, MediaElementData } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
+import { Element } from "./element.js";
 
 export interface MediaElement extends Element {
   media: MediaData | undefined;

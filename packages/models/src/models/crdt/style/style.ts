@@ -9,6 +9,7 @@ import { CssStyleData, styleToCss } from "@elllphnt/elementa-css";
 import {
   assert,
   attachReactiveMap,
+  setEnhancer,
   setObjectGetter,
   setObjectProperty,
 } from "@elllphnt/elementa-utils";
@@ -22,8 +23,8 @@ import {
 } from "rxjs";
 import * as y from "yjs";
 import { Project } from "../../../infrastructure/_.js";
+import { StyleFragmentRegistry } from "../../_interfaces/_.js";
 import { Style } from "../../_interfaces/style/style.js";
-import { StyleFragmentRegistry } from "./style_fragment_registry.js";
 
 export function attachStyle(
   style: y.Map<any>,
@@ -163,18 +164,17 @@ export function attachStyle(
 
   // Mutations
   assert(
-    setObjectGetter(
+    setObjectProperty(
       style,
       "setProperty",
-      () =>
-        <N extends StylePropertyName>(property: N, value: StyleData[N]) => {
-          style.set(property, value);
-        }
+      <N extends StylePropertyName>(property: N, value: StyleData[N]) => {
+        style.set(property, value);
+      }
     )
   );
 
   assert(
-    setObjectGetter(style, "setRaw", () => (raw: Record<string, string>) => {
+    setObjectProperty(style, "setRaw", (raw: Record<string, string>) => {
       for (const [key, value] of Object.entries(raw)) {
         style.set(`__${key}`, value);
       }
@@ -200,12 +200,12 @@ export function attachStyle(
   });
 
   // Setup cleanup
-  const disposeBase = style.dispose || (() => {});
-  style.dispose = () => {
+  const baseDispose = (style as any).dispose?.bind(style);
+  (style as any).dispose = () => {
     _css$.complete();
     cssSub.unsubscribe();
-    disposeBase();
+    baseDispose?.();
   };
 
-  return true;
+  return setEnhancer<Style>(style as any, attachStyle);
 }

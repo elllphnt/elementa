@@ -1,54 +1,43 @@
-import { SlotElementData } from "@elllphnt/elementa-base";
-import { Extendable, getOrCreateYArray } from "@elllphnt/elementa-utils";
+import {
+  assert,
+  attachEnhancedReactiveList,
+  getOrCreateYArray,
+  setEnhancer,
+  setObjectGetter,
+  setObjectProperty,
+} from "@elllphnt/elementa-utils";
 import * as y from "yjs";
-import { Fragment } from "../fragment.js";
-import { attachElementList, ElementList } from "./_list.js";
-import { attachBaseElement, Element } from "./element.js";
+import { Element, Fragment } from "../../../_interfaces/_.js";
+import { SlotElement } from "../../../_interfaces/component/elements/slot.js";
+import { attachElement } from "./_create.js";
+import { attachBaseElement } from "./element.js";
 
-export type SlotElement = Element<SlotElementData> & {
-  placeholder: ElementList;
-};
-
-/**
- * Attach SlotElement behavior to a y.Map
- */
 export function attachSlotElement(
-  ymap: y.Map<any>,
+  element: y.Map<any>,
   fragment: Fragment
-): ymap is SlotElement {
-  ymap.set("type", "slot");
+): element is y.Map<any> & SlotElement {
+  element.set("type", "slot");
 
-  if (!attachBaseElement(ymap as Extendable<y.Map<any>>, fragment)) {
-    throw new Error("Failed to attach base element to ymap");
-  }
-  const element = ymap as SlotElement;
+  assert(attachBaseElement(element, fragment));
 
-  const placeholder = getOrCreateYArray(ymap, "placeholder");
-  attachElementList(getOrCreateYArray(element, "placeholder"), fragment);
-  element.placeholder = placeholder as ElementList;
-
-  element.cloneIds = (clone: y.Map<any>) => {
-    element.cloneOwnId(clone);
-    element.placeholder.cloneIds(getOrCreateYArray(clone, "placeholder"));
-  };
+  const content = getOrCreateYArray(element, "placeholder");
+  assert(
+    attachEnhancedReactiveList<Element>(content, attachElement, (ymap) =>
+      attachElement(ymap, fragment)
+    )
+  );
+  assert(setObjectGetter(element, "placeholder", () => content.items));
+  assert(setObjectProperty(element, "placeholder$", content.items$));
 
   // --- Slot registration at runtime ---
   fragment.registerSlotId(element.id);
 
   const baseDispose = (element as any).dispose?.bind(element);
-  element.dispose = () => {
+  (element as any).dispose = () => {
     fragment.unregisterSlotId(element.id); // Unregister on disposal
-    element.placeholder.dispose();
-    if (baseDispose) baseDispose();
+    (element.placeholder as any).dispose?.();
+    baseDispose?.();
   };
 
-  return true;
-}
-
-export function createSlotElement(fragment: Fragment): SlotElement {
-  const ymap = new y.Map<any>();
-  if (!attachSlotElement(ymap, fragment)) {
-    throw new Error("Failed to create SlotElement");
-  }
-  return ymap as SlotElement;
+  return setEnhancer<SlotElement>(element, attachSlotElement);
 }

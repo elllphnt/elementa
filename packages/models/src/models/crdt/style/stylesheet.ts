@@ -1,18 +1,21 @@
 import { baseSelector, StyleSheetData } from "@elllphnt/elementa-base";
 import {
   assert,
+  attachEnhancedReactiveMap,
   attachReactiveMap,
+  getOrCreateYArray,
   getOrCreateYMap,
+  setEnhancer,
   setObjectGetter,
   setObjectProperty,
 } from "@elllphnt/elementa-utils";
-import { BehaviorSubject, distinctUntilChanged, filter, map } from "rxjs";
+import { BehaviorSubject, distinctUntilChanged, filter, map, tap } from "rxjs";
 import * as y from "yjs";
 import { Project } from "../../../infrastructure/_.js";
 import { Style } from "../../_interfaces/style/style.js";
 import { Stylesheet } from "../../_interfaces/style/stylesheet.js";
-import { createStyle } from "./style.js";
-import { createStyleFragmentRegistry } from "./style_fragment_registry.js";
+import { attachStyle } from "./style.js";
+import { attachStyleFragmentRegistry } from "./style_fragment_registry.js";
 
 export function attachStylesheet(
   stylesheet: y.Map<any>,
@@ -24,13 +27,19 @@ export function attachStylesheet(
   assert(setObjectProperty(stylesheet, "project", project));
 
   // Setup fragment registry
-  const fragmentRegistry = createStyleFragmentRegistry();
+  const fragmentRegistry = getOrCreateYArray(stylesheet, "fragmentRegistry");
+  assert(attachStyleFragmentRegistry(fragmentRegistry));
   assert(setObjectProperty(stylesheet, "fragmentRegistry", fragmentRegistry));
 
   // Setup styles
   const stylesYMap = getOrCreateYMap(stylesheet, "styles");
-  assert(attachReactiveMap(stylesYMap));
-  assert(setObjectGetter(stylesheet, "styles", () => stylesYMap));
+  assert(
+    attachEnhancedReactiveMap<Style>(stylesYMap, attachStyle, (ymap) =>
+      attachStyle(ymap, project, fragmentRegistry)
+    )
+  );
+  assert(setObjectGetter(stylesheet, "styles", () => stylesYMap.items));
+  assert(setObjectProperty(stylesheet, "styles$", stylesYMap.items$));
 
   // Setup class name
   assert(
@@ -49,8 +58,10 @@ export function attachStylesheet(
         <C extends true | undefined>(selector: string, create?: C) => {
           let style = stylesYMap.get(selector) as unknown as Style;
           if (!style && create) {
-            style = createStyle(project, fragmentRegistry);
+            const newStyle = getOrCreateYMap(stylesYMap, selector);
+            assert(attachStyle(newStyle, project, fragmentRegistry));
             stylesYMap.set(selector, style as unknown as y.Map<any>);
+            style = newStyle;
           }
           return style as any as C extends true ? Style : Style | undefined;
         }
@@ -62,18 +73,17 @@ export function attachStylesheet(
       stylesheet,
       "style$",
       <C extends true | undefined>(selector: string, create?: C) => {
-        const style = stylesheet.style(selector, create as true);
-        if (style) {
-          return stylesYMap.observe$("*").pipe(
-            map(() => stylesYMap.get(selector) as unknown as Style),
-            filter((s): s is Style => !!s)
-          );
-        }
-        return stylesYMap
-          .observe$("*")
-          .pipe(
-            map(() => stylesYMap.get(selector) as unknown as Style | undefined)
-          );
+        return stylesYMap.items$.pipe(
+          map((styles) => (styles as any)[selector] as unknown as Style),
+          tap((style) => {
+            if (!style && create) {
+              const newStyle = getOrCreateYMap(stylesYMap, selector);
+              assert(attachStyle(newStyle, project, fragmentRegistry));
+              stylesYMap.set(selector, style as unknown as y.Map<any>);
+            }
+          }),
+          filter((style) => !create || !!style)
+        );
       }
     )
   );
@@ -131,13 +141,9 @@ export function attachStylesheet(
     setObjectProperty(
       stylesheet,
       "selectors$",
-      stylesYMap.observe$("*").pipe(
-        map(() => Object.keys(stylesYMap.toJSON())),
-        distinctUntilChanged(
-          (prev, curr) =>
-            prev.length === curr.length &&
-            prev.every((key, i) => key === curr[i])
-        )
+      stylesYMap.items$.pipe(
+        map((styles) => Object.keys(styles)),
+        distinctUntilChanged()
       )
     )
   );
@@ -164,14 +170,57 @@ export function attachStylesheet(
     )
   );
 
+  // Implement addStyle method
+  assert(
+    setObjectProperty(stylesheet, "addStyle", (selector: string) => {
+      if (!stylesYMap.has(selector)) {
+        const newStyle = getOrCreateYMap(stylesYMap, selector);
+        assert(attachStyle(newStyle, project, fragmentRegistry));
+        stylesYMap.set(selector, newStyle);
+      }
+    })
+  );
+
+  // Implement removeStyle method
+  assert(
+    setObjectProperty(stylesheet, "removeStyle", (selector: string) => {
+      if (stylesYMap.has(selector)) {
+        stylesYMap.delete(selector);
+      }
+    })
+  );
+
+  // Implement setCondition method
+  assert(
+    setObjectProperty(
+      stylesheet,
+      "setCondition",
+      (id: string, expression: string) => {
+        const currentConditions = { ...stylesheet.conditions };
+        currentConditions[id] = expression;
+        stylesheet.set("conditions", currentConditions);
+      }
+    )
+  );
+
+  // Implement removeCondition method
+  assert(
+    setObjectProperty(stylesheet, "removeCondition", (id: string) => {
+      const currentConditions = { ...stylesheet.conditions };
+      if (id in currentConditions) {
+        delete currentConditions[id];
+        stylesheet.set("conditions", currentConditions);
+      }
+    })
+  );
+
   // Setup cleanup
-  const disposeBase = stylesheet.dispose || (() => {});
-  stylesheet.dispose = () => {
+  const baseDispose = (stylesheet as any).dispose?.bind(stylesheet);
+  (stylesheet as any).dispose = () => {
     _conditions$.complete();
-    fragmentRegistry.dispose?.();
     (stylesYMap as unknown as { dispose?: () => void }).dispose?.();
-    disposeBase();
+    baseDispose?.();
   };
 
-  return true;
+  return setEnhancer<Stylesheet>(stylesheet, attachStylesheet);
 }

@@ -13,8 +13,8 @@ export interface DataInput {
   tsType: string | undefined;
   tsType$: Observable<string | undefined>;
 
-  required: boolean;
-  required$: Observable<boolean>;
+  required: boolean | undefined;
+  required$: Observable<boolean | undefined>;
 
   defaultValue: any;
   defaultValue$: Observable<any>;

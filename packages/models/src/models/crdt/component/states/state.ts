@@ -1,59 +1,38 @@
 import { BaseStateData } from "@elllphnt/elementa-base";
-import { setEnhancer, setReactiveMapGetters } from "@elllphnt/elementa-utils";
-import { Observable } from "rxjs";
+import {
+  assert,
+  ReactiveMap,
+  setEnhancer,
+  setObjectGetter,
+  setObjectProperty,
+  setReactiveMapGetters,
+} from "@elllphnt/elementa-utils";
 import * as y from "yjs";
-import { Component } from "../component.js";
-import { attachIdentifiable, Identifiable } from "../identifiable.js";
+import { Component } from "../../../_interfaces/component/component.js";
+import { Identifiable } from "../../../_interfaces/component/identifiable.js";
+import { State } from "../../../_interfaces/component/states/state.js";
+import { attachIdentifiable } from "../identifiable.js";
 
-export type State<D extends BaseStateData = BaseStateData> = Identifiable<D> & {
-  component: Component;
-  type: string;
-  name: string | undefined;
-  name$: Observable<string | undefined>;
-  varName: string | undefined;
-  varName$: Observable<string | undefined>;
-  remove(): void;
-};
-
-/**
- * Attach State behavior to a y.Map
- */
-export function attachState(
-  ymap: y.Map<any>,
+export function attachState<D extends BaseStateData>(
+  state: y.Map<any>,
   component: Component
-): ymap is State {
-  if (!attachIdentifiable<BaseStateData>(ymap)) {
-    throw new Error("Failed to attach identifiable to ymap");
-  }
-  const state = ymap as State;
+): state is y.Map<any> & ReactiveMap<D> & Identifiable & State {
+  assert(attachIdentifiable<D>(state));
 
-  state.component = component;
+  assert(setObjectProperty(state, "component", component));
+  assert(setObjectGetter(state, "type", () => state.get("type")));
+  assert(setReactiveMapGetters(state, ["name", "varName"]));
 
-  Object.defineProperty(state, "type", {
-    get() {
-      return state.get("type");
-    },
-  });
+  assert(
+    setObjectProperty(state, "remove", () => {
+      // TODO: remove from component
+    })
+  );
 
-  setReactiveMapGetters(state, ["name", "varName"]);
-
-  state.remove = () => {
-    state.component.states.delete(
-      state.component.states.toArray().indexOf(state)
-    );
+  const baseDispose = (state as any).dispose?.bind(state);
+  (state as any).dispose = () => {
+    baseDispose?.();
   };
 
-  setEnhancer(state, attachState);
-  return true;
-}
-
-/**
- * Create a new local State
- */
-export function createState(component: Component): State {
-  const ymap = new y.Map<any>();
-  if (!attachState(ymap, component)) {
-    throw new Error("Failed to create State");
-  }
-  return ymap as State;
+  return setEnhancer<State>(state, attachState);
 }

@@ -1,32 +1,27 @@
-import { VectorElementData, VectorNodeData } from "@elllphnt/elementa-base";
-import { setReactiveMapGetters } from "@elllphnt/elementa-utils";
-import { Observable } from "rxjs";
+import { VectorElementData } from "@elllphnt/elementa-base";
+import {
+  assert,
+  setEnhancer,
+  setReactiveMapGetters,
+} from "@elllphnt/elementa-utils";
 import * as y from "yjs";
-import { Fragment } from "../fragment.js";
-import { attachBaseElement, Element } from "./element.js";
-
-export type VectorElement = Element<VectorElementData> & {
-  content: VectorNodeData[] | undefined;
-  content$: Observable<VectorNodeData[] | undefined>;
-};
+import { Fragment } from "../../../_interfaces/_.js";
+import { VectorElement } from "../../../_interfaces/component/elements/vector.js";
+import { attachBaseElement } from "./element.js";
 
 export function attachVectorElement(
-  ymap: y.Map<any>,
+  element: y.Map<any>,
   fragment: Fragment
-): ymap is VectorElement {
-  ymap.set("type", "vector");
-  if (!attachBaseElement(ymap as y.Map<any>, fragment)) {
-    throw new Error("Failed to attach base element to ymap");
-  }
-  const element = ymap as VectorElement;
-  setReactiveMapGetters(element, ["content"]);
-  return true;
-}
+): element is y.Map<any> & VectorElement {
+  element.set("type", "vector");
 
-export function createVectorElement(fragment: Fragment): VectorElement {
-  const ymap = new y.Map<any>();
-  if (!attachVectorElement(ymap, fragment)) {
-    throw new Error("Failed to create VectorElement");
-  }
-  return ymap as VectorElement;
+  assert(attachBaseElement<VectorElementData>(element, fragment));
+  assert(setReactiveMapGetters(element, ["content"]));
+
+  const baseDispose = (element as any).dispose?.bind(element);
+  (element as any).dispose = () => {
+    baseDispose?.();
+  };
+
+  return setEnhancer<VectorElement>(element, attachVectorElement);
 }

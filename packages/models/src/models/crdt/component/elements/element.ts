@@ -11,11 +11,11 @@ import {
 import { of } from "rxjs";
 import * as y from "yjs";
 import { StylesheetCssStyleSheet } from "../../../../css/_.js";
-import { Element } from "../../../_interfaces/_.js";
+import { Element } from "../../../_interfaces/component/elements/element.js";
 import { Identifiable } from "../../../_interfaces/component/identifiable.js";
 import { attachStylesheet } from "../../style/stylesheet.js";
-import { Fragment } from "../fragment.js";
 import { attachIdentifiable } from "../identifiable.js";
+import { Fragment } from "../../../_interfaces/_.js";
 
 export function attachBaseElement<E extends ElementData>(
   element: y.Map<any>,

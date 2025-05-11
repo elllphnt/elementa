@@ -1,19 +1,19 @@
 import { StateData } from "@elllphnt/elementa-base";
 import * as y from "yjs";
-import { Component } from "../component.js";
+import { Component } from "../../../_interfaces/component/component.js";
+import { State } from "../../../_interfaces/component/states/state.js";
 import { attachHookState } from "./hook.js";
-import { State } from "./state.js";
 import { attachValueState } from "./value.js";
 
 export function createState(
-  ymap: y.Map<any>,
+  state: y.Map<any>,
   component: Component
-): ymap is State {
-  const type = ymap.get("type") as StateData["type"];
+): state is y.Map<any> & State {
+  const type = state.get("type") as StateData["type"];
   if (type === "value") {
-    return attachValueState(ymap, component);
+    return attachValueState(state, component);
   } else if (type === "hook") {
-    return attachHookState(ymap, component);
+    return attachHookState(state, component);
   } else {
     throw new Error(`Unknown state type: ${type}`);
   }

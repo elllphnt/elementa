@@ -1,14 +1,19 @@
 import { ResolvableOrEvaluable } from "@elllphnt/elementa-base";
 import {
+  assert,
   attachEnhancedReactiveMap,
+  attachReactiveMap,
   combineLatestOrEmpty,
   getOrCreateYArray,
   getOrCreateYMap,
   setEnhancer,
+  setObjectGetter,
+  setObjectProperty,
   setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
-import { filter, map, tap } from "rxjs";
+import { filter, map, Observable, tap } from "rxjs";
 import * as y from "yjs";
+import { PrimitiveElement } from "../../../../_interfaces/_.js";
 import { ResolvableRecord } from "../../../../_lib/resolvable.js";
 import { Fragment } from "../../fragment.js";
 import { attachElementList, ElementList } from "../_list.js";
@@ -17,121 +22,146 @@ import {
   attachPrimitiveSubElement,
   createPrimitiveSubElement,
 } from "./sub_element.js";
-import { PrimitiveElement } from "../../../../_interfaces/_.js";
 
 export function attachPrimitiveElement(
-  ymap: y.Map<any>,
+  element: y.Map<any>,
   fragment: Fragment
-): ymap is PrimitiveElement {
-  ymap.set("type", "primitive");
-  if (!attachBaseElement(ymap, fragment)) {
-    throw new Error("Failed to attach base element to ymap");
-  }
-  const element = ymap as PrimitiveElement;
+): element is y.Map<any> & PrimitiveElement {
+  element.set("type", "primitive");
 
-  const content = getOrCreateYArray(ymap, "content");
-  attachElementList(getOrCreateYArray(ymap, "content"), fragment);
-  element.content = content as ElementList;
+  assert(attachBaseElement(element, fragment));
+  assert(attachReactiveMap<any>(element));
+  assert(setReactiveMapGetters(element, ["primitiveUrl", "props"]));
 
-  element.elements = attachEnhancedReactiveMap(
-    getOrCreateYMap<y.Map<any>>(element, "elements"),
-    attachPrimitiveSubElement,
-    (ymap) => attachPrimitiveSubElement(ymap, fragment)
+  const content = getOrCreateYArray(element, "content");
+  assert(attachElementList(content, fragment));
+  assert(setObjectProperty(element, "content", content as ElementList));
+
+  assert(
+    setObjectProperty(
+      element,
+      "allCssStylesheets$",
+      combineLatestOrEmpty([content.allCssStylesheets$]).pipe(
+        map(([sheets]) => [element.cssStyleSheet, ...sheets.flat()])
+      )
+    )
   );
-
-  Object.defineProperty(element, "allCssStylesheets", {
-    get() {
-      return [element.cssStyleSheet, ...element.content.allCssStylesheets];
-    },
-    configurable: true,
-  });
-  element.allCssStylesheets$ = combineLatestOrEmpty([
-    element.content.allCssStylesheets$,
-  ]).pipe(
-    map(([childrenSheets]) => [element.cssStyleSheet, ...childrenSheets.flat()])
+  assert(
+    setObjectGetter(element, "allCssStylesheets", () => [
+      element.cssStyleSheet,
+      ...element.content.allCssStylesheets,
+    ])
   );
 
   const _props = new ResolvableRecord(
-    element.props ?? {},
+    element.get("props") ?? {},
     fragment.component.project.infrastructure
   );
-
   const propsSubscription = _props.subscribe(
     element.items$.pipe(map((v) => v.props ?? {}))
   );
 
-  setReactiveMapGetters(element, ["primitiveUrl", "props"]);
+  assert(setObjectGetter(element, "props", () => _props.value));
+  assert(setObjectProperty(element, "props$", _props.value$));
 
-  Object.defineProperty(element, "absoluteModuleUrl", {
-    get() {
-      return element.primitiveUrl
-        ? fragment.component.project.absoluteFileUrl(element.primitiveUrl)
-        : undefined;
-    },
-  });
+  assert(
+    setObjectGetter(element, "prop", () => (key: string) => _props.value[key])
+  );
+  assert(
+    setObjectProperty(
+      element,
+      "prop$",
+      (key: string): Observable<any> =>
+        _props.value$.pipe(map((props) => props[key]))
+    )
+  );
 
-  element.primitiveAbsoluteUrl$ = element.primitiveUrl$.pipe(
-    map((url) => {
+  assert(
+    setObjectProperty(
+      element,
+      "setProp",
+      (key: string, value: ResolvableOrEvaluable<any> | undefined) => {
+        const next = { ..._props.value };
+        if (value === undefined) delete next[key];
+        else next[key] = value;
+        element.set("props", next);
+      }
+    )
+  );
+
+  assert(
+    setObjectGetter(element, "primitiveAbsoluteUrl", () => {
+      const url = element.primitiveUrl;
       return url ? fragment.component.project.absoluteFileUrl(url) : undefined;
     })
   );
+  assert(
+    setObjectProperty(
+      element,
+      "primitiveAbsoluteUrl$",
+      element.primitiveUrl$.pipe(
+        map((url) =>
+          url ? fragment.component.project.absoluteFileUrl(url) : undefined
+        )
+      )
+    )
+  );
 
-  element.prop = (key: string) => {
-    return element.props[key];
-  };
+  const elements = attachEnhancedReactiveMap<PrimitiveSubElement>(
+    getOrCreateYMap(element, "elements"),
+    attachPrimitiveSubElement,
+    (map) => attachPrimitiveSubElement(map, fragment)
+  );
+  assert(setObjectProperty(element, "elements", elements));
+  assert(setObjectProperty(element, "elements$", elements.items$));
 
-  element.prop$ = (key: string) => {
-    return element.props$.pipe(map((props) => props[key]));
-  };
-
-  element.setProp = (
-    key: string,
-    value: ResolvableOrEvaluable<any> | undefined
-  ) => {
-    const props = { ...element.get("props") };
-    if (value === undefined) {
-      delete props[key];
-    } else {
-      props[key] = value;
-    }
-    element.set("props", props);
-  };
-
-  element.element = (name: string, create?: true) => {
-    let el = element.elements.get(name);
-    if (!el && create) {
-      element.elements.set(name, createPrimitiveSubElement(fragment));
-      el = element.elements.get(name);
-    }
-    return el!;
-  };
-
-  element.element$ = (name: string, create?: true) => {
-    return element.elements.items$.pipe(
-      map((elements) => elements[name]),
-      tap((el) => {
+  assert(
+    setObjectProperty(
+      element,
+      "element",
+      (name: string, create?: true): PrimitiveSubElement => {
+        let el = elements.get(name);
         if (!el && create) {
-          element.elements.set(name, createPrimitiveSubElement(fragment));
+          elements.set(name, createPrimitiveSubElement(fragment));
+          el = elements.get(name);
         }
-      }),
-      filter((el) => !!el || !create)
-    ) as any;
-  };
+        return el!;
+      }
+    )
+  );
+
+  assert(
+    setObjectProperty(
+      element,
+      "element$",
+      (name: string, create?: true): Observable<PrimitiveSubElement> =>
+        elements.items$.pipe(
+          map((items) => items[name]),
+          tap((el) => {
+            if (!el && create) {
+              elements.set(name, createPrimitiveSubElement(fragment));
+            }
+          }),
+          filter((el) => !!el || !create)
+        ) as any
+    )
+  );
 
   const baseDispose = (element as any).dispose?.bind(element);
-  element.dispose = () => {
+  (element as any).dispose = () => {
     propsSubscription.unsubscribe();
     _props.dispose();
-    element.elements.dispose();
-    if (baseDispose) baseDispose();
+    elements.dispose?.();
+    baseDispose?.();
   };
 
-  element.cloneIds = (clone: y.Map<any>) => {
-    element.cloneOwnId(clone);
-  };
+  assert(
+    setObjectProperty(element, "cloneIds", (clone: y.Map<any>) => {
+      (element as any).cloneOwnId(clone);
+    })
+  );
 
-  setEnhancer(element, attachPrimitiveElement);
-  return true;
+  return setEnhancer<PrimitiveElement>(element, attachPrimitiveElement);
 }
 
 export function createPrimitiveElement(fragment: Fragment): PrimitiveElement {

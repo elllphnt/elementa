@@ -1,34 +1,35 @@
 import { ElementData } from "@elllphnt/elementa-base";
 import * as y from "yjs";
-import { Fragment } from "../fragment.js";
-import { attachContainerElement, attachPrimitiveElement } from "./_.js";
+import { Fragment } from "../../../_interfaces/_.js";
+import { Element } from "../../../_interfaces/component/elements/element.js";
 import { attachComponentElement } from "./component/_.js";
-import { Element } from "./element.js";
+import { attachContainerElement } from "./container.js";
 import { attachMediaElement } from "./media.js";
+import { attachPrimitiveElement } from "./primitive/primitive.js";
 import { attachSlotElement } from "./slot.js";
 import { attachTextElement } from "./text.js";
 import { attachVectorElement } from "./vector.js";
 
-export function createElement(
-  ymap: y.Map<any>,
+export function attachElement(
+  element: y.Map<any>,
   fragment: Fragment
-): ymap is Element {
-  const type = ymap.get("type") as ElementData["type"];
+): element is y.Map<any> & Element {
+  const type = element.get("type") as ElementData["type"];
   switch (type) {
     case "component":
-      return attachComponentElement(ymap, fragment);
+      return attachComponentElement(element, fragment);
     case "container":
-      return attachContainerElement(ymap, fragment);
+      return attachContainerElement(element, fragment);
     case "slot":
-      return attachSlotElement(ymap, fragment);
+      return attachSlotElement(element, fragment);
     case "text":
-      return attachTextElement(ymap, fragment);
+      return attachTextElement(element, fragment);
     case "vector":
-      return attachVectorElement(ymap, fragment);
+      return attachVectorElement(element, fragment);
     case "media":
-      return attachMediaElement(ymap, fragment);
+      return attachMediaElement(element, fragment);
     case "primitive":
-      return attachPrimitiveElement(ymap, fragment);
+      return attachPrimitiveElement(element, fragment);
     default:
       throw new Error(`Unknown element type: ${type}`);
   }

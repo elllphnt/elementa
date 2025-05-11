@@ -1,71 +1,65 @@
-import { ContainerElementData } from "@elllphnt/elementa-base";
 import {
+  assert,
+  attachEnhancedReactiveList,
   combineLatestOrEmpty,
   getOrCreateYArray,
   setEnhancer,
+  setObjectGetter,
+  setObjectProperty,
 } from "@elllphnt/elementa-utils";
-import { map, Observable } from "rxjs";
+import { map } from "rxjs";
 import * as y from "yjs";
-import { Fragment } from "../fragment.js";
-import { attachElementList, ElementList } from "./_list.js";
-import { attachBaseElement, Element } from "./element.js";
+import { Element, Fragment } from "../../../_interfaces/_.js";
+import { ContainerElement } from "../../../_interfaces/component/elements/container.js";
+import { attachElement } from "./_create.js";
+import { attachBaseElement } from "./element.js";
 
-export type ContainerElement = Element<ContainerElementData> & {
-  content: ElementList;
-
-  allCssStylesheets: any[];
-  allCssStylesheets$: Observable<any[]>;
-};
-
-/**
- * Attach ContainerElement behavior to a y.Map
- */
 export function attachContainerElement(
-  ymap: y.Map<any>,
+  element: y.Map<any>,
   fragment: Fragment
-): ymap is ContainerElement {
-  ymap.set("type", "container");
-  if (!attachBaseElement(ymap, fragment)) {
-    throw new Error("Failed to attach base element to ymap");
-  }
-  const element = ymap as ContainerElement;
+): element is y.Map<any> & ContainerElement {
+  element.set("type", "container");
 
-  const content = getOrCreateYArray(ymap, "content");
-  attachElementList(getOrCreateYArray(ymap, "content"), fragment);
-  element.content = content as ElementList;
+  assert(attachBaseElement(element, fragment));
 
-  Object.defineProperty(element, "allCssStylesheets", {
-    get() {
-      return [element.cssStyleSheet, ...element.content.allCssStylesheets];
-    },
-    configurable: true,
-  });
-  element.allCssStylesheets$ = combineLatestOrEmpty([
-    element.content.allCssStylesheets$,
-  ]).pipe(
-    map(([childrenSheets]) => [element.cssStyleSheet, ...childrenSheets.flat()])
+  const content = getOrCreateYArray(element, "content");
+  assert(
+    attachEnhancedReactiveList<Element>(content, attachElement, (ymap) =>
+      attachElement(ymap, fragment)
+    )
+  );
+  assert(setObjectGetter(element, "content", () => content.items));
+  assert(setObjectProperty(element, "content$", content.items$));
+
+  assert(
+    setObjectGetter(element, "allCssStylesheets", () => [
+      element.cssStyleSheet,
+      ...element.content.flatMap((s) => s.allCssStylesheets),
+    ])
   );
 
-  element.cloneIds = (clone: y.Map<any>) => {
-    element.cloneOwnId(clone);
-    const contentClone = getOrCreateYArray(clone, "content");
-    element.content.cloneIds(contentClone as any);
-  };
+  assert(
+    setObjectProperty(
+      element,
+      "allCssStylesheets$",
+      combineLatestOrEmpty([
+        element.content$.pipe(
+          map((children) => children.map((child) => child.allCssStylesheets$))
+        ),
+      ]).pipe(
+        map(([childrenSheets]) => [
+          element.cssStyleSheet,
+          ...childrenSheets.flat(),
+        ])
+      )
+    )
+  );
 
   const baseDispose = (element as any).dispose?.bind(element);
-  element.dispose = () => {
-    element.content.dispose();
-    if (baseDispose) baseDispose();
+  (element as any).dispose = () => {
+    (element.content as any).dispose?.();
+    baseDispose?.();
   };
 
-  setEnhancer(element, attachContainerElement);
-  return true;
-}
-
-export function createContainerElement(fragment: Fragment): ContainerElement {
-  const ymap = new y.Map<any>();
-  if (!attachContainerElement(ymap, fragment)) {
-    throw new Error("Failed to create ContainerElement");
-  }
-  return ymap as ContainerElement;
+  return setEnhancer<ContainerElement>(element, attachContainerElement);
 }

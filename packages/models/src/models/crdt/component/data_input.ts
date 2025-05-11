@@ -1,65 +1,35 @@
 import { DataInputData } from "@elllphnt/elementa-base";
 import {
+  assert,
   attachReactiveMap,
-  ReactiveMap,
   setEnhancer,
+  setObjectProperty,
   setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
-import { Observable } from "rxjs";
 import * as y from "yjs";
-import { Component } from "./component.js";
+import { Component, DataInput } from "../../_interfaces/_.js";
 
-export type DataInput = ReactiveMap<DataInputData> & {
-  component: Component;
-
-  name: string;
-  name$: Observable<string>;
-
-  varName: string | undefined;
-  varName$: Observable<string | undefined>;
-
-  tsType: string | undefined;
-  tsType$: Observable<string | undefined>;
-
-  required: boolean;
-  required$: Observable<boolean>;
-
-  defaultValue: any;
-  defaultValue$: Observable<any>;
-};
-
-/**
- * Attach DataInput behavior to a y.Map
- */
 export function attachDataInput(
-  ymap: y.Map<any>,
+  input: y.Map<any>,
   component: Component
-): ymap is DataInput {
-  if (!attachReactiveMap<DataInputData>(ymap)) {
-    throw new Error("Failed to attach reactive map to ymap");
-  }
-  const input = ymap as DataInput;
-  input.component = component;
+): input is y.Map<any> & DataInput {
+  assert(attachReactiveMap<DataInputData>(input));
 
-  setReactiveMapGetters(input, [
-    "name",
-    "varName",
-    "tsType",
-    "required",
-    "default",
-  ]);
+  assert(setObjectProperty(input, "component", component));
+  assert(
+    setReactiveMapGetters(input, [
+      "name",
+      "varName",
+      "tsType",
+      "required",
+      "defaultValue",
+    ])
+  );
 
-  setEnhancer(input, attachDataInput);
-  return true;
-}
+  const baseDispose = (input as any).dispose?.bind(input);
+  (input as any).dispose = () => {
+    baseDispose?.();
+  };
 
-/**
- * Create a new local DataInput
- */
-export function createDataInput(component: Component): DataInput {
-  const ymap = new y.Map<any>();
-  if (!attachDataInput(ymap, component)) {
-    throw new Error("Failed to create DataInput");
-  }
-  return ymap as DataInput;
+  return setEnhancer<DataInput>(input, attachDataInput);
 }

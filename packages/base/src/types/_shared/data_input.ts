@@ -11,7 +11,7 @@ export type DataInputData = {
   varName?: string;
   tsType?: string;
   required?: boolean;
-  default?: Resolvable<any>;
+  defaultValue?: Resolvable<any>;
 };
 
 // Schemas

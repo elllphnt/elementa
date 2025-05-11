@@ -1,41 +1,27 @@
-import { MediaData, MediaElementData } from "@elllphnt/elementa-base";
-import { setEnhancer, setReactiveMapGetters } from "@elllphnt/elementa-utils";
-import { Observable } from "rxjs";
+import { MediaElementData } from "@elllphnt/elementa-base";
+import {
+  assert,
+  setEnhancer,
+  setReactiveMapGetters,
+} from "@elllphnt/elementa-utils";
 import * as y from "yjs";
-import { Fragment } from "../fragment.js";
-import { attachBaseElement, Element } from "./element.js";
-
-export type MediaElement = Element<MediaElementData> & {
-  media: MediaData | undefined;
-  media$: Observable<MediaData | undefined>;
-
-  fit: MediaElementData["fit"] | undefined;
-  fit$: Observable<MediaElementData["fit"] | undefined>;
-
-  position: MediaElementData["position"] | undefined;
-  position$: Observable<MediaElementData["position"] | undefined>;
-};
+import { Fragment } from "../../../_interfaces/_.js";
+import { MediaElement } from "../../../_interfaces/component/elements/media.js";
+import { attachBaseElement } from "./element.js";
 
 export function attachMediaElement(
-  ymap: y.Map<any>,
+  element: y.Map<any>,
   fragment: Fragment
-): ymap is MediaElement {
-  ymap.set("type", "media");
-  if (!attachBaseElement(ymap, fragment)) {
-    throw new Error("Failed to attach base element to ymap");
-  }
-  const element = ymap as MediaElement;
+): element is y.Map<any> & MediaElement {
+  element.set("type", "media");
 
-  setReactiveMapGetters(element, ["media", "fit", "position"]);
+  assert(attachBaseElement<MediaElementData>(element, fragment));
+  assert(setReactiveMapGetters(element, ["media", "fit", "position"]));
 
-  setEnhancer(element, attachMediaElement);
-  return true;
-}
+  const baseDispose = (element as any).dispose?.bind(element);
+  (element as any).dispose = () => {
+    baseDispose?.();
+  };
 
-export function createMediaElement(fragment: Fragment): MediaElement {
-  const ymap = new y.Map<any>();
-  if (!attachMediaElement(ymap, fragment)) {
-    throw new Error("Failed to create MediaElement");
-  }
-  return ymap as MediaElement;
+  return setEnhancer<MediaElement>(element, attachMediaElement);
 }

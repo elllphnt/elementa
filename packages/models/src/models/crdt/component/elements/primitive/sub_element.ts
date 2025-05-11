@@ -2,6 +2,7 @@ import { ResolvableOrEvaluable } from "@elllphnt/elementa-base";
 import {
   assert,
   attachEnhancedReactiveMap,
+  attachReactiveMap,
   combineLatestOrEmpty,
   getOrCreateYArray,
   getOrCreateYMap,
@@ -20,17 +21,14 @@ import { ResolvableRecord } from "../../../../_lib/resolvable.js";
 import { Fragment } from "../../fragment.js";
 import { attachElementList, ElementList } from "../_list.js";
 import { attachBaseElement } from "../element.js";
-import {
-  attachPrimitiveSubElement,
-  createPrimitiveSubElement,
-} from "./sub_element.js";
 
-export function attachPrimitiveElement(
+export function attachPrimitiveSubElement(
   element: y.Map<any>,
   fragment: Fragment
-): element is y.Map<any> & PrimitiveElement {
-  element.set("type", "primitive");
-  assert(attachBaseElement(element, fragment));
+): element is y.Map<any> & PrimitiveSubElement {
+  element.set("type", "primitiveSubElement");
+  
+  assert(attachReactiveMap<any>(element));
   assert(setReactiveMapGetters(element, ["primitiveUrl", "props"]));
 
   const content = getOrCreateYArray(element, "content");
@@ -161,5 +159,13 @@ export function attachPrimitiveElement(
     })
   );
 
-  return setEnhancer<PrimitiveElement>(element, attachPrimitiveElement);
+  return setEnhancer<PrimitiveSubElement>(element, attachPrimitiveSubElement);
+}
+
+export function createPrimitiveSubElement(fragment: Fragment): PrimitiveSubElement {
+  const ymap = new y.Map<any>();
+  if (!attachPrimitiveSubElement(ymap, fragment)) {
+    throw new Error("Failed to create PrimitiveSubElement");
+  }
+  return ymap as PrimitiveSubElement;
 }

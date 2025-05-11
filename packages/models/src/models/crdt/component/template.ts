@@ -1,39 +1,28 @@
-import { setEnhancer } from "@elllphnt/elementa-utils";
-import { Observable } from "rxjs";
+import {
+  assert,
+  setEnhancer,
+  setObjectGetter,
+  setObjectProperty,
+} from "@elllphnt/elementa-utils";
 import * as y from "yjs";
-import { Component } from "./component.js";
-import { Fragment, FragmentVariant, attachFragment } from "./fragment.js";
-
-export type Template = Fragment & {
-  name: string;
-  name$: Observable<string>;
-};
+import { FragmentVariant, attachFragment } from "./fragment.js";
+import { Component } from "../../_interfaces/_.js";
+import { Template } from "../../_interfaces/component/template.js";
 
 export function attachTemplate(
-  ymap: y.Map<any>,
+  template: y.Map<any>,
   component: Component
-): ymap is Template {
-  if (!attachFragment(ymap, component, FragmentVariant.Template)) {
-    throw new Error("Failed to attach fragment to ymap");
-  }
-  const template = ymap as Template;
+): template is y.Map<any> & Template {
+  assert(attachFragment(template, component, FragmentVariant.Template));
 
-  Object.defineProperty(template, "name", {
-    get() {
-      return template.component.name;
-    },
-  });
+  assert(setObjectGetter(template, "name", () => template.component.name));
 
-  template.name$ = template.component.name$;
+  assert(setObjectProperty(template, "name$", template.component.name$));
 
-  setEnhancer(template, attachTemplate);
-  return true;
-}
+  const baseDispose = (template as any).dispose?.bind(template);
+  (template as any).dispose = () => {
+    baseDispose?.();
+  };
 
-export function createTemplate(component: Component): Template {
-  const ymap = new y.Map<any>();
-  if (!attachTemplate(ymap, component)) {
-    throw new Error("Failed to create Template");
-  }
-  return ymap as Template;
+  return setEnhancer<Template>(template, attachTemplate);
 }

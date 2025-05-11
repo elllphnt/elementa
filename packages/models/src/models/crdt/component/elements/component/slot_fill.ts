@@ -1,6 +1,7 @@
 import { Expression, SlotFillData } from "@elllphnt/elementa-base";
 import {
   assert,
+  attachEnhancedReactiveList,
   attachReactiveMap,
   combineLatestOrEmpty,
   getOrCreateYArray,
@@ -12,10 +13,9 @@ import {
 import { map, Observable, switchMap } from "rxjs";
 import * as y from "yjs";
 import { StylesheetCssStyleSheet } from "../../../../../css/_.js";
-import { SlotFill } from "../../../../_interfaces/_.js";
+import { Element, Fragment, SlotFill } from "../../../../_interfaces/_.js";
 import { attachStylesheet } from "../../../style/stylesheet.js";
-import { Fragment } from "../../fragment.js";
-import { attachElementList } from "../_list.js";
+import { attachElement } from "../_create.js";
 
 export function attachSlotFill(
   slot: y.Map<any>,
@@ -34,7 +34,11 @@ export function attachSlotFill(
   assert(setObjectProperty(slot, "cssStyleSheet", cssStyleSheet));
 
   const content = getOrCreateYArray(slot, "content");
-  assert(attachElementList(content, fragment));
+  assert(
+    attachEnhancedReactiveList<Element>(content, attachElement, (ymap) =>
+      attachElement(ymap, fragment)
+    )
+  );
   assert(setObjectGetter(slot, "content", () => content.items));
   assert(setObjectProperty(slot, "content$", content.items$));
 
@@ -53,7 +57,9 @@ export function attachSlotFill(
       combineLatestOrEmpty([
         slot.content$.pipe(
           switchMap((children) =>
-            children.map((child) => child.allCssStylesheets$)
+            combineLatestOrEmpty(
+              children.map((child) => child.allCssStylesheets$)
+            )
           )
         ),
       ]).pipe(map(([children]) => [cssStyleSheet, ...children.flat()]))
@@ -114,7 +120,6 @@ export function attachSlotFill(
   // Cleanup
   const baseDispose = (slot as any).dispose?.bind(slot);
   (slot as any).dispose = () => {
-    slot.content.forEach((child) => child.dispose());
     cssStyleSheet.dispose?.();
     baseDispose?.();
   };

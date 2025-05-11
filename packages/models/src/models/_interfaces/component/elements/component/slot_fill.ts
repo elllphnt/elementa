@@ -2,6 +2,7 @@ import { Expression } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
 import { CssStyleSheet } from "../../../../../css/_.js";
 import { Component } from "../../component.js";
+import { Element } from "../element.js";
 
 export interface SlotFill {
   component: Component;
