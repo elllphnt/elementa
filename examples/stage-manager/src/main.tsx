@@ -1,8 +1,9 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { StageManager } from "./stage_manager";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <div>Stager</div>
+    <StageManager />
   </StrictMode>
 );
