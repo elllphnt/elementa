@@ -2,10 +2,10 @@
 
 import { Stylesheet } from "@elllphnt/elementa-models";
 import { BehaviorSubject } from "rxjs";
-import { Instance, InstanceType } from "../instance";
+import { Runtime } from "../../runtime/runtime";
+import { ElementaInstanceType, Instance } from "../instance";
 import { StyleCascadeResolver } from "./cascade";
 import { StyleInstance } from "./style";
-import { Runtime } from "../../runtime/runtime";
 
 export class StyleSheetInstance extends Instance {
   readonly stylesheet: Stylesheet;
@@ -48,7 +48,7 @@ export class StyleSheetInstance extends Instance {
     parent?: Instance;
   }) {
     super({
-      type: InstanceType.StyleSheet,
+      type: ElementaInstanceType.StyleSheet,
       runtime,
       parent,
     });

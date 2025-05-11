@@ -1,7 +1,9 @@
 import {
+  createStylesheet,
   CssStyleSheet,
   StyleManager,
   Stylesheet,
+  StylesheetCssStyleSheet,
 } from "@elllphnt/elementa-models";
 import { BehaviorSubject, Observable } from "rxjs";
 
@@ -14,8 +16,10 @@ export class LocalStyleManager extends StyleManager {
 
   constructor() {
     super();
-    this.rootStylesheet = new Stylesheet();
-    this.rootCssStylesheet = new CssStyleSheet();
+    this.rootStylesheet = createStylesheet({})
+    this.rootCssStylesheet = new StylesheetCssStyleSheet({
+      stylesheet:
+    });
     this._stylesheets.next([this.rootCssStylesheet]);
   }
 

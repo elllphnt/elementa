@@ -6,7 +6,7 @@ import {
 import { Style } from "@elllphnt/elementa-models";
 import { assert } from "@elllphnt/elementa-utils";
 import { Observable, of, switchMap } from "rxjs";
-import { Instance, InstanceType } from "../instance";
+import { ElementaInstanceType, Instance } from "../instance";
 import { StyleSheetInstance } from "./stylesheet";
 
 /**
@@ -86,7 +86,7 @@ export class StyleInstance extends Instance {
     stylesheet: StyleSheetInstance;
   }) {
     super({
-      type: InstanceType.Style,
+      type: ElementaInstanceType.Style,
       runtime: stylesheet.runtime,
       parent: stylesheet,
     });

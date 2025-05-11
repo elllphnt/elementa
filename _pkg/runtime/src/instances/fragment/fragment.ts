@@ -3,7 +3,7 @@ import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, combineLatest, Observable } from "rxjs";
 import { createElementInstance } from "../elements/_create";
 import { ElementInstance } from "../elements/element";
-import { Instance, InstanceType } from "../instance";
+import { ElementaInstanceType, Instance } from "../instance";
 import { SlotInstance } from "../slot/slot";
 import { FragmentEnvironment } from "./environment/environment";
 
@@ -46,7 +46,7 @@ export class FragmentInstance extends Instance {
     parent?: Instance;
   }) {
     super({
-      type: InstanceType.Fragment,
+      type: ElementaInstanceType.Fragment,
       runtime: environment.runtime,
       parent,
     });

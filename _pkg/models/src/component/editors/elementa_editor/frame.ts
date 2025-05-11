@@ -1,8 +1,14 @@
 import { CornerData, ElementaFrameData } from "@elllphnt/elementa-base";
-import { setEnhancer, setModelFields } from "@elllphnt/elementa-utils";
+import {
+  assert,
+  getOrCreateYMap,
+  setEnhancer,
+  setModelFields,
+} from "@elllphnt/elementa-utils";
 import { Observable, of, switchMap } from "rxjs";
 import * as y from "yjs";
 import { attachIdentifiable, Identifiable } from "../../identifiable.js";
+import { createRenderableContent, RenderableContent } from "../elementa/_.js";
 import {
   attachRenderingContext,
   RenderingContext,
@@ -12,6 +18,7 @@ import { ElementaEditorComponentState } from "./state.js";
 export type ElementaFrame = Identifiable<ElementaFrameData> & {
   componentState: ElementaEditorComponentState;
   renderingContext: RenderingContext;
+  content: RenderableContent;
 
   name: string | undefined;
   name$: Observable<string | undefined>;
@@ -52,17 +59,16 @@ export function attachElementaFrame(
   const frame = ymap as ElementaFrame;
 
   frame.componentState = componentState;
-  attachRenderingContext(ymap, componentState.component);
 
-  setModelFields(frame, [
-    "name",
-    "fragmentId",
-    "x",
-    "y",
-    "height",
-    "width",
-    "corners",
-  ]);
+  setModelFields(frame, ["name", "x", "y", "height", "width", "corners"]);
+
+  const renderingContext = getOrCreateYMap(frame, "renderingContext");
+  assert(attachRenderingContext(renderingContext, componentState.component));
+  frame.renderingContext = renderingContext;
+
+  const renderableContent = getOrCreateYMap(frame, "renderableContent");
+  assert(createRenderableContent(renderableContent, componentState.component));
+  frame.content = renderableContent;
 
   // Fragment dynamic lookup
   Object.defineProperty(frame, "fragment", {

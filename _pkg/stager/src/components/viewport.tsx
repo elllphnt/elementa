@@ -7,7 +7,7 @@ export function Viewport({
   children,
 }: PropsWithChildren<{
   renderer: ElementaStager;
-}>): JSX.Element {
+}>) {
   const viewport = renderer.viewport;
   const containerRef = useRef<HTMLDivElement>(null);
 

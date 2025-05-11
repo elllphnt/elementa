@@ -8,13 +8,7 @@ export type LocalFileState = {
 };
 
 export class LocalFile extends File {
-  readonly id: string;
-  readonly project: Project;
   private _state$: BehaviorSubject<LocalFileState>;
-
-  get url(): string {
-    return `${this.project.url}:${this.id}`;
-  }
 
   get name(): string {
     return this._state$.value.name;
@@ -36,9 +30,8 @@ export class LocalFile extends File {
   }
 
   constructor({ id, project }: { id: string; project: Project }) {
-    super();
-    this.id = id;
-    this.project = project;
+    super({ id, project });
+
     this._state$ = new BehaviorSubject<LocalFileState>({
       name: "",
       type: "js",

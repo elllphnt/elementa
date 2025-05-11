@@ -5,7 +5,6 @@ import { LocalPackageManager } from "./package_manager";
 import { LocalStyleManager } from "./style_manager";
 
 export class LocalProject extends Project {
-  readonly id: string;
   readonly styleManager: LocalStyleManager;
   readonly packageManager: LocalPackageManager;
   readonly componentManager: LocalComponentManager;
@@ -22,8 +21,7 @@ export class LocalProject extends Project {
     id: string;
     infrastructure: Infrastructure;
   }) {
-    super({ infrastructure });
-    this.id = id;
+    super({ id, infrastructure });
     this.styleManager = new LocalStyleManager();
     this.packageManager = new LocalPackageManager();
     this.componentManager = new LocalComponentManager();

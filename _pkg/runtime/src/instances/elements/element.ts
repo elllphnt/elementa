@@ -1,6 +1,6 @@
 import { Element } from "@elllphnt/elementa-models";
 import { FragmentEnvironment } from "../fragment/environment/environment";
-import { Instance, InstanceType } from "../instance";
+import { ElementaInstanceType, Instance } from "../instance";
 import { StyleSheetInstance } from "../stylesheet/stylesheet";
 
 export abstract class ElementInstance<
@@ -11,7 +11,7 @@ export abstract class ElementInstance<
   readonly stylesheet: StyleSheetInstance;
 
   get parentElement(): ElementInstance | undefined {
-    return this.parent?.type === InstanceType.Element
+    return this.parent?.type === ElementaInstanceType.Element
       ? (this.parent as ElementInstance)
       : undefined;
   }
@@ -26,7 +26,7 @@ export abstract class ElementInstance<
     parent?: Instance;
   }) {
     super({
-      type: InstanceType.Element,
+      type: ElementaInstanceType.Element,
       runtime: environment.runtime,
       parent,
     });

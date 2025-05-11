@@ -8,7 +8,7 @@ import { BehaviorSubject } from "rxjs";
 import * as y from "yjs";
 import { File } from "./file.js";
 
-export abstract class FileModel<M extends ReactiveMap> extends Disposable {
+export abstract class ModelFile<M extends ReactiveMap> extends Disposable {
   readonly file: File;
 
   private _model$: BehaviorSubject<M | undefined> = new BehaviorSubject<

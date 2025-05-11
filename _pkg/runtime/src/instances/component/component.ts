@@ -1,8 +1,8 @@
 import { Component } from "@elllphnt/elementa-models";
 import { FragmentInstance } from "../fragment/_";
-import { Instance, InstanceType } from "../instance";
+import { ElementaInstanceType, Instance } from "../instance";
 import { ComponentInstanceFragmentEnvironment } from "./fragment_environment";
-import { ComponentPropResolver } from "./prop_resolver/prop_resolver";
+import { ComponentInputResolver } from "./input_resolver/input_resolver";
 
 export class ComponentInstance extends Instance {
   readonly component: Component;
@@ -15,11 +15,11 @@ export class ComponentInstance extends Instance {
     parent,
   }: {
     component: Component;
-    propResolver: ComponentPropResolver;
+    propResolver: ComponentInputResolver;
     parent?: Instance;
   }) {
     super({
-      type: InstanceType.Component,
+      type: ElementaInstanceType.Component,
       runtime: propResolver.environment.runtime,
       parent,
     });

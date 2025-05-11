@@ -1,3 +1,4 @@
+import { StaticReference } from "@elllphnt/elementa-base";
 import { File, Infrastructure } from "@elllphnt/elementa-models";
 import { LocalFile } from "./file";
 import { LocalProject } from "./project/project";
@@ -29,19 +30,7 @@ export class LocalInfra implements Infrastructure {
     return project;
   }
 
-  resolveAbsoluteUrl(
-    projectUrl: string,
-    relativeUrl: string
-  ): string | undefined {
-    throw new Error("Method not implemented.");
-  }
-  resolveRelativeUrl(fileUrl: string): string | undefined {
-    throw new Error("Method not implemented.");
-  }
-  resolveProjectUrl(fileUrl: string): string | undefined {
-    throw new Error("Method not implemented.");
-  }
-  resolveStaticReference<T>(ref: StaticReference): Promise<T> {
-    throw new Error("Method not implemented.");
+  async resolveStaticReference<T>(ref: StaticReference): Promise<T> {
+    return ref as T;
   }
 }

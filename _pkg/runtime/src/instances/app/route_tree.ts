@@ -2,11 +2,11 @@ import { RouteTree, SlotFill } from "@elllphnt/elementa-models";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable, of, switchMap } from "rxjs";
 import { ComponentInstance } from "../component/component";
-import { ComponentPropResolver } from "../component/prop_resolver/prop_resolver";
+import { ComponentInputResolver } from "../component/input_resolver/input_resolver";
 import { FragmentEnvironment } from "../fragment/_";
-import { Instance, InstanceType } from "../instance";
+import { ElementaInstanceType, Instance } from "../instance";
 
-export class RouteComponentPropResolver extends ComponentPropResolver {
+export class RouteComponentPropResolver extends ComponentInputResolver {
   propValue() {
     return undefined;
   }
@@ -93,7 +93,7 @@ export class RouteTreeInstance extends Instance {
     parent?: Instance;
   }) {
     super({
-      type: InstanceType.Route,
+      type: ElementaInstanceType.Route,
       runtime: environment.runtime,
       parent,
     });

@@ -1,13 +1,13 @@
 import { SlotFill } from "@elllphnt/elementa-models";
 import { Observable } from "rxjs";
-import { ComponentPropResolver } from "../../component/prop_resolver/prop_resolver";
+import { ComponentInputResolver } from "../../component/input_resolver/input_resolver";
 import { ComponentElementInstance } from "./component";
 
 /**
  * Prop and slot binding resolver for components rendered via <ComponentElement>.
  * Pulls values directly from the ComponentElementInstance's element data model.
  */
-export class ComponentElementComponentPropResolver extends ComponentPropResolver {
+export class ComponentElementComponentPropResolver extends ComponentInputResolver {
   readonly componentElementInstance: ComponentElementInstance;
 
   propValue(varName: string) {

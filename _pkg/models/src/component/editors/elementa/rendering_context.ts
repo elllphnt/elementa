@@ -28,9 +28,6 @@ export type RenderingContext = ReactiveMap<RenderingContextData> & {
   theme: ColorTheme;
   viewport: Viewport;
 
-  props: Record<string, any>;
-  props$: Observable<Record<string, any>>;
-
   viewportEnabled: boolean;
   viewportEnabled$: Observable<boolean>;
 
@@ -42,9 +39,6 @@ export type RenderingContext = ReactiveMap<RenderingContextData> & {
 
   styleModifiers: StyleModifierData[];
   styleModifiers$: Observable<StyleModifierData[]>;
-
-  setProp: (varName: string, value: any) => void;
-  clearProp: (varName: string) => void;
 };
 
 /**
@@ -68,7 +62,6 @@ export function attachRenderingContext(
   context.viewport = viewport;
 
   setModelFields(context, [
-    "props",
     "viewportEnabled",
     "styleModifierEnabled",
     "styleModifiers",
@@ -144,20 +137,6 @@ export function attachRenderingContext(
   context.styleModifiers$ = context.styleModifierEnabled$.pipe(
     switchMap((enabled) => (enabled ? _styleModifiers$ : of([])))
   );
-
-  // Methods
-  context.setProp = (varName: string, value: any) => {
-    context.set("props", {
-      ...context.props,
-      [varName]: value,
-    });
-  };
-
-  context.clearProp = (varName: string) => {
-    const newProps = { ...context.props };
-    delete newProps[varName];
-    context.set("props", newProps);
-  };
 
   setEnhancer(context, attachRenderingContext);
   return true;

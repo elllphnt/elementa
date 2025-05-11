@@ -7,9 +7,10 @@ import {
   of,
   switchMap,
 } from "rxjs";
-import { ElementInstance, FragmentEnvironment } from "../_";
+import { ElementInstance } from "../elements/_";
 import { createElementInstance } from "../elements/_create";
-import { Instance, InstanceType } from "../instance";
+import { FragmentEnvironment } from "../fragment/_";
+import { ElementaInstanceType, Instance } from "../instance";
 import { StyleSheetInstance } from "../stylesheet/stylesheet";
 
 export class SlotInstance extends Instance {
@@ -61,7 +62,7 @@ export class SlotInstance extends Instance {
     parent?: Instance;
   }) {
     super({
-      type: InstanceType.Slot,
+      type: ElementaInstanceType.Slot,
       runtime: environment.runtime,
       parent,
     });

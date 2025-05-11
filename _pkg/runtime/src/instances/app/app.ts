@@ -1,12 +1,13 @@
 import { App } from "@elllphnt/elementa-models";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject } from "rxjs";
-import { FragmentEnvironment } from "../fragment/_";
-import { Instance, InstanceType } from "../instance";
-import { RouteTreeInstance } from "./route_tree";
+import { ElementaInstanceType, Instance } from "../instance.js";
+import { AppInputResolver } from "./input_resolver/_.js";
+import { RouteTreeInstance } from "./route_tree.js";
 
 export class AppInstance extends Instance {
   readonly app: App;
+  readonly inputResolver: AppInputResolver;
 
   private _routes$ = new BehaviorSubject<RouteTreeInstance[]>([]);
 
@@ -19,19 +20,20 @@ export class AppInstance extends Instance {
 
   constructor({
     app,
-    environment,
+    inputResolver,
     parent,
   }: {
     app: App;
-    environment: FragmentEnvironment;
+    inputResolver: AppInputResolver;
     parent?: Instance;
   }) {
     super({
-      type: InstanceType.App,
-      runtime: environment.runtime,
+      type: ElementaInstanceType.App,
+      runtime: inputResolver.environment.runtime,
       parent,
     });
     this.app = app;
+    this.inputResolver = inputResolver;
 
     const routeSubscription = this.app.routes.observable$.subscribe(
       (routes) => {

@@ -7,10 +7,10 @@ import { FragmentEnvironment } from "../fragment/environment/environment";
 import { StateInstance } from "../states/_";
 import { createStateInstance } from "../states/_create";
 import { ComponentInstance } from "./component";
-import { ComponentPropResolver } from "./prop_resolver/prop_resolver";
+import { ComponentInputResolver } from "./input_resolver/input_resolver";
 
 export class ComponentInstanceFragmentEnvironment extends FragmentEnvironment {
-  readonly propResolver: ComponentPropResolver;
+  readonly propResolver: ComponentInputResolver;
   readonly componentInstance: ComponentInstance;
 
   private _states$ = new BehaviorSubject<StateInstance[]>([]);
@@ -80,7 +80,7 @@ export class ComponentInstanceFragmentEnvironment extends FragmentEnvironment {
     propResolver,
   }: {
     componentInstance: ComponentInstance;
-    propResolver: ComponentPropResolver;
+    propResolver: ComponentInputResolver;
   }) {
     super({ runtime: propResolver.environment.runtime });
     this.componentInstance = componentInstance;

@@ -7,7 +7,7 @@ import { FragmentEnvironment } from "../../fragment/environment/environment";
  * Used by ComponentInstanceEnvironment to abstract over different input contexts
  * (e.g., route-based rendering vs nested component element rendering).
  */
-export abstract class ComponentPropResolver {
+export abstract class ComponentInputResolver {
   readonly environment: FragmentEnvironment;
 
   constructor({ environment }: { environment: FragmentEnvironment }) {

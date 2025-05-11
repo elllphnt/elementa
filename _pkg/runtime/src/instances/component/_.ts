@@ -1,2 +1,2 @@
 export * from "./component";
-export * from "./prop_resolver/_";
+export * from "./input_resolver/_";

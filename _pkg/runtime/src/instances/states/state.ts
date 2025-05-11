@@ -1,6 +1,6 @@
 import { State } from "@elllphnt/elementa-models";
 import { Runtime } from "../../runtime/runtime";
-import { Instance, InstanceType } from "../instance";
+import { ElementaInstanceType, Instance } from "../instance";
 
 export abstract class StateInstance<S extends State = State> extends Instance {
   readonly model: S;
@@ -18,7 +18,7 @@ export abstract class StateInstance<S extends State = State> extends Instance {
     runtime: Runtime;
     parent?: Instance;
   }) {
-    super({ type: InstanceType.State, runtime, parent });
+    super({ type: ElementaInstanceType.State, runtime, parent });
     this.model = state;
   }
 }

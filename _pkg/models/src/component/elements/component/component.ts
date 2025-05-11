@@ -14,7 +14,7 @@ import { filter, map, Observable, switchMap, tap } from "rxjs";
 import * as y from "yjs";
 import { ResolvableRecord } from "../../../_lib/resolvable.js";
 import { CssStyleSheet } from "../../../css/_.js";
-import { FileModel } from "../../../infrastructure/_.js";
+import { ModelFile } from "../../../infrastructure/_.js";
 import { Component } from "../../component.js";
 import { Fragment } from "../../fragment.js";
 import { Identifiable } from "../../identifiable.js";
@@ -33,8 +33,8 @@ export type ComponentElement = Element<ComponentElementData> & {
   absoluteComponentUrl: string | undefined;
   absoluteComponentUrl$: Observable<string | undefined>;
 
-  localComponent: FileModel<Component> | undefined;
-  localComponent$: Observable<FileModel<Component> | undefined>;
+  localComponent: ModelFile<Component> | undefined;
+  localComponent$: Observable<ModelFile<Component> | undefined>;
 
   componentName: string | undefined;
   componentName$: Observable<string | undefined>;

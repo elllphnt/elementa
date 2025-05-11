@@ -1,0 +1,55 @@
+import { AppRenderableContent } from "@elllphnt/elementa-models";
+import { BehaviorSubject, of, switchMap } from "rxjs";
+import { AppInstance } from "../../../../app/_.js";
+import { FragmentEnvironment } from "../../../../fragment/_.js";
+import { ModelInstance } from "../../../../model.js";
+import { ElementaEditorInstanceType } from "../_types.js";
+
+export class AppRenderableContentInstance extends ModelInstance<AppRenderableContent> {
+  private _app$ = new BehaviorSubject<AppInstance | undefined>(undefined);
+
+  app$ = this._app$.asObservable();
+  get app(): AppInstance | undefined {
+    return this._app$.getValue();
+  }
+
+  constructor({
+    model,
+    environment,
+  }: {
+    model: AppRenderableContent;
+    environment: FragmentEnvironment;
+  }) {
+    super({
+      type: ElementaEditorInstanceType.RenderableContext,
+      model,
+      runtime: environment.runtime,
+    });
+
+    const appSubscription = this.model.app$
+      .pipe(switchMap((f) => f?.model$ ?? of(undefined)))
+      .subscribe((app) => {
+        const current = this.app;
+        if (app) {
+          this._app$.next(
+            new AppInstance({
+              app,
+              environment,
+              parent: this,
+            })
+          );
+        } else {
+          this._app$.next(undefined);
+        }
+
+        if (current) {
+          current.dispose();
+        }
+      });
+
+    this.addDisposer(() => {
+      this._app$.complete();
+      appSubscription.unsubscribe();
+    });
+  }
+}

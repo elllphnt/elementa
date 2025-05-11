@@ -11,7 +11,7 @@ import { map, Observable } from "rxjs";
 import * as y from "yjs";
 import { genId } from "../../_lib/id.js";
 import { Component } from "../../component/component.js";
-import { FileModel } from "../../infrastructure/_.js";
+import { ModelFile } from "../../infrastructure/_.js";
 import { App } from "../app.js";
 import { attachRouteTreeList } from "./_list.js";
 
@@ -59,17 +59,17 @@ export type RouteTree = ReactiveMap<RouteData> & {
   absoluteHandlerUrl: string | undefined;
   absoluteHandlerUrl$: Observable<string | undefined>;
 
-  mainViewComponent: FileModel<Component> | undefined;
-  mainViewComponent$: Observable<FileModel<Component> | undefined>;
+  mainViewComponent: ModelFile<Component> | undefined;
+  mainViewComponent$: Observable<ModelFile<Component> | undefined>;
 
-  errorViewComponent: FileModel<Component> | undefined;
-  errorViewComponent$: Observable<FileModel<Component> | undefined>;
+  errorViewComponent: ModelFile<Component> | undefined;
+  errorViewComponent$: Observable<ModelFile<Component> | undefined>;
 
-  pendingViewComponent: FileModel<Component> | undefined;
-  pendingViewComponent$: Observable<FileModel<Component> | undefined>;
+  pendingViewComponent: ModelFile<Component> | undefined;
+  pendingViewComponent$: Observable<ModelFile<Component> | undefined>;
 
-  notFoundViewComponent: FileModel<Component> | undefined;
-  notFoundViewComponent$: Observable<FileModel<Component> | undefined>;
+  notFoundViewComponent: ModelFile<Component> | undefined;
+  notFoundViewComponent$: Observable<ModelFile<Component> | undefined>;
 };
 
 export function attachRouteTree(ymap: y.Map<any>, app: App): ymap is RouteTree {

@@ -1,9 +1,9 @@
 import { SlotFill } from "@elllphnt/elementa-models";
 import { Observable, of } from "rxjs";
 import { FragmentEnvironment } from "../../_";
-import { ComponentPropResolver } from "./prop_resolver";
+import { ComponentInputResolver } from "./input_resolver";
 
-export class StaticComponentPropResolver extends ComponentPropResolver {
+export class StaticComponentInputResolver extends ComponentInputResolver {
   private _props: { [key: string]: unknown };
   private _slotFills: { [key: string]: SlotFill | undefined };
 
