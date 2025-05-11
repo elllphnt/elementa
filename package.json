@@ -5,9 +5,8 @@
         "build": ""
     },
     "workspaces": [
-        "_app/*",
-        "_dev/*",
-        "_pkg/*"
+        "examples/*",
+        "packages/*"
     ],
     "devDependencies": {
         "@eslint/js": "^9.26.0",

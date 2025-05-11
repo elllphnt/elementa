@@ -1,4 +1,3 @@
 packages:
-  - _app/*
-  - _pkg/*
-  - _dev/*
+  - examples/*
+  - packages/*
