@@ -1,2 +1,1 @@
-export * from "./deep_partial";
-export * from "./extendable";
+export * from "./object";
