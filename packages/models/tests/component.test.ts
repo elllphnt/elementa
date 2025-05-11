@@ -2,8 +2,8 @@ import { baseSelector, ComponentData } from "@elllphnt/elementa-base";
 import { test } from "uvu";
 import assert from "uvu/assert";
 import * as y from "yjs";
-import { attachComponent } from "../src/component/component.js";
-import { createComponentElement } from "../src/component/elements/component/component.js";
+import { attachComponent } from "../src/crdt/component/component.js";
+import { createComponentElement } from "../src/crdt/component/elements/component/component.js";
 import {
   createContainerElement,
   createDataInput,

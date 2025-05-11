@@ -1,6 +1,6 @@
 import { StaticReference } from "@elllphnt/elementa-base";
 import { App } from "../app/app.js";
-import { Component } from "../component/component.js";
+import { Component } from "../crdt/component/component.js";
 import { File, ModelFile } from "./file/_.js";
 import { Project } from "./project/project.js";
 

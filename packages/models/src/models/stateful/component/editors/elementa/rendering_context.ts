@@ -1,0 +1,152 @@
+import {
+  RenderingContextData,
+  StyleModifierData,
+} from "@elllphnt/elementa-base";
+import {
+  assert,
+  attachReactiveMap,
+  getOrCreateYMap,
+  ReactiveMap,
+  setEnhancer,
+  setModelFields,
+} from "@elllphnt/elementa-utils";
+import {
+  combineLatest,
+  distinctUntilChanged,
+  map,
+  Observable,
+  of,
+  switchMap,
+} from "rxjs";
+import * as y from "yjs";
+import { Component } from "../../component.js";
+import { attachColorTheme, ColorTheme } from "./color_theme.js";
+import { attachViewport, Viewport } from "./viewport.js";
+
+export type RenderingContext = ReactiveMap<RenderingContextData> & {
+  component: Component;
+  theme: ColorTheme;
+  viewport: Viewport;
+
+  viewportEnabled: boolean;
+  viewportEnabled$: Observable<boolean>;
+
+  styleModifierEnabled: boolean;
+  styleModifierEnabled$: Observable<boolean>;
+
+  customStyleModifiers: StyleModifierData[];
+  customStyleModifiers$: Observable<StyleModifierData[]>;
+
+  styleModifiers: StyleModifierData[];
+  styleModifiers$: Observable<StyleModifierData[]>;
+};
+
+/**
+ * Attach RenderingContext behavior to a y.Map
+ */
+export function attachRenderingContext(
+  ymap: y.Map<any>,
+  component: Component
+): ymap is RenderingContext {
+  assert(attachReactiveMap<RenderingContextData>(ymap));
+  const context = ymap as RenderingContext;
+
+  context.component = component;
+
+  const theme = getOrCreateYMap(context, "theme");
+  assert(attachColorTheme(theme));
+  context.theme = theme;
+
+  const viewport = getOrCreateYMap(context, "viewport");
+  assert(attachViewport(viewport));
+  context.viewport = viewport;
+
+  setModelFields(context, [
+    "viewportEnabled",
+    "styleModifierEnabled",
+    "styleModifiers",
+  ]);
+
+  setModelFields(context, ["viewportEnabled", "styleModifierEnabled"]);
+
+  // Custom style modifiers
+  Object.defineProperty(context, "customStyleModifiers", {
+    get() {
+      return context.get("styleModifiers") ?? [];
+    },
+    set(value) {
+      context.set("styleModifiers", value);
+    },
+  });
+  context.customStyleModifiers$ = context.observable$.pipe(
+    map((value) => value.styleModifiers ?? []),
+    distinctUntilChanged()
+  );
+
+  // Computed modifiers
+  const _themeStyleModifiers$ = context.theme.scheme$.pipe(
+    switchMap((colorScheme) =>
+      colorScheme
+        ? context.component.project.styleManager.colorSchemeModifiers$({
+            colorScheme,
+          })
+        : of([])
+    )
+  );
+
+  const _viewportStyleModifiers$ = combineLatest([
+    context.viewport.height$,
+    context.viewport.width$,
+  ]).pipe(
+    switchMap(([height, width]) => {
+      return context.component.project.styleManager.viewportModifiers$({
+        height,
+        width,
+      });
+    })
+  );
+
+  const _styleModifiers$ = combineLatest([
+    _themeStyleModifiers$,
+    _viewportStyleModifiers$,
+    context.customStyleModifiers$,
+  ]).pipe(
+    map(([themeMods, viewportMods, customMods]) => [
+      ...viewportMods,
+      ...themeMods,
+      ...customMods,
+    ])
+  );
+
+  // Final exposed styleModifiers
+  Object.defineProperty(context, "styleModifiers", {
+    get() {
+      if (!context.styleModifierEnabled) return [];
+      return [
+        ...context.component.project.styleManager.viewportModifiers({
+          width: context.viewport.width,
+          height: context.viewport.height,
+        }),
+        ...context.component.project.styleManager.colorSchemeModifiers({
+          colorScheme: context.theme.scheme,
+        }),
+        ...(context.customStyleModifiers ?? []),
+      ];
+    },
+  });
+  context.styleModifiers$ = context.styleModifierEnabled$.pipe(
+    switchMap((enabled) => (enabled ? _styleModifiers$ : of([])))
+  );
+
+  setEnhancer(context, attachRenderingContext);
+  return true;
+}
+
+/**
+ * Create a new local RenderingContext
+ */
+export function createRenderingContext(component: Component): RenderingContext {
+  const ymap = new y.Map<any>();
+  assert(attachRenderingContext(ymap, component));
+  return ymap;
+}

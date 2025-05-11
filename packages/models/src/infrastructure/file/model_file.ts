@@ -1,14 +1,9 @@
-import {
-  Disposable,
-  Enhancer,
-  isFromEnhancer,
-  ReactiveMap,
-} from "@elllphnt/elementa-utils";
+import { Disposable, Enhancer, isFromEnhancer } from "@elllphnt/elementa-utils";
 import { BehaviorSubject } from "rxjs";
 import * as y from "yjs";
 import { File } from "./file.js";
 
-export abstract class ModelFile<M extends ReactiveMap> extends Disposable {
+export abstract class ModelFile<M> extends Disposable {
   readonly file: File;
 
   private _model$: BehaviorSubject<M | undefined> = new BehaviorSubject<
