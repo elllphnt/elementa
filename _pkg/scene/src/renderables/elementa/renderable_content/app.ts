@@ -1,9 +1,9 @@
 import { AppRenderableContentInstance } from "@elllphnt/elementa-runtime";
 import { createMemoryHistory } from "@tanstack/react-router";
 import { BehaviorSubject } from "rxjs";
-import { Scene } from "../../../../scene/scene.js";
-import { AppRenderable } from "../../../app/app.js";
-import { Renderable } from "../../../renderable.js";
+import { Scene } from "../../../scene/scene.js";
+import { AppRenderable } from "../../app/app.js";
+import { Renderable } from "../../renderable.js";
 
 export class AppRenderableContentRenderable extends Renderable {
   readonly instance: AppRenderableContentInstance;

@@ -23,7 +23,7 @@ export type ViewportData = {
   scale: number;
 };
 
-export class Viewport extends Disposable {
+export class StagerViewport extends Disposable {
   readonly scaleMin: number;
   readonly scaleMax: number;
 

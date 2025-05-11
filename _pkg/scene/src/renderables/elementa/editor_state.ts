@@ -1,12 +1,12 @@
-import { ElementaEditorComponentStateInstance } from "@elllphnt/elementa-runtime";
+import { ElementaStageInstance } from "@elllphnt/elementa-runtime";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject } from "rxjs";
-import { Scene } from "../../../scene/scene.js";
-import { Renderable } from "../../renderable.js";
+import { Scene } from "../../scene/scene.js";
+import { Renderable } from "../renderable.js";
 import { ElementaFrameRenderable } from "./frame.js";
 
-export class ElementaEditorComponentStateRenderable extends Renderable {
-  readonly instance: ElementaEditorComponentStateInstance;
+export class ElementaStageRenderable extends Renderable {
+  readonly instance: ElementaStageInstance;
   private _frames$ = new BehaviorSubject<ElementaFrameRenderable[]>([]);
 
   get frames() {
@@ -22,7 +22,7 @@ export class ElementaEditorComponentStateRenderable extends Renderable {
     instance,
   }: {
     scene: Scene;
-    instance: ElementaEditorComponentStateInstance;
+    instance: ElementaStageInstance;
   }) {
     super({ scene });
     this.instance = instance;

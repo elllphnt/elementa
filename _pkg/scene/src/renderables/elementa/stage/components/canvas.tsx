@@ -1,5 +1,5 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { ElementaStager } from "../elementa_stager";
+import { ElementaStager } from "../elementa_stager.js";
 
 export function Canvas({ renderer }: { renderer: ElementaStager }) {
   const frames = useObservable(renderer.frames$, renderer.frames);

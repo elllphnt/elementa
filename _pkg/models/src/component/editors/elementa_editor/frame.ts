@@ -13,10 +13,10 @@ import {
   attachRenderingContext,
   RenderingContext,
 } from "../elementa/rendering_context.js";
-import { ElementaEditorComponentState } from "./state.js";
+import { ElementaStage } from "./stage.js";
 
 export type ElementaFrame = Identifiable<ElementaFrameData> & {
-  componentState: ElementaEditorComponentState;
+  componentState: ElementaStage;
   renderingContext: RenderingContext;
   content: RenderableContent;
 
@@ -53,7 +53,7 @@ export type ElementaFrame = Identifiable<ElementaFrameData> & {
  */
 export function attachElementaFrame(
   ymap: y.Map<any>,
-  componentState: ElementaEditorComponentState
+  componentState: ElementaStage
 ): ymap is ElementaFrame {
   attachIdentifiable<ElementaFrameData>(ymap as y.Map<any>);
   const frame = ymap as ElementaFrame;
@@ -101,7 +101,7 @@ export function attachElementaFrame(
 }
 
 export function createElementaFrame(
-  componentState: ElementaEditorComponentState
+  componentState: ElementaStage
 ): ElementaFrame {
   const ymap = new y.Map<any>();
   attachElementaFrame(ymap, componentState);

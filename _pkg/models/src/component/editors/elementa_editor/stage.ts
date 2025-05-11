@@ -11,19 +11,16 @@ import * as y from "yjs";
 import { Component } from "../../component.js";
 import { attachElementaFrame, ElementaFrame } from "./frame.js";
 
-export type ElementaEditorComponentState =
-  ReactiveMap<ElementaEditorComponentStateData> & {
-    component: Component;
-    frames: ReactiveList<ElementaFrame>;
-  };
+export type ElementaStage = ReactiveMap<ElementaEditorComponentStateData> & {
+  component: Component;
+  frames: ReactiveList<ElementaFrame>;
+};
 
 export function attachElementaEditorComponentState(
   ymap: y.Map<any>,
   component: Component
-): ymap is ElementaEditorComponentState {
-  const state = attachReactiveMap(
-    ymap
-  ) as unknown as ElementaEditorComponentState;
+): ymap is ElementaStage {
+  const state = attachReactiveMap(ymap) as unknown as ElementaStage;
 
   state.component = component;
 
@@ -45,8 +42,8 @@ export function attachElementaEditorComponentState(
 
 export function createElementaEditorComponentState(
   component: Component
-): ElementaEditorComponentState {
+): ElementaStage {
   const ymap = new y.Map<any>();
   attachElementaEditorComponentState(ymap, component);
-  return ymap as ElementaEditorComponentState;
+  return ymap as ElementaStage;
 }

@@ -4,7 +4,7 @@ import {
   FragmentRenderableContentInstance,
   RenderableContentInstance,
 } from "@elllphnt/elementa-runtime";
-import { Scene } from "../../../../scene/scene.js";
+import { Scene } from "../../../scene/scene.js";
 import { AppRenderableContentRenderable } from "./app.js";
 import { ComponentRenderableContentRenderable } from "./component.js";
 import { FragmentRenderableContentRenderable } from "./fragment.js";

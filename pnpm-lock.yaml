@@ -815,9 +815,18 @@ importers:
       '@elllphnt/elementa-base':
         specifier: workspace:*
         version: link:../base
+      '@elllphnt/elementa-css':
+        specifier: workspace:*
+        version: link:../css
+      '@elllphnt/elementa-models':
+        specifier: workspace:*
+        version: link:../models
       '@elllphnt/elementa-react-utils':
         specifier: workspace:*
         version: link:../react-utils
+      '@elllphnt/elementa-runtime':
+        specifier: workspace:*
+        version: link:../runtime
       '@elllphnt/elementa-scene':
         specifier: workspace:*
         version: link:../scene

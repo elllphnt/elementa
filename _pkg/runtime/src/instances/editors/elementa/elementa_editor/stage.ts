@@ -1,4 +1,4 @@
-import { ElementaEditorComponentState } from "@elllphnt/elementa-models";
+import { ElementaStage } from "@elllphnt/elementa-models";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject } from "rxjs";
 import { Runtime } from "../../../../runtime/runtime.js";
@@ -7,7 +7,7 @@ import { ModelInstance } from "../../../model.js";
 import { ElementaEditorInstanceType } from "../elementa/_types.js";
 import { ElementaFrameInstance } from "./frame.js";
 
-export class ElementaEditorComponentStateInstance extends ModelInstance<ElementaEditorComponentState> {
+export class ElementaStageInstance extends ModelInstance<ElementaStage> {
   private _frames$ = new BehaviorSubject<ElementaFrameInstance[]>([]);
 
   get frames() {
@@ -24,7 +24,7 @@ export class ElementaEditorComponentStateInstance extends ModelInstance<Elementa
   }: {
     runtime: Runtime;
     parent?: Instance;
-    model: ElementaEditorComponentState;
+    model: ElementaStage;
   }) {
     super({
       model,

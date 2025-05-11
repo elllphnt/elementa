@@ -1,4 +1,4 @@
-import { resetCss } from "@elllphnt/elementa-base";
+import { resetCss } from "@elllphnt/elementa-css";
 
 export type ColorPalette = {
   backgroundColor: string;

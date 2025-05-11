@@ -1,8 +1,8 @@
 import { FragmentRenderableContentInstance } from "@elllphnt/elementa-runtime";
 import { BehaviorSubject } from "rxjs";
-import { Scene } from "../../../../scene/scene.js";
-import { FragmentRenderable } from "../../../fragment.js";
-import { Renderable } from "../../../renderable.js";
+import { Scene } from "../../../scene/scene.js";
+import { FragmentRenderable } from "../../fragment.js";
+import { Renderable } from "../../renderable.js";
 
 export class FragmentRenderableContentRenderable extends Renderable {
   readonly instance: FragmentRenderableContentInstance;
