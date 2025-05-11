@@ -1,7 +1,7 @@
 import { ValueState } from "@elllphnt/elementa-models";
-import { Runtime } from "../../runtime/runtime";
-import { Instance } from "../instance";
-import { StateInstance } from "./state";
+import { Runtime } from "../../runtime/runtime.js";
+import { Instance } from "../instance.js";
+import { StateInstance } from "./state.js";
 
 export class ValueStateInstance extends StateInstance<ValueState> {
   constructor({

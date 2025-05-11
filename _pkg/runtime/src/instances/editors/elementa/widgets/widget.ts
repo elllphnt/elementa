@@ -1,7 +1,7 @@
 // import { Widget } from "@elllphnt/elementa-models";
 // import { of } from "rxjs";
-// import { Runtime } from "../../../../runtime/runtime";
-// import { Instance } from "../../../instance";
+// import { Runtime } from "../../../../runtime/runtime.js";
+// import { Instance } from "../../../instance.js";
 
 // export abstract class WidgetInstance<
 //   W extends Widget = Widget

@@ -1,2 +1,2 @@
-export * from "./instances/_";
-export * from "./runtime/_";
+export * from "./instances/_.js";
+export * from "./runtime/_.js";

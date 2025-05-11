@@ -7,11 +7,11 @@ import {
   of,
   switchMap,
 } from "rxjs";
-import { ElementInstance } from "../elements/_";
-import { createElementInstance } from "../elements/_create";
-import { FragmentEnvironment } from "../fragment/_";
-import { ElementaInstanceType, Instance } from "../instance";
-import { StyleSheetInstance } from "../stylesheet/stylesheet";
+import { ElementInstance } from "../elements/_.js";
+import { createElementInstance } from "../elements/_create.js";
+import { FragmentEnvironment } from "../fragment/_.js";
+import { ElementaInstanceType, Instance } from "../instance.js";
+import { StyleSheetInstance } from "../stylesheet/stylesheet.js";
 
 export class SlotInstance extends Instance {
   readonly environment: FragmentEnvironment;

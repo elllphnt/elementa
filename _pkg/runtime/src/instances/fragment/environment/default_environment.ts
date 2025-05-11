@@ -1,5 +1,5 @@
 import { Observable, of } from "rxjs";
-import { FragmentEnvironment } from "./environment";
+import { FragmentEnvironment } from "./environment.js";
 
 /**
  * DefaultFragmentEnvironment is used in fallback or uninitialized cases

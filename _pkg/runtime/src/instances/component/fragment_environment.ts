@@ -1,13 +1,13 @@
-import { StateData, StyleModifierData } from "@elllphnt/elementa-base";
+import { StyleModifierData } from "@elllphnt/elementa-base";
 import { DataInput, SlotFill, State } from "@elllphnt/elementa-models";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, map, Observable, of } from "rxjs";
-import { FragmentInstance } from "../fragment/_";
-import { FragmentEnvironment } from "../fragment/environment/environment";
-import { StateInstance } from "../states/_";
-import { createStateInstance } from "../states/_create";
-import { ComponentInstance } from "./component";
-import { ComponentInputResolver } from "./input_resolver/input_resolver";
+import { FragmentInstance } from "../fragment/_.js";
+import { FragmentEnvironment } from "../fragment/environment/environment.js";
+import { StateInstance } from "../states/_.js";
+import { createStateInstance } from "../states/_create.js";
+import { ComponentInstance } from "./component.js";
+import { ComponentInputResolver } from "./input_resolver/input_resolver.js";
 
 export class ComponentInstanceFragmentEnvironment extends FragmentEnvironment {
   readonly propResolver: ComponentInputResolver;
@@ -56,10 +56,10 @@ export class ComponentInstanceFragmentEnvironment extends FragmentEnvironment {
       map((styles) => styles)
     );
   }
-  get states(): StateInstance<State<StateData>>[] {
+  get states(): StateInstance<State>[] {
     return this._states$.value;
   }
-  get states$(): Observable<StateInstance<State<StateData>>[]> {
+  get states$(): Observable<StateInstance<State>[]> {
     return this._states$.asObservable();
   }
   get props(): DataInput[] {

@@ -1,6 +1,6 @@
 import { Observable, of } from "rxjs";
-import { FragmentEnvironment } from "../../fragment/_";
-import { AppInputResolver } from "./input_resolver";
+import { FragmentEnvironment } from "../../fragment/_.js";
+import { AppInputResolver } from "./input_resolver.js";
 
 export class StaticAppInputResolver extends AppInputResolver {
   private _variables: { [key: string]: unknown };

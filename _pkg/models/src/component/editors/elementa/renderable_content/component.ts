@@ -23,6 +23,9 @@ export type ComponentRenderableContent =
 
     props: Record<string, any>;
     props$: Observable<Record<string, any>>;
+
+    propValue(name: string): any | undefined;
+    propValue$(name: string): Observable<any | undefined>;
   };
 
 /**
@@ -54,6 +57,17 @@ export function attachComponentRenderableContent(
         : undefined;
     },
   });
+
+  content.propValue = (name: string) => {
+    const props = content.props;
+    return props ? props[name] : undefined;
+  };
+
+  content.propValue$ = (name: string) =>
+    content.observable$.pipe(
+      map((value) => value.props?.[name]),
+      map((value) => (value !== undefined ? value : undefined))
+    );
 
   setEnhancer(content, attachComponentRenderableContent);
   return true;

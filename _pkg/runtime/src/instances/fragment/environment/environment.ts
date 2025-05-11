@@ -2,10 +2,10 @@ import { StyleModifierData } from "@elllphnt/elementa-base";
 import { DataInput, SlotFill } from "@elllphnt/elementa-models";
 import { Disposable } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable } from "rxjs";
-import { Runtime } from "../../../runtime/runtime";
-import { Namespace } from "../../namespace/namespace";
-import { StateInstance } from "../../states/state";
-import { FragmentInstance } from "../fragment";
+import { Runtime } from "../../../runtime/runtime.js";
+import { Namespace } from "../../namespace/namespace.js";
+import { StateInstance } from "../../states/state.js";
+import { FragmentInstance } from "../fragment.js";
 
 /**
  * FragmentEnvironment defines the runtime context used during rendering

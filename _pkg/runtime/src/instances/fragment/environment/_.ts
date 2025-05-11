@@ -1,2 +1,2 @@
-export * from "./default_environment";
-export * from "./environment";
+export * from "./default_environment.js";
+export * from "./environment.js";

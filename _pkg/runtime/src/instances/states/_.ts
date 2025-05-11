@@ -1,3 +1,3 @@
-export * from "./module";
-export * from "./state";
-export * from "./value";
+export * from "./module.js";
+export * from "./state.js";
+export * from "./value.js";

@@ -44,7 +44,7 @@ export class AppInstance extends Instance {
           targetRef: (r) => r.model,
           create: (route) =>
             new RouteTreeInstance({
-              environment,
+              environment: this.inputResolver.environment,
               routeTree: route,
               parent: this,
             }),

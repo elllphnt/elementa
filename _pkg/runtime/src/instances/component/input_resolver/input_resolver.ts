@@ -1,6 +1,6 @@
 import { SlotFill } from "@elllphnt/elementa-models";
 import { Observable } from "rxjs";
-import { FragmentEnvironment } from "../../fragment/environment/environment";
+import { FragmentEnvironment } from "../../fragment/environment/environment.js";
 
 /**
  * A binding layer for resolving props and slots during component rendering.

@@ -1,11 +1,11 @@
 import { Fragment } from "@elllphnt/elementa-models";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, combineLatest, Observable } from "rxjs";
-import { createElementInstance } from "../elements/_create";
-import { ElementInstance } from "../elements/element";
-import { ElementaInstanceType, Instance } from "../instance";
-import { SlotInstance } from "../slot/slot";
-import { FragmentEnvironment } from "./environment/environment";
+import { createElementInstance } from "../elements/_create.js";
+import { ElementInstance } from "../elements/element.js";
+import { ElementaInstanceType, Instance } from "../instance.js";
+import { SlotInstance } from "../slot/slot.js";
+import { FragmentEnvironment } from "./environment/environment.js";
 
 export class FragmentInstance extends Instance {
   readonly fragment: Fragment;

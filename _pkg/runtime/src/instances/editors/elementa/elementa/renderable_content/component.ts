@@ -1,5 +1,8 @@
-import { ComponentRenderableContent } from "@elllphnt/elementa-models";
-import { BehaviorSubject, of, switchMap } from "rxjs";
+import {
+  ComponentRenderableContent,
+  SlotFill,
+} from "@elllphnt/elementa-models";
+import { BehaviorSubject, Observable, of, switchMap } from "rxjs";
 import {
   ComponentInputResolver,
   ComponentInstance,
@@ -8,9 +11,40 @@ import { FragmentEnvironment } from "../../../../fragment/_.js";
 import { ModelInstance } from "../../../../model.js";
 import { ElementaEditorInstanceType } from "../_types.js";
 
-export class ComponentRenderableContentInstance extends ModelInstance<ComponentRenderableContent> {
-  propResolver: ComponentInputResolver;
+export class ComponentRenderableContentInputResolver extends ComponentInputResolver {
+  renderableContent: ComponentRenderableContent;
 
+  constructor({
+    environment,
+    renderableContent,
+  }: {
+    environment: FragmentEnvironment;
+    renderableContent: ComponentRenderableContent;
+  }) {
+    super({ environment });
+    this.renderableContent = renderableContent;
+  }
+
+  propValue(name: string): unknown {
+    return this.renderableContent.propValue(name);
+  }
+
+  propValue$(name: string): Observable<unknown> {
+    return this.renderableContent.propValue$(name);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  slotFill(id: string): SlotFill | undefined {
+    return undefined; // slot fills are not supported in this context for now
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  slotFill$(id: string): Observable<SlotFill | undefined> {
+    return of(undefined); // slot fills are not supported in this context for now
+  }
+}
+
+export class ComponentRenderableContentInstance extends ModelInstance<ComponentRenderableContent> {
   private _component$ = new BehaviorSubject<ComponentInstance | undefined>(
     undefined
   );
@@ -41,7 +75,10 @@ export class ComponentRenderableContentInstance extends ModelInstance<ComponentR
           this._component$.next(
             new ComponentInstance({
               component,
-              propResolver: this.propResolver,
+              inputResolver: new ComponentRenderableContentInputResolver({
+                environment,
+                renderableContent: this.model,
+              }),
               parent: this,
             })
           );

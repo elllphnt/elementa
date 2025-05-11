@@ -1,7 +1,7 @@
 // import { entityTypes, switchEntityType } from "@elllphnt/elementa-base";
 // import { FrameWidget, Widget } from "@elllphnt/elementa-models";
-// import { Runtime } from "../../../../runtime/runtime";
-// import { FrameWidgetInstance, Instance, WidgetInstance } from "../../../_";
+// import { Runtime } from "../../../../runtime/runtime.js";
+// import { FrameWidgetInstance, Instance, WidgetInstance } from "../../../_.js";
 
 // export function makeWidgetInstance({
 //   widget,

@@ -51,7 +51,7 @@ export function get(
   let current: unknown = object;
 
   while (current != null && index < keys.length) {
-    current = current[keys[index++]];
+    current = (current as any)[keys[index++]];
   }
 
   return current === undefined ? defaultValue : current;

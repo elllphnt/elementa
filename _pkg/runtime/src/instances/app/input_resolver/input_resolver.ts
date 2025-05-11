@@ -1,5 +1,5 @@
 import { Observable } from "rxjs";
-import { FragmentEnvironment } from "../../fragment/environment/environment";
+import { FragmentEnvironment } from "../../fragment/environment/environment.js";
 
 /**
  * A binding layer for resolving inputs during app rendering.

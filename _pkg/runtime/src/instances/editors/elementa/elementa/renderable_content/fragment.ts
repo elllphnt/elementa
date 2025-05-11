@@ -1,13 +1,39 @@
 import { FragmentRenderableContent } from "@elllphnt/elementa-models";
-import { BehaviorSubject, of, switchMap } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import {
   FragmentEnvironment,
   FragmentInstance,
 } from "../../../../fragment/_.js";
+import { ChildEnvironment } from "../../../../fragment/environment/child_environment.js";
 import { ModelInstance } from "../../../../model.js";
 import { ElementaEditorInstanceType } from "../_types.js";
 
+export class FragmentRenderableContentFragmentEnvironment extends ChildEnvironment {
+  renderableContent: FragmentRenderableContent;
+
+  constructor({
+    environment,
+    renderableContent,
+  }: {
+    environment: FragmentEnvironment;
+    renderableContent: FragmentRenderableContent;
+  }) {
+    super({ parent: environment });
+    this.renderableContent = renderableContent;
+  }
+
+  paramValue(name: string): unknown {
+    return this.renderableContent.paramValue(name);
+  }
+
+  paramValue$(name: string): Observable<unknown> {
+    return this.renderableContent.paramValue$(name);
+  }
+}
+
 export class FragmentRenderableContentInstance extends ModelInstance<FragmentRenderableContent> {
+  environment: FragmentEnvironment;
+
   private _fragment$ = new BehaviorSubject<FragmentInstance | undefined>(
     undefined
   );
@@ -30,26 +56,29 @@ export class FragmentRenderableContentInstance extends ModelInstance<FragmentRen
       runtime: environment.runtime,
     });
 
-    const fragmentSubscription = this.model.fragment$
-      .pipe(switchMap((f) => f?.model$ ?? of(undefined)))
-      .subscribe((fragment) => {
-        const current = this.fragment;
-        if (fragment) {
-          this._fragment$.next(
-            new FragmentInstance({
-              fragment,
-              environment,
-              parent: this,
-            })
-          );
-        } else {
-          this._fragment$.next(undefined);
-        }
+    this.environment = new FragmentRenderableContentFragmentEnvironment({
+      environment,
+      renderableContent: this.model,
+    });
 
-        if (current) {
-          current.dispose();
-        }
-      });
+    const fragmentSubscription = this.model.fragment$.subscribe((fragment) => {
+      const current = this.fragment;
+      if (fragment) {
+        this._fragment$.next(
+          new FragmentInstance({
+            fragment,
+            environment: this.environment,
+            parent: this,
+          })
+        );
+      } else {
+        this._fragment$.next(undefined);
+      }
+
+      if (current) {
+        current.dispose();
+      }
+    });
 
     this.addDisposer(() => {
       this._fragment$.complete();

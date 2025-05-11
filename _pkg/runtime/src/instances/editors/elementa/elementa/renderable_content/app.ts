@@ -1,9 +1,31 @@
 import { AppRenderableContent } from "@elllphnt/elementa-models";
-import { BehaviorSubject, of, switchMap } from "rxjs";
-import { AppInstance } from "../../../../app/_.js";
+import { BehaviorSubject, Observable, of, switchMap } from "rxjs";
+import { AppInputResolver, AppInstance } from "../../../../app/_.js";
 import { FragmentEnvironment } from "../../../../fragment/_.js";
 import { ModelInstance } from "../../../../model.js";
 import { ElementaEditorInstanceType } from "../_types.js";
+
+export class AppRenderableContentInputResolver extends AppInputResolver {
+  renderableContent: AppRenderableContent;
+
+  constructor({
+    environment,
+    renderableContent,
+  }: {
+    environment: FragmentEnvironment;
+    renderableContent: AppRenderableContent;
+  }) {
+    super({ environment });
+    this.renderableContent = renderableContent;
+  }
+
+  variableValue(name: string): unknown {
+    return this.renderableContent.variableValue(name);
+  }
+  variableValue$(name: string): Observable<unknown> {
+    return this.renderableContent.variableValue$(name);
+  }
+}
 
 export class AppRenderableContentInstance extends ModelInstance<AppRenderableContent> {
   private _app$ = new BehaviorSubject<AppInstance | undefined>(undefined);
@@ -34,7 +56,10 @@ export class AppRenderableContentInstance extends ModelInstance<AppRenderableCon
           this._app$.next(
             new AppInstance({
               app,
-              environment,
+              inputResolver: new AppRenderableContentInputResolver({
+                environment,
+                renderableContent: this.model,
+              }),
               parent: this,
             })
           );

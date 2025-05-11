@@ -1,8 +1,8 @@
 import { Infrastructure, PackageData } from "@elllphnt/elementa-models";
 import { Disposable } from "@elllphnt/elementa-utils";
-import { rewriteImports, transpileTsToJs } from "./_utils";
-import { Module } from "./module";
-import { ModuleHost } from "./module_host/module_host";
+import { rewriteImports, transpileTsToJs } from "./_utils.js";
+import { Module } from "./module.js";
+import { ModuleHost } from "./module_host/module_host.js";
 
 export class ModuleManager extends Disposable {
   private infrastructure: Infrastructure;
@@ -27,7 +27,7 @@ export class ModuleManager extends Disposable {
     this.externals = externals;
   }
 
-  private addModule(url) {
+  private addModule(url: string) {
     const module = new Module({
       file: this.infrastructure.file(url),
       evaluate: (url) => this.evaluateModule(url),
@@ -51,11 +51,7 @@ export class ModuleManager extends Disposable {
     try {
       // 1) Fetch raw content
       const content = await this.module(url).file.getContent();
-      const projectUrl = this.infrastructure.resolveProjectUrl(url);
-      if (!projectUrl) {
-        throw new Error(`Failed to resolve project URL for ${url}`);
-      }
-      const project = this.infrastructure.project(projectUrl);
+      const project = this.module(url).file.project;
 
       // 2) Transpile TSX/JSX → ESNext JS
       const jsCode = transpileTsToJs(content);
@@ -125,11 +121,7 @@ export class ModuleManager extends Disposable {
     }
 
     try {
-      const projectUrl = this.infrastructure.resolveProjectUrl(url);
-      if (!projectUrl) {
-        throw new Error(`Failed to resolve project URL for ${url}`);
-      }
-      const project = this.infrastructure.project(projectUrl);
+      const project = module.file.project;
       const packages = await project.packageManager.getPackages();
 
       // 1) Load module to host (including dependencies)

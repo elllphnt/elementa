@@ -22,6 +22,9 @@ export type AppRenderableContent = ReactiveMap<AppRenderableContentData> & {
 
   variables: Record<string, any>;
   variables$: Observable<Record<string, any>>;
+
+  variableValue(name: string): any | undefined;
+  variableValue$(name: string): Observable<any | undefined>;
 };
 
 /**
@@ -51,6 +54,16 @@ export function attachAppRenderableContent(
         : undefined;
     },
   });
+
+  content.variableValue = (name: string) => {
+    const variables = content.variables;
+    return variables ? variables[name] : undefined;
+  };
+  content.variableValue$ = (name: string) =>
+    content.observable$.pipe(
+      map((value) => value.variables?.[name]),
+      map((value) => (value !== undefined ? value : undefined))
+    );
 
   setEnhancer(content, attachAppRenderableContent);
   return true;

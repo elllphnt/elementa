@@ -1,2 +1,2 @@
-// export * from "./frame";
-// export * from "./widget";
+// export * from "./frame.js";
+// export * from "./widget.js";

@@ -9,16 +9,16 @@ import {
   VectorElement,
 } from "@elllphnt/elementa-models";
 
-import { FragmentEnvironment } from "../fragment/environment/environment";
-import { Instance } from "../instance";
-import { ComponentElementInstance } from "./component/component";
-import { ContainerElementInstance } from "./container";
-import { ElementInstance } from "./element";
-import { MediaElementInstance } from "./media";
-import { PrimitiveElementInstance } from "./primitive";
-import { SlotElementInstance } from "./slot";
-import { TextElementInstance } from "./text";
-import { VectorElementInstance } from "./vector";
+import { FragmentEnvironment } from "../fragment/environment/environment.js";
+import { Instance } from "../instance.js";
+import { ComponentElementInstance } from "./component/component.js";
+import { ContainerElementInstance } from "./container.js";
+import { ElementInstance } from "./element.js";
+import { MediaElementInstance } from "./media.js";
+import { PrimitiveElementInstance } from "./primitive.js";
+import { SlotElementInstance } from "./slot.js";
+import { TextElementInstance } from "./text.js";
+import { VectorElementInstance } from "./vector.js";
 
 export function createElementInstance({
   element,

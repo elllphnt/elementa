@@ -1,7 +1,7 @@
 import { Element } from "@elllphnt/elementa-models";
-import { FragmentEnvironment } from "../fragment/environment/environment";
-import { ElementaInstanceType, Instance } from "../instance";
-import { StyleSheetInstance } from "../stylesheet/stylesheet";
+import { FragmentEnvironment } from "../fragment/environment/environment.js";
+import { ElementaInstanceType, Instance } from "../instance.js";
+import { StyleSheetInstance } from "../stylesheet/stylesheet.js";
 
 export abstract class ElementInstance<
   E extends Element = Element

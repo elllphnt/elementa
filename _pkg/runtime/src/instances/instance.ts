@@ -1,5 +1,5 @@
 import { Disposable, keyManager } from "@elllphnt/elementa-utils";
-import { Runtime } from "../runtime/runtime";
+import { Runtime } from "../runtime/runtime.js";
 
 /**
  * Enumerates all runtime instance types in the Elll execution model.

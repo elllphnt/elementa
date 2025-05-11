@@ -1,10 +1,10 @@
 import { ComponentElement } from "@elllphnt/elementa-models";
 import { BehaviorSubject, of, switchMap } from "rxjs";
-import { ComponentInstance } from "../../component/_";
-import { FragmentEnvironment } from "../../fragment/environment/environment";
-import { Instance } from "../../instance";
-import { ElementInstance } from "../element";
-import { ComponentElementComponentPropResolver } from "./component_prop_resolver";
+import { ComponentInstance } from "../../component/_.js";
+import { FragmentEnvironment } from "../../fragment/environment/environment.js";
+import { Instance } from "../../instance.js";
+import { ElementInstance } from "../element.js";
+import { ComponentElementComponentPropResolver } from "./component_prop_resolver.js";
 
 export class ComponentElementInstance<
   E extends ComponentElement = ComponentElement
@@ -47,7 +47,7 @@ export class ComponentElementInstance<
           const currentComponent = this.component;
           const componentInstance = new ComponentInstance({
             component,
-            propResolver: this.componentPropsResolver,
+            inputResolver: this.componentPropsResolver,
           });
           this._component$.next(componentInstance);
           if (currentComponent) {

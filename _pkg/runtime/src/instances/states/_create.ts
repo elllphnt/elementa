@@ -1,11 +1,11 @@
 import { HookState, State, ValueState } from "@elllphnt/elementa-models";
-import { Runtime } from "../../runtime/runtime";
+import { Runtime } from "../../runtime/runtime.js";
+import { Instance } from "../instance.js";
 import {
   HookStateInstance,
-  Instance,
   StateInstance,
   ValueStateInstance,
-} from "../_";
+} from "../states/_.js";
 
 export function createStateInstance({
   state,

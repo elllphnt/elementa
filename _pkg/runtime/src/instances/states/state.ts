@@ -1,6 +1,6 @@
 import { State } from "@elllphnt/elementa-models";
-import { Runtime } from "../../runtime/runtime";
-import { ElementaInstanceType, Instance } from "../instance";
+import { Runtime } from "../../runtime/runtime.js";
+import { ElementaInstanceType, Instance } from "../instance.js";
 
 export abstract class StateInstance<S extends State = State> extends Instance {
   readonly model: S;

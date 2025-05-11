@@ -1,2 +1,2 @@
-export * from "./component";
-export * from "./input_resolver/_";
+export * from "./component.js";
+export * from "./input_resolver/_.js";

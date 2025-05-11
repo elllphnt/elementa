@@ -1,5 +1,5 @@
 import { Expression, isExpression } from "@elllphnt/elementa-base";
-import { get, set } from "./utils";
+import { get, set } from "./utils.js";
 
 const expressionRegex = /\{\{([^}]*\}?[^}]*)\}\}/;
 

@@ -1,10 +1,10 @@
 import { RouteTree, SlotFill } from "@elllphnt/elementa-models";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable, of, switchMap } from "rxjs";
-import { ComponentInstance } from "../component/component";
-import { ComponentInputResolver } from "../component/input_resolver/input_resolver";
-import { FragmentEnvironment } from "../fragment/_";
-import { ElementaInstanceType, Instance } from "../instance";
+import { ComponentInstance } from "../component/component.js";
+import { ComponentInputResolver } from "../component/input_resolver/input_resolver.js";
+import { FragmentEnvironment } from "../fragment/_.js";
+import { ElementaInstanceType, Instance } from "../instance.js";
 
 export class RouteComponentPropResolver extends ComponentInputResolver {
   propValue() {
@@ -106,7 +106,7 @@ export class RouteTreeInstance extends Instance {
           this._mainView$.next(
             new ComponentInstance({
               component: view,
-              propResolver: new RouteComponentPropResolver({ environment }),
+              inputResolver: new RouteComponentPropResolver({ environment }),
             })
           );
         } else {
@@ -121,7 +121,7 @@ export class RouteTreeInstance extends Instance {
           this._errorView$.next(
             new ComponentInstance({
               component: view,
-              propResolver: new RouteComponentPropResolver({ environment }),
+              inputResolver: new RouteComponentPropResolver({ environment }),
             })
           );
         } else {
@@ -136,7 +136,7 @@ export class RouteTreeInstance extends Instance {
           this._pendingView$.next(
             new ComponentInstance({
               component: view,
-              propResolver: new RouteComponentPropResolver({ environment }),
+              inputResolver: new RouteComponentPropResolver({ environment }),
             })
           );
         } else {
@@ -151,7 +151,7 @@ export class RouteTreeInstance extends Instance {
           this._notFoundView$.next(
             new ComponentInstance({
               component: view,
-              propResolver: new RouteComponentPropResolver({ environment }),
+              inputResolver: new RouteComponentPropResolver({ environment }),
             })
           );
         } else {

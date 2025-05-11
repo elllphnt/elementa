@@ -1,4 +1,4 @@
-import { StyleSheetInstance } from "./stylesheet";
+import { StyleSheetInstance } from "./stylesheet.js";
 
 /**
  * Resolves the parent StyleSheetInstance for cascade inheritance.

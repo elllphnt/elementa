@@ -1,2 +1,2 @@
-export * from "./module_manager/_";
-export * from "./runtime";
+export * from "./module_manager/_.js";
+export * from "./runtime.js";

@@ -6,8 +6,8 @@ import {
 import { Style } from "@elllphnt/elementa-models";
 import { assert } from "@elllphnt/elementa-utils";
 import { Observable, of, switchMap } from "rxjs";
-import { ElementaInstanceType, Instance } from "../instance";
-import { StyleSheetInstance } from "./stylesheet";
+import { ElementaInstanceType, Instance } from "../instance.js";
+import { StyleSheetInstance } from "./stylesheet.js";
 
 /**
  * Represents a runtime live wrapper around a Style.

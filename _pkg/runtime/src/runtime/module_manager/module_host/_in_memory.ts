@@ -1,4 +1,4 @@
-import { ModuleHost } from "./module_host";
+import { ModuleHost } from "./module_host.js";
 
 export class InMemoryModuleHost implements ModuleHost {
   private modules = new Map<string, string>(); // Map of url → JavaScript code

@@ -7,15 +7,15 @@
 // } from "@elllphnt/elementa-models";
 // import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
 // import { updateInstanceList } from "~/src/_lib/instances";
-// import { Runtime } from "../../../../runtime/runtime";
-// import { StateInstance } from "../../../_";
+// import { Runtime } from "../../../../runtime/runtime.js";
+// import { StateInstance } from "../../../_.js";
 // import {
 //   ChildFragmentEnvironment,
 //   FragmentEnvironment,
 // } from "../../../fragment/environment/environment";
-// import { FragmentInstance } from "../../../fragment/fragment";
-// import { Instance } from "../../../instance";
-// import { WidgetInstance } from "./widget";
+// import { FragmentInstance } from "../../../fragment/fragment.js";
+// import { Instance } from "../../../instance.js";
+// import { WidgetInstance } from "./widget.js";
 
 // export class FrameFragmentEnvironment extends FragmentEnvironment {
 //   readonly frame: FrameWidgetInstance;
