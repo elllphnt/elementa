@@ -1,35 +1,40 @@
 import { BlueprintNodeData } from "@elllphnt/elementa-base";
-import {
-  assert,
-  attachReactiveMap,
-  PointData,
-  ReactiveMap,
-  setEnhancer,
-  setReactiveMapGetters,
-} from "@elllphnt/elementa-utils";
-import { Observable } from "rxjs";
-import * as y from "yjs";
+import { Model, PointData, RecordState } from "@elllphnt/elementa-utils";
+import { merge, Observable } from "rxjs";
+import { BlueprintNode } from "../../../../_interfaces/_.js";
 
-export type BlueprintNode = ReactiveMap<BlueprintNodeData> & {
-  position: PointData;
-  position$: Observable<PointData>;
-};
+export class BlueprintNodeModel
+  extends Model<BlueprintNodeData>
+  implements BlueprintNode
+{
+  private _state: RecordState<BlueprintNodeData>;
 
-export function attachBlueprintNode(ymap: y.Map<any>): ymap is BlueprintNode {
-  assert(
-    attachReactiveMap<BlueprintNodeData>(ymap),
-    "Failed to attach reactive map to ymap"
-  );
-  const node = ymap as BlueprintNode;
+  get position(): PointData {
+    return this._state.entry("position");
+  }
+  get position$(): Observable<PointData> {
+    return this._state.entry$("position");
+  }
 
-  setReactiveMapGetters(node, ["position"]);
+  get data(): BlueprintNodeData {
+    return { ...this._state.record };
+  }
+  get data$(): Observable<BlueprintNodeData> {
+    return merge(this._state.record$);
+  }
 
-  setEnhancer(node, attachBlueprintNode);
-  return true;
-}
+  constructor({ init }: { init: BlueprintNodeData }) {
+    super();
+    this._state = new RecordState<BlueprintNodeData>({
+      init,
+    });
 
-export function createBlueprintNode(): BlueprintNode {
-  const ymap = new y.Map<any>();
-  assert(attachBlueprintNode(ymap), "Failed to attach reactive map to ymap");
-  return ymap;
+    this.addDisposer(() => {
+      this._state.dispose();
+    });
+  }
+
+  restore(data: BlueprintNodeData): void {
+    this._state.setRecord(data);
+  }
 }

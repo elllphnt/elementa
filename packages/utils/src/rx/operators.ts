@@ -38,3 +38,20 @@ export function pairwiseOrEmpty<T>() {
     });
   };
 }
+
+export function combineLatestMerged<T extends object[]>(sources: {
+  [K in keyof T]: Observable<T[K]>;
+}): Observable<UnionToIntersection<T[number]>> {
+  return combineLatest(sources).pipe(
+    map(
+      (values) => Object.assign({}, ...values) as UnionToIntersection<T[number]>
+    )
+  );
+}
+
+// Utility to infer A & B from [A, B]
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
+  k: infer I
+) => void
+  ? I
+  : never;
