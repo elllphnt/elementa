@@ -1,9 +1,8 @@
-import { ReactiveList } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import { CssStyleSheet } from "../../../css/_.js";
 import { Component } from "./component.js";
 import { DataInput } from "./data_input.js";
-import { ElementList } from "./elements/_list.js";
+import { Element } from "./elements/_.js";
 import { Identifiable } from "./identifiable.js";
 
 export enum FragmentVariant {
@@ -15,8 +14,11 @@ export interface Fragment extends Identifiable {
   component: Component;
   variant: FragmentVariant;
 
-  content: ElementList;
-  params: ReactiveList<DataInput>;
+  content: Element[];
+  content$: Observable<Element[]>;
+
+  params: DataInput[];
+  params$: Observable<DataInput[]>;
 
   allCssStylesheets: CssStyleSheet[];
   allCssStylesheets$: Observable<CssStyleSheet[]>;

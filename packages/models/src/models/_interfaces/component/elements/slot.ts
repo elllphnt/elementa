@@ -1,6 +1,7 @@
-import { ElementList } from "./_list.js";
+import { Observable } from "rxjs";
 import { Element } from "./element.js";
 
 export interface SlotElement extends Element {
-  placeholder: ElementList;
+  placeholder: Element[];
+  placeholder$: Observable<Element[]>;
 }

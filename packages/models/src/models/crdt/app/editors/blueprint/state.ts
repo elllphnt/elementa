@@ -9,14 +9,14 @@ import {
   setObjectProperty,
 } from "@elllphnt/elementa-utils";
 import * as y from "yjs";
-import { BlueprintAppState, BlueprintNode } from "../../../../_interfaces/_.js";
+import { AppBlueprint, BlueprintNode } from "../../../../_interfaces/_.js";
 import { attachBlueprintNode } from "./node.js";
 
 export const blueprintEditorStateKey = "blueprint";
 
 export function attachBlueprintAppState(
   blueprint: y.Map<any>
-): blueprint is y.Map<any> & BlueprintAppState {
+): blueprint is y.Map<any> & AppBlueprint {
   assert(attachReactiveMap<BlueprintAppStateData>(blueprint));
 
   assert(setObjectProperty(blueprint, "type", "blueprint" as const));
@@ -33,5 +33,5 @@ export function attachBlueprintAppState(
   assert(setObjectProperty(blueprint, "nodes$", nodeList.items$));
   assert(setObjectGetter(blueprint, "nodes", () => nodeList.items));
 
-  return setEnhancer<BlueprintAppState>(blueprint, attachBlueprintAppState);
+  return setEnhancer<AppBlueprint>(blueprint, attachBlueprintAppState);
 }

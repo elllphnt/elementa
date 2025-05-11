@@ -1,5 +1,4 @@
 import { ResolvableOrEvaluable } from "@elllphnt/elementa-base";
-import { ReactiveMap } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import { CssStyleSheet } from "../../../../../css/_.js";
 import { FileModel } from "../../../file/_.js";
@@ -8,7 +7,8 @@ import { Element } from "../element.js";
 import { SlotFill } from "./slot_fill.js";
 
 export interface ComponentElement extends Element {
-  fills: ReactiveMap<Record<string, SlotFill>>;
+  fills: Record<string, SlotFill>;
+  fills$: Observable<Record<string, SlotFill>>;
 
   allCssStylesheets: CssStyleSheet[];
   allCssStylesheets$: Observable<CssStyleSheet[]>;

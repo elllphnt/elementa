@@ -3,7 +3,7 @@ import { Observable } from "rxjs";
 import { RenderableContent } from "../elementa/_.js";
 import { RenderingContext } from "../elementa/rendering_context.js";
 
-export interface ElementaViewerComponentState {
+export interface ElementaPreview {
   context: RenderingContext;
   content: RenderableContent;
 

@@ -2,12 +2,13 @@ import { Expression } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
 import { CssStyleSheet } from "../../../../../css/_.js";
 import { Component } from "../../component.js";
-import { ElementList } from "../_list.js";
 
 export interface SlotFill {
   component: Component;
   cssStyleSheet: CssStyleSheet;
-  content: ElementList;
+
+  content: Element[];
+  content$: Observable<Element[]>;
 
   allCssStylesheets: CssStyleSheet[];
   allCssStylesheets$: Observable<CssStyleSheet[]>;
