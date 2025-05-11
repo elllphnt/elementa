@@ -1,23 +1,23 @@
 import { BehaviorSubject, Observable } from "rxjs";
 import * as y from "yjs";
+import { assert } from "../core/assert";
 import { setEnhancer } from "../core/enhancer";
-import { nextKey, updateYMap } from "./_utils";
+import { nextKey, setObjectGetter, setObjectProperty } from "./_utils";
 
-export type ReactiveMap<T extends object = object> = y.Map<any> & {
+export type ReactiveMap<T extends object = object> = {
   key: number;
-  observable$: Observable<T>;
-  restore(data: T): void;
+  items: T;
+  items$: Observable<T>;
   dispose(): void;
 };
 
 export function attachReactiveMap<T extends object>(
-  ymap: y.Map<any>
-): ymap is ReactiveMap<T> {
-  const rxMap = ymap as ReactiveMap<T>;
+  rxMap: y.Map<any>
+): rxMap is y.Map<any> & ReactiveMap<T> {
   // initialize subject
   const initial: Record<string, any> = {};
-  if (ymap.doc) {
-    for (const [key, value] of ymap.entries()) {
+  if (rxMap.doc) {
+    for (const [key, value] of rxMap.entries()) {
       initial[key] = value;
     }
   }
@@ -28,38 +28,33 @@ export function attachReactiveMap<T extends object>(
     const current = { ...subject$.value };
     for (const [key, change] of event.changes.keys.entries()) {
       if (change.action === "add" || change.action === "update") {
-        (current as Record<string, any>)[key] = ymap.get(key);
+        (current as Record<string, any>)[key] = rxMap.get(key);
       } else if (change.action === "delete") {
         delete (current as any)[key];
       }
     }
     subject$.next(current as T);
   };
-  ymap.observe(observer);
+  rxMap.observe(observer);
 
   // attach API
-  rxMap.key = nextKey();
-  rxMap.observable$ = subject$.asObservable();
-  rxMap.dispose = () => {
-    ymap.unobserve(observer);
-    subject$.complete();
-  };
+  assert(setObjectProperty(rxMap, "key", nextKey()));
+  assert(setObjectProperty(rxMap, "items$", subject$));
+  assert(
+    setObjectGetter(rxMap, "items", () => {
+      const data: Record<string, any> = {};
+      for (const [key, value] of rxMap.entries()) {
+        data[key] = value;
+      }
+      return data as T;
+    })
+  );
+  assert(
+    setObjectProperty(rxMap, "dispose", () => {
+      rxMap.unobserve(observer);
+      subject$.complete();
+    })
+  );
 
-  rxMap.restore = (data: T): void => {
-    updateYMap(ymap, data);
-  };
-
-  setEnhancer(rxMap, attachReactiveMap);
-  return true;
-}
-
-export function createReactiveMap<T extends Record<string, any>>(
-  init?: T
-): ReactiveMap<T> {
-  const ymap = new y.Map<any>(Object.entries(init || {}));
-  if (attachReactiveMap<T>(ymap)) {
-    return ymap;
-  } else {
-    throw new Error("Failed to attach reactive map");
-  }
+  return setEnhancer<ReactiveMap<T>>(rxMap, attachReactiveMap);
 }

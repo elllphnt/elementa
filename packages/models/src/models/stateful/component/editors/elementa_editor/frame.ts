@@ -3,7 +3,7 @@ import {
   assert,
   getOrCreateYMap,
   setEnhancer,
-  setModelFields,
+  setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
 import { Observable, of, switchMap } from "rxjs";
 import * as y from "yjs";
@@ -60,7 +60,14 @@ export function attachElementaFrame(
 
   frame.componentState = componentState;
 
-  setModelFields(frame, ["name", "x", "y", "height", "width", "corners"]);
+  setReactiveMapGetters(frame, [
+    "name",
+    "x",
+    "y",
+    "height",
+    "width",
+    "corners",
+  ]);
 
   const renderingContext = getOrCreateYMap(frame, "renderingContext");
   assert(attachRenderingContext(renderingContext, componentState.component));

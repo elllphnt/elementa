@@ -8,7 +8,7 @@ import {
   getOrCreateYMap,
   ReactiveMap,
   setEnhancer,
-  setModelFields,
+  setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
 import {
   combineLatest,
@@ -61,13 +61,13 @@ export function attachRenderingContext(
   assert(attachViewport(viewport));
   context.viewport = viewport;
 
-  setModelFields(context, [
+  setReactiveMapGetters(context, [
     "viewportEnabled",
     "styleModifierEnabled",
     "styleModifiers",
   ]);
 
-  setModelFields(context, ["viewportEnabled", "styleModifierEnabled"]);
+  setReactiveMapGetters(context, ["viewportEnabled", "styleModifierEnabled"]);
 
   // Custom style modifiers
   Object.defineProperty(context, "customStyleModifiers", {
@@ -78,7 +78,7 @@ export function attachRenderingContext(
       context.set("styleModifiers", value);
     },
   });
-  context.customStyleModifiers$ = context.observable$.pipe(
+  context.customStyleModifiers$ = context.items$.pipe(
     map((value) => value.styleModifiers ?? []),
     distinctUntilChanged()
   );

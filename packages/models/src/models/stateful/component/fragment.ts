@@ -1,6 +1,6 @@
 import { FragmentData } from "@elllphnt/elementa-base";
 import {
-  createEnhancedReactiveList,
+  attachEnhancedReactiveList,
   Extendable,
   getOrCreateYArray,
   ReactiveList,
@@ -56,7 +56,7 @@ export function attachFragment(
   attachElementList(content, fragment);
   fragment.content = content as ElementList;
 
-  fragment.params = createEnhancedReactiveList(
+  fragment.params = attachEnhancedReactiveList(
     getOrCreateYArray<y.Map<any>>(ymap, "params"),
     attachDataInput,
     (ymap) => attachDataInput(ymap, component)

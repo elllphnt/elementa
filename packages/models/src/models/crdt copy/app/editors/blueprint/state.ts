@@ -1,41 +1,37 @@
 import { BlueprintAppStateData } from "@elllphnt/elementa-base";
 import {
   assert,
+  attachEnhancedReactiveList,
   attachReactiveMap,
-  createEnhancedReactiveList,
   getOrCreateYArray,
-  ReactiveList,
-  ReactiveMap,
   setEnhancer,
+  setObjectGetter,
+  setObjectProperty,
 } from "@elllphnt/elementa-utils";
 import * as y from "yjs";
-import { App } from "../../app.js";
-import { attachBlueprintNode, BlueprintNode } from "./node.js";
+import { BlueprintAppState, BlueprintNode } from "../../../../_interfaces/_.js";
+import { attachBlueprintNode } from "./node.js";
 
 export const blueprintEditorStateKey = "blueprint";
 
-export type BlueprintAppState = ReactiveMap<BlueprintAppStateData> & {
-  nodes: ReactiveList<BlueprintNode>;
-};
-
 export function attachBlueprintAppState(
-  ymap: y.Map<any>
-): ymap is BlueprintAppState {
-  assert(attachReactiveMap<BlueprintAppStateData>(ymap));
-  const blueprint = ymap as BlueprintAppState;
+  blueprint: y.Map<any>
+): blueprint is y.Map<any> & BlueprintAppState {
+  assert(attachReactiveMap<BlueprintAppStateData>(blueprint));
 
-  blueprint.nodes = createEnhancedReactiveList(
-    getOrCreateYArray<y.Map<any>>(ymap, "nodes"),
-    attachBlueprintNode,
-    (yMap) => attachBlueprintNode(yMap)
+  assert(setObjectProperty(blueprint, "type", "blueprint" as const));
+
+  const nodeList = getOrCreateYArray<y.Map<any>>(blueprint, "nodes");
+  assert(
+    attachEnhancedReactiveList<BlueprintNode>(
+      nodeList,
+      attachBlueprintNode,
+      (yMap) => attachBlueprintNode(yMap)
+    )
   );
 
-  setEnhancer(blueprint, attachBlueprintAppState);
-  return true;
-}
+  assert(setObjectProperty(blueprint, "nodes$", nodeList.items$));
+  assert(setObjectGetter(blueprint, "nodes", () => nodeList.items));
 
-export function createBlueprintAppState(app: App): BlueprintAppState {
-  const blueprint = app.getMapEditorState(blueprintEditorStateKey);
-  assert(attachBlueprintAppState(blueprint));
-  return blueprint;
+  return setEnhancer<BlueprintAppState>(blueprint, attachBlueprintAppState);
 }

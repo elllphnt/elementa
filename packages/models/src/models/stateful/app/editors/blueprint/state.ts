@@ -1,8 +1,8 @@
 import { BlueprintAppStateData } from "@elllphnt/elementa-base";
 import {
   assert,
+  attachEnhancedReactiveList,
   attachReactiveMap,
-  createEnhancedReactiveList,
   getOrCreateYArray,
   ReactiveList,
   ReactiveMap,
@@ -24,7 +24,7 @@ export function attachBlueprintAppState(
   assert(attachReactiveMap<BlueprintAppStateData>(ymap));
   const blueprint = ymap as BlueprintAppState;
 
-  blueprint.nodes = createEnhancedReactiveList(
+  blueprint.nodes = attachEnhancedReactiveList(
     getOrCreateYArray<y.Map<any>>(ymap, "nodes"),
     attachBlueprintNode,
     (yMap) => attachBlueprintNode(yMap)

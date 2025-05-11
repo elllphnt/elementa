@@ -1,12 +1,12 @@
 import { baseSelector, StyleSheetData } from "@elllphnt/elementa-base";
 import {
+  attachEnhancedReactiveMap,
   attachReactiveMap,
-  createEnhancedReactiveMap,
   getOrCreateYArray,
   getOrCreateYMap,
   ReactiveMap,
   setEnhancer,
-  setModelFields,
+  setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
 import { filter, map, Observable, tap } from "rxjs";
 import * as y from "yjs";
@@ -76,13 +76,13 @@ export function attachStylesheet(
   attachStyleFragmentRegistry(getOrCreateYArray(sheet, "fragments"));
   sheet.fragmentRegistry = fragmentRegistry;
 
-  sheet.styles = createEnhancedReactiveMap(
+  sheet.styles = attachEnhancedReactiveMap(
     getOrCreateYMap<y.Map<any>>(sheet, "styles"),
     attachStyle,
     (ymap) => attachStyle(ymap, project, sheet.fragmentRegistry)
   );
 
-  setModelFields(sheet, ["conditions"]);
+  setReactiveMapGetters(sheet, ["conditions"]);
 
   sheet.style = function <C extends true | undefined>(
     selector: string,
@@ -100,7 +100,7 @@ export function attachStylesheet(
     selector: string,
     create?: C
   ) {
-    return sheet.styles.observable$.pipe(
+    return sheet.styles.items$.pipe(
       map((styles) => styles[selector]),
       tap((style) => {
         if (!style && create) {
@@ -119,7 +119,7 @@ export function attachStylesheet(
     return sheet.conditions$.pipe(map((conds) => conds[id]));
   };
 
-  sheet.selectors$ = sheet.styles.observable$.pipe(
+  sheet.selectors$ = sheet.styles.items$.pipe(
     map((styles) => Object.keys(styles))
   );
 

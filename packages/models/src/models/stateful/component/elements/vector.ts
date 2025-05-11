@@ -1,5 +1,5 @@
 import { VectorElementData, VectorNodeData } from "@elllphnt/elementa-base";
-import { setModelFields } from "@elllphnt/elementa-utils";
+import { setReactiveMapGetters } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import * as y from "yjs";
 import { Fragment } from "../fragment.js";
@@ -19,7 +19,7 @@ export function attachVectorElement(
     throw new Error("Failed to attach base element to ymap");
   }
   const element = ymap as VectorElement;
-  setModelFields(element, ["content"]);
+  setReactiveMapGetters(element, ["content"]);
   return true;
 }
 

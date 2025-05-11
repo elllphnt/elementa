@@ -1,5 +1,5 @@
 import { Expression, HookStateData } from "@elllphnt/elementa-base";
-import { setModelFields } from "@elllphnt/elementa-utils";
+import { setReactiveMapGetters } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
 import * as y from "yjs";
 import { Component } from "../component.js";
@@ -31,7 +31,7 @@ export function attachHookState(
   }
   const state = ymap as HookState;
 
-  setModelFields(state, ["hookUrl", "args"]);
+  setReactiveMapGetters(state, ["hookUrl", "args"]);
 
   Object.defineProperty(state, "absoluteHookUrl", {
     get() {

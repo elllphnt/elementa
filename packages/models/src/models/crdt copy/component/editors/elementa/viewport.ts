@@ -4,7 +4,7 @@ import {
   attachReactiveMap,
   ReactiveMap,
   setEnhancer,
-  setModelFields,
+  setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import * as y from "yjs";
@@ -24,7 +24,7 @@ export function attachViewport(ymap: y.Map<any>): ymap is Viewport {
   assert(attachReactiveMap<ViewportData>(ymap as y.Map<any>));
   const viewport = ymap as Viewport;
 
-  setModelFields(viewport, ["height", "width", "overflow"]);
+  setReactiveMapGetters(viewport, ["height", "width", "overflow"]);
 
   setEnhancer(viewport, attachViewport);
   return true;

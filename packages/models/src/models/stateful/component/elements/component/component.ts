@@ -3,12 +3,12 @@ import {
   ResolvableOrEvaluable,
 } from "@elllphnt/elementa-base";
 import {
+  attachEnhancedReactiveMap,
   combineLatestOrEmpty,
-  createEnhancedReactiveMap,
   getOrCreateYMap,
   ReactiveMap,
   setEnhancer,
-  setModelFields,
+  setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
 import { filter, map, Observable, switchMap, tap } from "rxjs";
 import * as y from "yjs";
@@ -66,13 +66,13 @@ export function attachComponentElement(
   const element = ymap;
   const componentElement = element as ComponentElement;
 
-  componentElement.fills = createEnhancedReactiveMap(
+  componentElement.fills = attachEnhancedReactiveMap(
     getOrCreateYMap<y.Map<any>>(element, "fills"),
     attachSlotFill,
     (ymap) => attachSlotFill(ymap, fragment)
   );
 
-  setModelFields(componentElement, ["componentUrl"]);
+  setReactiveMapGetters(componentElement, ["componentUrl"]);
 
   const _props = new ResolvableRecord(
     (componentElement.get("props") as Record<string, any>) ?? {},
@@ -80,7 +80,7 @@ export function attachComponentElement(
   );
 
   const propsSubscription = _props.subscribe(
-    componentElement.observable$.pipe(map((v) => v.props ?? {}))
+    componentElement.items$.pipe(map((v) => v.props ?? {}))
   );
 
   Object.defineProperty(componentElement, "allCssStylesheets", {
@@ -97,7 +97,7 @@ export function attachComponentElement(
 
   element.allCssStylesheets$ = combineLatestOrEmpty([
     element.allCssStylesheets$,
-    componentElement.fills.observable$.pipe(
+    componentElement.fills.items$.pipe(
       switchMap((slots) =>
         combineLatestOrEmpty(
           Object.values(slots).map((slot) => slot.allCssStylesheets$)
@@ -182,7 +182,7 @@ export function attachComponentElement(
   };
 
   componentElement.fill$ = (id: string, create?: true) => {
-    return componentElement.fills.observable$.pipe(
+    return componentElement.fills.items$.pipe(
       map((fills) => fills[id]),
       tap((item) => {
         if (!item && create) {

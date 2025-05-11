@@ -1,7 +1,6 @@
 import { StaticReference } from "@elllphnt/elementa-base";
-import { App } from "../app/app.js";
-import { Component } from "../crdt/component/component.js";
-import { File, ModelFile } from "./file/_.js";
+import { App, Component, FileModel } from "../models/_interfaces/_.js";
+import { File } from "./file/_.js";
 import { Project } from "./project/project.js";
 
 export interface Infrastructure {
@@ -10,11 +9,11 @@ export interface Infrastructure {
   file(url: string): File;
   project(id: string): Project;
 
-  component(url: string): ModelFile<Component>;
-  createComponent(): Promise<ModelFile<Component>>;
+  component(url: string): FileModel<Component>;
+  createComponent(): Promise<FileModel<Component>>;
 
-  app(url: string): ModelFile<App>;
-  createApp(): Promise<ModelFile<App>>;
+  app(url: string): FileModel<App>;
+  createApp(): Promise<FileModel<App>>;
 
   // References
 

@@ -9,7 +9,7 @@ import {
   getOrCreateYMap,
   ReactiveMap,
   setEnhancer,
-  setModelFields,
+  setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
 import { distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
@@ -50,9 +50,9 @@ export function attachElementaViewerComponentState(
   assert(createRenderableContent(renderableContent, component));
   state.content = renderableContent;
 
-  setModelFields(state, ["corners"]);
+  setReactiveMapGetters(state, ["corners"]);
 
-  state.corners$ = state.observable$.pipe(
+  state.corners$ = state.items$.pipe(
     map((value) => value.corners),
     distinctUntilChanged()
   );

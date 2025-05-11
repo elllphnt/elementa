@@ -1,5 +1,9 @@
 import { ValueStateData } from "@elllphnt/elementa-base";
-import { assert, setEnhancer, setModelFields } from "@elllphnt/elementa-utils";
+import {
+  assert,
+  setEnhancer,
+  setReactiveMapGetters,
+} from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import * as y from "yjs";
 import { Component } from "../component.js";
@@ -23,7 +27,7 @@ export function attachValueState(
   assert(attachState(ymap, component), "Failed to attach State");
   const state = ymap as State;
   const valueState = state as ValueState;
-  setModelFields(valueState, ["init", "tsType"]);
+  setReactiveMapGetters(valueState, ["init", "tsType"]);
 
   setEnhancer(valueState, attachValueState);
   return true;

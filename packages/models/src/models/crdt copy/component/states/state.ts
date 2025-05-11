@@ -1,5 +1,5 @@
 import { BaseStateData } from "@elllphnt/elementa-base";
-import { setEnhancer, setModelFields } from "@elllphnt/elementa-utils";
+import { setEnhancer, setReactiveMapGetters } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import * as y from "yjs";
 import { Component } from "../component.js";
@@ -35,7 +35,7 @@ export function attachState(
     },
   });
 
-  setModelFields(state, ["name", "varName"]);
+  setReactiveMapGetters(state, ["name", "varName"]);
 
   state.remove = () => {
     state.component.states.delete(

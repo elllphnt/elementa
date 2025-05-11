@@ -4,7 +4,7 @@ import {
   assert,
   attachReactiveMap,
   setEnhancer,
-  setModelFields,
+  setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import * as y from "yjs";
@@ -27,7 +27,7 @@ export function attachColorTheme(ymap: y.Map<any>): ymap is ColorTheme {
   );
   const theme = ymap as ColorTheme;
 
-  setModelFields(theme, ["scheme", "foreground", "background"]);
+  setReactiveMapGetters(theme, ["scheme", "foreground", "background"]);
 
   setEnhancer(theme, attachColorTheme);
   return true;

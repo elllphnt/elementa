@@ -4,7 +4,7 @@ import {
   attachReactiveMap,
   ReactiveMap,
   setEnhancer,
-  setModelFields,
+  setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
 import { map, Observable, of, switchMap } from "rxjs";
 import * as y from "yjs";
@@ -40,7 +40,7 @@ export function attachFragmentRenderableContent(
   assert(attachReactiveMap<FragmentRenderableContentData>(ymap));
   const content = ymap as FragmentRenderableContent;
 
-  setModelFields(content, ["fragmentId", "params"]);
+  setReactiveMapGetters(content, ["fragmentId", "params"]);
 
   content.fragment$ = content.fragmentId$.pipe(
     switchMap((id) => (id ? component.fragment$(id) : of(undefined)))
@@ -58,7 +58,7 @@ export function attachFragmentRenderableContent(
   };
 
   content.paramValue$ = (name: string) =>
-    content.observable$.pipe(
+    content.items$.pipe(
       map((value) => value.params?.[name]),
       map((value) => (value !== undefined ? value : undefined))
     );

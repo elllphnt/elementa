@@ -115,7 +115,7 @@ export function attachStyle(
   };
 
   style.propertyValue$ = <N extends StylePropertyName>(property: N) => {
-    return style.observable$.pipe(map((v) => v[property]));
+    return style.items$.pipe(map((v) => v[property]));
   };
 
   style.propertyValueOrUndefined = (property: any) => {
@@ -153,7 +153,7 @@ export function attachStyle(
   };
 
   style.hasProperty$ = (property: StylePropertyName) => {
-    return style.observable$.pipe(map((v) => v[property] !== undefined));
+    return style.items$.pipe(map((v) => v[property] !== undefined));
   };
 
   style.setProperty = <N extends StylePropertyName>(
@@ -176,12 +176,12 @@ export function attachStyle(
       return raw;
     },
   });
-  style.raw$ = style.observable$.pipe(map((v) => v.__raw ?? {}));
+  style.raw$ = style.items$.pipe(map((v) => v.__raw ?? {}));
 
   // --- CSS generation ---
 
   const cssSub = combineLatest([
-    style.observable$,
+    style.items$,
     fragmentRegistry.allFragments$,
   ]).subscribe(([value, fragments]) => {
     const [css, errors] = styleToCss(value, {

@@ -1,43 +1,33 @@
 import { BehaviorSubject, Observable } from "rxjs";
 import * as y from "yjs";
-import { nextKey, updateYArray } from "./_utils";
+import { assert } from "../core/assert";
+import { setEnhancer } from "../core/enhancer";
+import { nextKey, setObjectGetter, setObjectProperty } from "./_utils";
 
-export type ReactiveList<T> = y.Array<T> & {
+export type ReactiveList<T> = {
   key: number;
-  observable$: Observable<T[]>;
-  restore(data: T[]): void;
+  items: T[];
+  items$: Observable<T[]>;
   dispose(): void;
 };
 
 export function attachReactiveList<T>(
-  yArray: y.Array<T>
-): yArray is ReactiveList<T> {
-  const rxlist = yArray as ReactiveList<T>;
-  const subject$ = new BehaviorSubject<T[]>(yArray.doc ? yArray.toArray() : []);
+  rxList: y.Array<T>
+): rxList is y.Array<T> & ReactiveList<T> {
+  const subject$ = new BehaviorSubject<T[]>(rxList.doc ? rxList.toArray() : []);
 
-  const observer = () => subject$.next(yArray.toArray());
-  yArray.observe(observer);
+  const observer = () => subject$.next(rxList.toArray());
+  rxList.observe(observer);
 
-  rxlist.key = nextKey();
-  rxlist.observable$ = subject$.asObservable();
+  assert(setObjectProperty(rxList, "key", nextKey()));
+  assert(setObjectProperty(rxList, "items$", subject$));
+  assert(setObjectGetter(rxList, "items", () => rxList.toArray()));
+  assert(
+    setObjectProperty(rxList, "dispose", () => {
+      rxList.unobserve(observer);
+      subject$.complete();
+    })
+  );
 
-  rxlist.restore = (data: T[]): void => {
-    updateYArray(yArray, data);
-  };
-
-  rxlist.dispose = () => {
-    yArray.unobserve(observer);
-    subject$.complete();
-  };
-
-  return true;
-}
-
-export function createReactiveList<T>(): ReactiveList<T> {
-  const yarray = new y.Array<T>();
-  if (attachReactiveList(yarray)) {
-    return yarray;
-  } else {
-    throw new Error("Failed to attach reactive list");
-  }
+  return setEnhancer<ReactiveList<T>>(rxList, attachReactiveList);
 }

@@ -3,7 +3,7 @@ import {
   attachReactiveMap,
   ReactiveMap,
   setEnhancer,
-  setModelFields,
+  setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import * as y from "yjs";
@@ -40,7 +40,7 @@ export function attachAppVariable(
 
   variable.app = app;
 
-  setModelFields(variable, [
+  setReactiveMapGetters(variable, [
     "varName",
     "name",
     "tsType",

@@ -1,7 +1,7 @@
 import { ElementaEditorComponentStateData } from "@elllphnt/elementa-base";
 import {
+  attachEnhancedReactiveList,
   attachReactiveMap,
-  createEnhancedReactiveList,
   getOrCreateYArray,
   ReactiveList,
   ReactiveMap,
@@ -24,7 +24,7 @@ export function attachElementaEditorComponentState(
 
   state.component = component;
 
-  state.frames = createEnhancedReactiveList(
+  state.frames = attachEnhancedReactiveList(
     getOrCreateYArray<y.Map<any>>(state, "frames"),
     attachElementaFrame,
     (frameYMap) => attachElementaFrame(frameYMap, state)

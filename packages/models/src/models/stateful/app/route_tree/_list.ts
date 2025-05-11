@@ -1,5 +1,5 @@
 import {
-  createEnhancedReactiveList,
+  attachEnhancedReactiveList,
   ReactiveList,
   setEnhancer,
 } from "@elllphnt/elementa-utils";
@@ -13,7 +13,7 @@ export function attachRouteTreeList(
   yarray: y.Array<y.Map<any>>,
   app: App
 ): yarray is RouteTreeList {
-  const rxList = createEnhancedReactiveList(
+  const rxList = attachEnhancedReactiveList(
     yarray as y.Array<y.Map<any>>,
     attachRouteTree,
     (ymap) => attachRouteTree(ymap, app)

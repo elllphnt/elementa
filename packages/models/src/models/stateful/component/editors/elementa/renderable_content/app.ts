@@ -4,7 +4,7 @@ import {
   attachReactiveMap,
   ReactiveMap,
   setEnhancer,
-  setModelFields,
+  setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
 import * as y from "yjs";
@@ -39,7 +39,7 @@ export function attachAppRenderableContent(
   assert(attachReactiveMap<AppRenderableContentData>(ymap));
   const content = ymap as AppRenderableContent;
 
-  setModelFields(content, ["appUrl", "variables"]);
+  setReactiveMapGetters(content, ["appUrl", "variables"]);
 
   content.app$ = content.appUrl$.pipe(
     map((url) =>
@@ -60,7 +60,7 @@ export function attachAppRenderableContent(
     return variables ? variables[name] : undefined;
   };
   content.variableValue$ = (name: string) =>
-    content.observable$.pipe(
+    content.items$.pipe(
       map((value) => value.variables?.[name]),
       map((value) => (value !== undefined ? value : undefined))
     );

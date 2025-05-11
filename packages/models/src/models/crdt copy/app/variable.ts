@@ -1,61 +1,51 @@
 import { AppVariableData } from "@elllphnt/elementa-base";
 import {
+  assert,
   attachReactiveMap,
-  ReactiveMap,
   setEnhancer,
-  setModelFields,
+  setObjectProperty,
+  setReactiveMapGetters,
+  setReactiveMapSetters,
 } from "@elllphnt/elementa-utils";
-import { Observable } from "rxjs";
 import * as y from "yjs";
-import { App } from "./app.js"; // use updated App type
-
-export type AppVariable = ReactiveMap<AppVariableData> & {
-  app: App;
-
-  varName: string;
-  varName$: Observable<string>;
-
-  name: string;
-  name$: Observable<string>;
-
-  tsType: string;
-  tsType$: Observable<string>;
-
-  scope: string | undefined;
-  scope$: Observable<string | undefined>;
-
-  description: string | undefined;
-  description$: Observable<string | undefined>;
-};
+import { App, AppVariable } from "../../_interfaces/_.js";
 
 export function attachAppVariable(
-  ymap: y.Map<any>,
+  variable: y.Map<any>,
   app: App
-): ymap is AppVariable {
-  if (!attachReactiveMap<AppVariableData>(ymap)) {
-    throw new Error("Failed to attach reactive map to ymap");
-  }
-  const rxMap = ymap;
-  const variable = rxMap as AppVariable;
+): variable is y.Map<any> & AppVariable {
+  assert(attachReactiveMap<AppVariableData>(variable));
 
-  variable.app = app;
+  // Set app reference
+  assert(setObjectProperty(variable, "app", app));
 
-  setModelFields(variable, [
-    "varName",
-    "name",
-    "tsType",
-    "scope",
-    "description",
-  ]);
+  // Setup getters for reactive properties
+  assert(
+    setReactiveMapGetters(variable, [
+      "varName",
+      "name",
+      "tsType",
+      "scope",
+      "description",
+    ])
+  );
 
-  setEnhancer(variable, attachAppVariable);
-  return true;
-}
+  // Setup setters for reactive properties
+  assert(
+    setReactiveMapSetters(variable, [
+      ["setVarName", "varName"],
+      ["setName", "name"],
+      ["setTsType", "tsType"],
+      ["setScope", "scope"],
+      ["setDescription", "description"],
+    ] as const)
+  );
 
-export function createAppVariable(app: App): AppVariable {
-  const ymap = new y.Map<any>();
-  if (!attachAppVariable(ymap, app)) {
-    throw new Error("Failed to attach app variable");
-  }
-  return ymap;
+  // Setup cleanup
+  const disposeBase = variable.dispose || (() => {});
+  variable.dispose = () => {
+    disposeBase();
+  };
+
+  return setEnhancer<AppVariable>(variable, attachAppVariable);
 }

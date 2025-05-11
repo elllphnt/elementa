@@ -2,34 +2,20 @@ import { BlueprintNodeData } from "@elllphnt/elementa-base";
 import {
   assert,
   attachReactiveMap,
-  PointData,
-  ReactiveMap,
   setEnhancer,
-  setModelFields,
+  setReactiveMapGetters,
+  setReactiveMapSetters,
 } from "@elllphnt/elementa-utils";
-import { Observable } from "rxjs";
 import * as y from "yjs";
+import { BlueprintNode } from "../../../../_interfaces/_.js";
 
-export type BlueprintNode = ReactiveMap<BlueprintNodeData> & {
-  position: PointData;
-  position$: Observable<PointData>;
-};
+export function attachBlueprintNode(
+  node: y.Map<any>
+): node is y.Map<any> & BlueprintNode {
+  assert(attachReactiveMap<BlueprintNodeData>(node));
 
-export function attachBlueprintNode(ymap: y.Map<any>): ymap is BlueprintNode {
-  assert(
-    attachReactiveMap<BlueprintNodeData>(ymap),
-    "Failed to attach reactive map to ymap"
-  );
-  const node = ymap as BlueprintNode;
+  assert(setReactiveMapGetters(node, ["position"]));
+  assert(setReactiveMapSetters(node, [["setPosition", "position"]] as const));
 
-  setModelFields(node, ["position"]);
-
-  setEnhancer(node, attachBlueprintNode);
-  return true;
-}
-
-export function createBlueprintNode(): BlueprintNode {
-  const ymap = new y.Map<any>();
-  assert(attachBlueprintNode(ymap), "Failed to attach reactive map to ymap");
-  return ymap;
+  return setEnhancer<BlueprintNode>(node, attachBlueprintNode);
 }

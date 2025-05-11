@@ -78,7 +78,7 @@ export function attachSlotFill(
     },
   });
 
-  slot.interactions$ = slot.observable$.pipe(map((v) => v.interactions ?? {}));
+  slot.interactions$ = slot.items$.pipe(map((v) => v.interactions ?? {}));
 
   slot.interaction = (event: string) => {
     return slot.interactions[event];

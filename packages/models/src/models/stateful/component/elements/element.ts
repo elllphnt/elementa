@@ -9,7 +9,7 @@ import {
 import {
   getOrCreateYMap,
   setEnhancer,
-  setModelFields,
+  setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
 import { Observable, of } from "rxjs";
 import * as y from "yjs";
@@ -94,7 +94,7 @@ export function attachBaseElement<D extends BaseElementData>(
     stylesheet,
   });
 
-  setModelFields(element, [
+  setReactiveMapGetters(element, [
     "name",
     "tag",
     "repeat",

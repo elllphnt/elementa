@@ -5,7 +5,7 @@ import {
   ReactiveList,
   ReactiveMap,
   setEnhancer,
-  setModelFields,
+  setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
 import * as y from "yjs";
@@ -95,7 +95,7 @@ export function attachRouteTree(ymap: y.Map<any>, app: App): ymap is RouteTree {
     },
   });
 
-  setModelFields(route, [
+  setReactiveMapGetters(route, [
     "path",
     "parentId",
     "mainViewUrl",

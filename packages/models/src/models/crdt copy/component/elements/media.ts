@@ -1,5 +1,5 @@
 import { MediaData, MediaElementData } from "@elllphnt/elementa-base";
-import { setEnhancer, setModelFields } from "@elllphnt/elementa-utils";
+import { setEnhancer, setReactiveMapGetters } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import * as y from "yjs";
 import { Fragment } from "../fragment.js";
@@ -26,7 +26,7 @@ export function attachMediaElement(
   }
   const element = ymap as MediaElement;
 
-  setModelFields(element, ["media", "fit", "position"]);
+  setReactiveMapGetters(element, ["media", "fit", "position"]);
 
   setEnhancer(element, attachMediaElement);
   return true;

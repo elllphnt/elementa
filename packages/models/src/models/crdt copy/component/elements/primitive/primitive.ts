@@ -3,13 +3,13 @@ import {
   ResolvableOrEvaluable,
 } from "@elllphnt/elementa-base";
 import {
+  attachEnhancedReactiveMap,
   combineLatestOrEmpty,
-  createEnhancedReactiveMap,
   getOrCreateYArray,
   getOrCreateYMap,
   ReactiveMap,
   setEnhancer,
-  setModelFields,
+  setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
 import { filter, map, Observable, tap } from "rxjs";
 import * as y from "yjs";
@@ -69,7 +69,7 @@ export function attachPrimitiveElement(
   attachElementList(getOrCreateYArray(ymap, "content"), fragment);
   element.content = content as ElementList;
 
-  element.elements = createEnhancedReactiveMap(
+  element.elements = attachEnhancedReactiveMap(
     getOrCreateYMap<y.Map<any>>(element, "elements"),
     attachPrimitiveSubElement,
     (ymap) => attachPrimitiveSubElement(ymap, fragment)
@@ -93,10 +93,10 @@ export function attachPrimitiveElement(
   );
 
   const propsSubscription = _props.subscribe(
-    element.observable$.pipe(map((v) => v.props ?? {}))
+    element.items$.pipe(map((v) => v.props ?? {}))
   );
 
-  setModelFields(element, ["primitiveUrl", "props"]);
+  setReactiveMapGetters(element, ["primitiveUrl", "props"]);
 
   Object.defineProperty(element, "absoluteModuleUrl", {
     get() {
@@ -143,7 +143,7 @@ export function attachPrimitiveElement(
   };
 
   element.element$ = (name: string, create?: true) => {
-    return element.elements.observable$.pipe(
+    return element.elements.items$.pipe(
       map((elements) => elements[name]),
       tap((el) => {
         if (!el && create) {

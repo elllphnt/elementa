@@ -60,7 +60,7 @@ export function attachStyleFragmentRegistry(
     Record<string, StyleFragmentData>
   >({});
 
-  const sub = registry.observable$
+  const sub = registry.items$
     .pipe(map((arr) => Object.fromEntries(arr.map((f) => [f.id, f]))))
     .subscribe(_fragmentsById$);
 
@@ -92,12 +92,12 @@ export function attachStyleFragmentRegistry(
   };
 
   registry.fragments$ = function <T extends StyleFragmentType>(type: T) {
-    return registry.observable$.pipe(
+    return registry.items$.pipe(
       map((arr) => arr.filter((f) => f.type === type) as StyleFragmentData<T>[])
     );
   };
 
-  registry.allFragments$ = registry.observable$;
+  registry.allFragments$ = registry.items$;
 
   registry.addFragment = function <T extends StyleFragmentType>(
     type: T,

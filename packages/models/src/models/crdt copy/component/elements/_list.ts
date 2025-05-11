@@ -1,6 +1,6 @@
 import {
+  attachEnhancedReactiveList,
   combineLatestOrEmpty,
-  createEnhancedReactiveList,
   ReactiveList,
   setEnhancer,
 } from "@elllphnt/elementa-utils";
@@ -22,7 +22,7 @@ export function attachElementList(
   yarray: y.Array<any>,
   fragment: Fragment
 ): yarray is ElementList {
-  const rxList = createEnhancedReactiveList(
+  const rxList = attachEnhancedReactiveList(
     yarray,
     attachBaseElement,
     (ymap) => {
@@ -37,7 +37,7 @@ export function attachElementList(
     },
     configurable: true,
   });
-  list.allCssStylesheets$ = list.observable$.pipe(
+  list.allCssStylesheets$ = list.items$.pipe(
     switchMap((elements) =>
       combineLatestOrEmpty(
         elements.map((element) => element.allCssStylesheets$)

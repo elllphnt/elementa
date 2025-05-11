@@ -1,118 +1,129 @@
 import { AppData } from "@elllphnt/elementa-base";
 import {
+  assert,
+  attachEnhancedReactiveList,
   attachReactiveMap,
-  createEnhancedReactiveList,
   getOrCreateYArray,
   getOrCreateYMap,
-  ReactiveList,
-  ReactiveMap,
   setEnhancer,
+  setObjectGetter,
+  setObjectProperty,
 } from "@elllphnt/elementa-utils";
-import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs";
+import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
 import * as y from "yjs";
-import { Project } from "../infrastructure/project/_.js";
-import { attachRouteTreeList } from "./route_tree/_list.js";
-import { attachRouteTree, RouteTree } from "./route_tree/route_tree.js"; // make sure Route is updated too
-import { AppVariable, attachAppVariable } from "./variable.js"; // make sure Variable is updated too
+import { Project } from "../../../infrastructure/_.js";
+import { App, AppVariable, RouteTree } from "../../_interfaces/_.js";
+import { attachRouteTree } from "./route_tree.js";
+import { attachAppVariable } from "./variable.js";
 
-export type App = ReactiveMap<AppData> & {
-  project: Project;
-  routes: ReactiveList<RouteTree>;
-  variables: ReactiveList<AppVariable>;
-  editors: ReactiveMap<y.AbstractType<any>>;
+export function attachApp(
+  app: y.Map<any>,
+  project: Project
+): app is y.Map<any> & App {
+  assert(attachReactiveMap<AppData>(app));
 
-  route(id: string): RouteTree | undefined;
-  route$(id: string): Observable<RouteTree | undefined>;
+  // Set project reference
+  assert(setObjectProperty(app, "project", project));
 
-  variable(varName: string): AppVariable | undefined;
-  variable$(varName: string): Observable<AppVariable | undefined>;
-
-  getMapEditorState(editorKey: string): y.Map<any>;
-  getArrayEditorState(editorKey: string): y.Array<any>;
-};
-
-export function attachApp(ymap: y.Map<any>, project: Project): ymap is App {
-  if (!attachReactiveMap<AppData>(ymap)) {
-    throw new Error("Failed to attach reactive map to ymap");
-  }
-  const rxMap = ymap;
-  const app = rxMap as App;
-
-  // initialization
-  app.project = project;
-
-  const routes = getOrCreateYArray<y.Map<any>>(rxMap, "routes");
-  if (!attachRouteTreeList(routes, app)) {
-    throw new Error("Failed to attach route tree list");
-  }
-  app.routes = routes;
-
-  const editors = getOrCreateYMap(rxMap, "editors");
-  if (!attachReactiveMap(editors)) {
-    throw new Error("Failed to attach reactive map to editors");
-  }
-  app.editors = editors as ReactiveMap<y.AbstractType<any>>;
-
-  app.routes = createEnhancedReactiveList(
-    getOrCreateYArray<y.Map<any>>(rxMap, "routes"),
-    attachRouteTree,
-    (yMap) => attachRouteTree(yMap, app)
+  // Setup routes
+  const routesList = getOrCreateYArray<y.Map<any>>(app, "routes");
+  assert(
+    attachEnhancedReactiveList<RouteTree>(
+      routesList,
+      attachRouteTree,
+      (route) => attachRouteTree(route, app as unknown as App)
+    )
   );
-  app.variables = createEnhancedReactiveList(
-    getOrCreateYArray<y.Map<any>>(rxMap, "variables"),
-    attachAppVariable,
-    (yMap) => attachAppVariable(yMap, app)
+  assert(setObjectProperty(app, "routes$", routesList.items$));
+  assert(setObjectGetter(app, "routes", () => routesList.items));
+
+  // Setup variables
+  const variablesList = getOrCreateYArray<y.Map<any>>(app, "variables");
+  assert(
+    attachEnhancedReactiveList<AppVariable>(
+      variablesList,
+      attachAppVariable,
+      (varMap) => attachAppVariable(varMap, app as unknown as App)
+    )
+  );
+  assert(setObjectProperty(app, "variables$", variablesList.items$));
+  assert(setObjectGetter(app, "variables", () => variablesList.items));
+
+  // Setup route lookup by ID
+  const _routesById$ = new BehaviorSubject<Record<string, RouteTree>>({});
+  routesList.items$.subscribe((routes) => {
+    const routesById: Record<string, RouteTree> = {};
+
+    function addRoute(route: RouteTree) {
+      routesById[route.id] = route;
+      route.children.forEach(addRoute);
+    }
+
+    routes.forEach(addRoute);
+    _routesById$.next(routesById);
+  });
+
+  assert(
+    setObjectProperty(app, "route$", (id: string) =>
+      _routesById$.pipe(
+        map((routes) => routes[id]),
+        distinctUntilChanged()
+      )
+    )
+  );
+  assert(
+    setObjectGetter(app, "route", () => (id: string) => _routesById$.value[id])
   );
 
-  const _variablesByVarName$ = new BehaviorSubject<Record<string, AppVariable>>(
+  // Setup variable lookup by name
+  const _variablesByName$ = new BehaviorSubject<Record<string, AppVariable>>(
     {}
   );
-  app.variable = (varName: string) => _variablesByVarName$.value[varName];
-  app.variable$ = (varName: string) =>
-    _variablesByVarName$.pipe(
-      map((variables) => variables[varName]),
-      distinctUntilChanged()
+  variablesList.items$.subscribe((variables) => {
+    _variablesByName$.next(
+      Object.fromEntries(
+        variables.map((variable) => [variable.varName, variable])
+      )
     );
+  });
 
-  app.getMapEditorState = (editorKey) => {
-    return getOrCreateYMap(app.editors, editorKey);
-  };
-  app.getArrayEditorState = (editorKey) => {
-    return getOrCreateYArray(app.editors, editorKey);
-  };
-
-  // subscriptions
-  const variablesSubscription = app.variables.observable$.subscribe(
-    (variables) => {
-      _variablesByVarName$.next(
-        Object.fromEntries(
-          variables.map((variable) => [variable.varName, variable])
-        )
-      );
-    }
+  assert(
+    setObjectProperty(app, "variable$", (varName: string) =>
+      _variablesByName$.pipe(
+        map((variables) => variables[varName]),
+        distinctUntilChanged()
+      )
+    )
+  );
+  assert(
+    setObjectGetter(
+      app,
+      "variable",
+      () => (varName: string) => _variablesByName$.value[varName]
+    )
   );
 
-  // disposal
-  const disposeBase = rxMap.dispose.bind(rxMap);
-  rxMap.dispose = () => {
-    variablesSubscription.unsubscribe();
-    _variablesByVarName$.complete();
+  // Setup editor getter
+  const editors = getOrCreateYMap(app, "editors");
+  assert(attachReactiveMap(editors));
 
-    app.routes.dispose();
-    app.variables.dispose();
-    app.editors.dispose();
+  assert(
+    setObjectGetter(app, "getEditor", () => <E>(editorKey: string): E => {
+      const editorState = getOrCreateYMap(editors, editorKey);
+      return editorState as unknown as E;
+    })
+  );
 
+  // Setup cleanup
+  const disposeBase = app.dispose || (() => {});
+  app.dispose = () => {
+    _routesById$.complete();
+    _variablesByName$.complete();
+    routesList.dispose?.();
+    variablesList.dispose?.();
+    editors.dispose?.();
     disposeBase();
   };
 
-  setEnhancer(app, attachApp);
-  return true;
-}
-
-export function createApp(project: Project): App {
-  const ymap = new y.Map<any>();
-  if (!attachApp(ymap, project)) {
-    throw new Error("Failed to attach app");
-  }
-  return ymap;
+  return setEnhancer<App>(app, attachApp);
 }

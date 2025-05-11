@@ -4,14 +4,14 @@ import { App } from "./app.js"; // use updated App type
 export interface AppVariable {
   app: App;
 
-  varName: string;
-  varName$: Observable<string>;
+  varName: string | undefined;
+  varName$: Observable<string | undefined>;
 
-  name: string;
-  name$: Observable<string>;
+  name: string | undefined;
+  name$: Observable<string | undefined>;
 
-  tsType: string;
-  tsType$: Observable<string>;
+  tsType: string | undefined;
+  tsType$: Observable<string | undefined>;
 
   scope: string | undefined;
   scope$: Observable<string | undefined>;

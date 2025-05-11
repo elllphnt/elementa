@@ -1,20 +1,24 @@
 import * as y from "yjs";
-import { Enhancer, isFromEnhancer, LooseEnhancer } from "../core/enhancer";
+import { assert } from "../core/assert";
+import {
+  Enhancer,
+  isFromEnhancer,
+  LooseEnhancer,
+  setEnhancer,
+} from "../core/enhancer";
 import { attachReactiveMap, ReactiveMap } from "./map";
 
-export function createEnhancedReactiveMap<I, T extends y.Map<I>>(
-  ymap: y.Map<I>,
+export function attachEnhancedReactiveMap<T>(
+  ymap: y.Map<any>,
   enhancer: LooseEnhancer,
   enhance: LooseEnhancer
-): ReactiveMap<Record<string, T>> {
-  if (!attachReactiveMap(ymap)) {
-    throw new Error("Failed to attach reactive map");
-  }
-  const map = ymap as any as ReactiveMap<Record<string, T>>;
+): ymap is y.Map<any> & ReactiveMap<Record<string, T>> {
+  assert(attachReactiveMap(ymap));
+  const map = ymap as ReactiveMap<Record<string, T>>;
 
   // Enhance existing entries
-  if (map.doc) {
-    Object.entries(map.values).forEach(([, value]) => {
+  if (ymap.doc) {
+    Object.entries(ymap.values).forEach(([, value]) => {
       if (!isFromEnhancer(value, enhancer as Enhancer<any, any>)) {
         enhance(value);
       }
@@ -22,7 +26,7 @@ export function createEnhancedReactiveMap<I, T extends y.Map<I>>(
   }
 
   // Reactively enhance new entries
-  map.observable$.subscribe((entries) => {
+  map.items$.subscribe((entries) => {
     Object.entries(entries).forEach(([, value]) => {
       if (!isFromEnhancer(value, enhancer as Enhancer<any, any>)) {
         enhance(value);
@@ -30,5 +34,5 @@ export function createEnhancedReactiveMap<I, T extends y.Map<I>>(
     });
   });
 
-  return map;
+  return setEnhancer(map, attachEnhancedReactiveMap);
 }

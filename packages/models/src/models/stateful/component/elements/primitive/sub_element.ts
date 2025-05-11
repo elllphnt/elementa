@@ -55,7 +55,7 @@ export function attachPrimitiveSubElement(
     },
   });
 
-  subElement.interactions$ = subElement.observable$.pipe(
+  subElement.interactions$ = subElement.items$.pipe(
     map((v) => v.interactions ?? {}),
     distinctUntilChanged()
   );

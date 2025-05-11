@@ -1,7 +1,7 @@
 import { AppData } from "@elllphnt/elementa-base";
 import {
+  attachEnhancedReactiveList,
   attachReactiveMap,
-  createEnhancedReactiveList,
   getOrCreateYArray,
   getOrCreateYMap,
   ReactiveList,
@@ -53,12 +53,12 @@ export function attachApp(ymap: y.Map<any>, project: Project): ymap is App {
   }
   app.editors = editors as ReactiveMap<y.AbstractType<any>>;
 
-  app.routes = createEnhancedReactiveList(
+  app.routes = attachEnhancedReactiveList(
     getOrCreateYArray<y.Map<any>>(rxMap, "routes"),
     attachRouteTree,
     (yMap) => attachRouteTree(yMap, app)
   );
-  app.variables = createEnhancedReactiveList(
+  app.variables = attachEnhancedReactiveList(
     getOrCreateYArray<y.Map<any>>(rxMap, "variables"),
     attachAppVariable,
     (yMap) => attachAppVariable(yMap, app)
@@ -82,15 +82,13 @@ export function attachApp(ymap: y.Map<any>, project: Project): ymap is App {
   };
 
   // subscriptions
-  const variablesSubscription = app.variables.observable$.subscribe(
-    (variables) => {
-      _variablesByVarName$.next(
-        Object.fromEntries(
-          variables.map((variable) => [variable.varName, variable])
-        )
-      );
-    }
-  );
+  const variablesSubscription = app.variables.items$.subscribe((variables) => {
+    _variablesByVarName$.next(
+      Object.fromEntries(
+        variables.map((variable) => [variable.varName, variable])
+      )
+    );
+  });
 
   // disposal
   const disposeBase = rxMap.dispose.bind(rxMap);

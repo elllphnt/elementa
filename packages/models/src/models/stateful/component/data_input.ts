@@ -3,7 +3,7 @@ import {
   attachReactiveMap,
   ReactiveMap,
   setEnhancer,
-  setModelFields,
+  setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import * as y from "yjs";
@@ -41,7 +41,13 @@ export function attachDataInput(
   const input = ymap as DataInput;
   input.component = component;
 
-  setModelFields(input, ["name", "varName", "tsType", "required", "default"]);
+  setReactiveMapGetters(input, [
+    "name",
+    "varName",
+    "tsType",
+    "required",
+    "default",
+  ]);
 
   setEnhancer(input, attachDataInput);
   return true;

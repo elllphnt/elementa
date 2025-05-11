@@ -1,13 +1,13 @@
 import { ComponentData } from "@elllphnt/elementa-base";
 import {
+  attachEnhancedReactiveList,
   attachReactiveMap,
-  createEnhancedReactiveList,
   getOrCreateYArray,
   getOrCreateYMap,
   ReactiveList,
   ReactiveMap,
   setEnhancer,
-  setModelFields,
+  setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
@@ -59,28 +59,28 @@ export function attachComponent(
 
   component.editorStates = getOrCreateYMap(rxMap, "editors");
 
-  component.props = createEnhancedReactiveList(
+  component.props = attachEnhancedReactiveList(
     getOrCreateYArray<y.Map<any>>(rxMap, "props"),
     attachDataInput,
     (ymap) => attachDataInput(ymap, component)
   );
 
-  component.fragments = createEnhancedReactiveList(
+  component.fragments = attachEnhancedReactiveList(
     getOrCreateYArray<y.Map<any>>(rxMap, "fragments"),
     attachFragment,
     (ymap) => attachFragment(ymap, component)
   );
 
-  component.states = createEnhancedReactiveList(
+  component.states = attachEnhancedReactiveList(
     getOrCreateYArray<y.Map<any>>(rxMap, "states"),
     attachState,
     (ymap) => createState(ymap, component)
   );
 
-  setModelFields(component, ["name"]);
+  setReactiveMapGetters(component, ["name"]);
 
   const _fragmentsById$ = new BehaviorSubject<Record<string, Fragment>>({});
-  const fragmentSub = component.fragments.observable$.subscribe((fragments) => {
+  const fragmentSub = component.fragments.items$.subscribe((fragments) => {
     _fragmentsById$.next(
       Object.fromEntries(fragments.map((fragment) => [fragment.id, fragment]))
     );

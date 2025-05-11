@@ -5,7 +5,7 @@ import {
   PointData,
   ReactiveMap,
   setEnhancer,
-  setModelFields,
+  setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import * as y from "yjs";
@@ -22,7 +22,7 @@ export function attachBlueprintNode(ymap: y.Map<any>): ymap is BlueprintNode {
   );
   const node = ymap as BlueprintNode;
 
-  setModelFields(node, ["position"]);
+  setReactiveMapGetters(node, ["position"]);
 
   setEnhancer(node, attachBlueprintNode);
   return true;
