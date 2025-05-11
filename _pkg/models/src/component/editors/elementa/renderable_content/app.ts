@@ -43,14 +43,14 @@ export function attachAppRenderableContent(
 
   content.app$ = content.appUrl$.pipe(
     map((url) =>
-      url ? project.appManager.app(project.absoluteFileUrl(url)) : undefined
+      url ? project.infrastructure.app(project.absoluteFileUrl(url)) : undefined
     )
   );
   Object.defineProperty(content, "app", {
     get: () => {
       const url = content.appUrl;
       return url
-        ? project.appManager.app(project.absoluteFileUrl(url))
+        ? project.infrastructure.app(project.absoluteFileUrl(url))
         : undefined;
     },
   });

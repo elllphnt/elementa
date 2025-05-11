@@ -116,13 +116,15 @@ export function attachRouteTree(ymap: y.Map<any>, app: App): ymap is RouteTree {
   ].forEach(([urlKey, absoluteUrlKey]) => {
     Object.defineProperty(route, absoluteUrlKey, {
       get() {
-        const url = route[urlKey];
+        const url = (route as any)[urlKey];
         return url ? route.app.project.absoluteFileUrl(url) : undefined;
       },
     });
     Object.defineProperty(route, `${absoluteUrlKey}$`, {
       get() {
-        const url$: Observable<string | undefined> = route[`${urlKey}$`];
+        const url$: Observable<string | undefined> = (route as any)[
+          `${urlKey}$`
+        ];
         return url$.pipe(
           map((url) =>
             url ? route.app.project.absoluteFileUrl(url) : undefined
@@ -140,18 +142,20 @@ export function attachRouteTree(ymap: y.Map<any>, app: App): ymap is RouteTree {
   ].forEach(([urlKey, key]) => {
     Object.defineProperty(route, `${key}Component`, {
       get() {
-        const url = route[urlKey];
+        const url = (route as any)[urlKey];
         return url
-          ? route.app.project.componentManager.component(url)
+          ? route.app.project.infrastructure.component(url)
           : undefined;
       },
     });
     Object.defineProperty(route, `${key}Component$`, {
       get() {
-        const url$: Observable<string | undefined> = route[`${urlKey}$`];
+        const url$: Observable<string | undefined> = (route as any)[
+          `${urlKey}$`
+        ];
         return url$.pipe(
           map((url) =>
-            url ? route.app.project.componentManager.component(url) : undefined
+            url ? route.app.project.infrastructure.component(url) : undefined
           )
         );
       },

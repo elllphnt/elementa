@@ -127,7 +127,7 @@ export function attachComponentElement(
   Object.defineProperty(componentElement, "localComponent", {
     get() {
       return componentElement.absoluteComponentUrl
-        ? fragment.component.project.componentManager.component(
+        ? fragment.component.project.infrastructure.component(
             componentElement.absoluteComponentUrl
           )
         : undefined;
@@ -138,7 +138,7 @@ export function attachComponentElement(
     componentElement.absoluteComponentUrl$.pipe(
       map((url) => {
         return url
-          ? fragment.component.project.componentManager.component(url)
+          ? fragment.component.project.infrastructure.component(url)
           : undefined;
       })
     );

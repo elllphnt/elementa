@@ -45,7 +45,7 @@ export function attachComponentRenderableContent(
   content.component$ = content.componentUrl$.pipe(
     map((url) =>
       url
-        ? project.componentManager.component(project.absoluteFileUrl(url))
+        ? project.infrastructure.component(project.absoluteFileUrl(url))
         : undefined
     )
   );
@@ -53,7 +53,7 @@ export function attachComponentRenderableContent(
     get: () => {
       const url = content.componentUrl;
       return url
-        ? project.componentManager.component(project.absoluteFileUrl(url))
+        ? project.infrastructure.component(project.absoluteFileUrl(url))
         : undefined;
     },
   });
