@@ -1,7 +1,7 @@
 import {
   CornerData,
   CornerName,
-  ElementaViewerComponentStateData,
+  ElementaPreviewData,
 } from "@elllphnt/elementa-base";
 import {
   assert,
@@ -20,17 +20,16 @@ import {
   RenderingContext,
 } from "../elementa/rendering_context.js";
 
-export type ElementaViewerComponentState =
-  ReactiveMap<ElementaViewerComponentStateData> & {
-    renderingContext: RenderingContext;
-    content: RenderableContent;
+export type ElementaViewerComponentState = ReactiveMap<ElementaPreviewData> & {
+  renderingContext: RenderingContext;
+  content: RenderableContent;
 
-    corners: CornerData<number> | undefined;
-    corners$: Observable<CornerData<number> | undefined>;
+  corners: CornerData<number> | undefined;
+  corners$: Observable<CornerData<number> | undefined>;
 
-    corner(name: CornerName): number | undefined;
-    corner$(name: CornerName): Observable<number | undefined>;
-  };
+  corner(name: CornerName): number | undefined;
+  corner$(name: CornerName): Observable<number | undefined>;
+};
 
 /**
  * Attach ElementaViewerComponentState behavior to a y.Map

@@ -2,12 +2,12 @@ import { OverflowValue } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
 
 export interface Viewport {
-  height: number;
-  height$: Observable<number>;
+  height: number | undefined;
+  height$: Observable<number | undefined>;
 
-  width: number;
-  width$: Observable<number>;
+  width: number | undefined;
+  width$: Observable<number | undefined>;
 
-  overflow: OverflowValue;
-  overflow$: Observable<OverflowValue>;
+  overflow: OverflowValue | undefined;
+  overflow$: Observable<OverflowValue | undefined>;
 }

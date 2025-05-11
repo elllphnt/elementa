@@ -4,81 +4,122 @@ import {
   attachReactiveMap,
   getOrCreateYArray,
   getOrCreateYMap,
-  ReactiveMap,
   setEnhancer,
   setObjectGetter,
   setObjectProperty,
 } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
 import * as y from "yjs";
+import { CssStyleSheet } from "../../../css/_.js";
 import { Project } from "../../../infrastructure/_.js";
 import { Component } from "../../_interfaces/component/component.js";
-import { attachDataInput, DataInput } from "./data_input.js";
-import { attachFragment, Fragment } from "./fragment.js";
-import { attachState, State } from "./states/_.js";
+import { DataInput } from "../../_interfaces/component/data_input.js";
+import { Fragment } from "../../_interfaces/component/fragment.js";
+import { State } from "../../_interfaces/component/states/_.js";
+import { Template } from "../../_interfaces/component/template.js";
+import { attachDataInput } from "./data_input.js";
+import { attachFragment } from "./fragment.js";
+import { attachState } from "./states/_.js";
 import { createState } from "./states/_create.js";
-import { attachTemplate, Template } from "./template.js";
+import { attachTemplate } from "./template.js";
 
 export function attachComponent(
-  ymap: y.Map<any>,
+  component: y.Map<any>,
   project: Project
-): ymap is y.Map<any> & Component {
-  assert(attachReactiveMap(ymap));
-  const component = ymap;
+): component is y.Map<any> & Component {
+  assert(attachReactiveMap(component));
 
+  // Set project reference
   assert(setObjectProperty(component, "project", project));
 
-  const templateYMap = getOrCreateYMap(ymap, "template");
-  attachTemplate(templateYMap, component);
-  assert(
-    setObjectGetter(component, "template", () => templateYMap as Template)
-  );
+  // Setup stage editor
+  const editorsYMap = getOrCreateYMap(component, "editors");
+  const stage = getOrCreateYMap(editorsYMap, "stage");
+  assert(attachReactiveMap(stage));
+  // We're setting this as any for now because we'll need to implement proper stage handling
+  assert(setObjectGetter(component, "stage", () => stage as any));
 
-  const editorStatesYMap = getOrCreateYMap(ymap, "editors");
-  assert(attachReactiveMap(editorStatesYMap));
+  // Setup preview editor (placeholder for now)
+  const preview = getOrCreateYMap(editorsYMap, "preview");
+  assert(attachReactiveMap(preview));
+  assert(setObjectGetter(component, "preview", () => preview as any));
+
+  // Setup template
+  const templateYMap = getOrCreateYMap(component, "template");
+  attachTemplate(templateYMap, component as unknown as Component);
   assert(
     setObjectGetter(
       component,
-      "editorStates",
-      () => editorStatesYMap as y.Map<y.Map<any>>
+      "template",
+      () => templateYMap as unknown as Template
     )
   );
 
-  const propsList = attachEnhancedReactiveList<DataInput>(
-    getOrCreateYArray<y.Map<any>>(ymap, "props"),
-    attachDataInput,
-    (ymap) => attachDataInput(ymap, component)
+  // Setup props
+  const propsList = getOrCreateYArray<y.Map<any>>(component, "props");
+  assert(
+    attachEnhancedReactiveList<DataInput>(propsList, attachDataInput, (prop) =>
+      attachDataInput(prop, component as unknown as Component)
+    )
   );
-  assert(setObjectProperty(component, "props", propsList));
+  assert(setObjectProperty(component, "props$", propsList.items$));
+  assert(setObjectGetter(component, "props", () => propsList.items));
 
-  const fragmentsList = attachEnhancedReactiveList<Fragment>(
-    getOrCreateYArray<y.Map<any>>(ymap, "fragments"),
-    attachFragment,
-    (ymap) => attachFragment(ymap, component)
+  // Setup fragments
+  const fragmentsList = getOrCreateYArray<y.Map<any>>(component, "fragments");
+  assert(
+    attachEnhancedReactiveList<Fragment>(
+      fragmentsList,
+      attachFragment,
+      (fragment) => attachFragment(fragment, component as unknown as Component)
+    )
   );
-  assert(setObjectProperty(component, "fragments", fragmentsList));
+  assert(setObjectProperty(component, "fragments$", fragmentsList.items$));
+  assert(setObjectGetter(component, "fragments", () => fragmentsList.items));
 
-  const statesList = attachEnhancedReactiveList<State>(
-    getOrCreateYArray<y.Map<any>>(ymap, "states"),
-    attachState,
-    (ymap) => createState(ymap, component)
+  // Setup states
+  const statesList = getOrCreateYArray<y.Map<any>>(component, "states");
+  assert(
+    attachEnhancedReactiveList<State>(statesList, attachState, (state) =>
+      createState(state, component as unknown as Component)
+    )
   );
-  assert(setObjectProperty(component, "states", statesList));
+  assert(setObjectProperty(component, "states$", statesList.items$));
+  assert(setObjectGetter(component, "states", () => statesList.items));
 
+  // Setup component name
+  const _nameSubject = new BehaviorSubject<string>(
+    (component.get("name") as string) || ""
+  );
+  component.observe((event) => {
+    if (event.path.length === 1 && event.path[0] === "name") {
+      _nameSubject.next((component.get("name") as string) || "");
+    }
+  });
+
+  assert(
+    setObjectProperty(
+      component,
+      "name$",
+      _nameSubject.asObservable().pipe(distinctUntilChanged())
+    )
+  );
+  assert(
+    setObjectGetter(
+      component,
+      "name",
+      () => (component.get("name") as string) || ""
+    )
+  );
+
+  // Setup fragment lookup by ID
   const _fragmentsById$ = new BehaviorSubject<Record<string, Fragment>>({});
-  const fragmentSub = fragmentsList.items$.subscribe((fragments) => {
+  fragmentsList.items$.subscribe((fragments) => {
     _fragmentsById$.next(
       Object.fromEntries(fragments.map((fragment) => [fragment.id, fragment]))
     );
   });
 
-  assert(
-    setObjectGetter(
-      component,
-      "fragment",
-      () => (id: string) => _fragmentsById$.value[id]
-    )
-  );
   assert(
     setObjectProperty(component, "fragment$", (id: string) =>
       _fragmentsById$.pipe(
@@ -87,7 +128,15 @@ export function attachComponent(
       )
     )
   );
+  assert(
+    setObjectGetter(
+      component,
+      "fragment",
+      () => (id: string) => _fragmentsById$.value[id]
+    )
+  );
 
+  // Setup stylesheets
   const _allStylesheets$ = new BehaviorSubject<CssStyleSheet[]>([]);
   assert(
     setObjectProperty(
@@ -100,40 +149,20 @@ export function attachComponent(
     setObjectGetter(component, "allStylesheets", () => _allStylesheets$.value)
   );
 
-  assert(
-    setObjectGetter(component, "getEditorState", () => (key: string) => {
-      let map = editorStatesYMap.get(key) as y.Map<any> | undefined;
-      if (!map || !(map instanceof y.Map)) {
-        map = new y.Map();
-        editorStatesYMap.set(key, map);
-      }
-      return map;
-    })
-  );
-
-  const originalDispose = component.dispose || (() => {});
+  // Setup cleanup
+  const disposeBase = component.dispose || (() => {});
   component.dispose = () => {
+    _fragmentsById$.complete();
+    _allStylesheets$.complete();
+    _nameSubject.complete();
     propsList.dispose?.();
     fragmentsList.dispose?.();
     statesList.dispose?.();
-
+    (stage as unknown as { dispose?: () => void }).dispose?.();
+    (preview as unknown as { dispose?: () => void }).dispose?.();
     (templateYMap as unknown as { dispose?: () => void }).dispose?.();
-    (
-      editorStatesYMap as unknown as ReactiveMap<{ dispose?: () => void }>
-    ).dispose?.();
-
-    _fragmentsById$.complete();
-    fragmentSub.unsubscribe();
-    _allStylesheets$.complete();
-
-    originalDispose();
+    disposeBase();
   };
 
-  return setEnhancer<ComponentCRDT>(component, attachComponent);
-}
-
-export function createComponent(project: Project): ComponentCRDT {
-  const ymap = new y.Map<any>();
-  attachComponent(ymap, project);
-  return ymap as ComponentCRDT;
+  return setEnhancer<Component>(component, attachComponent);
 }

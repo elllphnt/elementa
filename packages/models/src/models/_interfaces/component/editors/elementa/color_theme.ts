@@ -2,12 +2,12 @@ import { ColorData } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
 
 export interface ColorTheme {
-  scheme: string;
-  scheme$: Observable<string>;
+  scheme: string | undefined;
+  scheme$: Observable<string | undefined>;
 
-  foreground: ColorData;
-  foreground$: Observable<ColorData>;
+  foreground: ColorData | undefined;
+  foreground$: Observable<ColorData | undefined>;
 
-  background: ColorData;
-  background$: Observable<ColorData>;
+  background: ColorData | undefined;
+  background$: Observable<ColorData | undefined>;
 }

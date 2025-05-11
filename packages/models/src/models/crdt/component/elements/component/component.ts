@@ -1,226 +1,212 @@
+import { ComponentElementData } from "@elllphnt/elementa-base";
 import {
-  ComponentElementData,
-  ResolvableOrEvaluable,
-} from "@elllphnt/elementa-base";
-import {
+  assert,
   attachEnhancedReactiveMap,
-  combineLatestOrEmpty,
   getOrCreateYMap,
-  ReactiveMap,
   setEnhancer,
+  setObjectGetter,
+  setObjectProperty,
   setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
-import { filter, map, Observable, switchMap, tap } from "rxjs";
+import {
+  filter,
+  map,
+  Observable,
+  combineLatest as rxCombineLatest,
+  switchMap,
+  tap,
+} from "rxjs";
 import * as y from "yjs";
-import { ResolvableRecord } from "../../../../_lib/resolvable.js";
-import { CssStyleSheet } from "../../../../css/_.js";
-import { ModelFile } from "../../../../infrastructure/_.js";
-import { Component } from "../../component.js";
+import { ResolvableRecord } from "../../../../../_lib/resolvable.js";
+import { ComponentElement, SlotFill } from "../../../../_interfaces/_.js";
 import { Fragment } from "../../fragment.js";
-import { Identifiable } from "../../identifiable.js";
-import { attachBaseElement, Element } from "../element.js";
-import { attachSlotFill, createSlotFill, SlotFill } from "./slot_fill.js";
+import { attachBaseElement } from "../element.js";
+import { attachSlotFill } from "./slot_fill.js";
 
-export type ComponentElement = Element<ComponentElementData> & {
-  fills: ReactiveMap<Record<string, SlotFill>>;
-
-  allCssStylesheets: CssStyleSheet[];
-  allCssStylesheets$: Observable<CssStyleSheet[]>;
-
-  componentUrl: string | undefined;
-  componentUrl$: Observable<string | undefined>;
-
-  absoluteComponentUrl: string | undefined;
-  absoluteComponentUrl$: Observable<string | undefined>;
-
-  localComponent: ModelFile<Component> | undefined;
-  localComponent$: Observable<ModelFile<Component> | undefined>;
-
-  componentName: string | undefined;
-  componentName$: Observable<string | undefined>;
-
-  props: Record<string, any>;
-  props$: Observable<Record<string, any>>;
-
-  prop(key: string): any;
-  prop$(key: string): Observable<any>;
-
-  fill(id: string, create?: true): SlotFill;
-  fill$(id: string, create?: true): Observable<SlotFill>;
-
-  setProp(key: string, value: ResolvableOrEvaluable<any> | undefined): void;
-};
-
-/**
- * Attach ComponentElement behavior to a y.Map
- */
 export function attachComponentElement(
-  ymap: y.Map<any>,
+  element: y.Map<any>,
   fragment: Fragment
-): ymap is ComponentElement {
-  ymap.set("type", "component");
+): element is y.Map<any> & ComponentElement {
+  element.set("type", "component");
+  assert(attachBaseElement<ComponentElementData>(element, fragment));
 
-  if (!attachBaseElement(ymap, fragment)) {
-    throw new Error("Failed to attach base element to ymap");
-  }
-  const element = ymap;
-  const componentElement = element as ComponentElement;
+  assert(setReactiveMapGetters(element, ["componentUrl"]));
 
-  componentElement.fills = attachEnhancedReactiveMap(
-    getOrCreateYMap<y.Map<any>>(element, "fills"),
-    attachSlotFill,
-    (ymap) => attachSlotFill(ymap, fragment)
+  const fillsMap = getOrCreateYMap(element, "fills");
+  assert(
+    attachEnhancedReactiveMap<SlotFill>(fillsMap, attachSlotFill, (ymap) =>
+      attachSlotFill(ymap, fragment)
+    )
   );
-
-  setReactiveMapGetters(componentElement, ["componentUrl"]);
+  assert(setObjectGetter(element, "fills", () => fillsMap.items));
+  assert(setObjectProperty(element, "fills$", fillsMap.items$));
 
   const _props = new ResolvableRecord(
-    (componentElement.get("props") as Record<string, any>) ?? {},
+    (element.get("props") as Record<string, any>) ?? {},
     fragment.component.project.infrastructure
   );
-
   const propsSubscription = _props.subscribe(
-    componentElement.items$.pipe(map((v) => v.props ?? {}))
+    element.items$.pipe(map((v) => v.props ?? {}))
   );
 
-  Object.defineProperty(componentElement, "allCssStylesheets", {
-    get() {
-      return [
-        ...componentElement.allCssStylesheets,
-        ...Object.values([...componentElement.fills.values()]).flatMap(
-          (s: SlotFill) => s.allCssStylesheets
-        ),
-      ];
-    },
-    configurable: true,
-  });
-
-  element.allCssStylesheets$ = combineLatestOrEmpty([
-    element.allCssStylesheets$,
-    componentElement.fills.items$.pipe(
-      switchMap((slots) =>
-        combineLatestOrEmpty(
-          Object.values(slots).map((slot) => slot.allCssStylesheets$)
-        )
-      )
-    ),
-  ]).pipe(
-    map(([selfSheets, slotSheets]) => [...selfSheets, ...slotSheets.flat()])
+  // allCssStylesheets
+  assert(
+    setObjectGetter(element, "allCssStylesheets", () => [
+      ...element.allCssStylesheets,
+      ...Object.values(fillsMap.items).flatMap(
+        (s: SlotFill) => s.allCssStylesheets
+      ),
+    ])
   );
-
-  Object.defineProperty(componentElement, "absoluteComponentUrl", {
-    get() {
-      return componentElement.componentUrl
-        ? fragment.component.project.absoluteFileUrl(
-            componentElement.componentUrl
+  assert(
+    setObjectProperty(
+      element,
+      "allCssStylesheets$",
+      rxCombineLatest([
+        element.allCssStylesheets$,
+        fillsMap.items$.pipe(
+          switchMap((slots) =>
+            rxCombineLatest(
+              Object.values(slots).map((s) => s.allCssStylesheets$)
+            )
           )
-        : undefined;
-    },
-  });
+        ),
+      ]).pipe(map(([self, slots]) => [...self, ...slots.flat()]))
+    )
+  );
 
-  componentElement.absoluteComponentUrl$ = componentElement.componentUrl$.pipe(
-    map((url) => {
+  // localComponent (resolved from absoluteComponentUrl)
+  assert(
+    setObjectGetter(element, "absoluteComponentUrl", () => {
+      const url = element.componentUrl;
       return url ? fragment.component.project.absoluteFileUrl(url) : undefined;
     })
   );
+  assert(
+    setObjectProperty(
+      element,
+      "absoluteComponentUrl$",
+      element.componentUrl$.pipe(
+        map((url) =>
+          url ? fragment.component.project.absoluteFileUrl(url) : undefined
+        )
+      )
+    )
+  );
 
-  Object.defineProperty(componentElement, "localComponent", {
-    get() {
-      return componentElement.absoluteComponentUrl
-        ? fragment.component.project.infrastructure.component(
-            componentElement.absoluteComponentUrl
-          )
+  assert(
+    setObjectGetter(element, "localComponent", () => {
+      const url = element.absoluteComponentUrl;
+      return url
+        ? fragment.component.project.infrastructure.component(url)
         : undefined;
-    },
-  });
+    })
+  );
+  assert(
+    setObjectProperty(
+      element,
+      "localComponent$",
+      element.absoluteComponentUrl$.pipe(
+        map((url) =>
+          url
+            ? fragment.component.project.infrastructure.component(url)
+            : undefined
+        )
+      )
+    )
+  );
 
-  componentElement.localComponent$ =
-    componentElement.absoluteComponentUrl$.pipe(
-      map((url) => {
-        return url
-          ? fragment.component.project.infrastructure.component(url)
-          : undefined;
-      })
-    );
+  // props
+  assert(setObjectGetter(element, "props", () => _props.value));
+  assert(setObjectProperty(element, "props$", _props.value$));
 
-  Object.defineProperty(componentElement, "props", {
-    get() {
-      return _props.value;
-    },
-  });
+  // prop(key)
+  assert(
+    setObjectGetter(element, "prop", () => (key: string) => element.props[key])
+  );
+  assert(
+    setObjectProperty(
+      element,
+      "prop$",
+      (key: string): Observable<any> =>
+        element.props$.pipe(map((props) => props[key]))
+    )
+  );
 
-  componentElement.props$ = _props.value$;
+  // setProp
+  assert(
+    setObjectProperty(element, "setProp", (key: string, value: any) => {
+      const newProps = { ...element.props };
+      if (value === undefined) delete newProps[key];
+      else newProps[key] = value;
+      element.set("props", newProps);
+    })
+  );
 
-  componentElement.prop = (key: string) => {
-    return componentElement.props[key];
-  };
-
-  componentElement.prop$ = (key: string) => {
-    return componentElement.props$.pipe(map((props) => props[key]));
-  };
-
-  componentElement.setProp = (
-    key: string,
-    value: ResolvableOrEvaluable<any> | undefined
-  ) => {
-    const newProps = { ...componentElement.props };
-    if (value === undefined) {
-      delete newProps[key];
-    } else {
-      newProps[key] = value;
-    }
-    element.set("props", newProps);
-  };
-
-  componentElement.fill = (id: string, create?: true) => {
-    let item = componentElement.fills.get(id);
-    if (!item && create) {
-      componentElement.fills.set(id, createSlotFill(fragment));
-      item = componentElement.fills.get(id);
-    }
-    return item!;
-  };
-
-  componentElement.fill$ = (id: string, create?: true) => {
-    return componentElement.fills.items$.pipe(
-      map((fills) => fills[id]),
-      tap((item) => {
+  // fill(id, create?)
+  assert(
+    setObjectProperty(
+      element,
+      "fill",
+      (id: string, create?: true): SlotFill => {
+        let item = fillsMap.get(id);
         if (!item && create) {
-          componentElement.fills.set(id, createSlotFill(fragment));
+          const newFills = getOrCreateYMap(fillsMap, id);
+          assert(attachSlotFill(newFills, fragment));
+          fillsMap.set(id, newFills);
+          item = fillsMap.get(id);
         }
-      }),
-      filter((item) => !!item || !create)
-    ) as any;
-  };
+        return item!;
+      }
+    )
+  );
 
-  const baseDispose = (element as any).dispose?.bind(element);
+  // fill$(id, create?)
+  assert(
+    setObjectProperty(
+      element,
+      "fill$",
+      (id: string, create?: true): Observable<SlotFill> =>
+        fillsMap.items$.pipe(
+          map((fills: Record<string, SlotFill>) => fills[id]),
+          tap((item) => {
+            if (!item && create) {
+              const newFills = getOrCreateYMap(fillsMap, id);
+              assert(attachSlotFill(newFills, fragment));
+              fillsMap.set(id, newFills);
+              item = fillsMap.get(id);
+            }
+          }),
+          filter((item) => !!item || !create)
+        )
+    )
+  );
+  assert(
+    setObjectProperty(
+      element,
+      "setFill",
+      (id: string, value: SlotFill | undefined) => {
+        const newFills = { ...fillsMap.items };
+        if (value === undefined) delete newFills[id];
+        else newFills[id] = value;
+        fillsMap.set("items", newFills);
+      }
+    )
+  );
+  assert(
+    setObjectProperty(element, "setComponentUrl", (url: string | undefined) => {
+      element.set("componentUrl", url);
+    })
+  );
+
+  // Cleanup
+  const baseDispose = element.dispose?.bind(element);
   element.dispose = () => {
     propsSubscription.unsubscribe();
     _props.dispose();
-    componentElement.fills.dispose();
-    if (baseDispose) baseDispose();
+    fillsMap.dispose?.();
+    baseDispose?.();
   };
 
-  componentElement.cloneIds = (clone: y.Map<any>) => {
-    componentElement.cloneOwnId(clone);
-    const fillsClone = getOrCreateYMap(clone, "fills");
-    Identifiable.cloneIdentifiableMapIds(
-      Object.fromEntries(componentElement.fills.entries()),
-      fillsClone as any
-    );
-  };
-
-  setEnhancer(element, attachComponentElement);
-  return true;
-}
-
-/**
- * Create a new local ComponentElement model
- */
-export function createComponentElement(fragment: Fragment): ComponentElement {
-  const ymap = new y.Map<any>();
-  if (!attachComponentElement(ymap, fragment)) {
-    throw new Error("Failed to create ComponentElement");
-  }
-  return ymap as ComponentElement;
+  return setEnhancer<ComponentElement>(element, attachComponentElement);
 }

@@ -55,7 +55,7 @@ export function setReactiveMapGetters<
   ReactiveMap<T> & {
     [key in K]: T[key];
   } & {
-    [key in `${K}$`]: Observable<T[K]>;
+    [key in `${K}$`]: key extends `${infer F}$` ? Observable<T[F]> : never;
   } {
   for (const field of fields) {
     Object.defineProperty(rxMap, field, {

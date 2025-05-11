@@ -2,80 +2,81 @@ import { AppRenderableContentData } from "@elllphnt/elementa-base";
 import {
   assert,
   attachReactiveMap,
-  ReactiveMap,
   setEnhancer,
+  setObjectGetter,
+  setObjectProperty,
   setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
 import * as y from "yjs";
-import { App } from "../../../../../app/app.js";
-import { ModelFile, Project } from "../../../../../infrastructure/_.js";
+import { Project } from "../../../../../../infrastructure/_.js";
+import { AppRenderableContent } from "../../../../../_interfaces/_.js";
 
-export type AppRenderableContent = ReactiveMap<AppRenderableContentData> & {
-  type: "app";
-
-  appUrl: string | undefined;
-  appUrl$: Observable<string | undefined>;
-
-  app: ModelFile<App> | undefined;
-  app$: Observable<ModelFile<App> | undefined>;
-
-  variables: Record<string, any>;
-  variables$: Observable<Record<string, any>>;
-
-  variableValue(name: string): any | undefined;
-  variableValue$(name: string): Observable<any | undefined>;
-};
-
-/**
- * Attach RenderingContext behavior to a y.Map
- */
 export function attachAppRenderableContent(
-  ymap: y.Map<any>,
+  content: y.Map<any>,
   project: Project
-): ymap is AppRenderableContent {
-  ymap.set("type", "app");
+): content is y.Map<any> & AppRenderableContent {
+  content.set("type", "app");
 
-  assert(attachReactiveMap<AppRenderableContentData>(ymap));
-  const content = ymap as AppRenderableContent;
+  assert(setObjectGetter(content, "type", () => content.get("type") as "app"));
 
-  setReactiveMapGetters(content, ["appUrl", "variables"]);
+  assert(attachReactiveMap<AppRenderableContentData>(content));
 
-  content.app$ = content.appUrl$.pipe(
-    map((url) =>
-      url ? project.infrastructure.app(project.absoluteFileUrl(url)) : undefined
+  // Reactive getters
+  assert(setReactiveMapGetters(content, ["appUrl", "variables"]));
+
+  // app$
+  assert(
+    setObjectProperty(
+      content,
+      "app$",
+      content.appUrl$.pipe(
+        map((url) =>
+          url
+            ? project.infrastructure.app(project.absoluteFileUrl(url))
+            : undefined
+        )
+      )
     )
   );
-  Object.defineProperty(content, "app", {
-    get: () => {
+
+  // app
+  assert(
+    setObjectGetter(content, "app", () => {
       const url = content.appUrl;
       return url
         ? project.infrastructure.app(project.absoluteFileUrl(url))
         : undefined;
-    },
-  });
+    })
+  );
 
-  content.variableValue = (name: string) => {
-    const variables = content.variables;
-    return variables ? variables[name] : undefined;
+  // variableValue(name)
+  assert(
+    setObjectGetter(
+      content,
+      "variableValue",
+      () => (name: string) => content.variables?.[name]
+    )
+  );
+
+  // variableValue$(name)
+  assert(
+    setObjectProperty(
+      content,
+      "variableValue$",
+      (name: string): Observable<any | undefined> =>
+        content.variables$.pipe(
+          map((vars) => vars?.[name]),
+          map((v) => (v !== undefined ? v : undefined))
+        )
+    )
+  );
+
+  // Stub cleanup (optional, can be removed if not needed)
+  const disposeBase = content.dispose || (() => {});
+  content.dispose = () => {
+    disposeBase();
   };
-  content.variableValue$ = (name: string) =>
-    content.items$.pipe(
-      map((value) => value.variables?.[name]),
-      map((value) => (value !== undefined ? value : undefined))
-    );
 
-  setEnhancer(content, attachAppRenderableContent);
-  return true;
-}
-
-/**
- * Create a new local RenderingContext
- */
-export function createAppRenderableContent(
-  project: Project
-): AppRenderableContent {
-  const ymap = new y.Map<any>();
-  assert(attachAppRenderableContent(ymap, project));
-  return ymap;
+  return setEnhancer<AppRenderableContent>(content, attachAppRenderableContent);
 }

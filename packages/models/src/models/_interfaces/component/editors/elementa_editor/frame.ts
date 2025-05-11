@@ -14,12 +14,6 @@ export interface ElementaFrame extends Identifiable {
   name: string | undefined;
   name$: Observable<string | undefined>;
 
-  fragmentId: string | undefined;
-  fragmentId$: Observable<string | undefined>;
-
-  fragment: any;
-  fragment$: Observable<any>;
-
   x: number | undefined;
   x$: Observable<number | undefined>;
 
@@ -34,6 +28,13 @@ export interface ElementaFrame extends Identifiable {
 
   corners: CornerData<number> | undefined;
   corners$: Observable<CornerData<number> | undefined>;
+
+  setName(name: string | undefined): void;
+  setX(x: number | undefined): void;
+  setY(y: number | undefined): void;
+  setHeight(height: number | undefined): void;
+  setWidth(width: number | undefined): void;
+  setCorners(corners: CornerData<number> | undefined): void;
 
   remove(): void;
 }

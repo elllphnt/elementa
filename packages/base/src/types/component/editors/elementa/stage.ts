@@ -3,12 +3,12 @@ import { ElementaFrameData, elementaFrameDataSchema } from "./frame.js";
 
 // Types
 
-export type ElementaEditorComponentStateData = {
+export type ElementaStageData = {
   frames: ElementaFrameData[];
 };
 
 // Schemas
 
-export const elementaEditorComponentStateDataSchema = z.object({
+export const elementaStageDataSchema = z.object({
   frames: z.array(elementaFrameDataSchema),
 });

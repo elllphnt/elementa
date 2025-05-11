@@ -2,78 +2,73 @@ import { FragmentRenderableContentData } from "@elllphnt/elementa-base";
 import {
   assert,
   attachReactiveMap,
-  ReactiveMap,
   setEnhancer,
+  setObjectGetter,
+  setObjectProperty,
   setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
 import { map, Observable, of, switchMap } from "rxjs";
 import * as y from "yjs";
-import { Component } from "../../../component.js";
-import { Fragment } from "../../../fragment.js";
+import { Project } from "../../../../../../infrastructure/_.js";
+import { FragmentRenderableContent } from "../../../../../_interfaces/_.js";
 
-export type FragmentRenderableContent =
-  ReactiveMap<FragmentRenderableContentData> & {
-    type: "fragment";
-
-    fragmentId: string | undefined;
-    fragmentId$: Observable<string | undefined>;
-
-    fragment: Fragment | undefined;
-    fragment$: Observable<Fragment | undefined>;
-
-    params: Record<string, any>;
-    params$: Observable<Record<string, any>>;
-
-    paramValue(name: string): any | undefined;
-    paramValue$(name: string): Observable<any | undefined>;
-  };
-
-/**
- * Attach RenderingContext behavior to a y.Map
- */
 export function attachFragmentRenderableContent(
-  ymap: y.Map<any>,
-  component: Component
-): ymap is FragmentRenderableContent {
-  ymap.set("type", "fragment");
+  content: y.Map<any>,
+  project: Project
+): content is y.Map<any> & FragmentRenderableContent {
+  content.set("type", "fragment");
 
-  assert(attachReactiveMap<FragmentRenderableContentData>(ymap));
-  const content = ymap as FragmentRenderableContent;
-
-  setReactiveMapGetters(content, ["fragmentId", "params"]);
-
-  content.fragment$ = content.fragmentId$.pipe(
-    switchMap((id) => (id ? component.fragment$(id) : of(undefined)))
+  assert(attachReactiveMap<FragmentRenderableContentData>(content));
+  assert(setReactiveMapGetters(content, ["fragmentUrl", "params"]));
+  assert(
+    setObjectGetter(content, "type", () => content.get("type") as "fragment")
   );
-  Object.defineProperty(content, "fragment", {
-    get: () => {
-      const id = content.fragmentId;
-      return id ? component.fragment(id) : undefined;
-    },
-  });
 
-  content.paramValue = (name: string) => {
-    const params = content.params;
-    return params ? params[name] : undefined;
-  };
+  // fragment$
+  assert(
+    setObjectProperty(
+      content,
+      "fragment$",
+      content.fragmentUrl$.pipe(
+        switchMap((url) =>
+          url ? project.infrastructure.fragment$(url) : of(undefined)
+        )
+      )
+    )
+  );
 
-  content.paramValue$ = (name: string) =>
-    content.items$.pipe(
-      map((value) => value.params?.[name]),
-      map((value) => (value !== undefined ? value : undefined))
-    );
+  // fragment
+  assert(
+    setObjectGetter(content, "fragment", () => {
+      const url = content.fragmentUrl;
+      return url ? project.infrastructure.fragment(url) : undefined;
+    })
+  );
 
-  setEnhancer(content, attachFragmentRenderableContent);
-  return true;
-}
+  // paramValue(name)
+  assert(
+    setObjectGetter(
+      content,
+      "paramValue",
+      () => (name: string) => content.params?.[name]
+    )
+  );
 
-/**
- * Create a new local RenderingContext
- */
-export function createFragmentRenderableContent(
-  component: Component
-): FragmentRenderableContent {
-  const ymap = new y.Map<any>();
-  assert(attachFragmentRenderableContent(ymap, component));
-  return ymap;
+  // paramValue$(name)
+  assert(
+    setObjectProperty(
+      content,
+      "paramValue$",
+      (name: string): Observable<any | undefined> =>
+        content.params$.pipe(
+          map((params) => params?.[name]),
+          map((v) => (v !== undefined ? v : undefined))
+        )
+    )
+  );
+
+  return setEnhancer<FragmentRenderableContent>(
+    content,
+    attachFragmentRenderableContent
+  );
 }

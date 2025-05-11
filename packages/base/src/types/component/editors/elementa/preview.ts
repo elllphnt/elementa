@@ -3,15 +3,15 @@ import { CornerData, cornerDataSchema } from "../../../_primitives/_.js";
 import {
   RenderableContentData,
   renderableContentDataSchema,
-} from "../elementa/renderable_content.js";
+} from "./renderable_content.js";
 import {
   RenderingContextData,
   renderingContextDataSchema,
-} from "../elementa/rendering_context.js";
+} from "./rendering_context.js";
 
 // Types
 
-export type ElementaViewerComponentStateData = {
+export type ElementaPreviewData = {
   renderingContext?: RenderingContextData;
   content?: RenderableContentData;
   corners?: CornerData<number>;
@@ -19,7 +19,7 @@ export type ElementaViewerComponentStateData = {
 
 // Schemas
 
-export const elementaViewerComponentStateDataSchema = z.object({
+export const elementaPreviewDataSchema = z.object({
   context: renderingContextDataSchema.optional(),
   content: renderableContentDataSchema.optional(),
   corners: cornerDataSchema(z.number()).optional(),

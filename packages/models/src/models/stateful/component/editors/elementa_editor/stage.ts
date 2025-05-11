@@ -1,4 +1,4 @@
-import { ElementaEditorComponentStateData } from "@elllphnt/elementa-base";
+import { ElementaStageData } from "@elllphnt/elementa-base";
 import {
   attachEnhancedReactiveList,
   attachReactiveMap,
@@ -11,7 +11,7 @@ import * as y from "yjs";
 import { Component } from "../../component.js";
 import { attachElementaFrame, ElementaFrame } from "./frame.js";
 
-export type ElementaStage = ReactiveMap<ElementaEditorComponentStateData> & {
+export type ElementaStage = ReactiveMap<ElementaStageData> & {
   component: Component;
   frames: ReactiveList<ElementaFrame>;
 };

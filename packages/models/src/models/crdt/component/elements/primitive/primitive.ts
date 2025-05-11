@@ -1,59 +1,23 @@
-import {
-  PrimitiveElementData,
-  ResolvableOrEvaluable,
-} from "@elllphnt/elementa-base";
+import { ResolvableOrEvaluable } from "@elllphnt/elementa-base";
 import {
   attachEnhancedReactiveMap,
   combineLatestOrEmpty,
   getOrCreateYArray,
   getOrCreateYMap,
-  ReactiveMap,
   setEnhancer,
   setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
-import { filter, map, Observable, tap } from "rxjs";
+import { filter, map, tap } from "rxjs";
 import * as y from "yjs";
 import { ResolvableRecord } from "../../../../_lib/resolvable.js";
-import { File } from "../../../../infrastructure/file/file.js";
 import { Fragment } from "../../fragment.js";
 import { attachElementList, ElementList } from "../_list.js";
-import { attachBaseElement, Element } from "../element.js";
+import { attachBaseElement } from "../element.js";
 import {
   attachPrimitiveSubElement,
   createPrimitiveSubElement,
-  PrimitiveSubElement,
 } from "./sub_element.js";
-
-export type PrimitiveElement = Element<PrimitiveElementData> & {
-  content: ElementList;
-  elements: ReactiveMap<Record<string, PrimitiveSubElement>>;
-
-  allCssStylesheets: any[];
-  allCssStylesheets$: Observable<any[]>;
-
-  primitiveUrl: string | undefined;
-  primitiveUrl$: Observable<string | undefined>;
-
-  primitiveAbsoluteUrl: string | undefined;
-  primitiveAbsoluteUrl$: Observable<string | undefined>;
-
-  primitiveFile: File | undefined;
-  primitiveFile$: Observable<File | undefined>;
-
-  props: Record<string, any>;
-  props$: Observable<Record<string, any>>;
-
-  prop(key: string): any;
-  prop$(key: string): Observable<any>;
-
-  setPrimitiveUrl(url: string | undefined): void;
-  setProp(key: string, value: ResolvableOrEvaluable<any> | undefined): void;
-
-  element(name: string, create?: true): PrimitiveSubElement;
-  element$(name: string, create?: true): Observable<PrimitiveSubElement>;
-
-  cloneIds(clone: y.Map<any>): void;
-};
+import { PrimitiveElement } from "../../../../_interfaces/_.js";
 
 export function attachPrimitiveElement(
   ymap: y.Map<any>,

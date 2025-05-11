@@ -4,14 +4,14 @@ import { Fragment } from "../../../fragment.js";
 export interface FragmentRenderableContent {
   type: "fragment";
 
-  fragmentId: string | undefined;
-  fragmentId$: Observable<string | undefined>;
+  fragmentUrl: string | undefined;
+  fragmentUrl$: Observable<string | undefined>;
 
   fragment: Fragment | undefined;
   fragment$: Observable<Fragment | undefined>;
 
-  params: Record<string, any>;
-  params$: Observable<Record<string, any>>;
+  params: Record<string, any> | undefined;
+  params$: Observable<Record<string, any> | undefined>;
 
   paramValue(name: string): any | undefined;
   paramValue$(name: string): Observable<any | undefined>;

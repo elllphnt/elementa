@@ -1,5 +1,11 @@
 import { StaticReference } from "@elllphnt/elementa-base";
-import { App, Component, FileModel } from "../models/_interfaces/_.js";
+import { Observable } from "rxjs";
+import {
+  App,
+  Component,
+  FileModel,
+  Fragment,
+} from "../models/_interfaces/_.js";
 import { File } from "./file/_.js";
 import { Project } from "./project/project.js";
 
@@ -14,6 +20,9 @@ export interface Infrastructure {
 
   app(url: string): FileModel<App>;
   createApp(): Promise<FileModel<App>>;
+
+  fragment(url: string): Fragment | undefined;
+  fragment$(url: string): Observable<Fragment | undefined>;
 
   // References
 

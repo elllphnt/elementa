@@ -13,7 +13,7 @@ export type ComponentRenderableContentData = BaseRenderableContentData & {
 
 export type FragmentRenderableContentData = BaseRenderableContentData & {
   type: "fragment";
-  fragmentId?: string;
+  fragmentUrl?: string;
   params?: Record<string, any>;
 };
 

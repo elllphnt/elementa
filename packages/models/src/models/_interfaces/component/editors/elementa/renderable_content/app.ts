@@ -11,8 +11,8 @@ export interface AppRenderableContent {
   app: FileModel<App> | undefined;
   app$: Observable<FileModel<App> | undefined>;
 
-  variables: Record<string, any>;
-  variables$: Observable<Record<string, any>>;
+  variables: Record<string, any> | undefined;
+  variables$: Observable<Record<string, any> | undefined>;
 
   variableValue(name: string): any | undefined;
   variableValue$(name: string): Observable<any | undefined>;

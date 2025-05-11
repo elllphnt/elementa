@@ -1,33 +1,23 @@
 import { RenderableContentData } from "@elllphnt/elementa-base";
 import * as y from "yjs";
-import { Component } from "../../../component.js";
-import { AppRenderableContent, attachAppRenderableContent } from "./app.js";
-import {
-  attachComponentRenderableContent,
-  ComponentRenderableContent,
-} from "./component.js";
-import {
-  attachFragmentRenderableContent,
-  FragmentRenderableContent,
-} from "./fragment.js";
+import { Project } from "../../../../../../infrastructure/_.js";
+import { RenderableContent } from "../../../../../_interfaces/_.js";
+import { attachAppRenderableContent } from "./app.js";
+import { attachComponentRenderableContent } from "./component.js";
+import { attachFragmentRenderableContent } from "./fragment.js";
 
-export type RenderableContent =
-  | AppRenderableContent
-  | ComponentRenderableContent
-  | FragmentRenderableContent;
-
-export function createRenderableContent(
+export function attachRenderableContent(
   ymap: y.Map<any>,
-  component: Component
-): ymap is RenderableContent {
+  project: Project
+): ymap is y.Map<any> & RenderableContent {
   const type = ymap.get("type") as RenderableContentData["type"];
   switch (type) {
     case "component":
-      return attachComponentRenderableContent(ymap, component.project);
+      return attachComponentRenderableContent(ymap, project);
     case "fragment":
-      return attachFragmentRenderableContent(ymap, component);
+      return attachFragmentRenderableContent(ymap, project);
     case "app":
-      return attachAppRenderableContent(ymap, component.project);
+      return attachAppRenderableContent(ymap, project);
     default:
       throw new Error(`Unknown renderable content type: ${type}`);
   }

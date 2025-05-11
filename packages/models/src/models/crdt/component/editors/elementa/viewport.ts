@@ -1,37 +1,18 @@
-import { OverflowValue, ViewportData } from "@elllphnt/elementa-base";
+import { ViewportData } from "@elllphnt/elementa-base";
 import {
   assert,
   attachReactiveMap,
-  ReactiveMap,
   setEnhancer,
   setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
-import { Observable } from "rxjs";
 import * as y from "yjs";
+import { Viewport } from "../../../../_interfaces/_.js";
 
-export type Viewport = ReactiveMap<ViewportData> & {
-  height: number;
-  height$: Observable<number>;
+export function attachViewport(
+  viewport: y.Map<any>
+): viewport is y.Map<any> & Viewport {
+  assert(attachReactiveMap<ViewportData>(viewport));
+  assert(setReactiveMapGetters(viewport, ["height", "width", "overflow"]));
 
-  width: number;
-  width$: Observable<number>;
-
-  overflow: OverflowValue;
-  overflow$: Observable<OverflowValue>;
-};
-
-export function attachViewport(ymap: y.Map<any>): ymap is Viewport {
-  assert(attachReactiveMap<ViewportData>(ymap as y.Map<any>));
-  const viewport = ymap as Viewport;
-
-  setReactiveMapGetters(viewport, ["height", "width", "overflow"]);
-
-  setEnhancer(viewport, attachViewport);
-  return true;
-}
-
-export function createViewport(): Viewport {
-  const ymap = new y.Map<any>();
-  assert(attachViewport(ymap));
-  return ymap;
+  return setEnhancer<Viewport>(viewport, attachViewport);
 }

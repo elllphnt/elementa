@@ -11,8 +11,8 @@ export interface ComponentRenderableContent {
   component: FileModel<Component> | undefined;
   component$: Observable<FileModel<Component> | undefined>;
 
-  props: Record<string, any>;
-  props$: Observable<Record<string, any>>;
+  props: Record<string, any> | undefined;
+  props$: Observable<Record<string, any> | undefined>;
 
   propValue(name: string): any | undefined;
   propValue$(name: string): Observable<any | undefined>;

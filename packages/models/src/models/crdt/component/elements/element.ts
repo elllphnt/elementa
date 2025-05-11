@@ -1,118 +1,67 @@
+import { ElementData } from "@elllphnt/elementa-base";
 import {
-  BaseElementData,
-  ElementRepeatData,
-  Evaluable,
-  Expression,
-  LinkData,
-  ResolvableOrEvaluable,
-} from "@elllphnt/elementa-base";
-import {
+  assert,
   getOrCreateYMap,
+  ReactiveMap,
   setEnhancer,
+  setObjectGetter,
+  setObjectProperty,
   setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
-import { Observable, of } from "rxjs";
+import { of } from "rxjs";
 import * as y from "yjs";
-import { CssStyleSheet, StylesheetCssStyleSheet } from "../../../css/_.js";
+import { StylesheetCssStyleSheet } from "../../../../css/_.js";
+import { Element } from "../../../_interfaces/_.js";
+import { Identifiable } from "../../../_interfaces/component/identifiable.js";
 import { attachStylesheet } from "../../style/stylesheet.js";
 import { Fragment } from "../fragment.js";
-import { attachIdentifiable, Identifiable } from "../identifiable.js";
+import { attachIdentifiable } from "../identifiable.js";
 
-export type Element<D extends BaseElementData = BaseElementData> =
-  Identifiable<D> & {
-    fragment: Fragment;
-    cssStyleSheet: StylesheetCssStyleSheet;
-
-    allCssStylesheets: CssStyleSheet[];
-    allCssStylesheets$: Observable<CssStyleSheet[]>;
-
-    type: string;
-
-    name: string | undefined;
-    name$: Observable<string | undefined>;
-
-    tag: string | undefined;
-    tag$: Observable<string | undefined>;
-
-    repeat: ElementRepeatData | undefined;
-    repeat$: Observable<ElementRepeatData | undefined>;
-
-    condition: Evaluable<boolean> | undefined;
-    condition$: Observable<Evaluable<boolean> | undefined>;
-
-    interactions: Record<string, Expression> | undefined;
-    interactions$: Observable<Record<string, Expression> | undefined>;
-
-    link: LinkData | undefined;
-    link$: Observable<LinkData | undefined>;
-
-    ariaLabel: ResolvableOrEvaluable<string> | undefined;
-    ariaLabel$: Observable<ResolvableOrEvaluable<string> | undefined>;
-
-    ariaHidden: ResolvableOrEvaluable<boolean> | undefined;
-    ariaHidden$: Observable<ResolvableOrEvaluable<boolean> | undefined>;
-
-    ariaRole: ResolvableOrEvaluable<string> | undefined;
-    ariaRole$: Observable<ResolvableOrEvaluable<string> | undefined>;
-
-    tabIndex: ResolvableOrEvaluable<number> | undefined;
-    tabIndex$: Observable<ResolvableOrEvaluable<number> | undefined>;
-  };
-
-export function attachBaseElement<D extends BaseElementData>(
-  ymap: y.Map<any>,
+export function attachBaseElement<E extends ElementData>(
+  element: y.Map<any>,
   fragment: Fragment
-): ymap is Element<D> {
-  if (!attachIdentifiable<BaseElementData>(ymap)) {
-    throw Error("Failed to attach identifiable");
-  }
-  const identifiable = ymap;
-  const element = identifiable as any as Element<D>;
+): element is y.Map<any> & ReactiveMap<E> & Identifiable & Element {
+  assert(attachIdentifiable<E>(element));
+  assert(setObjectProperty(element, "fragment", fragment));
 
-  element.fragment = fragment;
+  // Reactive getters
+  assert(
+    setReactiveMapGetters(element, [
+      "name",
+      "tag",
+      "repeat",
+      "condition",
+      "interactions",
+      "link",
+      "ariaLabel",
+      "ariaHidden",
+      "ariaRole",
+      "tabIndex",
+    ])
+  );
 
-  Object.defineProperty(identifiable, "allCssStylesheets", {
-    get() {
-      return [element.cssStyleSheet];
-    },
-    configurable: true,
-  });
-  element.allCssStylesheets$ = of([element.cssStyleSheet]);
+  // Type
+  assert(setObjectGetter(element, "type", () => element.get("type")));
 
-  Object.defineProperty(element, "type", {
-    get() {
-      return element.get("type");
-    },
-  });
-
+  // Stylesheet
   const stylesheet = getOrCreateYMap(element, "stylesheet");
-  if (!attachStylesheet(stylesheet, fragment.component.project)) {
-    throw Error("Failed to attach stylesheet");
-  }
-  element.cssStyleSheet = new StylesheetCssStyleSheet({
-    target: `${element.type}:${element.key}`,
+  assert(attachStylesheet(stylesheet, fragment.component.project));
+
+  const cssStyleSheet = new StylesheetCssStyleSheet({
+    target: `${(element as any).type}:${(element as any).key}`,
     stylesheet,
   });
 
-  setReactiveMapGetters(element, [
-    "name",
-    "tag",
-    "repeat",
-    "condition",
-    "interactions",
-    "link",
-    "ariaLabel",
-    "ariaHidden",
-    "ariaRole",
-    "tabIndex",
-  ]);
+  assert(setObjectProperty(element, "cssStyleSheet", cssStyleSheet));
+  assert(setObjectGetter(element, "allCssStylesheets", () => [cssStyleSheet]));
+  assert(setObjectProperty(element, "allCssStylesheets$", of([cssStyleSheet])));
 
-  const baseDispose = element.dispose.bind(element);
-  element.dispose = () => {
-    element.cssStyleSheet.dispose();
-    if (baseDispose) baseDispose();
+  // Cleanup
+  const baseDispose = (element as any).dispose?.bind(element);
+  (element as any).dispose = () => {
+    cssStyleSheet.dispose?.();
+    baseDispose?.();
   };
 
-  setEnhancer(element, attachBaseElement);
-  return true;
+  return setEnhancer<Element>(element, attachBaseElement);
 }

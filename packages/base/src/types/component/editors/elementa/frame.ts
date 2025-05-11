@@ -7,11 +7,11 @@ import {
 import {
   RenderableContentData,
   renderableContentDataSchema,
-} from "../elementa/renderable_content.js";
+} from "./renderable_content.js";
 import {
   RenderingContextData,
   renderingContextDataSchema,
-} from "../elementa/rendering_context.js";
+} from "./rendering_context.js";
 
 // Types
 

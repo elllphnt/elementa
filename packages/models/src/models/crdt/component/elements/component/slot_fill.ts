@@ -1,121 +1,123 @@
 import { Expression, SlotFillData } from "@elllphnt/elementa-base";
 import {
+  assert,
   attachReactiveMap,
   combineLatestOrEmpty,
   getOrCreateYArray,
   getOrCreateYMap,
-  ReactiveMap,
+  setEnhancer,
+  setObjectGetter,
+  setObjectProperty,
 } from "@elllphnt/elementa-utils";
-import { map, Observable } from "rxjs";
+import { map, Observable, switchMap } from "rxjs";
 import * as y from "yjs";
-import { CssStyleSheet, StylesheetCssStyleSheet } from "../../../../css/_.js";
+import { StylesheetCssStyleSheet } from "../../../../../css/_.js";
+import { SlotFill } from "../../../../_interfaces/_.js";
 import { attachStylesheet } from "../../../style/stylesheet.js";
-import { Component } from "../../component.js";
 import { Fragment } from "../../fragment.js";
-import { attachElementList, ElementList } from "../_list.js";
-
-export type SlotFill = ReactiveMap<SlotFillData> & {
-  component: Component;
-  cssStyleSheet: StylesheetCssStyleSheet;
-  content: ElementList;
-
-  allCssStylesheets: CssStyleSheet[];
-  allCssStylesheets$: Observable<CssStyleSheet[]>;
-
-  interactions: Record<string, Expression>;
-  interactions$: Observable<Record<string, Expression>>;
-
-  interaction(event: string): Expression | undefined;
-  interaction$(event: string): Observable<Expression | undefined>;
-
-  setInteraction(event: string, interaction: Expression): void;
-  clearInteractions(): void;
-
-  cloneIds(clone: y.Map<any>): void;
-};
+import { attachElementList } from "../_list.js";
 
 export function attachSlotFill(
-  ymap: y.Map<any>,
+  slot: y.Map<any>,
   fragment: Fragment
-): ymap is SlotFill {
-  if (!attachReactiveMap<SlotFillData>(ymap as y.Map<any>)) {
-    throw new Error("Failed to attach reactive map to ymap");
-  }
-  const slot = ymap as SlotFill;
-
-  slot.component = fragment.component;
+): slot is y.Map<any> & SlotFill {
+  assert(attachReactiveMap<SlotFillData>(slot));
+  assert(setObjectProperty(slot, "component", fragment.component));
 
   const stylesheet = getOrCreateYMap(slot, "stylesheet");
-  if (!attachStylesheet(stylesheet, fragment.component.project)) {
-    throw new Error("Failed to attach stylesheet to ymap");
-  }
-  slot.cssStyleSheet = new StylesheetCssStyleSheet({
-    target: `slot-fill`,
+  assert(attachStylesheet(stylesheet, fragment.component.project));
+
+  const cssStyleSheet = new StylesheetCssStyleSheet({
+    target: "slot-fill",
     stylesheet,
   });
+  assert(setObjectProperty(slot, "cssStyleSheet", cssStyleSheet));
 
   const content = getOrCreateYArray(slot, "content");
-  attachElementList(getOrCreateYArray(slot, "content"), fragment);
-  slot.content = content as ElementList;
+  assert(attachElementList(content, fragment));
+  assert(setObjectGetter(slot, "content", () => content.items));
+  assert(setObjectProperty(slot, "content$", content.items$));
 
-  Object.defineProperty(slot, "allCssStylesheets", {
-    get() {
-      return [slot.cssStyleSheet, ...slot.content.allCssStylesheets];
-    },
-    configurable: true,
-  });
+  // allCssStylesheets
+  assert(
+    setObjectGetter(slot, "allCssStylesheets", () => [
+      cssStyleSheet,
+      ...slot.content.flatMap((s) => s.allCssStylesheets),
+    ])
+  );
 
-  slot.allCssStylesheets$ = combineLatestOrEmpty([
-    slot.content.allCssStylesheets$,
-  ]).pipe(map(([children]) => [slot.cssStyleSheet, ...children.flat()]));
+  assert(
+    setObjectProperty(
+      slot,
+      "allCssStylesheets$",
+      combineLatestOrEmpty([
+        slot.content$.pipe(
+          switchMap((children) =>
+            children.map((child) => child.allCssStylesheets$)
+          )
+        ),
+      ]).pipe(map(([children]) => [cssStyleSheet, ...children.flat()]))
+    )
+  );
 
-  Object.defineProperty(slot, "interactions", {
-    get() {
-      return slot.get("interactions") ?? {};
-    },
-    set(value) {
-      slot.set("interactions", value);
-    },
-  });
+  // interactions
+  assert(
+    setObjectGetter(slot, "interactions", () => slot.get("interactions") ?? {})
+  );
+  assert(
+    setObjectProperty(
+      slot,
+      "interactions$",
+      slot.items$.pipe(map((v) => v.interactions ?? {}))
+    )
+  );
 
-  slot.interactions$ = slot.items$.pipe(map((v) => v.interactions ?? {}));
+  // interaction(event)
+  assert(
+    setObjectGetter(
+      slot,
+      "interaction",
+      () => (event: string) => slot.interactions[event]
+    )
+  );
 
-  slot.interaction = (event: string) => {
-    return slot.interactions[event];
-  };
+  // interaction$(event)
+  assert(
+    setObjectProperty(
+      slot,
+      "interaction$",
+      (event: string): Observable<Expression | undefined> =>
+        slot.interactions$.pipe(map((interactions) => interactions[event]))
+    )
+  );
 
-  slot.interaction$ = (event: string) => {
-    return slot.interactions$.pipe(map((interactions) => interactions[event]));
-  };
+  // setInteraction
+  assert(
+    setObjectProperty(
+      slot,
+      "setInteraction",
+      (event: string, expr: Expression) => {
+        const updated = { ...slot.interactions };
+        updated[event] = expr;
+        slot.set("interactions", updated);
+      }
+    )
+  );
 
-  slot.setInteraction = (event: string, interaction: Expression) => {
-    const newInteractions = { ...slot.interactions };
-    newInteractions[event] = interaction;
-    slot.set("interactions", newInteractions);
-  };
+  // clearInteractions
+  assert(
+    setObjectProperty(slot, "clearInteractions", () => {
+      slot.set("interactions", {});
+    })
+  );
 
-  slot.clearInteractions = () => {
-    slot.set("interactions", {});
-  };
-
-  slot.cloneIds = (clone: y.Map<any>) => {
-    slot.content.cloneIds(getOrCreateYArray(clone, "content"));
-  };
-
+  // Cleanup
   const baseDispose = (slot as any).dispose?.bind(slot);
-  slot.dispose = () => {
-    slot.content.dispose();
-    slot.cssStyleSheet.dispose();
-    if (baseDispose) baseDispose();
+  (slot as any).dispose = () => {
+    slot.content.forEach((child) => child.dispose());
+    cssStyleSheet.dispose?.();
+    baseDispose?.();
   };
 
-  return true;
-}
-
-export function createSlotFill(fragment: Fragment): SlotFill {
-  const ymap = new y.Map<any>();
-  if (!attachSlotFill(ymap, fragment)) {
-    throw new Error("Failed to create SlotFill");
-  }
-  return ymap as SlotFill;
+  return setEnhancer<SlotFill>(slot, attachSlotFill);
 }

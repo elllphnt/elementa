@@ -1,19 +1,17 @@
 import { StyleModifierData } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
-import { Component } from "../../component.js";
 import { ColorTheme } from "./color_theme.js";
 import { Viewport } from "./viewport.js";
 
 export interface RenderingContext {
-  component: Component;
   theme: ColorTheme;
   viewport: Viewport;
 
-  viewportEnabled: boolean;
-  viewportEnabled$: Observable<boolean>;
+  viewportEnabled: boolean | undefined;
+  viewportEnabled$: Observable<boolean | undefined>;
 
-  styleModifierEnabled: boolean;
-  styleModifierEnabled$: Observable<boolean>;
+  styleModifierEnabled: boolean | undefined;
+  styleModifierEnabled$: Observable<boolean | undefined>;
 
   customStyleModifiers: StyleModifierData[];
   customStyleModifiers$: Observable<StyleModifierData[]>;

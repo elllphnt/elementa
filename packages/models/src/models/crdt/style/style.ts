@@ -4,13 +4,13 @@ import {
   StyleData,
   StylePropertyName,
   UnsettableStyleData,
-  VariableStyleData,
 } from "@elllphnt/elementa-base";
 import { CssStyleData, styleToCss } from "@elllphnt/elementa-css";
 import {
+  assert,
   attachReactiveMap,
-  ReactiveMap,
-  setEnhancer,
+  setObjectGetter,
+  setObjectProperty,
 } from "@elllphnt/elementa-utils";
 import {
   BehaviorSubject,
@@ -21,165 +21,167 @@ import {
   switchMap,
 } from "rxjs";
 import * as y from "yjs";
-import { Project } from "../../infrastructure/project/project.js";
+import { Project } from "../../../infrastructure/_.js";
+import { Style } from "../../_interfaces/style/style.js";
 import { StyleFragmentRegistry } from "./style_fragment_registry.js";
 
-export type Style = ReactiveMap<StyleData> & {
-  project: Project;
-  fragmentRegistry: StyleFragmentRegistry;
-  className: string;
-
-  // --- Property accessors ---
-
-  /** Returns the raw value of a property (may be "unset" or varRef) */
-  propertyValue<N extends StylePropertyName>(
-    property: N
-  ): UnsettableStyleData[N];
-  propertyValue$<N extends StylePropertyName>(
-    property: N
-  ): Observable<UnsettableStyleData[N]>;
-
-  /** Returns the value or undefined if it was "unset" (still may be a varRef) */
-  propertyValueOrUndefined<N extends StylePropertyName>(
-    property: N
-  ): VariableStyleData[N];
-  propertyValueOrUndefined$<N extends StylePropertyName>(
-    property: N
-  ): Observable<VariableStyleData[N]>;
-
-  /** Returns the final runtime-resolved value (unset -> undefined, varRef resolved) */
-  resolvedPropertyValue<N extends StylePropertyName>(
-    property: N
-  ): RawStyleData[N];
-  resolvedPropertyValue$<N extends StylePropertyName>(
-    property: N
-  ): Observable<RawStyleData[N]>; // Updated return type to RawStyleData[N]
-
-  /** True if the property is explicitly defined (not inherited) */
-  hasProperty(property: StylePropertyName): boolean;
-  hasProperty$(property: StylePropertyName): Observable<boolean>;
-
-  // --- Raw value accessors ---
-
-  raw: Record<string, string>;
-  raw$: Observable<Record<string, string>>;
-
-  // --- Mutations ---
-
-  /** Updates the value of a style property */
-  setProperty<N extends StylePropertyName>(
-    property: N,
-    value: StyleData[N]
-  ): void;
-
-  setRaw(raw: Record<string, string>): void;
-
-  // --- Compiled CSS output (still may contain varRefs) ---
-
-  css: CssStyleData;
-  css$: Observable<CssStyleData>;
-};
-
-/**
- * Attaches a reactive Style object to a Y.Map, enhancing it with Style-specific methods.
- */
 export function attachStyle(
-  ymap: y.Map<any>,
+  style: y.Map<any>,
   project: Project,
   fragmentRegistry: StyleFragmentRegistry
-): ymap is Style {
-  if (!attachReactiveMap<StyleData>(ymap)) {
-    throw new Error("Failed to attach reactive map to ymap");
-  }
-  const style = ymap as Style;
+): style is y.Map<any> & Style {
+  assert(attachReactiveMap<StyleData>(style));
 
-  style.project = project;
-  style.fragmentRegistry = fragmentRegistry;
+  // Set project and fragment registry
+  assert(setObjectProperty(style, "project", project));
+  assert(setObjectProperty(style, "fragmentRegistry", fragmentRegistry));
 
+  // Set up CSS styles
   const _css$ = new BehaviorSubject<CssStyleData>({});
+  assert(setObjectProperty(style, "css$", _css$.asObservable()));
+  assert(setObjectGetter(style, "css", () => _css$.getValue()));
 
-  // --- Base Fields ---
+  // Setup class name
+  assert(
+    setObjectGetter(style, "className", () => `style-${style.get("key")}`)
+  );
 
-  Object.defineProperty(style, "className", {
-    get() {
-      return `style-${style.key}`;
-    },
-  });
+  // Property accessors
+  assert(
+    setObjectGetter(
+      style,
+      "propertyValue",
+      () =>
+        <N extends StylePropertyName>(property: N) =>
+          style.get(property) as UnsettableStyleData[N]
+    )
+  );
 
-  style.css$ = _css$.asObservable();
+  assert(
+    setObjectProperty(
+      style,
+      "propertyValue$",
+      <N extends StylePropertyName>(property: N) =>
+        style.items$.pipe(
+          map((items) => items[property] as UnsettableStyleData[N])
+        )
+    )
+  );
 
-  // --- Property Logic ---
-
-  style.propertyValue = <N extends StylePropertyName>(property: N) => {
-    return style.get(property) as UnsettableStyleData[N];
-  };
-
-  style.propertyValue$ = <N extends StylePropertyName>(property: N) => {
-    return style.items$.pipe(map((v) => v[property]));
-  };
-
-  style.propertyValueOrUndefined = (property: any) => {
-    const value = style.propertyValue(property);
-    return value === "unset" ? undefined : value;
-  };
-
-  style.propertyValueOrUndefined$ = (property: any) => {
-    return style
-      .propertyValue$(property)
-      .pipe(map((value) => (value === "unset" ? undefined : value)));
-  };
-
-  style.resolvedPropertyValue = <N extends StylePropertyName>(property: N) => {
-    const value = style.propertyValueOrUndefined(property);
-    if (value && isVarRef(value)) {
-      return style.project.styleManager.variableValue(value.__var) as any;
-    }
-    return value as any;
-  };
-
-  style.resolvedPropertyValue$ = <N extends StylePropertyName>(property: N) => {
-    return style.propertyValueOrUndefined$(property).pipe(
-      switchMap((value) => {
-        if (value && isVarRef(value)) {
-          return style.project.styleManager.variableValue$(value.__var) as any;
+  assert(
+    setObjectGetter(
+      style,
+      "propertyValueOrUndefined",
+      () =>
+        <N extends StylePropertyName>(property: N) => {
+          const value = style.propertyValue(property);
+          return value === "unset" ? undefined : value;
         }
-        return of(value) as any;
-      })
-    ) as Observable<RawStyleData[N]>;
-  };
+    )
+  );
 
-  style.hasProperty = (property: StylePropertyName) => {
-    return style.get(property) !== undefined;
-  };
+  assert(
+    setObjectProperty(
+      style,
+      "propertyValueOrUndefined$",
+      <N extends StylePropertyName>(property: N) =>
+        style
+          .propertyValue$(property)
+          .pipe(map((value) => (value === "unset" ? undefined : value)))
+    )
+  );
 
-  style.hasProperty$ = (property: StylePropertyName) => {
-    return style.items$.pipe(map((v) => v[property] !== undefined));
-  };
+  assert(
+    setObjectGetter(
+      style,
+      "resolvedPropertyValue",
+      () =>
+        <N extends StylePropertyName>(property: N) => {
+          const value = style.propertyValueOrUndefined(property);
+          if (value && isVarRef(value)) {
+            return style.project.styleManager.variableValue(
+              value.__var
+            ) as RawStyleData[N];
+          }
+          return value as RawStyleData[N];
+        }
+    )
+  );
 
-  style.setProperty = <N extends StylePropertyName>(
-    property: N,
-    value: StyleData[N]
-  ) => {
-    style.set(property, value);
-  };
+  assert(
+    setObjectProperty(
+      style,
+      "resolvedPropertyValue$",
+      <N extends StylePropertyName>(property: N) =>
+        style.propertyValueOrUndefined$(property).pipe(
+          switchMap((value) => {
+            if (value && isVarRef(value)) {
+              return style.project.styleManager.variableValue$(
+                value.__var
+              ) as Observable<RawStyleData[N]>;
+            }
+            return of(value) as Observable<RawStyleData[N]>;
+          })
+        )
+    )
+  );
 
-  // --- Raw field (__raw in StyleData) ---
+  assert(
+    setObjectGetter(
+      style,
+      "hasProperty",
+      () => (property: StylePropertyName) => style.get(property) !== undefined
+    )
+  );
 
-  Object.defineProperty(style, "raw", {
-    get() {
+  assert(
+    setObjectProperty(style, "hasProperty$", (property: StylePropertyName) =>
+      style.items$.pipe(map((items) => items[property] !== undefined))
+    )
+  );
+
+  // Raw value accessors
+  assert(
+    setObjectGetter(style, "raw", () => {
       const raw: Record<string, string> = {};
-      for (const [key, value] of Object.entries(style)) {
+      for (const [key, value] of Object.entries(style.toJSON())) {
         if (key.startsWith("__")) {
-          raw[key.slice(2)] = value;
+          raw[key.slice(2)] = value as string;
         }
       }
       return raw;
-    },
-  });
-  style.raw$ = style.items$.pipe(map((v) => v.__raw ?? {}));
+    })
+  );
 
-  // --- CSS generation ---
+  assert(
+    setObjectProperty(
+      style,
+      "raw$",
+      style.items$.pipe(map((v) => v.__raw ?? {}))
+    )
+  );
 
+  // Mutations
+  assert(
+    setObjectGetter(
+      style,
+      "setProperty",
+      () =>
+        <N extends StylePropertyName>(property: N, value: StyleData[N]) => {
+          style.set(property, value);
+        }
+    )
+  );
+
+  assert(
+    setObjectGetter(style, "setRaw", () => (raw: Record<string, string>) => {
+      for (const [key, value] of Object.entries(raw)) {
+        style.set(`__${key}`, value);
+      }
+    })
+  );
+
+  // Generate CSS
   const cssSub = combineLatest([
     style.items$,
     fragmentRegistry.allFragments$,
@@ -197,26 +199,13 @@ export function attachStyle(
     _css$.next(css);
   });
 
-  // --- Cleanup ---
-
-  const baseDispose = (style as any).dispose?.bind(style);
+  // Setup cleanup
+  const disposeBase = style.dispose || (() => {});
   style.dispose = () => {
     _css$.complete();
     cssSub.unsubscribe();
-    if (baseDispose) baseDispose();
+    disposeBase();
   };
 
-  setEnhancer(style, attachStyle);
   return true;
-}
-
-export function createStyle(
-  project: Project,
-  fragmentRegistry: StyleFragmentRegistry
-): Style {
-  const ymap = new y.Map<any>();
-  if (!attachStyle(ymap, project, fragmentRegistry)) {
-    throw new Error("Failed to create Style");
-  }
-  return ymap as Style;
 }

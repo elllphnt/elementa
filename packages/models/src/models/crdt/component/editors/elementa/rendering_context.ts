@@ -1,95 +1,70 @@
-import {
-  RenderingContextData,
-  StyleModifierData,
-} from "@elllphnt/elementa-base";
+import { RenderingContextData } from "@elllphnt/elementa-base";
 import {
   assert,
   attachReactiveMap,
   getOrCreateYMap,
-  ReactiveMap,
   setEnhancer,
+  setObjectGetter,
+  setObjectProperty,
   setReactiveMapGetters,
 } from "@elllphnt/elementa-utils";
-import {
-  combineLatest,
-  distinctUntilChanged,
-  map,
-  Observable,
-  of,
-  switchMap,
-} from "rxjs";
+import { combineLatest, distinctUntilChanged, map, of, switchMap } from "rxjs";
 import * as y from "yjs";
-import { Component } from "../../component.js";
-import { attachColorTheme, ColorTheme } from "./color_theme.js";
-import { attachViewport, Viewport } from "./viewport.js";
+import { Project } from "../../../../../infrastructure/_.js";
+import {
+  ColorTheme,
+  RenderingContext,
+  Viewport,
+} from "../../../../_interfaces/_.js";
+import { attachColorTheme } from "./color_theme.js";
+import { attachViewport } from "./viewport.js";
 
-export type RenderingContext = ReactiveMap<RenderingContextData> & {
-  component: Component;
-  theme: ColorTheme;
-  viewport: Viewport;
-
-  viewportEnabled: boolean;
-  viewportEnabled$: Observable<boolean>;
-
-  styleModifierEnabled: boolean;
-  styleModifierEnabled$: Observable<boolean>;
-
-  customStyleModifiers: StyleModifierData[];
-  customStyleModifiers$: Observable<StyleModifierData[]>;
-
-  styleModifiers: StyleModifierData[];
-  styleModifiers$: Observable<StyleModifierData[]>;
-};
-
-/**
- * Attach RenderingContext behavior to a y.Map
- */
 export function attachRenderingContext(
-  ymap: y.Map<any>,
-  component: Component
-): ymap is RenderingContext {
-  assert(attachReactiveMap<RenderingContextData>(ymap));
-  const context = ymap as RenderingContext;
+  context: y.Map<any>,
+  project: Project
+): context is y.Map<any> & RenderingContext {
+  assert(attachReactiveMap<RenderingContextData>(context));
+  assert(
+    setReactiveMapGetters(context, [
+      "viewportEnabled",
+      "styleModifierEnabled",
+      "styleModifiers",
+    ])
+  );
 
-  context.component = component;
-
+  // Set direct references
   const theme = getOrCreateYMap(context, "theme");
   assert(attachColorTheme(theme));
-  context.theme = theme;
+  assert(setObjectProperty(context, "theme", theme as ColorTheme));
 
   const viewport = getOrCreateYMap(context, "viewport");
   assert(attachViewport(viewport));
-  context.viewport = viewport;
-
-  setReactiveMapGetters(context, [
-    "viewportEnabled",
-    "styleModifierEnabled",
-    "styleModifiers",
-  ]);
-
-  setReactiveMapGetters(context, ["viewportEnabled", "styleModifierEnabled"]);
+  assert(setObjectProperty(context, "viewport", viewport as Viewport));
 
   // Custom style modifiers
-  Object.defineProperty(context, "customStyleModifiers", {
-    get() {
-      return context.get("styleModifiers") ?? [];
-    },
-    set(value) {
-      context.set("styleModifiers", value);
-    },
-  });
-  context.customStyleModifiers$ = context.items$.pipe(
-    map((value) => value.styleModifiers ?? []),
-    distinctUntilChanged()
+  assert(
+    setObjectGetter(
+      context,
+      "customStyleModifiers",
+      () => context.get("styleModifiers") ?? []
+    )
+  );
+  assert(
+    setObjectProperty(
+      context,
+      "customStyleModifiers$",
+      context.items$.pipe(
+        map((value) => value.styleModifiers ?? []),
+        distinctUntilChanged()
+      )
+    )
   );
 
-  // Computed modifiers
+  // Computed streams
   const _themeStyleModifiers$ = context.theme.scheme$.pipe(
     switchMap((colorScheme) =>
       colorScheme
-        ? context.component.project.styleManager.colorSchemeModifiers$({
-            colorScheme,
-          })
+        ? project.styleManager.colorSchemeModifiers$({ colorScheme })
         : of([])
     )
   );
@@ -98,12 +73,9 @@ export function attachRenderingContext(
     context.viewport.height$,
     context.viewport.width$,
   ]).pipe(
-    switchMap(([height, width]) => {
-      return context.component.project.styleManager.viewportModifiers$({
-        height,
-        width,
-      });
-    })
+    switchMap(([height, width]) =>
+      project.styleManager.viewportModifiers$({ height, width })
+    )
   );
 
   const _styleModifiers$ = combineLatest([
@@ -118,35 +90,33 @@ export function attachRenderingContext(
     ])
   );
 
-  // Final exposed styleModifiers
-  Object.defineProperty(context, "styleModifiers", {
-    get() {
+  assert(
+    setObjectGetter(context, "styleModifiers", () => {
       if (!context.styleModifierEnabled) return [];
       return [
-        ...context.component.project.styleManager.viewportModifiers({
+        ...project.styleManager.viewportModifiers({
           width: context.viewport.width,
           height: context.viewport.height,
         }),
-        ...context.component.project.styleManager.colorSchemeModifiers({
-          colorScheme: context.theme.scheme,
-        }),
+        ...(context.theme.scheme
+          ? project.styleManager.colorSchemeModifiers({
+              colorScheme: context.theme.scheme,
+            })
+          : []),
         ...(context.customStyleModifiers ?? []),
       ];
-    },
-  });
-  context.styleModifiers$ = context.styleModifierEnabled$.pipe(
-    switchMap((enabled) => (enabled ? _styleModifiers$ : of([])))
+    })
   );
 
-  setEnhancer(context, attachRenderingContext);
-  return true;
-}
+  assert(
+    setObjectProperty(
+      context,
+      "styleModifiers$",
+      context.styleModifierEnabled$.pipe(
+        switchMap((enabled) => (enabled ? _styleModifiers$ : of([])))
+      )
+    )
+  );
 
-/**
- * Create a new local RenderingContext
- */
-export function createRenderingContext(component: Component): RenderingContext {
-  const ymap = new y.Map<any>();
-  assert(attachRenderingContext(ymap, component));
-  return ymap;
+  return setEnhancer<RenderingContext>(context, attachRenderingContext);
 }
