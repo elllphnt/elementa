@@ -1,8 +1,9 @@
 import { StateData } from "@elllphnt/elementa-base";
 import { Component } from "../../../_interfaces/component/component.js";
-import { BaseStateModel } from "./_base.js";
 import { HookStateModel } from "./hook.js";
 import { ValueStateModel } from "./value.js";
+
+export type StateModel = ValueStateModel | HookStateModel;
 
 export function createStateModel({
   init,
@@ -10,7 +11,7 @@ export function createStateModel({
 }: {
   init: StateData;
   component: Component;
-}): BaseStateModel<any> {
+}): StateModel {
   switch (init.type) {
     case "value":
       return new ValueStateModel({ init, component });

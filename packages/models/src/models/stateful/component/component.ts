@@ -13,8 +13,7 @@ import { DataInputModel } from "../_shared/data_input.js";
 import { ElementaPreviewModel } from "./editors/elementa/preview.js";
 import { ElementaStageModel } from "./editors/elementa/stage.js";
 import { FragmentModel } from "./fragment.js";
-import { createStateModel } from "./states/_create.js";
-import { StateModel } from "./states/state.js";
+import { StateModel, createStateModel } from "./states/_state.js";
 
 export class ComponentModel extends Model<ComponentData> implements Component {
   readonly project: Project;
@@ -29,7 +28,7 @@ export class ComponentModel extends Model<ComponentData> implements Component {
     >
   >;
   private _props: AggregatedModelList<DataInputModel>;
-  private _states: AggregatedModelList<StateModel<any>>;
+  private _states: AggregatedModelList<StateModel>;
   private _fragments: AggregatedModelList<FragmentModel>;
 
   constructor({ init, project }: { init: ComponentData; project: Project }) {
@@ -142,11 +141,11 @@ export class ComponentModel extends Model<ComponentData> implements Component {
     return this._fragments.state.items$;
   }
 
-  get states(): StateModel<any>[] {
+  get states(): StateModel[] {
     return this._states.state.items;
   }
 
-  get states$(): Observable<StateModel<any>[]> {
+  get states$(): Observable<StateModel[]> {
     return this._states.state.items$;
   }
 

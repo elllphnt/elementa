@@ -1,24 +1,23 @@
-import {
-  ComponentElement,
-  ContainerElement,
-  Element,
-  MediaElement,
-  PrimitiveElement,
-  SlotElement,
-  TextElement,
-  VectorElement,
-} from "@elllphnt/elementa-models";
+import { Element } from "@elllphnt/elementa-models";
 
 import { FragmentEnvironment } from "../fragment/environment/environment.js";
 import { Instance } from "../instance.js";
 import { ComponentElementInstance } from "./component/component.js";
 import { ContainerElementInstance } from "./container.js";
-import { ElementInstance } from "./element.js";
 import { MediaElementInstance } from "./media.js";
 import { PrimitiveElementInstance } from "./primitive.js";
 import { SlotElementInstance } from "./slot.js";
 import { TextElementInstance } from "./text.js";
 import { VectorElementInstance } from "./vector.js";
+
+export type ElementInstance =
+  | ContainerElementInstance
+  | ComponentElementInstance
+  | MediaElementInstance
+  | PrimitiveElementInstance
+  | SlotElementInstance
+  | TextElementInstance
+  | VectorElementInstance;
 
 export function createElementInstance({
   element,
@@ -32,54 +31,54 @@ export function createElementInstance({
   switch (element.type) {
     case "container":
       return new ContainerElementInstance({
-        element: element as ContainerElement,
+        element: element,
         environment,
         parent,
       });
 
     case "component":
       return new ComponentElementInstance({
-        element: element as ComponentElement,
+        element: element,
         environment,
         parent,
       });
 
     case "media":
       return new MediaElementInstance({
-        element: element as MediaElement,
+        element: element,
         environment,
         parent,
       });
 
     case "primitive":
       return new PrimitiveElementInstance({
-        element: element as PrimitiveElement,
+        element: element,
         environment,
         parent,
       });
 
     case "slot":
       return new SlotElementInstance({
-        element: element as SlotElement,
+        element: element,
         environment,
         parent,
       });
 
     case "text":
       return new TextElementInstance({
-        element: element as TextElement,
+        element: element,
         environment,
         parent,
       });
 
     case "vector":
       return new VectorElementInstance({
-        element: element as VectorElement,
+        element: element,
         environment,
         parent,
       });
 
     default:
-      throw new Error(`Unknown element type: ${element.type}`);
+      throw new Error(`Unknown element type: ${(element as any).type}`);
   }
 }

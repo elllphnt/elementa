@@ -1,4 +1,7 @@
-import { ResolvableOrEvaluable } from "@elllphnt/elementa-base";
+import {
+  PrimitiveElementData,
+  ResolvableOrEvaluable,
+} from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
 import { File } from "~/src/infrastructure/_.js";
 import { BaseElement } from "../_base.js";
@@ -34,4 +37,6 @@ export interface PrimitiveElement extends BaseElement<"primitive"> {
   subElement(name: string, create: true): PrimitiveSubElement;
   subElement$(name: string): Observable<PrimitiveSubElement | undefined>;
   subElement$(name: string, create: true): Observable<PrimitiveSubElement>;
+
+  initialize(data: Omit<PrimitiveElementData, "id" | "type">): void;
 }

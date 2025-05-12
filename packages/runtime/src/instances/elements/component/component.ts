@@ -3,12 +3,12 @@ import { BehaviorSubject, of, switchMap } from "rxjs";
 import { ComponentInstance } from "../../component/_.js";
 import { FragmentEnvironment } from "../../fragment/environment/environment.js";
 import { Instance } from "../../instance.js";
-import { ElementInstance } from "../element.js";
+import { BaseElementInstance } from "../_base.js";
 import { ComponentElementComponentPropResolver } from "./component_prop_resolver.js";
 
 export class ComponentElementInstance<
   E extends ComponentElement = ComponentElement
-> extends ElementInstance<E> {
+> extends BaseElementInstance<E> {
   readonly componentPropsResolver: ComponentElementComponentPropResolver;
   private _component$ = new BehaviorSubject<ComponentInstance | undefined>(
     undefined
@@ -40,7 +40,7 @@ export class ComponentElementInstance<
       this
     );
 
-    const componentSubscription = this.element.localComponent$
+    const componentSubscription = this.element.component$
       .pipe(switchMap((c) => c?.model$ ?? of(undefined)))
       .subscribe((component) => {
         if (component) {

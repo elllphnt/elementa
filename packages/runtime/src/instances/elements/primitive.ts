@@ -5,7 +5,7 @@ import { BehaviorSubject, combineLatest, map, Observable, of } from "rxjs";
 import { Module } from "../../runtime/module_manager/_.js";
 import { FragmentEnvironment } from "../fragment/environment/environment.js";
 import { Instance } from "../instance.js";
-import { createElementInstance } from "./_create.js";
+import { createElementInstance } from "./_element.js";
 import { ElementInstance } from "./element.js";
 
 export class PrimitiveElementInstance extends ElementInstance<PrimitiveElement> {
@@ -119,7 +119,7 @@ export class PrimitiveElementInstance extends ElementInstance<PrimitiveElement> 
     };
     if (module?.config?.init) {
       const data = this.element.toJSON() as PrimitiveElementData;
-      this.element.restore({
+      this.element.initialize({
         ...data,
         ...module?.config?.init,
         id: this.element.id,

@@ -224,6 +224,10 @@ export class PrimitiveElementModel
     );
   }
 
+  initialize(data: Omit<PrimitiveElementData, "id" | "type">): void {
+    this.restore({ ...data, id: this.id, type: this.type });
+  }
+
   // restore method
   restore(data: PrimitiveElementData): void {
     super.restore(data);

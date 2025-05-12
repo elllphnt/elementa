@@ -1,17 +1,17 @@
 import { StyleModifierData } from "@elllphnt/elementa-base";
 import { DataInput, SlotFill } from "@elllphnt/elementa-models";
 import { Observable } from "rxjs";
-import { StateInstance } from "../../states/state.js";
+import { StateInstance } from "../../states/_.js";
 import { FragmentInstance } from "../fragment.js";
 import { FragmentEnvironment } from "./environment.js";
 
 /**
- * ChildEnvironment provides a base implementation for environment hierarchies.
+ * ChildFragmentEnvironment provides a base implementation for environment hierarchies.
  * It delegates all methods to the parent environment by default, allowing
  * subclasses to selectively override specific behaviors while maintaining
  * the inheritance chain of the environment context.
  */
-export class ChildEnvironment extends FragmentEnvironment {
+export class ChildFragmentEnvironment extends FragmentEnvironment {
   protected parent: FragmentEnvironment;
 
   constructor({ parent }: { parent: FragmentEnvironment }) {
@@ -20,12 +20,12 @@ export class ChildEnvironment extends FragmentEnvironment {
   }
 
   // Component stack delegation
-  get componentStack(): string[] {
-    return this.parent.componentStack;
+  get fragmentStack(): string[] {
+    return this.parent.fragmentStack;
   }
 
-  get componentStack$(): Observable<string[]> {
-    return this.parent.componentStack$;
+  get fragmentStack$(): Observable<string[]> {
+    return this.parent.fragmentStack$;
   }
 
   // Style modifiers delegation

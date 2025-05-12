@@ -1,8 +1,8 @@
-import { Observable, of } from "rxjs";
-import { FragmentEnvironment } from "./environment.js";
 import { StyleModifierData } from "@elllphnt/elementa-base";
-import { StateInstance } from "../../states/_.js";
 import { DataInput } from "@elllphnt/elementa-models";
+import { Observable, of } from "rxjs";
+import { StateInstance } from "../../states/_.js";
+import { FragmentEnvironment } from "./environment.js";
 
 /**
  * DefaultFragmentEnvironment is used in fallback or uninitialized cases
@@ -10,10 +10,10 @@ import { DataInput } from "@elllphnt/elementa-models";
  * or default values.
  */
 export class DefaultFragmentEnvironment extends FragmentEnvironment {
-  get componentStack() {
+  get fragmentStack() {
     return [];
   }
-  get componentStack$() {
+  get fragmentStack$() {
     return of([]);
   }
 

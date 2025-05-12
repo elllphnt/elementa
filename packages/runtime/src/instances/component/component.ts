@@ -31,7 +31,7 @@ export class ComponentInstance extends Instance {
 
     this.template = new FragmentInstance({
       environment: this.fragmentEnvironment,
-      fragment: component.template,
+      model: component.template,
     });
   }
 }

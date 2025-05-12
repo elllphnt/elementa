@@ -8,7 +8,7 @@ import {
   switchMap,
 } from "rxjs";
 import { ElementInstance } from "../elements/_.js";
-import { createElementInstance } from "../elements/_create.js";
+import { createElementInstance } from "../elements/_element.js";
 import { FragmentEnvironment } from "../fragment/_.js";
 import { ElementaInstanceType, Instance } from "../instance.js";
 import { StyleSheetInstance } from "../stylesheet/stylesheet.js";
@@ -70,7 +70,7 @@ export class SlotInstance extends Instance {
     this.environment = environment;
 
     const contentSubscription = this.fill$
-      .pipe(switchMap((fill) => fill?.content.observable$ ?? of([])))
+      .pipe(switchMap((fill) => fill?.content$ ?? of([])))
       .subscribe((content) => {
         const [newContent, removed] = reconcileList({
           sources: content,

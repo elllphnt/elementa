@@ -4,7 +4,7 @@ import { Disposable } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Runtime } from "../../../runtime/runtime.js";
 import { Namespace } from "../../namespace/namespace.js";
-import { StateInstance } from "../../states/state.js";
+import { StateInstance } from "../../states/_.js";
 import { FragmentInstance } from "../fragment.js";
 
 /**
@@ -23,9 +23,9 @@ export abstract class FragmentEnvironment extends Disposable {
   // for evaluating expressions at runtime (e.g., var:*, if:*, etc.)
   private _namespace$ = new BehaviorSubject<Namespace>(new Namespace());
 
-  // Tracks the component stack to support recursion detection and introspection.
-  abstract get componentStack(): string[];
-  abstract get componentStack$(): Observable<string[]>;
+  // Tracks the fragment stack to support recursion detection and introspection.
+  abstract get fragmentStack(): string[];
+  abstract get fragmentStack$(): Observable<string[]>;
 
   // List of style modifiers (e.g., responsive, hover) inherited by this fragment.
   abstract get styleModifiers(): StyleModifierData[];

@@ -1,13 +1,18 @@
 import { App } from "@elllphnt/elementa-models";
-import { reconcileList } from "@elllphnt/elementa-utils";
-import { BehaviorSubject } from "rxjs";
+import { combineLatestOrEmpty, reconcileList } from "@elllphnt/elementa-utils";
+import {
+  BehaviorSubject,
+  combineLatest,
+  map,
+  Observable,
+  switchMap,
+} from "rxjs";
+import { FragmentEnvironment } from "../fragment/_.js";
 import { ElementaInstanceType, Instance } from "../instance.js";
-import { AppInputResolver } from "./input_resolver/_.js";
 import { RouteTreeInstance } from "./route_tree.js";
 
 export class AppInstance extends Instance {
   readonly app: App;
-  readonly inputResolver: AppInputResolver;
 
   private _routes$ = new BehaviorSubject<RouteTreeInstance[]>([]);
 
@@ -18,43 +23,57 @@ export class AppInstance extends Instance {
     return this._routes$.asObservable();
   }
 
+  get diagnosticLevel(): number {
+    return Math.max(
+      this.ownDiagnosticLevel,
+      ...this.routes.map((r) => r.diagnosticLevel)
+    );
+  }
+  get diagnosticLevel$(): Observable<number> {
+    return combineLatest([
+      this.ownDiagnosticLevel$,
+      this.routes$.pipe(
+        switchMap((routes) =>
+          combineLatestOrEmpty(routes.map((r) => r.diagnosticLevel$))
+        )
+      ),
+    ]).pipe(map(([own, routes]) => Math.max(own, ...routes)));
+  }
+
   constructor({
     app,
-    inputResolver,
     parent,
+    environment,
   }: {
     app: App;
-    inputResolver: AppInputResolver;
     parent?: Instance;
+    environment: FragmentEnvironment;
   }) {
     super({
       type: ElementaInstanceType.App,
-      runtime: inputResolver.environment.runtime,
+      runtime: environment.runtime,
       parent,
     });
     this.app = app;
-    this.inputResolver = inputResolver;
 
-    const routeSubscription = this.app.routes.observable$.subscribe(
-      (routes) => {
-        const [nextRoutes, removed] = reconcileList({
-          targets: this.routes,
-          sources: routes,
-          sourceRef: (r) => r,
-          targetRef: (r) => r.model,
-          create: (route) =>
-            new RouteTreeInstance({
-              environment: this.inputResolver.environment,
-              routeTree: route,
-              parent: this,
-            }),
-        });
-        this._routes$.next(nextRoutes);
-        removed.forEach((route) => {
-          route.dispose();
-        });
-      }
-    );
+    const routeSubscription = this.app.routes$.subscribe((routes) => {
+      const [nextRoutes, removed] = reconcileList({
+        targets: this.routes,
+        sources: routes,
+        sourceRef: (r) => r,
+        targetRef: (r) => r.model,
+        create: (route) =>
+          new RouteTreeInstance({
+            environment,
+            routeTree: route,
+            parent: this,
+          }),
+      });
+      this._routes$.next(nextRoutes);
+      removed.forEach((route) => {
+        route.dispose();
+      });
+    });
 
     this.addDisposer(() => {
       this._routes$.complete();

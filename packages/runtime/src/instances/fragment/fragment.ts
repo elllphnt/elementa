@@ -1,14 +1,14 @@
 import { Fragment } from "@elllphnt/elementa-models";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, combineLatest, Observable } from "rxjs";
-import { createElementInstance } from "../elements/_create.js";
+import { createElementInstance } from "../elements/_element.js";
 import { ElementInstance } from "../elements/element.js";
 import { ElementaInstanceType, Instance } from "../instance.js";
+import { ModelInstance } from "../model.js";
 import { SlotInstance } from "../slot/slot.js";
 import { FragmentEnvironment } from "./environment/environment.js";
 
-export class FragmentInstance extends Instance {
-  readonly fragment: Fragment;
+export class FragmentInstance extends ModelInstance<Fragment> {
   readonly environment: FragmentEnvironment;
 
   private _content$ = new BehaviorSubject<ElementInstance[]>([]);
@@ -37,25 +37,25 @@ export class FragmentInstance extends Instance {
   }
 
   constructor({
-    fragment,
+    model,
     environment,
     parent,
   }: {
-    fragment: Fragment;
+    model: Fragment;
     environment: FragmentEnvironment;
     parent?: Instance;
   }) {
     super({
+      model,
       type: ElementaInstanceType.Fragment,
       runtime: environment.runtime,
       parent,
     });
-    this.fragment = fragment;
     this.environment = environment;
 
     const contentSubscription = combineLatest([
-      this.fragment.content.observable$,
-      this.environment.componentStack$,
+      this.model.content$,
+      this.environment.fragmentStack$,
     ]).subscribe(([content, componentStack]) => {
       console.log({ content, componentStack });
       const recursion = this.resolveRecursion(componentStack);
@@ -79,7 +79,7 @@ export class FragmentInstance extends Instance {
       });
     });
 
-    const slotsSubscription = this.fragment.slotIds$.subscribe((slots) => {
+    const slotsSubscription = this.model.slotIds$.subscribe((slots) => {
       const [newSlots, removed] = reconcileList({
         targets: this.slots,
         sources: slots,

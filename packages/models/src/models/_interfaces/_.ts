@@ -1,3 +1,4 @@
+export * from "./_shared/_.js";
 export * from "./app/_.js";
 export * from "./component/_.js";
 export * from "./file/_.js";

@@ -3,12 +3,15 @@ import { HookState } from "@elllphnt/elementa-models";
 import { map, of } from "rxjs";
 import { Runtime } from "../../runtime/runtime.js";
 import { Instance } from "../instance.js";
-import { StateInstance } from "./state.js";
+import { BaseStateInstance } from "./_base.js";
 
-export class HookStateInstance extends StateInstance<HookState> {
+export class HookStateInstance extends BaseStateInstance<HookState> {
   get module() {
-    const url = this.model.absoluteHookUrl;
-    return url ? this.runtime.moduleManager.module(url) : undefined;
+    return this.model.hookUrl
+      ? this.runtime.moduleManager.module(
+          this.model.component.project.absoluteFileUrl(this.model.hookUrl)
+        )
+      : undefined;
   }
 
   get use() {
@@ -38,14 +41,14 @@ export class HookStateInstance extends StateInstance<HookState> {
   }
 
   constructor({
-    state,
+    model,
     runtime,
     parent,
   }: {
-    state: HookState;
+    model: HookState;
     runtime: Runtime;
     parent?: Instance;
   }) {
-    super({ state, runtime, parent });
+    super({ model, runtime, parent });
   }
 }

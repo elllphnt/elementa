@@ -3,8 +3,8 @@ import { combineLatestOrEmpty, reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable } from "rxjs";
 import { FragmentEnvironment } from "../fragment/environment/environment.js";
 import { Instance } from "../instance.js";
+import { createElementInstance } from "./_element.js";
 import { ElementInstance } from "./element.js";
-import { createElementInstance } from "./_create.js";
 
 export class SlotElementInstance extends ElementInstance<SlotElement> {
   private _placeholder$ = new BehaviorSubject<ElementInstance[]>([]);
@@ -32,7 +32,7 @@ export class SlotElementInstance extends ElementInstance<SlotElement> {
     });
 
     const contentSubscription = combineLatestOrEmpty([
-      this.element.placeholder.observable$,
+      this.element.placeholder$,
     ]).subscribe(([placeholder]) => {
       const [newContent, removed] = reconcileList({
         targets: this.placeholder,

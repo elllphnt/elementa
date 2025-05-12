@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ProviderData, providerDataSchema } from "../../provider/_.js";
+import { ProviderData, providerDataSchema } from "../../../provider/_.js";
 import { ElementData } from "../element.js";
 import { elementRepeatDataSchema } from "./repeatable.js";
 

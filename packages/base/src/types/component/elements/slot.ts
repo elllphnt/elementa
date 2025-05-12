@@ -1,9 +1,9 @@
-import { ProviderData } from "../provider/_.js";
+import { ProviderData } from "../../provider/_.js";
 import { BaseElementData } from "./_base.js";
 import { ElementData, elementDataSchema } from "./element.js";
 
 import { z } from "zod";
-import { providerDataSchema } from "../provider/provider.js";
+import { providerDataSchema } from "../../provider/provider.js";
 import { baseElementDataSchema } from "./_base.js";
 
 export type SlotElementData = BaseElementData<"slot"> & {

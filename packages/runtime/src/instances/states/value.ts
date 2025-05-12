@@ -1,18 +1,18 @@
 import { ValueState } from "@elllphnt/elementa-models";
 import { Runtime } from "../../runtime/runtime.js";
 import { Instance } from "../instance.js";
-import { StateInstance } from "./state.js";
+import { BaseStateInstance } from "./_base.js";
 
-export class ValueStateInstance extends StateInstance<ValueState> {
+export class ValueStateInstance extends BaseStateInstance<ValueState> {
   constructor({
-    state,
+    model,
     runtime,
     parent,
   }: {
-    state: ValueState;
+    model: ValueState;
     runtime: Runtime;
     parent?: Instance;
   }) {
-    super({ state, runtime, parent });
+    super({ model, runtime, parent });
   }
 }

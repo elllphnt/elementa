@@ -4,11 +4,11 @@ import {
   FragmentEnvironment,
   FragmentInstance,
 } from "../../../../fragment/_.js";
-import { ChildEnvironment } from "../../../../fragment/environment/child_environment.js";
+import { ChildFragmentEnvironment } from "../../../../fragment/environment/child_environment.js";
 import { ModelInstance } from "../../../../model.js";
 import { ElementaEditorInstanceType } from "../_types.js";
 
-export class FragmentRenderableContentFragmentEnvironment extends ChildEnvironment {
+export class FragmentRenderableContentFragmentEnvironment extends ChildFragmentEnvironment {
   renderableContent: FragmentRenderableContent;
 
   constructor({
@@ -66,7 +66,7 @@ export class FragmentRenderableContentInstance extends ModelInstance<FragmentRen
       if (fragment) {
         this._fragment$.next(
           new FragmentInstance({
-            fragment,
+            model: fragment,
             environment: this.environment,
             parent: this,
           })
