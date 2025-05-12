@@ -1,11 +1,18 @@
 import { FragmentRenderableContent } from "@elllphnt/elementa-models";
-import { BehaviorSubject, Observable } from "rxjs";
+import {
+  BehaviorSubject,
+  combineLatest,
+  map,
+  Observable,
+  of,
+  switchMap,
+} from "rxjs";
 import {
   FragmentEnvironment,
   FragmentInstance,
-} from "../../../../fragment/_.js";
-import { ChildFragmentEnvironment } from "../../../../fragment/environment/child_environment.js";
-import { ModelInstance } from "../../../../model.js";
+} from "../../../fragment/_.js";
+import { ChildFragmentEnvironment } from "../../../fragment/environment/child_environment.js";
+import { ModelInstance } from "../../../model.js";
 import { ElementaEditorInstanceType } from "../_types.js";
 
 export class FragmentRenderableContentFragmentEnvironment extends ChildFragmentEnvironment {
@@ -43,6 +50,22 @@ export class FragmentRenderableContentInstance extends ModelInstance<FragmentRen
     return this._fragment$.getValue();
   }
 
+  get diagnosticLevel(): number {
+    return Math.max(
+      this.ownDiagnosticLevel,
+      this.fragment?.diagnosticLevel ?? 0
+    );
+  }
+
+  get diagnosticLevel$(): Observable<number> {
+    return combineLatest([
+      this.ownDiagnosticLevel$,
+      this.fragment$.pipe(
+        switchMap((fragment) => fragment?.diagnosticLevel$ ?? of(0))
+      ),
+    ]).pipe(map(([own, fragment]) => Math.max(own, fragment)));
+  }
+
   constructor({
     model,
     environment,
@@ -51,7 +74,7 @@ export class FragmentRenderableContentInstance extends ModelInstance<FragmentRen
     environment: FragmentEnvironment;
   }) {
     super({
-      type: ElementaEditorInstanceType.RenderableContext,
+      type: ElementaEditorInstanceType.RenderableContent,
       model,
       runtime: environment.runtime,
     });

@@ -1,4 +1,5 @@
 import { Element } from "@elllphnt/elementa-models";
+import { combineLatest, map, Observable } from "rxjs";
 import { FragmentEnvironment } from "../fragment/environment/environment.js";
 import { ElementaInstanceType, Instance } from "../instance.js";
 import { StyleSheetInstance } from "../stylesheet/stylesheet.js";
@@ -14,6 +15,17 @@ export abstract class ElementInstance<
     return this.parent?.type === ElementaInstanceType.Element
       ? (this.parent as ElementInstance)
       : undefined;
+  }
+
+  get diagnosticLevel(): number {
+    return Math.max(this.ownDiagnosticLevel, this.stylesheet.diagnosticLevel);
+  }
+
+  get diagnosticLevel$(): Observable<number> {
+    return combineLatest([
+      this.ownDiagnosticLevel$,
+      this.stylesheet.diagnosticLevel$,
+    ]).pipe(map(([own, stylesheet]) => Math.max(own, stylesheet)));
   }
 
   constructor({

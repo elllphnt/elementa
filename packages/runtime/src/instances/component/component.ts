@@ -1,4 +1,5 @@
 import { Component } from "@elllphnt/elementa-models";
+import { Observable, combineLatest, map } from "rxjs";
 import { FragmentInstance } from "../fragment/_.js";
 import { ElementaInstanceType, Instance } from "../instance.js";
 import { ComponentInstanceFragmentEnvironment } from "./fragment_environment.js";
@@ -33,5 +34,16 @@ export class ComponentInstance extends Instance {
       environment: this.fragmentEnvironment,
       model: component.template,
     });
+  }
+
+  get diagnosticLevel(): number {
+    return Math.max(this.ownDiagnosticLevel, this.template.diagnosticLevel);
+  }
+
+  get diagnosticLevel$(): Observable<number> {
+    return combineLatest([
+      this.ownDiagnosticLevel$,
+      this.template.diagnosticLevel$,
+    ]).pipe(map(([own, template]) => Math.max(own, template)));
   }
 }

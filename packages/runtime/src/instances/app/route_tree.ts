@@ -1,6 +1,13 @@
 import { RouteTree, SlotFill } from "@elllphnt/elementa-models";
-import { reconcileList } from "@elllphnt/elementa-utils";
-import { BehaviorSubject, Observable, of, switchMap } from "rxjs";
+import { combineLatestOrEmpty, reconcileList } from "@elllphnt/elementa-utils";
+import {
+  BehaviorSubject,
+  combineLatest,
+  map,
+  Observable,
+  of,
+  switchMap,
+} from "rxjs";
 import { ComponentInstance } from "../component/component.js";
 import { ComponentInputResolver } from "../component/input_resolver/input_resolver.js";
 import { FragmentEnvironment } from "../fragment/_.js";
@@ -74,13 +81,81 @@ export class RouteTreeInstance extends Instance {
   }
 
   get loaderModule() {
-    const url = this.model.absoluteLoaderUrl;
-    return url ? this.runtime.moduleManager.module(url) : undefined;
+    return this.model.loaderUrl
+      ? this.runtime.moduleManager.module(
+          this.model.app.project.absoluteFileUrl(this.model.loaderUrl)
+        )
+      : undefined;
+  }
+  get loaderModule$() {
+    return this.model.loaderUrl$.pipe(
+      map((url) => {
+        return url
+          ? this.runtime.moduleManager.module(
+              this.model.app.project.absoluteFileUrl(url)
+            )
+          : undefined;
+      })
+    );
   }
 
   get handlerModule() {
-    const url = this.model.absoluteHandlerUrl;
-    return url ? this.runtime.moduleManager.module(url) : undefined;
+    return this.model.handlerUrl
+      ? this.runtime.moduleManager.module(
+          this.model.app.project.absoluteFileUrl(this.model.handlerUrl)
+        )
+      : undefined;
+  }
+  get handlerModule$() {
+    return this.model.handlerUrl$.pipe(
+      map((url) => {
+        return url
+          ? this.runtime.moduleManager.module(
+              this.model.app.project.absoluteFileUrl(url)
+            )
+          : undefined;
+      })
+    );
+  }
+
+  get diagnosticLevel(): number {
+    const viewsLevel = Math.max(
+      this.mainView?.diagnosticLevel ?? 0,
+      this.pendingView?.diagnosticLevel ?? 0,
+      this.errorView?.diagnosticLevel ?? 0,
+      this.notFoundView?.diagnosticLevel ?? 0
+    );
+
+    return Math.max(
+      this.ownDiagnosticLevel,
+      viewsLevel,
+      ...this.children.map((r) => r.diagnosticLevel)
+    );
+  }
+
+  get diagnosticLevel$(): Observable<number> {
+    return combineLatest([
+      this.ownDiagnosticLevel$,
+      this.mainView$.pipe(switchMap((view) => view?.diagnosticLevel$ ?? of(0))),
+      this.pendingView$.pipe(
+        switchMap((view) => view?.diagnosticLevel$ ?? of(0))
+      ),
+      this.errorView$.pipe(
+        switchMap((view) => view?.diagnosticLevel$ ?? of(0))
+      ),
+      this.notFoundView$.pipe(
+        switchMap((view) => view?.diagnosticLevel$ ?? of(0))
+      ),
+      this.children$.pipe(
+        switchMap((children) =>
+          combineLatestOrEmpty(children.map((c) => c.diagnosticLevel$))
+        )
+      ),
+    ]).pipe(
+      map(([own, main, pending, error, notFound, childLevels]) =>
+        Math.max(own, main, pending, error, notFound, ...childLevels)
+      )
+    );
   }
 
   constructor({
@@ -159,26 +234,24 @@ export class RouteTreeInstance extends Instance {
         }
       });
 
-    const childrenSubscription = this.model.children.observable$.subscribe(
-      (children) => {
-        const [nextChildren, removed] = reconcileList({
-          targets: this._children$.value,
-          sources: children,
-          sourceRef: (r) => r,
-          targetRef: (r) => r.model,
-          create: (route) =>
-            new RouteTreeInstance({
-              environment,
-              routeTree: route,
-              parent: this,
-            }),
-        });
-        this._children$.next(nextChildren);
-        removed.forEach((route) => {
-          route.dispose();
-        });
-      }
-    );
+    const childrenSubscription = this.model.children$.subscribe((children) => {
+      const [nextChildren, removed] = reconcileList({
+        targets: this._children$.value,
+        sources: children,
+        sourceRef: (r) => r,
+        targetRef: (r) => r.model,
+        create: (route) =>
+          new RouteTreeInstance({
+            environment,
+            routeTree: route,
+            parent: this,
+          }),
+      });
+      this._children$.next(nextChildren);
+      removed.forEach((route) => {
+        route.dispose();
+      });
+    });
 
     this.addDisposer(() => {
       mainViewSubscription.unsubscribe();

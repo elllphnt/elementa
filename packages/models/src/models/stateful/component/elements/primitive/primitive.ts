@@ -11,7 +11,7 @@ import {
 } from "@elllphnt/elementa-utils";
 import { filter, forkJoin, map, Observable, of, switchMap, tap } from "rxjs";
 import { CssStyleSheet } from "../../../../../css/_.js";
-import { File, Project } from "../../../../../infrastructure/_.js";
+import { Project } from "../../../../../infrastructure/_.js";
 import { Element } from "../../../../_interfaces/_.js";
 import { PrimitiveElement } from "../../../../_interfaces/component/elements/primitive/primitive.js";
 import { PrimitiveSubElement } from "../../../../_interfaces/component/elements/primitive/sub_element.js";
@@ -67,23 +67,6 @@ export class PrimitiveElementModel
   }
   get primitiveUrl$(): Observable<string | undefined> {
     return this._state.entry$("primitiveUrl");
-  }
-
-  get primitiveFile(): File | undefined {
-    return this.primitiveUrl
-      ? this.project.infrastructure.file(
-          this.project.absoluteFileUrl(this.primitiveUrl)
-        )
-      : undefined;
-  }
-  get primitiveFile$(): Observable<File | undefined> {
-    return this.primitiveUrl$.pipe(
-      map((url) =>
-        url
-          ? this.project.infrastructure.file(this.project.absoluteFileUrl(url))
-          : undefined
-      )
-    );
   }
 
   get props(): Record<string, any> | undefined {

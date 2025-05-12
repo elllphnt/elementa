@@ -1,5 +1,12 @@
 import { ComponentElement } from "@elllphnt/elementa-models";
-import { BehaviorSubject, of, switchMap } from "rxjs";
+import {
+  BehaviorSubject,
+  combineLatest,
+  map,
+  Observable,
+  of,
+  switchMap,
+} from "rxjs";
 import { ComponentInstance } from "../../component/_.js";
 import { FragmentEnvironment } from "../../fragment/environment/environment.js";
 import { Instance } from "../../instance.js";
@@ -19,6 +26,22 @@ export class ComponentElementInstance<
   }
   get component() {
     return this._component$.value;
+  }
+
+  get diagnosticLevel(): number {
+    return Math.max(
+      super.diagnosticLevel,
+      this.component?.diagnosticLevel ?? 0
+    );
+  }
+
+  get diagnosticLevel$(): Observable<number> {
+    return combineLatest([
+      super.diagnosticLevel$,
+      this.component$.pipe(
+        switchMap((component) => component?.diagnosticLevel$ ?? of(0))
+      ),
+    ]).pipe(map(([own, component]) => Math.max(own, component)));
   }
 
   constructor({

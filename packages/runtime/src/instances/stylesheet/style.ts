@@ -5,7 +5,7 @@ import {
 } from "@elllphnt/elementa-base";
 import { Style } from "@elllphnt/elementa-models";
 import { assert } from "@elllphnt/elementa-utils";
-import { Observable, of, switchMap } from "rxjs";
+import { combineLatest, map, Observable, of, switchMap } from "rxjs";
 import { ElementaInstanceType, Instance } from "../instance.js";
 import { StyleSheetInstance } from "./stylesheet.js";
 
@@ -76,6 +76,20 @@ export class StyleInstance extends Instance {
         return this.inheritedPropertyValue$(property);
       })
     );
+  }
+
+  get diagnosticLevel(): number {
+    return Math.max(
+      this.ownDiagnosticLevel,
+      this.parentStyleInstance?.diagnosticLevel ?? 0
+    );
+  }
+
+  get diagnosticLevel$(): Observable<number> {
+    return combineLatest([
+      this.ownDiagnosticLevel$,
+      this.parentStyleInstance?.diagnosticLevel$ ?? of(0),
+    ]).pipe(map(([own, parent]) => Math.max(own, parent)));
   }
 
   constructor({

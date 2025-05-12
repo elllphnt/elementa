@@ -66,7 +66,7 @@ export class AppViewer extends SubViewer {
   }
   private _getRenderable(app: App): AppRenderable {
     const instance = new AppInstance({
-      app,
+      model: app,
       environment: this.context.environment,
     });
     const renderable = new AppRenderable({

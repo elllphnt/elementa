@@ -1,6 +1,12 @@
 import { ContainerElement } from "@elllphnt/elementa-models";
-import { reconcileList } from "@elllphnt/elementa-utils";
-import { BehaviorSubject, Observable } from "rxjs";
+import { combineLatestOrEmpty, reconcileList } from "@elllphnt/elementa-utils";
+import {
+  BehaviorSubject,
+  Observable,
+  combineLatest,
+  map,
+  switchMap,
+} from "rxjs";
 import { FragmentEnvironment } from "../fragment/environment/environment.js";
 import { Instance } from "../instance.js";
 import { createElementInstance } from "./_element.js";
@@ -14,6 +20,24 @@ export class ContainerElementInstance extends ElementInstance<ContainerElement> 
   }
   get content(): ElementInstance[] {
     return this._content$.value;
+  }
+
+  get diagnosticLevel(): number {
+    return Math.max(
+      super.diagnosticLevel,
+      ...this.content.map((c) => c.diagnosticLevel)
+    );
+  }
+
+  get diagnosticLevel$(): Observable<number> {
+    return combineLatest([
+      super.diagnosticLevel$,
+      this.content$.pipe(
+        switchMap((elements) =>
+          combineLatestOrEmpty(elements.map((e) => e.diagnosticLevel$))
+        )
+      ),
+    ]).pipe(map(([own, contentLevels]) => Math.max(own, ...contentLevels)));
   }
 
   constructor({
@@ -31,7 +55,7 @@ export class ContainerElementInstance extends ElementInstance<ContainerElement> 
       parent,
     });
 
-    const contentSubscription = this.element.content.observable$.subscribe(
+    const contentSubscription = this.element.content$.subscribe(
       (content) => {
         const [newContent, removed] = reconcileList({
           targets: this.content,

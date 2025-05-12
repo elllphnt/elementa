@@ -1,26 +1,33 @@
-import { ElementaFrame, RenderableContent } from "@elllphnt/elementa-models";
-import { BehaviorSubject, Observable } from "rxjs";
-import { Runtime } from "../../../../runtime/runtime.js";
+import { ElementaFrame } from "@elllphnt/elementa-models";
+import {
+  BehaviorSubject,
+  combineLatest,
+  map,
+  Observable,
+  of,
+  switchMap,
+} from "rxjs";
+import { Runtime } from "../../../runtime/runtime.js";
 import {
   DefaultFragmentEnvironment,
   FragmentEnvironment,
-} from "../../../fragment/_.js";
-import { Instance } from "../../../instance.js";
-import { ModelInstance } from "../../../model.js";
+} from "../../fragment/_.js";
+import { Instance } from "../../instance.js";
+import { ModelInstance } from "../../model.js";
+import { ElementaEditorInstanceType } from "./_types.js";
 import {
   createRenderableContentInstance,
   RenderableContentInstance,
-} from "../elementa/_.js";
-import { ElementaEditorInstanceType } from "../elementa/_types.js";
+} from "./renderable_content/_.js";
 
 export class FrameFragmentEnvironment extends DefaultFragmentEnvironment {
   frame: ElementaFrame;
 
   get styleModifiers() {
-    return this.frame.renderingContext.styleModifiers;
+    return this.frame.context.styleModifiers;
   }
   get styleModifiers$() {
-    return this.frame.renderingContext.styleModifiers$;
+    return this.frame.context.styleModifiers$;
   }
 
   constructor({ runtime, frame }: { runtime: Runtime; frame: ElementaFrame }) {
@@ -40,6 +47,22 @@ export class ElementaFrameInstance extends ModelInstance<ElementaFrame> {
   }
   get content$() {
     return this._content$.asObservable();
+  }
+
+  get diagnosticLevel(): number {
+    return Math.max(
+      this.ownDiagnosticLevel,
+      this.content?.diagnosticLevel ?? 0
+    );
+  }
+
+  get diagnosticLevel$(): Observable<number> {
+    return combineLatest([
+      this.ownDiagnosticLevel$,
+      this.content$.pipe(
+        switchMap((content) => content?.diagnosticLevel$ ?? of(0))
+      ),
+    ]).pipe(map(([own, content]) => Math.max(own, content)));
   }
 
   constructor({
@@ -63,9 +86,7 @@ export class ElementaFrameInstance extends ModelInstance<ElementaFrame> {
       frame: model,
     });
 
-    const contentSubscription = (
-      this.model.content.observable$ as Observable<RenderableContent>
-    ).subscribe((content) => {
+    const contentSubscription = this.model.content$.subscribe((content) => {
       const current = this.content;
       if (content) {
         const next = createRenderableContentInstance({

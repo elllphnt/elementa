@@ -1,6 +1,7 @@
-import { reconcileList } from "@elllphnt/elementa-utils";
+import { combineLatestOrEmpty, reconcileList } from "@elllphnt/elementa-utils";
 import {
   BehaviorSubject,
+  combineLatest,
   distinctUntilChanged,
   map,
   Observable,
@@ -50,6 +51,33 @@ export class SlotInstance extends Instance {
   }
   get fill$() {
     return this.environment.slotFill$(this.slotId);
+  }
+
+  get diagnosticLevel(): number {
+    const stylesheetLevel = this.stylesheet?.diagnosticLevel ?? 0;
+    return Math.max(
+      this.ownDiagnosticLevel,
+      stylesheetLevel,
+      ...this.content.map((c) => c.diagnosticLevel)
+    );
+  }
+
+  get diagnosticLevel$(): Observable<number> {
+    return combineLatest([
+      this.ownDiagnosticLevel$,
+      this.stylesheet$.pipe(
+        switchMap((sheet) => sheet?.diagnosticLevel$ ?? of(0))
+      ),
+      this.content$.pipe(
+        switchMap((elements) =>
+          combineLatestOrEmpty(elements.map((e) => e.diagnosticLevel$))
+        )
+      ),
+    ]).pipe(
+      map(([own, stylesheetLevel, contentLevels]) =>
+        Math.max(own, stylesheetLevel, ...contentLevels)
+      )
+    );
   }
 
   constructor({

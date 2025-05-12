@@ -1,7 +1,15 @@
 // src/runtime/style/stylesheet_instance.ts
 
 import { Stylesheet } from "@elllphnt/elementa-models";
-import { BehaviorSubject } from "rxjs";
+import { combineLatestOrEmpty } from "@elllphnt/elementa-utils";
+import {
+  BehaviorSubject,
+  combineLatest,
+  map,
+  Observable,
+  of,
+  switchMap,
+} from "rxjs";
 import { Runtime } from "../../runtime/runtime.js";
 import { ElementaInstanceType, Instance } from "../instance.js";
 import { StyleCascadeResolver } from "./cascade.js";
@@ -22,6 +30,31 @@ export class StyleSheetInstance extends Instance {
   }
   get styles(): Record<string, StyleInstance> {
     return this._styles$.value;
+  }
+
+  get diagnosticLevel(): number {
+    const parentLevel = this.parentStylesheetInstance?.diagnosticLevel ?? 0;
+    return Math.max(
+      this.ownDiagnosticLevel,
+      parentLevel,
+      ...Object.values(this.styles).map((s) => s.diagnosticLevel)
+    );
+  }
+
+  get diagnosticLevel$(): Observable<number> {
+    return combineLatest([
+      this.ownDiagnosticLevel$,
+      this.parentStylesheetInstance?.diagnosticLevel$ ?? of(0),
+      this._styles$.pipe(
+        switchMap((styles) =>
+          combineLatestOrEmpty(
+            Object.values(styles).map((s) => s.diagnosticLevel$)
+          )
+        )
+      ),
+    ]).pipe(
+      map(([own, parent, styleLevels]) => Math.max(own, parent, ...styleLevels))
+    );
   }
 
   style(selector: string): StyleInstance {

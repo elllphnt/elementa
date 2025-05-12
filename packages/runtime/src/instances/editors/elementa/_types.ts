@@ -1,5 +1,5 @@
 export enum ElementaEditorInstanceType {
   EditorState = "editor-state",
-  RenderableContext = "renderable-context",
+  RenderableContent = "renderable-content",
   Frame = "frame",
 }

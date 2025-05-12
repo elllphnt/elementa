@@ -1,6 +1,12 @@
 import { Fragment } from "@elllphnt/elementa-models";
-import { reconcileList } from "@elllphnt/elementa-utils";
-import { BehaviorSubject, combineLatest, Observable } from "rxjs";
+import { combineLatestOrEmpty, reconcileList } from "@elllphnt/elementa-utils";
+import {
+  BehaviorSubject,
+  Observable,
+  combineLatest,
+  map,
+  switchMap,
+} from "rxjs";
 import { createElementInstance } from "../elements/_element.js";
 import { ElementInstance } from "../elements/element.js";
 import { ElementaInstanceType, Instance } from "../instance.js";
@@ -34,6 +40,34 @@ export class FragmentInstance extends ModelInstance<Fragment> {
   }
   get recursion() {
     return this._recursion$.value;
+  }
+
+  get diagnosticLevel(): number {
+    return Math.max(
+      this.ownDiagnosticLevel,
+      ...this.content.map((c) => c.diagnosticLevel),
+      ...this.slots.map((s) => s.diagnosticLevel)
+    );
+  }
+
+  get diagnosticLevel$(): Observable<number> {
+    return combineLatest([
+      this.ownDiagnosticLevel$,
+      this.content$.pipe(
+        switchMap((elements) =>
+          combineLatestOrEmpty(elements.map((e) => e.diagnosticLevel$))
+        )
+      ),
+      this.slots$.pipe(
+        switchMap((slots) =>
+          combineLatestOrEmpty(slots.map((s) => s.diagnosticLevel$))
+        )
+      ),
+    ]).pipe(
+      map(([own, elementLevels, slotLevels]) =>
+        Math.max(own, ...elementLevels, ...slotLevels)
+      )
+    );
   }
 
   constructor({

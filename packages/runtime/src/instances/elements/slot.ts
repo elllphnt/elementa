@@ -1,6 +1,12 @@
 import { SlotElement } from "@elllphnt/elementa-models";
 import { combineLatestOrEmpty, reconcileList } from "@elllphnt/elementa-utils";
-import { BehaviorSubject, Observable } from "rxjs";
+import {
+  BehaviorSubject,
+  combineLatest,
+  map,
+  Observable,
+  switchMap,
+} from "rxjs";
 import { FragmentEnvironment } from "../fragment/environment/environment.js";
 import { Instance } from "../instance.js";
 import { createElementInstance } from "./_element.js";
@@ -14,6 +20,26 @@ export class SlotElementInstance extends ElementInstance<SlotElement> {
   }
   get placeholder(): ElementInstance[] {
     return this._placeholder$.value;
+  }
+
+  get diagnosticLevel(): number {
+    return Math.max(
+      super.diagnosticLevel,
+      ...this.placeholder.map((p) => p.diagnosticLevel)
+    );
+  }
+
+  get diagnosticLevel$(): Observable<number> {
+    return combineLatest([
+      super.diagnosticLevel$,
+      this.placeholder$.pipe(
+        switchMap((elements) =>
+          combineLatestOrEmpty(elements.map((e) => e.diagnosticLevel$))
+        )
+      ),
+    ]).pipe(
+      map(([own, placeholderLevels]) => Math.max(own, ...placeholderLevels))
+    );
   }
 
   constructor({

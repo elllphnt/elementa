@@ -1,5 +1,5 @@
 import { RenderableContent } from "@elllphnt/elementa-models";
-import { FragmentEnvironment } from "../../../../fragment/_.js";
+import { FragmentEnvironment } from "../../../fragment/_.js";
 import { AppRenderableContentInstance } from "./app.js";
 import { ComponentRenderableContentInstance } from "./component.js";
 import { FragmentRenderableContentInstance } from "./fragment.js";

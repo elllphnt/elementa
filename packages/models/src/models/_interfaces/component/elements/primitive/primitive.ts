@@ -3,7 +3,6 @@ import {
   ResolvableOrEvaluable,
 } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
-import { File } from "~/src/infrastructure/_.js";
 import { BaseElement } from "../_base.js";
 import { Element } from "../_element.js";
 import { PrimitiveSubElement } from "./sub_element.js";
@@ -17,9 +16,6 @@ export interface PrimitiveElement extends BaseElement<"primitive"> {
 
   primitiveUrl: string | undefined;
   primitiveUrl$: Observable<string | undefined>;
-
-  primitiveFile: File | undefined;
-  primitiveFile$: Observable<File | undefined>;
 
   props: Record<string, any> | undefined;
   props$: Observable<Record<string, any> | undefined>;

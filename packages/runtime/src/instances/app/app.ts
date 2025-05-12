@@ -41,11 +41,11 @@ export class AppInstance extends Instance {
   }
 
   constructor({
-    app,
+    model,
     parent,
     environment,
   }: {
-    app: App;
+    model: App;
     parent?: Instance;
     environment: FragmentEnvironment;
   }) {
@@ -54,7 +54,7 @@ export class AppInstance extends Instance {
       runtime: environment.runtime,
       parent,
     });
-    this.app = app;
+    this.app = model;
 
     const routeSubscription = this.app.routes$.subscribe((routes) => {
       const [nextRoutes, removed] = reconcileList({

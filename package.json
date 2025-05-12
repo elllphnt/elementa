@@ -19,6 +19,7 @@
         "eslint-plugin-import": "^2.29.1",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
+        "tsc-alias": "^1.8.16",
         "tsx": "^4.19.3",
         "turbo": "^2.5.2",
         "typescript": "^5.8.3",

@@ -1,5 +1,5 @@
 import { Disposable, keyManager } from "@elllphnt/elementa-utils";
-import { Observable, of } from "rxjs";
+import { BehaviorSubject, map, Observable, of } from "rxjs";
 import { Runtime } from "../runtime/runtime.js";
 
 /**
@@ -24,9 +24,15 @@ export const DiagnosticLevel = {
   Error: 2,
 };
 
+export interface DiagnosticEntry {
+  level: number;
+  message: string;
+}
+
 export interface Diagnostic {
   level: number;
   message: string;
+  entries?: DiagnosticEntry[];
 }
 
 /**
@@ -39,18 +45,22 @@ export abstract class Instance extends Disposable {
   readonly runtime: Runtime;
   readonly parent?: Instance;
 
+  private _diagnostics = new BehaviorSubject<Record<string, Diagnostic>>({});
+
   get diagnostics(): Diagnostic[] {
-    return [];
+    return Object.values(this._diagnostics.getValue());
   }
   get diagnostics$(): Observable<Diagnostic[]> {
-    return of([]);
+    return this._diagnostics.asObservable().pipe(map((d) => Object.values(d)));
   }
 
   get ownDiagnosticLevel(): number {
-    return DiagnosticLevel.Info;
+    return Math.max(0, ...this.diagnostics.map((d) => d.level));
   }
   get ownDiagnosticLevel$(): Observable<number> {
-    return of(DiagnosticLevel.Info);
+    return this.diagnostics$.pipe(
+      map((d) => Math.max(0, ...d.map((d) => d.level)))
+    );
   }
 
   get diagnosticLevel(): number {
@@ -74,5 +84,19 @@ export abstract class Instance extends Disposable {
     this.key = keyManager.next(type + "-instance");
     this.runtime = runtime;
     this.parent = parent;
+  }
+
+  setDiagnostic(key: string, diagnostic: Diagnostic) {
+    this._diagnostics.next({
+      ...this._diagnostics.getValue(),
+      [key]: {
+        ...diagnostic,
+      },
+    });
+  }
+  clearDiagnostic(key: string) {
+    const currentDiagnostics = { ...this._diagnostics.getValue() };
+    delete currentDiagnostics[key];
+    this._diagnostics.next(currentDiagnostics);
   }
 }

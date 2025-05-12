@@ -2,14 +2,20 @@ import {
   ComponentRenderableContent,
   SlotFill,
 } from "@elllphnt/elementa-models";
-import { BehaviorSubject, Observable, of, switchMap } from "rxjs";
+import {
+  BehaviorSubject,
+  combineLatest,
+  map,
+  Observable,
+  of,
+  switchMap,
+} from "rxjs";
 import {
   ComponentInputResolver,
   ComponentInstance,
-} from "../../../../component/_.js";
-import { FragmentEnvironment } from "../../../../fragment/_.js";
-import { ModelInstance } from "../../../../model.js";
-import { ElementaEditorInstanceType } from "../_types.js";
+} from "../../../component/_.js";
+import { FragmentEnvironment } from "../../../fragment/_.js";
+import { BaseRenderableContentInstance } from "./_base.js";
 
 export class ComponentRenderableContentInputResolver extends ComponentInputResolver {
   renderableContent: ComponentRenderableContent;
@@ -44,7 +50,7 @@ export class ComponentRenderableContentInputResolver extends ComponentInputResol
   }
 }
 
-export class ComponentRenderableContentInstance extends ModelInstance<ComponentRenderableContent> {
+export class ComponentRenderableContentInstance extends BaseRenderableContentInstance<ComponentRenderableContent> {
   private _component$ = new BehaviorSubject<ComponentInstance | undefined>(
     undefined
   );
@@ -52,6 +58,22 @@ export class ComponentRenderableContentInstance extends ModelInstance<ComponentR
   component$ = this._component$.asObservable();
   get component(): ComponentInstance | undefined {
     return this._component$.getValue();
+  }
+
+  get diagnosticLevel(): number {
+    return Math.max(
+      this.ownDiagnosticLevel,
+      this.component?.diagnosticLevel ?? 0
+    );
+  }
+
+  get diagnosticLevel$(): Observable<number> {
+    return combineLatest([
+      this.ownDiagnosticLevel$,
+      this.component$.pipe(
+        switchMap((component) => component?.diagnosticLevel$ ?? of(0))
+      ),
+    ]).pipe(map(([own, component]) => Math.max(own, component)));
   }
 
   constructor({
@@ -62,9 +84,8 @@ export class ComponentRenderableContentInstance extends ModelInstance<ComponentR
     environment: FragmentEnvironment;
   }) {
     super({
-      type: ElementaEditorInstanceType.RenderableContext,
       model,
-      runtime: environment.runtime,
+      environment,
     });
 
     const componentSubscription = this.model.component$
