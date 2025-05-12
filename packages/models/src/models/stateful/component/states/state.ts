@@ -59,10 +59,6 @@ export abstract class StateModel<T extends StateData>
     return this._state.entry$("varName");
   }
 
-  remove(): void {
-    // Implementation will be handled by the parent component
-  }
-
   abstract get data(): T;
   abstract get data$(): Observable<T>;
   abstract restore(data: T): void;

@@ -12,7 +12,7 @@ import { CssStyleSheet } from "../../../../css/_.js";
 import { Project } from "../../../../infrastructure/_.js";
 import { Component, FileModel } from "../../../_interfaces/_.js";
 import { SlotFill } from "../../../_interfaces/_shared/slot_fill.js";
-import { ComponentElement } from "../../../_interfaces/component/elements/component/component.js";
+import { ComponentElement } from "../../../_interfaces/component/elements/component.js";
 import { SlotFillModel } from "../../_shared/slot_fill.js";
 import { BaseElementModel } from "./_base.js";
 
@@ -203,6 +203,7 @@ export class ComponentElementModel
 
   // restore method
   restore(data: ComponentElementData): void {
+    super.restore(data);
     this._state.setRecord(data);
     this._fills.restore(data.fills || {});
   }

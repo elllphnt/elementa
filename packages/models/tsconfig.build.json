@@ -7,5 +7,6 @@
     "strictFunctionTypes": false
   },
   "include": ["src"],
+  "exclude": ["src/models/crdt"],
   "references": []
 }

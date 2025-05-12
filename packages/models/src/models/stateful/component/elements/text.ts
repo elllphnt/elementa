@@ -4,9 +4,8 @@ import {
 } from "@elllphnt/elementa-base";
 import { combineLatestMerged } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import { CssStyleSheet } from "../../../../css/_.js";
+import { Project } from "../../../../infrastructure/_.js";
 import { TextElement } from "../../../_interfaces/component/elements/text.js";
-import { Fragment } from "../fragment.js";
 import { BaseElementModel } from "./_base.js";
 
 export class TextElementModel
@@ -35,23 +34,13 @@ export class TextElementModel
   }
 
   // constructor
-  constructor({
-    init,
-    fragment,
-    cssStyleSheet,
-  }: {
-    init: TextElementData;
-    fragment: Fragment;
-    cssStyleSheet: CssStyleSheet;
-  }) {
-    super({ init, fragment, cssStyleSheet });
+  constructor({ init, project }: { init: TextElementData; project: Project }) {
+    super({ init, project });
   }
 
   // restore method
   restore(data: TextElementData): void {
-    this._state.setRecord({
-      ...data,
-      id: undefined,
-    });
+    super.restore(data);
+    this._state.setRecord(data);
   }
 }

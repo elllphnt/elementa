@@ -1,4 +1,4 @@
-import { ComponentElement } from "./component/_.js";
+import { ComponentElement } from "./component.js";
 import { ContainerElement } from "./container.js";
 import { MediaElement } from "./media.js";
 import { PrimitiveElement } from "./primitive/_.js";

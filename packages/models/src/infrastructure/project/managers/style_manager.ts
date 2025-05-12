@@ -4,7 +4,6 @@ import {
   StyleModifierData,
 } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
-import { Stylesheet } from "../../../crdt/style/stylesheet.js";
 import { CssStyleSheet } from "../../../css/_.js";
 
 export abstract class StyleManager {

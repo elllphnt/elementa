@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
+import { Identifiable } from "../../_shared/identifiable.js";
 import { Component } from "../component.js";
-import { Identifiable } from "../identifiable.js";
 
 export interface State extends Identifiable {
   component: Component;
@@ -9,5 +9,4 @@ export interface State extends Identifiable {
   name$: Observable<string | undefined>;
   varName: string | undefined;
   varName$: Observable<string | undefined>;
-  remove(): void;
 }

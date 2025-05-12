@@ -1,10 +1,10 @@
 import { ResolvableOrEvaluable } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
-import { CssStyleSheet } from "../../../../../css/_.js";
-import { SlotFill } from "../../../_shared/slot_fill.js";
-import { FileModel } from "../../../file/_.js";
-import { Component } from "../../component.js";
-import { BaseElement } from "../_base.js";
+import { CssStyleSheet } from "../../../../css/_.js";
+import { SlotFill } from "../../_shared/slot_fill.js";
+import { FileModel } from "../../file/_.js";
+import { Component } from "../component.js";
+import { BaseElement } from "./_base.js";
 
 export interface ComponentElement extends BaseElement<"component"> {
   fills: Record<string, SlotFill>;

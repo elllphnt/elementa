@@ -1,9 +1,8 @@
 import { MediaData, MediaElementData } from "@elllphnt/elementa-base";
 import { combineLatestMerged } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import { CssStyleSheet } from "../../../../css/_.js";
+import { Project } from "../../../../infrastructure/_.js";
 import { MediaElement } from "../../../_interfaces/component/elements/media.js";
-import { Fragment } from "../fragment.js";
 import { BaseElementModel } from "./_base.js";
 
 export class MediaElementModel
@@ -48,23 +47,13 @@ export class MediaElementModel
   }
 
   // constructor
-  constructor({
-    init,
-    fragment,
-    cssStyleSheet,
-  }: {
-    init: MediaElementData;
-    fragment: Fragment;
-    cssStyleSheet: CssStyleSheet;
-  }) {
-    super({ init, fragment, cssStyleSheet });
+  constructor({ init, project }: { init: MediaElementData; project: Project }) {
+    super({ init, project });
   }
 
   // restore method
   restore(data: MediaElementData): void {
-    this._state.setRecord({
-      ...data,
-      id: undefined,
-    });
+    super.restore(data);
+    this._state.setRecord(data);
   }
 }

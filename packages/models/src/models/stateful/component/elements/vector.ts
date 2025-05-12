@@ -1,9 +1,8 @@
 import { VectorElementData, VectorNodeData } from "@elllphnt/elementa-base";
 import { combineLatestMerged } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import { CssStyleSheet } from "../../../../css/_.js";
+import { Project } from "../../../../infrastructure/_.js";
 import { VectorElement } from "../../../_interfaces/component/elements/vector.js";
-import { Fragment } from "../fragment.js";
 import { BaseElementModel } from "./_base.js";
 
 export class VectorElementModel
@@ -34,21 +33,17 @@ export class VectorElementModel
   // constructor
   constructor({
     init,
-    fragment,
-    cssStyleSheet,
+    project,
   }: {
     init: VectorElementData;
-    fragment: Fragment;
-    cssStyleSheet: CssStyleSheet;
+    project: Project;
   }) {
-    super({ init, fragment, cssStyleSheet });
+    super({ init, project });
   }
 
   // restore method
   restore(data: VectorElementData): void {
-    this._state.setRecord({
-      ...data,
-      id: undefined,
-    });
+    super.restore(data);
+    this._state.setRecord(data);
   }
 }
