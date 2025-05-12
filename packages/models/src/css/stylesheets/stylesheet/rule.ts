@@ -1,8 +1,8 @@
 import { CssSelector } from "@elllphnt/elementa-base";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-utils";
 import { combineLatest, map, Observable, switchMap } from "rxjs";
-import { CssStyleRule } from "../../lib/rule/stylerule.js";
 import { Style, Stylesheet } from "../../../models/_interfaces/_.js";
+import { CssStyleRule } from "../../lib/rule/stylerule.js";
 
 /**
  * An implementation of the `CssStyleRule` for a single style in a `Stylesheet` object.
@@ -14,7 +14,7 @@ import { Style, Stylesheet } from "../../../models/_interfaces/_.js";
  */
 export class StylesheetCssStyleRule extends CssStyleRule {
   readonly layer?: string;
-  readonly stylesheet: Stylesheet
+  readonly stylesheet: Stylesheet;
   readonly selector: string;
 
   get style(): Style {

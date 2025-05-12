@@ -1,100 +1,134 @@
 import {
+  isVarRef,
   RawStyleData,
   StyleData,
   StylePropertyName,
   UnsettableStyleData,
   VariableStyleData,
 } from "@elllphnt/elementa-base";
-import { CssStyleData } from "@elllphnt/elementa-css";
-import { Model, RecordState } from "@elllphnt/elementa-utils";
-import { Observable, map } from "rxjs";
-import { ProjectModel } from "../../../infrastructure/project.js";
+import {
+  CssStyleData,
+  styleToCss,
+  StyleToCssContext,
+} from "@elllphnt/elementa-css";
+import {
+  combineLatestMerged,
+  keyManager,
+  Model,
+  RecordState,
+} from "@elllphnt/elementa-utils";
+import {
+  BehaviorSubject,
+  combineLatest,
+  forkJoin,
+  map,
+  Observable,
+} from "rxjs";
+import { Project } from "~/src/infrastructure/_.js";
 import { Style } from "../../_interfaces/style/style.js";
 import { StyleFragmentRegistry } from "../../_interfaces/style/style_fragment_registry.js";
 
-export class StyleModel extends Model<Record<string, string>> implements Style {
-  private _state: RecordState<Record<string, string>>;
-  private _project: ProjectModel;
-  private _fragmentRegistry: StyleFragmentRegistry;
-  private _className: string;
+export class StyleModel extends Model<StyleData> implements Style {
+  readonly project: Project;
+  readonly fragmentRegistry: StyleFragmentRegistry;
+
+  private _properties: RecordState<UnsettableStyleData>;
+  private _raw: RecordState<Record<string, string>>;
+
+  private _css$ = new BehaviorSubject<CssStyleData>({});
+  private _errors$ = new BehaviorSubject<Error[]>([]);
+
+  get className() {
+    return this.key;
+  }
 
   constructor({
     init,
     project,
     fragmentRegistry,
-    className,
   }: {
-    init: Record<string, string>;
-    project: ProjectModel;
+    init: StyleData;
+    project: Project;
     fragmentRegistry: StyleFragmentRegistry;
-    className: string;
   }) {
-    super();
+    const { __raw, ...styleData } = init;
+    super({ key: keyManager.next("style") });
 
-    this._project = project;
-    this._fragmentRegistry = fragmentRegistry;
-    this._className = className;
+    this.project = project;
+    this.fragmentRegistry = fragmentRegistry;
 
-    this._state = new RecordState({
-      init: init || {},
+    this._properties = new RecordState<UnsettableStyleData>({
+      init: styleData,
+    });
+    this._raw = new RecordState<Record<string, string>>({ init: __raw || {} });
+
+    const cssSubscription = combineLatest([
+      this._properties.record$,
+      this._raw.record$,
+      this.fragmentRegistry.allFragments$,
+    ]).subscribe(([properties, raw, fragments]) => {
+      const context: StyleToCssContext = {
+        getFragment: (type, id) =>
+          fragments.find((f) => f.type === type && f.id == id) as any,
+      };
+      const [css, errors] = styleToCss(
+        {
+          ...properties,
+          __raw: raw,
+        },
+        context
+      );
+      this._css$.next(css);
+      this._errors$.next(errors);
     });
 
     this.addDisposer(() => {
-      this._state.dispose();
+      this._properties.dispose();
+      this._raw.dispose();
+      this._css$.complete();
+      this._errors$.complete();
+      cssSubscription.unsubscribe();
     });
   }
 
-  get project(): ProjectModel {
-    return this._project;
+  get data(): StyleData {
+    return {
+      ...this._properties.record,
+      __raw: this._raw.record,
+    };
   }
-
-  get fragmentRegistry(): StyleFragmentRegistry {
-    return this._fragmentRegistry;
-  }
-
-  get className(): string {
-    return this._className;
-  }
-
-  get data(): Record<string, string> {
-    return this._state.record;
-  }
-
-  get data$(): Observable<Record<string, string>> {
-    return this._state.record$;
-  }
-
-  restore(data: Record<string, string>): void {
-    this._state.setRecord(data || {});
+  get data$(): Observable<StyleData> {
+    return combineLatestMerged([
+      this._properties.record$,
+      forkJoin({
+        __raw: this._raw.record$,
+      }),
+    ]);
   }
 
   propertyValue<N extends StylePropertyName>(
     property: N
   ): UnsettableStyleData[N] {
-    return this._state.record[property] as UnsettableStyleData[N];
+    return this._properties.entry(property);
   }
 
   propertyValue$<N extends StylePropertyName>(
     property: N
   ): Observable<UnsettableStyleData[N]> {
-    return this._state.record$.pipe(
-      map((record) => record[property] as UnsettableStyleData[N])
-    );
+    return this._properties.entry$(property);
   }
 
   propertyValueOrUndefined<N extends StylePropertyName>(
     property: N
   ): VariableStyleData[N] {
-    const value = this._state.record[property];
+    const value = this.propertyValue(property);
     return (value === "unset" ? undefined : value) as VariableStyleData[N];
   }
-
   propertyValueOrUndefined$<N extends StylePropertyName>(
     property: N
   ): Observable<VariableStyleData[N]> {
-    return this._state.record$.pipe(
-      map((record) => {
-        const value = record[property];
+    return this.propertyValue$(property).pipe(
+      map((value) => {
         return (value === "unset" ? undefined : value) as VariableStyleData[N];
       })
     );
@@ -103,74 +137,73 @@ export class StyleModel extends Model<Record<string, string>> implements Style {
   resolvedPropertyValue<N extends StylePropertyName>(
     property: N
   ): RawStyleData[N] {
-    // Simple implementation - a more complex one would resolve variable references
-    return this.propertyValueOrUndefined(property) as RawStyleData[N];
+    const value = this.propertyValueOrUndefined(property);
+    if (isVarRef(value)) {
+      return this.project.styleManager.varRefValue(value) as RawStyleData[N];
+    } else {
+      return value as unknown as RawStyleData[N];
+    }
   }
 
   resolvedPropertyValue$<N extends StylePropertyName>(
     property: N
   ): Observable<RawStyleData[N]> {
-    // Simple implementation - a more complex one would resolve variable references
-    return this.propertyValueOrUndefined$(property) as Observable<
-      RawStyleData[N]
-    >;
+    return this.propertyValueOrUndefined$(property).pipe(
+      map((value: unknown) => {
+        if (isVarRef(value)) {
+          return this.project.styleManager.varRefValue(
+            value
+          ) as RawStyleData[N];
+        } else {
+          return value as unknown as RawStyleData[N];
+        }
+      })
+    );
   }
 
   hasProperty(property: StylePropertyName): boolean {
-    return this._state.record[property] !== undefined;
+    return this.propertyValue(property) !== undefined;
   }
 
   hasProperty$(property: StylePropertyName): Observable<boolean> {
-    return this._state.record$.pipe(
-      map((record) => record[property] !== undefined)
+    return this.propertyValue$(property).pipe(
+      map((value) => {
+        return value !== undefined;
+      })
     );
   }
 
   get raw(): Record<string, string> {
-    return { ...this._state.record };
+    return { ...this._raw.record };
   }
 
   get raw$(): Observable<Record<string, string>> {
-    return this._state.record$;
+    return this._raw.record$;
   }
 
   setProperty<N extends StylePropertyName>(
     property: N,
     value: StyleData[N]
   ): void {
-    this._state.set(property, value);
+    this._properties.set(property, value);
   }
 
   setRaw(raw: Record<string, string>): void {
-    this._state.setRecord(raw);
+    this._raw.setRecord(raw);
   }
 
   get css(): CssStyleData {
-    // Convert raw properties to CSS style data
-    const cssData: CssStyleData = {};
-
-    Object.entries(this._state.record).forEach(([key, value]) => {
-      if (value !== "unset" && value !== undefined) {
-        cssData[key as keyof CssStyleData] = value;
-      }
-    });
-
-    return cssData;
+    return this._css$.value;
   }
 
   get css$(): Observable<CssStyleData> {
-    return this._state.record$.pipe(
-      map((record) => {
-        const cssData: CssStyleData = {};
+    return this._css$.asObservable();
+  }
 
-        Object.entries(record).forEach(([key, value]) => {
-          if (value !== "unset" && value !== undefined) {
-            cssData[key as keyof CssStyleData] = value;
-          }
-        });
+  restore(data: StyleData): void {
+    const { __raw, ...properties } = data;
 
-        return cssData;
-      })
-    );
+    this._properties.setRecord(properties);
+    this._raw.setRecord(__raw || {});
   }
 }

@@ -100,7 +100,7 @@ export function attachStyle(
         <N extends StylePropertyName>(property: N) => {
           const value = style.propertyValueOrUndefined(property);
           if (value && isVarRef(value)) {
-            return style.project.styleManager.variableValue(
+            return style.project.styleManager.varRefValue(
               value.__var
             ) as RawStyleData[N];
           }

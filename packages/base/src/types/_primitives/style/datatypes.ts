@@ -57,3 +57,15 @@ export type StyleDataTypeMap = {
   [StyleDataType.Percent]: PercentData;
   [StyleDataType.Ratio]: RatioData;
 };
+
+export type StyleDataData =
+  | boolean
+  | number
+  | string
+  | AngleData
+  | ColorData
+  | DurationData
+  | FlexData
+  | LengthData
+  | PercentData
+  | RatioData;

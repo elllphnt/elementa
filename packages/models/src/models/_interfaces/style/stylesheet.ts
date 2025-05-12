@@ -12,18 +12,13 @@ export interface Stylesheet {
   styles: Record<string, Style>;
   styles$: Observable<Record<string, Style>>;
 
-  style<C extends true | undefined>(
-    selector: string,
-    create?: C
-  ): C extends true ? Style : Style | undefined;
+  style(selector: string): Style | undefined;
+  style(selector: string, create: true): Style;
+  style$(selector: string): Observable<Style | undefined>;
+  style$(selector: string, create: true): Observable<Style>;
 
-  style$<C extends true | undefined>(
-    selector: string,
-    create?: C
-  ): C extends true ? Observable<Style> : Observable<Style | undefined>;
-
-  conditions: Record<string, string>;
-  conditions$: Observable<Record<string, string>>;
+  conditions: Record<string, string> | undefined;
+  conditions$: Observable<Record<string, string> | undefined>;
 
   condition(id: string): string | undefined;
   condition$(id: string): Observable<string | undefined>;
@@ -31,13 +26,10 @@ export interface Stylesheet {
   selectors: string[];
   selectors$: Observable<string[]>;
 
-  baseStyle<C extends true | undefined>(
-    create?: C
-  ): C extends true ? Style : Style | undefined;
-
-  baseStyle$<C extends true | undefined>(
-    create?: C
-  ): C extends true ? Observable<Style> : Observable<Style | undefined>;
+  baseStyle(): Style | undefined;
+  baseStyle(create: true): Style;
+  baseStyle$(): Observable<Style | undefined>;
+  baseStyle$(create: true): Observable<Style>;
 
   addStyle(selector: string): void;
   removeStyle(selector: string): void;

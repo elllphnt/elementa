@@ -1,23 +1,22 @@
 import {
   CssSelector,
   ElllSelectorData,
+  StyleDataData,
   StyleModifierData,
+  VarRef,
 } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
 import { CssStyleSheet } from "../../../css/_.js";
 
 export abstract class StyleManager {
-  abstract rootStylesheet: Stylesheet;
-  abstract rootCssStylesheet: CssStyleSheet;
-
   abstract get stylesheets(): CssStyleSheet[];
   abstract get stylesheets$(): Observable<CssStyleSheet[]>;
 
   abstract cssSelectorOf(selector: ElllSelectorData): CssSelector;
   abstract cssSelectorOf$(selector: ElllSelectorData): Observable<CssSelector>;
 
-  abstract variableValue(name: string): any;
-  abstract variableValue$(name: string): Observable<any>;
+  abstract varRefValue(varRef: VarRef): StyleDataData;
+  abstract varRefValue$(varRef: VarRef): Observable<StyleDataData>;
 
   abstract colorSchemeModifiers({
     colorScheme,
