@@ -7,8 +7,8 @@ import {
 } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
 import { CssStyleSheet } from "../../../../css/_.js";
+import { Identifiable } from "../../_shared/identifiable.js";
 import { Fragment } from "../fragment.js";
-import { Identifiable } from "../identifiable.js";
 
 export interface Element extends Identifiable {
   type: string;

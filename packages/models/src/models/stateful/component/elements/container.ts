@@ -1,71 +1,80 @@
 import { ContainerElementData } from "@elllphnt/elementa-base";
 import {
-  combineLatestOrEmpty,
-  getOrCreateYArray,
-  setEnhancer,
+  AggregatedModelList,
+  combineLatestMerged,
 } from "@elllphnt/elementa-utils";
-import { map, Observable } from "rxjs";
-import * as y from "yjs";
+import { Observable, forkJoin } from "rxjs";
+import { CssStyleSheet } from "../../../../css/_.js";
+import { ContainerElement } from "../../../_interfaces/component/elements/container.js";
+import { Element } from "../../../_interfaces/component/elements/element.js";
 import { Fragment } from "../fragment.js";
-import { attachElementList, ElementList } from "./_list.js";
-import { attachBaseElement, Element } from "./element.js";
+import { createElementModel } from "./_create.js";
+import { ElementModel } from "./element.js";
 
-export type ContainerElement = Element<ContainerElementData> & {
-  content: ElementList;
+export class ContainerElementModel
+  extends ElementModel<ContainerElementData>
+  implements ContainerElement
+{
+  private _content: AggregatedModelList<ElementModel<any>>;
 
-  allCssStylesheets: any[];
-  allCssStylesheets$: Observable<any[]>;
-};
+  constructor({
+    init,
+    fragment,
+    cssStyleSheet,
+  }: {
+    init: ContainerElementData;
+    fragment: Fragment;
+    cssStyleSheet: CssStyleSheet;
+  }) {
+    super({ init, fragment, cssStyleSheet });
 
-/**
- * Attach ContainerElement behavior to a y.Map
- */
-export function attachContainerElement(
-  ymap: y.Map<any>,
-  fragment: Fragment
-): ymap is ContainerElement {
-  ymap.set("type", "container");
-  if (!attachBaseElement(ymap, fragment)) {
-    throw new Error("Failed to attach base element to ymap");
+    this._content = new AggregatedModelList({
+      init: init.content || [],
+      create: (data) =>
+        createElementModel({
+          init: data,
+          fragment: this._fragment,
+          cssStyleSheet: this._cssStyleSheet,
+        }),
+    });
+
+    this.addDisposer(() => {
+      this._content.dispose();
+    });
   }
-  const element = ymap as ContainerElement;
 
-  const content = getOrCreateYArray(ymap, "content");
-  attachElementList(getOrCreateYArray(ymap, "content"), fragment);
-  element.content = content as ElementList;
-
-  Object.defineProperty(element, "allCssStylesheets", {
-    get() {
-      return [element.cssStyleSheet, ...element.content.allCssStylesheets];
-    },
-    configurable: true,
-  });
-  element.allCssStylesheets$ = combineLatestOrEmpty([
-    element.content.allCssStylesheets$,
-  ]).pipe(
-    map(([childrenSheets]) => [element.cssStyleSheet, ...childrenSheets.flat()])
-  );
-
-  element.cloneIds = (clone: y.Map<any>) => {
-    element.cloneOwnId(clone);
-    const contentClone = getOrCreateYArray(clone, "content");
-    element.content.cloneIds(contentClone as any);
-  };
-
-  const baseDispose = (element as any).dispose?.bind(element);
-  element.dispose = () => {
-    element.content.dispose();
-    if (baseDispose) baseDispose();
-  };
-
-  setEnhancer(element, attachContainerElement);
-  return true;
-}
-
-export function createContainerElement(fragment: Fragment): ContainerElement {
-  const ymap = new y.Map<any>();
-  if (!attachContainerElement(ymap, fragment)) {
-    throw new Error("Failed to create ContainerElement");
+  get data(): ContainerElementData {
+    return {
+      ...this._state.record,
+      id: this._id,
+      type: "container",
+      content: this._content.data,
+    };
   }
-  return ymap as ContainerElement;
+
+  get data$(): Observable<ContainerElementData> {
+    return combineLatestMerged([
+      this._state.record$,
+      forkJoin({
+        content: this._content.data$,
+      }),
+    ]);
+  }
+
+  restore(data: ContainerElementData): void {
+    this._state.setRecord({
+      ...data,
+      id: undefined,
+      content: undefined,
+    });
+    this._content.restore(data.content || []);
+  }
+
+  get content(): Element[] {
+    return this._content.items;
+  }
+
+  get content$(): Observable<Element[]> {
+    return this._content.items$;
+  }
 }

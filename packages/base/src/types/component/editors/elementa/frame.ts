@@ -17,7 +17,7 @@ import {
 
 export type ElementaFrameData = IdentifiableData & {
   name?: string;
-  renderingContext?: RenderingContextData;
+  context?: RenderingContextData;
   content?: RenderableContentData;
   x?: number;
   y?: number;

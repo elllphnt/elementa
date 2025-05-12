@@ -1,5 +1,12 @@
 {
   "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "build/.tsbuildinfo",
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./*"]
+    }
+  },
   "include": ["src", "tests"],
   "exclude": ["src/models/stateful"],
   "references": []

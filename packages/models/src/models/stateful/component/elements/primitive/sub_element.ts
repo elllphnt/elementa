@@ -1,101 +1,96 @@
 import { Expression, PrimitiveSubElementData } from "@elllphnt/elementa-base";
 import {
-  attachReactiveMap,
-  getOrCreateYMap,
-  ReactiveMap,
-  setEnhancer,
+  Model,
+  RecordState,
+  combineLatestMerged,
 } from "@elllphnt/elementa-utils";
-import { distinctUntilChanged, map, Observable } from "rxjs";
-import * as y from "yjs";
-import { StylesheetCssStyleSheet } from "../../../../css/_.js";
-import { attachStylesheet } from "../../../style/stylesheet.js";
-import { Component } from "../../component.js";
-import { Fragment } from "../../fragment.js";
+import { Observable, map } from "rxjs";
+import { CssStyleSheet } from "../../../../../css/_.js";
+import { Component } from "../../../../_interfaces/component/component.js";
+import { PrimitiveSubElement } from "../../../../_interfaces/component/elements/primitive/sub_element.js";
 
-export type PrimitiveSubElement = ReactiveMap<PrimitiveSubElementData> & {
-  component: Component;
-  cssStyleSheet: StylesheetCssStyleSheet;
+export class PrimitiveSubElementModel
+  extends Model<PrimitiveSubElementData>
+  implements PrimitiveSubElement
+{
+  private _state: RecordState<Partial<PrimitiveSubElementData>>;
+  private _component: Component;
+  private _cssStyleSheet: CssStyleSheet;
 
-  interactions: Record<string, Expression>;
-  interactions$: Observable<Record<string, Expression>>;
+  constructor({
+    init,
+    component,
+    cssStyleSheet,
+  }: {
+    init: PrimitiveSubElementData;
+    component: Component;
+    cssStyleSheet: CssStyleSheet;
+  }) {
+    super();
 
-  interaction(event: string): Expression | undefined;
-  interaction$(event: string): Observable<Expression | undefined>;
+    this._component = component;
+    this._cssStyleSheet = cssStyleSheet;
 
-  setInteraction(event: string, interaction: Expression): void;
-  clearInteractions(): void;
-};
+    this._state = new RecordState({
+      init: {
+        ...init,
+        component: undefined,
+        cssStyleSheet: undefined,
+      },
+    });
 
-export function attachPrimitiveSubElement(
-  ymap: y.Map<any>,
-  fragment: Fragment
-): ymap is PrimitiveSubElement {
-  if (!attachReactiveMap(ymap)) {
-    throw new Error("Failed to attach reactive map to ymap");
+    this.addDisposer(() => {
+      this._state.dispose();
+    });
   }
-  const subElement = ymap as PrimitiveSubElement;
 
-  subElement.component = fragment.component;
-
-  const stylesheet = getOrCreateYMap(subElement, "stylesheet");
-  if (!attachStylesheet(stylesheet, fragment.component.project)) {
-    throw new Error("Failed to attach stylesheet to ymap");
+  get component(): Component {
+    return this._component;
   }
-  subElement.cssStyleSheet = new StylesheetCssStyleSheet({
-    target: `primitive-sub-element`,
-    stylesheet,
-  });
 
-  Object.defineProperty(subElement, "interactions", {
-    get() {
-      return subElement.get("interactions") ?? {};
-    },
-    set(value) {
-      subElement.set("interactions", value);
-    },
-  });
+  get cssStyleSheet(): CssStyleSheet {
+    return this._cssStyleSheet;
+  }
 
-  subElement.interactions$ = subElement.items$.pipe(
-    map((v) => v.interactions ?? {}),
-    distinctUntilChanged()
-  );
+  get data(): PrimitiveSubElementData {
+    return {
+      ...this._state.record,
+    };
+  }
 
-  subElement.interaction = (event: string) => {
-    return subElement.interactions[event];
-  };
+  get data$(): Observable<PrimitiveSubElementData> {
+    return combineLatestMerged([this._state.record$]);
+  }
 
-  subElement.interaction$ = (event: string) => {
-    return subElement.interactions$.pipe(
-      map((interactions) => interactions[event])
-    );
-  };
+  restore(data: PrimitiveSubElementData): void {
+    this._state.setRecord({
+      ...data,
+    });
+  }
 
-  subElement.setInteraction = (event: string, interaction: Expression) => {
-    const interactions = { ...subElement.interactions };
+  get interactions(): Record<string, Expression> {
+    return this._state.record.interactions || {};
+  }
+
+  get interactions$(): Observable<Record<string, Expression>> {
+    return this._state.entry$("interactions");
+  }
+
+  interaction(event: string): Expression | undefined {
+    return this.interactions[event];
+  }
+
+  interaction$(event: string): Observable<Expression | undefined> {
+    return this.interactions$.pipe(map((interactions) => interactions[event]));
+  }
+
+  setInteraction(event: string, interaction: Expression): void {
+    const interactions = { ...this.interactions };
     interactions[event] = interaction;
-    subElement.set("interactions", interactions);
-  };
-
-  subElement.clearInteractions = () => {
-    subElement.set("interactions", {});
-  };
-
-  const baseDispose = (subElement as any).dispose?.bind(subElement);
-  subElement.dispose = () => {
-    subElement.cssStyleSheet.dispose();
-    if (baseDispose) baseDispose();
-  };
-
-  setEnhancer(subElement, attachPrimitiveSubElement);
-  return true;
-}
-
-export function createPrimitiveSubElement(
-  fragment: Fragment
-): PrimitiveSubElement {
-  const ymap = new y.Map<any>();
-  if (!attachPrimitiveSubElement(ymap, fragment)) {
-    throw new Error("Failed to attach primitive sub-element to ymap");
+    this._state.set("interactions", interactions);
   }
-  return ymap;
+
+  clearInteractions(): void {
+    this._state.set("interactions", {});
+  }
 }

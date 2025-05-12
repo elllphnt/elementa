@@ -1,35 +1,40 @@
 import { ElementData } from "@elllphnt/elementa-base";
-import * as y from "yjs";
+import { CssStyleSheet } from "../../../../css/_.js";
 import { Fragment } from "../fragment.js";
-import { attachContainerElement, attachPrimitiveElement } from "./_.js";
-import { attachComponentElement } from "./component/_.js";
-import { Element } from "./element.js";
-import { attachMediaElement } from "./media.js";
-import { attachSlotElement } from "./slot.js";
-import { attachTextElement } from "./text.js";
-import { attachVectorElement } from "./vector.js";
+import { ComponentElementModel } from "./component/component.js";
+import { ContainerElementModel } from "./container.js";
+import { ElementModel } from "./element.js";
+import { MediaElementModel } from "./media.js";
+import { PrimitiveElementModel } from "./primitive/primitive.js";
+import { SlotElementModel } from "./slot.js";
+import { TextElementModel } from "./text.js";
+import { VectorElementModel } from "./vector.js";
 
-export function createElement(
-  ymap: y.Map<any>,
-  fragment: Fragment
-): ymap is Element {
-  const type = ymap.get("type") as ElementData["type"];
-  switch (type) {
-    case "component":
-      return attachComponentElement(ymap, fragment);
+export function createElementModel({
+  init,
+  fragment,
+  cssStyleSheet,
+}: {
+  init: ElementData;
+  fragment: Fragment;
+  cssStyleSheet: CssStyleSheet;
+}): ElementModel<any> {
+  switch (init.type) {
     case "container":
-      return attachContainerElement(ymap, fragment);
-    case "slot":
-      return attachSlotElement(ymap, fragment);
+      return new ContainerElementModel({ init, fragment, cssStyleSheet });
     case "text":
-      return attachTextElement(ymap, fragment);
+      return new TextElementModel({ init, fragment, cssStyleSheet });
     case "vector":
-      return attachVectorElement(ymap, fragment);
+      return new VectorElementModel({ init, fragment, cssStyleSheet });
+    case "slot":
+      return new SlotElementModel({ init, fragment, cssStyleSheet });
     case "media":
-      return attachMediaElement(ymap, fragment);
+      return new MediaElementModel({ init, fragment, cssStyleSheet });
+    case "component":
+      return new ComponentElementModel({ init, fragment, cssStyleSheet });
     case "primitive":
-      return attachPrimitiveElement(ymap, fragment);
+      return new PrimitiveElementModel({ init, fragment, cssStyleSheet });
     default:
-      throw new Error(`Unknown element type: ${type}`);
+      throw new Error(`Unknown element type: ${(init as any).type}`);
   }
 }

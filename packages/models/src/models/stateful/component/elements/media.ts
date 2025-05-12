@@ -1,41 +1,67 @@
 import { MediaData, MediaElementData } from "@elllphnt/elementa-base";
-import { setEnhancer, setReactiveMapGetters } from "@elllphnt/elementa-utils";
+import { combineLatestMerged } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import * as y from "yjs";
+import { CssStyleSheet } from "../../../../css/_.js";
+import { MediaElement } from "../../../_interfaces/component/elements/media.js";
 import { Fragment } from "../fragment.js";
-import { attachBaseElement, Element } from "./element.js";
+import { ElementModel } from "./element.js";
 
-export type MediaElement = Element<MediaElementData> & {
-  media: MediaData | undefined;
-  media$: Observable<MediaData | undefined>;
-
-  fit: MediaElementData["fit"] | undefined;
-  fit$: Observable<MediaElementData["fit"] | undefined>;
-
-  position: MediaElementData["position"] | undefined;
-  position$: Observable<MediaElementData["position"] | undefined>;
-};
-
-export function attachMediaElement(
-  ymap: y.Map<any>,
-  fragment: Fragment
-): ymap is MediaElement {
-  ymap.set("type", "media");
-  if (!attachBaseElement(ymap, fragment)) {
-    throw new Error("Failed to attach base element to ymap");
+export class MediaElementModel
+  extends ElementModel<MediaElementData>
+  implements MediaElement
+{
+  constructor({
+    init,
+    fragment,
+    cssStyleSheet,
+  }: {
+    init: MediaElementData;
+    fragment: Fragment;
+    cssStyleSheet: CssStyleSheet;
+  }) {
+    super({ init, fragment, cssStyleSheet });
   }
-  const element = ymap as MediaElement;
 
-  setReactiveMapGetters(element, ["media", "fit", "position"]);
-
-  setEnhancer(element, attachMediaElement);
-  return true;
-}
-
-export function createMediaElement(fragment: Fragment): MediaElement {
-  const ymap = new y.Map<any>();
-  if (!attachMediaElement(ymap, fragment)) {
-    throw new Error("Failed to create MediaElement");
+  get data(): MediaElementData {
+    return {
+      ...this._state.record,
+      id: this._id,
+      type: "media",
+    };
   }
-  return ymap as MediaElement;
+
+  get data$(): Observable<MediaElementData> {
+    return combineLatestMerged([this._state.record$]);
+  }
+
+  restore(data: MediaElementData): void {
+    this._state.setRecord({
+      ...data,
+      id: undefined,
+    });
+  }
+
+  get media(): MediaData | undefined {
+    return this._state.record.media;
+  }
+
+  get media$(): Observable<MediaData | undefined> {
+    return this._state.entry$("media");
+  }
+
+  get fit(): MediaElementData["fit"] | undefined {
+    return this._state.record.fit;
+  }
+
+  get fit$(): Observable<MediaElementData["fit"] | undefined> {
+    return this._state.entry$("fit");
+  }
+
+  get position(): MediaElementData["position"] | undefined {
+    return this._state.record.position;
+  }
+
+  get position$(): Observable<MediaElementData["position"] | undefined> {
+    return this._state.entry$("position");
+  }
 }

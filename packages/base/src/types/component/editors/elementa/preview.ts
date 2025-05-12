@@ -12,7 +12,7 @@ import {
 // Types
 
 export type ElementaPreviewData = {
-  renderingContext?: RenderingContextData;
+  context?: RenderingContextData;
   content?: RenderableContentData;
   corners?: CornerData<number>;
 };

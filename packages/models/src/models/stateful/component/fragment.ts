@@ -1,123 +1,170 @@
 import { FragmentData } from "@elllphnt/elementa-base";
 import {
-  attachEnhancedReactiveList,
-  Extendable,
-  getOrCreateYArray,
-  ReactiveList,
-  setEnhancer,
+  AggregatedModelList,
+  combineLatestMerged,
+  Model,
+  RecordState,
 } from "@elllphnt/elementa-utils";
-import { BehaviorSubject, Observable } from "rxjs";
-import * as y from "yjs";
-import { CssStyleSheet } from "../../css/_.js";
-import { Component } from "./component.js";
-import { attachDataInput, DataInput } from "./data_input.js";
-import { attachElementList, ElementList } from "./elements/_list.js";
-import { attachIdentifiable, Identifiable } from "./identifiable.js";
+import { BehaviorSubject, forkJoin, Observable } from "rxjs";
+import { CssStyleSheet } from "../../../css/_.js";
+import { Component } from "../../_interfaces/component/component.js";
+import {
+  Fragment,
+  FragmentVariant,
+} from "../../_interfaces/component/fragment.js";
+import { DataInputModel } from "./data_input.js";
+import { createElementModel } from "./elements/_create.js";
+import { ElementModel } from "./elements/element.js";
 
-export enum FragmentVariant {
-  Template = "template",
-  Fragment = "fragment",
-}
+export class FragmentModel extends Model<FragmentData> implements Fragment {
+  private _state: RecordState<Omit<FragmentData, "content" | "params">>;
+  private _content: AggregatedModelList<ElementModel<any>>;
+  private _params: AggregatedModelList<DataInputModel>;
+  private _component: Component;
+  private _id: string;
+  private _variant: FragmentVariant;
+  private _cssStyleSheet: CssStyleSheet;
+  private _slotIds: BehaviorSubject<string[]>;
 
-export type Fragment = Identifiable<FragmentData> & {
-  component: Component;
-  variant: FragmentVariant;
+  constructor({
+    init,
+    component,
+    cssStyleSheet,
+    variant,
+  }: {
+    init: FragmentData;
+    component: Component;
+    cssStyleSheet: CssStyleSheet;
+    variant: FragmentVariant;
+  }) {
+    super();
 
-  content: ElementList;
-  params: ReactiveList<DataInput>;
+    this._component = component;
+    this._id = init.id;
+    this._variant = variant;
+    this._cssStyleSheet = cssStyleSheet;
+    this._slotIds = new BehaviorSubject<string[]>([]);
 
-  allCssStylesheets: CssStyleSheet[];
-  allCssStylesheets$: Observable<CssStyleSheet[]>;
+    this._state = new RecordState({
+      init: {
+        ...init,
+        content: undefined,
+        params: undefined,
+        component: undefined,
+        cssStyleSheet: undefined,
+      },
+    });
 
-  slotIds: string[];
-  slotIds$: Observable<string[]>;
+    this._content = new AggregatedModelList({
+      init: init.content || [],
+      create: (data) =>
+        createElementModel({
+          init: data,
+          fragment: this,
+          cssStyleSheet: this._cssStyleSheet,
+        }),
+    });
 
-  registerSlotId: (id: string) => void;
-  unregisterSlotId: (id: string) => void;
-};
+    this._params = new AggregatedModelList({
+      init: init.params || [],
+      create: (data) =>
+        new DataInputModel({
+          init: data,
+          component: this._component,
+        }),
+    });
 
-/**
- * Attach Fragment behavior to a y.Map
- */
-export function attachFragment(
-  ymap: y.Map<any>,
-  component: Component,
-  variant: FragmentVariant = FragmentVariant.Fragment
-): ymap is Fragment {
-  if (!attachIdentifiable<FragmentData>(ymap as Extendable<y.Map<any>>)) {
-    throw new Error("Failed to attach identifiable to ymap");
+    this.addDisposer(() => {
+      this._state.dispose();
+      this._content.dispose();
+      this._params.dispose();
+      this._slotIds.complete();
+    });
   }
-  const fragment = ymap as Fragment;
 
-  fragment.component = component;
-  fragment.variant = variant;
-
-  const content = getOrCreateYArray<y.Map<any>>(ymap, "content");
-  attachElementList(content, fragment);
-  fragment.content = content as ElementList;
-
-  fragment.params = attachEnhancedReactiveList(
-    getOrCreateYArray<y.Map<any>>(ymap, "params"),
-    attachDataInput,
-    (ymap) => attachDataInput(ymap, component)
-  );
-
-  Object.defineProperty(fragment, "allCssStylesheets", {
-    get() {
-      return fragment.content.allCssStylesheets;
-    },
-    configurable: true,
-  });
-
-  fragment.allCssStylesheets$ = fragment.content.allCssStylesheets$;
-
-  // --- Slot Registry ---
-  const slotIdSet = new Set<string>();
-  const _slotIds$ = new BehaviorSubject<string[]>([]);
-
-  fragment.slotIds$ = _slotIds$.asObservable();
-  Object.defineProperty(fragment, "slotIds", {
-    get() {
-      return _slotIds$.value;
-    },
-  });
-
-  fragment.registerSlotId = (id: string) => {
-    if (!slotIdSet.has(id)) {
-      slotIdSet.add(id);
-      _slotIds$.next(Array.from(slotIdSet));
-    }
-  };
-
-  fragment.unregisterSlotId = (id: string) => {
-    if (slotIdSet.delete(id)) {
-      _slotIds$.next(Array.from(slotIdSet));
-    }
-  };
-
-  // --- Disposal ---
-  const baseDispose = (fragment as any).dispose?.bind(fragment);
-  fragment.dispose = () => {
-    _slotIds$.complete();
-    fragment.content.dispose();
-    fragment.params.dispose();
-    if (baseDispose) baseDispose();
-  };
-
-  setEnhancer(fragment, attachFragment);
-  return true;
-}
-
-/**
- * Create a new local Fragment
- */
-export function createFragment(
-  component: Component,
-  variant: FragmentVariant = FragmentVariant.Fragment
-): Fragment {
-  const ymap = new y.Map<any>();
-  if (!attachFragment(ymap, component, variant)) {
-    throw new Error("Failed to create Fragment");
+  get id(): string {
+    return this._id;
   }
-  return ymap as Fragment;
+
+  get component(): Component {
+    return this._component;
+  }
+
+  get variant(): FragmentVariant {
+    return this._variant;
+  }
+
+  get data(): FragmentData {
+    return {
+      ...this._state.record,
+      id: this._id,
+      content: this._content.data,
+      params: this._params.data,
+    };
+  }
+
+  get data$(): Observable<FragmentData> {
+    return combineLatestMerged([
+      this._state.record$,
+      forkJoin({
+        content: this._content.data$,
+        params: this._params.data$,
+      }),
+    ]);
+  }
+
+  restore(data: FragmentData): void {
+    this._state.setRecord({
+      ...data,
+      id: undefined,
+      content: undefined,
+      params: undefined,
+    });
+    this._content.restore(data.content || []);
+    this._params.restore(data.params || []);
+  }
+
+  get content(): ElementModel<any>[] {
+    return this._content.items;
+  }
+
+  get content$(): Observable<ElementModel<any>[]> {
+    return this._content.items$;
+  }
+
+  get params(): DataInputModel[] {
+    return this._params.items;
+  }
+
+  get params$(): Observable<DataInputModel[]> {
+    return this._params.items$;
+  }
+
+  get allCssStylesheets(): CssStyleSheet[] {
+    return [this._cssStyleSheet];
+  }
+
+  get allCssStylesheets$(): Observable<CssStyleSheet[]> {
+    return this._component.allStylesheets$;
+  }
+
+  get slotIds(): string[] {
+    return this._slotIds.value;
+  }
+
+  get slotIds$(): Observable<string[]> {
+    return this._slotIds.asObservable();
+  }
+
+  registerSlotId(id: string): void {
+    if (!this._slotIds.value.includes(id)) {
+      this._slotIds.next([...this._slotIds.value, id]);
+    }
+  }
+
+  unregisterSlotId(id: string): void {
+    if (this._slotIds.value.includes(id)) {
+      this._slotIds.next(this._slotIds.value.filter((slotId) => slotId !== id));
+    }
+  }
 }

@@ -10,7 +10,7 @@ export class RecordState<T extends Record<string, unknown>> extends State<T> {
     return this.value$;
   }
 
-  entry(key: keyof T): T[keyof T] {
+  entry<K extends keyof T>(key: K): T[K] {
     return this.value[key];
   }
   entry$<K extends keyof T>(key: K): Observable<T[K]> {

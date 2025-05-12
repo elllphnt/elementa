@@ -1,85 +1,98 @@
-import { ComponentRenderableContentData } from "@elllphnt/elementa-base/build/types/component/editors/elementa/renderable_content.js";
-import {
-  assert,
-  attachReactiveMap,
-  ReactiveMap,
-  setEnhancer,
-  setReactiveMapGetters,
-} from "@elllphnt/elementa-utils";
+import { ComponentRenderableContentData } from "@elllphnt/elementa-base";
+import { combineLatestMerged, RecordState } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
-import * as y from "yjs";
-import { ModelFile, Project } from "../../../../../infrastructure/_.js";
-import { Component } from "../../../component.js";
+import { Project } from "../../../../../../infrastructure/_.js";
+import {
+  Component,
+  ComponentRenderableContent,
+  FileModel,
+} from "../../../../../_interfaces/_.js";
+import { BaseRenderableContentModel } from "./_base.js";
 
-export type ComponentRenderableContent =
-  ReactiveMap<ComponentRenderableContentData> & {
-    type: "component";
+export class ComponentRenderableContentModel
+  extends BaseRenderableContentModel<ComponentRenderableContentData>
+  implements ComponentRenderableContent
+{
+  private _state: RecordState<Omit<ComponentRenderableContentData, "type">>;
 
-    componentUrl: string | undefined;
-    componentUrl$: Observable<string | undefined>;
+  get componentUrl(): string | undefined {
+    return this._state.record.componentUrl;
+  }
 
-    component: ModelFile<Component> | undefined;
-    component$: Observable<ModelFile<Component> | undefined>;
+  get componentUrl$(): Observable<string | undefined> {
+    return this._state.entry$("componentUrl");
+  }
 
-    props: Record<string, any>;
-    props$: Observable<Record<string, any>>;
+  get component(): FileModel<Component> | undefined {
+    return this.componentUrl
+      ? this.project.infrastructure.component(
+          this.project.absoluteFileUrl(this.componentUrl)
+        )
+      : undefined;
+  }
 
-    propValue(name: string): any | undefined;
-    propValue$(name: string): Observable<any | undefined>;
-  };
-
-/**
- * Attach RenderingContext behavior to a y.Map
- */
-export function attachComponentRenderableContent(
-  ymap: y.Map<any>,
-  project: Project
-): ymap is ComponentRenderableContent {
-  ymap.set("type", "component");
-
-  assert(attachReactiveMap<ComponentRenderableContentData>(ymap));
-  const content = ymap as ComponentRenderableContent;
-
-  setReactiveMapGetters(content, ["componentUrl", "props"]);
-
-  content.component$ = content.componentUrl$.pipe(
-    map((url) =>
-      url
-        ? project.infrastructure.component(project.absoluteFileUrl(url))
-        : undefined
-    )
-  );
-  Object.defineProperty(content, "component", {
-    get: () => {
-      const url = content.componentUrl;
-      return url
-        ? project.infrastructure.component(project.absoluteFileUrl(url))
-        : undefined;
-    },
-  });
-
-  content.propValue = (name: string) => {
-    const props = content.props;
-    return props ? props[name] : undefined;
-  };
-
-  content.propValue$ = (name: string) =>
-    content.items$.pipe(
-      map((value) => value.props?.[name]),
-      map((value) => (value !== undefined ? value : undefined))
+  get component$(): Observable<FileModel<Component> | undefined> {
+    return this.componentUrl$.pipe(
+      map((url) =>
+        url
+          ? this.project.infrastructure.component(
+              this.project.absoluteFileUrl(url)
+            )
+          : undefined
+      )
     );
+  }
 
-  setEnhancer(content, attachComponentRenderableContent);
-  return true;
-}
+  get props(): Record<string, any> | undefined {
+    return this._state.entry("props");
+  }
 
-/**
- * Create a new local RenderingContext
- */
-export function createComponentRenderableContent(
-  project: Project
-): ComponentRenderableContent {
-  const ymap = new y.Map<any>();
-  assert(attachComponentRenderableContent(ymap, project));
-  return ymap;
+  get props$(): Observable<Record<string, any> | undefined> {
+    return this._state.entry$("props");
+  }
+
+  propValue(name: string): any | undefined {
+    return this._state.entry("props")?.[name];
+  }
+
+  propValue$(name: string): Observable<any | undefined> {
+    return this._state.entry$("props").pipe(map((props) => props?.[name]));
+  }
+
+  get data(): ComponentRenderableContentData {
+    return {
+      ...super._data,
+      ...this._state.record,
+    };
+  }
+
+  get data$(): Observable<ComponentRenderableContentData> {
+    return combineLatestMerged([super._data$, this._state.record$]);
+  }
+
+  constructor({
+    init,
+    project,
+  }: {
+    init: ComponentRenderableContentData;
+    project: Project;
+  }) {
+    super({
+      init,
+      project,
+    });
+
+    this._state = new RecordState({
+      init,
+    });
+
+    this.addDisposer(() => {
+      this._state.dispose();
+    });
+  }
+
+  restore(data: ComponentRenderableContentData) {
+    super.restore(data);
+    this._state.setRecord(data);
+  }
 }

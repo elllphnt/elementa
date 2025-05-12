@@ -1,24 +1,24 @@
 import { z } from "zod";
 import { SlotFillData } from "../../elements/_.js";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type BaseRenderableContentData = {};
-
-export type ComponentRenderableContentData = BaseRenderableContentData & {
-  type: "component";
-  componentUrl?: string;
-  props?: Record<string, any>;
-  fills?: Record<string, SlotFillData>;
+export type BaseRenderableContentData<T extends string> = {
+  type: T;
 };
 
-export type FragmentRenderableContentData = BaseRenderableContentData & {
-  type: "fragment";
-  fragmentUrl?: string;
-  params?: Record<string, any>;
-};
+export type ComponentRenderableContentData =
+  BaseRenderableContentData<"component"> & {
+    componentUrl?: string;
+    props?: Record<string, any>;
+    fills?: Record<string, SlotFillData>;
+  };
 
-export type AppRenderableContentData = BaseRenderableContentData & {
-  type: "app";
+export type FragmentRenderableContentData =
+  BaseRenderableContentData<"fragment"> & {
+    fragmentUrl?: string;
+    params?: Record<string, any>;
+  };
+
+export type AppRenderableContentData = BaseRenderableContentData<"app"> & {
   appUrl?: string;
   variables?: Record<string, any>;
 };

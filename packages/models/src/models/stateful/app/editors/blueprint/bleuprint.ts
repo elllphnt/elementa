@@ -1,4 +1,4 @@
-import { BlueprintAppStateData } from "@elllphnt/elementa-base";
+import { AppBlueprintData } from "@elllphnt/elementa-base";
 import {
   AggregatedModelRecord,
   combineLatestMerged,
@@ -10,23 +10,11 @@ import { AppBlueprint, BlueprintNode } from "../../../../_interfaces/_.js";
 import { BlueprintNodeModel } from "./node.js";
 
 export class AppBlueprintModel
-  extends Model<BlueprintAppStateData>
+  extends Model<AppBlueprintData>
   implements AppBlueprint
 {
   private _nodes: AggregatedModelRecord<BlueprintNodeModel>;
-  private _state: RecordState<Omit<BlueprintAppStateData, "nodes">>;
-
-  get data(): BlueprintAppStateData {
-    return { ...this._state.record, nodes: this._nodes.data };
-  }
-  get data$(): Observable<BlueprintAppStateData> {
-    return combineLatestMerged([
-      this._state.record$,
-      forkJoin({
-        nodes: this._nodes.data$,
-      }),
-    ]);
-  }
+  private _state: RecordState<Omit<AppBlueprintData, "nodes">>;
 
   get nodes(): BlueprintNode[] {
     return Object.values(this._nodes.state.record);
@@ -37,9 +25,21 @@ export class AppBlueprintModel
     );
   }
 
-  constructor({ init }: { init: BlueprintAppStateData }) {
+  get data(): AppBlueprintData {
+    return { ...this._state.record, nodes: this._nodes.data };
+  }
+  get data$(): Observable<AppBlueprintData> {
+    return combineLatestMerged([
+      this._state.record$,
+      forkJoin({
+        nodes: this._nodes.data$,
+      }),
+    ]);
+  }
+
+  constructor({ init }: { init: AppBlueprintData }) {
     super();
-    this._state = new RecordState<Omit<BlueprintAppStateData, "nodes">>({
+    this._state = new RecordState<Omit<AppBlueprintData, "nodes">>({
       init,
     });
 
@@ -53,7 +53,7 @@ export class AppBlueprintModel
       this._nodes.dispose();
     });
   }
-  restore(data: BlueprintAppStateData): void {
+  restore(data: AppBlueprintData): void {
     this._state.setRecord(data);
     this._nodes.restore(data.nodes);
   }

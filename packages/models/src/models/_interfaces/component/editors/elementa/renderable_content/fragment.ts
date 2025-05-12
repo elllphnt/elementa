@@ -1,9 +1,9 @@
 import { Observable } from "rxjs";
 import { Fragment } from "../../../fragment.js";
+import { BaseRenderableContent } from "./_base.js";
 
-export interface FragmentRenderableContent {
-  type: "fragment";
-
+export interface FragmentRenderableContent
+  extends BaseRenderableContent<"fragment"> {
   fragmentUrl: string | undefined;
   fragmentUrl$: Observable<string | undefined>;
 

@@ -1,9 +1,9 @@
 import { Observable } from "rxjs";
 import { CssStyleSheet } from "../../../css/_.js";
+import { Identifiable } from "../_shared/identifiable.js";
 import { Component } from "./component.js";
 import { DataInput } from "./data_input.js";
 import { Element } from "./elements/_.js";
-import { Identifiable } from "./identifiable.js";
 
 export enum FragmentVariant {
   Template = "template",

@@ -1,79 +1,92 @@
 import { FragmentRenderableContentData } from "@elllphnt/elementa-base";
+import { combineLatestMerged, RecordState } from "@elllphnt/elementa-utils";
+import { map, Observable } from "rxjs";
+import { Project } from "../../../../../../infrastructure/_.js";
 import {
-  assert,
-  attachReactiveMap,
-  ReactiveMap,
-  setEnhancer,
-  setReactiveMapGetters,
-} from "@elllphnt/elementa-utils";
-import { map, Observable, of, switchMap } from "rxjs";
-import * as y from "yjs";
-import { Component } from "../../../component.js";
-import { Fragment } from "../../../fragment.js";
+  Fragment,
+  FragmentRenderableContent,
+} from "../../../../../_interfaces/_.js";
+import { BaseRenderableContentModel } from "./_base.js";
 
-export type FragmentRenderableContent =
-  ReactiveMap<FragmentRenderableContentData> & {
-    type: "fragment";
+export class FragmentRenderableContentModel
+  extends BaseRenderableContentModel<FragmentRenderableContentData>
+  implements FragmentRenderableContent
+{
+  private _state: RecordState<Partial<FragmentRenderableContentData>>;
 
-    fragmentId: string | undefined;
-    fragmentId$: Observable<string | undefined>;
+  get fragmentUrl(): string | undefined {
+    return this._state.record.fragmentUrl;
+  }
 
-    fragment: Fragment | undefined;
-    fragment$: Observable<Fragment | undefined>;
+  get fragmentUrl$(): Observable<string | undefined> {
+    return this._state.entry$("fragmentUrl");
+  }
 
-    params: Record<string, any>;
-    params$: Observable<Record<string, any>>;
+  get fragment(): Fragment | undefined {
+    return this.fragmentUrl
+      ? this.project.infrastructure.fragment(this.fragmentUrl)
+      : undefined;
+  }
 
-    paramValue(name: string): any | undefined;
-    paramValue$(name: string): Observable<any | undefined>;
-  };
-
-/**
- * Attach RenderingContext behavior to a y.Map
- */
-export function attachFragmentRenderableContent(
-  ymap: y.Map<any>,
-  component: Component
-): ymap is FragmentRenderableContent {
-  ymap.set("type", "fragment");
-
-  assert(attachReactiveMap<FragmentRenderableContentData>(ymap));
-  const content = ymap as FragmentRenderableContent;
-
-  setReactiveMapGetters(content, ["fragmentId", "params"]);
-
-  content.fragment$ = content.fragmentId$.pipe(
-    switchMap((id) => (id ? component.fragment$(id) : of(undefined)))
-  );
-  Object.defineProperty(content, "fragment", {
-    get: () => {
-      const id = content.fragmentId;
-      return id ? component.fragment(id) : undefined;
-    },
-  });
-
-  content.paramValue = (name: string) => {
-    const params = content.params;
-    return params ? params[name] : undefined;
-  };
-
-  content.paramValue$ = (name: string) =>
-    content.items$.pipe(
-      map((value) => value.params?.[name]),
-      map((value) => (value !== undefined ? value : undefined))
+  get fragment$(): Observable<Fragment | undefined> {
+    return this.fragmentUrl$.pipe(
+      map((url) =>
+        url
+          ? this.project.infrastructure.fragment(
+              this.project.absoluteFileUrl(url)
+            )
+          : undefined
+      )
     );
+  }
 
-  setEnhancer(content, attachFragmentRenderableContent);
-  return true;
-}
+  get params(): Record<string, any> | undefined {
+    return this._state.record.params;
+  }
 
-/**
- * Create a new local RenderingContext
- */
-export function createFragmentRenderableContent(
-  component: Component
-): FragmentRenderableContent {
-  const ymap = new y.Map<any>();
-  assert(attachFragmentRenderableContent(ymap, component));
-  return ymap;
+  get params$(): Observable<Record<string, any> | undefined> {
+    return this._state.entry$("params");
+  }
+
+  paramValue(name: string): any | undefined {
+    return this._state.record.params?.[name];
+  }
+
+  paramValue$(name: string): Observable<any | undefined> {
+    return this._state.entry$("params").pipe(map((params) => params?.[name]));
+  }
+
+  get data(): FragmentRenderableContentData {
+    return {
+      ...super._data,
+      ...this._state.record,
+    };
+  }
+
+  get data$(): Observable<FragmentRenderableContentData> {
+    return combineLatestMerged([super._data$, this._state.record$]);
+  }
+
+  constructor({
+    init,
+    project,
+  }: {
+    init: FragmentRenderableContentData;
+    project: Project;
+  }) {
+    super({ init, project });
+
+    this._state = new RecordState({
+      init,
+    });
+
+    this.addDisposer(() => {
+      this._state.dispose();
+    });
+  }
+
+  restore(data: FragmentRenderableContentData) {
+    super.restore(data);
+    this._state.setRecord(data);
+  }
 }

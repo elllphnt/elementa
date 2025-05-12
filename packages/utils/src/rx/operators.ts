@@ -49,6 +49,21 @@ export function combineLatestMerged<T extends object[]>(sources: {
   );
 }
 
+export function combineLatestArrays<T extends readonly unknown[][]>(sources: {
+  [K in keyof T]: Observable<T[K]>;
+}): Observable<Flatten<T>> {
+  return combineLatest(sources).pipe(
+    map((arrays) => arrays.flat() as Flatten<T>)
+  );
+}
+
+// Utility to flatten tuple of arrays
+type Flatten<T extends readonly unknown[][]> = T extends Array<infer U>
+  ? U extends unknown[]
+    ? [...U]
+    : never
+  : never;
+
 // Utility to infer A & B from [A, B]
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   k: infer I

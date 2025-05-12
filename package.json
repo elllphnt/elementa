@@ -28,6 +28,8 @@
     },
     "packageManager": "pnpm@10.10.0",
     "dependencies": {
-        "rxjs": "^7.8.2"
+        "rxjs": "^7.8.2",
+        "tsc-watch": "^6.2.1",
+        "tscpaths": "^0.0.9"
     }
 }

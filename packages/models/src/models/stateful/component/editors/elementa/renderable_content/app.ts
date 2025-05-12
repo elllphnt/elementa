@@ -1,81 +1,95 @@
 import { AppRenderableContentData } from "@elllphnt/elementa-base";
-import {
-  assert,
-  attachReactiveMap,
-  ReactiveMap,
-  setEnhancer,
-  setReactiveMapGetters,
-} from "@elllphnt/elementa-utils";
+import { combineLatestMerged, RecordState } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
-import * as y from "yjs";
-import { App } from "../../../../../app/app.js";
-import { ModelFile, Project } from "../../../../../infrastructure/_.js";
+import { Project } from "../../../../../../infrastructure/_.js";
+import {
+  App,
+  AppRenderableContent,
+  FileModel,
+} from "../../../../../_interfaces/_.js";
+import { BaseRenderableContentModel } from "./_base.js";
 
-export type AppRenderableContent = ReactiveMap<AppRenderableContentData> & {
-  type: "app";
+export class AppRenderableContentModel
+  extends BaseRenderableContentModel<AppRenderableContentData>
+  implements AppRenderableContent
+{
+  private _state: RecordState<Omit<AppRenderableContentData, "type">>;
 
-  appUrl: string | undefined;
-  appUrl$: Observable<string | undefined>;
+  get appUrl(): string | undefined {
+    return this._state.entry("appUrl");
+  }
 
-  app: ModelFile<App> | undefined;
-  app$: Observable<ModelFile<App> | undefined>;
+  get appUrl$(): Observable<string | undefined> {
+    return this._state.entry$("appUrl");
+  }
 
-  variables: Record<string, any>;
-  variables$: Observable<Record<string, any>>;
-
-  variableValue(name: string): any | undefined;
-  variableValue$(name: string): Observable<any | undefined>;
-};
-
-/**
- * Attach RenderingContext behavior to a y.Map
- */
-export function attachAppRenderableContent(
-  ymap: y.Map<any>,
-  project: Project
-): ymap is AppRenderableContent {
-  ymap.set("type", "app");
-
-  assert(attachReactiveMap<AppRenderableContentData>(ymap));
-  const content = ymap as AppRenderableContent;
-
-  setReactiveMapGetters(content, ["appUrl", "variables"]);
-
-  content.app$ = content.appUrl$.pipe(
-    map((url) =>
-      url ? project.infrastructure.app(project.absoluteFileUrl(url)) : undefined
-    )
-  );
-  Object.defineProperty(content, "app", {
-    get: () => {
-      const url = content.appUrl;
-      return url
-        ? project.infrastructure.app(project.absoluteFileUrl(url))
-        : undefined;
-    },
-  });
-
-  content.variableValue = (name: string) => {
-    const variables = content.variables;
-    return variables ? variables[name] : undefined;
-  };
-  content.variableValue$ = (name: string) =>
-    content.items$.pipe(
-      map((value) => value.variables?.[name]),
-      map((value) => (value !== undefined ? value : undefined))
+  get app(): FileModel<App> | undefined {
+    const absoluteUrl = this.appUrl
+      ? this.project.absoluteFileUrl(this.appUrl)
+      : undefined;
+    return absoluteUrl
+      ? this.project.infrastructure.app(absoluteUrl)
+      : undefined;
+  }
+  get app$(): Observable<FileModel<App> | undefined> {
+    return this.appUrl$.pipe(
+      map((url) =>
+        url
+          ? this.project.infrastructure.app(this.project.absoluteFileUrl(url))
+          : undefined
+      )
     );
+  }
 
-  setEnhancer(content, attachAppRenderableContent);
-  return true;
-}
+  get variables(): Record<string, any> | undefined {
+    return this._state.entry("variables");
+  }
 
-/**
- * Create a new local RenderingContext
- */
-export function createAppRenderableContent(
-  project: Project
-): AppRenderableContent {
-  const ymap = new y.Map<any>();
-  assert(attachAppRenderableContent(ymap, project));
-  return ymap;
+  get variables$(): Observable<Record<string, any> | undefined> {
+    return this._state.entry$("variables");
+  }
+
+  variableValue(name: string): any | undefined {
+    return this._state.entry("variables")?.[name];
+  }
+
+  variableValue$(name: string): Observable<any | undefined> {
+    return this._state
+      .entry$("variables")
+      .pipe(map((variables) => variables?.[name]));
+  }
+
+  get data(): AppRenderableContentData {
+    return {
+      ...super._data,
+      ...this._state.record,
+    };
+  }
+
+  get data$(): Observable<AppRenderableContentData> {
+    return combineLatestMerged([super._data$, this._state.record$]);
+  }
+
+  constructor({
+    init,
+    project,
+  }: {
+    init: AppRenderableContentData;
+    project: Project;
+  }) {
+    super({ init, project });
+
+    this._state = new RecordState({
+      init,
+    });
+
+    this.addDisposer(() => {
+      this._state.dispose();
+    });
+  }
+
+  restore(data: AppRenderableContentData) {
+    super.restore(data);
+    this._state.setRecord(data);
+  }
 }

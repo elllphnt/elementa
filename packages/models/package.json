@@ -6,8 +6,8 @@
     "types": "dist/index.d.ts",
     "type": "module",
     "scripts": {
-        "build": "tsc -p tsconfig.build.json",
-        "watch": "tsc -p tsconfig.build.json --watch",
+        "build": "npm run lint && tsc -p tsconfig.build.json && tscpaths -p tsconfig.build.json -s ./src -o ./build",
+        "watch": "tsc-watch --project tsconfig.build.json --onSuccess \"tscpaths -p tsconfig.build.json -s ./src -o ./build\" --onFailure \"tscpaths -p tsconfig.build.json -s ./src -o ./build\"",
         "test": "tsx tests/_.test.ts"
     },
     "dependencies": {

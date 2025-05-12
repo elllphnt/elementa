@@ -1,43 +1,57 @@
 import { ValueStateData } from "@elllphnt/elementa-base";
-import {
-  assert,
-  setEnhancer,
-  setReactiveMapGetters,
-} from "@elllphnt/elementa-utils";
+import { combineLatestMerged } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import * as y from "yjs";
-import { Component } from "../component.js";
-import { attachState, State } from "./state.js";
+import { Component } from "../../../_interfaces/component/component.js";
+import { ValueState } from "../../../_interfaces/component/states/value.js";
+import { StateModel } from "./state.js";
 
-export type ValueState = State<ValueStateData> & {
-  init: any;
-  init$: Observable<any>;
+export class ValueStateModel
+  extends StateModel<ValueStateData>
+  implements ValueState
+{
+  constructor({
+    init,
+    component,
+  }: {
+    init: ValueStateData;
+    component: Component;
+  }) {
+    super({ init, component });
+  }
 
-  tsType: string | undefined;
-  tsType$: Observable<string | undefined>;
-};
+  get data(): ValueStateData {
+    return {
+      ...this._state.record,
+      id: this._id,
+      type: "value",
+    };
+  }
 
-/**
- * Attach ValueState behavior to a y.Map
- */
-export function attachValueState(
-  ymap: y.Map<any>,
-  component: Component
-): ymap is ValueState {
-  assert(attachState(ymap, component), "Failed to attach State");
-  const state = ymap as State;
-  const valueState = state as ValueState;
-  setReactiveMapGetters(valueState, ["init", "tsType"]);
+  get data$(): Observable<ValueStateData> {
+    return combineLatestMerged([this._state.record$]);
+  }
 
-  setEnhancer(valueState, attachValueState);
-  return true;
-}
+  restore(data: ValueStateData): void {
+    this._state.setRecord({
+      ...data,
+      id: undefined,
+      component: undefined,
+    });
+  }
 
-/**
- * Create a new local ValueState
- */
-export function createValueState(component: Component): ValueState {
-  const ymap = new y.Map<any>();
-  assert(attachValueState(ymap, component), "Failed to create ValueState");
-  return ymap as ValueState;
+  get init(): any {
+    return this._state.record.init;
+  }
+
+  get init$(): Observable<any> {
+    return this._state.entry$("init");
+  }
+
+  get tsType(): string | undefined {
+    return this._state.record.tsType;
+  }
+
+  get tsType$(): Observable<string | undefined> {
+    return this._state.entry$("tsType");
+  }
 }

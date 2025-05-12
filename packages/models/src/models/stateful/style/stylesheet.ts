@@ -1,178 +1,230 @@
-import { baseSelector, StyleSheetData } from "@elllphnt/elementa-base";
+import { StylesheetData } from "@elllphnt/elementa-base";
 import {
-  attachEnhancedReactiveMap,
-  attachReactiveMap,
-  getOrCreateYArray,
-  getOrCreateYMap,
-  ReactiveMap,
-  setEnhancer,
-  setReactiveMapGetters,
+  AggregatedModelRecord,
+  Model,
+  RecordState,
+  combineLatestMerged,
 } from "@elllphnt/elementa-utils";
-import { filter, map, Observable, tap } from "rxjs";
-import * as y from "yjs";
-import { Project } from "../../infrastructure/project/project.js";
-import { attachStyle, createStyle, Style } from "./style.js";
-import {
-  attachStyleFragmentRegistry,
-  StyleFragmentRegistry,
-} from "./style_fragment_registry.js";
+import { Observable, forkJoin, map } from "rxjs";
+import { ProjectModel } from "../../../infrastructure/project.js";
+import { Style } from "../../_interfaces/style/style.js";
+import { StyleFragmentRegistry } from "../../_interfaces/style/style_fragment_registry.js";
+import { Stylesheet } from "../../_interfaces/style/stylesheet.js";
+import { StyleModel } from "./style.js";
 
-export type Stylesheet = ReactiveMap<StyleSheetData> & {
-  project: Project;
-  fragmentRegistry: StyleFragmentRegistry;
-  styles: ReactiveMap<Record<string, Style>>;
+export class StylesheetModel
+  extends Model<StylesheetData>
+  implements Stylesheet
+{
+  private _state: RecordState<Omit<StylesheetData, "styles">>;
+  private _styles: AggregatedModelRecord<StyleModel>;
+  private _project: ProjectModel;
+  private _fragmentRegistry: StyleFragmentRegistry;
 
-  className: string;
+  constructor({
+    init,
+    project,
+    fragmentRegistry,
+  }: {
+    init: StylesheetData;
+    project: ProjectModel;
+    fragmentRegistry: StyleFragmentRegistry;
+  }) {
+    super();
+
+    this._project = project;
+    this._fragmentRegistry = fragmentRegistry;
+
+    this._state = new RecordState({
+      init: {
+        ...init,
+        styles: undefined,
+        project: undefined,
+        fragmentRegistry: undefined,
+      },
+    });
+
+    this._styles = new AggregatedModelRecord({
+      init: init.styles || {},
+      create: (data, selector) =>
+        new StyleModel({
+          init: data,
+          project: this._project,
+          fragmentRegistry: this._fragmentRegistry,
+          className: selector,
+        }),
+    });
+
+    this.addDisposer(() => {
+      this._state.dispose();
+      this._styles.dispose();
+    });
+  }
+
+  get project(): ProjectModel {
+    return this._project;
+  }
+
+  get fragmentRegistry(): StyleFragmentRegistry {
+    return this._fragmentRegistry;
+  }
+
+  get className(): string {
+    return this._state.record.className || "";
+  }
+
+  get data(): StylesheetData {
+    return {
+      ...this._state.record,
+      styles: this._styles.data,
+    };
+  }
+
+  get data$(): Observable<StylesheetData> {
+    return combineLatestMerged([
+      this._state.record$,
+      forkJoin({
+        styles: this._styles.data$,
+      }),
+    ]);
+  }
+
+  restore(data: StylesheetData): void {
+    this._state.setRecord({
+      ...data,
+      styles: undefined,
+    });
+    this._styles.restore(data.styles || {});
+  }
+
+  get styles(): Record<string, Style> {
+    return this._styles.state.record;
+  }
+
+  get styles$(): Observable<Record<string, Style>> {
+    return this._styles.state.record$;
+  }
 
   style<C extends true | undefined>(
     selector: string,
     create?: C
-  ): C extends true ? Style : Style | undefined;
+  ): C extends true ? Style : Style | undefined {
+    if (this._styles.state.record[selector]) {
+      return this._styles.state.record[selector] as any;
+    }
+
+    if (create) {
+      const style = new StyleModel({
+        init: {},
+        project: this._project,
+        fragmentRegistry: this._fragmentRegistry,
+        className: selector,
+      });
+
+      this._styles.state.set(selector, style);
+      return style as any;
+    }
+
+    return undefined as any;
+  }
+
   style$<C extends true | undefined>(
     selector: string,
     create?: C
-  ): C extends true ? Observable<Style> : Observable<Style | undefined>;
+  ): C extends true ? Observable<Style> : Observable<Style | undefined> {
+    if (create) {
+      return this._styles.state.record$.pipe(
+        map((record) => {
+          if (record[selector]) {
+            return record[selector];
+          }
 
-  conditions: Record<string, string>;
-  conditions$: Observable<Record<string, string>>;
+          const style = new StyleModel({
+            init: {},
+            project: this._project,
+            fragmentRegistry: this._fragmentRegistry,
+            className: selector,
+          });
 
-  condition(id: string): string | undefined;
-  condition$(id: string): Observable<string | undefined>;
+          this._styles.state.set(selector, style);
+          return style;
+        })
+      ) as any;
+    }
 
-  selectors: string[];
-  selectors$: Observable<string[]>;
+    return this._styles.state.record$.pipe(
+      map((record) => record[selector])
+    ) as any;
+  }
+
+  get conditions(): Record<string, string> {
+    return this._state.record.conditions || {};
+  }
+
+  get conditions$(): Observable<Record<string, string>> {
+    return this._state.entry$("conditions");
+  }
+
+  condition(id: string): string | undefined {
+    return this.conditions[id];
+  }
+
+  condition$(id: string): Observable<string | undefined> {
+    return this.conditions$.pipe(map((conditions) => conditions[id]));
+  }
+
+  get selectors(): string[] {
+    return Object.keys(this._styles.state.record);
+  }
+
+  get selectors$(): Observable<string[]> {
+    return this._styles.state.record$.pipe(
+      map((record) => Object.keys(record))
+    );
+  }
 
   baseStyle<C extends true | undefined>(
     create?: C
-  ): C extends true ? Style : Style | undefined;
+  ): C extends true ? Style : Style | undefined {
+    return this.style("base", create as any);
+  }
+
   baseStyle$<C extends true | undefined>(
     create?: C
-  ): C extends true ? Observable<Style> : Observable<Style | undefined>;
-
-  addStyle(selector: string): void;
-  removeStyle(selector: string): void;
-
-  setCondition(id: string, expression: string): void;
-  removeCondition(id: string): void;
-};
-
-/**
- * Attach Stylesheet behavior to a y.Map
- */
-export function attachStylesheet(
-  ymap: y.Map<any>,
-  project: Project
-): ymap is Stylesheet {
-  if (!attachReactiveMap<StyleSheetData>(ymap)) {
-    throw new Error("Failed to attach reactive map to ymap");
+  ): C extends true ? Observable<Style> : Observable<Style | undefined> {
+    return this.style$("base", create as any);
   }
-  const sheet = ymap as Stylesheet;
 
-  sheet.project = project;
-  const fragmentRegistry = getOrCreateYArray(
-    sheet,
-    "fragments"
-  ) as StyleFragmentRegistry;
-  attachStyleFragmentRegistry(getOrCreateYArray(sheet, "fragments"));
-  sheet.fragmentRegistry = fragmentRegistry;
+  addStyle(selector: string): void {
+    if (!this._styles.state.record[selector]) {
+      const style = new StyleModel({
+        init: {},
+        project: this._project,
+        fragmentRegistry: this._fragmentRegistry,
+        className: selector,
+      });
 
-  sheet.styles = attachEnhancedReactiveMap(
-    getOrCreateYMap<y.Map<any>>(sheet, "styles"),
-    attachStyle,
-    (ymap) => attachStyle(ymap, project, sheet.fragmentRegistry)
-  );
-
-  setReactiveMapGetters(sheet, ["conditions"]);
-
-  sheet.style = function <C extends true | undefined>(
-    selector: string,
-    create?: C
-  ) {
-    let style = sheet.styles.get(selector);
-    if (!style && create) {
-      sheet.addStyle(selector);
-      style = sheet.styles.get(selector);
+      this._styles.state.set(selector, style);
     }
-    return style as any;
-  };
-
-  sheet.style$ = function <C extends true | undefined>(
-    selector: string,
-    create?: C
-  ) {
-    return sheet.styles.items$.pipe(
-      map((styles) => styles[selector]),
-      tap((style) => {
-        if (!style && create) {
-          sheet.addStyle(selector);
-        }
-      }),
-      filter((style) => !!style || !create)
-    ) as any;
-  };
-
-  sheet.condition = (id: string) => {
-    return sheet.conditions[id];
-  };
-
-  sheet.condition$ = (id: string) => {
-    return sheet.conditions$.pipe(map((conds) => conds[id]));
-  };
-
-  sheet.selectors$ = sheet.styles.items$.pipe(
-    map((styles) => Object.keys(styles))
-  );
-
-  sheet.baseStyle = function <C extends true | undefined>(create?: C) {
-    return sheet.style(baseSelector, create) as any;
-  };
-
-  sheet.baseStyle$ = function <C extends true | undefined>(create?: C) {
-    return sheet.style$(baseSelector, create) as any;
-  };
-
-  sheet.addStyle = (selector: string) => {
-    if (!sheet.styles.get(selector)) {
-      sheet.styles.set(selector, createStyle(project, sheet.fragmentRegistry));
-    }
-  };
-
-  sheet.removeStyle = (selector: string) => {
-    if (sheet.styles.get(selector)) {
-      sheet.styles.delete(selector);
-    }
-  };
-
-  sheet.setCondition = (id: string, expression: string) => {
-    const conds = { ...sheet.conditions };
-    conds[id] = expression;
-    sheet.set("conditions", conds);
-  };
-
-  sheet.removeCondition = (id: string) => {
-    const conds = { ...sheet.conditions };
-    delete conds[id];
-    sheet.set("conditions", conds);
-  };
-
-  const baseDispose = sheet.dispose?.bind(sheet);
-  sheet.dispose = () => {
-    sheet.styles.dispose();
-    sheet.fragmentRegistry.dispose();
-    if (baseDispose) baseDispose();
-  };
-
-  setEnhancer(sheet, attachStylesheet);
-  return true;
-}
-
-/**
- * Create a new local Stylesheet
- */
-export function createStylesheet(project: Project): Stylesheet {
-  const ymap = new y.Map<any>();
-  if (!attachStylesheet(ymap, project)) {
-    throw new Error("Failed to create Stylesheet");
   }
-  return ymap as Stylesheet;
+
+  removeStyle(selector: string): void {
+    if (this._styles.state.record[selector]) {
+      this._styles.state.delete(selector);
+    }
+  }
+
+  setCondition(id: string, expression: string): void {
+    const conditions = { ...this.conditions };
+    conditions[id] = expression;
+    this._state.set("conditions", conditions);
+  }
+
+  removeCondition(id: string): void {
+    if (this.conditions[id]) {
+      const conditions = { ...this.conditions };
+      delete conditions[id];
+      this._state.set("conditions", conditions);
+    }
+  }
 }

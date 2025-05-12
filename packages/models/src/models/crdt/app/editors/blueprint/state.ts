@@ -1,4 +1,4 @@
-import { BlueprintAppStateData } from "@elllphnt/elementa-base";
+import { AppBlueprintData } from "@elllphnt/elementa-base";
 import {
   assert,
   attachEnhancedReactiveList,
@@ -17,7 +17,7 @@ export const blueprintEditorStateKey = "blueprint";
 export function attachBlueprintAppState(
   blueprint: y.Map<any>
 ): blueprint is y.Map<any> & AppBlueprint {
-  assert(attachReactiveMap<BlueprintAppStateData>(blueprint));
+  assert(attachReactiveMap<AppBlueprintData>(blueprint));
 
   assert(setObjectProperty(blueprint, "type", "blueprint" as const));
 

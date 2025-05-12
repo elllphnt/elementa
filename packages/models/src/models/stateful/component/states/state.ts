@@ -1,59 +1,69 @@
-import { BaseStateData } from "@elllphnt/elementa-base";
-import { setEnhancer, setReactiveMapGetters } from "@elllphnt/elementa-utils";
+import { StateData } from "@elllphnt/elementa-base";
+import { Model, RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import * as y from "yjs";
-import { Component } from "../component.js";
-import { attachIdentifiable, Identifiable } from "../identifiable.js";
+import { Component } from "../../../_interfaces/component/component.js";
+import { State } from "../../../_interfaces/component/states/state.js";
 
-export type State<D extends BaseStateData = BaseStateData> = Identifiable<D> & {
-  component: Component;
-  type: string;
-  name: string | undefined;
-  name$: Observable<string | undefined>;
-  varName: string | undefined;
-  varName$: Observable<string | undefined>;
-  remove(): void;
-};
+export abstract class StateModel<T extends StateData>
+  extends Model<T>
+  implements State
+{
+  protected _state: RecordState<Partial<T>>;
+  protected _component: Component;
+  protected _id: string;
 
-/**
- * Attach State behavior to a y.Map
- */
-export function attachState(
-  ymap: y.Map<any>,
-  component: Component
-): ymap is State {
-  if (!attachIdentifiable<BaseStateData>(ymap)) {
-    throw new Error("Failed to attach identifiable to ymap");
+  constructor({ init, component }: { init: T; component: Component }) {
+    super();
+
+    this._component = component;
+    this._id = init.id;
+
+    this._state = new RecordState({
+      init: {
+        ...init,
+        id: undefined,
+        component: undefined,
+      } as any,
+    });
+
+    this.addDisposer(() => {
+      this._state.dispose();
+    });
   }
-  const state = ymap as State;
 
-  state.component = component;
-
-  Object.defineProperty(state, "type", {
-    get() {
-      return state.get("type");
-    },
-  });
-
-  setReactiveMapGetters(state, ["name", "varName"]);
-
-  state.remove = () => {
-    state.component.states.delete(
-      state.component.states.toArray().indexOf(state)
-    );
-  };
-
-  setEnhancer(state, attachState);
-  return true;
-}
-
-/**
- * Create a new local State
- */
-export function createState(component: Component): State {
-  const ymap = new y.Map<any>();
-  if (!attachState(ymap, component)) {
-    throw new Error("Failed to create State");
+  get id(): string {
+    return this._id;
   }
-  return ymap as State;
+
+  get component(): Component {
+    return this._component;
+  }
+
+  get type(): string {
+    return this._state.record.type || "";
+  }
+
+  get name(): string | undefined {
+    return this._state.record.name;
+  }
+
+  get name$(): Observable<string | undefined> {
+    return this._state.entry$("name");
+  }
+
+  get varName(): string | undefined {
+    return this._state.record.varName;
+  }
+
+  get varName$(): Observable<string | undefined> {
+    return this._state.entry$("varName");
+  }
+
+  remove(): void {
+    // Implementation will be handled by the parent component
+  }
+
+  abstract get data(): T;
+  abstract get data$(): Observable<T>;
+  abstract restore(data: T): void;
 }

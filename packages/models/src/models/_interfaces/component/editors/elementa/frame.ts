@@ -1,6 +1,6 @@
 import { CornerData } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
-import { Identifiable } from "../../identifiable.js";
+import { Identifiable } from "../../../_shared/identifiable.js";
 import { RenderableContent } from "../elementa/_.js";
 import { RenderingContext } from "../elementa/rendering_context.js";
 import { ElementaStage } from "./stage.js";
@@ -9,7 +9,9 @@ export interface ElementaFrame extends Identifiable {
   stage: ElementaStage;
 
   context: RenderingContext;
-  content: RenderableContent;
+
+  content: RenderableContent | undefined;
+  content$: Observable<RenderableContent | undefined>;
 
   name: string | undefined;
   name$: Observable<string | undefined>;

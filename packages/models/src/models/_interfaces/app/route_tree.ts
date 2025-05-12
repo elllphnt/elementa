@@ -1,11 +1,11 @@
 import { Observable } from "rxjs";
+import { Identifiable } from "../_shared/identifiable.js";
 import { Component } from "../component/_.js";
 import { FileModel } from "../file/_.js";
 import { App } from "./app.js";
 
-export interface RouteTree {
+export interface RouteTree extends Identifiable {
   app: App;
-  id: string;
 
   children: RouteTree[];
   children$: Observable<RouteTree[]>;

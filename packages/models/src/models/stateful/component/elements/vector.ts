@@ -1,32 +1,51 @@
 import { VectorElementData, VectorNodeData } from "@elllphnt/elementa-base";
-import { setReactiveMapGetters } from "@elllphnt/elementa-utils";
+import { combineLatestMerged } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import * as y from "yjs";
+import { CssStyleSheet } from "../../../../css/_.js";
+import { VectorElement } from "../../../_interfaces/component/elements/vector.js";
 import { Fragment } from "../fragment.js";
-import { attachBaseElement, Element } from "./element.js";
+import { ElementModel } from "./element.js";
 
-export type VectorElement = Element<VectorElementData> & {
-  content: VectorNodeData[] | undefined;
-  content$: Observable<VectorNodeData[] | undefined>;
-};
-
-export function attachVectorElement(
-  ymap: y.Map<any>,
-  fragment: Fragment
-): ymap is VectorElement {
-  ymap.set("type", "vector");
-  if (!attachBaseElement(ymap as y.Map<any>, fragment)) {
-    throw new Error("Failed to attach base element to ymap");
+export class VectorElementModel
+  extends ElementModel<VectorElementData>
+  implements VectorElement
+{
+  constructor({
+    init,
+    fragment,
+    cssStyleSheet,
+  }: {
+    init: VectorElementData;
+    fragment: Fragment;
+    cssStyleSheet: CssStyleSheet;
+  }) {
+    super({ init, fragment, cssStyleSheet });
   }
-  const element = ymap as VectorElement;
-  setReactiveMapGetters(element, ["content"]);
-  return true;
-}
 
-export function createVectorElement(fragment: Fragment): VectorElement {
-  const ymap = new y.Map<any>();
-  if (!attachVectorElement(ymap, fragment)) {
-    throw new Error("Failed to create VectorElement");
+  get data(): VectorElementData {
+    return {
+      ...this._state.record,
+      id: this._id,
+      type: "vector",
+    };
   }
-  return ymap as VectorElement;
+
+  get data$(): Observable<VectorElementData> {
+    return combineLatestMerged([this._state.record$]);
+  }
+
+  restore(data: VectorElementData): void {
+    this._state.setRecord({
+      ...data,
+      id: undefined,
+    });
+  }
+
+  get content(): VectorNodeData[] | undefined {
+    return this._state.record.content;
+  }
+
+  get content$(): Observable<VectorNodeData[] | undefined> {
+    return this._state.entry$("content");
+  }
 }

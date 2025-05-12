@@ -1,74 +1,73 @@
 import { Expression, HookStateData } from "@elllphnt/elementa-base";
-import { setReactiveMapGetters } from "@elllphnt/elementa-utils";
-import { map, Observable } from "rxjs";
-import * as y from "yjs";
-import { Component } from "../component.js";
-import { attachState, State } from "./state.js";
+import { combineLatestMerged } from "@elllphnt/elementa-utils";
+import { Observable, map } from "rxjs";
+import { Component } from "../../../_interfaces/component/component.js";
+import { HookState } from "../../../_interfaces/component/states/hook.js";
+import { StateModel } from "./state.js";
 
-export type HookState = State<HookStateData> & {
-  hookUrl: string | undefined;
-  hookUrl$: Observable<string | undefined>;
-
-  absoluteHookUrl: string | undefined;
-  absoluteHookUrl$: Observable<string | undefined>;
-
-  args: Expression[];
-  args$: Observable<Expression[]>;
-
-  arg(index: number): Expression | undefined;
-  arg$(index: number): Observable<Expression | undefined>;
-};
-
-/**
- * Attach HookState behavior to a y.Map
- */
-export function attachHookState(
-  ymap: y.Map<any>,
-  component: Component
-): ymap is HookState {
-  if (!attachState(ymap, component)) {
-    throw new Error("Failed to attach HookState");
+export class HookStateModel
+  extends StateModel<HookStateData>
+  implements HookState
+{
+  constructor({
+    init,
+    component,
+  }: {
+    init: HookStateData;
+    component: Component;
+  }) {
+    super({ init, component });
   }
-  const state = ymap as HookState;
 
-  setReactiveMapGetters(state, ["hookUrl", "args"]);
-
-  Object.defineProperty(state, "absoluteHookUrl", {
-    get() {
-      return state.hookUrl
-        ? state.component.project.absoluteFileUrl(state.hookUrl)
-        : undefined;
-    },
-  });
-
-  state.absoluteHookUrl$ = state.hookUrl$.pipe(
-    map((url) => {
-      return url ? state.component.project.absoluteFileUrl(url) : undefined;
-    })
-  );
-
-  state.arg = (index: number) => {
-    return state.args[index];
-  };
-
-  state.arg$ = (index: number) => {
-    return state.args$.pipe(map((args) => args[index]));
-  };
-
-  state.cloneIds = (clone: y.Map<any>) => {
-    state.cloneOwnId(clone);
-  };
-
-  return true;
-}
-
-/**
- * Create a new local HookState
- */
-export function createHookState(component: Component): HookState {
-  const ymap = new y.Map<any>();
-  if (!attachHookState(ymap, component)) {
-    throw new Error("Failed to create HookState");
+  get data(): HookStateData {
+    return {
+      ...this._state.record,
+      id: this._id,
+      type: "hook",
+    };
   }
-  return ymap as HookState;
+
+  get data$(): Observable<HookStateData> {
+    return combineLatestMerged([this._state.record$]);
+  }
+
+  restore(data: HookStateData): void {
+    this._state.setRecord({
+      ...data,
+      id: undefined,
+      component: undefined,
+    });
+  }
+
+  get hookUrl(): string | undefined {
+    return this._state.record.hookUrl;
+  }
+
+  get hookUrl$(): Observable<string | undefined> {
+    return this._state.entry$("hookUrl");
+  }
+
+  get absoluteHookUrl(): string | undefined {
+    return this._state.record.absoluteHookUrl;
+  }
+
+  get absoluteHookUrl$(): Observable<string | undefined> {
+    return this._state.entry$("absoluteHookUrl");
+  }
+
+  get args(): Expression[] | undefined {
+    return this._state.record.args;
+  }
+
+  get args$(): Observable<Expression[] | undefined> {
+    return this._state.entry$("args");
+  }
+
+  arg(index: number): Expression | undefined {
+    return this.args?.[index];
+  }
+
+  arg$(index: number): Observable<Expression | undefined> {
+    return this.args$.pipe(map((args) => args?.[index]));
+  }
 }

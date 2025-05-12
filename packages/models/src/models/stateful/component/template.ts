@@ -1,39 +1,34 @@
-import { setEnhancer } from "@elllphnt/elementa-utils";
+import { TemplateData } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
-import * as y from "yjs";
-import { Component } from "./component.js";
-import { Fragment, FragmentVariant, attachFragment } from "./fragment.js";
+import { CssStyleSheet } from "../../../css/_.js";
+import { Component } from "../../_interfaces/component/component.js";
+import { FragmentVariant } from "../../_interfaces/component/fragment.js";
+import { Template } from "../../_interfaces/component/template.js";
+import { FragmentModel } from "./fragment.js";
 
-export type Template = Fragment & {
-  name: string;
-  name$: Observable<string>;
-};
-
-export function attachTemplate(
-  ymap: y.Map<any>,
-  component: Component
-): ymap is Template {
-  if (!attachFragment(ymap, component, FragmentVariant.Template)) {
-    throw new Error("Failed to attach fragment to ymap");
+export class TemplateModel extends FragmentModel implements Template {
+  constructor({
+    init,
+    component,
+    cssStyleSheet,
+  }: {
+    init: TemplateData;
+    component: Component;
+    cssStyleSheet: CssStyleSheet;
+  }) {
+    super({
+      init,
+      component,
+      cssStyleSheet,
+      variant: FragmentVariant.Template,
+    });
   }
-  const template = ymap as Template;
 
-  Object.defineProperty(template, "name", {
-    get() {
-      return template.component.name;
-    },
-  });
-
-  template.name$ = template.component.name$;
-
-  setEnhancer(template, attachTemplate);
-  return true;
-}
-
-export function createTemplate(component: Component): Template {
-  const ymap = new y.Map<any>();
-  if (!attachTemplate(ymap, component)) {
-    throw new Error("Failed to create Template");
+  get name(): string {
+    return this._state.record.name || "Template";
   }
-  return ymap as Template;
+
+  get name$(): Observable<string> {
+    return this._state.entry$("name");
+  }
 }

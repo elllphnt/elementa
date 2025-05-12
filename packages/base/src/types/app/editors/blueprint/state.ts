@@ -9,7 +9,7 @@ export type BlueprintNodeData = {
   };
 };
 
-export type BlueprintAppStateData = {
+export type AppBlueprintData = {
   nodes: Record<string, BlueprintNodeData>;
 };
 
@@ -22,6 +22,6 @@ export const blueprintNodeDataSchema = z.object({
   }),
 });
 
-export const blueprintAppStateDataSchema = z.object({
+export const appBlueprintDataSchema = z.object({
   nodes: z.record(blueprintNodeDataSchema),
 });

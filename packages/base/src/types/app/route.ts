@@ -1,9 +1,9 @@
 import { z } from "zod";
+import { IdentifiableData } from "../_shared/_.js";
 
 // Types
 
-export type RouteData = {
-  id: string;
+export type RouteData = IdentifiableData & {
   path?: string;
   parentId?: string;
   loaderUrl?: string;

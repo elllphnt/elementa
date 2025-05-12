@@ -1,65 +1,94 @@
 import { DataInputData } from "@elllphnt/elementa-base";
-import {
-  attachReactiveMap,
-  ReactiveMap,
-  setEnhancer,
-  setReactiveMapGetters,
-} from "@elllphnt/elementa-utils";
+import { Model, RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import * as y from "yjs";
-import { Component } from "./component.js";
+import { Component } from "../../_interfaces/component/component.js";
+import { DataInput } from "../../_interfaces/component/data_input.js";
 
-export type DataInput = ReactiveMap<DataInputData> & {
-  component: Component;
+export class DataInputModel extends Model<DataInputData> implements DataInput {
+  private _state: RecordState<Partial<DataInputData>>;
+  private _component: Component;
 
-  name: string;
-  name$: Observable<string>;
+  constructor({
+    init,
+    component,
+  }: {
+    init: DataInputData;
+    component: Component;
+  }) {
+    super();
 
-  varName: string | undefined;
-  varName$: Observable<string | undefined>;
+    this._component = component;
 
-  tsType: string | undefined;
-  tsType$: Observable<string | undefined>;
+    this._state = new RecordState({
+      init: {
+        ...init,
+        component: undefined,
+      },
+    });
 
-  required: boolean;
-  required$: Observable<boolean>;
-
-  defaultValue: any;
-  defaultValue$: Observable<any>;
-};
-
-/**
- * Attach DataInput behavior to a y.Map
- */
-export function attachDataInput(
-  ymap: y.Map<any>,
-  component: Component
-): ymap is DataInput {
-  if (!attachReactiveMap<DataInputData>(ymap)) {
-    throw new Error("Failed to attach reactive map to ymap");
+    this.addDisposer(() => {
+      this._state.dispose();
+    });
   }
-  const input = ymap as DataInput;
-  input.component = component;
 
-  setReactiveMapGetters(input, [
-    "name",
-    "varName",
-    "tsType",
-    "required",
-    "default",
-  ]);
-
-  setEnhancer(input, attachDataInput);
-  return true;
-}
-
-/**
- * Create a new local DataInput
- */
-export function createDataInput(component: Component): DataInput {
-  const ymap = new y.Map<any>();
-  if (!attachDataInput(ymap, component)) {
-    throw new Error("Failed to create DataInput");
+  get component(): Component {
+    return this._component;
   }
-  return ymap as DataInput;
+
+  get data(): DataInputData {
+    return {
+      ...this._state.record,
+    };
+  }
+
+  get data$(): Observable<DataInputData> {
+    return this._state.record$;
+  }
+
+  restore(data: DataInputData): void {
+    this._state.setRecord({
+      ...data,
+      component: undefined,
+    });
+  }
+
+  get name(): string {
+    return this._state.record.name || "";
+  }
+
+  get name$(): Observable<string> {
+    return this._state.entry$("name");
+  }
+
+  get varName(): string | undefined {
+    return this._state.record.varName;
+  }
+
+  get varName$(): Observable<string | undefined> {
+    return this._state.entry$("varName");
+  }
+
+  get tsType(): string | undefined {
+    return this._state.record.tsType;
+  }
+
+  get tsType$(): Observable<string | undefined> {
+    return this._state.entry$("tsType");
+  }
+
+  get required(): boolean | undefined {
+    return this._state.record.required;
+  }
+
+  get required$(): Observable<boolean | undefined> {
+    return this._state.entry$("required");
+  }
+
+  get defaultValue(): any {
+    return this._state.record.defaultValue;
+  }
+
+  get defaultValue$(): Observable<any> {
+    return this._state.entry$("defaultValue");
+  }
 }

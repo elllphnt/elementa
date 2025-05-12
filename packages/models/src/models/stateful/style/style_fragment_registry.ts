@@ -3,149 +3,110 @@ import {
   StyleFragmentDataTypeMap,
   StyleFragmentType,
 } from "@elllphnt/elementa-base";
-import {
-  attachReactiveList,
-  ReactiveList,
-  setEnhancer,
-} from "@elllphnt/elementa-utils";
-import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs";
-import * as y from "yjs";
-import { genId } from "../../_lib/id.js";
+import { Model } from "@elllphnt/elementa-utils";
+import { BehaviorSubject, Observable, map } from "rxjs";
+import { StyleFragmentRegistry } from "../../_interfaces/style/style_fragment_registry.js";
 
-export type StyleFragmentRegistry = ReactiveList<StyleFragmentData> & {
+export class StyleFragmentRegistryModel
+  extends Model<StyleFragmentData[]>
+  implements StyleFragmentRegistry
+{
+  private _fragments: BehaviorSubject<StyleFragmentData[]>;
+
+  constructor({ init }: { init: StyleFragmentData[] }) {
+    super();
+
+    this._fragments = new BehaviorSubject<StyleFragmentData[]>(init || []);
+
+    this.addDisposer(() => {
+      this._fragments.complete();
+    });
+  }
+
+  get data(): StyleFragmentData[] {
+    return this._fragments.value;
+  }
+
+  get data$(): Observable<StyleFragmentData[]> {
+    return this._fragments.asObservable();
+  }
+
+  restore(data: StyleFragmentData[]): void {
+    this._fragments.next(data || []);
+  }
+
   fragment<T extends StyleFragmentType>(
     type: T,
     id: string
-  ): StyleFragmentData<T> | undefined;
+  ): StyleFragmentData<T> | undefined {
+    return this._fragments.value.find((f) => f.id === id && f.type === type) as
+      | StyleFragmentData<T>
+      | undefined;
+  }
 
   fragment$<T extends StyleFragmentType>(
     type: T,
     id: string
-  ): Observable<StyleFragmentData<T> | undefined>;
+  ): Observable<StyleFragmentData<T> | undefined> {
+    return this._fragments.pipe(
+      map(
+        (fragments) =>
+          fragments.find((f) => f.id === id && f.type === type) as
+            | StyleFragmentData<T>
+            | undefined
+      )
+    );
+  }
 
-  fragments<T extends StyleFragmentType>(type: T): StyleFragmentData<T>[];
+  fragments<T extends StyleFragmentType>(type: T): StyleFragmentData<T>[] {
+    return this._fragments.value.filter(
+      (f) => f.type === type
+    ) as StyleFragmentData<T>[];
+  }
+
   fragments$<T extends StyleFragmentType>(
     type: T
-  ): Observable<StyleFragmentData<T>[]>;
+  ): Observable<StyleFragmentData<T>[]> {
+    return this._fragments.pipe(
+      map(
+        (fragments) =>
+          fragments.filter((f) => f.type === type) as StyleFragmentData<T>[]
+      )
+    );
+  }
 
-  allFragments: StyleFragmentData[];
-  allFragments$: Observable<StyleFragmentData[]>;
+  get allFragments(): StyleFragmentData[] {
+    return this._fragments.value;
+  }
+
+  get allFragments$(): Observable<StyleFragmentData[]> {
+    return this._fragments.asObservable();
+  }
 
   addFragment<T extends StyleFragmentType>(
     type: T,
     data: StyleFragmentDataTypeMap[T]
-  ): StyleFragmentData<T>;
+  ): StyleFragmentData<T> {
+    const id = Math.random().toString(36).substring(2, 10);
+    const fragment = { id, type, ...data } as StyleFragmentData<T>;
+    this._fragments.next([...this._fragments.value, fragment]);
+    return fragment;
+  }
 
   setFragmentData<T extends StyleFragmentType>(
     id: string,
     data: StyleFragmentDataTypeMap[T]
-  ): void;
-
-  removeFragment(id: string): void;
-  restore(data: StyleFragmentData[]): void;
-};
-
-/**
- * Attach StyleFragmentRegistry behavior to a y.Array
- */
-export function attachStyleFragmentRegistry(
-  yarray: y.Array<any>
-): yarray is StyleFragmentRegistry {
-  if (!attachReactiveList<StyleFragmentData>(yarray)) {
-    throw new Error("Failed to attach reactive list to yarray");
-  }
-  const registry = yarray as StyleFragmentRegistry;
-
-  const _fragmentsById$ = new BehaviorSubject<
-    Record<string, StyleFragmentData>
-  >({});
-
-  const sub = registry.items$
-    .pipe(map((arr) => Object.fromEntries(arr.map((f) => [f.id, f]))))
-    .subscribe(_fragmentsById$);
-
-  registry.fragment = function <T extends StyleFragmentType>(
-    type: T,
-    id: string
-  ) {
-    const frag = _fragmentsById$.value[id];
-    return frag?.type === type ? (frag as StyleFragmentData<T>) : undefined;
-  };
-
-  registry.fragment$ = function <T extends StyleFragmentType>(
-    type: T,
-    id: string
-  ) {
-    return _fragmentsById$.pipe(
-      map((frags) => {
-        const frag = frags[id];
-        return frag?.type === type ? (frag as StyleFragmentData<T>) : undefined;
-      }),
-      distinctUntilChanged()
-    );
-  };
-
-  registry.fragments = function <T extends StyleFragmentType>(type: T) {
-    return registry
-      .toArray()
-      .filter((f) => f.type === type) as StyleFragmentData<T>[];
-  };
-
-  registry.fragments$ = function <T extends StyleFragmentType>(type: T) {
-    return registry.items$.pipe(
-      map((arr) => arr.filter((f) => f.type === type) as StyleFragmentData<T>[])
-    );
-  };
-
-  registry.allFragments$ = registry.items$;
-
-  registry.addFragment = function <T extends StyleFragmentType>(
-    type: T,
-    data: StyleFragmentDataTypeMap[T]
-  ) {
-    const fragment: StyleFragmentData<T> = { id: genId(), type, data };
-    registry.push([fragment]);
-    return fragment;
-  };
-
-  registry.setFragmentData = function <T extends StyleFragmentType>(
-    id: string,
-    data: StyleFragmentDataTypeMap[T]
-  ) {
-    const idx = registry.toArray().findIndex((f) => f.id === id);
-    if (idx >= 0) {
-      const updated = { ...registry.toArray()[idx], data };
-      registry.doc?.transact(() => {
-        registry.delete(idx);
-        registry.insert(idx, [updated]);
-      });
+  ): void {
+    const fragment = this._fragments.value.find((f) => f.id === id);
+    if (fragment) {
+      const updatedFragment = { ...fragment, ...data };
+      this._fragments.next(
+        this._fragments.value.map((f) => (f.id === id ? updatedFragment : f))
+      );
     }
-  };
-
-  registry.removeFragment = function (id: string) {
-    const idx = registry.toArray().findIndex((f) => f.id === id);
-    if (idx >= 0) {
-      registry.delete(idx);
-    }
-  };
-
-  const baseDispose = (registry as any).dispose?.bind(registry);
-  registry.dispose = () => {
-    sub.unsubscribe();
-    if (baseDispose) baseDispose();
-  };
-
-  setEnhancer(registry, attachStyleFragmentRegistry);
-  return true;
-}
-
-/**
- * Create a new local StyleFragmentRegistry
- */
-export function createStyleFragmentRegistry(): StyleFragmentRegistry {
-  const yarray = new y.Array<any>();
-  if (!attachStyleFragmentRegistry(yarray)) {
-    throw new Error("Failed to create StyleFragmentRegistry");
   }
-  return yarray as StyleFragmentRegistry;
+
+  removeFragment(id: string): void {
+    this._fragments.next(this._fragments.value.filter((f) => f.id !== id));
+  }
 }

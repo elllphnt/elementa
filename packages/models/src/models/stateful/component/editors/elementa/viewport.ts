@@ -1,37 +1,56 @@
 import { OverflowValue, ViewportData } from "@elllphnt/elementa-base";
-import {
-  assert,
-  attachReactiveMap,
-  ReactiveMap,
-  setEnhancer,
-  setReactiveMapGetters,
-} from "@elllphnt/elementa-utils";
+import { Model, RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import * as y from "yjs";
+import { Viewport } from "../../../../_interfaces/_.js";
 
-export type Viewport = ReactiveMap<ViewportData> & {
-  height: number;
-  height$: Observable<number>;
+export class ViewportModel extends Model<ViewportData> implements Viewport {
+  private _state: RecordState<Partial<ViewportData>>;
 
-  width: number;
-  width$: Observable<number>;
+  get height(): number | undefined {
+    return this._state.entry("height");
+  }
 
-  overflow: OverflowValue;
-  overflow$: Observable<OverflowValue>;
-};
+  get height$(): Observable<number | undefined> {
+    return this._state.entry$("height");
+  }
 
-export function attachViewport(ymap: y.Map<any>): ymap is Viewport {
-  assert(attachReactiveMap<ViewportData>(ymap as y.Map<any>));
-  const viewport = ymap as Viewport;
+  get width(): number | undefined {
+    return this._state.entry("width");
+  }
 
-  setReactiveMapGetters(viewport, ["height", "width", "overflow"]);
+  get width$(): Observable<number | undefined> {
+    return this._state.entry$("width");
+  }
 
-  setEnhancer(viewport, attachViewport);
-  return true;
-}
+  get overflow(): OverflowValue | undefined {
+    return this._state.entry("overflow");
+  }
 
-export function createViewport(): Viewport {
-  const ymap = new y.Map<any>();
-  assert(attachViewport(ymap));
-  return ymap;
+  get overflow$(): Observable<OverflowValue | undefined> {
+    return this._state.entry$("overflow");
+  }
+
+  get data(): ViewportData {
+    return this._state.record;
+  }
+
+  get data$(): Observable<ViewportData> {
+    return this._state.record$;
+  }
+
+  constructor({ init }: { init: ViewportData }) {
+    super();
+
+    this._state = new RecordState({
+      init,
+    });
+
+    this.addDisposer(() => {
+      this._state.dispose();
+    });
+  }
+
+  restore(data: ViewportData) {
+    this._state.setRecord(data);
+  }
 }

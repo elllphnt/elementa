@@ -1,54 +1,87 @@
 import { SlotElementData } from "@elllphnt/elementa-base";
-import { Extendable, getOrCreateYArray } from "@elllphnt/elementa-utils";
-import * as y from "yjs";
+import {
+  AggregatedModelList,
+  combineLatestMerged,
+} from "@elllphnt/elementa-utils";
+import { Observable, forkJoin } from "rxjs";
+import { CssStyleSheet } from "../../../../css/_.js";
+import { Element } from "../../../_interfaces/component/elements/element.js";
+import { SlotElement } from "../../../_interfaces/component/elements/slot.js";
 import { Fragment } from "../fragment.js";
-import { attachElementList, ElementList } from "./_list.js";
-import { attachBaseElement, Element } from "./element.js";
+import { createElementModel } from "./_create.js";
+import { ElementModel } from "./element.js";
 
-export type SlotElement = Element<SlotElementData> & {
-  placeholder: ElementList;
-};
+export class SlotElementModel
+  extends ElementModel<SlotElementData>
+  implements SlotElement
+{
+  private _placeholder: AggregatedModelList<ElementModel<any>>;
 
-/**
- * Attach SlotElement behavior to a y.Map
- */
-export function attachSlotElement(
-  ymap: y.Map<any>,
-  fragment: Fragment
-): ymap is SlotElement {
-  ymap.set("type", "slot");
+  constructor({
+    init,
+    fragment,
+    cssStyleSheet,
+  }: {
+    init: SlotElementData;
+    fragment: Fragment;
+    cssStyleSheet: CssStyleSheet;
+  }) {
+    super({ init, fragment, cssStyleSheet });
 
-  if (!attachBaseElement(ymap as Extendable<y.Map<any>>, fragment)) {
-    throw new Error("Failed to attach base element to ymap");
+    this._placeholder = new AggregatedModelList({
+      init: init.placeholder || [],
+      create: (data) =>
+        createElementModel({
+          init: data,
+          fragment: this._fragment,
+          cssStyleSheet: this._cssStyleSheet,
+        }),
+    });
+
+    if (init.id) {
+      fragment.registerSlotId(init.id);
+    }
+
+    this.addDisposer(() => {
+      this._placeholder.dispose();
+      if (this._id) {
+        fragment.unregisterSlotId(this._id);
+      }
+    });
   }
-  const element = ymap as SlotElement;
 
-  const placeholder = getOrCreateYArray(ymap, "placeholder");
-  attachElementList(getOrCreateYArray(element, "placeholder"), fragment);
-  element.placeholder = placeholder as ElementList;
-
-  element.cloneIds = (clone: y.Map<any>) => {
-    element.cloneOwnId(clone);
-    element.placeholder.cloneIds(getOrCreateYArray(clone, "placeholder"));
-  };
-
-  // --- Slot registration at runtime ---
-  fragment.registerSlotId(element.id);
-
-  const baseDispose = (element as any).dispose?.bind(element);
-  element.dispose = () => {
-    fragment.unregisterSlotId(element.id); // Unregister on disposal
-    element.placeholder.dispose();
-    if (baseDispose) baseDispose();
-  };
-
-  return true;
-}
-
-export function createSlotElement(fragment: Fragment): SlotElement {
-  const ymap = new y.Map<any>();
-  if (!attachSlotElement(ymap, fragment)) {
-    throw new Error("Failed to create SlotElement");
+  get data(): SlotElementData {
+    return {
+      ...this._state.record,
+      id: this._id,
+      type: "slot",
+      placeholder: this._placeholder.data,
+    };
   }
-  return ymap as SlotElement;
+
+  get data$(): Observable<SlotElementData> {
+    return combineLatestMerged([
+      this._state.record$,
+      forkJoin({
+        placeholder: this._placeholder.data$,
+      }),
+    ]);
+  }
+
+  restore(data: SlotElementData): void {
+    this._state.setRecord({
+      ...data,
+      id: undefined,
+      placeholder: undefined,
+    });
+    this._placeholder.restore(data.placeholder || []);
+  }
+
+  get placeholder(): Element[] {
+    return this._placeholder.items;
+  }
+
+  get placeholder$(): Observable<Element[]> {
+    return this._placeholder.items$;
+  }
 }

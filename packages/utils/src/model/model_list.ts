@@ -48,6 +48,22 @@ export class AggregatedModelList<M extends Model<unknown>> extends Model<
     });
   }
 
+  add(item: ModelData<M>): void {
+    this.state.add(this.create(item));
+  }
+  insertAt(index: number, items: ModelData<M>[]): void {
+    this.state.insertAt(
+      index,
+      items.map((d) => this.create(d))
+    );
+  }
+  append(items: ModelData<M>[]): void {
+    this.state.append(items.map((d) => this.create(d)));
+  }
+  prepend(items: ModelData<M>[]): void {
+    this.state.prepend(items.map((d) => this.create(d)));
+  }
+
   restore(data: ModelData<M>[]) {
     const [next, removed] = reconcileList({
       sources: data || [],

@@ -2,34 +2,53 @@ import {
   ResolvableOrEvaluable,
   TextElementData,
 } from "@elllphnt/elementa-base";
-import { setReactiveMapGetters } from "@elllphnt/elementa-utils";
+import { combineLatestMerged } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import * as y from "yjs";
+import { CssStyleSheet } from "../../../../css/_.js";
+import { TextElement } from "../../../_interfaces/component/elements/text.js";
 import { Fragment } from "../fragment.js";
-import { attachBaseElement, Element } from "./element.js";
+import { ElementModel } from "./element.js";
 
-export type TextElement = Element<TextElementData> & {
-  text: ResolvableOrEvaluable<string> | undefined;
-  text$: Observable<ResolvableOrEvaluable<string> | undefined>;
-};
-
-export function attachTextElement(
-  ymap: y.Map<any>,
-  fragment: Fragment
-): ymap is TextElement {
-  ymap.set("type", "text");
-  if (!attachBaseElement(ymap as y.Map<any>, fragment)) {
-    throw new Error("Failed to attach base element to ymap");
+export class TextElementModel
+  extends ElementModel<TextElementData>
+  implements TextElement
+{
+  constructor({
+    init,
+    fragment,
+    cssStyleSheet,
+  }: {
+    init: TextElementData;
+    fragment: Fragment;
+    cssStyleSheet: CssStyleSheet;
+  }) {
+    super({ init, fragment, cssStyleSheet });
   }
-  const element = ymap as TextElement;
-  setReactiveMapGetters(element, ["text"]);
-  return true;
-}
 
-export function createTextElement(fragment: Fragment): TextElement {
-  const ymap = new y.Map<any>();
-  if (!attachTextElement(ymap, fragment)) {
-    throw new Error("Failed to create TextElement");
+  get data(): TextElementData {
+    return {
+      ...this._state.record,
+      id: this._id,
+      type: "text",
+    };
   }
-  return ymap as TextElement;
+
+  get data$(): Observable<TextElementData> {
+    return combineLatestMerged([this._state.record$]);
+  }
+
+  restore(data: TextElementData): void {
+    this._state.setRecord({
+      ...data,
+      id: undefined,
+    });
+  }
+
+  get text(): ResolvableOrEvaluable<string> | undefined {
+    return this._state.record.text;
+  }
+
+  get text$(): Observable<ResolvableOrEvaluable<string> | undefined> {
+    return this._state.entry$("text");
+  }
 }

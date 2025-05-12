@@ -1,10 +1,10 @@
 import { Observable } from "rxjs";
 import { FileModel } from "../../../../file/_.js";
 import { Component } from "../../../component.js";
+import { BaseRenderableContent } from "./_base.js";
 
-export interface ComponentRenderableContent {
-  type: "component";
-
+export interface ComponentRenderableContent
+  extends BaseRenderableContent<"component"> {
   componentUrl: string | undefined;
   componentUrl$: Observable<string | undefined>;
 

@@ -1,0 +1,253 @@
+import { RouteTreeData } from "@elllphnt/elementa-base";
+import {
+  AggregatedModelList,
+  RecordState,
+  combineLatestMerged,
+} from "@elllphnt/elementa-utils";
+import { Observable, forkJoin, map } from "rxjs";
+import { RouteTree } from "../../_interfaces/app/route_tree.js";
+import { IdentifiableModel } from "../_shared/identifiable.js";
+import { AppModel } from "./app.js";
+
+export class RouteTreeModel
+  extends IdentifiableModel<RouteTreeData>
+  implements RouteTree
+{
+  readonly app: AppModel;
+
+  private _state: RecordState<Omit<RouteTreeData, "children" | "id">>;
+  private _children: AggregatedModelList<RouteTreeModel>;
+
+  get children(): RouteTreeModel[] {
+    return this._children.state.items;
+  }
+
+  get children$(): Observable<RouteTreeModel[]> {
+    return this._children.state.items$;
+  }
+
+  get path(): string | undefined {
+    return this._state.entry("path");
+  }
+
+  get path$(): Observable<string | undefined> {
+    return this._state.entry$("path");
+  }
+
+  get mainViewUrl(): string | undefined {
+    return this._state.entry("mainViewUrl");
+  }
+
+  get mainViewUrl$(): Observable<string | undefined> {
+    return this._state.entry$("mainViewUrl");
+  }
+
+  get errorViewUrl(): string | undefined {
+    return this._state.entry("errorViewUrl");
+  }
+
+  get errorViewUrl$(): Observable<string | undefined> {
+    return this._state.entry$("errorViewUrl");
+  }
+
+  get pendingViewUrl(): string | undefined {
+    return this._state.entry("pendingViewUrl");
+  }
+
+  get pendingViewUrl$(): Observable<string | undefined> {
+    return this._state.entry$("pendingViewUrl");
+  }
+
+  get notFoundViewUrl(): string | undefined {
+    return this._state.entry("notFoundViewUrl");
+  }
+
+  get notFoundViewUrl$(): Observable<string | undefined> {
+    return this._state.entry$("notFoundViewUrl");
+  }
+
+  get loaderUrl(): string | undefined {
+    return this._state.entry("loaderUrl");
+  }
+
+  get loaderUrl$(): Observable<string | undefined> {
+    return this._state.entry$("loaderUrl");
+  }
+
+  get handlerUrl(): string | undefined {
+    return this._state.entry("handlerUrl");
+  }
+
+  get handlerUrl$(): Observable<string | undefined> {
+    return this._state.entry$("handlerUrl");
+  }
+
+  get mainViewComponent() {
+    const mainViewUrl = this.mainViewUrl
+      ? this.app.project.absoluteFileUrl(this.mainViewUrl)
+      : undefined;
+    return mainViewUrl
+      ? this.app.project.infrastructure.component(mainViewUrl)
+      : undefined;
+  }
+
+  get mainViewComponent$() {
+    return this.mainViewUrl$.pipe(
+      map((mainViewUrl) => {
+        if (!mainViewUrl) {
+          return undefined;
+        }
+        const mainViewComponent = this.app.project.infrastructure.component(
+          this.app.project.absoluteFileUrl(mainViewUrl)
+        );
+        return mainViewComponent;
+      })
+    );
+  }
+
+  get errorViewComponent() {
+    const errorViewUrl = this.errorViewUrl
+      ? this.app.project.absoluteFileUrl(this.errorViewUrl)
+      : undefined;
+    return errorViewUrl
+      ? this.app.project.infrastructure.component(errorViewUrl)
+      : undefined;
+  }
+
+  get errorViewComponent$() {
+    return this.errorViewUrl$.pipe(
+      map((errorViewUrl) => {
+        if (!errorViewUrl) {
+          return undefined;
+        }
+        const errorViewComponent = this.app.project.infrastructure.component(
+          this.app.project.absoluteFileUrl(errorViewUrl)
+        );
+        return errorViewComponent;
+      })
+    );
+  }
+
+  get pendingViewComponent() {
+    const pendingViewUrl = this.pendingViewUrl
+      ? this.app.project.absoluteFileUrl(this.pendingViewUrl)
+      : undefined;
+    return pendingViewUrl
+      ? this.app.project.infrastructure.component(pendingViewUrl)
+      : undefined;
+  }
+
+  get pendingViewComponent$() {
+    return this.pendingViewUrl$.pipe(
+      map((pendingViewUrl) => {
+        if (!pendingViewUrl) {
+          return undefined;
+        }
+        const pendingViewComponent = this.app.project.infrastructure.component(
+          this.app.project.absoluteFileUrl(pendingViewUrl)
+        );
+        return pendingViewComponent;
+      })
+    );
+  }
+
+  get notFoundViewComponent() {
+    const notFoundViewUrl = this.notFoundViewUrl
+      ? this.app.project.absoluteFileUrl(this.notFoundViewUrl)
+      : undefined;
+    return notFoundViewUrl
+      ? this.app.project.infrastructure.component(notFoundViewUrl)
+      : undefined;
+  }
+
+  get notFoundViewComponent$() {
+    return this.notFoundViewUrl$.pipe(
+      map((notFoundViewUrl) => {
+        if (!notFoundViewUrl) {
+          return undefined;
+        }
+        const notFoundViewComponent = this.app.project.infrastructure.component(
+          this.app.project.absoluteFileUrl(notFoundViewUrl)
+        );
+        return notFoundViewComponent;
+      })
+    );
+  }
+
+  get data(): RouteTreeData {
+    return {
+      ...super._data,
+      ...this._state.record,
+      children: this._children.data,
+    };
+  }
+
+  get data$(): Observable<RouteTreeData> {
+    return combineLatestMerged([
+      super._data$,
+      this._state.record$,
+      forkJoin({
+        children: this._children.data$,
+      }),
+    ]);
+  }
+
+  constructor({ init, app }: { init: RouteTreeData; app: AppModel }) {
+    super({ id: init.id });
+
+    this.app = app;
+
+    this._state = new RecordState<Omit<RouteTreeData, "children" | "id">>({
+      init,
+    });
+
+    this._children = new AggregatedModelList({
+      init: init.children || [],
+      create: (data) => new RouteTreeModel({ init: data, app }),
+      dataRef: (d) => d.id,
+      modelRef: (m) => m.id,
+    });
+
+    this.addDisposer(() => {
+      this._state.dispose();
+      this._children.dispose();
+    });
+  }
+
+  setPath(path: string | undefined): void {
+    this._state.set("path", path);
+  }
+
+  setMainViewUrl(url: string | undefined): void {
+    this._state.set("mainViewUrl", url);
+  }
+
+  setErrorViewUrl(url: string | undefined): void {
+    this._state.set("errorViewUrl", url);
+  }
+
+  setPendingViewUrl(url: string | undefined): void {
+    this._state.set("pendingViewUrl", url);
+  }
+
+  setNotFoundViewUrl(url: string | undefined): void {
+    this._state.set("notFoundViewUrl", url);
+  }
+
+  setLoaderUrl(url: string | undefined): void {
+    this._state.set("loaderUrl", url);
+  }
+
+  setHandlerUrl(url: string | undefined): void {
+    this._state.set("handlerUrl", url);
+  }
+
+  setParentId(id: string | undefined): void {
+    this._state.set("parentId", id);
+  }
+
+  restore(data: RouteTreeData) {
+    this._state.setRecord(data);
+    this._children.restore(data.children || []);
+  }
+}

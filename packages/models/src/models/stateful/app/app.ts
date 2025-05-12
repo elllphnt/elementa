@@ -1,116 +1,124 @@
-import { AppData } from "@elllphnt/elementa-base";
+import { AppBlueprintData, AppData } from "@elllphnt/elementa-base";
 import {
-  attachEnhancedReactiveList,
-  attachReactiveMap,
-  getOrCreateYArray,
-  getOrCreateYMap,
-  ReactiveList,
-  ReactiveMap,
-  setEnhancer,
+  AggregatedModelList,
+  Model,
+  RecordState,
+  combineLatestMerged,
 } from "@elllphnt/elementa-utils";
-import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs";
-import * as y from "yjs";
-import { Project } from "../infrastructure/project/_.js";
-import { attachRouteTreeList } from "./route_tree/_list.js";
-import { attachRouteTree, RouteTree } from "./route_tree/route_tree.js"; // make sure Route is updated too
-import { AppVariable, attachAppVariable } from "./variable.js"; // make sure Variable is updated too
+import { Observable, forkJoin, map } from "rxjs";
+import { Project } from "../../../infrastructure/_.js";
+import { RouteTree } from "../../_interfaces/_.js";
+import { App } from "../../_interfaces/app/app.js";
+import { AppBlueprintModel } from "./editors/_.js";
+import { RouteTreeModel } from "./route_tree.js";
+import { AppVariableModel } from "./variable.js";
 
-export type App = ReactiveMap<AppData> & {
-  project: Project;
-  routes: ReactiveList<RouteTree>;
-  variables: ReactiveList<AppVariable>;
-  editors: ReactiveMap<y.AbstractType<any>>;
+export class AppModel extends Model<AppData> implements App {
+  readonly project: Project;
+  readonly blueprint: AppBlueprintModel;
 
-  route(id: string): RouteTree | undefined;
-  route$(id: string): Observable<RouteTree | undefined>;
+  private _state: RecordState<Omit<AppData, "routes" | "variables">>;
+  private _routes: AggregatedModelList<RouteTreeModel>;
+  private _variables: AggregatedModelList<AppVariableModel>;
 
-  variable(varName: string): AppVariable | undefined;
-  variable$(varName: string): Observable<AppVariable | undefined>;
-
-  getMapEditorState(editorKey: string): y.Map<any>;
-  getArrayEditorState(editorKey: string): y.Array<any>;
-};
-
-export function attachApp(ymap: y.Map<any>, project: Project): ymap is App {
-  if (!attachReactiveMap<AppData>(ymap)) {
-    throw new Error("Failed to attach reactive map to ymap");
+  get routes(): RouteTreeModel[] {
+    return this._routes.state.items;
   }
-  const rxMap = ymap;
-  const app = rxMap as App;
 
-  // initialization
-  app.project = project;
-
-  const routes = getOrCreateYArray<y.Map<any>>(rxMap, "routes");
-  if (!attachRouteTreeList(routes, app)) {
-    throw new Error("Failed to attach route tree list");
+  get routes$(): Observable<RouteTreeModel[]> {
+    return this._routes.state.items$;
   }
-  app.routes = routes;
 
-  const editors = getOrCreateYMap(rxMap, "editors");
-  if (!attachReactiveMap(editors)) {
-    throw new Error("Failed to attach reactive map to editors");
+  get variables(): AppVariableModel[] {
+    return this._variables.state.items;
   }
-  app.editors = editors as ReactiveMap<y.AbstractType<any>>;
 
-  app.routes = attachEnhancedReactiveList(
-    getOrCreateYArray<y.Map<any>>(rxMap, "routes"),
-    attachRouteTree,
-    (yMap) => attachRouteTree(yMap, app)
-  );
-  app.variables = attachEnhancedReactiveList(
-    getOrCreateYArray<y.Map<any>>(rxMap, "variables"),
-    attachAppVariable,
-    (yMap) => attachAppVariable(yMap, app)
-  );
+  get variables$(): Observable<AppVariableModel[]> {
+    return this._variables.state.items$;
+  }
 
-  const _variablesByVarName$ = new BehaviorSubject<Record<string, AppVariable>>(
-    {}
-  );
-  app.variable = (varName: string) => _variablesByVarName$.value[varName];
-  app.variable$ = (varName: string) =>
-    _variablesByVarName$.pipe(
-      map((variables) => variables[varName]),
-      distinctUntilChanged()
+  route(id: string): RouteTree | undefined {
+    return this._routes.state.items.find((route) => route.id === id);
+  }
+
+  route$(id: string): Observable<RouteTree | undefined> {
+    return this._routes.state.items$.pipe(
+      map((routes) => routes.find((route) => route.id === id))
     );
+  }
 
-  app.getMapEditorState = (editorKey) => {
-    return getOrCreateYMap(app.editors, editorKey);
-  };
-  app.getArrayEditorState = (editorKey) => {
-    return getOrCreateYArray(app.editors, editorKey);
-  };
+  variable(varName: string): AppVariableModel | undefined {
+    return this._variables.state.items.find(
+      (variable) => variable.varName === varName
+    );
+  }
 
-  // subscriptions
-  const variablesSubscription = app.variables.items$.subscribe((variables) => {
-    _variablesByVarName$.next(
-      Object.fromEntries(
-        variables.map((variable) => [variable.varName, variable])
+  variable$(varName: string): Observable<AppVariableModel | undefined> {
+    return this._variables.state.items$.pipe(
+      map((variables) =>
+        variables.find((variable) => variable.varName === varName)
       )
     );
-  });
-
-  // disposal
-  const disposeBase = rxMap.dispose.bind(rxMap);
-  rxMap.dispose = () => {
-    variablesSubscription.unsubscribe();
-    _variablesByVarName$.complete();
-
-    app.routes.dispose();
-    app.variables.dispose();
-    app.editors.dispose();
-
-    disposeBase();
-  };
-
-  setEnhancer(app, attachApp);
-  return true;
-}
-
-export function createApp(project: Project): App {
-  const ymap = new y.Map<any>();
-  if (!attachApp(ymap, project)) {
-    throw new Error("Failed to attach app");
   }
-  return ymap;
+
+  get data(): AppData {
+    return {
+      ...this._state.record,
+      routes: this._routes.data,
+      variables: this._variables.data,
+    };
+  }
+
+  get data$(): Observable<AppData> {
+    return combineLatestMerged([
+      this._state.record$,
+      forkJoin({
+        routes: this._routes.data$,
+        variables: this._variables.data$,
+      }),
+    ]);
+  }
+
+  constructor({ init, project }: { init: AppData; project: Project }) {
+    super();
+
+    this.project = project;
+    this.blueprint = new AppBlueprintModel({
+      init: (init.editors?.blueprint as AppBlueprintData) || {
+        nodes: [],
+      },
+    });
+
+    this._state = new RecordState({
+      init,
+    });
+
+    this._routes = new AggregatedModelList({
+      init: init.routes || [],
+      create: (data) => new RouteTreeModel({ init: data, app: this }),
+      dataRef: (d) => d.id,
+      modelRef: (m) => m.id,
+    });
+
+    this._variables = new AggregatedModelList({
+      init: init.variables || [],
+      create: (data) => new AppVariableModel({ init: data, app: this }),
+      dataRef: () => 1, // DataInput are interchangeable
+      modelRef: () => 1,
+    });
+
+    this.addDisposer(() => {
+      this._state.dispose();
+      this._routes.dispose();
+      this._variables.dispose();
+    });
+  }
+
+  restore(data: AppData) {
+    this._state.setRecord({
+      ...data,
+    });
+    this._routes.restore(data.routes || []);
+    this._variables.restore(data.variables || []);
+  }
 }

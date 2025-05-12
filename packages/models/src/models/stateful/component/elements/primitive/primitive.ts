@@ -3,177 +3,209 @@ import {
   ResolvableOrEvaluable,
 } from "@elllphnt/elementa-base";
 import {
-  attachEnhancedReactiveMap,
-  combineLatestOrEmpty,
-  getOrCreateYArray,
-  getOrCreateYMap,
-  ReactiveMap,
-  setEnhancer,
-  setReactiveMapGetters,
+  AggregatedModelList,
+  AggregatedModelRecord,
+  combineLatestMerged,
 } from "@elllphnt/elementa-utils";
-import { filter, map, Observable, tap } from "rxjs";
-import * as y from "yjs";
-import { ResolvableRecord } from "../../../../_lib/resolvable.js";
-import { File } from "../../../../infrastructure/file/file.js";
+import { Observable, forkJoin, map, of } from "rxjs";
+import { CssStyleSheet } from "../../../../../css/_.js";
+import { PrimitiveElement } from "../../../../_interfaces/component/elements/primitive/primitive.js";
+import { PrimitiveSubElement } from "../../../../_interfaces/component/elements/primitive/sub_element.js";
 import { Fragment } from "../../fragment.js";
-import { attachElementList, ElementList } from "../_list.js";
-import { attachBaseElement, Element } from "../element.js";
-import {
-  attachPrimitiveSubElement,
-  createPrimitiveSubElement,
-  PrimitiveSubElement,
-} from "./sub_element.js";
+import { createElementModel } from "../_create.js";
+import { ElementModel } from "../element.js";
+import { PrimitiveSubElementModel } from "./sub_element.js";
 
-export type PrimitiveElement = Element<PrimitiveElementData> & {
-  content: ElementList;
-  elements: ReactiveMap<Record<string, PrimitiveSubElement>>;
+export class PrimitiveElementModel
+  extends ElementModel<PrimitiveElementData>
+  implements PrimitiveElement
+{
+  private _content: AggregatedModelList<ElementModel<any>>;
+  private _subElements: AggregatedModelRecord<PrimitiveSubElementModel>;
 
-  allCssStylesheets: any[];
-  allCssStylesheets$: Observable<any[]>;
+  constructor({
+    init,
+    fragment,
+    cssStyleSheet,
+  }: {
+    init: PrimitiveElementData;
+    fragment: Fragment;
+    cssStyleSheet: CssStyleSheet;
+  }) {
+    super({ init, fragment, cssStyleSheet });
 
-  primitiveUrl: string | undefined;
-  primitiveUrl$: Observable<string | undefined>;
+    this._content = new AggregatedModelList({
+      init: init.content || [],
+      create: (data) =>
+        createElementModel({
+          init: data,
+          fragment: this._fragment,
+          cssStyleSheet: this._cssStyleSheet,
+        }),
+    });
 
-  primitiveAbsoluteUrl: string | undefined;
-  primitiveAbsoluteUrl$: Observable<string | undefined>;
+    this._subElements = new AggregatedModelRecord({
+      init: init.elements || {},
+      create: (data) =>
+        new PrimitiveSubElementModel({
+          init: data,
+          component: this._fragment.component,
+          cssStyleSheet: this._cssStyleSheet,
+        }),
+    });
 
-  primitiveFile: File | undefined;
-  primitiveFile$: Observable<File | undefined>;
-
-  props: Record<string, any>;
-  props$: Observable<Record<string, any>>;
-
-  prop(key: string): any;
-  prop$(key: string): Observable<any>;
-
-  setPrimitiveUrl(url: string | undefined): void;
-  setProp(key: string, value: ResolvableOrEvaluable<any> | undefined): void;
-
-  element(name: string, create?: true): PrimitiveSubElement;
-  element$(name: string, create?: true): Observable<PrimitiveSubElement>;
-
-  cloneIds(clone: y.Map<any>): void;
-};
-
-export function attachPrimitiveElement(
-  ymap: y.Map<any>,
-  fragment: Fragment
-): ymap is PrimitiveElement {
-  ymap.set("type", "primitive");
-  if (!attachBaseElement(ymap, fragment)) {
-    throw new Error("Failed to attach base element to ymap");
+    this.addDisposer(() => {
+      this._content.dispose();
+      this._subElements.dispose();
+    });
   }
-  const element = ymap as PrimitiveElement;
 
-  const content = getOrCreateYArray(ymap, "content");
-  attachElementList(getOrCreateYArray(ymap, "content"), fragment);
-  element.content = content as ElementList;
+  get data(): PrimitiveElementData {
+    return {
+      ...this._state.record,
+      id: this._id,
+      type: "primitive",
+      content: this._content.data,
+      elements: this._subElements.data,
+    };
+  }
 
-  element.elements = attachEnhancedReactiveMap(
-    getOrCreateYMap<y.Map<any>>(element, "elements"),
-    attachPrimitiveSubElement,
-    (ymap) => attachPrimitiveSubElement(ymap, fragment)
-  );
+  get data$(): Observable<PrimitiveElementData> {
+    return combineLatestMerged([
+      this._state.record$,
+      forkJoin({
+        content: this._content.data$,
+        elements: this._subElements.data$,
+      }),
+    ]);
+  }
 
-  Object.defineProperty(element, "allCssStylesheets", {
-    get() {
-      return [element.cssStyleSheet, ...element.content.allCssStylesheets];
-    },
-    configurable: true,
-  });
-  element.allCssStylesheets$ = combineLatestOrEmpty([
-    element.content.allCssStylesheets$,
-  ]).pipe(
-    map(([childrenSheets]) => [element.cssStyleSheet, ...childrenSheets.flat()])
-  );
+  restore(data: PrimitiveElementData): void {
+    this._state.setRecord({
+      ...data,
+      id: undefined,
+      content: undefined,
+      elements: undefined,
+    });
+    this._content.restore(data.content || []);
+    this._subElements.restore(data.elements || {});
+  }
 
-  const _props = new ResolvableRecord(
-    element.props ?? {},
-    fragment.component.project.infrastructure
-  );
+  get content(): Element[] {
+    return this._content.items;
+  }
 
-  const propsSubscription = _props.subscribe(
-    element.items$.pipe(map((v) => v.props ?? {}))
-  );
+  get content$(): Observable<Element[]> {
+    return this._content.items$;
+  }
 
-  setReactiveMapGetters(element, ["primitiveUrl", "props"]);
+  get allCssStylesheets(): any[] {
+    return [this._cssStyleSheet];
+  }
 
-  Object.defineProperty(element, "absoluteModuleUrl", {
-    get() {
-      return element.primitiveUrl
-        ? fragment.component.project.absoluteFileUrl(element.primitiveUrl)
-        : undefined;
-    },
-  });
+  get allCssStylesheets$(): Observable<any[]> {
+    return of([this._cssStyleSheet]);
+  }
 
-  element.primitiveAbsoluteUrl$ = element.primitiveUrl$.pipe(
-    map((url) => {
-      return url ? fragment.component.project.absoluteFileUrl(url) : undefined;
-    })
-  );
+  get primitiveUrl(): string | undefined {
+    return this._state.record.primitiveUrl;
+  }
 
-  element.prop = (key: string) => {
-    return element.props[key];
-  };
+  get primitiveUrl$(): Observable<string | undefined> {
+    return this._state.entry$("primitiveUrl");
+  }
 
-  element.prop$ = (key: string) => {
-    return element.props$.pipe(map((props) => props[key]));
-  };
+  get primitiveAbsoluteUrl(): string | undefined {
+    return this._state.record.primitiveAbsoluteUrl;
+  }
 
-  element.setProp = (
-    key: string,
-    value: ResolvableOrEvaluable<any> | undefined
-  ) => {
-    const props = { ...element.get("props") };
+  get primitiveAbsoluteUrl$(): Observable<string | undefined> {
+    return this._state.entry$("primitiveAbsoluteUrl");
+  }
+
+  get primitiveFile(): File | undefined {
+    return this._state.record.primitiveFile;
+  }
+
+  get primitiveFile$(): Observable<File | undefined> {
+    return this._state.entry$("primitiveFile");
+  }
+
+  get props(): Record<string, any> {
+    return this._state.record.props || {};
+  }
+
+  get props$(): Observable<Record<string, any>> {
+    return this._state.entry$("props");
+  }
+
+  prop(key: string): any {
+    return this.props[key];
+  }
+
+  prop$(key: string): Observable<any> {
+    return this.props$.pipe(map((props) => props[key]));
+  }
+
+  setPrimitiveUrl(url: string | undefined): void {
+    this._state.set("primitiveUrl", url);
+  }
+
+  setProp(key: string, value: ResolvableOrEvaluable<any> | undefined): void {
+    const props = { ...this.props };
+
     if (value === undefined) {
       delete props[key];
     } else {
       props[key] = value;
     }
-    element.set("props", props);
-  };
 
-  element.element = (name: string, create?: true) => {
-    let el = element.elements.get(name);
-    if (!el && create) {
-      element.elements.set(name, createPrimitiveSubElement(fragment));
-      el = element.elements.get(name);
-    }
-    return el!;
-  };
-
-  element.element$ = (name: string, create?: true) => {
-    return element.elements.items$.pipe(
-      map((elements) => elements[name]),
-      tap((el) => {
-        if (!el && create) {
-          element.elements.set(name, createPrimitiveSubElement(fragment));
-        }
-      }),
-      filter((el) => !!el || !create)
-    ) as any;
-  };
-
-  const baseDispose = (element as any).dispose?.bind(element);
-  element.dispose = () => {
-    propsSubscription.unsubscribe();
-    _props.dispose();
-    element.elements.dispose();
-    if (baseDispose) baseDispose();
-  };
-
-  element.cloneIds = (clone: y.Map<any>) => {
-    element.cloneOwnId(clone);
-  };
-
-  setEnhancer(element, attachPrimitiveElement);
-  return true;
-}
-
-export function createPrimitiveElement(fragment: Fragment): PrimitiveElement {
-  const ymap = new y.Map<any>();
-  if (!attachPrimitiveElement(ymap, fragment)) {
-    throw new Error("Failed to create PrimitiveElement");
+    this._state.set("props", props);
   }
-  return ymap as PrimitiveElement;
+
+  element(name: string, create?: true): PrimitiveSubElement {
+    if (this._subElements.state.record[name]) {
+      return this._subElements.state.record[name];
+    }
+
+    if (create) {
+      const element = new PrimitiveSubElementModel({
+        init: {
+          interactions: {},
+        },
+        component: this._fragment.component,
+        cssStyleSheet: this._cssStyleSheet,
+      });
+
+      this._subElements.state.set(name, element);
+      return element;
+    }
+
+    throw new Error(`Element ${name} not found`);
+  }
+
+  element$(name: string, create?: true): Observable<PrimitiveSubElement> {
+    return this._subElements.state.record$.pipe(
+      map((record) => {
+        if (record[name]) {
+          return record[name];
+        }
+
+        if (create) {
+          const element = new PrimitiveSubElementModel({
+            init: {
+              interactions: {},
+            },
+            component: this._fragment.component,
+            cssStyleSheet: this._cssStyleSheet,
+          });
+
+          this._subElements.state.set(name, element);
+          return element;
+        }
+
+        throw new Error(`Element ${name} not found`);
+      })
+    );
+  }
 }

@@ -1,61 +1,90 @@
 import { AppVariableData } from "@elllphnt/elementa-base";
 import {
-  attachReactiveMap,
-  ReactiveMap,
-  setEnhancer,
-  setReactiveMapGetters,
+  Model,
+  RecordState,
+  combineLatestMerged,
 } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import * as y from "yjs";
-import { App } from "./app.js"; // use updated App type
+import { AppVariable } from "../../_interfaces/app/variable.js";
+import { AppModel } from "./app.js";
 
-export type AppVariable = ReactiveMap<AppVariableData> & {
-  app: App;
+export class AppVariableModel
+  extends Model<AppVariableData>
+  implements AppVariable
+{
+  private _state: RecordState<Partial<AppVariableData>>;
 
-  varName: string;
-  varName$: Observable<string>;
+  constructor({ init, app }: { init: AppVariableData; app: AppModel }) {
+    super();
 
-  name: string;
-  name$: Observable<string>;
+    this._state = new RecordState({
+      init,
+    });
 
-  tsType: string;
-  tsType$: Observable<string>;
+    this._app = app;
 
-  scope: string | undefined;
-  scope$: Observable<string | undefined>;
-
-  description: string | undefined;
-  description$: Observable<string | undefined>;
-};
-
-export function attachAppVariable(
-  ymap: y.Map<any>,
-  app: App
-): ymap is AppVariable {
-  if (!attachReactiveMap<AppVariableData>(ymap)) {
-    throw new Error("Failed to attach reactive map to ymap");
+    this.addDisposer(() => {
+      this._state.dispose();
+    });
   }
-  const rxMap = ymap;
-  const variable = rxMap as AppVariable;
 
-  variable.app = app;
+  private _app: AppModel;
 
-  setReactiveMapGetters(variable, [
-    "varName",
-    "name",
-    "tsType",
-    "scope",
-    "description",
-  ]);
-
-  setEnhancer(variable, attachAppVariable);
-  return true;
-}
-
-export function createAppVariable(app: App): AppVariable {
-  const ymap = new y.Map<any>();
-  if (!attachAppVariable(ymap, app)) {
-    throw new Error("Failed to attach app variable");
+  get app(): AppModel {
+    return this._app;
   }
-  return ymap;
+
+  get data(): AppVariableData {
+    return {
+      ...this._state.record,
+    };
+  }
+
+  get data$(): Observable<AppVariableData> {
+    return combineLatestMerged([this._state.record$]);
+  }
+
+  restore(data: AppVariableData) {
+    this._state.setRecord({ ...data });
+  }
+
+  get varName(): string | undefined {
+    return this._state.record.varName;
+  }
+
+  get varName$(): Observable<string | undefined> {
+    return this._state.entry$("varName");
+  }
+
+  get name(): string | undefined {
+    return this._state.record.name;
+  }
+
+  get name$(): Observable<string | undefined> {
+    return this._state.entry$("name");
+  }
+
+  get tsType(): string | undefined {
+    return this._state.record.tsType;
+  }
+
+  get tsType$(): Observable<string | undefined> {
+    return this._state.entry$("tsType");
+  }
+
+  get scope(): string | undefined {
+    return this._state.record.scope;
+  }
+
+  get scope$(): Observable<string | undefined> {
+    return this._state.entry$("scope");
+  }
+
+  get description(): string | undefined {
+    return this._state.record.description;
+  }
+
+  get description$(): Observable<string | undefined> {
+    return this._state.entry$("description");
+  }
 }

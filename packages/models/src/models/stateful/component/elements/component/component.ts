@@ -3,224 +3,202 @@ import {
   ResolvableOrEvaluable,
 } from "@elllphnt/elementa-base";
 import {
-  attachEnhancedReactiveMap,
-  combineLatestOrEmpty,
-  getOrCreateYMap,
-  ReactiveMap,
-  setEnhancer,
-  setReactiveMapGetters,
+  AggregatedModelRecord,
+  combineLatestMerged,
 } from "@elllphnt/elementa-utils";
-import { filter, map, Observable, switchMap, tap } from "rxjs";
-import * as y from "yjs";
-import { ResolvableRecord } from "../../../../_lib/resolvable.js";
-import { CssStyleSheet } from "../../../../css/_.js";
-import { ModelFile } from "../../../../infrastructure/_.js";
-import { Component } from "../../component.js";
+import { Observable, forkJoin, map } from "rxjs";
+import { CssStyleSheet } from "../../../../../css/_.js";
+import { ComponentElement } from "../../../../_interfaces/component/elements/component/component.js";
+import { SlotFill } from "../../../../_interfaces/component/elements/component/slot_fill.js";
+import { FileModel } from "../../../file/file.js";
+import { ComponentModel } from "../../component.js";
 import { Fragment } from "../../fragment.js";
-import { Identifiable } from "../../identifiable.js";
-import { attachBaseElement, Element } from "../element.js";
-import { attachSlotFill, createSlotFill, SlotFill } from "./slot_fill.js";
+import { ElementModel } from "../element.js";
+import { SlotFillModel } from "./slot_fill.js";
 
-export type ComponentElement = Element<ComponentElementData> & {
-  fills: ReactiveMap<Record<string, SlotFill>>;
+export class ComponentElementModel
+  extends ElementModel<ComponentElementData>
+  implements ComponentElement
+{
+  private _fills: AggregatedModelRecord<SlotFillModel>;
+  private _localComponent?: FileModel<ComponentModel>;
 
-  allCssStylesheets: CssStyleSheet[];
-  allCssStylesheets$: Observable<CssStyleSheet[]>;
+  constructor({
+    init,
+    fragment,
+    cssStyleSheet,
+  }: {
+    init: ComponentElementData;
+    fragment: Fragment;
+    cssStyleSheet: CssStyleSheet;
+  }) {
+    super({ init, fragment, cssStyleSheet });
 
-  componentUrl: string | undefined;
-  componentUrl$: Observable<string | undefined>;
+    this._fills = new AggregatedModelRecord({
+      init: init.fills || {},
+      create: (data) =>
+        new SlotFillModel({
+          init: data,
+          component: this._fragment.component,
+          cssStyleSheet: this._cssStyleSheet,
+        }),
+    });
 
-  absoluteComponentUrl: string | undefined;
-  absoluteComponentUrl$: Observable<string | undefined>;
+    this._localComponent = init.localComponent;
 
-  localComponent: ModelFile<Component> | undefined;
-  localComponent$: Observable<ModelFile<Component> | undefined>;
-
-  componentName: string | undefined;
-  componentName$: Observable<string | undefined>;
-
-  props: Record<string, any>;
-  props$: Observable<Record<string, any>>;
-
-  prop(key: string): any;
-  prop$(key: string): Observable<any>;
-
-  fill(id: string, create?: true): SlotFill;
-  fill$(id: string, create?: true): Observable<SlotFill>;
-
-  setProp(key: string, value: ResolvableOrEvaluable<any> | undefined): void;
-};
-
-/**
- * Attach ComponentElement behavior to a y.Map
- */
-export function attachComponentElement(
-  ymap: y.Map<any>,
-  fragment: Fragment
-): ymap is ComponentElement {
-  ymap.set("type", "component");
-
-  if (!attachBaseElement(ymap, fragment)) {
-    throw new Error("Failed to attach base element to ymap");
+    this.addDisposer(() => {
+      this._fills.dispose();
+    });
   }
-  const element = ymap;
-  const componentElement = element as ComponentElement;
 
-  componentElement.fills = attachEnhancedReactiveMap(
-    getOrCreateYMap<y.Map<any>>(element, "fills"),
-    attachSlotFill,
-    (ymap) => attachSlotFill(ymap, fragment)
-  );
+  get componentUrl(): string | undefined {
+    return this._state.record.componentUrl;
+  }
 
-  setReactiveMapGetters(componentElement, ["componentUrl"]);
+  get componentUrl$(): Observable<string | undefined> {
+    return this._state.entry$("componentUrl");
+  }
 
-  const _props = new ResolvableRecord(
-    (componentElement.get("props") as Record<string, any>) ?? {},
-    fragment.component.project.infrastructure
-  );
+  get localComponent(): FileModel<ComponentModel> | undefined {
+    return this._localComponent;
+  }
 
-  const propsSubscription = _props.subscribe(
-    componentElement.items$.pipe(map((v) => v.props ?? {}))
-  );
+  get localComponent$(): Observable<FileModel<ComponentModel> | undefined> {
+    return this._state.record$.pipe(map(() => this._localComponent));
+  }
 
-  Object.defineProperty(componentElement, "allCssStylesheets", {
-    get() {
-      return [
-        ...componentElement.allCssStylesheets,
-        ...Object.values([...componentElement.fills.values()]).flatMap(
-          (s: SlotFill) => s.allCssStylesheets
-        ),
-      ];
-    },
-    configurable: true,
-  });
+  get data(): ComponentElementData {
+    return {
+      ...this._state.record,
+      id: this._id,
+      type: "component",
+      fills: this._fills.data,
+      localComponent: this._localComponent,
+    };
+  }
 
-  element.allCssStylesheets$ = combineLatestOrEmpty([
-    element.allCssStylesheets$,
-    componentElement.fills.items$.pipe(
-      switchMap((slots) =>
-        combineLatestOrEmpty(
-          Object.values(slots).map((slot) => slot.allCssStylesheets$)
-        )
-      )
-    ),
-  ]).pipe(
-    map(([selfSheets, slotSheets]) => [...selfSheets, ...slotSheets.flat()])
-  );
+  get data$(): Observable<ComponentElementData> {
+    return combineLatestMerged([
+      this._state.record$,
+      forkJoin({
+        fills: this._fills.data$,
+      }),
+    ]);
+  }
 
-  Object.defineProperty(componentElement, "absoluteComponentUrl", {
-    get() {
-      return componentElement.componentUrl
-        ? fragment.component.project.absoluteFileUrl(
-            componentElement.componentUrl
-          )
-        : undefined;
-    },
-  });
+  restore(data: ComponentElementData): void {
+    this._state.setRecord({
+      ...data,
+      id: undefined,
+      fills: undefined,
+      localComponent: undefined,
+    });
+    this._fills.restore(data.fills || {});
+    this._localComponent = data.localComponent;
+  }
 
-  componentElement.absoluteComponentUrl$ = componentElement.componentUrl$.pipe(
-    map((url) => {
-      return url ? fragment.component.project.absoluteFileUrl(url) : undefined;
-    })
-  );
+  get fills(): Record<string, SlotFill> {
+    return this._fills.state.record;
+  }
 
-  Object.defineProperty(componentElement, "localComponent", {
-    get() {
-      return componentElement.absoluteComponentUrl
-        ? fragment.component.project.infrastructure.component(
-            componentElement.absoluteComponentUrl
-          )
-        : undefined;
-    },
-  });
+  get fills$(): Observable<Record<string, SlotFill>> {
+    return this._fills.state.record$;
+  }
 
-  componentElement.localComponent$ =
-    componentElement.absoluteComponentUrl$.pipe(
-      map((url) => {
-        return url
-          ? fragment.component.project.infrastructure.component(url)
-          : undefined;
+  get allCssStylesheets(): CssStyleSheet[] {
+    return [
+      this._cssStyleSheet,
+      ...Object.values(this._fills.state.record).flatMap(
+        (fill) => fill.allCssStylesheets
+      ),
+    ];
+  }
+
+  get allCssStylesheets$(): Observable<CssStyleSheet[]> {
+    return this._fragment.allCssStylesheets$;
+  }
+
+  get props(): Record<string, any> {
+    return this._state.record.props || {};
+  }
+
+  get props$(): Observable<Record<string, any>> {
+    return this._state.entry$("props");
+  }
+
+  prop(key: string): any {
+    return this.props[key];
+  }
+
+  prop$(key: string): Observable<any> {
+    return this.props$.pipe(map((props) => props[key]));
+  }
+
+  fill(id: string, create?: true): SlotFill {
+    if (this._fills.state.record[id]) {
+      return this._fills.state.record[id];
+    }
+
+    if (create) {
+      const fill = new SlotFillModel({
+        init: {
+          content: [],
+          interactions: {},
+        },
+        component: this._fragment.component,
+        cssStyleSheet: this._cssStyleSheet,
+      });
+
+      this._fills.state.set(id, fill);
+      return fill;
+    }
+
+    throw new Error(`Slot fill ${id} not found`);
+  }
+
+  fill$(id: string, create?: true): Observable<SlotFill> {
+    return this._fills.state.record$.pipe(
+      map((record) => {
+        if (record[id]) {
+          return record[id];
+        }
+
+        if (create) {
+          const fill = new SlotFillModel({
+            init: {
+              content: [],
+              interactions: {},
+            },
+            component: this._fragment.component,
+            cssStyleSheet: this._cssStyleSheet,
+          });
+
+          this._fills.state.set(id, fill);
+          return fill;
+        }
+
+        throw new Error(`Slot fill ${id} not found`);
       })
     );
-
-  Object.defineProperty(componentElement, "props", {
-    get() {
-      return _props.value;
-    },
-  });
-
-  componentElement.props$ = _props.value$;
-
-  componentElement.prop = (key: string) => {
-    return componentElement.props[key];
-  };
-
-  componentElement.prop$ = (key: string) => {
-    return componentElement.props$.pipe(map((props) => props[key]));
-  };
-
-  componentElement.setProp = (
-    key: string,
-    value: ResolvableOrEvaluable<any> | undefined
-  ) => {
-    const newProps = { ...componentElement.props };
-    if (value === undefined) {
-      delete newProps[key];
-    } else {
-      newProps[key] = value;
-    }
-    element.set("props", newProps);
-  };
-
-  componentElement.fill = (id: string, create?: true) => {
-    let item = componentElement.fills.get(id);
-    if (!item && create) {
-      componentElement.fills.set(id, createSlotFill(fragment));
-      item = componentElement.fills.get(id);
-    }
-    return item!;
-  };
-
-  componentElement.fill$ = (id: string, create?: true) => {
-    return componentElement.fills.items$.pipe(
-      map((fills) => fills[id]),
-      tap((item) => {
-        if (!item && create) {
-          componentElement.fills.set(id, createSlotFill(fragment));
-        }
-      }),
-      filter((item) => !!item || !create)
-    ) as any;
-  };
-
-  const baseDispose = (element as any).dispose?.bind(element);
-  element.dispose = () => {
-    propsSubscription.unsubscribe();
-    _props.dispose();
-    componentElement.fills.dispose();
-    if (baseDispose) baseDispose();
-  };
-
-  componentElement.cloneIds = (clone: y.Map<any>) => {
-    componentElement.cloneOwnId(clone);
-    const fillsClone = getOrCreateYMap(clone, "fills");
-    Identifiable.cloneIdentifiableMapIds(
-      Object.fromEntries(componentElement.fills.entries()),
-      fillsClone as any
-    );
-  };
-
-  setEnhancer(element, attachComponentElement);
-  return true;
-}
-
-/**
- * Create a new local ComponentElement model
- */
-export function createComponentElement(fragment: Fragment): ComponentElement {
-  const ymap = new y.Map<any>();
-  if (!attachComponentElement(ymap, fragment)) {
-    throw new Error("Failed to create ComponentElement");
   }
-  return ymap as ComponentElement;
+
+  setProp(key: string, value: ResolvableOrEvaluable<any> | undefined): void {
+    const props = { ...this.props };
+
+    if (value === undefined) {
+      delete props[key];
+    } else {
+      props[key] = value;
+    }
+
+    this._state.set("props", props);
+  }
+
+  setFill(id: string, value: SlotFill): void {
+    this._fills.state.set(id, value);
+  }
+
+  setComponentUrl(url: string | undefined): void {
+    this._state.set("componentUrl", url);
+  }
 }
