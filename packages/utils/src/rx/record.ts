@@ -1,6 +1,6 @@
 import { map, Observable } from "rxjs";
 import { NonOptionalKeys } from "../types/_.js";
-import { State } from "./state";
+import { State } from "./state.js";
 
 export class RecordState<T extends Record<string, unknown>> extends State<T> {
   get record(): T {

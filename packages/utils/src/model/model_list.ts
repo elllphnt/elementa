@@ -1,8 +1,8 @@
 import { Observable } from "rxjs";
-import { reconcileList } from "../core/_";
-import { combineLatestOrEmpty } from "../rx/_";
+import { reconcileList } from "../core/_.js";
+import { combineLatestOrEmpty } from "../rx/_.js";
 import { ListState } from "../rx/list.js";
-import { Model, ModelData } from "./model";
+import { Model, ModelData } from "./model.js";
 
 export class AggregatedModelList<M extends Model<unknown>> extends Model<
   ModelData<M>[]

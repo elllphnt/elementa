@@ -1,6 +1,6 @@
 export * from "./_base.js";
 export * from "./_element.js";
-export * from "./component/_.js";
+export * from "./component.js";
 export * from "./container.js";
 export * from "./media.js";
 export * from "./primitive/_.js";

@@ -1,4 +1,4 @@
-import { isProd } from "./env";
+import { isProd } from "./env.js";
 
 /**
  * Assert a condition: throws in dev, logs in prod.

@@ -1,8 +1,8 @@
 import { map, Observable, switchMap } from "rxjs";
-import { reconcileMap } from "..";
-import { combineLatestOrEmpty } from "../rx/_";
+import { reconcileMap } from "../core/_.js";
+import { combineLatestOrEmpty } from "../rx/_.js";
 import { RecordState } from "../rx/record.js";
-import { Model, ModelData } from "./model";
+import { Model, ModelData } from "./model.js";
 
 export class AggregatedModelRecord<M extends Model<unknown>> extends Model<
   Record<string, ModelData<M>>

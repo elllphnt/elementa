@@ -4,7 +4,12 @@
     "rootDir": "src",
     "outDir": "dist",
     "strict": false,
-    "strictFunctionTypes": false
+    "strictFunctionTypes": false,
+    "tsBuildInfoFile": "build/.tsbuildinfo",
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./*"]
+    }
   },
   "include": ["src"],
   "exclude": ["src/models/crdt"],

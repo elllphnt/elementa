@@ -94,7 +94,10 @@ export class SlotFillModel extends Model<SlotFillData> implements SlotFill {
     super({ key: keyManager.next("slot-fill") });
 
     this.project = project;
-    this._stylesheet = new StylesheetModel({ init: init.stylesheet, project });
+    this._stylesheet = new StylesheetModel({
+      init: init.stylesheet || {},
+      project,
+    });
     this.cssStyleSheet = new StylesheetCssStyleSheet({
       target: cssStyleSheetTarget || this.key,
       stylesheet: this._stylesheet,

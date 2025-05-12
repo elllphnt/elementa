@@ -1,6 +1,6 @@
 import { distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
-import { ReactiveMap } from "./map";
+import { ReactiveMap } from "./map.js";
 
 let keyCounter = Math.round(Math.random() * 100000);
 export function nextKey(): number {

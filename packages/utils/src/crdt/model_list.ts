@@ -1,12 +1,12 @@
 import * as y from "yjs";
-import { assert } from "../core/assert";
+import { assert } from "../core/assert.js";
 import {
   Enhancer,
   isFromEnhancer,
   LooseEnhancer,
   setEnhancer,
-} from "../core/enhancer";
-import { attachReactiveList, ReactiveList } from "./list";
+} from "../core/enhancer.js";
+import { attachReactiveList, ReactiveList } from "./list.js";
 
 export function attachEnhancedReactiveList<T>(
   yarray: y.Array<any>,

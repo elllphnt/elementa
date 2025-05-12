@@ -1,5 +1,5 @@
 import { BehaviorSubject, Observable } from "rxjs";
-import { Disposable } from "../core/_";
+import { Disposable } from "../core/_.js";
 
 export abstract class State<D> extends Disposable {
   private _value$: BehaviorSubject<D>;

@@ -1,5 +1,5 @@
 import { Observable } from "rxjs";
-import { State } from "./state";
+import { State } from "./state.js";
 
 export class ValueState<D> extends State<D> {
   get value(): D {

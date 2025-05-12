@@ -1,8 +1,8 @@
 import { BehaviorSubject, Observable } from "rxjs";
 import * as y from "yjs";
-import { assert } from "../core/assert";
-import { setEnhancer } from "../core/enhancer";
-import { nextKey, setObjectGetter, setObjectProperty } from "./_utils";
+import { assert } from "../core/assert.js";
+import { setEnhancer } from "../core/enhancer.js";
+import { nextKey, setObjectGetter, setObjectProperty } from "./_utils.js";
 
 export type ReactiveList<T> = {
   key: number;

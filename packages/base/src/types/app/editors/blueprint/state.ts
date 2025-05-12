@@ -10,7 +10,7 @@ export type BlueprintNodeData = {
 };
 
 export type AppBlueprintData = {
-  nodes: Record<string, BlueprintNodeData>;
+  nodes?: Record<string, BlueprintNodeData>;
 };
 
 // Schemas

@@ -1,2 +1,2 @@
-export * from "./strip_object_fields";
-export * from "./strip_undefined";
+export * from "./strip_object_fields.js";
+export * from "./strip_undefined.js";

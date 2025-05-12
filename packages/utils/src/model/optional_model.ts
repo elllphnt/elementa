@@ -1,6 +1,6 @@
 import { Observable, of, switchMap } from "rxjs";
-import { ValueState } from "../rx/_";
-import { Model, ModelData } from "./model";
+import { ValueState } from "../rx/_.js";
+import { Model, ModelData } from "./model.js";
 
 export class OptionalModel<M extends Model<any>> extends Model<
   ModelData<M> | undefined

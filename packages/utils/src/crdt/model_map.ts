@@ -1,12 +1,12 @@
 import * as y from "yjs";
-import { assert } from "../core/assert";
+import { assert } from "../core/assert.js";
 import {
   Enhancer,
   isFromEnhancer,
   LooseEnhancer,
   setEnhancer,
-} from "../core/enhancer";
-import { attachReactiveMap, ReactiveMap } from "./map";
+} from "../core/enhancer.js";
+import { attachReactiveMap, ReactiveMap } from "./map.js";
 
 export function attachEnhancedReactiveMap<T>(
   ymap: y.Map<any>,
