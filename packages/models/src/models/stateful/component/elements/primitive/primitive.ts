@@ -45,12 +45,16 @@ export class PrimitiveElementModel
   get allCssStylesheets(): CssStyleSheet[] {
     return [
       this.cssStyleSheet,
+      ...Object.values(this.content).map((s) => s.cssStyleSheet),
       ...Object.values(this.subElements).map((s) => s.cssStyleSheet),
     ];
   }
   get allCssStylesheets$(): Observable<CssStyleSheet[]> {
     return combineLatestArrays([
       of([this.cssStyleSheet]),
+      this.content$.pipe(
+        map((s) => Object.values(s).map((s) => s.cssStyleSheet))
+      ),
       this.subElements$.pipe(
         map((s) => Object.values(s).map((s) => s.cssStyleSheet))
       ),

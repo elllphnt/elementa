@@ -1,27 +1,77 @@
 import { BaseStateData } from "@elllphnt/elementa-base";
-import { keyManager, RecordState } from "@elllphnt/elementa-utils";
+import { assert, keyManager, RecordState } from "@elllphnt/elementa-utils";
 import { Observable, of } from "rxjs";
-import { BaseState } from "~/src/models/_interfaces/_.js";
 import { Component } from "../../../_interfaces/component/component.js";
+import { BaseState } from "../../../_interfaces/component/states/_base.js";
 import { IdentifiableModel } from "../../_shared/identifiable.js";
 
-export abstract class BaseStateModel<T extends BaseStateData<string>>
+export abstract class BaseStateModel<
+    T extends BaseStateData<string>,
+    K extends keyof T = never
+  >
   extends IdentifiableModel<T>
   implements BaseState<T["type"]>
 {
-  protected _state: RecordState<Omit<T, "id">>;
-  protected _component: Component;
-  protected _id: string;
+  // readonly properties
+  readonly type: T["type"];
+  readonly component: Component;
 
+  // protected properties
+  protected _state: RecordState<Omit<T, "id" | "type" | K>>;
+
+  // getters
+  private get _baseState() {
+    return this._state as RecordState<
+      Omit<BaseStateData<T["type"]>, "id" | "type">
+    >;
+  }
+
+  get name(): string | undefined {
+    return this._baseState.entry("name");
+  }
+
+  get name$(): Observable<string | undefined> {
+    return this._baseState.entry$("name");
+  }
+
+  get varName(): string | undefined {
+    return this._baseState.entry("varName");
+  }
+
+  get varName$(): Observable<string | undefined> {
+    return this._baseState.entry$("varName");
+  }
+
+  // data getters
+  get _data(): BaseStateData<T["type"]> {
+    return {
+      ...super._data,
+      type: this.type,
+      ...this._state.record,
+    };
+  }
+
+  get _data$(): Observable<BaseStateData<T["type"]>> {
+    return of({
+      ...super._data,
+      type: this.type,
+      ...this._state.record,
+    });
+  }
+
+  abstract get data(): T;
+  abstract get data$(): Observable<T>;
+
+  // constructor
   constructor({ init, component }: { init: T; component: Component }) {
-    const { id, ...stateData } = init;
+    const { id, type, ...stateData } = init;
     super({ id, key: keyManager.next("state") });
 
-    this._id = init.id;
-    this._component = component;
+    this.type = type;
+    this.component = component;
 
     this._state = new RecordState({
-      init: stateData,
+      init: stateData as Omit<T, "id" | "type" | K>,
     });
 
     this.addDisposer(() => {
@@ -29,56 +79,11 @@ export abstract class BaseStateModel<T extends BaseStateData<string>>
     });
   }
 
-  get id(): string {
-    return this._id;
-  }
-
-  get component(): Component {
-    return this._component;
-  }
-
-  get type(): string {
-    return this._state.record.type || "";
-  }
-
-  get name(): string | undefined {
-    return this._state.entry("name");
-  }
-
-  get name$(): Observable<string | undefined> {
-    return this._state.entry$("name");
-  }
-
-  get varName(): string | undefined {
-    return this._state.entry("varName");
-  }
-
-  get varName$(): Observable<string | undefined> {
-    return this._state.entry$("varName");
-  }
-
-  // Base data getters
-  get _data(): Omit<T, "type"> {
-    return {
-      ...this._state.record,
-      id: this._id,
-    } as any;
-  }
-
-  get _data$(): Observable<Omit<T, "type">> {
-    return of({
-      ...this._state.record,
-      id: this._id,
-    } as any);
-  }
-
-  // Derived classes must implement these
-  abstract get data(): T;
-  abstract get data$(): Observable<T>;
-
-  // Restore method
+  // restore method
   restore(data: T): void {
-    const { id, ...stateData } = data;
-    this._state.setRecord(stateData);
+    const { id, type, ...stateData } = data;
+    assert(type === this.type, "State type mismatch");
+    super.restore({ id });
+    this._state.setRecord(stateData as Omit<T, "id" | "type" | K>);
   }
 }

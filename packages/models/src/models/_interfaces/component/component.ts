@@ -1,18 +1,17 @@
 import { Observable } from "rxjs";
-import { CssStyleSheet } from "../../../css/_.js";
 import { Project } from "../../../infrastructure/_.js";
 import { DataInput } from "./data_input.js";
 import { ElementaPreview, ElementaStage } from "./editors/_.js";
 import { Fragment } from "./fragment.js";
 import { State } from "./states/_.js";
-import { Template } from "./template.js";
 
 export interface Component {
   project: Project;
+
   stage: ElementaStage;
   preview: ElementaPreview;
 
-  template: Template;
+  template: Fragment;
 
   props$: Observable<DataInput[]>;
   props: DataInput[];
@@ -23,12 +22,9 @@ export interface Component {
   states$: Observable<State[]>;
   states: State[];
 
-  name: string;
-  name$: Observable<string>;
+  name: string | undefined;
+  name$: Observable<string | undefined>;
 
   fragment(id: string): Fragment | undefined;
   fragment$(id: string): Observable<Fragment | undefined>;
-
-  allStylesheets$: Observable<CssStyleSheet[]>;
-  allStylesheets: CssStyleSheet[];
 }

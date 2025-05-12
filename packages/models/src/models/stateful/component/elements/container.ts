@@ -1,9 +1,12 @@
 import { ContainerElementData } from "@elllphnt/elementa-base";
 import {
   AggregatedModelList,
+  combineLatestArrays,
   combineLatestMerged,
+  combineLatestOrEmpty,
 } from "@elllphnt/elementa-utils";
-import { forkJoin, Observable } from "rxjs";
+import { forkJoin, map, Observable, of, switchMap } from "rxjs";
+import { CssStyleSheet } from "~/src/css/_.js";
 import { Project } from "../../../../infrastructure/_.js";
 import { Element } from "../../../_interfaces/_.js";
 import { ContainerElement } from "../../../_interfaces/component/elements/container.js";
@@ -24,6 +27,24 @@ export class ContainerElementModel
 
   get content$(): Observable<Element[]> {
     return this._content.state.items$;
+  }
+
+  get allCssStylesheets(): CssStyleSheet[] {
+    return [
+      this.cssStyleSheet,
+      ...this.content.flatMap((c) => c.allCssStylesheets),
+    ];
+  }
+  get allCssStylesheets$(): Observable<CssStyleSheet[]> {
+    return combineLatestArrays([
+      of([this.cssStyleSheet]),
+      this.content$.pipe(
+        switchMap((c) =>
+          combineLatestOrEmpty(c.map((c) => c.allCssStylesheets$))
+        ),
+        map((c) => c.flat())
+      ),
+    ]);
   }
 
   // data getters

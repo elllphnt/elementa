@@ -1,21 +1,15 @@
 import { Observable } from "rxjs";
+import { Project } from "~/src/infrastructure/_.js";
 import { CssStyleSheet } from "../../../css/_.js";
 import { Identifiable } from "../_shared/identifiable.js";
-import { Component } from "./component.js";
 import { DataInput } from "./data_input.js";
-import { BaseElement } from "./elements/_.js";
-
-export enum FragmentVariant {
-  Template = "template",
-  Fragment = "fragment",
-}
+import { Element } from "./elements/_.js";
 
 export interface Fragment extends Identifiable {
-  component: Component;
-  variant: FragmentVariant;
+  project: Project;
 
-  content: BaseElement[];
-  content$: Observable<BaseElement[]>;
+  content: Element[];
+  content$: Observable<Element[]>;
 
   params: DataInput[];
   params$: Observable<DataInput[]>;
@@ -25,7 +19,4 @@ export interface Fragment extends Identifiable {
 
   slotIds: string[];
   slotIds$: Observable<string[]>;
-
-  registerSlotId: (id: string) => void;
-  unregisterSlotId: (id: string) => void;
 }

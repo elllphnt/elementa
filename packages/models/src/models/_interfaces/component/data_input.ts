@@ -1,9 +1,6 @@
 import { Observable } from "rxjs";
-import { Component } from "./component.js";
 
 export interface DataInput {
-  component: Component;
-
   name: string;
   name$: Observable<string>;
 
