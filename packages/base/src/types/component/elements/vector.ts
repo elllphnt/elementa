@@ -16,8 +16,7 @@ export type VectorElementNodeData = {
 
 export type VectorNodeData = VectorTextNodeData | VectorElementNodeData;
 
-export type VectorElementData = BaseElementData & {
-  type: "vector";
+export type VectorElementData = BaseElementData<"vector"> & {
   width?: Evaluable<string | number>;
   height?: Evaluable<string | number>;
   viewBox?: Evaluable<string>;

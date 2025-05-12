@@ -3,33 +3,70 @@ import {
   Model,
   RecordState,
   combineLatestMerged,
+  keyManager,
 } from "@elllphnt/elementa-utils";
-import { Observable, map } from "rxjs";
-import { CssStyleSheet } from "../../../../../css/_.js";
-import { Component } from "../../../../_interfaces/component/component.js";
+import { Observable, forkJoin, map } from "rxjs";
+import { StylesheetCssStyleSheet } from "../../../../../css/_.js";
+import { Project } from "../../../../../infrastructure/_.js";
 import { PrimitiveSubElement } from "../../../../_interfaces/component/elements/primitive/sub_element.js";
+import { StylesheetModel } from "../../../style/stylesheet.js";
 
 export class PrimitiveSubElementModel
   extends Model<PrimitiveSubElementData>
   implements PrimitiveSubElement
 {
-  private _state: RecordState<Partial<PrimitiveSubElementData>>;
-  private _component: Component;
-  private _cssStyleSheet: CssStyleSheet;
+  readonly project: Project;
+  readonly cssStyleSheet: StylesheetCssStyleSheet;
 
+  // private properties
+  private _stylesheet: StylesheetModel;
+  private _state: RecordState<Partial<PrimitiveSubElementData>>;
+
+  get interactions(): Record<string, Expression> | undefined {
+    return this._state.entry("interactions");
+  }
+  get interactions$(): Observable<Record<string, Expression> | undefined> {
+    return this._state.entry$("interactions");
+  }
+
+  // data getters
+  get data(): PrimitiveSubElementData {
+    return {
+      ...this._state.record,
+      stylesheet: this._stylesheet.data,
+    };
+  }
+  get data$(): Observable<PrimitiveSubElementData> {
+    return combineLatestMerged([
+      this._state.record$,
+      forkJoin({
+        stylesheet: this._stylesheet.data$,
+      }),
+    ]);
+  }
+
+  // constructor
   constructor({
     init,
-    component,
-    cssStyleSheet,
+    project,
+    cssStyleSheetTarget,
   }: {
     init: PrimitiveSubElementData;
-    component: Component;
-    cssStyleSheet: CssStyleSheet;
+    project: Project;
+    cssStyleSheetTarget?: string;
   }) {
-    super();
+    super({ key: keyManager.next("primitive-sub-element") });
 
-    this._component = component;
-    this._cssStyleSheet = cssStyleSheet;
+    this.project = project;
+
+    this._stylesheet = new StylesheetModel({
+      init: init.stylesheet ?? {},
+      project,
+    });
+    this.cssStyleSheet = new StylesheetCssStyleSheet({
+      target: cssStyleSheetTarget ?? this.key,
+      stylesheet: this._stylesheet,
+    });
 
     this._state = new RecordState({
       init: {
@@ -44,44 +81,15 @@ export class PrimitiveSubElementModel
     });
   }
 
-  get component(): Component {
-    return this._component;
-  }
-
-  get cssStyleSheet(): CssStyleSheet {
-    return this._cssStyleSheet;
-  }
-
-  get data(): PrimitiveSubElementData {
-    return {
-      ...this._state.record,
-    };
-  }
-
-  get data$(): Observable<PrimitiveSubElementData> {
-    return combineLatestMerged([this._state.record$]);
-  }
-
-  restore(data: PrimitiveSubElementData): void {
-    this._state.setRecord({
-      ...data,
-    });
-  }
-
-  get interactions(): Record<string, Expression> {
-    return this._state.record.interactions || {};
-  }
-
-  get interactions$(): Observable<Record<string, Expression>> {
-    return this._state.entry$("interactions");
-  }
-
+  // methods
   interaction(event: string): Expression | undefined {
-    return this.interactions[event];
+    return this.interactions?.[event];
   }
 
   interaction$(event: string): Observable<Expression | undefined> {
-    return this.interactions$.pipe(map((interactions) => interactions[event]));
+    return this.interactions$.pipe(
+      map((interactions) => interactions?.[event])
+    );
   }
 
   setInteraction(event: string, interaction: Expression): void {
@@ -89,8 +97,16 @@ export class PrimitiveSubElementModel
     interactions[event] = interaction;
     this._state.set("interactions", interactions);
   }
+  clearInteraction(event: string): void {
+    const interactions = { ...this.interactions };
+    delete interactions[event];
+    this._state.set("interactions", interactions);
+  }
 
-  clearInteractions(): void {
-    this._state.set("interactions", {});
+  // restore method
+  restore(data: PrimitiveSubElementData): void {
+    this._state.setRecord({
+      ...data,
+    });
   }
 }

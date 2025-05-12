@@ -193,7 +193,7 @@ export class RouteTreeModel
   }
 
   constructor({ init, app }: { init: RouteTreeData; app: AppModel }) {
-    super({ id: init.id });
+    super(init);
 
     this.app = app;
 

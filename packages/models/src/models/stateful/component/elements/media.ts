@@ -4,12 +4,50 @@ import { Observable } from "rxjs";
 import { CssStyleSheet } from "../../../../css/_.js";
 import { MediaElement } from "../../../_interfaces/component/elements/media.js";
 import { Fragment } from "../fragment.js";
-import { ElementModel } from "./element.js";
+import { BaseElementModel } from "./_base.js";
 
 export class MediaElementModel
-  extends ElementModel<MediaElementData>
+  extends BaseElementModel<MediaElementData>
   implements MediaElement
 {
+  // getters
+  get media(): MediaData | undefined {
+    return this._state.entry("media");
+  }
+
+  get media$(): Observable<MediaData | undefined> {
+    return this._state.entry$("media");
+  }
+
+  get fit(): MediaElementData["fit"] | undefined {
+    return this._state.entry("fit");
+  }
+
+  get fit$(): Observable<MediaElementData["fit"] | undefined> {
+    return this._state.entry$("fit");
+  }
+
+  get position(): MediaElementData["position"] | undefined {
+    return this._state.entry("position");
+  }
+
+  get position$(): Observable<MediaElementData["position"] | undefined> {
+    return this._state.entry$("position");
+  }
+
+  // data getters
+  get data(): MediaElementData {
+    return {
+      ...super._data,
+      type: "media",
+    };
+  }
+
+  get data$(): Observable<MediaElementData> {
+    return combineLatestMerged([super._data$]);
+  }
+
+  // constructor
   constructor({
     init,
     fragment,
@@ -22,46 +60,11 @@ export class MediaElementModel
     super({ init, fragment, cssStyleSheet });
   }
 
-  get data(): MediaElementData {
-    return {
-      ...this._state.record,
-      id: this._id,
-      type: "media",
-    };
-  }
-
-  get data$(): Observable<MediaElementData> {
-    return combineLatestMerged([this._state.record$]);
-  }
-
+  // restore method
   restore(data: MediaElementData): void {
     this._state.setRecord({
       ...data,
       id: undefined,
     });
-  }
-
-  get media(): MediaData | undefined {
-    return this._state.record.media;
-  }
-
-  get media$(): Observable<MediaData | undefined> {
-    return this._state.entry$("media");
-  }
-
-  get fit(): MediaElementData["fit"] | undefined {
-    return this._state.record.fit;
-  }
-
-  get fit$(): Observable<MediaElementData["fit"] | undefined> {
-    return this._state.entry$("fit");
-  }
-
-  get position(): MediaElementData["position"] | undefined {
-    return this._state.record.position;
-  }
-
-  get position$(): Observable<MediaElementData["position"] | undefined> {
-    return this._state.entry$("position");
   }
 }

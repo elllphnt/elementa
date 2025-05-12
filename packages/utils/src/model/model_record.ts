@@ -7,7 +7,7 @@ import { Model, ModelData } from "./model";
 export class AggregatedModelRecord<M extends Model<unknown>> extends Model<
   Record<string, ModelData<M>>
 > {
-  private readonly create: (data: ModelData<M>) => M;
+  private readonly create: (data: ModelData<M>, key: string) => M;
 
   readonly state: RecordState<Record<string, M>>;
 
@@ -39,7 +39,7 @@ export class AggregatedModelRecord<M extends Model<unknown>> extends Model<
     create,
   }: {
     init?: Record<string, ModelData<M>>;
-    create: (data: ModelData<M>) => M;
+    create: (data: ModelData<M>, key: string) => M;
   }) {
     super();
 
@@ -47,7 +47,7 @@ export class AggregatedModelRecord<M extends Model<unknown>> extends Model<
 
     this.state = new RecordState<Record<string, M>>({
       init: Object.fromEntries(
-        Object.entries(init).map(([key, data]) => [key, this.create(data)])
+        Object.entries(init).map(([key, data]) => [key, this.create(data, key)])
       ),
     });
 
@@ -60,7 +60,7 @@ export class AggregatedModelRecord<M extends Model<unknown>> extends Model<
     const [next, removed] = reconcileMap({
       sources: data || {},
       targets: this.state.record,
-      create: (raw) => this.create(raw),
+      create: (raw, key: string) => this.create(raw, key),
       reconcile: (model, raw) => model.restore(raw),
     });
 

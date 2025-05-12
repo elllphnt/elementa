@@ -1,7 +1,7 @@
 import { ElementData } from "@elllphnt/elementa-base";
 import * as y from "yjs";
 import { Fragment } from "../../../_interfaces/_.js";
-import { Element } from "../../../_interfaces/component/elements/element.js";
+import { BaseElement } from "../../../_interfaces/component/elements/_base.js";
 import { attachComponentElement } from "./component/_.js";
 import { attachContainerElement } from "./container.js";
 import { attachMediaElement } from "./media.js";
@@ -13,7 +13,7 @@ import { attachVectorElement } from "./vector.js";
 export function attachElement(
   element: y.Map<any>,
   fragment: Fragment
-): element is y.Map<any> & Element {
+): element is y.Map<any> & BaseElement {
   const type = element.get("type") as ElementData["type"];
   switch (type) {
     case "component":

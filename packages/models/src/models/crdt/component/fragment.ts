@@ -11,9 +11,9 @@ import {
 import { BehaviorSubject, map, switchMap } from "rxjs";
 import * as y from "yjs";
 import {
+  BaseElement,
   Component,
   DataInput,
-  Element,
   Fragment,
 } from "../../_interfaces/_.js";
 import { attachDataInput } from "./data_input.js";
@@ -37,7 +37,7 @@ export function attachFragment(
 
   const content = getOrCreateYArray(fragment, "content");
   assert(
-    attachEnhancedReactiveList<Element>(content, attachElement, (ymap) =>
+    attachEnhancedReactiveList<BaseElement>(content, attachElement, (ymap) =>
       attachElement(ymap, fragment as unknown as Fragment)
     )
   );

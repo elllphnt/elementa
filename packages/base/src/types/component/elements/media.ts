@@ -33,8 +33,7 @@ export type VideoMediaData = BaseMediaData & {
 
 export type MediaData = ImageMediaData | VideoMediaData;
 
-export type MediaElementData = BaseElementData & {
-  type: "media";
+export type MediaElementData = BaseElementData<"media"> & {
   fit?: Evaluable<"contain" | "cover" | "fill" | "none" | "scale-down">;
   position?: {
     x?: Evaluable<LengthData | PercentData>;

@@ -1,9 +1,11 @@
 import { ResolvableOrEvaluable } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
-import { Element } from "../element.js";
+import { File } from "~/src/infrastructure/_.js";
+import { BaseElement } from "../_base.js";
+import { Element } from "../_element.js";
 import { PrimitiveSubElement } from "./sub_element.js";
 
-export interface PrimitiveElement extends Element {
+export interface PrimitiveElement extends BaseElement<"primitive"> {
   content: Element[];
   content$: Observable<Element[]>;
 
@@ -13,14 +15,14 @@ export interface PrimitiveElement extends Element {
   primitiveUrl: string | undefined;
   primitiveUrl$: Observable<string | undefined>;
 
-  primitiveAbsoluteUrl: string | undefined;
-  primitiveAbsoluteUrl$: Observable<string | undefined>;
-
   primitiveFile: File | undefined;
   primitiveFile$: Observable<File | undefined>;
 
-  props: Record<string, any>;
-  props$: Observable<Record<string, any>>;
+  props: Record<string, any> | undefined;
+  props$: Observable<Record<string, any> | undefined>;
+
+  subElements: Record<string, PrimitiveSubElement>;
+  subElements$: Observable<Record<string, PrimitiveSubElement>>;
 
   prop(key: string): any;
   prop$(key: string): Observable<any>;
@@ -28,6 +30,8 @@ export interface PrimitiveElement extends Element {
   setPrimitiveUrl(url: string | undefined): void;
   setProp(key: string, value: ResolvableOrEvaluable<any> | undefined): void;
 
-  element(name: string, create?: true): PrimitiveSubElement;
-  element$(name: string, create?: true): Observable<PrimitiveSubElement>;
+  subElement(name: string): PrimitiveSubElement | undefined;
+  subElement(name: string, create: true): PrimitiveSubElement;
+  subElement$(name: string): Observable<PrimitiveSubElement | undefined>;
+  subElement$(name: string, create: true): Observable<PrimitiveSubElement>;
 }

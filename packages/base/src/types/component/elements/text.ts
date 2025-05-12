@@ -19,8 +19,7 @@ export type TextMarkData = StylableData &
     tag?: string;
   };
 
-export type TextElementData = BaseElementData & {
-  type: "text";
+export type TextElementData = BaseElementData<"text"> & {
   text?: ResolvableOrEvaluable<string>;
   marks?: TextMarkData[];
 };

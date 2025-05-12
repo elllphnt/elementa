@@ -24,11 +24,9 @@ export class StylesheetModel
   constructor({
     init,
     project,
-    fragmentRegistry,
   }: {
     init: StylesheetData;
     project: ProjectModel;
-    fragmentRegistry: StyleFragmentRegistry;
   }) {
     super();
 

@@ -5,18 +5,47 @@ import {
 } from "@elllphnt/elementa-utils";
 import { Observable, forkJoin } from "rxjs";
 import { CssStyleSheet } from "../../../../css/_.js";
-import { Element } from "../../../_interfaces/component/elements/element.js";
+import { BaseElement } from "../../../_interfaces/component/elements/_base.js";
 import { SlotElement } from "../../../_interfaces/component/elements/slot.js";
 import { Fragment } from "../fragment.js";
-import { createElementModel } from "./_create.js";
-import { ElementModel } from "./element.js";
+import { BaseElementModel } from "./_base.js";
+import { createElementModel } from "./_element.js";
 
 export class SlotElementModel
-  extends ElementModel<SlotElementData>
+  extends BaseElementModel<SlotElementData>
   implements SlotElement
 {
-  private _placeholder: AggregatedModelList<ElementModel<any>>;
+  // private properties
+  private _placeholder: AggregatedModelList<BaseElementModel<any>>;
 
+  // getters
+  get placeholder(): BaseElement[] {
+    return this._placeholder.items;
+  }
+
+  get placeholder$(): Observable<BaseElement[]> {
+    return this._placeholder.items$;
+  }
+
+  // data getters
+  get data(): SlotElementData {
+    return {
+      ...super._data,
+      type: "slot",
+      placeholder: this._placeholder.data,
+    };
+  }
+
+  get data$(): Observable<SlotElementData> {
+    return combineLatestMerged([
+      super._data$,
+      forkJoin({
+        placeholder: this._placeholder.data$,
+      }),
+    ]);
+  }
+
+  // constructor
   constructor({
     init,
     fragment,
@@ -50,24 +79,7 @@ export class SlotElementModel
     });
   }
 
-  get data(): SlotElementData {
-    return {
-      ...this._state.record,
-      id: this._id,
-      type: "slot",
-      placeholder: this._placeholder.data,
-    };
-  }
-
-  get data$(): Observable<SlotElementData> {
-    return combineLatestMerged([
-      this._state.record$,
-      forkJoin({
-        placeholder: this._placeholder.data$,
-      }),
-    ]);
-  }
-
+  // restore method
   restore(data: SlotElementData): void {
     this._state.setRecord({
       ...data,
@@ -75,13 +87,5 @@ export class SlotElementModel
       placeholder: undefined,
     });
     this._placeholder.restore(data.placeholder || []);
-  }
-
-  get placeholder(): Element[] {
-    return this._placeholder.items;
-  }
-
-  get placeholder$(): Observable<Element[]> {
-    return this._placeholder.items$;
   }
 }

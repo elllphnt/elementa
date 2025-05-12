@@ -13,7 +13,7 @@ import {
 import { map, Observable, switchMap } from "rxjs";
 import * as y from "yjs";
 import { StylesheetCssStyleSheet } from "../../../../../css/_.js";
-import { Element, Fragment, SlotFill } from "../../../../_interfaces/_.js";
+import { BaseElement, Fragment, SlotFill } from "../../../../_interfaces/_.js";
 import { attachStylesheet } from "../../../style/stylesheet.js";
 import { attachElement } from "../_create.js";
 
@@ -35,7 +35,7 @@ export function attachSlotFill(
 
   const content = getOrCreateYArray(slot, "content");
   assert(
-    attachEnhancedReactiveList<Element>(content, attachElement, (ymap) =>
+    attachEnhancedReactiveList<BaseElement>(content, attachElement, (ymap) =>
       attachElement(ymap, fragment)
     )
   );

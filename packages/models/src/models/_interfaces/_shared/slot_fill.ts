@@ -1,11 +1,12 @@
 import { Expression } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
-import { CssStyleSheet } from "../../../../../css/_.js";
-import { Component } from "../../component.js";
-import { Element } from "../element.js";
+import { Project } from "~/src/infrastructure/_.js";
+import { CssStyleSheet } from "../../../css/_.js";
+import { Element } from "../component/_.js";
 
 export interface SlotFill {
-  component: Component;
+  project: Project;
+
   cssStyleSheet: CssStyleSheet;
 
   content: Element[];
@@ -14,12 +15,12 @@ export interface SlotFill {
   allCssStylesheets: CssStyleSheet[];
   allCssStylesheets$: Observable<CssStyleSheet[]>;
 
-  interactions: Record<string, Expression>;
-  interactions$: Observable<Record<string, Expression>>;
+  interactions: Record<string, Expression> | undefined;
+  interactions$: Observable<Record<string, Expression> | undefined>;
 
   interaction(event: string): Expression | undefined;
   interaction$(event: string): Observable<Expression | undefined>;
 
   setInteraction(event: string, interaction: Expression): void;
-  clearInteractions(): void;
+  clearInteraction(event: string): void;
 }

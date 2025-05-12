@@ -11,16 +11,16 @@ import {
 import { of } from "rxjs";
 import * as y from "yjs";
 import { StylesheetCssStyleSheet } from "../../../../css/_.js";
-import { Element } from "../../../_interfaces/component/elements/element.js";
+import { Fragment } from "../../../_interfaces/_.js";
+import { BaseElement } from "../../../_interfaces/component/elements/_base.js";
 import { Identifiable } from "../../../_interfaces/component/identifiable.js";
 import { attachStylesheet } from "../../style/stylesheet.js";
 import { attachIdentifiable } from "../identifiable.js";
-import { Fragment } from "../../../_interfaces/_.js";
 
 export function attachBaseElement<E extends ElementData>(
   element: y.Map<any>,
   fragment: Fragment
-): element is y.Map<any> & ReactiveMap<E> & Identifiable & Element {
+): element is y.Map<any> & ReactiveMap<E> & Identifiable & BaseElement {
   assert(attachIdentifiable<E>(element));
   assert(setObjectProperty(element, "fragment", fragment));
 
@@ -63,5 +63,5 @@ export function attachBaseElement<E extends ElementData>(
     baseDispose?.();
   };
 
-  return setEnhancer<Element>(element, attachBaseElement);
+  return setEnhancer<BaseElement>(element, attachBaseElement);
 }

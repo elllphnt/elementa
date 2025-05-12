@@ -6,15 +6,15 @@ import {
   ResolvableOrEvaluable,
 } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
-import { CssStyleSheet } from "../../../../css/_.js";
+import { Project } from "~/src/infrastructure/_.js";
+import { CssStyleSheet, StylesheetCssStyleSheet } from "../../../../css/_.js";
 import { Identifiable } from "../../_shared/identifiable.js";
-import { Fragment } from "../fragment.js";
 
-export interface Element extends Identifiable {
-  type: string;
+export interface BaseElement<T extends string> extends Identifiable {
+  type: T;
 
-  fragment: Fragment;
-  cssStyleSheet: CssStyleSheet;
+  project: Project;
+  cssStyleSheet: StylesheetCssStyleSheet;
 
   allCssStylesheets: CssStyleSheet[];
   allCssStylesheets$: Observable<CssStyleSheet[]>;

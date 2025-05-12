@@ -14,9 +14,8 @@ import {
 
 export type PrimitiveSubElementData = StylableData & InteractiveData & {};
 
-export type PrimitiveElementData = BaseElementData &
+export type PrimitiveElementData = BaseElementData<"primitive"> &
   ElementContainerData & {
-    type: "primitive";
     primitiveUrl?: string;
     props?: Record<string, ResolvableOrEvaluable<any>>;
     elements?: Record<string, PrimitiveSubElementData>;

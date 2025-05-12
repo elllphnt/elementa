@@ -5,18 +5,47 @@ import {
 } from "@elllphnt/elementa-utils";
 import { Observable, forkJoin } from "rxjs";
 import { CssStyleSheet } from "../../../../css/_.js";
+import { BaseElement } from "../../../_interfaces/component/elements/_base.js";
 import { ContainerElement } from "../../../_interfaces/component/elements/container.js";
-import { Element } from "../../../_interfaces/component/elements/element.js";
 import { Fragment } from "../fragment.js";
-import { createElementModel } from "./_create.js";
-import { ElementModel } from "./element.js";
+import { BaseElementModel } from "./_base.js";
+import { createElementModel } from "./_element.js";
 
 export class ContainerElementModel
-  extends ElementModel<ContainerElementData>
+  extends BaseElementModel<ContainerElementData>
   implements ContainerElement
 {
-  private _content: AggregatedModelList<ElementModel<any>>;
+  // private properties
+  private _content: AggregatedModelList<BaseElementModel<any>>;
 
+  // getters
+  get content(): BaseElement[] {
+    return this._content.items;
+  }
+
+  get content$(): Observable<BaseElement[]> {
+    return this._content.items$;
+  }
+
+  // data getters
+  get data(): ContainerElementData {
+    return {
+      ...super._data,
+      type: "container",
+      content: this._content.data,
+    };
+  }
+
+  get data$(): Observable<ContainerElementData> {
+    return combineLatestMerged([
+      super._data$,
+      forkJoin({
+        content: this._content.data$,
+      }),
+    ]);
+  }
+
+  // constructor
   constructor({
     init,
     fragment,
@@ -43,24 +72,7 @@ export class ContainerElementModel
     });
   }
 
-  get data(): ContainerElementData {
-    return {
-      ...this._state.record,
-      id: this._id,
-      type: "container",
-      content: this._content.data,
-    };
-  }
-
-  get data$(): Observable<ContainerElementData> {
-    return combineLatestMerged([
-      this._state.record$,
-      forkJoin({
-        content: this._content.data$,
-      }),
-    ]);
-  }
-
+  // restore method
   restore(data: ContainerElementData): void {
     this._state.setRecord({
       ...data,
@@ -68,13 +80,5 @@ export class ContainerElementModel
       content: undefined,
     });
     this._content.restore(data.content || []);
-  }
-
-  get content(): Element[] {
-    return this._content.items;
-  }
-
-  get content$(): Observable<Element[]> {
-    return this._content.items$;
   }
 }

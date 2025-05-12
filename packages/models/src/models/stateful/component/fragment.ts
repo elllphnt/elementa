@@ -13,12 +13,12 @@ import {
   FragmentVariant,
 } from "../../_interfaces/component/fragment.js";
 import { DataInputModel } from "./data_input.js";
-import { createElementModel } from "./elements/_create.js";
-import { ElementModel } from "./elements/element.js";
+import { BaseElementModel } from "./elements/_base.js";
+import { createElementModel } from "./elements/_element.js";
 
 export class FragmentModel extends Model<FragmentData> implements Fragment {
   private _state: RecordState<Omit<FragmentData, "content" | "params">>;
-  private _content: AggregatedModelList<ElementModel<any>>;
+  private _content: AggregatedModelList<BaseElementModel<any>>;
   private _params: AggregatedModelList<DataInputModel>;
   private _component: Component;
   private _id: string;
@@ -124,11 +124,11 @@ export class FragmentModel extends Model<FragmentData> implements Fragment {
     this._params.restore(data.params || []);
   }
 
-  get content(): ElementModel<any>[] {
+  get content(): BaseElementModel<any>[] {
     return this._content.items;
   }
 
-  get content$(): Observable<ElementModel<any>[]> {
+  get content$(): Observable<BaseElementModel<any>[]> {
     return this._content.items$;
   }
 

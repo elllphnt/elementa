@@ -7,10 +7,8 @@ import {
 
 // Types
 
-export type ContainerElementData = BaseElementData &
-  ElementContainerData & {
-    type: "container";
-  };
+export type ContainerElementData = BaseElementData<"container"> &
+  ElementContainerData & {};
 
 // Schemas
 

@@ -5,43 +5,128 @@ import {
 import {
   AggregatedModelList,
   AggregatedModelRecord,
+  combineLatestArrays,
   combineLatestMerged,
 } from "@elllphnt/elementa-utils";
-import { Observable, forkJoin, map, of } from "rxjs";
+import { filter, forkJoin, map, Observable, of, tap } from "rxjs";
 import { CssStyleSheet } from "../../../../../css/_.js";
+import { File, Project } from "../../../../../infrastructure/_.js";
+import { Element } from "../../../../_interfaces/_.js";
 import { PrimitiveElement } from "../../../../_interfaces/component/elements/primitive/primitive.js";
 import { PrimitiveSubElement } from "../../../../_interfaces/component/elements/primitive/sub_element.js";
-import { Fragment } from "../../fragment.js";
-import { createElementModel } from "../_create.js";
-import { ElementModel } from "../element.js";
+import { BaseElementModel } from "../_base.js";
+import { createElementModel, ElementModel } from "../_element.js";
 import { PrimitiveSubElementModel } from "./sub_element.js";
 
 export class PrimitiveElementModel
-  extends ElementModel<PrimitiveElementData>
+  extends BaseElementModel<PrimitiveElementData>
   implements PrimitiveElement
 {
-  private _content: AggregatedModelList<ElementModel<any>>;
+  // private properties
+  private _content: AggregatedModelList<ElementModel>;
   private _subElements: AggregatedModelRecord<PrimitiveSubElementModel>;
 
+  // getters
+  get content(): Element[] {
+    return this._content.state.items;
+  }
+
+  get content$(): Observable<Element[]> {
+    return this._content.state.items$;
+  }
+
+  get subElements() {
+    return this._subElements.state.record;
+  }
+  get subElements$() {
+    return this._subElements.state.record$;
+  }
+
+  get allCssStylesheets(): CssStyleSheet[] {
+    return [
+      this.cssStyleSheet,
+      ...Object.values(this.subElements).map((s) => s.cssStyleSheet),
+    ];
+  }
+  get allCssStylesheets$(): Observable<CssStyleSheet[]> {
+    return combineLatestArrays([
+      of([this.cssStyleSheet]),
+      this.subElements$.pipe(
+        map((s) => Object.values(s).map((s) => s.cssStyleSheet))
+      ),
+    ]);
+  }
+
+  get primitiveUrl(): string | undefined {
+    return this._state.entry("primitiveUrl");
+  }
+  get primitiveUrl$(): Observable<string | undefined> {
+    return this._state.entry$("primitiveUrl");
+  }
+
+  get primitiveFile(): File | undefined {
+    return this.primitiveUrl
+      ? this.project.infrastructure.file(
+          this.project.absoluteFileUrl(this.primitiveUrl)
+        )
+      : undefined;
+  }
+  get primitiveFile$(): Observable<File | undefined> {
+    return this.primitiveUrl$.pipe(
+      map((url) =>
+        url
+          ? this.project.infrastructure.file(this.project.absoluteFileUrl(url))
+          : undefined
+      )
+    );
+  }
+
+  get props(): Record<string, any> | undefined {
+    return this._state.entry("props");
+  }
+
+  get props$(): Observable<Record<string, any> | undefined> {
+    return this._state.entry$("props");
+  }
+
+  // data getters
+  get data(): PrimitiveElementData {
+    return {
+      ...super._data,
+      content: this._content.data,
+      elements: this._subElements.data,
+    };
+  }
+
+  get data$(): Observable<PrimitiveElementData> {
+    return combineLatestMerged([
+      super._data$,
+      forkJoin({
+        content: this._content.data$,
+        elements: this._subElements.data$,
+      }),
+    ]);
+  }
+
+  // constructor
   constructor({
     init,
-    fragment,
-    cssStyleSheet,
+    project,
   }: {
     init: PrimitiveElementData;
-    fragment: Fragment;
-    cssStyleSheet: CssStyleSheet;
+    project: Project;
   }) {
-    super({ init, fragment, cssStyleSheet });
+    super({ init, project });
 
     this._content = new AggregatedModelList({
       init: init.content || [],
       create: (data) =>
         createElementModel({
           init: data,
-          fragment: this._fragment,
-          cssStyleSheet: this._cssStyleSheet,
+          project: this.project,
         }),
+      dataRef: (d) => d.id,
+      modelRef: (m) => m.id,
     });
 
     this._subElements = new AggregatedModelRecord({
@@ -49,8 +134,7 @@ export class PrimitiveElementModel
       create: (data) =>
         new PrimitiveSubElementModel({
           init: data,
-          component: this._fragment.component,
-          cssStyleSheet: this._cssStyleSheet,
+          project: this.project,
         }),
     });
 
@@ -60,91 +144,13 @@ export class PrimitiveElementModel
     });
   }
 
-  get data(): PrimitiveElementData {
-    return {
-      ...this._state.record,
-      id: this._id,
-      type: "primitive",
-      content: this._content.data,
-      elements: this._subElements.data,
-    };
-  }
-
-  get data$(): Observable<PrimitiveElementData> {
-    return combineLatestMerged([
-      this._state.record$,
-      forkJoin({
-        content: this._content.data$,
-        elements: this._subElements.data$,
-      }),
-    ]);
-  }
-
-  restore(data: PrimitiveElementData): void {
-    this._state.setRecord({
-      ...data,
-      id: undefined,
-      content: undefined,
-      elements: undefined,
-    });
-    this._content.restore(data.content || []);
-    this._subElements.restore(data.elements || {});
-  }
-
-  get content(): Element[] {
-    return this._content.items;
-  }
-
-  get content$(): Observable<Element[]> {
-    return this._content.items$;
-  }
-
-  get allCssStylesheets(): any[] {
-    return [this._cssStyleSheet];
-  }
-
-  get allCssStylesheets$(): Observable<any[]> {
-    return of([this._cssStyleSheet]);
-  }
-
-  get primitiveUrl(): string | undefined {
-    return this._state.record.primitiveUrl;
-  }
-
-  get primitiveUrl$(): Observable<string | undefined> {
-    return this._state.entry$("primitiveUrl");
-  }
-
-  get primitiveAbsoluteUrl(): string | undefined {
-    return this._state.record.primitiveAbsoluteUrl;
-  }
-
-  get primitiveAbsoluteUrl$(): Observable<string | undefined> {
-    return this._state.entry$("primitiveAbsoluteUrl");
-  }
-
-  get primitiveFile(): File | undefined {
-    return this._state.record.primitiveFile;
-  }
-
-  get primitiveFile$(): Observable<File | undefined> {
-    return this._state.entry$("primitiveFile");
-  }
-
-  get props(): Record<string, any> {
-    return this._state.record.props || {};
-  }
-
-  get props$(): Observable<Record<string, any>> {
-    return this._state.entry$("props");
-  }
-
+  // methods
   prop(key: string): any {
-    return this.props[key];
+    return this.props?.[key];
   }
 
   prop$(key: string): Observable<any> {
-    return this.props$.pipe(map((props) => props[key]));
+    return this.props$.pipe(map((props) => props?.[key]));
   }
 
   setPrimitiveUrl(url: string | undefined): void {
@@ -163,49 +169,49 @@ export class PrimitiveElementModel
     this._state.set("props", props);
   }
 
-  element(name: string, create?: true): PrimitiveSubElement {
-    if (this._subElements.state.record[name]) {
-      return this._subElements.state.record[name];
-    }
+  subElement(name: string): PrimitiveSubElement | undefined;
+  subElement(name: string, create: true): PrimitiveSubElement;
+  subElement(name: string, create?: true): PrimitiveSubElement | undefined {
+    let element = this._subElements.state.record[name];
 
-    if (create) {
-      const element = new PrimitiveSubElementModel({
-        init: {
-          interactions: {},
-        },
-        component: this._fragment.component,
-        cssStyleSheet: this._cssStyleSheet,
+    if (!element && create) {
+      element = new PrimitiveSubElementModel({
+        init: {},
+        project: this.project,
       });
 
       this._subElements.state.set(name, element);
-      return element;
     }
 
-    throw new Error(`Element ${name} not found`);
+    return element;
   }
-
-  element$(name: string, create?: true): Observable<PrimitiveSubElement> {
+  subElement$(name: string): Observable<PrimitiveSubElement | undefined>;
+  subElement$(name: string, create: true): Observable<PrimitiveSubElement>;
+  subElement$(
+    name: string,
+    create?: true
+  ): Observable<PrimitiveSubElement | undefined> {
     return this._subElements.state.record$.pipe(
-      map((record) => {
-        if (record[name]) {
-          return record[name];
-        }
-
-        if (create) {
-          const element = new PrimitiveSubElementModel({
-            init: {
-              interactions: {},
-            },
-            component: this._fragment.component,
-            cssStyleSheet: this._cssStyleSheet,
+      map((record) => record[name]),
+      tap((element) => {
+        if (!element && create) {
+          const newElement = new PrimitiveSubElementModel({
+            init: {},
+            project: this.project,
           });
 
-          this._subElements.state.set(name, element);
-          return element;
+          this._subElements.state.set(name, newElement);
         }
-
-        throw new Error(`Element ${name} not found`);
-      })
+      }),
+      filter((element) => !create || !!element)
     );
+  }
+
+  // restore method
+  restore(data: PrimitiveElementData): void {
+    super.restore(data);
+    this._state.setRecord(data);
+    this._content.restore(data.content || []);
+    this._subElements.restore(data.elements || {});
   }
 }

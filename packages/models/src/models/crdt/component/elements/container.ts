@@ -9,7 +9,7 @@ import {
 } from "@elllphnt/elementa-utils";
 import { map } from "rxjs";
 import * as y from "yjs";
-import { Element, Fragment } from "../../../_interfaces/_.js";
+import { BaseElement, Fragment } from "../../../_interfaces/_.js";
 import { ContainerElement } from "../../../_interfaces/component/elements/container.js";
 import { attachElement } from "./_create.js";
 import { attachBaseElement } from "./element.js";
@@ -24,7 +24,7 @@ export function attachContainerElement(
 
   const content = getOrCreateYArray(element, "content");
   assert(
-    attachEnhancedReactiveList<Element>(content, attachElement, (ymap) =>
+    attachEnhancedReactiveList<BaseElement>(content, attachElement, (ymap) =>
       attachElement(ymap, fragment)
     )
   );

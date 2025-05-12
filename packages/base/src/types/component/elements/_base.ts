@@ -20,14 +20,14 @@ import {
 
 // Types
 
-export type BaseElementData = IdentifiableData &
+export type BaseElementData<T extends string> = IdentifiableData &
   StylableData &
   RepeatableData &
   ConditionalData &
   InteractiveData &
   LinkableData &
   AccessibleData & {
-    type: string;
+    type: T;
     name?: string;
     tag?: string;
   };

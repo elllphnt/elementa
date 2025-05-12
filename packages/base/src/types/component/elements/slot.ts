@@ -6,8 +6,7 @@ import { z } from "zod";
 import { providerDataSchema } from "../provider/provider.js";
 import { baseElementDataSchema } from "./_base.js";
 
-export type SlotElementData = BaseElementData & {
-  type: "slot";
+export type SlotElementData = BaseElementData<"slot"> & {
   placeholder?: ElementData[];
   providers?: ProviderData[];
 };

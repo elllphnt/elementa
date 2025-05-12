@@ -107,7 +107,7 @@ export class ElementaFrameModel
     init: ElementaFrameData;
     stage: ElementaStage;
   }) {
-    super({ id: init.id });
+    super(init);
 
     this.stage = stage;
     this.context = new RenderingContextModel({

@@ -7,7 +7,7 @@ import {
   setObjectProperty,
 } from "@elllphnt/elementa-utils";
 import * as y from "yjs";
-import { Element, Fragment } from "../../../_interfaces/_.js";
+import { BaseElement, Fragment } from "../../../_interfaces/_.js";
 import { SlotElement } from "../../../_interfaces/component/elements/slot.js";
 import { attachElement } from "./_create.js";
 import { attachBaseElement } from "./element.js";
@@ -22,7 +22,7 @@ export function attachSlotElement(
 
   const content = getOrCreateYArray(element, "placeholder");
   assert(
-    attachEnhancedReactiveList<Element>(content, attachElement, (ymap) =>
+    attachEnhancedReactiveList<BaseElement>(content, attachElement, (ymap) =>
       attachElement(ymap, fragment)
     )
   );
