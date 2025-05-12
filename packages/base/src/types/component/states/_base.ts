@@ -1,9 +1,11 @@
-import { IdentifiableData } from "../../_shared/identifiable.js";
 import { z } from "zod";
-import { identifiableDataSchema } from "../../_shared/identifiable.js";
+import {
+  IdentifiableData,
+  identifiableDataSchema,
+} from "../../_shared/identifiable.js";
 
-export type BaseStateData = IdentifiableData & {
-  type: string;
+export type BaseStateData<T extends string> = IdentifiableData & {
+  type: T;
   name?: string;
   varName?: string;
 };

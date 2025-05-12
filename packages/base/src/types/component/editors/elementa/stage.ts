@@ -4,11 +4,11 @@ import { ElementaFrameData, elementaFrameDataSchema } from "./frame.js";
 // Types
 
 export type ElementaStageData = {
-  frames: ElementaFrameData[];
+  frames?: ElementaFrameData[];
 };
 
 // Schemas
 
 export const elementaStageDataSchema = z.object({
-  frames: z.array(elementaFrameDataSchema),
+  frames: z.array(elementaFrameDataSchema).optional(),
 });

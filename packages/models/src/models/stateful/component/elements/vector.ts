@@ -44,6 +44,5 @@ export class VectorElementModel
   // restore method
   restore(data: VectorElementData): void {
     super.restore(data);
-    this._state.setRecord(data);
   }
 }

@@ -1,5 +1,5 @@
 import { BaseRenderableContentData } from "@elllphnt/elementa-base";
-import { Model } from "@elllphnt/elementa-utils";
+import { keyManager, Model } from "@elllphnt/elementa-utils";
 import { Observable, of } from "rxjs";
 import { Project } from "../../../../../../infrastructure/_.js";
 import { BaseRenderableContent } from "../../../../../_interfaces/_.js";
@@ -25,13 +25,21 @@ export abstract class BaseRenderableContentModel<
     });
   }
 
-  constructor({ init, project }: { init: D; project: Project }) {
-    super();
+  constructor({
+    init,
+    project,
+  }: {
+    init: {
+      type: D["type"];
+    };
+    project: Project;
+  }) {
+    super({ key: keyManager.next("renderable-content") });
     this.project = project;
     this.type = init.type;
   }
 
-  restore(data: BaseRenderableContentData<D["type"]>) {
+  restore(data: { type: D["type"] }) {
     if (data.type !== this.type) {
       throw new Error(
         `Cannot restore data of type ${data.type} to a ${this.type} model`

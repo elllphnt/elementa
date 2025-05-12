@@ -1,6 +1,6 @@
 import { ValueStateData } from "@elllphnt/elementa-base";
 import { combineLatestMerged } from "@elllphnt/elementa-utils";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { Component } from "../../../_interfaces/component/component.js";
 import { ValueState } from "../../../_interfaces/component/states/value.js";
 import { StateModel } from "./state.js";
@@ -19,28 +19,20 @@ export class ValueStateModel
     super({ init, component });
   }
 
+  // data getters
   get data(): ValueStateData {
     return {
-      ...this._state.record,
-      id: this._id,
+      ...super._data,
       type: "value",
     };
   }
 
   get data$(): Observable<ValueStateData> {
-    return combineLatestMerged([this._state.record$]);
-  }
-
-  restore(data: ValueStateData): void {
-    this._state.setRecord({
-      ...data,
-      id: undefined,
-      component: undefined,
-    });
+    return combineLatestMerged([super._data$, of({ type: "value" as const })]);
   }
 
   get init(): any {
-    return this._state.record.init;
+    return this._state.entry("init");
   }
 
   get init$(): Observable<any> {
@@ -48,7 +40,7 @@ export class ValueStateModel
   }
 
   get tsType(): string | undefined {
-    return this._state.record.tsType;
+    return this._state.entry("tsType");
   }
 
   get tsType$(): Observable<string | undefined> {

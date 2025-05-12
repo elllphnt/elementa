@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
-import { State } from "./state.js";
+import { BaseState } from "./_base.js";
 
-export interface ValueState extends State {
+export interface ValueState extends BaseState<"value"> {
   init: any;
   init$: Observable<any>;
 

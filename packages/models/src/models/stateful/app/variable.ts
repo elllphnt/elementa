@@ -13,22 +13,21 @@ export class AppVariableModel
   implements AppVariable
 {
   private _state: RecordState<Partial<AppVariableData>>;
+  private _app: AppModel;
 
   constructor({ init, app }: { init: AppVariableData; app: AppModel }) {
     super();
+
+    this._app = app;
 
     this._state = new RecordState({
       init,
     });
 
-    this._app = app;
-
     this.addDisposer(() => {
       this._state.dispose();
     });
   }
-
-  private _app: AppModel;
 
   get app(): AppModel {
     return this._app;
@@ -45,7 +44,7 @@ export class AppVariableModel
   }
 
   restore(data: AppVariableData) {
-    this._state.setRecord({ ...data });
+    this._state.setRecord(data);
   }
 
   get varName(): string | undefined {

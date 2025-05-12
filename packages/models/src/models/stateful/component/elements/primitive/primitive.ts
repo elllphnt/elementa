@@ -19,7 +19,7 @@ import { createElementModel, ElementModel } from "../_element.js";
 import { PrimitiveSubElementModel } from "./sub_element.js";
 
 export class PrimitiveElementModel
-  extends BaseElementModel<PrimitiveElementData>
+  extends BaseElementModel<PrimitiveElementData, "content" | "elements">
   implements PrimitiveElement
 {
   // private properties
@@ -116,10 +116,11 @@ export class PrimitiveElementModel
     init: PrimitiveElementData;
     project: Project;
   }) {
-    super({ init, project });
+    const { content, elements, ...elementData } = init;
+    super({ init: elementData, project });
 
     this._content = new AggregatedModelList({
-      init: init.content || [],
+      init: content || [],
       create: (data) =>
         createElementModel({
           init: data,
@@ -130,7 +131,7 @@ export class PrimitiveElementModel
     });
 
     this._subElements = new AggregatedModelRecord({
-      init: init.elements || {},
+      init: elements || {},
       create: (data) =>
         new PrimitiveSubElementModel({
           init: data,
@@ -210,8 +211,8 @@ export class PrimitiveElementModel
   // restore method
   restore(data: PrimitiveElementData): void {
     super.restore(data);
-    this._state.setRecord(data);
-    this._content.restore(data.content || []);
-    this._subElements.restore(data.elements || {});
+    const { content, elements } = data;
+    this._content.restore(content || []);
+    this._subElements.restore(elements || {});
   }
 }

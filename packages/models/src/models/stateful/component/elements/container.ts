@@ -11,7 +11,7 @@ import { BaseElementModel } from "./_base.js";
 import { createElementModel, ElementModel } from "./_element.js";
 
 export class ContainerElementModel
-  extends BaseElementModel<ContainerElementData>
+  extends BaseElementModel<ContainerElementData, "content">
   implements ContainerElement
 {
   // private properties
@@ -52,10 +52,11 @@ export class ContainerElementModel
     init: ContainerElementData;
     project: Project;
   }) {
-    super({ init, project });
+    const { content, ...elementData } = init;
+    super({ init: elementData, project });
 
     this._content = new AggregatedModelList({
-      init: init.content || [],
+      init: content || [],
       create: (data) =>
         createElementModel({
           init: data,
@@ -73,7 +74,7 @@ export class ContainerElementModel
   // restore method
   restore(data: ContainerElementData): void {
     super.restore(data);
-    this._state.setRecord(data);
-    this._content.restore(data.content || []);
+    const { content } = data;
+    this._content.restore(content || []);
   }
 }

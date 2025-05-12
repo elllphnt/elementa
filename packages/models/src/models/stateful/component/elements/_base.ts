@@ -9,6 +9,7 @@ import {
 import {
   assert,
   combineLatestMerged,
+  keyManager,
   RecordState,
 } from "@elllphnt/elementa-utils";
 import { forkJoin, Observable, of } from "rxjs";
@@ -18,7 +19,10 @@ import { BaseElement } from "../../../_interfaces/component/elements/_base.js";
 import { IdentifiableModel } from "../../_shared/identifiable.js";
 import { StylesheetModel } from "../../style/stylesheet.js";
 
-export abstract class BaseElementModel<T extends BaseElementData<string>>
+export abstract class BaseElementModel<
+    T extends BaseElementData<string>,
+    K extends keyof T = never
+  >
   extends IdentifiableModel<T>
   implements BaseElement<T["type"]>
 {
@@ -29,7 +33,7 @@ export abstract class BaseElementModel<T extends BaseElementData<string>>
 
   // private properties
   private _stylesheet: StylesheetModel;
-  protected _state: RecordState<Omit<T, "id" | "type" | "stylesheet">>;
+  protected _state: RecordState<Omit<T, "id" | "type" | "stylesheet" | K>>;
 
   // getters for properties
   get allCssStylesheets(): CssStyleSheet[] {
@@ -164,14 +168,15 @@ export abstract class BaseElementModel<T extends BaseElementData<string>>
   abstract get data$(): Observable<T>;
 
   // constructor
-  constructor({ init, project }: { init: T; project: Project }) {
-    super(init);
+  constructor({ init, project }: { init: Omit<T, K>; project: Project }) {
+    const { id, type, stylesheet, ...stateData } = init as T;
+    super({ id, key: keyManager.next("element") });
 
-    this.type = init.type;
+    this.type = type;
     this.project = project;
 
     this._stylesheet = new StylesheetModel({
-      init: init.stylesheet ?? {},
+      init: stylesheet ?? {},
       project,
     });
     this.cssStyleSheet = new StylesheetCssStyleSheet({
@@ -180,7 +185,7 @@ export abstract class BaseElementModel<T extends BaseElementData<string>>
     });
 
     this._state = new RecordState({
-      init,
+      init: stateData as Omit<T, "id" | "type" | "stylesheet" | K>,
     });
 
     this.addDisposer(() => {
@@ -191,10 +196,13 @@ export abstract class BaseElementModel<T extends BaseElementData<string>>
 
   // restore method
   restore(data: T) {
-    assert(data.type === this.type, "Element type mismatch");
+    const { id, type, stylesheet, ...stateData } = data;
+    assert(type === this.type, "Element type mismatch");
 
-    super.restore(data);
-    this._state.setRecord(data);
-    this._stylesheet.restore(data.stylesheet ?? {});
+    super.restore({ id });
+    this._state.setRecord(
+      stateData as Omit<T, "id" | "type" | "stylesheet" | K>
+    );
+    this._stylesheet.restore(stylesheet ?? {});
   }
 }

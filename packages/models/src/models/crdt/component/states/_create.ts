@@ -1,7 +1,7 @@
 import { StateData } from "@elllphnt/elementa-base";
 import * as y from "yjs";
 import { Component } from "../../../_interfaces/component/component.js";
-import { State } from "../../../_interfaces/component/states/state.js";
+import { State } from "../../../_interfaces/component/states/_state.js";
 import { attachHookState } from "./hook.js";
 import { attachValueState } from "./value.js";
 

@@ -6,8 +6,7 @@ import {
 } from "../../_primitives/dynamic/evaluable.js";
 import { BaseStateData, baseStateDataSchema } from "./_base.js";
 
-export type HookStateData = BaseStateData & {
-  type: "hook";
+export type HookStateData = BaseStateData<"hook"> & {
   hookUrl?: string;
   args?: (Evaluable<any> | Resolvable<any>)[];
 };

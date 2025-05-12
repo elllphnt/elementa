@@ -5,8 +5,9 @@ import {
   RecordState,
   combineLatestMerged,
 } from "@elllphnt/elementa-utils";
-import { Observable, forkJoin, map } from "rxjs";
+import { Observable, forkJoin, map, of } from "rxjs";
 import { CssStyleSheet } from "../../../css/_.js";
+import { Project } from "../../../infrastructure/_.js";
 import { Component } from "../../_interfaces/component/component.js";
 import { FragmentVariant } from "../../_interfaces/component/fragment.js";
 import { DataInputModel } from "./data_input.js";
@@ -19,13 +20,16 @@ import { TemplateModel } from "./template.js";
 
 export class ComponentModel extends Model<ComponentData> implements Component {
   private _state: RecordState<
-    Omit<ComponentData, "template" | "props" | "fragments" | "states">
+    Omit<
+      ComponentData,
+      "template" | "props" | "fragments" | "states" | "stage" | "preview"
+    >
   >;
   private _template: TemplateModel;
   private _props: AggregatedModelList<DataInputModel>;
   private _fragments: AggregatedModelList<FragmentModel>;
   private _states: AggregatedModelList<StateModel<any>>;
-  private _project: ProjectModel;
+  private _project: Project;
   private _stage: ElementaStageModel;
   private _preview: ElementaPreviewModel;
   private _cssStyleSheet: CssStyleSheet;
@@ -36,7 +40,7 @@ export class ComponentModel extends Model<ComponentData> implements Component {
     cssStyleSheet,
   }: {
     init: ComponentData;
-    project: ProjectModel;
+    project: Project;
     cssStyleSheet: CssStyleSheet;
   }) {
     super();
@@ -44,45 +48,40 @@ export class ComponentModel extends Model<ComponentData> implements Component {
     this._project = project;
     this._cssStyleSheet = cssStyleSheet;
 
+    const { template, props, fragments, states, stage, preview, ...stateData } =
+      init;
+
     // Create stage and preview first
     this._stage = new ElementaStageModel({
-      init: init.stage,
+      init: stage,
       project: this._project,
     });
 
     this._preview = new ElementaPreviewModel({
-      init: init.preview,
+      init: preview,
       project: this._project,
     });
 
     this._state = new RecordState({
-      init: {
-        ...init,
-        template: undefined,
-        props: undefined,
-        fragments: undefined,
-        states: undefined,
-        stage: undefined,
-        preview: undefined,
-        project: undefined,
-        cssStyleSheet: undefined,
-      },
+      init: stateData,
     });
 
     // Create template
     this._template = new TemplateModel({
-      init: init.template,
+      init: template,
       component: this,
       cssStyleSheet: this._cssStyleSheet,
     });
 
     this._props = new AggregatedModelList({
-      init: init.props || [],
+      init: props || [],
       create: (data) => new DataInputModel({ init: data, component: this }),
+      dataRef: (d) => d.name,
+      modelRef: (m) => m.name,
     });
 
     this._fragments = new AggregatedModelList({
-      init: init.fragments || [],
+      init: fragments || [],
       create: (data) =>
         new FragmentModel({
           init: data,
@@ -90,11 +89,15 @@ export class ComponentModel extends Model<ComponentData> implements Component {
           cssStyleSheet: this._cssStyleSheet,
           variant: FragmentVariant.Fragment,
         }),
+      dataRef: (d) => d.id,
+      modelRef: (m) => m.id,
     });
 
     this._states = new AggregatedModelList({
-      init: init.states || [],
+      init: states || [],
       create: (data) => createStateModel({ init: data, component: this }),
+      dataRef: (d) => d.id,
+      modelRef: (m) => m.id,
     });
 
     this.addDisposer(() => {
@@ -108,7 +111,8 @@ export class ComponentModel extends Model<ComponentData> implements Component {
     });
   }
 
-  get project(): ProjectModel {
+  // properties
+  get project(): Project {
     return this._project;
   }
 
@@ -124,6 +128,7 @@ export class ComponentModel extends Model<ComponentData> implements Component {
     return this._template;
   }
 
+  // data getters
   get data(): ComponentData {
     return {
       ...this._state.record,
@@ -150,63 +155,46 @@ export class ComponentModel extends Model<ComponentData> implements Component {
     ]);
   }
 
-  restore(data: ComponentData): void {
-    this._state.setRecord({
-      ...data,
-      template: undefined,
-      props: undefined,
-      fragments: undefined,
-      states: undefined,
-      stage: undefined,
-      preview: undefined,
-    });
-    this._template.restore(data.template);
-    this._props.restore(data.props || []);
-    this._fragments.restore(data.fragments || []);
-    this._states.restore(data.states || []);
-    this._stage.restore(data.stage);
-    this._preview.restore(data.preview);
-  }
-
   get props(): DataInputModel[] {
-    return this._props.items;
+    return this._props.state.items;
   }
 
   get props$(): Observable<DataInputModel[]> {
-    return this._props.items$;
+    return this._props.state.items$;
   }
 
   get fragments(): FragmentModel[] {
-    return [this._template, ...this._fragments.items];
+    return [this._template, ...this._fragments.state.items];
   }
 
   get fragments$(): Observable<FragmentModel[]> {
-    return this._fragments.items$.pipe(
+    return this._fragments.state.items$.pipe(
       map((fragments) => [this._template, ...fragments])
     );
   }
 
   get states(): StateModel<any>[] {
-    return this._states.items;
+    return this._states.state.items;
   }
 
   get states$(): Observable<StateModel<any>[]> {
-    return this._states.items$;
+    return this._states.state.items$;
   }
 
   get name(): string {
-    return this._state.record.name || "";
+    return this._state.entry("name") || "";
   }
 
   get name$(): Observable<string> {
     return this._state.entry$("name");
   }
 
+  // methods
   fragment(id: string): FragmentModel | undefined {
     if (this._template.id === id) {
       return this._template;
     }
-    return this._fragments.items.find((fragment) => fragment.id === id);
+    return this._fragments.state.items.find((fragment) => fragment.id === id);
   }
 
   fragment$(id: string): Observable<FragmentModel | undefined> {
@@ -220,6 +208,30 @@ export class ComponentModel extends Model<ComponentData> implements Component {
   }
 
   get allStylesheets$(): Observable<CssStyleSheet[]> {
-    return this._project.allStylesheets$;
+    return of([this._cssStyleSheet]);
+  }
+
+  // restore method
+  restore({
+    template,
+    props,
+    states,
+    fragments,
+    editors,
+    ...stateData
+  }: ComponentData): void {
+    const { stage, preview } = editors || {};
+
+    this._state.setRecord(stateData);
+    this._template.restore(
+      template || {
+        id: "template",
+      }
+    );
+    this._props.restore(props || []);
+    this._fragments.restore(fragments || []);
+    this._states.restore(states || []);
+    this._stage.restore(stage);
+    this._preview.restore(preview);
   }
 }

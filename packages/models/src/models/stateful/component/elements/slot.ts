@@ -11,7 +11,7 @@ import { BaseElementModel } from "./_base.js";
 import { createElementModel, ElementModel } from "./_element.js";
 
 export class SlotElementModel
-  extends BaseElementModel<SlotElementData>
+  extends BaseElementModel<SlotElementData, "placeholder">
   implements SlotElement
 {
   // private properties
@@ -46,10 +46,11 @@ export class SlotElementModel
 
   // constructor
   constructor({ init, project }: { init: SlotElementData; project: Project }) {
-    super({ init, project });
+    const { placeholder, ...elementData } = init;
+    super({ init: elementData, project });
 
     this._placeholder = new AggregatedModelList({
-      init: init.placeholder || [],
+      init: placeholder || [],
       create: (data) =>
         createElementModel({
           init: data,
@@ -67,7 +68,7 @@ export class SlotElementModel
   // restore method
   restore(data: SlotElementData): void {
     super.restore(data);
-    this._state.setRecord(data);
-    this._placeholder.restore(data.placeholder || []);
+    const { placeholder } = data;
+    this._placeholder.restore(placeholder || []);
   }
 }

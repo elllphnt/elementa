@@ -41,6 +41,5 @@ export class TextElementModel
   // restore method
   restore(data: TextElementData): void {
     super.restore(data);
-    this._state.setRecord(data);
   }
 }

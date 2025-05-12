@@ -8,6 +8,7 @@ import {
   OptionalModel,
   RecordState,
   combineLatestMerged,
+  keyManager,
 } from "@elllphnt/elementa-utils";
 import { Observable, forkJoin, map } from "rxjs";
 import { Project } from "../../../../../infrastructure/_.js";
@@ -102,19 +103,22 @@ export class ElementaPreviewModel
     init: ElementaPreviewData;
     project: Project;
   }) {
-    super();
+    const { context, content, ...stateData } = init;
+    super({ key: keyManager.next("elementa-preview") });
 
     this.project = project;
+
     this.context = new RenderingContextModel({
-      init: init.context ?? {},
+      init: context ?? {},
     });
+
     this._content = new OptionalModel({
-      init: init.content,
+      init: content,
       create: (data) => createRenderableContentModel({ init: data, project }),
     });
 
     this._state = new RecordState({
-      init,
+      init: stateData,
     });
 
     this.addDisposer(() => {
@@ -125,8 +129,10 @@ export class ElementaPreviewModel
   }
 
   restore(data: ElementaPreviewData) {
-    this._state.setRecord(data);
-    this.context.restore(data.context ?? {});
-    this._content.restore(data.content);
+    const { context, content, ...stateData } = data;
+
+    this._state.setRecord(stateData);
+    this.context.restore(context ?? {});
+    this._content.restore(content);
   }
 }

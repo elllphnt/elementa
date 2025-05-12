@@ -12,7 +12,7 @@ export class FragmentRenderableContentModel
   extends BaseRenderableContentModel<FragmentRenderableContentData>
   implements FragmentRenderableContent
 {
-  private _state: RecordState<Partial<FragmentRenderableContentData>>;
+  private _state: RecordState<Omit<FragmentRenderableContentData, "type">>;
 
   get fragmentUrl(): string | undefined {
     return this._state.record.fragmentUrl;
@@ -74,10 +74,11 @@ export class FragmentRenderableContentModel
     init: FragmentRenderableContentData;
     project: Project;
   }) {
-    super({ init, project });
+    const { type, ...stateData } = init;
+    super({ init: { type }, project });
 
     this._state = new RecordState({
-      init,
+      init: stateData,
     });
 
     this.addDisposer(() => {
@@ -86,7 +87,8 @@ export class FragmentRenderableContentModel
   }
 
   restore(data: FragmentRenderableContentData) {
-    super.restore(data);
-    this._state.setRecord(data);
+    const { type, ...stateData } = data;
+    super.restore({ type });
+    this._state.setRecord(stateData);
   }
 }

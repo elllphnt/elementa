@@ -20,10 +20,10 @@ export abstract class IdentifiableModel<D extends IdentifiableData>
     });
   }
 
-  constructor(data: D) {
-    super();
+  constructor({ id, key }: { id: string; key?: string }) {
+    super({ key });
 
-    this.id = data.id;
+    this.id = id;
   }
 
   restore(data: IdentifiableData): void {

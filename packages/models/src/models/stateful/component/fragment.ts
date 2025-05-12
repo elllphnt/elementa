@@ -5,7 +5,7 @@ import {
   Model,
   RecordState,
 } from "@elllphnt/elementa-utils";
-import { BehaviorSubject, forkJoin, Observable } from "rxjs";
+import { BehaviorSubject, forkJoin, Observable, of } from "rxjs";
 import { CssStyleSheet } from "../../../css/_.js";
 import { Component } from "../../_interfaces/component/component.js";
 import {
@@ -17,7 +17,7 @@ import { BaseElementModel } from "./elements/_base.js";
 import { createElementModel } from "./elements/_element.js";
 
 export class FragmentModel extends Model<FragmentData> implements Fragment {
-  private _state: RecordState<Omit<FragmentData, "content" | "params">>;
+  protected _state: RecordState<Omit<FragmentData, "content" | "params">>;
   private _content: AggregatedModelList<BaseElementModel<any>>;
   private _params: AggregatedModelList<DataInputModel>;
   private _component: Component;
@@ -45,33 +45,32 @@ export class FragmentModel extends Model<FragmentData> implements Fragment {
     this._cssStyleSheet = cssStyleSheet;
     this._slotIds = new BehaviorSubject<string[]>([]);
 
+    const { content, params, ...stateData } = init;
+
     this._state = new RecordState({
-      init: {
-        ...init,
-        content: undefined,
-        params: undefined,
-        component: undefined,
-        cssStyleSheet: undefined,
-      },
+      init: stateData,
     });
 
     this._content = new AggregatedModelList({
-      init: init.content || [],
+      init: content || [],
       create: (data) =>
         createElementModel({
           init: data,
-          fragment: this,
-          cssStyleSheet: this._cssStyleSheet,
+          project: component.project,
         }),
+      dataRef: (d) => d.id,
+      modelRef: (m) => m.id,
     });
 
     this._params = new AggregatedModelList({
-      init: init.params || [],
+      init: params || [],
       create: (data) =>
         new DataInputModel({
           init: data,
           component: this._component,
         }),
+      dataRef: (d) => d.name,
+      modelRef: (m) => m.name,
     });
 
     this.addDisposer(() => {
@@ -94,6 +93,7 @@ export class FragmentModel extends Model<FragmentData> implements Fragment {
     return this._variant;
   }
 
+  // data getters
   get data(): FragmentData {
     return {
       ...this._state.record,
@@ -107,37 +107,28 @@ export class FragmentModel extends Model<FragmentData> implements Fragment {
     return combineLatestMerged([
       this._state.record$,
       forkJoin({
+        id: of(this._id),
         content: this._content.data$,
         params: this._params.data$,
       }),
     ]);
   }
 
-  restore(data: FragmentData): void {
-    this._state.setRecord({
-      ...data,
-      id: undefined,
-      content: undefined,
-      params: undefined,
-    });
-    this._content.restore(data.content || []);
-    this._params.restore(data.params || []);
-  }
-
+  // properties
   get content(): BaseElementModel<any>[] {
-    return this._content.items;
+    return this._content.state.items;
   }
 
   get content$(): Observable<BaseElementModel<any>[]> {
-    return this._content.items$;
+    return this._content.state.items$;
   }
 
   get params(): DataInputModel[] {
-    return this._params.items;
+    return this._params.state.items;
   }
 
   get params$(): Observable<DataInputModel[]> {
-    return this._params.items$;
+    return this._params.state.items$;
   }
 
   get allCssStylesheets(): CssStyleSheet[] {
@@ -156,6 +147,7 @@ export class FragmentModel extends Model<FragmentData> implements Fragment {
     return this._slotIds.asObservable();
   }
 
+  // methods
   registerSlotId(id: string): void {
     if (!this._slotIds.value.includes(id)) {
       this._slotIds.next([...this._slotIds.value, id]);
@@ -166,5 +158,14 @@ export class FragmentModel extends Model<FragmentData> implements Fragment {
     if (this._slotIds.value.includes(id)) {
       this._slotIds.next(this._slotIds.value.filter((slotId) => slotId !== id));
     }
+  }
+
+  // restore method
+  restore(data: FragmentData): void {
+    const { content, params, ...stateData } = data;
+
+    this._state.setRecord(stateData);
+    this._content.restore(content || []);
+    this._params.restore(params || []);
   }
 }

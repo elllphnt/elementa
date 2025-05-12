@@ -54,6 +54,5 @@ export class MediaElementModel
   // restore method
   restore(data: MediaElementData): void {
     super.restore(data);
-    this._state.setRecord(data);
   }
 }

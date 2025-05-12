@@ -17,7 +17,9 @@ export class AppModel extends Model<AppData> implements App {
   readonly project: Project;
   readonly blueprint: AppBlueprintModel;
 
-  private _state: RecordState<Omit<AppData, "routes" | "variables">>;
+  private _state: RecordState<
+    Omit<AppData, "routes" | "variables" | "editors">
+  >;
   private _routes: AggregatedModelList<RouteTreeModel>;
   private _variables: AggregatedModelList<AppVariableModel>;
 
@@ -83,25 +85,28 @@ export class AppModel extends Model<AppData> implements App {
     super();
 
     this.project = project;
+    
+    const { routes, variables, editors, ...stateData } = init;
+
     this.blueprint = new AppBlueprintModel({
-      init: (init.editors?.blueprint as AppBlueprintData) || {
+      init: (editors?.blueprint as AppBlueprintData) || {
         nodes: [],
       },
     });
 
     this._state = new RecordState({
-      init,
+      init: stateData,
     });
 
     this._routes = new AggregatedModelList({
-      init: init.routes || [],
+      init: routes || [],
       create: (data) => new RouteTreeModel({ init: data, app: this }),
       dataRef: (d) => d.id,
       modelRef: (m) => m.id,
     });
 
     this._variables = new AggregatedModelList({
-      init: init.variables || [],
+      init: variables || [],
       create: (data) => new AppVariableModel({ init: data, app: this }),
       dataRef: () => 1, // DataInput are interchangeable
       modelRef: () => 1,
@@ -115,10 +120,14 @@ export class AppModel extends Model<AppData> implements App {
   }
 
   restore(data: AppData) {
-    this._state.setRecord({
-      ...data,
-    });
-    this._routes.restore(data.routes || []);
-    this._variables.restore(data.variables || []);
+    const { routes, variables, editors, ...stateData } = data;
+
+    this._state.setRecord(stateData);
+    this._routes.restore(routes || []);
+    this._variables.restore(variables || []);
+
+    if (editors?.blueprint) {
+      this.blueprint.restore(editors.blueprint as AppBlueprintData);
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { OverflowValue, ViewportData } from "@elllphnt/elementa-base";
-import { Model, RecordState } from "@elllphnt/elementa-utils";
+import { keyManager, Model, RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import { Viewport } from "../../../../_interfaces/_.js";
 
@@ -39,7 +39,7 @@ export class ViewportModel extends Model<ViewportData> implements Viewport {
   }
 
   constructor({ init }: { init: ViewportData }) {
-    super();
+    super({ key: keyManager.next("elementa-viewport") });
 
     this._state = new RecordState({
       init,

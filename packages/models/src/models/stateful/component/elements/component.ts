@@ -17,7 +17,7 @@ import { SlotFillModel } from "../../_shared/slot_fill.js";
 import { BaseElementModel } from "./_base.js";
 
 export class ComponentElementModel
-  extends BaseElementModel<ComponentElementData>
+  extends BaseElementModel<ComponentElementData, "fills">
   implements ComponentElement
 {
   // private properties
@@ -115,8 +115,10 @@ export class ComponentElementModel
   }) {
     super({ init, project });
 
+    const { fills } = init;
+
     this._fills = new AggregatedModelRecord({
-      init: init.fills || {},
+      init: fills || {},
       create: (data, key) =>
         new SlotFillModel({
           init: data,
@@ -204,7 +206,7 @@ export class ComponentElementModel
   // restore method
   restore(data: ComponentElementData): void {
     super.restore(data);
-    this._state.setRecord(data);
-    this._fills.restore(data.fills || {});
+    const { fills } = data;
+    this._fills.restore(fills || {});
   }
 }

@@ -1,4 +1,5 @@
 import { StateData } from "@elllphnt/elementa-base";
+import { assert } from "@elllphnt/elementa-utils";
 import { Component } from "../../../_interfaces/component/component.js";
 import { HookStateModel } from "./hook.js";
 import { StateModel } from "./state.js";
@@ -17,6 +18,6 @@ export function createStateModel({
     case "hook":
       return new HookStateModel({ init, component });
     default:
-      throw new Error(`Unknown state type: ${(init as any).type}`);
+      assert(false, `Unknown state type: ${(init as any).type}`);
   }
 }

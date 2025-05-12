@@ -193,16 +193,17 @@ export class RouteTreeModel
   }
 
   constructor({ init, app }: { init: RouteTreeData; app: AppModel }) {
-    super(init);
+    const { children, id, ...stateData } = init;
+    super({ id });
 
     this.app = app;
 
     this._state = new RecordState<Omit<RouteTreeData, "children" | "id">>({
-      init,
+      init: stateData,
     });
 
     this._children = new AggregatedModelList({
-      init: init.children || [],
+      init: children || [],
       create: (data) => new RouteTreeModel({ init: data, app }),
       dataRef: (d) => d.id,
       modelRef: (m) => m.id,
@@ -247,7 +248,10 @@ export class RouteTreeModel
   }
 
   restore(data: RouteTreeData) {
-    this._state.setRecord(data);
-    this._children.restore(data.children || []);
+    const { children, id, ...stateData } = data;
+
+    super.restore({ id });
+    this._state.setRecord(stateData);
+    this._children.restore(children || []);
   }
 }

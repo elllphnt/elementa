@@ -25,7 +25,7 @@ export class TemplateModel extends FragmentModel implements Template {
   }
 
   get name(): string {
-    return this._state.record.name || "Template";
+    return this._state.entry("name") || "Template";
   }
 
   get name$(): Observable<string> {

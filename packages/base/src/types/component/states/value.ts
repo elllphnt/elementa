@@ -6,8 +6,7 @@ import {
 } from "../../_primitives/dynamic/evaluable.js";
 import { BaseStateData, baseStateDataSchema } from "./_base.js";
 
-export type ValueStateData = BaseStateData & {
-  type: "value";
+export type ValueStateData = BaseStateData<"value"> & {
   init?: Evaluable<any> | Resolvable<any>;
   tsType?: string;
 };

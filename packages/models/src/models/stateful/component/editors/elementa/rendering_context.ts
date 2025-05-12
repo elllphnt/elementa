@@ -8,6 +8,7 @@ import {
   RecordState,
   combineLatestArrays,
   combineLatestMerged,
+  keyManager,
 } from "@elllphnt/elementa-utils";
 import { Observable, forkJoin } from "rxjs";
 import { RenderingContext } from "../../../../_interfaces/_.js";
@@ -22,7 +23,7 @@ export class RenderingContextModel
   readonly viewport: ViewportModel;
 
   private _state: RecordState<
-    Omit<RenderingContextData, "theme" | "viewport" | "customStyleModifiers">
+    Omit<RenderingContextData, "theme" | "viewport" | "styleModifiers">
   >;
   private _customStyleModifiers: ListState<StyleModifierData>;
 
@@ -78,22 +79,18 @@ export class RenderingContextModel
   }
 
   constructor({ init }: { init: RenderingContextData }) {
-    super();
+    const { theme, viewport, styleModifiers, ...stateData } = init;
+    super({ key: keyManager.next("rendering-context") });
 
-    this.theme = new ColorThemeModel({ init: init.theme ?? {} });
-    this.viewport = new ViewportModel({ init: init.viewport ?? {} });
+    this.theme = new ColorThemeModel({ init: theme ?? {} });
+    this.viewport = new ViewportModel({ init: viewport ?? {} });
 
     this._state = new RecordState({
-      init: {
-        ...init,
-        theme: undefined,
-        viewport: undefined,
-        customStyleModifiers: undefined,
-      },
+      init: stateData,
     });
 
     this._customStyleModifiers = new ListState({
-      init: init.styleModifiers || [],
+      init: styleModifiers || [],
     });
 
     this.addDisposer(() => {
@@ -105,9 +102,11 @@ export class RenderingContextModel
   }
 
   restore(data: RenderingContextData) {
-    this._state.setRecord(data);
-    this.theme.restore(data.theme ?? {});
-    this.viewport.restore(data.viewport ?? {});
-    this._customStyleModifiers.setItems(data.styleModifiers || []);
+    const { theme, viewport, styleModifiers, ...stateData } = data;
+
+    this._state.setRecord(stateData);
+    this.theme.restore(theme ?? {});
+    this.viewport.restore(viewport ?? {});
+    this._customStyleModifiers.setItems(styleModifiers || []);
   }
 }

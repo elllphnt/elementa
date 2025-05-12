@@ -4,6 +4,7 @@ import {
   Model,
   RecordState,
   combineLatestMerged,
+  keyManager,
 } from "@elllphnt/elementa-utils";
 import { Observable, forkJoin } from "rxjs";
 import { Project } from "../../../../../infrastructure/_.js";
@@ -50,19 +51,17 @@ export class ElementaStageModel
     init: ElementaStageData;
     project: Project;
   }) {
-    super();
+    const { frames, ...stateData } = init;
+    super({ key: keyManager.next("elementa-stage") });
 
     this.project = project;
 
     this._state = new RecordState({
-      init: {
-        ...init,
-        frames: undefined,
-      },
+      init: stateData,
     });
 
     this._frames = new AggregatedModelList({
-      init: init.frames || [],
+      init: frames || [],
       create: (data) => new ElementaFrameModel({ init: data, stage: this }),
       dataRef: (data) => data.id,
       modelRef: (model) => model.id,
@@ -82,10 +81,9 @@ export class ElementaStageModel
   }
 
   restore(data: ElementaStageData) {
-    this._state.setRecord({
-      ...data,
-      frames: undefined,
-    });
-    this._frames.restore(data.frames || []);
+    const { frames, ...stateData } = data;
+
+    this._state.setRecord(stateData);
+    this._frames.restore(frames || []);
   }
 }

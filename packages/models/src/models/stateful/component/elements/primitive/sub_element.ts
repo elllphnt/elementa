@@ -20,7 +20,7 @@ export class PrimitiveSubElementModel
 
   // private properties
   private _stylesheet: StylesheetModel;
-  private _state: RecordState<Partial<PrimitiveSubElementData>>;
+  private _state: RecordState<Omit<PrimitiveSubElementData, "stylesheet">>;
 
   get interactions(): Record<string, Expression> | undefined {
     return this._state.entry("interactions");
@@ -59,21 +59,20 @@ export class PrimitiveSubElementModel
 
     this.project = project;
 
+    const { stylesheet, ...stateData } = init;
+
     this._stylesheet = new StylesheetModel({
-      init: init.stylesheet ?? {},
+      init: stylesheet ?? {},
       project,
     });
+
     this.cssStyleSheet = new StylesheetCssStyleSheet({
       target: cssStyleSheetTarget ?? this.key,
       stylesheet: this._stylesheet,
     });
 
     this._state = new RecordState({
-      init: {
-        ...init,
-        component: undefined,
-        cssStyleSheet: undefined,
-      },
+      init: stateData,
     });
 
     this.addDisposer(() => {
@@ -105,8 +104,9 @@ export class PrimitiveSubElementModel
 
   // restore method
   restore(data: PrimitiveSubElementData): void {
-    this._state.setRecord({
-      ...data,
-    });
+    const { stylesheet, ...stateData } = data;
+
+    this._state.setRecord(stateData);
+    this._stylesheet.restore(stylesheet ?? {});
   }
 }

@@ -39,12 +39,15 @@ export class AppBlueprintModel
 
   constructor({ init }: { init: AppBlueprintData }) {
     super();
+
+    const { nodes, ...stateData } = init;
+
     this._state = new RecordState<Omit<AppBlueprintData, "nodes">>({
-      init,
+      init: stateData,
     });
 
     this._nodes = new AggregatedModelRecord<BlueprintNodeModel>({
-      init: init.nodes,
+      init: nodes || {},
       create: (data) => new BlueprintNodeModel({ init: data }),
     });
 
@@ -53,8 +56,11 @@ export class AppBlueprintModel
       this._nodes.dispose();
     });
   }
+
   restore(data: AppBlueprintData): void {
-    this._state.setRecord(data);
-    this._nodes.restore(data.nodes);
+    const { nodes, ...stateData } = data;
+
+    this._state.setRecord(stateData);
+    this._nodes.restore(nodes || {});
   }
 }

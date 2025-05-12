@@ -10,7 +10,7 @@ import {
 import * as y from "yjs";
 import { Component } from "../../../_interfaces/component/component.js";
 import { Identifiable } from "../../../_interfaces/component/identifiable.js";
-import { State } from "../../../_interfaces/component/states/state.js";
+import { State } from "../../../_interfaces/component/states/_state.js";
 import { attachIdentifiable } from "../identifiable.js";
 
 export function attachState<D extends BaseStateData>(

@@ -3,6 +3,7 @@ import {
   OptionalModel,
   RecordState,
   combineLatestMerged,
+  keyManager,
 } from "@elllphnt/elementa-utils";
 import { Observable, forkJoin } from "rxjs";
 import { ElementaFrame, ElementaStage } from "../../../../_interfaces/_.js";
@@ -21,7 +22,7 @@ export class ElementaFrameModel
   readonly context: RenderingContextModel;
 
   private _state: RecordState<
-    Omit<ElementaFrameData, "renderingContext" | "content">
+    Omit<ElementaFrameData, "id" | "renderingContext" | "content">
   >;
   private _content: OptionalModel<RenderableContentModel>;
 
@@ -107,14 +108,17 @@ export class ElementaFrameModel
     init: ElementaFrameData;
     stage: ElementaStage;
   }) {
-    super(init);
+    const { id, context, content, ...stateData } = init;
+    super({ id, key: keyManager.next("elementa-frame") });
 
     this.stage = stage;
+
     this.context = new RenderingContextModel({
-      init: init.context ?? {},
+      init: context ?? {},
     });
+
     this._content = new OptionalModel({
-      init: init.content,
+      init: content,
       create: (data) =>
         createRenderableContentModel({
           init: data,
@@ -123,7 +127,7 @@ export class ElementaFrameModel
     });
 
     this._state = new RecordState({
-      init,
+      init: stateData,
     });
 
     this.addDisposer(() => {
@@ -163,9 +167,11 @@ export class ElementaFrameModel
   }
 
   restore(data: ElementaFrameData) {
-    super.restore(data);
-    this._state.setRecord(data);
-    this._content.restore(data.content);
-    this.context.restore(data.context ?? {});
+    const { id, context, content, ...stateData } = data;
+    super.restore({ id });
+
+    this._state.setRecord(stateData);
+    this._content.restore(content);
+    this.context.restore(context ?? {});
   }
 }

@@ -77,10 +77,17 @@ export class AppRenderableContentModel
     init: AppRenderableContentData;
     project: Project;
   }) {
-    super({ init, project });
+    const { type, ...stateData } = init;
+
+    super({
+      init: {
+        type,
+      },
+      project,
+    });
 
     this._state = new RecordState({
-      init,
+      init: stateData,
     });
 
     this.addDisposer(() => {
@@ -89,7 +96,8 @@ export class AppRenderableContentModel
   }
 
   restore(data: AppRenderableContentData) {
-    super.restore(data);
-    this._state.setRecord(data);
+    const { type, ...stateData } = data;
+    super.restore({ type });
+    this._state.setRecord(stateData);
   }
 }

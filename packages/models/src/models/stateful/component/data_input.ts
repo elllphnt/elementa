@@ -5,7 +5,7 @@ import { Component } from "../../_interfaces/component/component.js";
 import { DataInput } from "../../_interfaces/component/data_input.js";
 
 export class DataInputModel extends Model<DataInputData> implements DataInput {
-  private _state: RecordState<Partial<DataInputData>>;
+  private _state: RecordState<Omit<DataInputData, "component">>;
   private _component: Component;
 
   constructor({
@@ -19,11 +19,10 @@ export class DataInputModel extends Model<DataInputData> implements DataInput {
 
     this._component = component;
 
+    const { component: _, ...stateData } = init;
+
     this._state = new RecordState({
-      init: {
-        ...init,
-        component: undefined,
-      },
+      init: stateData,
     });
 
     this.addDisposer(() => {
@@ -35,6 +34,7 @@ export class DataInputModel extends Model<DataInputData> implements DataInput {
     return this._component;
   }
 
+  // data getters
   get data(): DataInputData {
     return {
       ...this._state.record,
@@ -45,15 +45,9 @@ export class DataInputModel extends Model<DataInputData> implements DataInput {
     return this._state.record$;
   }
 
-  restore(data: DataInputData): void {
-    this._state.setRecord({
-      ...data,
-      component: undefined,
-    });
-  }
-
+  // properties
   get name(): string {
-    return this._state.record.name || "";
+    return this._state.entry("name") || "";
   }
 
   get name$(): Observable<string> {
@@ -61,7 +55,7 @@ export class DataInputModel extends Model<DataInputData> implements DataInput {
   }
 
   get varName(): string | undefined {
-    return this._state.record.varName;
+    return this._state.entry("varName");
   }
 
   get varName$(): Observable<string | undefined> {
@@ -69,7 +63,7 @@ export class DataInputModel extends Model<DataInputData> implements DataInput {
   }
 
   get tsType(): string | undefined {
-    return this._state.record.tsType;
+    return this._state.entry("tsType");
   }
 
   get tsType$(): Observable<string | undefined> {
@@ -77,7 +71,7 @@ export class DataInputModel extends Model<DataInputData> implements DataInput {
   }
 
   get required(): boolean | undefined {
-    return this._state.record.required;
+    return this._state.entry("required");
   }
 
   get required$(): Observable<boolean | undefined> {
@@ -85,10 +79,16 @@ export class DataInputModel extends Model<DataInputData> implements DataInput {
   }
 
   get defaultValue(): any {
-    return this._state.record.defaultValue;
+    return this._state.entry("defaultValue");
   }
 
   get defaultValue$(): Observable<any> {
     return this._state.entry$("defaultValue");
+  }
+
+  // restore method
+  restore(data: DataInputData): void {
+    const { component: _, ...stateData } = data;
+    this._state.setRecord(stateData);
   }
 }
