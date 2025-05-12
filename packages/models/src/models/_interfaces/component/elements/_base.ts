@@ -19,6 +19,9 @@ export interface BaseElement<T extends string> extends Identifiable {
   allCssStylesheets: CssStyleSheet[];
   allCssStylesheets$: Observable<CssStyleSheet[]>;
 
+  slotIds: string[];
+  slotIds$: Observable<string[]>;
+
   name: string | undefined;
   name$: Observable<string | undefined>;
 

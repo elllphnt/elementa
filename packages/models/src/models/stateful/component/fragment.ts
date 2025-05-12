@@ -59,11 +59,14 @@ export class FragmentModel
   }
 
   get slotIds(): string[] {
-    //todo
+    return this.content.flatMap((c) => c.slotIds);
   }
 
   get slotIds$(): Observable<string[]> {
-    //todo
+    return this.content$.pipe(
+      switchMap((c) => combineLatestOrEmpty(c.map((c) => c.slotIds$))),
+      map((slotIdsArrays) => slotIdsArrays.flat())
+    );
   }
 
   // data getters

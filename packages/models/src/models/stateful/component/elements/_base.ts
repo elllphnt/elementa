@@ -44,6 +44,14 @@ export abstract class BaseElementModel<
     return of([this.cssStyleSheet]);
   }
 
+  get slotIds(): string[] {
+    return [];
+  }
+
+  get slotIds$(): Observable<string[]> {
+    return of([]);
+  }
+
   private get _baseElementState() {
     return this._state as RecordState<
       Omit<BaseElementData<T["type"]>, "id" | "type" | "stylesheet">

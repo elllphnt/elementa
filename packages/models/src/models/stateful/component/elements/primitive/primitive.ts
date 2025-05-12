@@ -7,8 +7,9 @@ import {
   AggregatedModelRecord,
   combineLatestArrays,
   combineLatestMerged,
+  combineLatestOrEmpty,
 } from "@elllphnt/elementa-utils";
-import { filter, forkJoin, map, Observable, of, tap } from "rxjs";
+import { filter, forkJoin, map, Observable, of, switchMap, tap } from "rxjs";
 import { CssStyleSheet } from "../../../../../css/_.js";
 import { File, Project } from "../../../../../infrastructure/_.js";
 import { Element } from "../../../../_interfaces/_.js";
@@ -91,6 +92,17 @@ export class PrimitiveElementModel
 
   get props$(): Observable<Record<string, any> | undefined> {
     return this._state.entry$("props");
+  }
+
+  get slotIds(): string[] {
+    return this.content.flatMap((c) => c.slotIds);
+  }
+
+  get slotIds$(): Observable<string[]> {
+    return this.content$.pipe(
+      switchMap((c) => combineLatestOrEmpty(c.map((c) => c.slotIds$))),
+      map((slotIdsArrays) => slotIdsArrays.flat())
+    );
   }
 
   // data getters

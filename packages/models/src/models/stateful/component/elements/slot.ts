@@ -3,7 +3,7 @@ import {
   AggregatedModelList,
   combineLatestMerged,
 } from "@elllphnt/elementa-utils";
-import { forkJoin, Observable } from "rxjs";
+import { forkJoin, Observable, of } from "rxjs";
 import { Project } from "../../../../infrastructure/_.js";
 import { Element } from "../../../_interfaces/_.js";
 import { SlotElement } from "../../../_interfaces/component/elements/slot.js";
@@ -24,6 +24,15 @@ export class SlotElementModel
 
   get placeholder$(): Observable<Element[]> {
     return this._placeholder.state.items$;
+  }
+
+  // Override the slotIds property to return this element's ID
+  get slotIds(): string[] {
+    return [this.id];
+  }
+
+  get slotIds$(): Observable<string[]> {
+    return of([this.id]);
   }
 
   // data getters
