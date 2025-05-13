@@ -1,10 +1,26 @@
 import { RouteTreeInstance } from "@elllphnt/elementa-runtime";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { createRoute, RootRoute, Route } from "@tanstack/react-router";
-import { BehaviorSubject, map } from "rxjs";
+import React, { createElement } from "react";
+import {
+  BehaviorSubject,
+  combineLatest,
+  distinctUntilChanged,
+  map,
+  of,
+  switchMap,
+} from "rxjs";
+import { RouteViewComponent } from "../../components/app/route_view.js";
 import { Scene } from "../../scene/scene.js";
 import { Renderable } from "../renderable.js";
 import { RouteHandlerRenderable } from "./route_handler.js";
+
+export type TsRouteComponentOptions = Partial<
+  Record<
+    "component" | "errorComponent" | "pendingComponent" | "notFoundComponent",
+    React.ComponentType
+  >
+>;
 
 export class RouteTreeRenderable extends Renderable {
   readonly instance: RouteTreeInstance;
@@ -14,6 +30,8 @@ export class RouteTreeRenderable extends Renderable {
   private _handler$ = new BehaviorSubject<RouteHandlerRenderable | undefined>(
     undefined
   );
+
+  private _tsComponentOptions: TsRouteComponentOptions = {};
 
   get children$() {
     return this._children$.asObservable();
@@ -84,12 +102,55 @@ export class RouteTreeRenderable extends Renderable {
         }
       });
 
+    // call onStructure when views change
+    const viewsSubscription = this.handler$
+      .pipe(
+        distinctUntilChanged(),
+        switchMap((handler) =>
+          handler
+            ? combineLatest({
+                mainView: handler.mainView$,
+                errorView: handler.errorView$,
+                pendingView: handler.pendingView$,
+                notFoundView: handler.notFoundView$,
+              })
+            : of(undefined)
+        ),
+        distinctUntilChanged()
+      )
+      .subscribe((views) => {
+        this._tsComponentOptions = {};
+        if (views?.mainView) {
+          const view = views.mainView;
+          this._tsComponentOptions.component = () =>
+            createElement(RouteViewComponent, { key: view.key, view });
+        }
+        if (views?.errorView) {
+          const view = views.errorView;
+          this._tsComponentOptions.component = () =>
+            createElement(RouteViewComponent, { key: view.key, view });
+        }
+        if (views?.notFoundView) {
+          const view = views.notFoundView;
+          this._tsComponentOptions.component = () =>
+            createElement(RouteViewComponent, { key: view.key, view });
+        }
+        if (views?.pendingView) {
+          const view = views.pendingView;
+          this._tsComponentOptions.component = () =>
+            createElement(RouteViewComponent, { key: view.key, view });
+        }
+
+        onStructure();
+      });
+
     this.addDisposer(() => {
       this._children$.complete();
       this._handler$.complete();
 
       childrenSubscription.unsubscribe();
       handlerSubscription.unsubscribe();
+      viewsSubscription.unsubscribe();
     });
   }
 
@@ -99,6 +160,7 @@ export class RouteTreeRenderable extends Renderable {
     }
 
     const options: any = {
+      ...this._tsComponentOptions,
       getParentRoute: () => parent,
     };
     if (this.instance.model.path) {

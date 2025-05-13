@@ -2,7 +2,7 @@ import { ResolvableOrEvaluable } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
 import { CssStyleSheet } from "../../../../css/_.js";
 import { SlotFill } from "../../_shared/slot_fill.js";
-import { FileModelAdaptor } from "../../file/_.js";
+import { FileModelAdaptor } from "../../adaptors/_.js";
 import { Component } from "../component.js";
 import { BaseElement } from "./_base.js";
 

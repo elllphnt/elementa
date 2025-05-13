@@ -53,7 +53,7 @@ function createRenderableComponent({
     scene,
     instance: new ComponentInstance({
       propResolver,
-      component,
+      model: component,
     }),
   });
 
@@ -130,8 +130,8 @@ test("component states", async () => {
       },
     },
   });
-  assert.equal(component.instance.component.states.length, 1);
-  const state = component.instance.component.states.get(0);
+  assert.equal(component.instance.model.states.length, 1);
+  const state = component.instance.model.states.get(0);
 
   assert.equal(state.type, "value");
   assert.equal(state.varName, "text");

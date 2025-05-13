@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
+import { FileModelAdaptor } from "../../../../adaptors/_.js";
 import { App } from "../../../../app/_.js";
-import { FileModelAdaptor } from "../../../../file/_.js";
 import { BaseRenderableContent } from "./_base.js";
 
 export interface AppRenderableContent extends BaseRenderableContent<"app"> {

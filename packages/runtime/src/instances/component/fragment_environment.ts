@@ -71,10 +71,10 @@ export class ComponentInstanceFragmentEnvironment extends ChildFragmentEnvironme
     return this._states$.asObservable();
   }
   get props(): DataInput[] {
-    return this.componentInstance.component.props;
+    return this.componentInstance.model.props;
   }
   get props$(): Observable<DataInput[]> {
-    return this.componentInstance.component.props$;
+    return this.componentInstance.model.props$;
   }
   get fragments(): FragmentInstance[] {
     return this._fragments$.value;
@@ -95,8 +95,8 @@ export class ComponentInstanceFragmentEnvironment extends ChildFragmentEnvironme
 
     this.propResolver = propResolver;
 
-    const statesSubscription =
-      this.componentInstance.component.states$.subscribe((states) => {
+    const statesSubscription = this.componentInstance.model.states$.subscribe(
+      (states) => {
         const [newStates, removed] = reconcileList({
           targets: this.states,
           sources: states,
@@ -112,11 +112,12 @@ export class ComponentInstanceFragmentEnvironment extends ChildFragmentEnvironme
 
         this._states$.next(newStates);
         removed.forEach((s) => s.dispose());
-      });
+      }
+    );
 
     // --- Reconcile fragments ---
     const fragmentsSubscription =
-      this.componentInstance.component.fragments$.subscribe((fragments) => {
+      this.componentInstance.model.fragments$.subscribe((fragments) => {
         const [newFragments, removed] = reconcileList({
           targets: this.fragments,
           sources: fragments,

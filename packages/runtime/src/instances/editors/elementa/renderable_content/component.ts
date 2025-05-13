@@ -95,7 +95,7 @@ export class ComponentRenderableContentInstance extends BaseRenderableContentIns
         if (component) {
           this._component$.next(
             new ComponentInstance({
-              component,
+              model: component,
               inputResolver: new ComponentRenderableContentInputResolver({
                 environment,
                 renderableContent: this.model,

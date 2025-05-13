@@ -18,6 +18,7 @@ export enum ElementaInstanceType {
   State = "state",
   StyleSheet = "stylesheet",
   Style = "style",
+  Adaptor = "adaptor",
 }
 
 /**

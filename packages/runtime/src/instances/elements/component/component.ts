@@ -69,7 +69,7 @@ export class ComponentElementInstance<
         if (component) {
           const currentComponent = this.component;
           const componentInstance = new ComponentInstance({
-            component,
+            model: component,
             inputResolver: this.componentPropsResolver,
           });
           this._component$.next(componentInstance);

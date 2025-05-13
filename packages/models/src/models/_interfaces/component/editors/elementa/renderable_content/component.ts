@@ -1,5 +1,5 @@
 import { Observable } from "rxjs";
-import { FileModelAdaptor } from "../../../../file/_.js";
+import { FileModelAdaptor } from "../../../../adaptors/_.js";
 import { Component } from "../../../component.js";
 import { BaseRenderableContent } from "./_base.js";
 

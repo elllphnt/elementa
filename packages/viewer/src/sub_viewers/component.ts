@@ -78,7 +78,7 @@ export class ComponentViewer extends SubViewer {
   }
   private _getRenderable(component: Component): ComponentRenderable {
     const instance = new ComponentInstance({
-      component,
+      model: component,
       propResolver: this.propResolver,
     });
     const renderable = new ComponentRenderable({

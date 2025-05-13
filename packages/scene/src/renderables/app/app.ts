@@ -16,7 +16,7 @@ export class AppRenderable extends Renderable {
   readonly history: RouterHistory;
 
   private _routes$ = new BehaviorSubject<RouteTreeRenderable[]>([]);
-  private _tsRootRoute$ = new BehaviorSubject<RootRoute>(createRootRoute());
+  private _tsRootRoute$ = new BehaviorSubject<RootRoute | undefined>(undefined);
 
   get routes$(): Observable<RouteTreeRenderable[]> {
     return this._routes$;
@@ -25,10 +25,10 @@ export class AppRenderable extends Renderable {
     return this._routes$.value;
   }
 
-  get tsRootRoute$(): Observable<RootRoute> {
+  get tsRootRoute$(): Observable<RootRoute | undefined> {
     return this._tsRootRoute$;
   }
-  get tsRootRoute(): RootRoute {
+  get tsRootRoute(): RootRoute | undefined {
     return this._tsRootRoute$.value;
   }
 
