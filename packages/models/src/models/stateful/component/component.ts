@@ -7,7 +7,7 @@ import {
   keyManager,
 } from "@elllphnt/elementa-utils";
 import { Observable, forkJoin, map } from "rxjs";
-import { Project } from "../../../infrastructure/_.js";
+import { File } from "../../../infrastructure/_.js";
 import { Component } from "../../_interfaces/component/component.js";
 import { DataInputModel } from "../_shared/data_input.js";
 import { ElementaPreviewModel } from "./editors/elementa/preview.js";
@@ -16,7 +16,7 @@ import { FragmentModel } from "./fragment.js";
 import { StateModel, createStateModel } from "./states/_state.js";
 
 export class ComponentModel extends Model<ComponentData> implements Component {
-  readonly project: Project;
+  readonly file: File;
   readonly template: FragmentModel;
   readonly stage: ElementaStageModel;
   readonly preview: ElementaPreviewModel;
@@ -31,21 +31,21 @@ export class ComponentModel extends Model<ComponentData> implements Component {
   private _states: AggregatedModelList<StateModel>;
   private _fragments: AggregatedModelList<FragmentModel>;
 
-  constructor({ init, project }: { init: ComponentData; project: Project }) {
+  constructor({ init, file }: { init: ComponentData; file: File }) {
     const { template, props, fragments, states, editors, ...stateData } = init;
     const { stage, preview } = editors || {};
     super({ key: keyManager.next("component") });
 
-    this.project = project;
+    this.file = file;
 
     // Create stage and preview first
     this.stage = new ElementaStageModel({
       init: stage,
-      project,
+      project: file.project,
     });
     this.preview = new ElementaPreviewModel({
       init: preview,
-      project,
+      project: file.project,
     });
 
     this._state = new RecordState({
@@ -55,7 +55,7 @@ export class ComponentModel extends Model<ComponentData> implements Component {
     // Create template
     this.template = new FragmentModel({
       init: template || { id: "template" },
-      project,
+      component: this,
     });
 
     this._props = new AggregatedModelList({
@@ -70,7 +70,7 @@ export class ComponentModel extends Model<ComponentData> implements Component {
       create: (data) =>
         new FragmentModel({
           init: data,
-          project,
+          component: this,
         }),
       dataRef: (d) => d.id,
       modelRef: (m) => m.id,

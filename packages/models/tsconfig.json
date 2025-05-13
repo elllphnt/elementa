@@ -4,7 +4,7 @@
     "tsBuildInfoFile": "build/.tsbuildinfo",
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./*"]
+      "~/*": ["./src/*"]
     }
   },
   "include": ["src", "tests"],

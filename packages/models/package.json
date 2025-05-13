@@ -6,8 +6,10 @@
     "types": "build/index.d.ts",
     "type": "module",
     "scripts": {
-        "build": "npm run lint && tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
-        "watch": "tsc-watch --project tsconfig.build.json --onSuccess \"tsc-alias -p tsconfig.build.json\" --onFailure \"tsc-alias -p tsconfig.build.json\"",
+        "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json --verbose",
+        "build:watch": "tsc -p tsconfig.build.json --watch",
+        "alias:watch": "tsc-alias -p tsconfig.build.json --watch",
+        "watch": "concurrently \"npm run build:watch\" \"npm run alias:watch\"",
         "test": "tsx tests/_.test.ts"
     },
     "dependencies": {

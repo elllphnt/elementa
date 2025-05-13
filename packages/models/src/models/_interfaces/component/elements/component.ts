@@ -2,7 +2,7 @@ import { ResolvableOrEvaluable } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
 import { CssStyleSheet } from "../../../../css/_.js";
 import { SlotFill } from "../../_shared/slot_fill.js";
-import { FileModel } from "../../file/_.js";
+import { FileModelAdaptor } from "../../file/_.js";
 import { Component } from "../component.js";
 import { BaseElement } from "./_base.js";
 
@@ -16,8 +16,8 @@ export interface ComponentElement extends BaseElement<"component"> {
   componentUrl: string | undefined;
   componentUrl$: Observable<string | undefined>;
 
-  component: FileModel<Component> | undefined;
-  component$: Observable<FileModel<Component> | undefined>;
+  component: FileModelAdaptor<Component> | undefined;
+  component$: Observable<FileModelAdaptor<Component> | undefined>;
 
   props: Record<string, any> | undefined;
   props$: Observable<Record<string, any> | undefined>;

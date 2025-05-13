@@ -1,5 +1,5 @@
 import { Observable } from "rxjs";
-import { Fragment } from "../../../fragment.js";
+import { Fragment } from "../../../fragment/fragment.js";
 import { BaseRenderableContent } from "./_base.js";
 
 export interface FragmentRenderableContent

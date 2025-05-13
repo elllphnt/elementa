@@ -45,7 +45,7 @@ export function attachBaseElement<E extends ElementData>(
 
   // Stylesheet
   const stylesheet = getOrCreateYMap(element, "stylesheet");
-  assert(attachStylesheet(stylesheet, fragment.component.project));
+  assert(attachStylesheet(stylesheet, fragment.component.file));
 
   const cssStyleSheet = new StylesheetCssStyleSheet({
     target: `${(element as any).type}:${(element as any).key}`,

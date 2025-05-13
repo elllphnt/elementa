@@ -47,6 +47,7 @@ export class ElementaStageManager {
 
     // create root element
     const rootElement = document.createElement("div");
+    rootElement.style.display = "none";
     this.root.appendChild(rootElement);
 
     // register root element

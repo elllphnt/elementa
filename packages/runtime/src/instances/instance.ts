@@ -1,5 +1,6 @@
 import { Disposable, keyManager } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, map, Observable, of } from "rxjs";
+import { Diagnostic, Diagnosticable, DiagnosticLevel } from "../_shared/_.js";
 import { Runtime } from "../runtime/runtime.js";
 
 /**
@@ -9,6 +10,7 @@ import { Runtime } from "../runtime/runtime.js";
 export enum ElementaInstanceType {
   App = "app",
   Route = "route",
+  RouteHandler = "route-handler",
   Component = "component",
   Fragment = "fragment",
   Element = "element",
@@ -18,28 +20,11 @@ export enum ElementaInstanceType {
   Style = "style",
 }
 
-export const DiagnosticLevel = {
-  Info: 0,
-  Warning: 1,
-  Error: 2,
-};
-
-export interface DiagnosticEntry {
-  level: number;
-  message: string;
-}
-
-export interface Diagnostic {
-  level: number;
-  message: string;
-  entries?: DiagnosticEntry[];
-}
-
 /**
  * Base runtime class for all reactive, disposable, and traversable instances.
  * Includes a stable key, a parent link, and a type identifier.
  */
-export abstract class Instance extends Disposable {
+export abstract class Instance extends Disposable implements Diagnosticable {
   readonly key: string;
   readonly type: string;
   readonly runtime: Runtime;

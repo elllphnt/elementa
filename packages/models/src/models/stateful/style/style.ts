@@ -24,7 +24,7 @@ import {
   map,
   Observable,
 } from "rxjs";
-import { Project } from "~/src/infrastructure/_.js";
+import { Project } from "~/infrastructure/_.js";
 import { Style } from "../../_interfaces/style/style.js";
 import { StyleFragmentRegistry } from "../../_interfaces/style/style_fragment_registry.js";
 

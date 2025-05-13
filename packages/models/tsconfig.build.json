@@ -6,9 +6,8 @@
     "strict": false,
     "strictFunctionTypes": false,
     "tsBuildInfoFile": "build/.tsbuildinfo",
-    "baseUrl": ".",
     "paths": {
-      "~/*": ["./*"]
+      "~/*": ["./src/*"]
     }
   },
   "include": ["src"],

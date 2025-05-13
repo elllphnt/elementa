@@ -1,23 +1,19 @@
 import { RouteTreeInstance } from "@elllphnt/elementa-runtime";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { createRoute, RootRoute, Route } from "@tanstack/react-router";
-import { createElement } from "react";
-import { BehaviorSubject } from "rxjs";
-import ComponentComponent from "../../components/component/component.js";
+import { BehaviorSubject, map } from "rxjs";
 import { Scene } from "../../scene/scene.js";
-import { ComponentRenderable } from "../component/component.js";
 import { Renderable } from "../renderable.js";
+import { RouteHandlerRenderable } from "./route_handler.js";
 
 export class RouteTreeRenderable extends Renderable {
   readonly instance: RouteTreeInstance;
 
   private _onStructure: () => void;
   private _children$ = new BehaviorSubject<RouteTreeRenderable[]>([]);
-  private _mainView$ = new BehaviorSubject<ComponentRenderable | undefined>(
+  private _handler$ = new BehaviorSubject<RouteHandlerRenderable | undefined>(
     undefined
   );
-
-  private _tsRoute: Route | undefined;
 
   get children$() {
     return this._children$.asObservable();
@@ -26,11 +22,11 @@ export class RouteTreeRenderable extends Renderable {
     return this._children$.value;
   }
 
-  get mainView$() {
-    return this._mainView$.asObservable();
+  get handler$() {
+    return this._handler$.asObservable();
   }
-  get mainView() {
-    return this._mainView$.value;
+  get handler() {
+    return this._handler$.value;
   }
 
   constructor({
@@ -67,41 +63,43 @@ export class RouteTreeRenderable extends Renderable {
       }
     );
 
-    const mainViewSubscription = this.instance.mainView$.subscribe((view) => {
-      const currentView = this._mainView$.value;
-      if (view) {
-        this._mainView$.next(
-          new ComponentRenderable({
-            scene,
-            instance: view,
-          })
-        );
-      } else {
-        this._mainView$.next(undefined);
-      }
-      if (currentView) {
-        currentView.dispose();
-      }
-    });
+    const handlerSubscription = this.instance.handler$
+      .pipe(
+        map((handler) => (handler?.variant === "page" ? handler : undefined))
+      )
+      .subscribe((handler) => {
+        const currentView = this._handler$.value;
+        if (handler) {
+          this._handler$.next(
+            new RouteHandlerRenderable({
+              scene,
+              instance: handler,
+            })
+          );
+        } else {
+          this._handler$.next(undefined);
+        }
+        if (currentView) {
+          currentView.dispose();
+        }
+      });
 
     this.addDisposer(() => {
       this._children$.complete();
-      this._mainView$.complete();
+      this._handler$.complete();
 
       childrenSubscription.unsubscribe();
-      mainViewSubscription.unsubscribe();
+      handlerSubscription.unsubscribe();
     });
   }
 
-  createTsRoute(parent: RootRoute | Route): Route {
+  createTsRoute(parent: RootRoute | Route): Route | undefined {
+    if (!this.handler) {
+      return undefined;
+    }
+
     const options: any = {
       getParentRoute: () => parent,
-      component: () =>
-        this.mainView
-          ? createElement(ComponentComponent, {
-              component: this.mainView,
-            })
-          : undefined,
     };
     if (this.instance.model.path) {
       options.path = this.instance.model.path;
@@ -110,10 +108,15 @@ export class RouteTreeRenderable extends Renderable {
     }
     const route = createRoute(options) as unknown as Route;
 
-    const children = this.children.map((child) => child.createTsRoute(route));
+    const children: Route[] = [];
+    for (const child of this.children) {
+      const childRoute = child.createTsRoute(route);
+      if (childRoute) {
+        children.push(childRoute);
+      }
+    }
     route.addChildren(children);
 
-    this._tsRoute = route;
     return route;
   }
 }

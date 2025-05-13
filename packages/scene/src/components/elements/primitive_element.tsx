@@ -19,8 +19,8 @@ function usePrimitiveElementsProps({
 }) {
   const namespace = useNamespace();
   const elements = useObservable(
-    primitive.instance.element.elements.observable$,
-    Object.fromEntries(primitive.instance.element.elements.entries())
+    primitive.instance.element.subElements$,
+    primitive.instance.element.subElements
   );
   const elementEntries = Object.entries(elements);
   const key = elementEntries.map((e) => `${e[0]}:${e[1]}`).join(".");

@@ -9,7 +9,7 @@ export class HookStateInstance extends BaseStateInstance<HookState> {
   get module() {
     return this.model.hookUrl
       ? this.runtime.moduleManager.module(
-          this.model.component.project.absoluteFileUrl(this.model.hookUrl)
+          this.model.component.file.project.absoluteFileUrl(this.model.hookUrl)
         )
       : undefined;
   }

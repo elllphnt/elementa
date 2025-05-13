@@ -84,10 +84,10 @@ export class RouteTreeModel
 
   get mainViewComponent() {
     const mainViewUrl = this.mainViewUrl
-      ? this.app.project.absoluteFileUrl(this.mainViewUrl)
+      ? this.app.file.project.absoluteFileUrl(this.mainViewUrl)
       : undefined;
     return mainViewUrl
-      ? this.app.project.infrastructure.component(mainViewUrl)
+      ? this.app.file.project.infrastructure.component(mainViewUrl)
       : undefined;
   }
 
@@ -97,9 +97,10 @@ export class RouteTreeModel
         if (!mainViewUrl) {
           return undefined;
         }
-        const mainViewComponent = this.app.project.infrastructure.component(
-          this.app.project.absoluteFileUrl(mainViewUrl)
-        );
+        const mainViewComponent =
+          this.app.file.project.infrastructure.component(
+            this.app.file.project.absoluteFileUrl(mainViewUrl)
+          );
         return mainViewComponent;
       })
     );
@@ -107,10 +108,10 @@ export class RouteTreeModel
 
   get errorViewComponent() {
     const errorViewUrl = this.errorViewUrl
-      ? this.app.project.absoluteFileUrl(this.errorViewUrl)
+      ? this.app.file.project.absoluteFileUrl(this.errorViewUrl)
       : undefined;
     return errorViewUrl
-      ? this.app.project.infrastructure.component(errorViewUrl)
+      ? this.app.file.project.infrastructure.component(errorViewUrl)
       : undefined;
   }
 
@@ -120,9 +121,10 @@ export class RouteTreeModel
         if (!errorViewUrl) {
           return undefined;
         }
-        const errorViewComponent = this.app.project.infrastructure.component(
-          this.app.project.absoluteFileUrl(errorViewUrl)
-        );
+        const errorViewComponent =
+          this.app.file.project.infrastructure.component(
+            this.app.file.project.absoluteFileUrl(errorViewUrl)
+          );
         return errorViewComponent;
       })
     );
@@ -130,10 +132,10 @@ export class RouteTreeModel
 
   get pendingViewComponent() {
     const pendingViewUrl = this.pendingViewUrl
-      ? this.app.project.absoluteFileUrl(this.pendingViewUrl)
+      ? this.app.file.project.absoluteFileUrl(this.pendingViewUrl)
       : undefined;
     return pendingViewUrl
-      ? this.app.project.infrastructure.component(pendingViewUrl)
+      ? this.app.file.project.infrastructure.component(pendingViewUrl)
       : undefined;
   }
 
@@ -143,9 +145,10 @@ export class RouteTreeModel
         if (!pendingViewUrl) {
           return undefined;
         }
-        const pendingViewComponent = this.app.project.infrastructure.component(
-          this.app.project.absoluteFileUrl(pendingViewUrl)
-        );
+        const pendingViewComponent =
+          this.app.file.project.infrastructure.component(
+            this.app.file.project.absoluteFileUrl(pendingViewUrl)
+          );
         return pendingViewComponent;
       })
     );
@@ -153,10 +156,10 @@ export class RouteTreeModel
 
   get notFoundViewComponent() {
     const notFoundViewUrl = this.notFoundViewUrl
-      ? this.app.project.absoluteFileUrl(this.notFoundViewUrl)
+      ? this.app.file.project.absoluteFileUrl(this.notFoundViewUrl)
       : undefined;
     return notFoundViewUrl
-      ? this.app.project.infrastructure.component(notFoundViewUrl)
+      ? this.app.file.project.infrastructure.component(notFoundViewUrl)
       : undefined;
   }
 
@@ -166,9 +169,10 @@ export class RouteTreeModel
         if (!notFoundViewUrl) {
           return undefined;
         }
-        const notFoundViewComponent = this.app.project.infrastructure.component(
-          this.app.project.absoluteFileUrl(notFoundViewUrl)
-        );
+        const notFoundViewComponent =
+          this.app.file.project.infrastructure.component(
+            this.app.file.project.absoluteFileUrl(notFoundViewUrl)
+          );
         return notFoundViewComponent;
       })
     );

@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 import { Identifiable } from "../_shared/identifiable.js";
 import { Component } from "../component/_.js";
-import { FileModel } from "../file/_.js";
+import { FileModelAdaptor } from "../file/_.js";
 import { App } from "./app.js";
 
 export interface RouteTree extends Identifiable {
@@ -31,17 +31,17 @@ export interface RouteTree extends Identifiable {
   handlerUrl: string | undefined;
   handlerUrl$: Observable<string | undefined>;
 
-  mainViewComponent: FileModel<Component> | undefined;
-  mainViewComponent$: Observable<FileModel<Component> | undefined>;
+  mainViewComponent: FileModelAdaptor<Component> | undefined;
+  mainViewComponent$: Observable<FileModelAdaptor<Component> | undefined>;
 
-  errorViewComponent: FileModel<Component> | undefined;
-  errorViewComponent$: Observable<FileModel<Component> | undefined>;
+  errorViewComponent: FileModelAdaptor<Component> | undefined;
+  errorViewComponent$: Observable<FileModelAdaptor<Component> | undefined>;
 
-  pendingViewComponent: FileModel<Component> | undefined;
-  pendingViewComponent$: Observable<FileModel<Component> | undefined>;
+  pendingViewComponent: FileModelAdaptor<Component> | undefined;
+  pendingViewComponent$: Observable<FileModelAdaptor<Component> | undefined>;
 
-  notFoundViewComponent: FileModel<Component> | undefined;
-  notFoundViewComponent$: Observable<FileModel<Component> | undefined>;
+  notFoundViewComponent: FileModelAdaptor<Component> | undefined;
+  notFoundViewComponent$: Observable<FileModelAdaptor<Component> | undefined>;
 
   // setters
 

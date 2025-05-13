@@ -18,7 +18,11 @@ import {
 } from "rxjs";
 import * as y from "yjs";
 import { ResolvableRecord } from "../../../../../_lib/resolvable.js";
-import { ComponentElement, Fragment, SlotFill } from "../../../../_interfaces/_.js";
+import {
+  ComponentElement,
+  Fragment,
+  SlotFill,
+} from "../../../../_interfaces/_.js";
 import { attachBaseElement } from "../element.js";
 import { attachSlotFill } from "./slot_fill.js";
 
@@ -42,7 +46,7 @@ export function attachComponentElement(
 
   const _props = new ResolvableRecord(
     (element.get("props") as Record<string, any>) ?? {},
-    fragment.component.project.infrastructure
+    fragment.component.file.infrastructure
   );
   const propsSubscription = _props.subscribe(
     element.items$.pipe(map((v) => v.props ?? {}))
@@ -78,7 +82,7 @@ export function attachComponentElement(
   assert(
     setObjectGetter(element, "absoluteComponentUrl", () => {
       const url = element.componentUrl;
-      return url ? fragment.component.project.absoluteFileUrl(url) : undefined;
+      return url ? fragment.component.file.absoluteFileUrl(url) : undefined;
     })
   );
   assert(
@@ -87,7 +91,7 @@ export function attachComponentElement(
       "absoluteComponentUrl$",
       element.componentUrl$.pipe(
         map((url) =>
-          url ? fragment.component.project.absoluteFileUrl(url) : undefined
+          url ? fragment.component.file.absoluteFileUrl(url) : undefined
         )
       )
     )
@@ -97,7 +101,7 @@ export function attachComponentElement(
     setObjectGetter(element, "localComponent", () => {
       const url = element.absoluteComponentUrl;
       return url
-        ? fragment.component.project.infrastructure.component(url)
+        ? fragment.component.file.infrastructure.component(url)
         : undefined;
     })
   );
@@ -108,7 +112,7 @@ export function attachComponentElement(
       element.absoluteComponentUrl$.pipe(
         map((url) =>
           url
-            ? fragment.component.project.infrastructure.component(url)
+            ? fragment.component.file.infrastructure.component(url)
             : undefined
         )
       )

@@ -8,9 +8,9 @@ import {
   RecordState,
 } from "@elllphnt/elementa-utils";
 import { forkJoin, map, Observable, switchMap } from "rxjs";
-import { Project } from "~/src/infrastructure/_.js";
 import { CssStyleSheet } from "../../../css/_.js";
-import { Element, Fragment } from "../../_interfaces/_.js";
+import { Component, Element, Fragment } from "../../_interfaces/_.js";
+import { makeFragmentUrl } from "../../_interfaces/component/fragment/url.js";
 import { DataInputModel } from "../_shared/data_input.js";
 import { IdentifiableModel } from "../_shared/identifiable.js";
 import { createElementModel, ElementModel } from "./elements/_element.js";
@@ -19,7 +19,15 @@ export class FragmentModel
   extends IdentifiableModel<FragmentData>
   implements Fragment
 {
-  project: Project;
+  component: Component;
+
+  get url(): string {
+    return makeFragmentUrl({
+      projectId: this.component.file.project.id,
+      fileId: this.component.file.id,
+      fragmentId: this.id,
+    });
+  }
 
   protected _state: RecordState<
     Omit<FragmentData, "id" | "content" | "params">
@@ -90,11 +98,17 @@ export class FragmentModel
     ]);
   }
 
-  constructor({ init, project }: { init: FragmentData; project: Project }) {
+  constructor({
+    init,
+    component,
+  }: {
+    init: FragmentData;
+    component: Component;
+  }) {
     const { id, content, params, ...stateData } = init;
     super({ id, key: keyManager.next("fragment") });
 
-    this.project = project;
+    this.component = component;
 
     this._state = new RecordState({
       init: stateData,
@@ -105,7 +119,7 @@ export class FragmentModel
       create: (data) =>
         createElementModel({
           init: data,
-          project,
+          project: component.file.project,
         }),
       dataRef: (d) => d.id,
       modelRef: (m) => m.id,

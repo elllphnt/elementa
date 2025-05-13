@@ -10,7 +10,7 @@ import {
 import { Observable, filter, forkJoin, map, of, switchMap, tap } from "rxjs";
 import { CssStyleSheet } from "../../../../css/_.js";
 import { Project } from "../../../../infrastructure/_.js";
-import { Component, FileModel } from "../../../_interfaces/_.js";
+import { Component, FileModelAdaptor } from "../../../_interfaces/_.js";
 import { SlotFill } from "../../../_interfaces/_shared/slot_fill.js";
 import { ComponentElement } from "../../../_interfaces/component/elements/component.js";
 import { SlotFillModel } from "../../_shared/slot_fill.js";
@@ -32,7 +32,7 @@ export class ComponentElementModel
     return this._state.entry$("componentUrl");
   }
 
-  get component(): FileModel<Component> | undefined {
+  get component(): FileModelAdaptor<Component> | undefined {
     return this.componentUrl
       ? this.project.infrastructure.component(
           this.project.absoluteFileUrl(this.componentUrl)
@@ -40,7 +40,7 @@ export class ComponentElementModel
       : undefined;
   }
 
-  get component$(): Observable<FileModel<Component> | undefined> {
+  get component$(): Observable<FileModelAdaptor<Component> | undefined> {
     return this.componentUrl$.pipe(
       map((url) =>
         url

@@ -3,6 +3,7 @@ import { debounce, reconcileList } from "@elllphnt/elementa-utils";
 import {
   createRootRoute,
   RootRoute,
+  Route,
   RouterHistory,
 } from "@tanstack/react-router";
 import { BehaviorSubject, Observable } from "rxjs";
@@ -82,7 +83,14 @@ export class AppRenderable extends Renderable {
 
   handleStructureChange() {
     const rootRoute = createRootRoute();
-    const routes = this.routes.map((route) => route.createTsRoute(rootRoute));
+    const routes: Route[] = [];
+
+    for (const route of this.routes) {
+      const tsRoute = route.createTsRoute(rootRoute);
+      if (tsRoute) {
+        routes.push(tsRoute);
+      }
+    }
     rootRoute.addChildren(routes);
     this._tsRootRoute$.next(rootRoute);
   }

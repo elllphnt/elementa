@@ -1,12 +1,12 @@
 import { Observable } from "rxjs";
-import { Project } from "../../../infrastructure/_.js";
+import { File } from "~/infrastructure/_.js";
 import { DataInput } from "./data_input.js";
 import { ElementaPreview, ElementaStage } from "./editors/_.js";
-import { Fragment } from "./fragment.js";
+import { Fragment } from "./fragment/fragment.js";
 import { State } from "./states/_.js";
 
 export interface Component {
-  project: Project;
+  file: File;
 
   stage: ElementaStage;
   preview: ElementaPreview;

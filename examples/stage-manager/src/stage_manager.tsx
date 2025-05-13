@@ -1,4 +1,8 @@
 import {
+  ElementaStageModel,
+  InMemoryInfrastructure,
+} from "@elllphnt/elementa-models";
+import {
   InMemoryModuleHost,
   ModuleManager,
   Runtime,
@@ -6,27 +10,49 @@ import {
 import {
   DomStyleSheetManager,
   ElementaStageManager,
+  Renderable,
   Scene,
 } from "@elllphnt/elementa-scene";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const infrastructure = new Infrastrure();
+const infrastructure = new InMemoryInfrastructure({
+  projects: [
+    {
+      id: "1",
+    },
+  ],
+  files: [],
+});
+const project = infrastructure.project("1");
 const moduleHost = new InMemoryModuleHost();
 const moduleManager = new ModuleManager({
   infrastructure,
   moduleHost,
+  externals: [],
 });
 const stylesheetManager = new DomStyleSheetManager();
 const runtime = new Runtime({ moduleManager });
 const scene = new Scene({ stylesheetManager });
 
-export function SideBar() {
-  return <>Side Bar</>;
-}
+const stageModels = [
+  new ElementaStageModel({
+    project,
+    init: {},
+  }),
+  new ElementaStageModel({
+    project,
+    init: {},
+  }),
+  new ElementaStageModel({
+    project,
+    init: {},
+  }),
+];
 
 export function StageManager() {
   const managerRef = useRef<ElementaStageManager>(null);
   const managerRootref = useRef<HTMLDivElement>(null);
+  const [stages, setStages] = useState<[Renderable, number][]>([]);
 
   useEffect(() => {
     if (managerRef.current || !managerRootref.current) {
@@ -37,6 +63,11 @@ export function StageManager() {
       runtime,
       scene,
     });
+
+    const stages = stageModels.map((stage) => manager.addStage(stage));
+    setStages(stages);
+
+    managerRef.current = manager;
   });
 
   return (
@@ -50,7 +81,16 @@ export function StageManager() {
       }}
     >
       <div style={{ width: "200px", backgroundColor: "#f0f0f0" }}>
-        <SideBar />
+        <>
+          {stages.map(([, key], i) => (
+            <button
+              key={i}
+              onClick={() => managerRef.current?.activateStage(key)}
+            >
+              Stage {i}
+            </button>
+          ))}
+        </>
       </div>
       <div style={{ flexGrow: 1, backgroundColor: "#ffffff" }}>
         <div id="board" ref={managerRootref} />

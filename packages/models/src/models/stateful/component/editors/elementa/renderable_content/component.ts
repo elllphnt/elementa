@@ -5,7 +5,7 @@ import { Project } from "../../../../../../infrastructure/_.js";
 import {
   Component,
   ComponentRenderableContent,
-  FileModel,
+  FileModelAdaptor,
 } from "../../../../../_interfaces/_.js";
 import { BaseRenderableContentModel } from "./_base.js";
 
@@ -23,7 +23,7 @@ export class ComponentRenderableContentModel
     return this._state.entry$("componentUrl");
   }
 
-  get component(): FileModel<Component> | undefined {
+  get component(): FileModelAdaptor<Component> | undefined {
     return this.componentUrl
       ? this.project.infrastructure.component(
           this.project.absoluteFileUrl(this.componentUrl)
@@ -31,7 +31,7 @@ export class ComponentRenderableContentModel
       : undefined;
   }
 
-  get component$(): Observable<FileModel<Component> | undefined> {
+  get component$(): Observable<FileModelAdaptor<Component> | undefined> {
     return this.componentUrl$.pipe(
       map((url) =>
         url

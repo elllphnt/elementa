@@ -6,7 +6,7 @@ import {
   combineLatestOrEmpty,
 } from "@elllphnt/elementa-utils";
 import { forkJoin, map, Observable, of, switchMap } from "rxjs";
-import { CssStyleSheet } from "~/src/css/_.js";
+import { CssStyleSheet } from "~/css/_.js";
 import { Project } from "../../../../infrastructure/_.js";
 import { Element } from "../../../_interfaces/_.js";
 import { ContainerElement } from "../../../_interfaces/component/elements/container.js";

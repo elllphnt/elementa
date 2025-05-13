@@ -9,7 +9,7 @@ import {
 } from "rxjs";
 import { FragmentEnvironment } from "../fragment/_.js";
 import { ElementaInstanceType, Instance } from "../instance.js";
-import { RouteTreeInstance } from "./route_tree.js";
+import { RouteTreeInstance } from "./route_tree/route_tree.js";
 
 export class AppInstance extends Instance {
   readonly app: App;
@@ -65,7 +65,7 @@ export class AppInstance extends Instance {
         create: (route) =>
           new RouteTreeInstance({
             environment,
-            routeTree: route,
+            model: route,
             parent: this,
           }),
       });

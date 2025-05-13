@@ -75,6 +75,8 @@ export class FragmentRenderable extends InstanceRenderable<FragmentInstance> {
       }
     );
 
+    this.scene.registerFragment(this.instance.model);
+
     this.addDisposer(() => {
       contentSubscription.unsubscribe();
       fragmentSubscription.unsubscribe();
@@ -86,6 +88,8 @@ export class FragmentRenderable extends InstanceRenderable<FragmentInstance> {
       this.fragments.forEach((instance) => instance.dispose());
       this._fragments$.next([]);
       this._fragments$.complete();
+
+      this.scene.unregisterFragment(this.instance.model);
     });
   }
 }

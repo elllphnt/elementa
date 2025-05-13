@@ -25,7 +25,7 @@ export function attachSlotFill(
   assert(setObjectProperty(slot, "component", fragment.component));
 
   const stylesheet = getOrCreateYMap(slot, "stylesheet");
-  assert(attachStylesheet(stylesheet, fragment.component.project));
+  assert(attachStylesheet(stylesheet, fragment.component.file));
 
   const cssStyleSheet = new StylesheetCssStyleSheet({
     target: "slot-fill",

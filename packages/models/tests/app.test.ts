@@ -10,7 +10,7 @@ import {
   createBlueprintAppState,
   createBlueprintNode,
 } from "../src/index.js";
-import { Project } from "../src/infrastructure/project/project.js";
+import { Project } from "../src/infrastructure/interfaces/project/project.js";
 
 test("initial state", () => {
   const app = createApp({} as Project);

@@ -1,4 +1,4 @@
-import { Project } from "~/src/infrastructure/_.js";
+import { Project } from "~/infrastructure/_.js";
 
 export interface BaseRenderableContent<T extends string> {
   type: T;

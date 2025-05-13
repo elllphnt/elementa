@@ -1,5 +1,5 @@
 import { Observable } from "rxjs";
-import { FileModel } from "../../../../file/_.js";
+import { FileModelAdaptor } from "../../../../file/_.js";
 import { Component } from "../../../component.js";
 import { BaseRenderableContent } from "./_base.js";
 
@@ -8,8 +8,8 @@ export interface ComponentRenderableContent
   componentUrl: string | undefined;
   componentUrl$: Observable<string | undefined>;
 
-  component: FileModel<Component> | undefined;
-  component$: Observable<FileModel<Component> | undefined>;
+  component: FileModelAdaptor<Component> | undefined;
+  component$: Observable<FileModelAdaptor<Component> | undefined>;
 
   props: Record<string, any> | undefined;
   props$: Observable<Record<string, any> | undefined>;

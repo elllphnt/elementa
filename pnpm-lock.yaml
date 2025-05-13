@@ -41,7 +41,7 @@ importers:
         version: 9.26.0(jiti@1.21.7)
       eslint-plugin-import:
         specifier: ^2.29.1
-        version: 2.31.0(@typescript-eslint/parser@8.31.0(eslint@9.26.0(jiti@1.21.7))(typescript@5.8.3))(eslint@9.26.0(jiti@1.21.7))
+        version: 2.31.0(eslint@9.26.0(jiti@1.21.7))
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -70,6 +70,15 @@ importers:
         specifier: ^3.1.2
         version: 3.1.2(@types/node@22.15.17)(@vitest/ui@3.1.2)(jiti@1.21.7)(jsdom@26.1.0)(lightningcss@1.29.3)(tsx@4.19.3)(yaml@2.7.1)
 
+  examples/apps:
+    dependencies:
+      '@elllphnt/elementa-base':
+        specifier: workspace:*
+        version: link:../../packages/base
+      '@elllphnt/elementa-models':
+        specifier: workspace:*
+        version: link:../../packages/models
+
   examples/stage-manager:
     dependencies:
       react:
@@ -79,6 +88,70 @@ importers:
         specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
     devDependencies:
+      '@elllphnt/elementa-app-examples':
+        specifier: workspace:*
+        version: link:../apps
+      '@elllphnt/elementa-models':
+        specifier: workspace:*
+        version: link:../../packages/models
+      '@elllphnt/elementa-runtime':
+        specifier: workspace:*
+        version: link:../../packages/runtime
+      '@elllphnt/elementa-scene':
+        specifier: workspace:*
+        version: link:../../packages/scene
+      '@eslint/js':
+        specifier: ^9.25.0
+        version: 9.26.0
+      '@types/react':
+        specifier: ^19.1.2
+        version: 19.1.2
+      '@types/react-dom':
+        specifier: ^19.1.2
+        version: 19.1.2(@types/react@19.1.2)
+      '@vitejs/plugin-react':
+        specifier: ^4.4.1
+        version: 4.4.1(vite@6.3.5(@types/node@22.15.17)(jiti@1.21.7)(lightningcss@1.29.3)(tsx@4.19.3)(yaml@2.7.1))
+      eslint:
+        specifier: ^9.25.0
+        version: 9.26.0(jiti@1.21.7)
+      eslint-plugin-react-hooks:
+        specifier: ^5.2.0
+        version: 5.2.0(eslint@9.26.0(jiti@1.21.7))
+      eslint-plugin-react-refresh:
+        specifier: ^0.4.19
+        version: 0.4.20(eslint@9.26.0(jiti@1.21.7))
+      globals:
+        specifier: ^16.0.0
+        version: 16.0.0
+      typescript:
+        specifier: ~5.8.3
+        version: 5.8.3
+      typescript-eslint:
+        specifier: ^8.30.1
+        version: 8.31.0(eslint@9.26.0(jiti@1.21.7))(typescript@5.8.3)
+      vite:
+        specifier: ^6.3.5
+        version: 6.3.5(@types/node@22.15.17)(jiti@1.21.7)(lightningcss@1.29.3)(tsx@4.19.3)(yaml@2.7.1)
+
+  examples/viewer:
+    dependencies:
+      '@tanstack/react-router':
+        specifier: ^1.119.0
+        version: 1.119.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react:
+        specifier: ^19.1.0
+        version: 19.1.0
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.1.0(react@19.1.0)
+    devDependencies:
+      '@elllphnt/elementa-app-examples':
+        specifier: workspace:*
+        version: link:../apps
+      '@elllphnt/elementa-models':
+        specifier: workspace:*
+        version: link:../../packages/models
       '@elllphnt/elementa-runtime':
         specifier: workspace:*
         version: link:../../packages/runtime
@@ -442,7 +515,7 @@ importers:
         version: 5.0.2
       eslint-plugin-import:
         specifier: ^2.29.1
-        version: 2.31.0(@typescript-eslint/parser@8.31.0(eslint@9.26.0(jiti@1.21.7))(typescript@5.8.3))(eslint@9.26.0(jiti@1.21.7))
+        version: 2.31.0(eslint@9.26.0(jiti@1.21.7))
       parcel:
         specifier: ^2.11.0
         version: 2.14.4(@swc/helpers@0.5.17)(postcss@8.5.3)(typescript@5.2.2)
@@ -524,7 +597,7 @@ importers:
         version: 7.1.9
       eslint-plugin-import:
         specifier: ^2.29.1
-        version: 2.31.0(@typescript-eslint/parser@8.31.0(eslint@9.26.0(jiti@1.21.7))(typescript@5.8.3))(eslint@9.26.0(jiti@1.21.7))
+        version: 2.31.0(eslint@9.26.0(jiti@1.21.7))
       typescript:
         specifier: 5.2.2
         version: 5.2.2
@@ -8233,17 +8306,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.31.0(eslint@9.26.0(jiti@1.21.7))(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint@9.26.0(jiti@1.21.7)):
+  eslint-module-utils@2.12.0(eslint-import-resolver-node@0.3.9)(eslint@9.26.0(jiti@1.21.7)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
-      '@typescript-eslint/parser': 8.31.0(eslint@9.26.0(jiti@1.21.7))(typescript@5.8.3)
       eslint: 9.26.0(jiti@1.21.7)
       eslint-import-resolver-node: 0.3.9
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.31.0(eslint@9.26.0(jiti@1.21.7))(typescript@5.8.3))(eslint@9.26.0(jiti@1.21.7)):
+  eslint-plugin-import@2.31.0(eslint@9.26.0(jiti@1.21.7)):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.8
@@ -8254,7 +8326,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 9.26.0(jiti@1.21.7)
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.31.0(eslint@9.26.0(jiti@1.21.7))(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint@9.26.0(jiti@1.21.7))
+      eslint-module-utils: 2.12.0(eslint-import-resolver-node@0.3.9)(eslint@9.26.0(jiti@1.21.7))
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -8265,8 +8337,6 @@ snapshots:
       semver: 6.3.1
       string.prototype.trimend: 1.0.9
       tsconfig-paths: 3.15.0
-    optionalDependencies:
-      '@typescript-eslint/parser': 8.31.0(eslint@9.26.0(jiti@1.21.7))(typescript@5.8.3)
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack

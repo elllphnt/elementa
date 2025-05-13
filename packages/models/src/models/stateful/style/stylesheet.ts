@@ -7,7 +7,7 @@ import {
   keyManager,
 } from "@elllphnt/elementa-utils";
 import { Observable, filter, forkJoin, map, tap } from "rxjs";
-import { Project } from "~/src/infrastructure/_.js";
+import { Project } from "~/infrastructure/_.js";
 import { Style } from "../../_interfaces/style/style.js";
 import { Stylesheet } from "../../_interfaces/style/stylesheet.js";
 import { StyleModel } from "./style.js";

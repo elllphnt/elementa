@@ -5,5 +5,5 @@ export function ElementaStageComponent({
 }: {
   renderable: ElementaStageRenderable;
 }) {
-  return <>Stage ${renderable.key}</>;
+  return <>Stage {renderable.key}</>;
 }

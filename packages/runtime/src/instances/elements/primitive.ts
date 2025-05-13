@@ -12,9 +12,10 @@ import {
   of,
   switchMap,
 } from "rxjs";
+import { DiagnosticLevel } from "../../_shared/diagnosticable.js";
 import { Module } from "../../runtime/module_manager/_.js";
 import { FragmentEnvironment } from "../fragment/environment/environment.js";
-import { DiagnosticLevel, Instance } from "../instance.js";
+import { Instance } from "../instance.js";
 import { createElementInstance } from "./_element.js";
 import { ElementInstance } from "./element.js";
 

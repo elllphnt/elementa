@@ -14,7 +14,7 @@ import { CssStyleSheet } from "../../../css/_.js";
 import { Project } from "../../../infrastructure/_.js";
 import { Component } from "../../_interfaces/component/component.js";
 import { DataInput } from "../../_interfaces/component/data_input.js";
-import { Fragment } from "../../_interfaces/component/fragment.js";
+import { Fragment } from "../../_interfaces/component/fragment/fragment.js";
 import { State } from "../../_interfaces/component/states/_.js";
 import { Template } from "../../_interfaces/component/template.js";
 import { attachDataInput } from "./data_input.js";

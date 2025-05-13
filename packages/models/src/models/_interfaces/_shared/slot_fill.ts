@@ -1,6 +1,6 @@
 import { Expression } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
-import { Project } from "~/src/infrastructure/_.js";
+import { Project } from "~/infrastructure/_.js";
 import { CssStyleSheet, StylesheetCssStyleSheet } from "../../../css/_.js";
 import { Element } from "../component/_.js";
 

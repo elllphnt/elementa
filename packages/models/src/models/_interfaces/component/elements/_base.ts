@@ -6,7 +6,7 @@ import {
   ResolvableOrEvaluable,
 } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
-import { Project } from "~/src/infrastructure/_.js";
+import { Project } from "~/infrastructure/_.js";
 import { CssStyleSheet, StylesheetCssStyleSheet } from "../../../../css/_.js";
 import { Identifiable } from "../../_shared/identifiable.js";
 

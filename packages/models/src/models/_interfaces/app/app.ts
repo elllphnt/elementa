@@ -1,10 +1,10 @@
 import { Observable } from "rxjs";
-import { Project } from "../../../infrastructure/_.js";
+import { File } from "../../../infrastructure/_.js";
 import { AppBlueprint } from "./editors/_.js";
 import { RouteTree } from "./route_tree.js"; // make sure Route is updated too
 
 export interface App {
-  project: Project;
+  file: File;
   blueprint: AppBlueprint;
 
   routes: RouteTree[];

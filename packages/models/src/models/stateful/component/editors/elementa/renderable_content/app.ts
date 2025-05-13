@@ -5,7 +5,7 @@ import { Project } from "../../../../../../infrastructure/_.js";
 import {
   App,
   AppRenderableContent,
-  FileModel,
+  FileModelAdaptor,
 } from "../../../../../_interfaces/_.js";
 import { BaseRenderableContentModel } from "./_base.js";
 
@@ -23,7 +23,7 @@ export class AppRenderableContentModel
     return this._state.entry$("appUrl");
   }
 
-  get app(): FileModel<App> | undefined {
+  get app(): FileModelAdaptor<App> | undefined {
     const absoluteUrl = this.appUrl
       ? this.project.absoluteFileUrl(this.appUrl)
       : undefined;
@@ -31,7 +31,7 @@ export class AppRenderableContentModel
       ? this.project.infrastructure.app(absoluteUrl)
       : undefined;
   }
-  get app$(): Observable<FileModel<App> | undefined> {
+  get app$(): Observable<FileModelAdaptor<App> | undefined> {
     return this.appUrl$.pipe(
       map((url) =>
         url

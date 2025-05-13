@@ -6,14 +6,14 @@ import {
   combineLatestMerged,
 } from "@elllphnt/elementa-utils";
 import { Observable, forkJoin, map } from "rxjs";
-import { Project } from "../../../infrastructure/_.js";
+import { File } from "../../../infrastructure/_.js";
 import { RouteTree } from "../../_interfaces/_.js";
 import { App } from "../../_interfaces/app/app.js";
 import { AppBlueprintModel } from "./editors/_.js";
 import { RouteTreeModel } from "./route_tree.js";
 
 export class AppModel extends Model<AppData> implements App {
-  readonly project: Project;
+  readonly file: File;
   readonly blueprint: AppBlueprintModel;
 
   private _state: RecordState<
@@ -55,10 +55,10 @@ export class AppModel extends Model<AppData> implements App {
     ]);
   }
 
-  constructor({ init, project }: { init: AppData; project: Project }) {
+  constructor({ init, file }: { init: AppData; file: File }) {
     super();
 
-    this.project = project;
+    this.file = file;
 
     const { routes, editors, ...stateData } = init;
 

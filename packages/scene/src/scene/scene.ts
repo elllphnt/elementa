@@ -1,4 +1,4 @@
-import { Component, Project } from "@elllphnt/elementa-models";
+import { Fragment, Project } from "@elllphnt/elementa-models";
 import { Disposable, pairwiseOrEmpty } from "@elllphnt/elementa-utils";
 import { Subscription } from "rxjs";
 import { DomStyleSheetManager } from "../style/_.js";
@@ -10,14 +10,14 @@ type RefCountedSubscription = {
 
 /**
  * Scene manages global rendering context such as stylesheet lifecycles.
- * It tracks registered components and projects, ensuring stylesheets are
- * injected and removed efficiently as components are mounted and unmounted.
+ * It tracks registered fragments and projects, ensuring stylesheets are
+ * injected and removed efficiently as fragments are mounted and unmounted.
  */
 export class Scene extends Disposable {
   readonly stylesheetDomManager: DomStyleSheetManager;
 
   private readonly _projects = new Map<Project, RefCountedSubscription>();
-  private readonly _components = new Map<Component, RefCountedSubscription>();
+  private readonly _fragments = new Map<Fragment, RefCountedSubscription>();
 
   constructor({
     stylesheetManager,
@@ -30,14 +30,14 @@ export class Scene extends Disposable {
     this.addDisposer(() => {
       for (const { subscription } of this._projects.values())
         subscription.unsubscribe();
-      for (const { subscription } of this._components.values())
+      for (const { subscription } of this._fragments.values())
         subscription.unsubscribe();
       this._projects.clear();
-      this._components.clear();
+      this._fragments.clear();
     });
   }
 
-  registerProject(project: Project): void {
+  private _registerProject(project: Project): void {
     const existing = this._projects.get(project);
     if (existing) {
       existing.refCount++;
@@ -57,8 +57,7 @@ export class Scene extends Disposable {
 
     this._projects.set(project, { refCount: 1, subscription });
   }
-
-  unregisterProject(project: Project): void {
+  private _unregisterProject(project: Project): void {
     const tracked = this._projects.get(project);
     if (!tracked) return;
 
@@ -68,14 +67,14 @@ export class Scene extends Disposable {
     }
   }
 
-  registerComponent(component: Component): void {
-    const existing = this._components.get(component);
+  registerFragment(fragment: Fragment): void {
+    const existing = this._fragments.get(fragment);
     if (existing) {
       existing.refCount++;
       return;
     }
 
-    const subscription = component.allStylesheets$
+    const subscription = fragment.allCssStylesheets$
       .pipe(pairwiseOrEmpty())
       .subscribe(([prev, next]) => {
         next.forEach((s) =>
@@ -86,18 +85,17 @@ export class Scene extends Disposable {
         );
       });
 
-    this._components.set(component, { refCount: 1, subscription });
-    this.registerProject(component.project);
+    this._fragments.set(fragment, { refCount: 1, subscription });
+    this._registerProject(fragment.component.file.project);
   }
-
-  unregisterComponent(component: Component): void {
-    const tracked = this._components.get(component);
+  unregisterFragment(fragment: Fragment): void {
+    const tracked = this._fragments.get(fragment);
     if (!tracked) return;
 
     if (--tracked.refCount === 0) {
       tracked.subscription.unsubscribe();
-      this._components.delete(component);
-      this.unregisterProject(component.project);
+      this._fragments.delete(fragment);
+      this._unregisterProject(fragment.component.file.project);
     }
   }
 }

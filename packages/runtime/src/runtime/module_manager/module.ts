@@ -1,6 +1,11 @@
 import { File } from "@elllphnt/elementa-models";
 import { Disposable } from "@elllphnt/elementa-utils";
-import { BehaviorSubject, debounceTime, map } from "rxjs";
+import { BehaviorSubject, debounceTime, map, Observable } from "rxjs";
+import {
+  Diagnostic,
+  Diagnosticable,
+  DiagnosticLevel,
+} from "../../_shared/diagnosticable.js";
 
 export type ModuleState = {
   value: any;
@@ -15,11 +20,35 @@ export const nullModuleState: ModuleState = {
   dependencies: [],
 };
 
-export class Module extends Disposable {
+export class Module extends Disposable implements Diagnosticable {
   readonly file: File;
   private readonly _evaluate: (url: string) => Promise<void>;
 
   private _state$ = new BehaviorSubject<ModuleState>(nullModuleState);
+  private _diagnostics$ = new BehaviorSubject<Diagnostic[]>([]);
+
+  // Implement Diagnosticable interface
+  get diagnostics(): Diagnostic[] {
+    return this._diagnostics$.value;
+  }
+
+  get diagnostics$(): Observable<Diagnostic[]> {
+    return this._diagnostics$.asObservable();
+  }
+
+  get diagnosticLevel(): number {
+    if (this.diagnostics.length === 0) return DiagnosticLevel.Info;
+    return Math.max(...this.diagnostics.map((d) => d.level));
+  }
+
+  get diagnosticLevel$(): Observable<number> {
+    return this.diagnostics$.pipe(
+      map((diagnostics) => {
+        if (diagnostics.length === 0) return DiagnosticLevel.Info;
+        return Math.max(...diagnostics.map((d) => d.level));
+      })
+    );
+  }
 
   get url() {
     return this.file.url;
@@ -71,6 +100,7 @@ export class Module extends Disposable {
     this.addDisposer(() => {
       this._state$.next(nullModuleState);
       this._state$.complete();
+      this._diagnostics$.complete();
     });
   }
 
@@ -86,6 +116,16 @@ export class Module extends Disposable {
 
   setState(state: ModuleState): void {
     this._state$.next(state);
+
+    // Update diagnostics based on the module state
+    const diagnostics: Diagnostic[] = [];
+    if (state.error) {
+      diagnostics.push({
+        level: DiagnosticLevel.Error,
+        message: state.error.message,
+      });
+    }
+    this._diagnostics$.next(diagnostics);
   }
 
   async getValue() {

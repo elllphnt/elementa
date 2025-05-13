@@ -12,7 +12,27 @@ import { ElementInstance } from "../elements/element.js";
 import { ElementaInstanceType, Instance } from "../instance.js";
 import { ModelInstance } from "../model.js";
 import { SlotInstance } from "../slot/slot.js";
+import { ChildFragmentEnvironment } from "./environment/child_environment.js";
 import { FragmentEnvironment } from "./environment/environment.js";
+
+export class FragmentFragmentEnvironment extends ChildFragmentEnvironment {
+  readonly fragment: Fragment;
+
+  get fragmentStack(): string[] {
+    return [...this.parent.fragmentStack, this.fragment.url];
+  }
+
+  constructor({
+    parent,
+    fragment,
+  }: {
+    parent: FragmentEnvironment;
+    fragment: Fragment;
+  }) {
+    super({ parent });
+    this.fragment = fragment;
+  }
+}
 
 export class FragmentInstance extends ModelInstance<Fragment> {
   readonly environment: FragmentEnvironment;
@@ -90,9 +110,9 @@ export class FragmentInstance extends ModelInstance<Fragment> {
     const contentSubscription = combineLatest([
       this.model.content$,
       this.environment.fragmentStack$,
-    ]).subscribe(([content, componentStack]) => {
-      console.log({ content, componentStack });
-      const recursion = this.resolveRecursion(componentStack);
+    ]).subscribe(([content, fragmentStack]) => {
+      console.log({ content, fragmentStack });
+      const recursion = this.resolveRecursion(fragmentStack);
       const [newContent, removed] = reconcileList({
         sources: recursion ? [] : content,
         targets: this.content,
@@ -145,13 +165,13 @@ export class FragmentInstance extends ModelInstance<Fragment> {
     });
   }
 
-  private resolveRecursion(componentStack: string[]) {
+  private resolveRecursion(fragmentStack: string[]) {
     const set = new Set<string>();
-    for (const component of componentStack) {
-      if (set.has(component)) {
-        return component;
+    for (const fragment of fragmentStack) {
+      if (set.has(fragment)) {
+        return fragment;
       }
-      set.add(component);
+      set.add(fragment);
     }
 
     return undefined;

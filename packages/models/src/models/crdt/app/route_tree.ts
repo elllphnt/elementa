@@ -72,7 +72,7 @@ export function attachRouteTree(
       route.mainViewUrl$.pipe(
         map((url) => {
           if (url) {
-            return app.project.infrastructure.component(url);
+            return app.file.project.infrastructure.component(url);
           } else {
             return undefined;
           }
@@ -83,10 +83,10 @@ export function attachRouteTree(
   assert(
     setObjectGetter(route, "mainViewComponent", () => {
       const absoluteUrl = route.mainViewUrl
-        ? app.project.absoluteFileUrl(route.mainViewUrl)
+        ? app.file.project.absoluteFileUrl(route.mainViewUrl)
         : undefined;
       if (absoluteUrl) {
-        return app.project.infrastructure.component(absoluteUrl);
+        return app.file.project.infrastructure.component(absoluteUrl);
       } else {
         return undefined;
       }
@@ -100,7 +100,7 @@ export function attachRouteTree(
       route.errorViewUrl$.pipe(
         map((url) => {
           if (url) {
-            return app.project.infrastructure.component(url);
+            return app.file.project.infrastructure.component(url);
           } else {
             return undefined;
           }
@@ -111,10 +111,10 @@ export function attachRouteTree(
   assert(
     setObjectGetter(route, "errorViewComponent", () => {
       const absoluteUrl = route.errorViewUrl
-        ? app.project.absoluteFileUrl(route.errorViewUrl)
+        ? app.file.project.absoluteFileUrl(route.errorViewUrl)
         : undefined;
       if (absoluteUrl) {
-        return app.project.infrastructure.component(absoluteUrl);
+        return app.file.project.infrastructure.component(absoluteUrl);
       } else {
         return undefined;
       }
@@ -128,7 +128,7 @@ export function attachRouteTree(
       route.pendingViewUrl$.pipe(
         map((url) => {
           if (url) {
-            return app.project.infrastructure.component(url);
+            return app.file.project.infrastructure.component(url);
           } else {
             return undefined;
           }
@@ -139,10 +139,10 @@ export function attachRouteTree(
   assert(
     setObjectGetter(route, "pendingViewComponent", () => {
       const absoluteUrl = route.pendingViewUrl
-        ? app.project.absoluteFileUrl(route.pendingViewUrl)
+        ? app.file.project.absoluteFileUrl(route.pendingViewUrl)
         : undefined;
       if (absoluteUrl) {
-        return app.project.infrastructure.component(absoluteUrl);
+        return app.file.project.infrastructure.component(absoluteUrl);
       } else {
         return undefined;
       }
@@ -156,7 +156,7 @@ export function attachRouteTree(
       route.notFoundViewUrl$.pipe(
         map((url) => {
           if (url) {
-            return app.project.infrastructure.component(url);
+            return app.file.project.infrastructure.component(url);
           } else {
             return undefined;
           }
@@ -167,10 +167,10 @@ export function attachRouteTree(
   assert(
     setObjectGetter(route, "notFoundViewComponent", () => {
       const absoluteUrl = route.notFoundViewUrl
-        ? app.project.absoluteFileUrl(route.notFoundViewUrl)
+        ? app.file.project.absoluteFileUrl(route.notFoundViewUrl)
         : undefined;
       if (absoluteUrl) {
-        return app.project.infrastructure.component(absoluteUrl);
+        return app.file.project.infrastructure.component(absoluteUrl);
       } else {
         return undefined;
       }

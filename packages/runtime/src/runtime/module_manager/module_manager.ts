@@ -54,7 +54,7 @@ export class ModuleManager extends Disposable {
       const project = this.module(url).file.project;
 
       // 2) Transpile TSX/JSX → ESNext JS
-      const jsCode = transpileTsToJs(content);
+      const jsCode = transpileTsToJs(content || "");
 
       // 3) Rewrite imports & collect dependencies
       const transformScipt = (packages: PackageData[]) => {
