@@ -1,6 +1,6 @@
 import { ProviderData } from "../../provider/_.js";
 import { BaseElementData } from "./_base.js";
-import { ElementData, elementDataSchema } from "./element.js";
+import { ElementData } from "./element.js";
 
 import { z } from "zod";
 import { providerDataSchema } from "../../provider/provider.js";
@@ -15,6 +15,6 @@ export type SlotElementData = BaseElementData<"slot"> & {
 
 export const slotElementDataSchema = baseElementDataSchema.extend({
   type: z.literal("slot"),
-  placeholder: z.array(z.lazy(() => elementDataSchema)).optional(),
+  placeholder: z.lazy(() => z.array(baseElementDataSchema)).optional(), // Using z.lazy() properly
   providers: z.array(providerDataSchema).optional(),
 });

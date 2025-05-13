@@ -1,6 +1,6 @@
 import { ValueState } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
-import { ResourceStatus } from "../interfaces/_.js";
+import { AsyncResourceStatus } from "../interfaces/_.js";
 import { File } from "../interfaces/file/file.js";
 import { makeFileUrl } from "../interfaces/file/url.js";
 import { InMemoryProject } from "./project.js";
@@ -49,7 +49,7 @@ export class InMemoryFile extends InMemoryResource implements File {
     id: string;
     project: InMemoryProject;
     data?: Omit<InMemoryFileData, "id" | "projectId">;
-    status?: ResourceStatus;
+    status?: AsyncResourceStatus;
   }) {
     super({ id, status });
     this.project = project;

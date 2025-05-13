@@ -2,7 +2,7 @@ import { Disposable } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable, combineLatest, map } from "rxjs";
 import { FileModelAdaptor } from "~/models/_.js";
 import { File } from "../../interfaces/file/file.js";
-import { ResourceStatus } from "../../interfaces/resource.js";
+import { AsyncResourceStatus } from "../../interfaces/resource.js";
 
 export abstract class InMemoryFileModelAdaptor<M>
   extends Disposable
@@ -12,7 +12,9 @@ export abstract class InMemoryFileModelAdaptor<M>
 
   private _model = new BehaviorSubject<M | undefined>(undefined);
   private _error = new BehaviorSubject<Error | undefined>(undefined);
-  private _status = new BehaviorSubject<ResourceStatus>(ResourceStatus.Pending);
+  private _status = new BehaviorSubject<AsyncResourceStatus>(
+    AsyncResourceStatus.Pending
+  );
 
   constructor({ file }: { file: File }) {
     super();
@@ -27,10 +29,10 @@ export abstract class InMemoryFileModelAdaptor<M>
         }
 
         // Update our status based on file status
-        if (fileStatus === ResourceStatus.Errored) {
-          this._status.next(ResourceStatus.Errored);
-        } else if (fileStatus === ResourceStatus.Missing) {
-          this._status.next(ResourceStatus.Missing);
+        if (fileStatus === AsyncResourceStatus.Errored) {
+          this._status.next(AsyncResourceStatus.Errored);
+        } else if (fileStatus === AsyncResourceStatus.Missing) {
+          this._status.next(AsyncResourceStatus.Missing);
         }
         // Other status changes might be handled by derived classes
       }
@@ -52,11 +54,11 @@ export abstract class InMemoryFileModelAdaptor<M>
   }
 
   // AsyncResource implementation
-  get status$(): Observable<ResourceStatus> {
+  get status$(): Observable<AsyncResourceStatus> {
     return this._status.asObservable();
   }
 
-  get status(): ResourceStatus {
+  get status(): AsyncResourceStatus {
     return this._status.getValue();
   }
 
@@ -70,53 +72,53 @@ export abstract class InMemoryFileModelAdaptor<M>
 
   get isPending$(): Observable<boolean> {
     return this.status$.pipe(
-      map((status) => status === ResourceStatus.Pending)
+      map((status) => status === AsyncResourceStatus.Pending)
     );
   }
 
   get isPending(): boolean {
-    return this.status === ResourceStatus.Pending;
+    return this.status === AsyncResourceStatus.Pending;
   }
 
   get isMissing$(): Observable<boolean> {
     return this.status$.pipe(
-      map((status) => status === ResourceStatus.Missing)
+      map((status) => status === AsyncResourceStatus.Missing)
     );
   }
 
   get isMissing(): boolean {
-    return this.status === ResourceStatus.Missing;
+    return this.status === AsyncResourceStatus.Missing;
   }
 
   get isErrored$(): Observable<boolean> {
     return this.status$.pipe(
-      map((status) => status === ResourceStatus.Errored)
+      map((status) => status === AsyncResourceStatus.Errored)
     );
   }
 
   get isErrored(): boolean {
-    return this.status === ResourceStatus.Errored;
+    return this.status === AsyncResourceStatus.Errored;
   }
 
   get isResolved$(): Observable<boolean> {
     return this.status$.pipe(
-      map((status) => status === ResourceStatus.Resolved)
+      map((status) => status === AsyncResourceStatus.Resolved)
     );
   }
 
   get isResolved(): boolean {
-    return this.status === ResourceStatus.Resolved;
+    return this.status === AsyncResourceStatus.Resolved;
   }
 
   protected setModel(model: M | undefined): void {
     this._model.next(model);
     if (model !== undefined) {
-      this._status.next(ResourceStatus.Resolved);
+      this._status.next(AsyncResourceStatus.Resolved);
     }
   }
 
   protected setError(error: Error): void {
     this._error.next(error);
-    this._status.next(ResourceStatus.Errored);
+    this._status.next(AsyncResourceStatus.Errored);
   }
 }

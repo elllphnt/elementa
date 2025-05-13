@@ -21,6 +21,11 @@ export class FragmentFragmentEnvironment extends ChildFragmentEnvironment {
   get fragmentStack(): string[] {
     return [...this.parent.fragmentStack, this.fragment.url];
   }
+  get fragmentStack$(): Observable<string[]> {
+    return this.parent.fragmentStack$.pipe(
+      map((stack) => [...stack, this.fragment.url])
+    );
+  }
 
   constructor({
     parent,
@@ -105,13 +110,15 @@ export class FragmentInstance extends ModelInstance<Fragment> {
       runtime: environment.runtime,
       parent,
     });
-    this.environment = environment;
+    this.environment = new FragmentFragmentEnvironment({
+      parent: environment,
+      fragment: model,
+    });
 
     const contentSubscription = combineLatest([
       this.model.content$,
       this.environment.fragmentStack$,
     ]).subscribe(([content, fragmentStack]) => {
-      console.log({ content, fragmentStack });
       const recursion = this.resolveRecursion(fragmentStack);
       const [newContent, removed] = reconcileList({
         sources: recursion ? [] : content,

@@ -1,19 +1,19 @@
 import { BehaviorSubject, Observable } from "rxjs";
-import { AsyncResource, ResourceStatus } from "../interfaces/resource.js";
+import { AsyncResource, AsyncResourceStatus } from "../interfaces/resource.js";
 
 export abstract class InMemoryResource implements AsyncResource {
   readonly id: string;
 
-  protected _status = new BehaviorSubject<ResourceStatus>(
-    ResourceStatus.Pending
+  protected _status = new BehaviorSubject<AsyncResourceStatus>(
+    AsyncResourceStatus.Pending
   );
   protected _error = new BehaviorSubject<Error | undefined>(undefined);
 
-  get status$(): Observable<ResourceStatus> {
+  get status$(): Observable<AsyncResourceStatus> {
     return this._status.asObservable();
   }
 
-  get status(): ResourceStatus {
+  get status(): AsyncResourceStatus {
     return this._status.getValue();
   }
 
@@ -28,85 +28,85 @@ export abstract class InMemoryResource implements AsyncResource {
   get isPending$(): Observable<boolean> {
     return new Observable<boolean>((subscriber) => {
       const subscription = this._status.subscribe((status) => {
-        subscriber.next(status === ResourceStatus.Pending);
+        subscriber.next(status === AsyncResourceStatus.Pending);
       });
       return () => subscription.unsubscribe();
     });
   }
 
   get isPending(): boolean {
-    return this.status === ResourceStatus.Pending;
+    return this.status === AsyncResourceStatus.Pending;
   }
 
   get isRetrieved$(): Observable<boolean> {
     return new Observable<boolean>((subscriber) => {
       const subscription = this._status.subscribe((status) => {
-        subscriber.next(status !== ResourceStatus.Pending);
+        subscriber.next(status !== AsyncResourceStatus.Pending);
       });
       return () => subscription.unsubscribe();
     });
   }
 
   get isRetrieved(): boolean {
-    return this.status !== ResourceStatus.Pending;
+    return this.status !== AsyncResourceStatus.Pending;
   }
 
   get isMissing$(): Observable<boolean> {
     return new Observable<boolean>((subscriber) => {
       const subscription = this._status.subscribe((status) => {
-        subscriber.next(status === ResourceStatus.Missing);
+        subscriber.next(status === AsyncResourceStatus.Missing);
       });
       return () => subscription.unsubscribe();
     });
   }
 
   get isMissing(): boolean {
-    return this.status === ResourceStatus.Missing;
+    return this.status === AsyncResourceStatus.Missing;
   }
 
   get isErrored$(): Observable<boolean> {
     return new Observable<boolean>((subscriber) => {
       const subscription = this._status.subscribe((status) => {
-        subscriber.next(status === ResourceStatus.Errored);
+        subscriber.next(status === AsyncResourceStatus.Errored);
       });
       return () => subscription.unsubscribe();
     });
   }
 
   get isErrored(): boolean {
-    return this.status === ResourceStatus.Errored;
+    return this.status === AsyncResourceStatus.Errored;
   }
 
   get isResolved$(): Observable<boolean> {
     return new Observable<boolean>((subscriber) => {
       const subscription = this._status.subscribe((status) => {
-        subscriber.next(status === ResourceStatus.Resolved);
+        subscriber.next(status === AsyncResourceStatus.Resolved);
       });
       return () => subscription.unsubscribe();
     });
   }
 
   get isResolved(): boolean {
-    return this.status === ResourceStatus.Resolved;
+    return this.status === AsyncResourceStatus.Resolved;
   }
 
-  constructor({ id, status }: { id: string; status?: ResourceStatus }) {
+  constructor({ id, status }: { id: string; status?: AsyncResourceStatus }) {
     this.id = id;
-    this._status.next(status ?? ResourceStatus.Pending);
+    this._status.next(status ?? AsyncResourceStatus.Pending);
   }
 
   markResolved(): void {
-    this._status.next(ResourceStatus.Resolved);
+    this._status.next(AsyncResourceStatus.Resolved);
     this._error.next(undefined);
   }
 
   markMissing(): void {
-    this._status.next(ResourceStatus.Missing);
+    this._status.next(AsyncResourceStatus.Missing);
     this._error.next(undefined);
   }
 
   markError(error: Error): void {
-    this._status.next(ResourceStatus.Errored);
+    this._status.next(AsyncResourceStatus.Errored);
     this._error.next(error);
   }
 }

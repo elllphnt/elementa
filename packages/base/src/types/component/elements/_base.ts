@@ -45,4 +45,5 @@ export const baseElementDataSchema = identifiableDataSchema
     type: z.string(),
     name: z.string().optional(),
     tag: z.string().optional(),
-  });
+  })
+  .passthrough();

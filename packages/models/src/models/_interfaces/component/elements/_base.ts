@@ -9,8 +9,9 @@ import { Observable } from "rxjs";
 import { Project } from "~/infrastructure/_.js";
 import { CssStyleSheet, StylesheetCssStyleSheet } from "../../../../css/_.js";
 import { Identifiable } from "../../_shared/identifiable.js";
+import { Model } from "../../model.js";
 
-export interface BaseElement<T extends string> extends Identifiable {
+export interface BaseElement<T extends string> extends Model, Identifiable {
   type: T;
 
   project: Project;

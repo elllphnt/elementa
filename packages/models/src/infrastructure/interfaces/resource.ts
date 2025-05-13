@@ -5,7 +5,7 @@ import { Observable } from "rxjs";
  *
  * @enum {number}
  */
-export enum ResourceStatus {
+export enum AsyncResourceStatus {
   /** Resource is currently loading or being processed */
   Pending,
   /** Resource was not found or does not exist */
@@ -21,8 +21,8 @@ export enum ResourceStatus {
  * Provides reactive properties to monitor the resource's state throughout its lifecycle.
  */
 export interface AsyncResource {
-  status$: Observable<ResourceStatus>;
-  status: ResourceStatus;
+  status$: Observable<AsyncResourceStatus>;
+  status: AsyncResourceStatus;
 
   error$: Observable<Error | undefined>;
   error: Error | undefined;

@@ -1,6 +1,7 @@
 import { Observable } from "rxjs";
+import { Model } from "../model.js";
 
-export interface DataInput {
+export interface DataInput extends Model {
   name: string;
   name$: Observable<string>;
 

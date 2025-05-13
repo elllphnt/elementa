@@ -2,6 +2,7 @@ import { Fragment, Project } from "@elllphnt/elementa-models";
 import { Disposable, pairwiseOrEmpty } from "@elllphnt/elementa-utils";
 import { Subscription } from "rxjs";
 import { DomStyleSheetManager } from "../style/_.js";
+import { systemStylesheet } from "./stylesheet/stylesheet.js";
 
 type RefCountedSubscription = {
   refCount: number;
@@ -27,6 +28,10 @@ export class Scene extends Disposable {
     super();
     this.stylesheetDomManager = stylesheetManager;
 
+    this.stylesheetDomManager
+      .stylesheetAdaptor(systemStylesheet)
+      .useRef(document);
+
     this.addDisposer(() => {
       for (const { subscription } of this._projects.values())
         subscription.unsubscribe();
@@ -34,6 +39,9 @@ export class Scene extends Disposable {
         subscription.unsubscribe();
       this._projects.clear();
       this._fragments.clear();
+      this.stylesheetDomManager
+        .stylesheetAdaptor(systemStylesheet)
+        .clearRef(document);
     });
   }
 

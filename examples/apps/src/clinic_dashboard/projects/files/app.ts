@@ -1,14 +1,21 @@
 import { AppData } from "@elllphnt/elementa-base";
-import { InMemoryFileData } from "@elllphnt/elementa-models";
+import { InMemoryFileData, makeFileUrl } from "@elllphnt/elementa-models";
 import { clinicDashboardProject } from "../clinic_dashboard.js";
+import { landingViewFile } from "./views/landing.js";
 
 export const appData: AppData = {
   routes: [
     {
       id: "root",
-      path: "/",
-      mainViewUrl: "file:landing",
       children: [
+        {
+          id: "landing",
+          path: "/",
+          mainViewUrl: makeFileUrl({
+            projectId: landingViewFile.projectId,
+            fileId: landingViewFile.id,
+          }),
+        },
         {
           id: "login",
           path: "login",
@@ -87,6 +94,5 @@ export const appFile: InMemoryFileData = {
   id: "app",
   projectId: clinicDashboardProject.id,
   name: "app",
-  type: "app",
   content: JSON.stringify(appData, null, 2),
 };

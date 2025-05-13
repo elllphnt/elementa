@@ -40,11 +40,11 @@ export class ComponentModel extends Model<ComponentData> implements Component {
 
     // Create stage and preview first
     this.stage = new ElementaStageModel({
-      init: stage,
+      init: stage || {},
       project: file.project,
     });
     this.preview = new ElementaPreviewModel({
-      init: preview,
+      init: preview || {},
       project: file.project,
     });
 

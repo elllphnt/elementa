@@ -13,7 +13,9 @@ function RecursionAlert({
   url: string;
 }) {
   const component =
-    fragment.instance.model.component.project.componentManager.component(url);
+    fragment.instance.model.component.file.project.infrastructure.component(
+      url
+    );
   const name = useObservable(component?.file.name$, component.file?.name);
 
   return (

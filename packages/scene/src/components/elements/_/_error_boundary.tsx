@@ -1,7 +1,7 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { Namespace } from "@elllphnt/elementa-runtime";
 import React, { PropsWithChildren, useEffect } from "react";
-import { combineLatest, Subscription } from "rxjs";
+import { Subscription } from "rxjs";
 import { useNamespace } from "../../../hooks/namespace.js";
 import { ElementRenderable } from "../../../renderables/element/element.js";
 import { Renderable } from "../../../renderables/renderable.js";
@@ -56,11 +56,11 @@ export class BaseElementErrorBoundary extends React.Component<
 
   componentDidMount(): void {
     // clear error state when the element is updated
-    this.subscription = combineLatest([
-      this.props.element.instance.element.observable$,
-    ]).subscribe(() => {
-      this.setState({ hasError: false });
-    });
+    this.subscription = this.props.element.instance.element.updated$.subscribe(
+      () => {
+        this.setState({ hasError: false });
+      }
+    );
   }
   componentWillUnmount(): void {
     this.subscription?.unsubscribe();

@@ -11,7 +11,7 @@ import {
   isFragmentUrl,
   parseFragmentUrl,
 } from "../../models/_interfaces/component/fragment/url.js";
-import { ResourceStatus } from "../interfaces/_.js";
+import { AsyncResourceStatus } from "../interfaces/_.js";
 import {
   isFileUrl,
   makeFileUrl,
@@ -61,7 +61,7 @@ export class InMemoryInfrastructure implements Infrastructure {
       file = new InMemoryFile({
         id: fileId,
         project: this.project(projectId),
-        status: ResourceStatus.Missing,
+        status: AsyncResourceStatus.Missing,
       });
       this._files.set(fileKey, file);
     }
@@ -76,7 +76,7 @@ export class InMemoryInfrastructure implements Infrastructure {
       project = new InMemoryProject({
         id,
         infrastructure: this,
-        status: ResourceStatus.Missing,
+        status: AsyncResourceStatus.Missing,
       });
       this._projects.set(projectKey, project);
     }
@@ -158,7 +158,7 @@ export class InMemoryInfrastructure implements Infrastructure {
       id,
       data,
       infrastructure: this,
-      status: ResourceStatus.Resolved,
+      status: AsyncResourceStatus.Resolved,
     });
     this._projects.set(id, project);
     return project;
@@ -170,7 +170,7 @@ export class InMemoryInfrastructure implements Infrastructure {
       id,
       data,
       project: project,
-      status: ResourceStatus.Resolved,
+      status: AsyncResourceStatus.Resolved,
     });
     const fileKey = this._fileKey(projectId, id);
     this._files.set(fileKey, file);

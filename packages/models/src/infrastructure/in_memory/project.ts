@@ -1,4 +1,4 @@
-import { ResourceStatus } from "../interfaces/_.js";
+import { AsyncResourceStatus } from "../interfaces/_.js";
 import { toAbsoluteFileUrl } from "../interfaces/file/url.js";
 import { PackageData } from "../interfaces/project/managers/package_manager.js";
 import { Project } from "../interfaces/project/project.js";
@@ -29,7 +29,7 @@ export class InMemoryProject extends InMemoryResource implements Project {
     id: string;
     data?: Omit<InMemoryProjectData, "id">;
     infrastructure: InMemoryInfrastructure;
-    status?: ResourceStatus;
+    status?: AsyncResourceStatus;
   }) {
     super({ id, status });
     this.infrastructure = infrastructure;

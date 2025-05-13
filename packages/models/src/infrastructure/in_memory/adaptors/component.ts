@@ -17,6 +17,7 @@ export class InMemoryComponentFileModelAdaptor extends InMemoryFileModelAdaptor<
           const { data, error } = componentSchema.safeParse(
             JSON.parse(content)
           );
+          console.log("Parsed data", data);
           if (error) {
             this.setError(error);
             this.setModel(undefined);
