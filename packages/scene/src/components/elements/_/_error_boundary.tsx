@@ -73,9 +73,7 @@ export class BaseElementErrorBoundary extends React.Component<
         element: ElementRenderable;
         namespace: Namespace;
       }>
-    >,
-    prevState: Readonly<{ hasError: boolean }>,
-    snapshot?: any
+    >
   ): void {
     if (
       this.props.element !== prevProps.element ||
@@ -86,22 +84,6 @@ export class BaseElementErrorBoundary extends React.Component<
       }
     }
   }
-
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    const element = this.props.element;
-
-    // element.instance.setDiagnostics("rendering", [
-    //   {
-    //     severity: DiagnosticSeverity.Error,
-    //     message: error.message,
-    //     data: {
-    //       error,
-    //       info: errorInfo,
-    //     },
-    //   },
-    // ]);
-  }
-
   render() {
     if (this.state.hasError) {
       return <ElementErrorFallback element={this.props.element} />;

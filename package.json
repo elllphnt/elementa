@@ -5,6 +5,7 @@
         "build": ""
     },
     "workspaces": [
+        "app",
         "examples/*",
         "packages/*"
     ],

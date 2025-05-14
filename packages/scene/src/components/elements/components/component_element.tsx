@@ -30,8 +30,8 @@ export function ComponentElementComponent({
   onRef?: (element: HTMLElement | null) => void;
 }): JSX.Element {
   const model = useObservable(
-    element.instance.element.localComponent$,
-    element.instance.element.localComponent
+    element.instance.element.component$,
+    element.instance.element.component
   );
   const component = useObservable(model?.model$, model?.model);
 
