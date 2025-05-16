@@ -2,7 +2,7 @@ import { isStaticReference, Resolvable } from "@elllphnt/elementa-base";
 import { Disposable } from "@elllphnt/elementa-utils";
 import {
   BehaviorSubject,
-  forkJoin,
+  combineLatest,
   from,
   Observable,
   of,
@@ -170,7 +170,7 @@ export class ResolvableRecord<V> extends Disposable {
               })
             );
           }
-          return forkJoin(observables).pipe(
+          return combineLatest(observables).pipe(
             tap((resolvedRecord) => {
               const prev = this._state$.getValue();
               this._state$.next({
@@ -271,7 +271,7 @@ export class ResolvableList<V> extends Disposable {
               })
             )
           );
-          return forkJoin(observables).pipe(
+          return combineLatest(observables).pipe(
             tap((resolvedList) => {
               const prev = this._state$.getValue();
               this._state$.next({

@@ -8,7 +8,7 @@ import {
   combineLatestOrEmpty,
   keyManager,
 } from "@elllphnt/elementa-utils";
-import { Observable, forkJoin, map, of, switchMap } from "rxjs";
+import { Observable, combineLatest, map, of, switchMap } from "rxjs";
 import { CssStyleSheet, StylesheetCssStyleSheet } from "../../../css/_.js";
 import { Project } from "../../../infrastructure/_.js";
 import { Element } from "../../_interfaces/_.js";
@@ -74,7 +74,7 @@ export class SlotFillModel extends Model<SlotFillData> implements SlotFill {
   get data$(): Observable<SlotFillData> {
     return combineLatestMerged([
       this._state.record$,
-      forkJoin({
+      combineLatest({
         content: this._content.data$,
         stylesheet: this._stylesheet.data$,
       }),

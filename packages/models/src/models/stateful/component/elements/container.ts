@@ -5,7 +5,7 @@ import {
   combineLatestMerged,
   combineLatestOrEmpty,
 } from "@elllphnt/elementa-utils";
-import { forkJoin, map, Observable, of, switchMap } from "rxjs";
+import { combineLatest, map, Observable, of, switchMap } from "rxjs";
 import { CssStyleSheet } from "~/css/_.js";
 import { Project } from "../../../../infrastructure/_.js";
 import { Element } from "../../../_interfaces/_.js";
@@ -70,7 +70,7 @@ export class ContainerElementModel
   get data$(): Observable<ContainerElementData> {
     return combineLatestMerged([
       super._data$,
-      forkJoin({
+      combineLatest({
         content: this._content.data$,
       }),
     ]);

@@ -7,7 +7,7 @@ import {
   keyManager,
   RecordState,
 } from "@elllphnt/elementa-utils";
-import { forkJoin, map, Observable, switchMap } from "rxjs";
+import { combineLatest, map, Observable, switchMap } from "rxjs";
 import { CssStyleSheet } from "../../../css/_.js";
 import { Component, Element, Fragment } from "../../_interfaces/_.js";
 import { makeFragmentUrl } from "../../_interfaces/component/fragment/url.js";
@@ -91,7 +91,7 @@ export class FragmentModel
     return combineLatestMerged([
       super._data$,
       this._state.record$,
-      forkJoin({
+      combineLatest({
         content: this._content.data$,
         params: this._params.data$,
       }),

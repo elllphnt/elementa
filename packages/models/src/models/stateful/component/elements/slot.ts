@@ -3,7 +3,7 @@ import {
   AggregatedModelList,
   combineLatestMerged,
 } from "@elllphnt/elementa-utils";
-import { forkJoin, Observable, of } from "rxjs";
+import { combineLatest, Observable, of } from "rxjs";
 import { Project } from "../../../../infrastructure/_.js";
 import { Element } from "../../../_interfaces/_.js";
 import { SlotElement } from "../../../_interfaces/component/elements/slot.js";
@@ -47,7 +47,7 @@ export class SlotElementModel
   get data$(): Observable<SlotElementData> {
     return combineLatestMerged([
       super._data$,
-      forkJoin({
+      combineLatest({
         placeholder: this._placeholder.data$,
       }),
     ]);

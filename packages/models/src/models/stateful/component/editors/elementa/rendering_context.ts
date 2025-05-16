@@ -10,7 +10,7 @@ import {
   combineLatestMerged,
   keyManager,
 } from "@elllphnt/elementa-utils";
-import { Observable, forkJoin } from "rxjs";
+import { Observable, combineLatest } from "rxjs";
 import { RenderingContext } from "../../../../_interfaces/_.js";
 import { ColorThemeModel } from "./color_theme.js";
 import { ViewportModel } from "./viewport.js";
@@ -70,7 +70,7 @@ export class RenderingContextModel
   get data$(): Observable<RenderingContextData> {
     return combineLatestMerged([
       this._state.record$,
-      forkJoin({
+      combineLatest({
         theme: this.theme.data$,
         viewport: this.viewport.data$,
         styleModifiers: this.customStyleModifiers$,

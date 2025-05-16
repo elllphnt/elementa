@@ -1,13 +1,16 @@
-import { AppBlueprintData, AppData } from "@elllphnt/elementa-base";
+import {
+  AppBlueprintData,
+  AppData,
+  RouteTreeData,
+} from "@elllphnt/elementa-base";
 import {
   AggregatedModelList,
   Model,
   RecordState,
   combineLatestMerged,
 } from "@elllphnt/elementa-utils";
-import { Observable, forkJoin, map } from "rxjs";
+import { Observable, combineLatest } from "rxjs";
 import { File } from "../../../infrastructure/_.js";
-import { RouteTree } from "../../_interfaces/_.js";
 import { App } from "../../_interfaces/app/app.js";
 import { AppBlueprintModel } from "./editors/_.js";
 import { RouteTreeModel } from "./route_tree.js";
@@ -20,23 +23,17 @@ export class AppModel extends Model<AppData> implements App {
     Omit<AppData, "routes" | "variables" | "editors">
   >;
   private _routes: AggregatedModelList<RouteTreeModel>;
+  private _routesById: Record<string, RouteTreeModel> = {};
 
   get routes(): RouteTreeModel[] {
     return this._routes.state.items;
   }
-
   get routes$(): Observable<RouteTreeModel[]> {
     return this._routes.state.items$;
   }
 
-  route(id: string): RouteTree | undefined {
-    return this._routes.state.items.find((route) => route.id === id);
-  }
-
-  route$(id: string): Observable<RouteTree | undefined> {
-    return this._routes.state.items$.pipe(
-      map((routes) => routes.find((route) => route.id === id))
-    );
+  route(id: string): RouteTreeModel | undefined {
+    return this._routesById[id];
   }
 
   get data(): AppData {
@@ -49,7 +46,7 @@ export class AppModel extends Model<AppData> implements App {
   get data$(): Observable<AppData> {
     return combineLatestMerged([
       this._state.record$,
-      forkJoin({
+      combineLatest({
         routes: this._routes.data$,
       }),
     ]);
@@ -83,6 +80,16 @@ export class AppModel extends Model<AppData> implements App {
       this._state.dispose();
       this._routes.dispose();
     });
+  }
+
+  addRoute(route: RouteTreeData): void {
+    this._routes.add(route);
+  }
+  removeRoutes(predicate: (item: RouteTreeModel) => boolean) {
+    return this._routes.state.remove(predicate);
+  }
+  removeRoutesAt(index: number, count?: number) {
+    return this._routes.state.removeAt(index, count);
   }
 
   restore(data: AppData) {

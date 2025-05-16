@@ -6,7 +6,7 @@ import {
   combineLatestMerged,
   keyManager,
 } from "@elllphnt/elementa-utils";
-import { Observable, filter, forkJoin, map, tap } from "rxjs";
+import { Observable, filter, combineLatest, map, tap } from "rxjs";
 import { Project } from "~/infrastructure/_.js";
 import { Style } from "../../_interfaces/style/style.js";
 import { Stylesheet } from "../../_interfaces/style/stylesheet.js";
@@ -38,7 +38,7 @@ export class StylesheetModel
   get data$(): Observable<StyleSheetData> {
     return combineLatestMerged([
       this._state.record$,
-      forkJoin({
+      combineLatest({
         styles: this._styles.data$,
         fragments: this.fragmentRegistry.data$,
       }),

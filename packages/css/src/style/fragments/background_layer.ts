@@ -38,11 +38,11 @@ export function angularGradientStopToCss(
 }
 
 export function linearGradientToCss(gradient: LinearGradientData): string {
-  let parts: string[] = [];
+  const parts: string[] = [];
   if (gradient.angle) {
     parts.push(variableStyleDataToCss(StyleDataType.Angle, gradient.angle));
   }
-  for (let stop of gradient.stops || []) {
+  for (const stop of gradient.stops || []) {
     parts.push(
       linearGradientStopToCss({
         color: stop.color,
@@ -54,7 +54,7 @@ export function linearGradientToCss(gradient: LinearGradientData): string {
   return `linear-gradient(${parts.join(", ")})`;
 }
 export function radialGradientToCss(gradient: RadialGradientData): string {
-  let parts: string[] = [];
+  const parts: string[] = [];
   if (gradient.shape) {
     parts.push(variableStyleDataToCss(StyleDataType.String, gradient.shape));
   }
@@ -84,7 +84,7 @@ export function radialGradientToCss(gradient: RadialGradientData): string {
         ].join(" ")
     );
   }
-  for (let stop of gradient.stops) {
+  for (const stop of gradient.stops) {
     parts.push(
       linearGradientStopToCss({
         color: stop.color,
@@ -96,10 +96,11 @@ export function radialGradientToCss(gradient: RadialGradientData): string {
   return `radial-gradient(${parts.join(", ")})`;
 }
 export function conicGradientToCss(gradient: ConicGradientData): string {
-  let parts: string[] = [];
+  const parts: string[] = [];
   if (gradient.angle) {
-    "from " +
-      parts.push(variableStyleDataToCss(StyleDataType.Angle, gradient.angle));
+    parts.push(
+      "from " + variableStyleDataToCss(StyleDataType.Angle, gradient.angle)
+    );
   }
   if (gradient.position) {
     parts.push(
@@ -118,7 +119,7 @@ export function conicGradientToCss(gradient: ConicGradientData): string {
         ].join(" ")
     );
   }
-  for (let stop of gradient.stops || []) {
+  for (const stop of gradient.stops || []) {
     parts.push(angularGradientStopToCss(stop));
   }
 
@@ -128,7 +129,7 @@ export function conicGradientToCss(gradient: ConicGradientData): string {
 export function imagebackgroundLayerToCss(
   layer: ImageBackgroundLayerData
 ): string {
-  let parts: string[] = [];
+  const parts: string[] = [];
   if (layer.url) {
     parts.push(`url(${layer.url})`);
   }

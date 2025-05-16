@@ -1,4 +1,13 @@
-import { BehaviorSubject, Observable } from "rxjs";
+import {
+  BehaviorSubject,
+  filter,
+  firstValueFrom,
+  map,
+  Observable,
+  take,
+  tap,
+  timeout,
+} from "rxjs";
 import { AsyncResource, AsyncResourceStatus } from "../interfaces/resource.js";
 
 export abstract class InMemoryResource implements AsyncResource {
@@ -93,6 +102,22 @@ export abstract class InMemoryResource implements AsyncResource {
   constructor({ id, status }: { id: string; status?: AsyncResourceStatus }) {
     this.id = id;
     this._status.next(status ?? AsyncResourceStatus.Pending);
+  }
+
+  untilRetrieved(timeoutAfter: number = 10000): Promise<void> {
+    return firstValueFrom(
+      this.status$.pipe(
+        filter((status) => status !== AsyncResourceStatus.Pending),
+        tap((status) => {
+          if (status === AsyncResourceStatus.Errored) {
+            throw this.error;
+          }
+        }),
+        take(1),
+        timeout(timeoutAfter),
+        map(() => void 0) // Convert to void
+      )
+    );
   }
 
   markResolved(): void {

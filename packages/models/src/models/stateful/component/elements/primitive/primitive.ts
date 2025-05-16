@@ -9,7 +9,15 @@ import {
   combineLatestMerged,
   combineLatestOrEmpty,
 } from "@elllphnt/elementa-utils";
-import { filter, forkJoin, map, Observable, of, switchMap, tap } from "rxjs";
+import {
+  filter,
+  combineLatest,
+  map,
+  Observable,
+  of,
+  switchMap,
+  tap,
+} from "rxjs";
 import { CssStyleSheet } from "../../../../../css/_.js";
 import { Project } from "../../../../../infrastructure/_.js";
 import { Element } from "../../../../_interfaces/_.js";
@@ -100,7 +108,7 @@ export class PrimitiveElementModel
   get data$(): Observable<PrimitiveElementData> {
     return combineLatestMerged([
       super._data$,
-      forkJoin({
+      combineLatest({
         content: this._content.data$,
         elements: this._subElements.data$,
       }),

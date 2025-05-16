@@ -10,7 +10,7 @@ import {
   combineLatestMerged,
   keyManager,
 } from "@elllphnt/elementa-utils";
-import { Observable, forkJoin, map } from "rxjs";
+import { Observable, combineLatest, map } from "rxjs";
 import { Project } from "../../../../../infrastructure/_.js";
 import { ElementaPreview } from "../../../../_interfaces/_.js";
 import {
@@ -89,7 +89,7 @@ export class ElementaPreviewModel
   get data$(): Observable<ElementaPreviewData> {
     return combineLatestMerged([
       this._state.record$,
-      forkJoin({
+      combineLatest({
         context: this.context.data$,
         content: this._content.data$,
       }),

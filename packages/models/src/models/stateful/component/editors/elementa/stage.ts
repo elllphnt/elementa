@@ -6,7 +6,7 @@ import {
   combineLatestMerged,
   keyManager,
 } from "@elllphnt/elementa-utils";
-import { Observable, forkJoin } from "rxjs";
+import { Observable, combineLatest } from "rxjs";
 import { Project } from "../../../../../infrastructure/_.js";
 import { ElementaFrame, ElementaStage } from "../../../../_interfaces/_.js";
 import { ElementaFrameModel } from "./frame.js";
@@ -38,7 +38,7 @@ export class ElementaStageModel
   get data$(): Observable<ElementaStageData> {
     return combineLatestMerged([
       this._state.record$,
-      forkJoin({
+      combineLatest({
         frames: this._frames.data$,
       }),
     ]);

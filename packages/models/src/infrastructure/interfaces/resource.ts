@@ -38,4 +38,9 @@ export interface AsyncResource {
 
   isResolved$: Observable<boolean>;
   isResolved: boolean;
+
+  isRetrieved$: Observable<boolean>;
+  isRetrieved: boolean;
+
+  untilRetrieved(timeout?: number): Promise<void>;
 }

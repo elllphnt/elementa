@@ -5,7 +5,7 @@ import {
   combineLatestMerged,
   keyManager,
 } from "@elllphnt/elementa-utils";
-import { Observable, forkJoin, map } from "rxjs";
+import { Observable, combineLatest, map } from "rxjs";
 import { StylesheetCssStyleSheet } from "../../../../../css/_.js";
 import { Project } from "../../../../../infrastructure/_.js";
 import { PrimitiveSubElement } from "../../../../_interfaces/component/elements/primitive/sub_element.js";
@@ -39,7 +39,7 @@ export class PrimitiveSubElementModel
   get data$(): Observable<PrimitiveSubElementData> {
     return combineLatestMerged([
       this._state.record$,
-      forkJoin({
+      combineLatest({
         stylesheet: this._stylesheet.data$,
       }),
     ]);

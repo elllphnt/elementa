@@ -17,13 +17,7 @@ import {
   Model,
   RecordState,
 } from "@elllphnt/elementa-utils";
-import {
-  BehaviorSubject,
-  combineLatest,
-  forkJoin,
-  map,
-  Observable,
-} from "rxjs";
+import { BehaviorSubject, combineLatest, map, Observable } from "rxjs";
 import { Project } from "~/infrastructure/_.js";
 import { Style } from "../../_interfaces/style/style.js";
 import { StyleFragmentRegistry } from "../../_interfaces/style/style_fragment_registry.js";
@@ -100,7 +94,7 @@ export class StyleModel extends Model<StyleData> implements Style {
   get data$(): Observable<StyleData> {
     return combineLatestMerged([
       this._properties.record$,
-      forkJoin({
+      combineLatest({
         __raw: this._raw.record$,
       }),
     ]);

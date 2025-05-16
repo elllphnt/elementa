@@ -1,38 +1,35 @@
-import { AppBlueprintData } from "@elllphnt/elementa-base";
+import { AppBlueprintData, BlueprintNodeData } from "@elllphnt/elementa-base";
 import {
-  AggregatedModelRecord,
   combineLatestMerged,
+  ListState,
   Model,
   RecordState,
 } from "@elllphnt/elementa-utils";
-import { forkJoin, map, Observable } from "rxjs";
-import { AppBlueprint, BlueprintNode } from "../../../../_interfaces/_.js";
-import { BlueprintNodeModel } from "./node.js";
+import { combineLatest, Observable } from "rxjs";
+import { AppBlueprint } from "../../../../_interfaces/_.js";
 
 export class AppBlueprintModel
   extends Model<AppBlueprintData>
   implements AppBlueprint
 {
-  private _nodes: AggregatedModelRecord<BlueprintNodeModel>;
+  private _nodes: ListState<BlueprintNodeData>;
   private _state: RecordState<Omit<AppBlueprintData, "nodes">>;
 
-  get nodes(): BlueprintNode[] {
-    return Object.values(this._nodes.state.record);
+  get nodes(): BlueprintNodeData[] {
+    return this._nodes.items;
   }
-  get nodes$(): Observable<BlueprintNode[]> {
-    return this._nodes.state.record$.pipe(
-      map((record) => Object.values(record))
-    );
+  get nodes$(): Observable<BlueprintNodeData[]> {
+    return this._nodes.items$;
   }
 
   get data(): AppBlueprintData {
-    return { ...this._state.record, nodes: this._nodes.data };
+    return { ...this._state.record, nodes: this._nodes.items };
   }
   get data$(): Observable<AppBlueprintData> {
     return combineLatestMerged([
       this._state.record$,
-      forkJoin({
-        nodes: this._nodes.data$,
+      combineLatest({
+        nodes: this._nodes.items$,
       }),
     ]);
   }
@@ -46,9 +43,8 @@ export class AppBlueprintModel
       init: stateData,
     });
 
-    this._nodes = new AggregatedModelRecord<BlueprintNodeModel>({
-      init: nodes || {},
-      create: (data) => new BlueprintNodeModel({ init: data }),
+    this._nodes = new ListState<BlueprintNodeData>({
+      init: nodes || [],
     });
 
     this.addDisposer(() => {
@@ -56,11 +52,14 @@ export class AppBlueprintModel
       this._nodes.dispose();
     });
   }
+  setNodes(data: BlueprintNodeData[]): void {
+    this._nodes.setItems(data);
+  }
 
   restore(data: AppBlueprintData): void {
     const { nodes, ...stateData } = data;
 
     this._state.setRecord(stateData);
-    this._nodes.restore(nodes || {});
+    this._nodes.setItems(nodes || []);
   }
 }

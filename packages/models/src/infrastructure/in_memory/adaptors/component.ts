@@ -10,7 +10,7 @@ export class InMemoryComponentFileModelAdaptor extends InMemoryFileModelAdaptor<
 
     const modelSubscription = combineLatest([
       this.file.isResolved$,
-      this.file.content$,
+      this.file.content.text$,
     ]).subscribe(([isResolved, content]) => {
       if (isResolved && content) {
         try {

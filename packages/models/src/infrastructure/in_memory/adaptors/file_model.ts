@@ -1,5 +1,15 @@
 import { Disposable } from "@elllphnt/elementa-utils";
-import { BehaviorSubject, Observable, combineLatest, map } from "rxjs";
+import {
+  BehaviorSubject,
+  Observable,
+  combineLatest,
+  filter,
+  firstValueFrom,
+  map,
+  take,
+  tap,
+  timeout,
+} from "rxjs";
 import { FileModelAdaptor } from "~/models/_.js";
 import { File } from "../../interfaces/file/file.js";
 import { AsyncResourceStatus } from "../../interfaces/resource.js";
@@ -108,6 +118,31 @@ export abstract class InMemoryFileModelAdaptor<M>
 
   get isResolved(): boolean {
     return this.status === AsyncResourceStatus.Resolved;
+  }
+
+  get isRetrieved$(): Observable<boolean> {
+    return this.status$.pipe(
+      map((status) => status !== AsyncResourceStatus.Pending)
+    );
+  }
+  get isRetrieved(): boolean {
+    return this.status !== AsyncResourceStatus.Pending;
+  }
+
+  untilRetrieved(timeoutAfter: number = 10000): Promise<void> {
+    return firstValueFrom(
+      this.status$.pipe(
+        filter((status) => status !== AsyncResourceStatus.Pending),
+        tap((status) => {
+          if (status === AsyncResourceStatus.Errored) {
+            throw this.error;
+          }
+        }),
+        take(1),
+        timeout(timeoutAfter),
+        map(() => void 0) // Convert to void
+      )
+    );
   }
 
   protected setModel(model: M | undefined): void {

@@ -51,7 +51,7 @@ All model class members must follow this strict order:
    get data$(): Observable<ComponentData> {
      return combineLatestMerged([
        this._state.record$,
-       forkJoin({ children: this._children.data$ }),
+       combineLatest({ children: this._children.data$ }),
      ]);
    }
    ```

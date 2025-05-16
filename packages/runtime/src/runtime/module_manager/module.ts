@@ -105,7 +105,7 @@ export class Module extends Disposable implements Diagnosticable {
   }
 
   init() {
-    const subscription = this.file.content$
+    const subscription = this.file.content.text$
       .pipe(debounceTime(30))
       .subscribe(() => this._evaluate(this.file.url));
 

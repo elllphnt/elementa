@@ -6,7 +6,7 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
-        "build": "tsc -p tsconfig.build.json || echo \"Ignoring TS errors\"",
+        "build": "tsc -p tsconfig.build.json",
         "watch": "tsc -w -p tsconfig.build.json"
     },
     "devDependencies": {

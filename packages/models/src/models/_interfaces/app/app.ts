@@ -1,3 +1,4 @@
+import { RouteTreeData } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
 import { File } from "../../../infrastructure/_.js";
 import { AppBlueprint } from "./editors/_.js";
@@ -11,5 +12,8 @@ export interface App {
   routes$: Observable<RouteTree[]>;
 
   route(id: string): RouteTree | undefined;
-  route$(id: string): Observable<RouteTree | undefined>;
+
+  addRoute(route: RouteTreeData): void;
+  removeRoutes(predicate: (item: RouteTree) => boolean): RouteTree[];
+  removeRoutesAt(index: number, count?: number): RouteTree[];
 }

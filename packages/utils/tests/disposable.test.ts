@@ -1,6 +1,5 @@
-import { test } from "uvu";
-import * as assert from "uvu/assert";
-import { Disposable } from "../src/core/disposable";
+import { assert, test } from "vitest";
+import { Disposable } from "../src/index.js";
 
 // Test that disposers run in FIFO order
 test("calls disposers in order", () => {
@@ -9,7 +8,7 @@ test("calls disposers in order", () => {
   d.addDisposer(() => calls.push(1));
   d.addDisposer(() => calls.push(2));
   d.dispose();
-  assert.equal(calls, [1, 2]);
+  assert.sameOrderedMembers(calls, [1, 2]);
 });
 
 // Test that errors are aggregated and thrown
@@ -30,7 +29,7 @@ test("aggregates errors from disposers", () => {
   assert.ok(thrown instanceof Error);
   assert.match(thrown.message, /2 errors during cleanup; first: first/);
   assert.ok(Array.isArray((thrown as any).inner));
-  assert.equal(
+  assert.sameOrderedMembers(
     (thrown as any).inner.map((e: any) => e.message),
     ["first", "second"]
   );
@@ -58,5 +57,3 @@ test("warns when adding disposer after dispose", () => {
   assert.ok(warnings.length === 1);
   assert.match(warnings[0], /Adding disposer after dispose\(\)/);
 });
-
-test.run();

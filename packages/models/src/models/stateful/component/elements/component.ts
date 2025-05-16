@@ -7,7 +7,15 @@ import {
   combineLatestArrays,
   combineLatestMerged,
 } from "@elllphnt/elementa-utils";
-import { Observable, filter, forkJoin, map, of, switchMap, tap } from "rxjs";
+import {
+  Observable,
+  filter,
+  combineLatest,
+  map,
+  of,
+  switchMap,
+  tap,
+} from "rxjs";
 import { CssStyleSheet } from "../../../../css/_.js";
 import { Project } from "../../../../infrastructure/_.js";
 import { Component, FileModelAdaptor } from "../../../_interfaces/_.js";
@@ -99,7 +107,7 @@ export class ComponentElementModel
   get data$(): Observable<ComponentElementData> {
     return combineLatestMerged([
       super._data$,
-      forkJoin({
+      combineLatest({
         fills: this._fills.data$,
       }),
     ]);

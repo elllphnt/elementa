@@ -4,7 +4,7 @@ import {
   RecordState,
   combineLatestMerged,
 } from "@elllphnt/elementa-utils";
-import { Observable, forkJoin, map } from "rxjs";
+import { Observable, combineLatest, map } from "rxjs";
 import { RouteTree } from "../../_interfaces/app/route_tree.js";
 import { IdentifiableModel } from "../_shared/identifiable.js";
 import { AppModel } from "./app.js";
@@ -14,6 +14,7 @@ export class RouteTreeModel
   implements RouteTree
 {
   readonly app: AppModel;
+  readonly parent: RouteTreeModel | undefined;
 
   private _state: RecordState<Omit<RouteTreeData, "children" | "id">>;
   private _children: AggregatedModelList<RouteTreeModel>;
@@ -190,15 +191,24 @@ export class RouteTreeModel
     return combineLatestMerged([
       super._data$,
       this._state.record$,
-      forkJoin({
+      combineLatest({
         children: this._children.data$,
       }),
     ]);
   }
 
-  constructor({ init, app }: { init: RouteTreeData; app: AppModel }) {
+  constructor({
+    init,
+    app,
+    parent,
+  }: {
+    init: RouteTreeData;
+    app: AppModel;
+    parent?: RouteTreeModel;
+  }) {
     const { children, id, ...stateData } = init;
     super({ id });
+    this.parent = parent;
 
     this.app = app;
 
@@ -208,7 +218,7 @@ export class RouteTreeModel
 
     this._children = new AggregatedModelList({
       init: children || [],
-      create: (data) => new RouteTreeModel({ init: data, app }),
+      create: (data) => new RouteTreeModel({ init: data, app, parent: this }),
       dataRef: (d) => d.id,
       modelRef: (m) => m.id,
     });
@@ -249,6 +259,16 @@ export class RouteTreeModel
 
   setParentId(id: string | undefined): void {
     this._state.set("parentId", id);
+  }
+
+  addRoute(route: RouteTreeData): void {
+    this._children.add(route);
+  }
+  removeRoutes(predicate: (item: RouteTreeModel) => boolean) {
+    return this._children.state.remove(predicate);
+  }
+  removeRoutesAt(index: number, count?: number) {
+    return this._children.state.removeAt(index, count);
   }
 
   restore(data: RouteTreeData) {

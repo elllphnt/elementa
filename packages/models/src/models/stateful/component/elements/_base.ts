@@ -12,7 +12,7 @@ import {
   keyManager,
   RecordState,
 } from "@elllphnt/elementa-utils";
-import { forkJoin, Observable, of } from "rxjs";
+import { combineLatest, Observable, of } from "rxjs";
 import { CssStyleSheet, StylesheetCssStyleSheet } from "../../../../css/_.js";
 import { Project } from "../../../../infrastructure/_.js";
 import { BaseElement } from "../../../_interfaces/component/elements/_base.js";
@@ -165,7 +165,7 @@ export abstract class BaseElementModel<
     return combineLatestMerged([
       super._data$,
       this._state.record$,
-      forkJoin({
+      combineLatest({
         type: of(this.type),
         stylesheet: this._stylesheet.data$,
       }),

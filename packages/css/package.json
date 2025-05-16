@@ -5,9 +5,15 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "clean": "rm -rf dist",
+    "build": "npm run lint && tsc -p tsconfig.build.json",
+    "build:dist": "npm run lint && tsc -p tsconfig.build.json --sourceMap false --declarationMap false",
     "watch": "tsc --watch",
-    "test": "tsx src/index.test.ts"
+    "packup": "tsx scripts/packup.ts",
+    "pub": "npm run test:run && npm run clean && npm run build:dist && npm run packup && cd dist && npm publish",
+    "lint": "eslint src",
+    "test": "vitest",
+    "test:run": "vitest --run"
   },
   "dependencies": {
     "@elllphnt/elementa-base": "workspace:*",

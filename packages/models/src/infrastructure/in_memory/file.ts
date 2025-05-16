@@ -1,7 +1,7 @@
 import { ValueState } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
 import { AsyncResourceStatus } from "../interfaces/_.js";
-import { File } from "../interfaces/file/file.js";
+import { File, FileContent } from "../interfaces/file/file.js";
 import { makeFileUrl } from "../interfaces/file/url.js";
 import { InMemoryProject } from "./project.js";
 import { InMemoryResource } from "./resource.js";
@@ -13,8 +13,41 @@ export interface InMemoryFileData {
   content: string;
 }
 
+export class InMemoryFileContent
+  extends InMemoryResource
+  implements FileContent
+{
+  readonly file: InMemoryFile;
+
+  get text(): string | undefined {
+    return this.file.contentValue;
+  }
+  get text$(): Observable<string | undefined> {
+    return this.file.contentValue$;
+  }
+
+  constructor({
+    id,
+    file,
+    status,
+  }: {
+    id: string;
+    file: InMemoryFile;
+    status?: AsyncResourceStatus;
+  }) {
+    super({ id, status });
+    this.file = file;
+  }
+
+  async getContent(): Promise<string | undefined> {
+    return this.file.getContent();
+  }
+}
+
 export class InMemoryFile extends InMemoryResource implements File {
   readonly project: InMemoryProject;
+  readonly content: InMemoryFileContent;
+
   private _state: ValueState<
     Omit<InMemoryFileData, "id" | "projectId"> | undefined
   >;
@@ -33,10 +66,10 @@ export class InMemoryFile extends InMemoryResource implements File {
     return this._state.value$.pipe(map((state) => state?.name));
   }
 
-  get content(): string | undefined {
+  get contentValue(): string | undefined {
     return this._state.value?.content;
   }
-  get content$(): Observable<string | undefined> {
+  get contentValue$(): Observable<string | undefined> {
     return this._state.value$.pipe(map((state) => state?.content));
   }
 
@@ -56,6 +89,11 @@ export class InMemoryFile extends InMemoryResource implements File {
     this._state = new ValueState<
       Omit<InMemoryFileData, "id" | "projectId"> | undefined
     >({ init: data });
+    this.content = new InMemoryFileContent({
+      id: this.id,
+      file: this,
+      status,
+    });
   }
 
   async getContent(): Promise<string | undefined> {

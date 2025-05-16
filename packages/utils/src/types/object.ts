@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+
 export type DeepPartial<T> = {
   [P in keyof T]?: DeepPartial<T[P]>;
 };

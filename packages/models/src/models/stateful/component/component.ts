@@ -6,7 +6,7 @@ import {
   combineLatestMerged,
   keyManager,
 } from "@elllphnt/elementa-utils";
-import { Observable, forkJoin, map } from "rxjs";
+import { Observable, combineLatest, map } from "rxjs";
 import { File } from "../../../infrastructure/_.js";
 import { Component } from "../../_interfaces/component/component.js";
 import { DataInputModel } from "../_shared/data_input.js";
@@ -112,12 +112,12 @@ export class ComponentModel extends Model<ComponentData> implements Component {
   get data$(): Observable<ComponentData> {
     return combineLatestMerged([
       this._state.record$,
-      forkJoin({
+      combineLatest({
         template: this.template.data$,
         props: this._props.data$,
         fragments: this._fragments.data$,
         states: this._states.data$,
-        editors: forkJoin({
+        editors: combineLatest({
           stage: this.stage.data$,
           preview: this.preview.data$,
         }),

@@ -4,6 +4,8 @@ import { rewriteImports, transpileTsToJs } from "./_utils.js";
 import { Module } from "./module.js";
 import { ModuleHost } from "./module_host/module_host.js";
 
+const CONTENT_LOAD_TIMEOUT = 60000; // 60 seconds
+
 export class ModuleManager extends Disposable {
   private infrastructure: Infrastructure;
   private moduleHost: ModuleHost;
@@ -49,12 +51,14 @@ export class ModuleManager extends Disposable {
     packages: PackageData[]
   ): Promise<string[]> {
     try {
-      // 1) Fetch raw content
-      const content = await this.module(url).file.getContent();
+      // 1) await for content to be retrieved
+      const fileContent = this.module(url).file.content;
+      await fileContent.untilRetrieved(CONTENT_LOAD_TIMEOUT);
+      const content = fileContent.text || "";
       const project = this.module(url).file.project;
 
       // 2) Transpile TSX/JSX → ESNext JS
-      const jsCode = transpileTsToJs(content || "");
+      const jsCode = transpileTsToJs(content);
 
       // 3) Rewrite imports & collect dependencies
       const transformScipt = (packages: PackageData[]) => {

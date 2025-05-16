@@ -2,7 +2,7 @@ export function stripUndefined<T>(obj: T) {
   if (typeof obj !== "object") {
     return obj;
   }
-  for (let key in obj) {
+  for (const key in obj) {
     if (obj[key] === undefined) {
       delete obj[key];
     } else if (typeof obj[key] === "object") {
