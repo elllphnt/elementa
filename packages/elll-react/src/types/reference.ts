@@ -1,6 +1,6 @@
-import { Reference } from "@elllphnt/elll-element";
+import { StaticReference } from "@elllphnt/elementa-base";
 
 export type TranspilerReference = {
   key: number;
-  data: Reference["__reference"];
+  data: StaticReference["__reference"];
 };

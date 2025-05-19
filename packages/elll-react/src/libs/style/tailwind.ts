@@ -4,7 +4,7 @@ import {
   StyleData,
   stylePropertyConfigMap,
   StylePropertyName,
-} from "@elllphnt/elll-element";
+} from "@elllphnt/elementa-base";
 import { stylePropertyToTwConfigMap } from "./properties.js";
 
 export function styleToTailwind(data: StyleData): string[] {
@@ -20,7 +20,7 @@ export function styleToTailwind(data: StyleData): string[] {
 
     if (tgConfig.toTw) {
       (tgConfig.toTw as any)(value).forEach((twClass: string) =>
-        classes.add(twClass),
+        classes.add(twClass)
       );
     } else {
       if (isVarRef(value)) {
@@ -32,22 +32,22 @@ export function styleToTailwind(data: StyleData): string[] {
       } else {
         if (tgConfig.toTwRaw) {
           (tgConfig.toTwRaw as any)(value).forEach((twClass: string) =>
-            classes.add(twClass),
+            classes.add(twClass)
           );
         } else {
           if (tgConfig.utility) {
             classes.add(
-              `${tgConfig.utility}-[${stringifyFlexibleStyleData(value, ...cssConfig.types)}]`.replaceAll(
-                " ",
-                "_",
-              ),
+              `${tgConfig.utility}-[${stringifyFlexibleStyleData(
+                value,
+                ...cssConfig.types
+              )}]`.replaceAll(" ", "_")
             );
           } else {
             classes.add(
-              `[${property}:${stringifyFlexibleStyleData(value, ...cssConfig.types)}]`.replaceAll(
-                " ",
-                "_",
-              ),
+              `[${property}:${stringifyFlexibleStyleData(
+                value,
+                ...cssConfig.types
+              )}]`.replaceAll(" ", "_")
             );
           }
         }

@@ -1,11 +1,11 @@
-import { isExpression, isReference } from "@elllphnt/elll-element";
+import { isExpression, isStaticReference } from "@elllphnt/elementa-base";
 import { TranspilerContext, TranspilerResult } from "../types/transpiler.js";
 
 export function transpileDynamic(
   data: any,
-  context: TranspilerContext,
+  context: TranspilerContext
 ): TranspilerResult {
-  if (isReference(data)) {
+  if (isStaticReference(data)) {
     const ref = context.useReference(data);
     return {
       generate: (env) => {

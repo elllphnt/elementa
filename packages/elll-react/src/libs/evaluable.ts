@@ -1,4 +1,4 @@
-import { Evaluable, isExpression } from "@elllphnt/elll-element";
+import { Evaluable, isExpression } from "@elllphnt/elementa-base";
 
 export function transpileEvaluable(value: Evaluable<any>): string {
   if (isExpression(value)) {

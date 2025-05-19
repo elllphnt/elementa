@@ -1,31 +1,18 @@
-import {
-  entityTypes,
-  StateData,
-  switchEntityType,
-} from "@elllphnt/elll-element";
+import { StateData } from "@elllphnt/elementa-base";
 import { TranspilerContext, TranspilerResult } from "../../types/transpiler.js";
-import { transpileModuleState } from "./module.js";
+import { transpileHookState } from "./hook.js";
 import { transpileValueState } from "./value.js";
 
 export function transpileState(
   data: StateData,
-  context: TranspilerContext,
+  context: TranspilerContext
 ): TranspilerResult {
-  return switchEntityType<TranspilerResult>(
-    data.type,
-    {
-      [entityTypes.states.value]: () => {
-        return transpileValueState(data, context);
-      },
-      [entityTypes.states.module]: () => {
-        return transpileModuleState(data, context);
-      },
-    },
-    () => {
-      console.warn(`Unknown state type: ${data.type}`);
-      return {
-        generate: () => `<>{/* Unknown state type: ${data.type} */}</>`,
-      };
-    },
-  );
+  switch (data.type) {
+    case "value":
+      return transpileValueState(data, context);
+    case "hook":
+      return transpileHookState(data, context);
+    default:
+      throw new Error(`Unsupported state type: ${(data as any).type}.`);
+  }
 }

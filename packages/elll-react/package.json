@@ -5,40 +5,16 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && tsc",
-    "packup": "node ./scripts/packup.js",
-    "pub": "npm run build && npm run packup && cd dist && npm publish",
-    "build:esbuild": "esbuild src/elll.ts --bundle --format=esm --outfile=es_dist/index.js --minify --analyze"
+    "clean": "rm -rf dist build",
+    "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json --verbose",
+    "build:dist": "tsc -p tsconfig.build.json --sourceMap false --declarationMap false && tsc-alias -p tsconfig.build.json --verbose",
+    "build:watch": "tsc -p tsconfig.build.json --watch",
+    "alias:watch": "tsc-alias -p tsconfig.build.json --watch",
+    "watch": "concurrently \"npm run build:watch\" \"npm run alias:watch\"",
+    "packup": "tsx scripts/packup.ts",
+    "pub": "npm run clean && npm run build:dist && npm run packup && cd dist && npm publish"
   },
   "dependencies": {
-    "@elllphnt/elll-element": "^0.26.32",
-    "@elllphnt/utils": "^0.2.1",
-    "@jsep-plugin/new": "^1.0.3",
-    "@jsep-plugin/numbers": "^1.0.1",
-    "@jsep-plugin/object": "^1.2.1",
-    "@jsep-plugin/spread": "^1.0.2",
-    "@jsep-plugin/template": "^1.0.4",
-    "@jsep-plugin/ternary": "^1.1.3",
-    "css-to-tailwindcss": "^1.0.5",
-    "csstype": "^3.1.3",
-    "fast-xml-parser": "^4.3.6",
-    "jsep": "^1.3.8",
-    "json-refs": "^3.0.15",
-    "lodash": "^4.17.21",
-    "lodash.camelcase": "^4.3.0",
-    "rxjs": "^7.8.1",
-    "xml2js": "^0.6.2",
-    "yup": "^1.4.0"
-  },
-  "devDependencies": {
-    "@types/lodash": "^4.14.201",
-    "@types/lodash.camelcase": "^4.3.9",
-    "@types/node": "^20.8.4",
-    "@types/react": "^18.3.1",
-    "@types/xml2js": "^0.4.14",
-    "esbuild": "^0.20.2",
-    "react": "^18.3.1",
-    "typescript": "^5.2.2"
-  },
-  "peerDependencies": {}
+    "@elllphnt/elementa-base": "workspace:*"
+  }
 }

@@ -7,7 +7,7 @@ import {
 } from "../_primitives/_.js";
 import { BaseProviderData, baseProviderDataSchema } from "./_base.js";
 
-export type ContextProviderData = BaseProviderData & {
+export type ContextProviderData = BaseProviderData<"context"> & {
   contextUrl?: string;
   value?: Evaluable<any> | Resolvable<any>;
 };

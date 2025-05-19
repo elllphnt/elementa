@@ -3,16 +3,22 @@ import {
   ResolvableOrEvaluable,
   resolvableOrEvaluableSchema,
 } from "../../../_primitives/_.js";
+import { StylableData } from "./stylable.js";
 
 // Types
 
-export type RouteLinkData = {
-  type: "route";
-  routeUrl?: string;
+export type BaseLinkData<T extends string> = StylableData & {
+  type: T;
 };
 
-export type HrefLinkData = {
-  type: "href";
+export type RouteLinkData = BaseLinkData<"route"> & {
+  routeUrl?: string;
+  params?: Record<string, ResolvableOrEvaluable<any>>;
+  query?: Record<string, ResolvableOrEvaluable<any>>;
+  state?: Record<string, ResolvableOrEvaluable<any>>;
+};
+
+export type HrefLinkData = BaseLinkData<"href"> & {
   href?: ResolvableOrEvaluable<string>;
   hreflang?: ResolvableOrEvaluable<string>;
   ping?: ResolvableOrEvaluable<string[]>;

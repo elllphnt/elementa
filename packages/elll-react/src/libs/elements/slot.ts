@@ -1,24 +1,38 @@
-import { SlotElementData } from "@elllphnt/elll-element";
-import { TranspilerContext, TranspilerResult } from "../../types/transpiler.js";
-import { compileStylesheet } from "../style/style.js";
+import { SlotElementData } from "@elllphnt/elementa-base";
+import { TranspilerContext, TranspilerResult } from "build/index.js";
+import { transpileBaseElement, TranspileElementOptions } from "./_base.js";
 
 export function transpileSlotElement(
   data: SlotElementData,
-  _: TranspilerContext,
-): TranspilerResult {
-  const classes = compileStylesheet(data.stylesheet ?? {});
-  const classesCode = classes.join(" ");
+  context: TranspilerContext
+): TranspilerResult<[TranspileElementOptions]> {
+  const base = transpileBaseElement(data, context);
 
   return {
-    generate: () => {
-      return [
-        `<>{`,
-        `(()=>{`,
-        `const { className, content } = props.__slotFills?.["${data._id}"] || {}`,
-        `return <div className={className + " ${classesCode}"}>{content}</div>`,
-        `})()`,
-        `}</>`,
-      ].join("\n");
+    generate: (env, upstream) => {
+      const slotId = data.id;
+
+      const content: TranspilerResult = {
+        generate: () => {
+          return [
+            `(() => {`,
+            `  const fill = fills["${slotId}"];`,
+            `  if (!fill) return null;`,
+            `  return fill.content;`,
+            `})()`,
+          ].join("\n");
+        },
+      };
+
+      return base.generate(env, {
+        tag: upstream.tag ?? "div",
+        children: [content],
+        classNames: [
+          {
+            generate: () => `\`\${fills["${slotId}"]?.className ?? ""}\``,
+          },
+        ],
+      });
     },
   };
 }

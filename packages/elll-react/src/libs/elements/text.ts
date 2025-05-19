@@ -1,6 +1,7 @@
-import { TextElementData } from "@elllphnt/elll-element";
+import { TextElementData } from "@elllphnt/elementa-base";
 import { TranspilerContext, TranspilerResult } from "../../types/transpiler.js";
-import { compileStylesheet } from "../style/style.js";
+import { transpileDynamic } from "../dynamic.js";
+import { transpileBaseElement, TranspileElementOptions } from "./_base.js";
 
 const expressionRegex = /\{\{([^}]*\}?[^}]*)\}\}/;
 
@@ -15,19 +16,24 @@ export function compileString(str: string): string {
 
 export function transpileTextElement(
   data: TextElementData,
-  context: TranspilerContext,
-): TranspilerResult {
-  const classes = compileStylesheet(data.stylesheet ?? {});
-  const classesCode = classes.join(" ");
+  context: TranspilerContext
+): TranspilerResult<[TranspileElementOptions]> {
+  const base = transpileBaseElement(data, context);
+  const text = transpileDynamic(data.text, context);
 
   return {
-    generate: (env) => {
-      const propsCode = `className="${classesCode}"`;
-      return [
-        `<span ${propsCode} >`,
-        compileString(data.text || ""),
-        `</span>`,
-      ].join("\n");
+    generate: (env, upstream) => {
+      const compiledText = compileString(text.generate(env));
+
+      return base.generate(env, {
+        ...upstream,
+        tag: upstream.tag ?? "span",
+        children: [
+          {
+            generate: () => compiledText,
+          },
+        ],
+      });
     },
   };
 }

@@ -1,41 +1,23 @@
-import {
-  ComponentData,
-  entityTypes,
-  OverflowValue,
-} from "@elllphnt/elll-element";
+import { ComponentData } from "@elllphnt/elementa-base";
 import { ComponentCompilerResult } from "../types/component.js";
 import { createComponentCompilerContext } from "./_context.js";
-import { getName } from "./_lib/names.js";
 import { compileFragment } from "./fragment.js";
 import { compileState } from "./state.js";
 import { compileTransformer } from "./transformers.js";
 
-export function compileComponent(
-  data: ComponentData,
-  options?: {
-    viewport?: {
-      overflow: OverflowValue;
-    };
-  }
-): ComponentCompilerResult {
+export function compileComponent(data: ComponentData): ComponentCompilerResult {
   const context = createComponentCompilerContext();
 
   const template = compileFragment(
     {
-      type: entityTypes.fragment,
       ...data.template,
       _id: "template",
     },
-    context,
-    {
-      viewport: options?.viewport,
-    }
+    context
   );
   const states = data.states?.map((data) => compileState(data, context)) ?? [];
   const fragments =
     data.fragments?.map((data) => compileFragment(data, context)) ?? [];
-  const transformers =
-    data.transformers?.map((data) => compileTransformer(data, context)) ?? [];
 
   const componentDependencies = context.getComponentDependencies();
   const moduleDependencies = context.getModuleDependencies();

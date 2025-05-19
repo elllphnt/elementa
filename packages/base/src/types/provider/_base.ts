@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-export type BaseProviderData = {
-  type: string;
+export type BaseProviderData<T extends string> = {
+  type: T;
   name?: string;
 };
 

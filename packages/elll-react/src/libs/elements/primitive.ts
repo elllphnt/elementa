@@ -1,65 +1,125 @@
-import { isReference, PrimitiveElementData } from "@elllphnt/elll-element";
-import { TranspilerContext, TranspilerResult } from "../../types/transpiler.js";
-import { Environment } from "../_env.js";
-import { transpileEvaluable } from "../evaluable.js";
-import { compileStylesheet } from "../style/style.js";
+import {
+  InteractionEvent,
+  PrimitiveElementData,
+  PrimitiveSubElementData,
+  reactInteractionEventMap,
+} from "@elllphnt/elementa-base";
+import { transpileBaseElement } from "build/libs/elements/_base.js";
+import { TranspilerDiagnosticLevel } from "~/types/diagnostic.js";
+import { TranspilerContext, TranspilerResult } from "~/types/transpiler.js";
+import { transpileDynamic } from "../dynamic.js";
+import { TranspileElementOptions } from "./_base.js";
+import { transpileStyleSheet } from "./_common/stylesheet.js";
 import { transpileElement } from "./element.js";
 
-export function compileCodeComponentElement(
-  data: PrimitiveElementData,
-  context: TranspilerContext,
+function transpilePrimitiveSubElement(
+  data: PrimitiveSubElementData,
+  context: TranspilerContext
 ): TranspilerResult {
-  if (!data.moduleUrl) {
-    console.warn(`No component URL provided for code component`);
-    return {
-      generate: () => {
-        return `<>{/* No component URL provided for code component */}</>`;
-      },
+  const classNames: TranspilerResult[] = [];
+  const props: Record<string, TranspilerResult> = {};
+
+  // Interaction handlers
+  if (data.interactions) {
+    for (const [event, expr] of Object.entries(data.interactions)) {
+      const reactEvent = reactInteractionEventMap[event as InteractionEvent];
+      if (!reactEvent) {
+        context.addDiagnostic({
+          level: TranspilerDiagnosticLevel.Warning,
+          message: `Unknown interaction event: ${event}`,
+        });
+        continue;
+      }
+
+      props[reactEvent] = transpileDynamic(expr, context);
+    }
+  }
+
+  // ClassName from stylesheet
+  if (data.stylesheet) {
+    classNames.push(transpileStyleSheet(data.stylesheet, context));
+  }
+
+  // Add className prop
+  if (classNames.length) {
+    props["className"] = {
+      generate: (env) => classNames.map((c) => c.generate(env)).join(" "),
     };
   }
 
-  const classes = compileStylesheet(data.stylesheet ?? {});
-  const classesCode = classes.join(" ");
-  const children = data.content?.map((child) =>
-    transpileElement(child, context),
-  );
-  const component = context.useDependency({
-    url: data.moduleUrl,
-    name: {
-      capitalize: true,
-    },
-  });
-  const propCodes = Object.entries(data.props ?? {}).map(([key, value]) => {
-    if (isReference(value)) {
-      const ref = context.useReference(value);
-      return (env: Environment) => {
-        const value = env.getResolvedValue(ref.key);
-        return `${key}={${transpileEvaluable(value)}}`;
-      };
-    } else {
-      const valueCode = transpileEvaluable(value);
-      return () => `${key}={${valueCode}}`;
-    }
-  });
-
   return {
     generate: (env) => {
-      const componentName = env.getName(component.key);
-      const propsCode = [
-        `className="${classesCode}"`,
-        ...propCodes.map((p) => p(env)),
-      ].join(" ");
+      const propsCode = Object.entries(props)
+        .map(([key, val]) => `${key}: ${val.generate(env)}`)
+        .join(",\n");
 
-      if (children?.length) {
-        const childrenCodes = children.map((c) => c.generate(env));
-        return [
-          `<${componentName} ${propsCode}>`,
-          ...childrenCodes,
-          `</${componentName}>`,
-        ].join("\n");
-      } else {
-        return `<${componentName} ${propsCode} />`;
-      }
+      return `{${propsCode}}`;
+    },
+  };
+}
+
+export function transpilePrimitiveElement(
+  data: PrimitiveElementData,
+  context: TranspilerContext
+): TranspilerResult<[TranspileElementOptions]> {
+  if (!data.primitiveUrl) {
+    context.addDiagnostic?.({
+      level: TranspilerDiagnosticLevel.Warning,
+      message: `No primitiveUrl provided for primitive element`,
+      data: { id: data.id },
+    });
+
+    return {
+      generate: () => `<>{/* Missing primitive component */}</>`,
+    };
+  }
+
+  const base = transpileBaseElement(data, context);
+  const component = context.useDependency({
+    url: data.primitiveUrl,
+    name: { capitalize: true },
+  });
+
+  // Dynamic props
+  const props: Record<string, TranspilerResult> = Object.fromEntries(
+    Object.entries(data.props ?? {}).map(([key, value]) => {
+      return [key, transpileDynamic(value, context)];
+    })
+  );
+
+  // Sub-elements (__elements)
+  const subElements = Object.entries(data.elements ?? {}).map(
+    ([name, element]) => {
+      return [name, transpilePrimitiveSubElement(element, context)] as const;
+    }
+  );
+
+  props["__elements"] = {
+    generate: (env) => {
+      const inner = subElements
+        .map(([name, sub]) => `${name}: ${sub.generate(env)}`)
+        .join(",\n");
+
+      return `{${inner}}`;
+    },
+  };
+
+  const children =
+    data.content?.map((child) => transpileElement(child, context)) ?? [];
+
+  return {
+    generate: (env, upstream) => {
+      const componentName = env.getClassName(component.key);
+
+      return base.generate(env, {
+        ...upstream,
+        tag: componentName,
+        children,
+        props: {
+          ...(upstream.props ?? {}),
+          ...props,
+        },
+      });
     },
   };
 }

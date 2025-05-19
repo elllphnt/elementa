@@ -1,47 +1,63 @@
-import {
-  ElementData,
-  entityTypes,
-  switchEntityType,
-} from "@elllphnt/elll-element";
+import { ElementData } from "@elllphnt/elementa-base";
 import { TranspilerContext, TranspilerResult } from "../../types/transpiler.js";
+import { TranspileElementOptions } from "./_base.js";
+import { applyConditionToTranspiledElement } from "./_common/condition.js";
+import { applyLinkToTranspiledElement } from "./_common/link/_link.js";
+import { applyRepeatToTranspiledElement } from "./_common/repeat.js";
 import { transpileComponentElement } from "./component.js";
 import { transpileContainerElement } from "./container.js";
 import { transpileMediaElement } from "./media.js";
-import { compileCodeComponentElement } from "./primitive.js";
+import { transpilePrimitiveElement } from "./primitive.js";
 import { transpileSlotElement } from "./slot.js";
 import { transpileTextElement } from "./text.js";
+import { transpileVectorElement } from "./vector.js";
+
+export function transpileElementVariant(
+  data: ElementData,
+  context: TranspilerContext
+): TranspilerResult<[TranspileElementOptions]> {
+  switch (data.type) {
+    case "container":
+      return transpileContainerElement(data, context);
+    case "component":
+      return transpileComponentElement(data, context);
+    case "slot":
+      return transpileSlotElement(data, context);
+    case "primitive":
+      return transpilePrimitiveElement(data, context);
+    case "text":
+      return transpileTextElement(data, context);
+    case "media":
+      return transpileMediaElement(data, context);
+    case "vector":
+      return transpileVectorElement(data, context);
+    default:
+      throw new Error(`Unknown element type: ${(data as any).type}`);
+  }
+}
 
 export function transpileElement(
   data: ElementData,
-  context: TranspilerContext,
+  context: TranspilerContext
 ): TranspilerResult {
-  return switchEntityType<TranspilerResult>(
-    data.type,
-    {
-      [entityTypes.elements.container]: () => {
-        return transpileContainerElement(data, context);
-      },
-      [entityTypes.elements.component]: () => {
-        return transpileComponentElement(data, context);
-      },
-      [entityTypes.elements.slot]: () => {
-        return transpileSlotElement(data, context);
-      },
-      [entityTypes.elements.primitive]: () => {
-        return compileCodeComponentElement(data, context);
-      },
-      [entityTypes.elements.text]: () => {
-        return transpileTextElement(data, context);
-      },
-      [entityTypes.elements.media]: () => {
-        return transpileMediaElement(data, context);
-      },
-    },
-    () => {
-      console.warn(`Unknown element type: ${data.type}`);
-      return {
-        generate: () => `<>{/* Unknown element type: ${data.type} */}</>`,
-      };
-    },
-  );
+  let element: TranspilerResult<[TranspileElementOptions]> =
+    transpileElementVariant(data, context);
+
+  if (data.link) {
+    element = applyLinkToTranspiledElement(data.link, element, context);
+  }
+  if (data.repeat) {
+    element = applyRepeatToTranspiledElement(data.repeat, element, context);
+  }
+  if (data.condition) {
+    element = applyConditionToTranspiledElement(
+      data.condition,
+      element,
+      context
+    );
+  }
+
+  return {
+    generate: (env) => element.generate(env, {}),
+  };
 }

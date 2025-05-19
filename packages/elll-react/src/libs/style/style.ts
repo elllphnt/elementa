@@ -1,5 +1,4 @@
-import { StyleData, StyleSheetData } from "@elllphnt/elll-element";
-import _ from "lodash";
+import { StyleData, StyleSheetData } from "@elllphnt/elementa-base";
 import { styleToTailwind } from "./tailwind.js";
 
 // Compile all the styles related to a single selector
@@ -17,5 +16,5 @@ export function compileStylesheet({ styles }: StyleSheetData): string[] {
     })
     .flat();
 
-  return _.uniq(classes);
+  return Array.from(new Set(classes));
 }

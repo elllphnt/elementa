@@ -1,8 +1,4 @@
-import {
-  ComponentData,
-  entityTypes,
-  OverflowValue,
-} from "@elllphnt/elll-element";
+import { ComponentData } from "@elllphnt/elementa-base";
 import { Dependency } from "../types/dependency.js";
 import { TranspilerReference } from "../types/reference.js";
 import { TranspilerResult } from "../types/transpiler.js";
@@ -10,14 +6,7 @@ import { createTranspilerContext } from "./_context.js";
 import { transpileFragment } from "./fragment.js";
 import { transpileState } from "./states/state.js";
 
-export function transpileComponent(
-  data: ComponentData,
-  options?: {
-    viewport?: {
-      overflow: OverflowValue;
-    };
-  },
-): TranspilerResult & {
+export function transpileComponent(data: ComponentData): TranspilerResult & {
   dependencies: Dependency[];
   references: TranspilerReference[];
 } {
@@ -25,29 +14,25 @@ export function transpileComponent(
 
   const template = transpileFragment(
     {
-      type: entityTypes.fragment,
       ...data.template,
-      _id: "template",
+      id: "template",
     },
-    context,
-    {
-      viewport: options?.viewport,
-      naked: true,
-    },
+    context
   );
-  const states = data.states?.map((state) => {
-    return transpileState(state, context);
-  });
+
+  const states = data.states?.map((state) => transpileState(state, context));
 
   return {
     generate: (env) => {
-      const fragmentCode = template.generate(env);
-      const stateCodes = states?.map((state) => state.generate(env)) ?? [];
+      const fragmentFn = template.generate(env); // ($) => JSX
+      const stateCode = states?.map((s) => s.generate(env)) ?? [];
+
       return [
-        `(props)=>{`,
-        ...stateCodes,
-        ``,
-        `return (${fragmentCode})`,
+        `(props) => {`,
+        ...stateCode,
+        `const template = ${fragmentFn};`,
+        `const fills = props.__fills || {};`,
+        `return template({});`,
         `}`,
       ].join("\n");
     },

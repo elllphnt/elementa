@@ -6,14 +6,14 @@ import {
   StyleDataType,
   StylePropertyName,
   validateStyleData,
-} from "@elllphnt/elll-element";
+} from "@elllphnt/elementa-base";
 
 export const stylePropertyToTwConfigMap: {
   [key in StylePropertyName]: {
     utility?: string;
     toTw?: (value: Exclude<NonNullable<StyleData[key]>, "unset">) => string[];
     toTwRaw?: (
-      value: Exclude<NonNullable<RawStyleData[key]>, "unset">,
+      value: Exclude<NonNullable<RawStyleData[key]>, "unset">
     ) => string[];
   };
 } = {
@@ -51,10 +51,13 @@ export const stylePropertyToTwConfigMap: {
         classes.add("elll-flexible");
       } else {
         classes.add(
-          `w-${stringifyFlexibleStyleData(value, StyleDataType.Length, StyleDataType.Percent, StyleDataType.Flex, StyleDataType.String)}`.replaceAll(
-            " ",
-            "_",
-          ),
+          `w-${stringifyFlexibleStyleData(
+            value,
+            StyleDataType.Length,
+            StyleDataType.Percent,
+            StyleDataType.Flex,
+            StyleDataType.String
+          )}`.replaceAll(" ", "_")
         );
       }
 
@@ -82,10 +85,13 @@ export const stylePropertyToTwConfigMap: {
         classes.add("elll-flexible");
       } else {
         classes.add(
-          `h-${stringifyFlexibleStyleData(value, StyleDataType.Length, StyleDataType.Percent, StyleDataType.Flex, StyleDataType.String)}`.replaceAll(
-            " ",
-            "_",
-          ),
+          `h-${stringifyFlexibleStyleData(
+            value,
+            StyleDataType.Length,
+            StyleDataType.Percent,
+            StyleDataType.Flex,
+            StyleDataType.String
+          )}`.replaceAll(" ", "_")
         );
       }
 

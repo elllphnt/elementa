@@ -1,27 +1,24 @@
-import { ContainerElementData } from "@elllphnt/elll-element";
-import { TranspilerContext, TranspilerResult } from "../../types/transpiler.js";
-import { compileStylesheet } from "../style/style.js";
+import { ContainerElementData } from "@elllphnt/elementa-base";
+import { TranspilerContext, TranspilerResult } from "~/types/transpiler.js";
+import { transpileBaseElement, TranspileElementOptions } from "./_base.js";
 import { transpileElement } from "./element.js";
 
 export function transpileContainerElement(
   data: ContainerElementData,
-  context: TranspilerContext,
-): TranspilerResult {
-  const classes = compileStylesheet(data.stylesheet ?? {});
-  const classesCode = classes.join(" ");
-  const children = data.content?.map((content) =>
-    transpileElement(content, context),
-  );
+  context: TranspilerContext
+): TranspilerResult<[TranspileElementOptions]> {
+  const base = transpileBaseElement(data, context);
+
+  const children =
+    data.content?.map((child) => transpileElement(child, context)) ?? [];
 
   return {
-    generate: (env) => {
-      const propsCode = `className="${classesCode}"`;
-      if (children?.length) {
-        const childrenCode = children.map((c) => c.generate(env));
-        return [`<div ${propsCode} >`, ...childrenCode, `</div>`].join("\n");
-      } else {
-        return `<div ${propsCode} />`;
-      }
+    generate: (env, upstream) => {
+      return base.generate(env, {
+        ...upstream,
+        tag: upstream.tag ?? "div",
+        children: [...(upstream.children ?? []), ...children],
+      });
     },
   };
 }
