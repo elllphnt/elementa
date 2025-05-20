@@ -1,5 +1,5 @@
 import { SlotElementData } from "@elllphnt/elementa-base";
-import { TranspilerContext, TranspilerResult } from "build/index.js";
+import { TranspilerContext, TranspilerResult } from "~/types/transpiler.js";
 import { transpileBaseElement, TranspileElementOptions } from "./_base.js";
 
 export function transpileSlotElement(
@@ -7,29 +7,37 @@ export function transpileSlotElement(
   context: TranspilerContext
 ): TranspilerResult<[TranspileElementOptions]> {
   const base = transpileBaseElement(data, context);
+  const slotId = data.id;
+  let content: TranspilerResult;
+
+  if (data.mode === "outlet") {
+    const outlet = context.useModule({
+      url: "@elllphnt/elementa-routing",
+      specifier: "Outlet",
+      name: { capitalize: true },
+    });
+    content = {
+      generate: (env) => {
+        const outletName = env.getModuleName(outlet.key);
+        return [`<${outletName} />`].join("\n");
+      },
+    };
+  } else {
+    content = {
+      generate: () => {
+        return [`{__fills["${slotId}"]?.content ?? null}`].join("\n");
+      },
+    };
+  }
 
   return {
     generate: (env, upstream) => {
-      const slotId = data.id;
-
-      const content: TranspilerResult = {
-        generate: () => {
-          return [
-            `(() => {`,
-            `  const fill = fills["${slotId}"];`,
-            `  if (!fill) return null;`,
-            `  return fill.content;`,
-            `})()`,
-          ].join("\n");
-        },
-      };
-
       return base.generate(env, {
         tag: upstream.tag ?? "div",
         children: [content],
         classNames: [
           {
-            generate: () => `\`\${fills["${slotId}"]?.className ?? ""}\``,
+            generate: () => `\`\${__fills["${slotId}"]?.className ?? ""}\``,
           },
         ],
       });

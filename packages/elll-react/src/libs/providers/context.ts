@@ -20,7 +20,7 @@ export function transpileContextProvider(
 
   const value = transpileDynamic(data.value, context);
 
-  const provider = context.useDependency({
+  const provider = context.useModule({
     url: data.contextUrl,
     name: {
       capitalize: true,
@@ -29,7 +29,7 @@ export function transpileContextProvider(
 
   return {
     generate: (env, children) => {
-      const providerName = env.getName(provider.key);
+      const providerName = env.getModuleName(provider.key);
       return `<${providerName} value={${value.generate(env)}}>${children
         .map((child) => child.generate(env))
         .join("")}</${providerName}>`;

@@ -52,7 +52,7 @@ export function transpileComponentElement(
   }
 
   const base = transpileBaseElement(data, context);
-  const component = context.useDependency({
+  const component = context.useModule({
     url: data.componentUrl,
     name: { capitalize: true },
   });
@@ -81,7 +81,7 @@ export function transpileComponentElement(
 
   return {
     generate: (env, upstream) => {
-      const componentName = env.getName(component.key);
+      const componentName = env.getModuleName(component.key);
 
       return base.generate(env, {
         tag: componentName,

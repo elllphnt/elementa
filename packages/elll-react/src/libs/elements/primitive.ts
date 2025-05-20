@@ -4,11 +4,10 @@ import {
   PrimitiveSubElementData,
   reactInteractionEventMap,
 } from "@elllphnt/elementa-base";
-import { transpileBaseElement } from "build/libs/elements/_base.js";
 import { TranspilerDiagnosticLevel } from "~/types/diagnostic.js";
 import { TranspilerContext, TranspilerResult } from "~/types/transpiler.js";
 import { transpileDynamic } from "../dynamic.js";
-import { TranspileElementOptions } from "./_base.js";
+import { transpileBaseElement, TranspileElementOptions } from "./_base.js";
 import { transpileStyleSheet } from "./_common/stylesheet.js";
 import { transpileElement } from "./element.js";
 
@@ -75,7 +74,7 @@ export function transpilePrimitiveElement(
   }
 
   const base = transpileBaseElement(data, context);
-  const component = context.useDependency({
+  const component = context.useModule({
     url: data.primitiveUrl,
     name: { capitalize: true },
   });

@@ -19,7 +19,7 @@ export function transpileHookState(
     };
   }
 
-  const hook = context.useDependency({
+  const hook = context.useModule({
     url: data.hookUrl,
     name: { capitalize: true },
   });
@@ -28,7 +28,7 @@ export function transpileHookState(
 
   return {
     generate: (env) => {
-      const hookName = env.getName(hook.key);
+      const hookName = env.getModuleName(hook.key);
       const argList = args.map((a) => a.generate(env)).join(", ");
       return `const ${data.name} = ${hookName}(${argList});`;
     },

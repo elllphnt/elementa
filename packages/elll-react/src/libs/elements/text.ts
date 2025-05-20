@@ -30,7 +30,7 @@ export function transpileTextElement(
         tag: upstream.tag ?? "span",
         children: [
           {
-            generate: () => compiledText,
+            generate: () => `{${compiledText}}`,
           },
         ],
       });

@@ -21,7 +21,7 @@ export function transpileValueState(
     };
   }
 
-  const elllDependency = context.useDependency({
+  const elllDependency = context.useModule({
     url: "elll",
     specifier: "useValueState",
     name: { base: "useValueState" },
@@ -33,7 +33,7 @@ export function transpileValueState(
 
   return {
     generate: (env) => {
-      const hookName = env.getName(elllDependency.key);
+      const hookName = env.getModuleName(elllDependency.key);
       const initArg = initValue ? `(${initValue.generate(env)})` : `()`;
       return `const ${name} = ${hookName}${initArg};`;
     },

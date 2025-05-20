@@ -1,92 +1,91 @@
+import { StaticReference, StyleSheetData } from "@elllphnt/elementa-base";
 import { TranspilerDiagnostic } from "~/types/diagnostic.js";
 import { TranspilerRoute } from "~/types/route.js";
 import { TranspilerStylesheet } from "~/types/stylesheet.js";
-import { Dependency } from "../types/dependency.js";
+import { Module } from "../types/module.js";
 import { TranspilerReference } from "../types/reference.js";
 import { TranspilerContext } from "../types/transpiler.js";
 
-let dependencyKey = 0;
-let stylesheetKey = 0;
-let referenceKey = 0;
-let routeKey = 0;
+export class TranspilerContextImpl implements TranspilerContext {
+  private moduleKey = 0;
+  private stylesheetKey = 0;
+  private referenceKey = 0;
+  private routeKey = 0;
 
-export function createTranspilerContext(): TranspilerContext {
-  const dependencies: Map<string, Dependency> = new Map();
-  const references: Map<string, TranspilerReference> = new Map();
-  const stylesheets: TranspilerStylesheet[] = [];
-  const routes: Map<string, TranspilerRoute> = new Map();
-  const diagnostics: TranspilerDiagnostic[] = [];
+  private _modules: Map<string, Module> = new Map();
+  private _references: Map<string, TranspilerReference> = new Map();
+  private _stylesheets: TranspilerStylesheet[] = [];
+  private _routes: Map<string, TranspilerRoute> = new Map();
+  private _diagnostics: TranspilerDiagnostic[] = [];
 
-  return {
-    // ───── Dependencies ─────
-    useDependency({ url, specifier, name }) {
-      let dependency = dependencies.get(url);
-      if (!dependency) {
-        const key = dependencyKey++;
-        dependency = { key, url, specifier, name };
-        dependencies.set(url, dependency);
-      }
-      return dependency;
-    },
-    getDependencies() {
-      return Array.from(dependencies.values());
-    },
+  get modules() {
+    return Array.from(this._modules.values());
+  }
+  get stylesheets() {
+    return this._stylesheets;
+  }
+  get references() {
+    return Array.from(this._references.values());
+  }
+  get routes() {
+    return Array.from(this._routes.values());
+  }
+  get diagnostics() {
+    return this._diagnostics;
+  }
 
-    // ───── Stylesheets ─────
-    useStyleSheet(data) {
-      const stylesheet: TranspilerStylesheet = {
-        key: ++stylesheetKey,
-        data,
+  // ───── Modules ─────
+  useModule({ url, specifier, name }) {
+    let module = this._modules.get(url);
+    if (!module) {
+      const key = this.moduleKey++;
+      module = { key, url, specifier, name };
+      this._modules.set(url, module);
+    }
+    return module;
+  }
+
+  // ───── Stylesheets ─────
+  useStyleSheet(data: StyleSheetData) {
+    const stylesheet: TranspilerStylesheet = {
+      key: ++this.stylesheetKey,
+      data,
+    };
+    this._stylesheets.push(stylesheet);
+    return stylesheet;
+  }
+
+  // ───── Static References ─────
+  useReference(reference: StaticReference) {
+    const mapKey = JSON.stringify(reference.__reference);
+    let tReference = this._references.get(mapKey);
+    if (!tReference) {
+      const key = this.referenceKey++;
+      tReference = {
+        key,
+        data: reference.__reference,
       };
-      stylesheets.push(stylesheet);
-      return stylesheet;
-    },
-    getStyleSheets() {
-      return stylesheets;
-    },
+      this._references.set(mapKey, tReference);
+    }
+    return tReference;
+  }
 
-    // ───── Static References ─────
-    useReference(reference) {
-      const mapKey = JSON.stringify(reference.__reference);
-      let tReference = references.get(mapKey);
-      if (!tReference) {
-        const key = referenceKey++;
-        tReference = {
-          key,
-          data: reference.__reference,
-        };
-        references.set(mapKey, tReference);
-      }
-      return tReference;
-    },
-    getReferences() {
-      return Array.from(references.values());
-    },
+  // ───── Routes ─────
+  useRoute(url: string) {
+    let route = this._routes.get(url);
+    if (!route) {
+      const key = this.routeKey++;
+      route = {
+        key,
+        url,
+      };
+      this._routes.set(url, route);
+    }
+    return route;
+  }
 
-    // ───── Routes ─────
-    useRoute(url: string) {
-      let route = routes.get(url);
-      if (!route) {
-        const key = routeKey++;
-        // You can optionally load real path metadata here later
-        route = {
-          key,
-          url,
-        };
-        routes.set(url, route);
-      }
-      return route;
-    },
-    getRoutes() {
-      return Array.from(routes.values());
-    },
-
-    // ───── Diagnostics ─────
-    addDiagnostic(diagnostic) {
-      diagnostics.push(diagnostic);
-    },
-    getDiagnostics() {
-      return diagnostics;
-    },
-  };
+  // ───── Diagnostics ─────
+  addDiagnostic(diagnostic: TranspilerDiagnostic) {
+    this._diagnostics.push(diagnostic);
+  }
 }

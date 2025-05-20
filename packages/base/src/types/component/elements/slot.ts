@@ -1,4 +1,3 @@
-import { ProviderData } from "../../provider/_.js";
 import { BaseElementData } from "./_base.js";
 import { ElementData } from "./element.js";
 
@@ -7,8 +6,8 @@ import { providerDataSchema } from "../../provider/provider.js";
 import { baseElementDataSchema } from "./_base.js";
 
 export type SlotElementData = BaseElementData<"slot"> & {
+  mode?: "fill" | "outlet";
   placeholder?: ElementData[];
-  providers?: ProviderData[];
 };
 
 // Schemas

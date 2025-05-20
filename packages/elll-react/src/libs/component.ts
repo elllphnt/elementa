@@ -1,17 +1,13 @@
 import { ComponentData } from "@elllphnt/elementa-base";
-import { Dependency } from "../types/dependency.js";
-import { TranspilerReference } from "../types/reference.js";
-import { TranspilerResult } from "../types/transpiler.js";
-import { createTranspilerContext } from "./_context.js";
+import { join } from "path";
+import { TranspilerContext, TranspilerResult } from "../types/transpiler.js";
 import { transpileFragment } from "./fragment.js";
 import { transpileState } from "./states/state.js";
 
-export function transpileComponent(data: ComponentData): TranspilerResult & {
-  dependencies: Dependency[];
-  references: TranspilerReference[];
-} {
-  const context = createTranspilerContext();
-
+export function transpileComponent(
+  data: ComponentData,
+  context: TranspilerContext
+): TranspilerResult {
   const template = transpileFragment(
     {
       ...data.template,
@@ -21,22 +17,34 @@ export function transpileComponent(data: ComponentData): TranspilerResult & {
   );
 
   const states = data.states?.map((state) => transpileState(state, context));
+  const fragments =
+    data.fragments?.map(
+      (fragment) => [fragment.id, transpileFragment(fragment, context)] as const
+    ) || [];
 
   return {
     generate: (env) => {
-      const fragmentFn = template.generate(env); // ($) => JSX
+      const templateCode = template.generate(env);
       const stateCode = states?.map((s) => s.generate(env)) ?? [];
+      const fragmentsCode = join(
+        [
+          `{`,
+          ...fragments.map(([id, f]) => {
+            const code = f.generate(env);
+            return `  "${id}": (${code}),`;
+          }),
+          `}`,
+        ].join("\n")
+      );
 
       return [
         `(props) => {`,
         ...stateCode,
-        `const template = ${fragmentFn};`,
-        `const fills = props.__fills || {};`,
-        `return template({});`,
+        `const __fills = props.__fills || {};`,
+        `const __fragments = ${fragmentsCode};`,
+        `return (${templateCode})`,
         `}`,
       ].join("\n");
     },
-    dependencies: context.getDependencies(),
-    references: context.getReferences(),
   };
 }

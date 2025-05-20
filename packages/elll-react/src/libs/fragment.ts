@@ -29,16 +29,15 @@ export function transpileFragment(
 
       // 2. Wrap in providers (from inside-out)
       for (let i = providers.length - 1; i >= 0; i--) {
-        const provider = providers[i];
-        contentCode = provider.generate(env, [
+        contentCode = providers[i].generate(env, [
           {
             generate: () => contentCode,
           },
         ]);
       }
 
-      // 4. Return as arrow function
-      return `($) => (${contentCode})`;
+      // 3. Return raw JSX
+      return contentCode;
     },
   };
 }

@@ -1,2 +1,2 @@
-export * from "./dependency.js";
+export * from "./module.js";
 export * from "./transpiler.js";

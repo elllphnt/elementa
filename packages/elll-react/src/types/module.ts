@@ -1,6 +1,6 @@
 import { NameOptions } from "../libs/utils/namespace.js";
 
-export type Dependency = {
+export type Module = {
   key: number;
   url: string;
   specifier?: string;

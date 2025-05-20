@@ -2,14 +2,13 @@ import {
   styleConditionToClassName,
   StyleSheetData,
 } from "@elllphnt/elementa-base";
-import { TranspilerContext } from "build/index.js";
-import { TranspilerResult } from "~/types/transpiler.js";
+import { TranspilerContext, TranspilerResult } from "~/types/transpiler.js";
 
 export function transpileStyleSheet(
   data: StyleSheetData,
   context: TranspilerContext
 ): TranspilerResult {
-  const cx = context.useDependency({ url: "clsx" });
+  const cx = context.useModule({ url: "clsx" });
   const stylesheet = context.useStyleSheet(data);
   const conditions = data.conditions
     ? Object.entries(data.conditions).map(
@@ -21,7 +20,7 @@ export function transpileStyleSheet(
   return {
     generate: (env) => {
       if (conditions.length) {
-        const cxName = env.getName(cx.key);
+        const cxName = env.getModuleName(cx.key);
         return `${cxName}("${env.getClassName(stylesheet.key)}", { ${conditions
           .map(([className, expression]) => `"${className}": ${expression}`)
           .join(", ")} })`;

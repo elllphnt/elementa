@@ -3,7 +3,7 @@ import {
   InteractionEvent,
   reactInteractionEventMap,
 } from "@elllphnt/elementa-base";
-import { TranspilerDiagnosticLevel } from "build/types/diagnostic.js";
+import { TranspilerDiagnosticLevel } from "~/types/diagnostic.js";
 import { TranspilerContext, TranspilerResult } from "../../types/transpiler.js";
 import { transpileDynamic } from "../dynamic.js";
 import { transpileStyleSheet } from "./_common/stylesheet.js";
@@ -56,7 +56,7 @@ export function transpileBaseElement(
 
   return {
     generate: (env, upstream) => {
-      const tag = data.tag || "div";
+      const tag = upstream.tag || "div";
 
       // Merge class names
       const allClassNames = [...classNames, ...(upstream.classNames ?? [])];

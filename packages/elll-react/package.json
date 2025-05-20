@@ -12,7 +12,8 @@
     "alias:watch": "tsc-alias -p tsconfig.build.json --watch",
     "watch": "concurrently \"npm run build:watch\" \"npm run alias:watch\"",
     "packup": "tsx scripts/packup.ts",
-    "pub": "npm run clean && npm run build:dist && npm run packup && cd dist && npm publish"
+    "pub": "npm run clean && npm run build:dist && npm run packup && cd dist && npm publish",
+    "test": "vitest"
   },
   "dependencies": {
     "@elllphnt/elementa-base": "workspace:*"

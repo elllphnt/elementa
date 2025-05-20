@@ -1,8 +1,8 @@
 import { RouteLinkData } from "@elllphnt/elementa-base";
 import { transpileDynamic } from "~/libs/dynamic.js";
+import { TranspilerDiagnosticLevel } from "~/types/diagnostic.js";
 import { TranspilerContext, TranspilerResult } from "~/types/transpiler.js";
 import { TranspileElementOptions } from "../../_base.js";
-import { TranspilerDiagnosticLevel } from "~/types/diagnostic.js";
 import { applyBaseLinkToTranspiledElement } from "./_base.js";
 
 export function applyRouteLinkToTranspiledElement(
@@ -24,7 +24,10 @@ export function applyRouteLinkToTranspiledElement(
   // Props passed to <Link>
   const props: Record<string, TranspilerResult> = {
     path: {
-      generate: (env) => JSON.stringify(env.getRoutePath(route.key)),
+      generate: (env) => {
+        const _route = env.getRoute(route.key);
+        return JSON.stringify(_route.path);
+      },
     },
   };
 
@@ -73,7 +76,7 @@ export function applyRouteLinkToTranspiledElement(
     };
   }
 
-  const routerDep = context.useDependency({
+  const routerDep = context.useModule({
     url: "@elllphnt/elementa-router",
     specifier: "Link",
     name: { capitalize: true },
@@ -84,7 +87,7 @@ export function applyRouteLinkToTranspiledElement(
   return {
     generate: (env, elementUpstream) =>
       wrapped.generate(env, elementUpstream, {
-        tag: env.getName(routerDep.key),
+        tag: env.getModuleName(routerDep.key),
         props,
       }),
   };

@@ -5,6 +5,7 @@
     "baseUrl": ".",
     "strict": false,
     "strictFunctionTypes": false,
+    "jsx": "react-jsx",
     "paths": {
       "~/*": ["./src/*"]
     }
