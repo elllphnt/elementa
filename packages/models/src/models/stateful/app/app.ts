@@ -9,7 +9,7 @@ import {
   RecordState,
   combineLatestMerged,
 } from "@elllphnt/elementa-utils";
-import { Observable, combineLatest } from "rxjs";
+import { Observable, combineLatest, map } from "rxjs";
 import { File } from "../../../infrastructure/_.js";
 import { App } from "../../_interfaces/app/app.js";
 import { AppBlueprintModel } from "./editors/_.js";
@@ -19,11 +19,8 @@ export class AppModel extends Model<AppData> implements App {
   readonly file: File;
   readonly blueprint: AppBlueprintModel;
 
-  private _state: RecordState<
-    Omit<AppData, "routes" | "variables" | "editors">
-  >;
+  private _state: RecordState<Omit<AppData, "routes" | "variables">>;
   private _routes: AggregatedModelList<RouteTreeModel>;
-  private _routesById: Record<string, RouteTreeModel> = {};
 
   get routes(): RouteTreeModel[] {
     return this._routes.state.items;
@@ -32,8 +29,11 @@ export class AppModel extends Model<AppData> implements App {
     return this._routes.state.items$;
   }
 
-  route(id: string): RouteTreeModel | undefined {
-    return this._routesById[id];
+  editorData(key: string) {
+    return this._state.entry("editors")?.[key];
+  }
+  editorData$(key: string): Observable<any> {
+    return this._state.entry$("editors").pipe(map((editors) => editors?.[key]));
   }
 
   get data(): AppData {
@@ -90,6 +90,12 @@ export class AppModel extends Model<AppData> implements App {
   }
   removeRoutesAt(index: number, count?: number) {
     return this._routes.state.removeAt(index, count);
+  }
+  setEditorData(key: string, data: any) {
+    this._state.set("editors", {
+      ...this._state.entry("editors"),
+      [key]: data,
+    });
   }
 
   restore(data: AppData) {

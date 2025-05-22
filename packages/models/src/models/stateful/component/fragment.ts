@@ -83,7 +83,6 @@ export class FragmentModel
       ...super._data,
       ...this._state.record,
       content: this._content.data,
-      params: this._params.data,
     };
   }
 
@@ -93,7 +92,6 @@ export class FragmentModel
       this._state.record$,
       combineLatest({
         content: this._content.data$,
-        params: this._params.data$,
       }),
     ]);
   }
@@ -105,7 +103,7 @@ export class FragmentModel
     init: FragmentData;
     component: Component;
   }) {
-    const { id, content, params, ...stateData } = init;
+    const { id, content, ...stateData } = init;
     super({ id, key: keyManager.next("fragment") });
 
     this.component = component;
@@ -125,30 +123,18 @@ export class FragmentModel
       modelRef: (m) => m.id,
     });
 
-    this._params = new AggregatedModelList({
-      init: params || [],
-      create: (data) =>
-        new DataInputModel({
-          init: data,
-        }),
-      dataRef: (d) => d.name,
-      modelRef: (m) => m.name,
-    });
-
     this.addDisposer(() => {
       this._state.dispose();
       this._content.dispose();
-      this._params.dispose();
     });
   }
 
   // restore method
   restore(data: FragmentData): void {
-    const { id, content, params, ...stateData } = data;
+    const { id, content, ...stateData } = data;
     super.restore({ id });
 
     this._state.setRecord(stateData);
     this._content.restore(content || []);
-    this._params.restore(params || []);
   }
 }
