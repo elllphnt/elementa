@@ -1,8 +1,4 @@
-import {
-  AppBlueprintData,
-  AppData,
-  RouteTreeData,
-} from "@elllphnt/elementa-base";
+import { AppData, RouteTreeData } from "@elllphnt/elementa-base";
 import {
   AggregatedModelList,
   Model,
@@ -12,12 +8,10 @@ import {
 import { Observable, combineLatest, map } from "rxjs";
 import { File } from "../../../infrastructure/_.js";
 import { App } from "../../_interfaces/app/app.js";
-import { AppBlueprintModel } from "./editors/_.js";
 import { RouteTreeModel } from "./route_tree.js";
 
 export class AppModel extends Model<AppData> implements App {
   readonly file: File;
-  readonly blueprint: AppBlueprintModel;
 
   private _state: RecordState<Omit<AppData, "routes" | "variables">>;
   private _routes: AggregatedModelList<RouteTreeModel>;
@@ -57,13 +51,7 @@ export class AppModel extends Model<AppData> implements App {
 
     this.file = file;
 
-    const { routes, editors, ...stateData } = init;
-
-    this.blueprint = new AppBlueprintModel({
-      init: (editors?.blueprint as AppBlueprintData) || {
-        nodes: [],
-      },
-    });
+    const { routes, ...stateData } = init;
 
     this._state = new RecordState({
       init: stateData,
@@ -99,13 +87,9 @@ export class AppModel extends Model<AppData> implements App {
   }
 
   restore(data: AppData) {
-    const { routes, editors, ...stateData } = data;
+    const { routes, ...stateData } = data;
 
     this._state.setRecord(stateData);
     this._routes.restore(routes || []);
-
-    if (editors?.blueprint) {
-      this.blueprint.restore(editors.blueprint as AppBlueprintData);
-    }
   }
 }
