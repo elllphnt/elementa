@@ -1,16 +1,15 @@
-import { RouteTreeData } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
 import { Identifiable } from "../_shared/identifiable.js";
 import { FileModelAdaptor } from "../adaptors/_.js";
 import { Component } from "../component/_.js";
 import { App } from "./app.js";
 
-export interface RouteTree extends Identifiable {
+export interface RouteTree<R extends RouteTree = RouteTree<any>>
+  extends Identifiable {
   app: App;
-  parent?: RouteTree;
 
-  children: RouteTree[];
-  children$: Observable<RouteTree[]>;
+  children: R[];
+  children$: Observable<R[]>;
 
   path: string | undefined;
   path$: Observable<string | undefined>;
@@ -56,7 +55,7 @@ export interface RouteTree extends Identifiable {
   setHandlerUrl(url: string | undefined): void;
   setParentId(id: string | undefined): void;
 
-  addRoute(route: RouteTreeData): void;
-  removeRoutes(predicate: (item: RouteTree) => boolean): RouteTree[];
-  removeRoutesAt(index: number, count?: number): RouteTree[];
+  addRoutes(routes: R[]): void;
+  insertRoutes(index: number, routes: R[]): void;
+  removeRoutes(routes: R[]): void;
 }

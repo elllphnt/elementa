@@ -11,10 +11,9 @@ import { AppModel } from "./app.js";
 
 export class RouteTreeModel
   extends IdentifiableModel<RouteTreeData>
-  implements RouteTree
+  implements RouteTree<RouteTreeModel>
 {
   readonly app: AppModel;
-  readonly parent: RouteTreeModel | undefined;
 
   private _state: RecordState<Omit<RouteTreeData, "children" | "id">>;
   private _children: AggregatedModelList<RouteTreeModel>;
@@ -197,18 +196,9 @@ export class RouteTreeModel
     ]);
   }
 
-  constructor({
-    init,
-    app,
-    parent,
-  }: {
-    init: RouteTreeData;
-    app: AppModel;
-    parent?: RouteTreeModel;
-  }) {
+  constructor({ init, app }: { init: RouteTreeData; app: AppModel }) {
     const { children, id, ...stateData } = init;
     super({ id });
-    this.parent = parent;
 
     this.app = app;
 
@@ -218,7 +208,7 @@ export class RouteTreeModel
 
     this._children = new AggregatedModelList({
       init: children || [],
-      create: (data) => new RouteTreeModel({ init: data, app, parent: this }),
+      create: (data) => new RouteTreeModel({ init: data, app }),
       dataRef: (d) => d.id,
       modelRef: (m) => m.id,
     });
@@ -261,14 +251,15 @@ export class RouteTreeModel
     this._state.set("parentId", id);
   }
 
-  addRoute(route: RouteTreeData): void {
-    this._children.add(route);
+  addRoutes(routes: RouteTreeModel[]): void {
+    this._children.state.append(routes);
   }
-  removeRoutes(predicate: (item: RouteTreeModel) => boolean) {
-    return this._children.state.remove(predicate);
+  insertRoutes(index: number, routes: RouteTreeModel[]): void {
+    this._children.state.insertAt(index, routes);
   }
-  removeRoutesAt(index: number, count?: number) {
-    return this._children.state.removeAt(index, count);
+  removeRoutes(routes: RouteTreeModel[]): void {
+    const set = new Set(routes);
+    this._children.state.remove((r) => set.has(r));
   }
 
   restore(data: RouteTreeData) {

@@ -82,9 +82,9 @@ export function setReactiveMapSetters<
   ReactiveMap<T> & {
     [key in F[number][0]]: (value: T[keyof T]) => void;
   } {
-  for (const [field, setter] of fields) {
-    (rxMap as any)[setter] = (value: any) => {
-      rxMap.set(field as any, value);
+  for (const [methodName, yKey] of fields) {
+    (rxMap as any)[methodName] = (value: any) => {
+      rxMap.set(yKey as any, value); // ✅ correct key
     };
   }
   return true;
@@ -183,5 +183,23 @@ export function updateYMap(map: y.Map<any>, data: any) {
 
   for (const key of deletedKey) {
     map.delete(key);
+  }
+}
+
+export function transactIfDoc(fn: () => void, doc?: y.Doc | null) {
+  if (doc) {
+    doc.transact(fn);
+  } else {
+    fn();
+  }
+}
+
+export function ensureField(
+  map: y.Map<any>,
+  field: string,
+  crateValue: () => any
+) {
+  if (!map.doc || !map.has(field)) {
+    map.set(field, crateValue());
   }
 }

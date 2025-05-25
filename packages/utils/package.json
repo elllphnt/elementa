@@ -3,8 +3,8 @@
     "version": "0.1.0",
     "type": "module",
     "description": "A collection of utilities for the repository",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
+    "main": "build/index.js",
+    "types": "build/index.d.ts",
     "scripts": {
         "clean": "rm -rf dist",
         "build": "npm run lint && tsc -p tsconfig.build.json",

@@ -1,5 +1,6 @@
 export * from "./core/_.js";
 export * from "./crdt/_.js";
+export * from "./crdt_2/_.js";
 export * from "./math/_.js";
 export * from "./model/_.js";
 export * from "./object/_.js";

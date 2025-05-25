@@ -6,12 +6,15 @@ import {
   combineLatestMerged,
 } from "@elllphnt/elementa-utils";
 import { Observable, combineLatest, map } from "rxjs";
+import { genId } from "~/_lib/id.js";
 import { File } from "../../../infrastructure/_.js";
 import { App } from "../../_interfaces/app/app.js";
+import { AppBlueprintModel } from "./blueprint/blueprint.js";
 import { RouteTreeModel } from "./route_tree.js";
 
-export class AppModel extends Model<AppData> implements App {
+export class AppModel extends Model<AppData> implements App<RouteTreeModel> {
   readonly file: File;
+  readonly blueprint: AppBlueprintModel;
 
   private _state: RecordState<Omit<AppData, "routes" | "variables">>;
   private _routes: AggregatedModelList<RouteTreeModel>;
@@ -34,6 +37,9 @@ export class AppModel extends Model<AppData> implements App {
     return {
       ...this._state.record,
       routes: this._routes.data,
+      editors: {
+        blueprint: this.blueprint.data,
+      },
     };
   }
 
@@ -42,6 +48,9 @@ export class AppModel extends Model<AppData> implements App {
       this._state.record$,
       combineLatest({
         routes: this._routes.data$,
+        editors: combineLatest({
+          blueprint: this.blueprint.data$,
+        }),
       }),
     ]);
   }
@@ -50,6 +59,9 @@ export class AppModel extends Model<AppData> implements App {
     super();
 
     this.file = file;
+    this.blueprint = new AppBlueprintModel({
+      init: init.editors?.blueprint ?? {},
+    });
 
     const { routes, ...stateData } = init;
 
@@ -70,25 +82,32 @@ export class AppModel extends Model<AppData> implements App {
     });
   }
 
-  addRoute(route: RouteTreeData): void {
-    this._routes.add(route);
-  }
-  removeRoutes(predicate: (item: RouteTreeModel) => boolean) {
-    return this._routes.state.remove(predicate);
-  }
-  removeRoutesAt(index: number, count?: number) {
-    return this._routes.state.removeAt(index, count);
-  }
-  setEditorData(key: string, data: any) {
-    this._state.set("editors", {
-      ...this._state.entry("editors"),
-      [key]: data,
+  createRoute(init: Omit<RouteTreeData, "id" | "children">): RouteTreeModel {
+    const route = new RouteTreeModel({
+      init: {
+        ...init,
+        id: genId(),
+      },
+      app: this,
     });
+    return route;
+  }
+
+  addRoutes(routes: RouteTreeModel[]): void {
+    this._routes.state.append(routes);
+  }
+  insertRoutes(index: number, routes: RouteTreeModel[]): void {
+    this._routes.state.insertAt(index, routes);
+  }
+  removeRoutes(routes: RouteTreeModel[]): void {
+    const set = new Set(routes);
+    this._routes.state.remove((r) => set.has(r));
   }
 
   restore(data: AppData) {
-    const { routes, ...stateData } = data;
+    const { routes, editors, ...stateData } = data;
 
+    this.blueprint.restore(editors?.blueprint || {});
     this._state.setRecord(stateData);
     this._routes.restore(routes || []);
   }
