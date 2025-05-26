@@ -1,4 +1,5 @@
-import { CrdtRecordState, ensureField } from "@elllphnt/elementa-utils";
+import { ensureField } from "@elllphnt/crdt";
+import { CrdtRecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import * as y from "yjs";
 import { BlueprintNode } from "~/models/_.js";
@@ -13,10 +14,16 @@ export class CrdtBlueprintNode
     position: { x: number; y: number };
   }>;
 
-  constructor(crdt: y.Map<any>, { id }: { id?: string } = {}) {
-    super({ crdt, id });
+  constructor(
+    crdt: y.Map<any>,
+    { initialized }: { initialized?: boolean } = {}
+  ) {
+    super({ crdt, initialized });
 
-    ensureField(crdt, "position", () => ({ x: 0, y: 0 }));
+    if (!initialized) {
+      ensureField(crdt, "position", () => ({ x: 0, y: 0 }));
+    }
+    ensureField(crdt, "__crdtAtomic", () => ["position"]);
     this._state = new CrdtRecordState(crdt);
 
     this.addDisposer(() => this._state.dispose());
@@ -36,5 +43,9 @@ export class CrdtBlueprintNode
 
   setPosition(pos: { x: number; y: number }) {
     this._state.set("position", pos);
+  }
+
+  protected factory(crdt: y.Map<any>): this {
+    return new CrdtBlueprintNode(crdt, { initialized: true }) as this;
   }
 }

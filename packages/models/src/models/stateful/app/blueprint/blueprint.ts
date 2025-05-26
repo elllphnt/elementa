@@ -10,6 +10,13 @@ export class AppBlueprintModel
 {
   private _nodes: AggregatedModelList<BlueprintNodeModel>;
 
+  get nodes(): BlueprintNodeModel[] {
+    return this._nodes.state.items;
+  }
+  get nodes$(): Observable<BlueprintNodeModel[]> {
+    return this._nodes.state.items$;
+  }
+
   constructor({ init }: { init?: AppBlueprintData }) {
     super();
 

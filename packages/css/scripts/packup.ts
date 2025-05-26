@@ -51,7 +51,7 @@ function freezeVersions(deps?: Record<string, string>) {
         const actualVersion = JSON.parse(
           fs.readFileSync(resolvedPath, "utf8")
         ).version;
-        deps[name] = actualVersion;
+        deps[name] = "^" + actualVersion;
         console.log(`froze ${name} to ${actualVersion}`);
       } catch {
         console.warn(`⚠️ could not resolve version for ${name}`);

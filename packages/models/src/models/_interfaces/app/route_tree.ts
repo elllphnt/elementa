@@ -58,4 +58,6 @@ export interface RouteTree<R extends RouteTree = RouteTree<any>>
   addRoutes(routes: R[]): void;
   insertRoutes(index: number, routes: R[]): void;
   removeRoutes(routes: R[]): void;
+
+  clone(): RouteTree<R>;
 }

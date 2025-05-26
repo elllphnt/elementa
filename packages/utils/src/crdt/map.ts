@@ -2,10 +2,11 @@ import { BehaviorSubject, Observable } from "rxjs";
 import * as y from "yjs";
 import { assert } from "../core/assert.js";
 import { setEnhancer } from "../core/enhancer.js";
-import { nextKey, setObjectGetter, setObjectProperty } from "./_utils.js";
+import { keyManager } from "../core/key.js";
+import { setObjectGetter, setObjectProperty } from "./_utils.js";
 
 export type ReactiveMap<T extends object = object> = {
-  key: number;
+  key: string;
   items: T;
   items$: Observable<T>;
   dispose(): void;
@@ -38,7 +39,7 @@ export function attachReactiveMap<T extends object>(
   rxMap.observe(observer);
 
   // attach API
-  assert(setObjectProperty(rxMap, "key", nextKey()));
+  assert(setObjectProperty(rxMap, "key", keyManager.next("reactive-map")));
   assert(setObjectProperty(rxMap, "items$", subject$));
   assert(
     setObjectGetter(rxMap, "items", () => {

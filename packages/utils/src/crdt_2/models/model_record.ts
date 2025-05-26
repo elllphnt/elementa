@@ -1,12 +1,13 @@
 import { BehaviorSubject } from "rxjs";
 import * as y from "yjs";
+import { Disposable } from "../../core/disposable.js";
 import { reconcileMap } from "../../core/reconciliation.js";
 import { CrdtRecordState } from "../record.js";
 import { CrdtModel, CrdtOf } from "./model.js";
 
 export class AggregatedCrdtModelRecord<
   M extends CrdtModel<any>
-> extends CrdtModel<y.Map<CrdtOf<M>>> {
+> extends Disposable {
   readonly state: CrdtRecordState<Record<string, CrdtOf<M>>>;
 
   private _models$ = new BehaviorSubject<Record<string, M>>({});
@@ -24,11 +25,19 @@ export class AggregatedCrdtModelRecord<
     create,
   }: {
     crdt: y.Map<CrdtOf<M>>;
-    create: (entry: CrdtOf<M>, key: string) => M;
+    create: (entry: CrdtOf<M>, key: string, init?: boolean) => M;
   }) {
-    super({ crdt });
+    super();
 
     this.state = new CrdtRecordState(crdt);
+    this._models$ = new BehaviorSubject<Record<string, M>>(
+      Object.fromEntries(
+        Object.entries(this.state.record).map(([key, entry]) => [
+          key,
+          create(entry, key, true),
+        ])
+      )
+    );
 
     const sub = this.state.record$.subscribe((record) => {
       const [next, removed] = reconcileMap({

@@ -1,6 +1,6 @@
 {
     "name": "@elllphnt/elementa-models",
-    "version": "0.2.0",
+    "version": "0.2.5",
     "main": "build/index.js",
     "types": "build/index.d.ts",
     "type": "module",
@@ -23,6 +23,9 @@
         "lodash": "^4.17.21",
         "rxjs": "^7.8.1",
         "yjs": "^13.6.26"
+    },
+    "peerDependencies": {
+        "@elllphnt/crdt": "^0.1.2"
     },
     "devDependencies": {
         "vite-tsconfig-paths": "^5.1.4"

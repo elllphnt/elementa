@@ -2,7 +2,7 @@
     "name": "elementa",
     "private": true,
     "scripts": {
-        "build": ""
+        "clean": "find . -type d \\( -name node_modules -o -name .turbo -o -name dist -o -name build \\) -prune -exec rm -rf '{}' +"
     },
     "workspaces": [
         "app",

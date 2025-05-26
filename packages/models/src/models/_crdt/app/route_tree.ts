@@ -1,8 +1,8 @@
+import { getOrCreateYArray } from "@elllphnt/crdt";
 import { RouteTreeData } from "@elllphnt/elementa-base";
 import {
   AggregatedCrdtModelList,
   CrdtRecordState,
-  getOrCreateYArray,
 } from "@elllphnt/elementa-utils";
 import { Observable, map } from "rxjs";
 import * as y from "yjs";
@@ -19,8 +19,11 @@ export class CrdtRouteTree
   private _state: CrdtRecordState<Omit<RouteTreeData, "children" | "id">>;
   private _children: AggregatedCrdtModelList<CrdtRouteTree>;
 
-  constructor({ crdt, app }: { crdt: y.Map<any>; app: App }) {
-    super({ crdt });
+  constructor(
+    crdt: y.Map<any>,
+    { app, initialized }: { app: App; initialized?: boolean }
+  ) {
+    super({ crdt, initialized });
     this.app = app;
 
     this._state = new CrdtRecordState<Omit<RouteTreeData, "children" | "id">>(
@@ -29,7 +32,8 @@ export class CrdtRouteTree
 
     this._children = new AggregatedCrdtModelList<CrdtRouteTree>({
       crdt: getOrCreateYArray<y.Map<any>>(crdt, "children"),
-      create: (crdt) => new CrdtRouteTree({ crdt, app }),
+      create: (crdt, init) =>
+        new CrdtRouteTree(crdt, { app, initialized: init && initialized }),
     });
 
     this.addDisposer(() => {
@@ -195,5 +199,12 @@ export class CrdtRouteTree
   }
   removeRoutes(routes: CrdtRouteTree[]): void {
     this._children.remove(routes);
+  }
+
+  protected factory(crdt: y.Map<any>): this {
+    return new CrdtRouteTree(crdt, {
+      app: this.app,
+      initialized: true,
+    }) as this;
   }
 }

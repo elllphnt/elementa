@@ -1,10 +1,6 @@
+import { getOrCreateYArray, getOrCreateYMap } from "@elllphnt/crdt";
 import { RouteTreeData } from "@elllphnt/elementa-base";
-import {
-  AggregatedCrdtModelList,
-  CrdtModel,
-  getOrCreateYArray,
-  getOrCreateYMap,
-} from "@elllphnt/elementa-utils";
+import { AggregatedCrdtModelList, CrdtModel } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { genId } from "~/_lib/id.js";
@@ -25,17 +21,24 @@ export class CrdtAppModel
     Record<string, CrdtRouteTree>
   >({});
 
-  constructor(crdt: y.Map<any>, file: File) {
+  constructor(
+    crdt: y.Map<any>,
+    { file, initialized }: { file: File; initialized?: boolean }
+  ) {
     super({ crdt });
     this.file = file;
 
     const editors = getOrCreateYMap(crdt, "editors");
     const blueprintMap = getOrCreateYMap(editors, "blueprint");
-    this.blueprint = new CrdtAppBlueprint(blueprintMap);
+    this.blueprint = new CrdtAppBlueprint(blueprintMap, { initialized });
 
     this._routes = new AggregatedCrdtModelList({
       crdt: getOrCreateYArray<y.Map<any>>(crdt, "routes"),
-      create: (entry) => new CrdtRouteTree({ crdt: entry, app: this }),
+      create: (entry, init) =>
+        new CrdtRouteTree(entry, {
+          app: this,
+          initialized: init && initialized,
+        }),
     });
 
     // reactive index
@@ -69,16 +72,29 @@ export class CrdtAppModel
   createRoute(init: Omit<RouteTreeData, "id" | "children">): CrdtRouteTree {
     const map = new y.Map();
     map.set("id", genId());
-    map.set("path", init.path ?? "");
-    map.set("mainViewUrl", init.mainViewUrl ?? "");
-    map.set("errorViewUrl", init.errorViewUrl ?? "");
-    map.set("pendingViewUrl", init.pendingViewUrl ?? "");
-    map.set("notFoundViewUrl", init.notFoundViewUrl ?? "");
-    map.set("loaderUrl", init.loaderUrl ?? "");
-    map.set("handlerUrl", init.handlerUrl ?? "");
-    map.set("children", new y.Array());
+    if (init.path != undefined) {
+      map.set("path", init.path);
+    }
+    if (init.mainViewUrl != undefined) {
+      map.set("mainViewUrl", init.mainViewUrl);
+    }
+    if (init.errorViewUrl != undefined) {
+      map.set("errorViewUrl", init.errorViewUrl);
+    }
+    if (init.pendingViewUrl != undefined) {
+      map.set("pendingViewUrl", init.pendingViewUrl);
+    }
+    if (init.notFoundViewUrl != undefined) {
+      map.set("notFoundViewUrl", init.notFoundViewUrl);
+    }
+    if (init.loaderUrl != undefined) {
+      map.set("loaderUrl", init.loaderUrl);
+    }
+    if (init.handlerUrl != undefined) {
+      map.set("handlerUrl", init.handlerUrl);
+    }
 
-    return new CrdtRouteTree({ crdt: map, app: this });
+    return new CrdtRouteTree(map, { app: this });
   }
 
   addRoutes(routes: CrdtRouteTree[]): void {
@@ -102,5 +118,12 @@ export class CrdtAppModel
       map((map) => map[id]),
       distinctUntilChanged()
     );
+  }
+
+  protected factory(crdt: y.Map<any>): this {
+    return new CrdtAppModel(crdt, {
+      file: this.file,
+      initialized: true,
+    }) as this;
   }
 }

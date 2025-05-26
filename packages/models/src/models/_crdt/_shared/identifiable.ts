@@ -1,4 +1,5 @@
-import { CrdtModel, ensureField } from "@elllphnt/elementa-utils";
+import { ensureField } from "@elllphnt/crdt";
+import { CrdtModel } from "@elllphnt/elementa-utils";
 import * as y from "yjs";
 import { genId } from "~/_lib/id.js";
 import { Identifiable } from "../../_interfaces/_shared/identifiable.js";
@@ -14,14 +15,16 @@ export abstract class CrdtIdentifiableModel
   constructor({
     crdt,
     key,
-    id,
+    initialized,
   }: {
     crdt: y.Map<any>;
     key?: string;
-    id?: string;
+    initialized?: boolean;
   }) {
     super({ key, crdt });
 
-    ensureField(crdt, "id", () => id || genId());
+    if (!initialized) {
+      ensureField(crdt, "id", () => genId());
+    }
   }
 }

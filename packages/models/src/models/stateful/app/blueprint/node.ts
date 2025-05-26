@@ -1,6 +1,6 @@
 import { BlueprintNodeData } from "@elllphnt/elementa-base";
 import { combineLatestMerged, RecordState } from "@elllphnt/elementa-utils";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { BlueprintNode } from "~/models/_interfaces/_.js";
 import { IdentifiableModel } from "../../_shared/_.js";
 
@@ -8,9 +8,9 @@ export class BlueprintNodeModel
   extends IdentifiableModel<BlueprintNodeData>
   implements BlueprintNode
 {
-  private _state: RecordState<Omit<BlueprintNodeData, "id">>;
+  private _state: RecordState<Omit<BlueprintNodeData, "id" | "__crdtAtomic">>;
 
-  constructor({ init }: { init: BlueprintNodeData }) {
+  constructor({ init }: { init: Omit<BlueprintNodeData, "__crdtAtomic"> }) {
     const { id, ...rest } = init;
     super({ id });
     this._state = new RecordState({ init: rest });
@@ -33,11 +33,18 @@ export class BlueprintNodeModel
     return {
       ...super._data,
       ...this._state.record,
+      __crdtAtomic: ["position"],
     };
   }
 
   get data$(): Observable<BlueprintNodeData> {
-    return combineLatestMerged([super._data$, this._state.record$]);
+    return combineLatestMerged([
+      super._data$,
+      this._state.record$,
+      of({
+        __crdtAtomic: ["position"],
+      }),
+    ]);
   }
 
   restore(data: BlueprintNodeData) {

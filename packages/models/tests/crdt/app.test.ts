@@ -106,4 +106,30 @@ describe("CRDT App Model", () => {
     app.removeRoutes([r1]);
     expect(app.routes[0]).toBe(r2);
   });
+
+  it.only("can move a set of routes from on parent to the other", () => {
+    const r1 = app.createRoute({ path: "/r1" });
+    const r2 = app.createRoute({ path: "/r2" });
+    const r3 = app.createRoute({ path: "/r3" });
+    const r4 = app.createRoute({ path: "/r4" });
+
+    app.addRoutes([r1, r2]);
+    r1.addRoutes([r3, r4]);
+
+    expect(app.routes[0]).toBe(r1);
+    expect(app.routes[1]).toBe(r2);
+    expect(r1.children[0]).toBe(r3);
+    expect(r1.children[1]).toBe(r4);
+
+    doc.transact(() => {
+      console.log("Will Remove");
+      r1.removeRoutes([r3, r4]);
+      console.log("Removed");
+      console.log("Will Add");
+      r2.addRoutes([r3, r4]);
+      console.log("Added");
+    });
+    expect(r2.children[0]).toBe(r3);
+    expect(r2.children[1]).toBe(r4);
+  });
 });

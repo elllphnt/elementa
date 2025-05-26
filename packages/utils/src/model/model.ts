@@ -13,6 +13,10 @@ export abstract class Model<D> extends Disposable {
     super();
     this.key = key ?? keyManager.next("model");
   }
+
+  clone(): this {
+    throw Error("Not implemented");
+  }
 }
 
 export type ModelData<M> = M extends Model<infer D> ? D : never;

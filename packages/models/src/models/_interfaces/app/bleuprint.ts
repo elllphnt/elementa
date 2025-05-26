@@ -13,6 +13,9 @@ export interface BlueprintNode {
 }
 
 export interface AppBlueprint {
+  nodes: BlueprintNode[];
+  nodes$: Observable<BlueprintNode[]>;
+
   node(id: string, create: true): BlueprintNode;
   node(id: string): BlueprintNode | undefined;
   node$(id: string, create: true): Observable<BlueprintNode>;

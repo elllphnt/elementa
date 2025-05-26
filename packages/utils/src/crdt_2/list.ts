@@ -18,6 +18,7 @@ export class CrdtListState<T> {
   }
 
   private observer() {
+    console.log("__observer__");
     this.subject$.next(this.list.toArray());
   }
 

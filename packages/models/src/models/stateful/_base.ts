@@ -5,4 +5,8 @@ export abstract class BaseModel<D> extends Model<D> {
   get updated$(): Observable<void> {
     return this.data$.pipe(map(() => void 0));
   }
+
+  clone(): this {
+    throw Error("Not implemented");
+  }
 }

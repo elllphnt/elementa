@@ -1,15 +1,16 @@
 import { BehaviorSubject } from "rxjs";
 import * as y from "yjs";
+import { Disposable } from "../../core/disposable.js";
 import { reconcileList } from "../../core/reconciliation.js";
 import { CrdtListState } from "../list.js";
 import { CrdtModel, CrdtOf } from "./model.js";
 
 export class AggregatedCrdtModelList<
   M extends CrdtModel<y.AbstractType<any>>
-> extends CrdtModel<y.Array<CrdtOf<M>>> {
+> extends Disposable {
   readonly state: CrdtListState<CrdtOf<M>>;
 
-  private _models$ = new BehaviorSubject<M[]>([]);
+  private _models$: BehaviorSubject<M[]>;
 
   get models() {
     return this._models$.value;
@@ -23,11 +24,15 @@ export class AggregatedCrdtModelList<
     create,
   }: {
     crdt: y.Array<CrdtOf<M>>;
-    create: (type: CrdtOf<M>) => M;
+    create: (type: CrdtOf<M>, init?: boolean) => M;
   }) {
-    super({ crdt });
+    super();
 
     this.state = new CrdtListState(crdt);
+    this._models$ = new BehaviorSubject<M[]>(
+      this.state.items.map((item) => create(item, true))
+    );
+
     const itemsSubscription = this.state.items$.subscribe((items) => {
       const [nextModels, toRemove] = reconcileList({
         sources: items,

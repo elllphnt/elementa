@@ -1,11 +1,8 @@
-import {
-  AggregatedCrdtModelList,
-  CrdtModel,
-  getOrCreateYArray,
-} from "@elllphnt/elementa-utils";
+import { getOrCreateYArray } from "@elllphnt/crdt";
+import { AggregatedCrdtModelList, CrdtModel } from "@elllphnt/elementa-utils";
 import { Observable, distinctUntilChanged, map } from "rxjs";
 import * as y from "yjs";
-import { AppBlueprint } from "~/models/_.js";
+import { AppBlueprint, BlueprintNode } from "~/models/_.js";
 import { CrdtBlueprintNode } from "./node.js";
 
 export class CrdtAppBlueprint
@@ -14,13 +11,24 @@ export class CrdtAppBlueprint
 {
   private readonly _nodes: AggregatedCrdtModelList<CrdtBlueprintNode>;
 
-  constructor(crdt: y.Map<any>) {
+  get nodes(): BlueprintNode[] {
+    return this._nodes.models;
+  }
+  get nodes$(): Observable<BlueprintNode[]> {
+    return this._nodes.models$;
+  }
+
+  constructor(
+    crdt: y.Map<any>,
+    { initialized }: { initialized?: boolean } = {}
+  ) {
     super({ crdt });
 
     const nodesArray = getOrCreateYArray<y.Map<any>>(crdt, "nodes");
     this._nodes = new AggregatedCrdtModelList({
       crdt: nodesArray,
-      create: (entry) => new CrdtBlueprintNode(entry),
+      create: (entry, init) =>
+        new CrdtBlueprintNode(entry, { initialized: init && initialized }),
     });
 
     this.addDisposer(() => this._nodes.dispose());
@@ -33,7 +41,9 @@ export class CrdtAppBlueprint
     if (existing || !create) return existing;
 
     const node = new y.Map();
-    const model = new CrdtBlueprintNode(node, { id });
+    node.set("id", id);
+    node.set("position", { x: 0, y: 0 });
+    const model = new CrdtBlueprintNode(node, { initialized: true });
     this._nodes.add([model]);
     return model;
   }
@@ -64,5 +74,9 @@ export class CrdtAppBlueprint
         this._nodes.state.removeAt(idx, 1);
       }
     }
+  }
+
+  protected factory(crdt: y.Map<any>): this {
+    return new CrdtAppBlueprint(crdt, { initialized: true }) as this;
   }
 }

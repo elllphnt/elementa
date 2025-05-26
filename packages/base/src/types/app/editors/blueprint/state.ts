@@ -1,8 +1,9 @@
 import { z } from "zod";
+import { CrdtAtomic, crdtAtomicSchema } from "../../../_shared/_.js";
 
 // Types
 
-export type BlueprintNodeData = {
+export type BlueprintNodeData = CrdtAtomic & {
   id: string;
   position: {
     x: number;
@@ -16,7 +17,7 @@ export type AppBlueprintData = {
 
 // Schemas
 
-export const blueprintNodeDataSchema = z.object({
+export const blueprintNodeDataSchema = crdtAtomicSchema(["position"]).extend({
   id: z.string(),
   position: z.object({
     x: z.number(),
@@ -25,5 +26,5 @@ export const blueprintNodeDataSchema = z.object({
 });
 
 export const appBlueprintDataSchema = z.object({
-  nodes: z.array(blueprintNodeDataSchema),
+  nodes: z.array(blueprintNodeDataSchema).optional(),
 });
