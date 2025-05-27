@@ -1,1 +1,1 @@
-export * from "./rx";
+export * from "./rx.js";

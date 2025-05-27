@@ -4,7 +4,18 @@ import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    {
+      name: "Origin-Agent-Cluster",
+      configureServer: (server) => {
+        server.middlewares.use((_, response, next) => {
+          response.setHeader("Origin-Agent-Cluster", "?0");
+          next();
+        });
+      },
+    },
+  ],
   build: {
     rollupOptions: {
       input: {

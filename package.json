@@ -2,7 +2,8 @@
     "name": "elementa",
     "private": true,
     "scripts": {
-        "clean": "find . -type d \\( -name node_modules -o -name .turbo -o -name dist -o -name build \\) -prune -exec rm -rf '{}' +"
+        "clean": "find . -type d \\( -name node_modules -o -name .turbo -o -name dist -o -name build \\) -prune -exec rm -rf '{}' +",
+        "build": "turbo run build --filter=@elllphnt/elementa"
     },
     "workspaces": [
         "app",

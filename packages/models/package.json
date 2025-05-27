@@ -1,6 +1,6 @@
 {
     "name": "@elllphnt/elementa-models",
-    "version": "0.2.5",
+    "version": "0.2.7",
     "main": "build/index.js",
     "types": "build/index.d.ts",
     "type": "module",

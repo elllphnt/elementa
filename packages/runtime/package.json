@@ -1,25 +1,33 @@
 {
     "name": "@elllphnt/elementa-runtime",
-    "private": true,
     "version": "0.1.0",
     "type": "module",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
+    "main": "build/index.js",
+    "types": "build/index.d.ts",
     "scripts": {
-        "build": "tsc -p tsconfig.build.json",
-        "watch": "tsc -w -p tsconfig.build.json"
+        "clean": "rm -rf dist build",
+        "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json --verbose",
+        "build:dist": "tsc -p tsconfig.build.json --sourceMap false --declarationMap false && tsc-alias -p tsconfig.build.json --verbose",
+        "build:watch": "tsc -p tsconfig.build.json --watch",
+        "alias:watch": "tsc-alias -p tsconfig.build.json --watch",
+        "watch": "concurrently \"npm run build:watch\" \"npm run alias:watch\"",
+        "packup": "tsx scripts/packup.ts",
+        "pub": "npm run clean && npm run build:dist && npm run packup && cd dist && npm publish",
+        "test": "vitest"
     },
     "devDependencies": {
-        "@elllphnt/elementa-models": "workspace:*",
         "@types/babel__standalone": "^7.1.9",
         "eslint-plugin-import": "^2.29.1",
-        "typescript": "5.2.2"
+        "typescript": "5.2.2",
+        "tsc-watch": "^6.2.0"
+    },
+    "peerDependencies": {
+        "rxjs": "^7.8.1"
     },
     "dependencies": {
         "@babel/standalone": "^7.26.9",
+        "@elllphnt/elementa-models": "workspace:*",
         "@elllphnt/elementa-base": "workspace:*",
-        "@elllphnt/elementa-utils": "workspace:*",
-        "rxjs": "^7.8.1",
-        "tsc-watch": "^6.2.0"
+        "@elllphnt/elementa-utils": "workspace:*"
     }
 }

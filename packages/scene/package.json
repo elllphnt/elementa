@@ -1,15 +1,19 @@
 {
     "name": "@elllphnt/elementa-scene",
-    "private": true,
     "type": "module",
-    "version": "0.1.0",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
+    "version": "0.1.1",
+    "main": "build/index.js",
+    "types": "build/index.d.ts",
     "scripts": {
-        "build": "tsc -p tsconfig.build.json",
-        "watch": "tsc --watch -p tsconfig.build.json",
-        "test": "vitest --ui",
-        "lint": "eslint --ext .ts,.tsx src"
+        "clean": "rm -rf dist build",
+        "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json --verbose",
+        "build:dist": "tsc -p tsconfig.build.json --sourceMap false --declarationMap false && tsc-alias -p tsconfig.build.json --verbose",
+        "build:watch": "tsc -p tsconfig.build.json --watch",
+        "alias:watch": "tsc-alias -p tsconfig.build.json --watch",
+        "watch": "concurrently \"npm run build:watch\" \"npm run alias:watch\"",
+        "packup": "tsx scripts/packup.ts",
+        "pub": "npm run clean && npm run build:dist && npm run packup && cd dist && npm publish",
+        "test": "vitest"
     },
     "devDependencies": {
         "@babel/core": "^7.12.0",
@@ -30,6 +34,10 @@
         "tscpaths": "^0.0.9",
         "vitest": "^3.1.2"
     },
+    "peerDependencies": {
+        "rxjs": "^7.8.1",
+        "yjs": "^13.6.26"
+    },
     "dependencies": {
         "@elllphnt/elementa-base": "workspace:*",
         "@elllphnt/elementa-css": "workspace:*",
@@ -40,8 +48,6 @@
         "@tanstack/react-router": "^1.119.0",
         "@tanstack/react-router-devtools": "^1.119.1",
         "classnames": "^2.5.1",
-        "deep-object-diff": "^1.1.9",
-        "rxjs": "^7.8.1",
-        "yjs": "^13.6.26"
+        "deep-object-diff": "^1.1.9"
     }
 }

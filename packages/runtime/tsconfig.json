@@ -1,5 +1,13 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["src", "tests"],
+  "compilerOptions": {
+    "tsBuildInfoFile": "build/.tsbuildinfo",
+    "baseUrl": ".",
+    "strict": false,
+    "strictFunctionTypes": false,
+    "paths": {
+      "~/*": ["./src/*"]
+    }
+  },
   "references": []
 }

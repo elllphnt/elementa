@@ -11,4 +11,5 @@ export interface Project extends AsyncResource {
   readonly packageManager: PackageManager;
 
   absoluteFileUrl(url: string): string;
+  relativeFileUrl(url: string): string;
 }

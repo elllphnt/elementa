@@ -1,3 +1,5 @@
+import { assert } from "@elllphnt/elementa-utils";
+
 export type FileUrlStruct = {
   projectId?: string;
   fileId: string;
@@ -61,10 +63,21 @@ export function toAbsoluteFileUrl({
   const { fileId } = parseFileUrl(url);
   return makeFileUrl({ projectId, fileId });
 }
-export function toRelativeFileUrl({ url }: { url: string }): string {
+export function toRelativeFileUrl({
+  url,
+  projectId,
+}: {
+  url: string;
+  projectId?: string;
+}): string {
   if (!isAbsoluteFileUrl(url)) {
     return url;
   }
-  const { fileId } = parseFileUrl(url);
+  const { fileId, projectId: urlProjectId } = parseFileUrl(url);
+  assert(
+    projectId === urlProjectId,
+    `Project ID mismatch: expected ${projectId}, got ${urlProjectId}`
+  );
+
   return makeFileUrl({ fileId });
 }

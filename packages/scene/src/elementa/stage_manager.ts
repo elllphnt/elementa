@@ -3,8 +3,8 @@ import { ElementaStageInstance, Runtime } from "@elllphnt/elementa-runtime";
 import { createElement } from "react";
 import { createRoot } from "react-dom/client";
 import { ElementaStageComponent } from "../components/_.js";
-import { ElementaStageRenderable } from "../renderables/elementa/editor_state.js";
 import { Scene } from "../scene/scene.js";
+import { ElementaStageRenderable } from "../renderables/_.js";
 
 export class ElementaStageManager {
   readonly root: HTMLElement;
@@ -57,7 +57,9 @@ export class ElementaStageManager {
 
     // mount
     const reactRoot = createRoot(rootElement);
-    reactRoot.render(createElement(ElementaStageComponent, { renderable }));
+    reactRoot.render(
+      createElement(ElementaStageComponent, { stage: renderable })
+    );
 
     return [renderable, key] as const;
   }

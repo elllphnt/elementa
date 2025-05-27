@@ -12,6 +12,62 @@ export type ComponentData = {
   editors?: Record<string, Record<string, any>>;
 };
 
+const f: ComponentData = {
+  template: {
+    id: "template",
+    content: [
+      {
+        type: "text",
+        id: "text",
+        text: "Root Layout View a",
+        stylesheet: {
+          styles: {
+            __base__: {
+              height: {
+                value: 40,
+                unit: "px",
+              },
+              width: {
+                value: 200,
+                unit: "px",
+              },
+              color: {
+                model: "rgb",
+                value: [4, 90, 77],
+              },
+            },
+          },
+          fragments: [],
+        },
+      },
+    ],
+  },
+  props: [],
+  fragments: [],
+  states: [],
+  editors: {
+    stage: {
+      frames: [
+        {
+          id: "frame_1",
+          name: "Main Frame",
+          content: {
+            type: "component",
+            componentUrl: "file:l6lvskpfhm0p0mf353jrloks",
+          },
+        },
+      ],
+    },
+    preview: {
+      context: {
+        theme: {},
+        viewport: {},
+        styleModifiers: [],
+      },
+    },
+  },
+};
+
 // Schemas
 
 export const componentSchema = z.object({

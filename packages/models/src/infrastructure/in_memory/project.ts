@@ -1,5 +1,8 @@
 import { AsyncResourceStatus } from "../interfaces/_.js";
-import { toAbsoluteFileUrl } from "../interfaces/file/url.js";
+import {
+  toAbsoluteFileUrl,
+  toRelativeFileUrl,
+} from "../interfaces/file/url.js";
 import { PackageData } from "../interfaces/project/managers/package_manager.js";
 import { Project } from "../interfaces/project/project.js";
 import { InMemoryInfrastructure } from "./infrastructure.js";
@@ -46,6 +49,9 @@ export class InMemoryProject extends InMemoryResource implements Project {
 
   absoluteFileUrl(url: string): string {
     return toAbsoluteFileUrl({ url, projectId: this.id });
+  }
+  relativeFileUrl(url: string): string {
+    return toRelativeFileUrl({ url, projectId: this.id });
   }
 
   toJSON(): InMemoryProjectData {
