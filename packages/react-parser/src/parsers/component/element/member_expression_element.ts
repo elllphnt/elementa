@@ -1,7 +1,7 @@
 import * as t from "@babel/types";
 import { ElementData } from "@elllphnt/elementa-base";
 import { GetStylesheet, parseBaseElementNode } from "./base_element.js";
-import { genId } from "./element.js";
+import { genId } from "../utils.js";
 
 function memberExpressionToString(expr: t.JSXMemberExpression): string {
   const object = expr.object;

@@ -4,8 +4,8 @@ import {
   TextElementData,
   TextMarkData,
 } from "@elllphnt/elementa-base";
+import { genId } from "../utils.js";
 import { GetStylesheet, parseBaseElementNode } from "./base_element.js";
-import { genId } from "./element.js";
 import { extractInnerTextFromElementNode } from "./utils/extract_text.js";
 
 export function parseTextElementNode({

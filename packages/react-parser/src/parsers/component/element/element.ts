@@ -1,7 +1,6 @@
 import { parse } from "@babel/parser";
 import * as t from "@babel/types";
 import { ElementData } from "@elllphnt/elementa-base";
-import { init } from "@paralleldrive/cuid2";
 import { CreateFragment } from "./_types.js";
 import { GetStylesheet } from "./base_element.js";
 import { parseComponentElementNode } from "./component_element.js";
@@ -19,8 +18,6 @@ import { mediaTags, nativeTags, textTags } from "./utils/html_tags.js";
 import { parseVectorElementNode } from "./vector_element.js";
 export { parseClassExpression } from "./utils/class_expression.js";
 export { extractInnerTextFromElementNode } from "./utils/extract_text.js";
-
-export const genId = init({ length: 8 });
 
 export function parseElementsFromJSX({
   code,

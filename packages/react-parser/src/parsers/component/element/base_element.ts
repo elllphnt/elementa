@@ -4,9 +4,9 @@ import {
   ResolvableOrEvaluable,
   StyleSheetData,
 } from "@elllphnt/elementa-base";
-import { genId } from "./element.js";
 import { parseClassExpression } from "./utils/class_expression.js";
 import { generate } from "./utils/generate.js";
+import { genId } from "../utils.js";
 
 export type GetStylesheet = (
   classes: string[],
