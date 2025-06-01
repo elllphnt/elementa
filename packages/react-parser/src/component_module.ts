@@ -1,6 +1,6 @@
 import { ComponentData } from "@elllphnt/elementa-base";
 import { Node, Project, ScriptTarget, SyntaxKind } from "ts-morph";
-import { parseComponent } from "./component";
+import { parseComponent } from "./component/component";
 import {
   extractImport,
   extractNamedResource,

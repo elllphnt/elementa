@@ -35,7 +35,7 @@ export type ModuleResourceDefinition<T extends string> = {
 };
 export type ResourceModule<R extends ResourceDefinition = ResourceDefinition> =
   {
-    imports: Record<string, Record<string, string>>; // import path -> specifier -> specifier alias
+    imports: Record<string, [string, string]>; // specifier alias -> [import path, specifier]
     types: Record<string, string>; // type name -> type definition
     resources: Record<string, R>;
     main?: string;
@@ -43,6 +43,47 @@ export type ResourceModule<R extends ResourceDefinition = ResourceDefinition> =
 export type ElllModule = ResourceModule<
   ModuleResourceDefinition<ModuleResourceType>
 >;
+
+export function extractType(
+  statement: TypeAliasDeclaration | InterfaceDeclaration | EnumDeclaration,
+  module: ResourceModule
+) {
+  const name = statement.getName();
+  const source = statement.getText();
+  const cleanedSource = source.replace(/\bexport\s+/, "");
+  module.types[name] = `export ${cleanedSource}`;
+}
+export function extractImport(
+  statement: ImportDeclaration,
+  module: ResourceModule
+) {
+  const moduleSpecifier = statement.getModuleSpecifierValue();
+  if (!moduleSpecifier) return;
+
+  const namedBindings = statement.getImportClause()?.getNamedBindings();
+  const defaultImport = statement.getImportClause()?.getDefaultImport();
+
+  // Handle default import: import React from "react"
+  if (defaultImport) {
+    const name = defaultImport.getText();
+    module.imports[name] = [moduleSpecifier, "default"];
+  }
+
+  // Handle named imports: import { useState, useEffect as ue } from "react"
+  if (Node.isNamedImports(namedBindings)) {
+    for (const element of namedBindings.getElements()) {
+      const name = element.getNameNode().getText();
+      const alias = element.getAliasNode()?.getText() ?? name;
+      module.imports[alias] = [moduleSpecifier, name];
+    }
+  }
+
+  // Handle namespace import: import * as React from "react"
+  if (Node.isNamespaceImport(namedBindings)) {
+    const alias = namedBindings.getName();
+    module.imports["*"] = [moduleSpecifier, alias];
+  }
+}
 
 export function parseElllModule(code: string): ElllModule {
   const project = new Project({
@@ -110,51 +151,6 @@ export function parseElllModule(code: string): ElllModule {
   }
 
   return module;
-}
-export function extractType(
-  statement: TypeAliasDeclaration | InterfaceDeclaration | EnumDeclaration,
-  module: ResourceModule
-) {
-  const name = statement.getName();
-  const source = statement.getText();
-  const cleanedSource = source.replace(/\bexport\s+/, "");
-  module.types[name] = `export ${cleanedSource}`;
-}
-export function extractImport(
-  statement: ImportDeclaration,
-  module: ResourceModule
-) {
-  const moduleSpecifier = statement.getModuleSpecifierValue();
-  if (!moduleSpecifier) return;
-
-  const namedBindings = statement.getImportClause()?.getNamedBindings();
-  const defaultImport = statement.getImportClause()?.getDefaultImport();
-  const imports: Record<string, string> = {};
-
-  // Handle default import: import React from "react"
-  if (defaultImport) {
-    const name = defaultImport.getText();
-    imports["default"] = name;
-  }
-
-  // Handle named imports: import { useState, useEffect as ue } from "react"
-  if (Node.isNamedImports(namedBindings)) {
-    for (const element of namedBindings.getElements()) {
-      const name = element.getNameNode().getText();
-      const alias = element.getAliasNode()?.getText() ?? name;
-      imports[name] = alias;
-    }
-  }
-
-  // Handle namespace import: import * as React from "react"
-  if (Node.isNamespaceImport(namedBindings)) {
-    const alias = namedBindings.getName();
-    imports["*"] = alias;
-  }
-
-  if (Object.keys(imports).length > 0) {
-    module.imports[moduleSpecifier] = imports;
-  }
 }
 export function extractResource(
   node: FunctionDeclaration | VariableStatement,
