@@ -7,6 +7,7 @@ import {
   ContainerElementData,
   containerElementDataSchema,
 } from "./container.js";
+import { FragmentElementData } from "./fragment.js";
 import { MediaElementData, mediaElementDataSchema } from "./media.js";
 import {
   PrimitiveElementData,
@@ -25,7 +26,8 @@ export type ElementData =
   | PrimitiveElementData
   | SlotElementData
   | TextElementData
-  | VectorElementData;
+  | VectorElementData
+  | FragmentElementData;
 
 // Schemas
 

@@ -9,6 +9,8 @@ export type ElementRepeatData = {
   mode?: RepeatMode;
   count?: Evaluable<number>;
   dataset?: Evaluable<any[]>;
+  alias?: string;
+  indexAlias?: string;
 };
 
 export type RepeatableData = {

@@ -313,6 +313,9 @@ importers:
 
   packages/react-parser:
     dependencies:
+      '@babel/generator':
+        specifier: ^7.27.3
+        version: 7.27.3
       '@babel/parser':
         specifier: ^7.27.3
         version: 7.27.3
@@ -325,13 +328,22 @@ importers:
       '@elllphnt/elementa-base':
         specifier: workspace:*
         version: link:../base
-      '@types/babel__traverse':
-        specifier: ^7.20.7
-        version: 7.20.7
+      '@paralleldrive/cuid2':
+        specifier: ^2.2.2
+        version: 2.2.2
+      postcss:
+        specifier: ^8.5.4
+        version: 8.5.4
       ts-morph:
         specifier: ^26.0.0
         version: 26.0.0
     devDependencies:
+      '@types/babel__generator':
+        specifier: ^7.27.0
+        version: 7.27.0
+      '@types/babel__traverse':
+        specifier: ^7.20.7
+        version: 7.20.7
       deepmerge:
         specifier: ^4.3.1
         version: 4.3.1
@@ -3124,6 +3136,10 @@ packages:
 
   postcss@8.5.3:
     resolution: {integrity: sha512-dle9A3yYxlBSrt8Fu+IpjGT8SY8hN0mlaA6GY8t0P5PjIOZemULz/E2Bnm/2dcUOena75OTNkHI76uZBNUUq3A==}
+    engines: {node: ^10 || ^12 || >=14}
+
+  postcss@8.5.4:
+    resolution: {integrity: sha512-QSa9EBe+uwlGTFmHsPKokv3B/oEMQZxfqW0QqNCyhpa6mB1afzulwn8hihglqAb2pOw+BJgNlmXQ8la2VeHB7w==}
     engines: {node: ^10 || ^12 || >=14}
 
   prelude-ls@1.2.1:
@@ -6860,6 +6876,12 @@ snapshots:
   possible-typed-array-names@1.1.0: {}
 
   postcss@8.5.3:
+    dependencies:
+      nanoid: 3.3.11
+      picocolors: 1.1.1
+      source-map-js: 1.2.1
+
+  postcss@8.5.4:
     dependencies:
       nanoid: 3.3.11
       picocolors: 1.1.1
