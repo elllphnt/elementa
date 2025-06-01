@@ -1,6 +1,6 @@
 import { mkdirSync, writeFileSync } from "fs";
 import path, { dirname } from "path";
-import { parseElllModule } from "../src";
+import { parseCodeModule } from "../src";
 import { buildElllModule } from "../src/build";
 
 const componentModule = `
@@ -68,11 +68,11 @@ export function Dashboard() {
 export default Dashboard;
 `;
 
-const module = parseElllModule(componentModule);
+const module = parseCodeModule(componentModule);
 const resources = await buildElllModule({
   module,
-  createFile: async ({ path }) => path,
-  resolveRelativePath: (_, to) => to,
+  getPath: async ({ path }) => path,
+  relativePath: (_, to) => to,
 });
 
 const runkey = "" + Date.now();

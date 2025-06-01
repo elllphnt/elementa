@@ -1,25 +1,13 @@
-import { ComponentData } from "@elllphnt/elementa-base";
-import { Node, Project, ScriptTarget, SyntaxKind } from "ts-morph";
-import { parseComponent } from "./component/component";
-import {
-  extractImport,
-  extractNamedResource,
-  extractType,
-  isStandaloneIdentifier,
-  ModuleResourceDefinition,
-  ResourceModule,
-} from "./module";
+import { Node, Project, ScriptTarget } from "ts-morph";
+import { ParsedCodeResource } from "../../../module/code_module";
+import { ParsedComponentModule } from "../../../module/component_module";
+import { ParsedModule } from "../../../module/module";
+import { parseComponent } from "../../component/component";
+import { extractImport } from "../_shared/import";
+import { extractType } from "../_shared/type";
+import { extractCodeResource } from "../code/code";
 
-export type ComponentResourceDefinition = {
-  type: "component";
-  component: ComponentData;
-  dependencies: string[];
-};
-export type ComponentModule = ResourceModule<
-  ModuleResourceDefinition<"hook"> | ComponentResourceDefinition
->;
-
-export function parseComponentModule(code: string): ComponentModule {
+export function parseComponentModule(code: string): ParsedComponentModule {
   const project = new Project({
     compilerOptions: {
       target: ScriptTarget.ESNext,
@@ -33,7 +21,7 @@ export function parseComponentModule(code: string): ComponentModule {
     overwrite: true,
   });
 
-  const module: ComponentModule = {
+  const module: ParsedComponentModule = {
     imports: {},
     types: {},
     resources: {},
@@ -54,20 +42,18 @@ export function parseComponentModule(code: string): ComponentModule {
       if (!name) continue;
 
       if (/^use[A-Z]/.test(name)) {
-        extractNamedResource({
+        extractCodeResource({
           node: statement,
-          module: module as ResourceModule<ModuleResourceDefinition<"hook">>,
+          module: module as ParsedModule<ParsedCodeResource<"hook">>,
           type: "hook",
           name,
         });
       } else {
         const component = parseComponent(statement);
-        const dependencies = extractDependencies(statement);
         if (component) {
           module.resources[name] = {
             type: "component",
-            component,
-            dependencies,
+            data: component,
           };
         }
       }
@@ -92,18 +78,4 @@ export function parseComponentModule(code: string): ComponentModule {
   }
 
   return module;
-}
-
-function extractDependencies(node: Node): string[] {
-  const dependencies = new Set<string>();
-
-  node.getDescendantsOfKind(SyntaxKind.Identifier).forEach((identifier) => {
-    if (!isStandaloneIdentifier(identifier)) return;
-    const defs = identifier.getDefinitionNodes();
-    if (defs.length === 0) return;
-    if (defs.some((d) => node.containsRange(d.getStart(), d.getEnd()))) return;
-    dependencies.add(identifier.getText());
-  });
-
-  return Array.from(dependencies);
 }

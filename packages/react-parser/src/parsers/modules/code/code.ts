@@ -1,91 +1,21 @@
 import {
-  EnumDeclaration,
   FunctionDeclaration,
-  Identifier,
-  ImportDeclaration,
-  InterfaceDeclaration,
   Node,
   Project,
   ScriptTarget,
   SyntaxKind,
-  TypeAliasDeclaration,
   VariableStatement,
 } from "ts-morph";
+import {
+  CodeResourceType,
+  ParsedCodeModule,
+  ParsedCodeResource,
+} from "../../../module/code_module";
+import { ParsedModule } from "../../../module/module";
+import { extractImport } from "../_shared/import";
+import { isStandaloneIdentifier } from "./_utils/identifier";
 
-export function isStandaloneIdentifier(identifier: Identifier): boolean {
-  const parent = identifier.getParent();
-
-  // If it's part of a property access like obj.prop
-  if (Node.isPropertyAccessExpression(parent)) {
-    return parent.getChildAtIndex(0) === identifier;
-  }
-
-  return true;
-}
-
-export type ResourceDefinition<T extends string = string> = {
-  type: T;
-  dependencies: string[];
-};
-export type ModuleResourceType = "component" | "hook" | "context" | "routine";
-export type ModuleResourceDefinition<T extends string> = {
-  type: T;
-  source: string;
-  dependencies: string[];
-};
-export type ResourceModule<R extends ResourceDefinition = ResourceDefinition> =
-  {
-    imports: Record<string, [string, string]>; // specifier alias -> [import path, specifier]
-    types: Record<string, string>; // type name -> type definition
-    resources: Record<string, R>;
-    main?: string;
-  };
-export type ElllModule = ResourceModule<
-  ModuleResourceDefinition<ModuleResourceType>
->;
-
-export function extractType(
-  statement: TypeAliasDeclaration | InterfaceDeclaration | EnumDeclaration,
-  module: ResourceModule
-) {
-  const name = statement.getName();
-  const source = statement.getText();
-  const cleanedSource = source.replace(/\bexport\s+/, "");
-  module.types[name] = `export ${cleanedSource}`;
-}
-export function extractImport(
-  statement: ImportDeclaration,
-  module: ResourceModule
-) {
-  const moduleSpecifier = statement.getModuleSpecifierValue();
-  if (!moduleSpecifier) return;
-
-  const namedBindings = statement.getImportClause()?.getNamedBindings();
-  const defaultImport = statement.getImportClause()?.getDefaultImport();
-
-  // Handle default import: import React from "react"
-  if (defaultImport) {
-    const name = defaultImport.getText();
-    module.imports[name] = [moduleSpecifier, "default"];
-  }
-
-  // Handle named imports: import { useState, useEffect as ue } from "react"
-  if (Node.isNamedImports(namedBindings)) {
-    for (const element of namedBindings.getElements()) {
-      const name = element.getNameNode().getText();
-      const alias = element.getAliasNode()?.getText() ?? name;
-      module.imports[alias] = [moduleSpecifier, name];
-    }
-  }
-
-  // Handle namespace import: import * as React from "react"
-  if (Node.isNamespaceImport(namedBindings)) {
-    const alias = namedBindings.getName();
-    module.imports["*"] = [moduleSpecifier, alias];
-  }
-}
-
-export function parseElllModule(code: string): ElllModule {
+export function parseCodeModule(code: string): ParsedCodeModule {
   const project = new Project({
     compilerOptions: {
       target: ScriptTarget.ESNext,
@@ -99,7 +29,7 @@ export function parseElllModule(code: string): ElllModule {
     overwrite: true,
   });
 
-  const module: ElllModule = {
+  const module: ParsedCodeModule = {
     imports: {},
     types: {},
     resources: {},
@@ -154,7 +84,7 @@ export function parseElllModule(code: string): ElllModule {
 }
 export function extractResource(
   node: FunctionDeclaration | VariableStatement,
-  module: ElllModule
+  module: ParsedCodeModule
 ) {
   const name = Node.isFunctionDeclaration(node)
     ? node.getName()
@@ -164,16 +94,16 @@ export function extractResource(
 
   // Hook: useXxx
   if (/^use[A-Z]/.test(name)) {
-    extractNamedResource({ type: "hook", name, node, module });
+    extractCodeResource({ type: "hook", name, node, module });
   } else if (/^[A-Z][a-zA-Z0-9]*Context$/.test(name)) {
-    extractNamedResource({ type: "context", name, node, module });
+    extractCodeResource({ type: "context", name, node, module });
   } else if (/^[A-Z]/.test(name)) {
-    extractNamedResource({ type: "component", name, node, module });
+    extractCodeResource({ type: "component", name, node, module });
   } else {
-    extractNamedResource({ type: "routine", name, node, module });
+    extractCodeResource({ type: "routine", name, node, module });
   }
 }
-export function extractNamedResource<T extends string>({
+export function extractCodeResource<T extends CodeResourceType>({
   type,
   name,
   node,
@@ -182,7 +112,7 @@ export function extractNamedResource<T extends string>({
   type: T;
   name: string;
   node: Node;
-  module: ResourceModule<ModuleResourceDefinition<T>>;
+  module: ParsedModule<ParsedCodeResource<T>>;
 }) {
   const dependencies = new Set<string>();
 

@@ -1,4 +1,4 @@
-import { standardizeComponent } from "../src/standardize";
+import { standardizeComponent } from "../src/parsers/modules/component/standardize";
 
 const code = `
 import React, { useState, useEffect } from "react";
