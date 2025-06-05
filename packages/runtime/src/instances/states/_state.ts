@@ -1,7 +1,7 @@
 import { HookState, State } from "@elllphnt/elementa-models";
 import { Runtime } from "../../runtime/runtime.js";
 import { Instance } from "../instance.js";
-import { HookStateInstance } from "./module.js";
+import { HookStateInstance } from "./hook.js";
 import { ValueStateInstance } from "./value.js";
 
 export type StateInstance = ValueStateInstance | HookStateInstance;

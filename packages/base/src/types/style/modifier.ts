@@ -32,7 +32,7 @@ export const styleModifierDefinitionDataSchema = z.object({
   type: z.enum([StyleModifierType.Context, StyleModifierType.Element]),
   signature: z.array(z.nativeEnum(StyleDataType)).optional(),
   predecence: z.number().optional(),
-  selector: z.string().optional(), // loosely typed
+  selector: z.array(z.string()).optional(),
 });
 
 export const styleModifierDataSchema = z.object({

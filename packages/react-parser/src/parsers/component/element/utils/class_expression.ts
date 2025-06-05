@@ -1,5 +1,5 @@
 import * as t from "@babel/types";
-import { generate } from "./generate";
+import { generate } from "./generate.js";
 
 export function parseClassExpression(expr: t.Expression): {
   classes: string[];

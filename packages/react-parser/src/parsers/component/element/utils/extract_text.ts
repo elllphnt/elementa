@@ -1,5 +1,5 @@
 import * as t from "@babel/types";
-import { generateExpressionSource } from "./generate";
+import { generateExpressionSource } from "./generate.js";
 
 export function extractTextFromNode(node: t.Node): string {
   if (t.isJSXText(node)) {

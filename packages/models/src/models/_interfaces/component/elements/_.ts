@@ -2,6 +2,7 @@ export * from "./_base.js";
 export * from "./_element.js";
 export * from "./component.js";
 export * from "./container.js";
+export * from "./fragment.js";
 export * from "./media.js";
 export * from "./primitive/_.js";
 export * from "./slot.js";

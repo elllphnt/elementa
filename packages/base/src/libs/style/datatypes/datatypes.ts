@@ -1,9 +1,11 @@
+import { ErrorTupple } from "../../../types/_.js";
 import { ArrayItem } from "../../../types/_primitives/array.js";
 import {
   StyleDataType,
   StyleDataTypeMap,
 } from "../../../types/_primitives/style/datatypes.js";
 import { styleDataNormalizers } from "./nomalizers.js";
+import { styleDataParsers } from "./parsers.js";
 import { styleDataSchemas } from "./schemas.js";
 import { styleDataStringifiers } from "./stringifiers.js";
 
@@ -19,6 +21,14 @@ export function getStyleDataType(
     }
   }
   return undefined;
+}
+
+export function parseStyleData(
+  type: StyleDataType,
+  input: string
+): ErrorTupple<any> {
+  const parse = styleDataParsers[type];
+  return parse(input);
 }
 
 export function stringifyStyleData<T extends StyleDataType>(

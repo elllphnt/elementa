@@ -1,13 +1,20 @@
 import { Node, Project, ScriptTarget } from "ts-morph";
-import { ParsedCodeResource } from "../../../module/code_module";
-import { ParsedComponentModule } from "../../../module/component_module";
-import { ParsedModule } from "../../../module/module";
-import { parseComponent } from "../../component/component";
-import { extractImport } from "../_shared/import";
-import { extractType } from "../_shared/type";
-import { extractCodeResource } from "../code/code";
+import { ParsedCodeResource } from "../../../module/code_module.js";
+import { ParsedComponentModule } from "../../../module/component_module.js";
+import { ParsedModule } from "../../../module/module.js";
+import { GetStylesheet } from "../../component/_.js";
+import { parseComponent } from "../../component/component.js";
+import { extractImport } from "../_shared/import.js";
+import { extractType } from "../_shared/type.js";
+import { extractCodeResource } from "../code/code.js";
 
-export function parseComponentModule(code: string): ParsedComponentModule {
+export function parseComponentModule({
+  code,
+  getStylesheet,
+}: {
+  code: string;
+  getStylesheet: GetStylesheet;
+}): ParsedComponentModule {
   const project = new Project({
     compilerOptions: {
       target: ScriptTarget.ESNext,
@@ -49,7 +56,7 @@ export function parseComponentModule(code: string): ParsedComponentModule {
           name,
         });
       } else {
-        const component = parseComponent(statement);
+        const component = parseComponent({ node: statement, getStylesheet });
         if (component) {
           module.resources[name] = {
             type: "component",

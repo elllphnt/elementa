@@ -11,12 +11,17 @@ import {
   PropertySignature,
   SyntaxKind,
 } from "ts-morph";
-import { parseElementsFromJSX } from "./element/element";
-import { extractArgValue, genId } from "./utils";
+import { GetStylesheet } from "./element/_.js";
+import { parseElementsFromJSX } from "./element/element.js";
+import { extractArgValue, genId } from "./utils.js";
 
-export function parseComponent(
-  node: FunctionDeclaration
-): ComponentData | undefined {
+export function parseComponent({
+  node,
+  getStylesheet,
+}: {
+  node: FunctionDeclaration;
+  getStylesheet: GetStylesheet;
+}): ComponentData | undefined {
   const name = node.getName();
   if (!name) return;
 
@@ -121,6 +126,9 @@ export function parseComponent(
     }
   }
 
+  // Fragments
+  const fragments: FragmentData[] = [];
+
   // Template
   const returnExpr = body
     .getDescendantsOfKind(SyntaxKind.ReturnStatement)[0]
@@ -130,14 +138,15 @@ export function parseComponent(
     content: returnExpr
       ? parseElementsFromJSX({
           code: returnExpr.getText(),
-          getStylesheet: () => {
-            return {};
+          getStylesheet,
+          createFragment: ({ content }) => {
+            const fragment: FragmentData = {
+              id: genId(),
+              content,
+            };
+            fragments.push(fragment);
+            return fragment;
           },
-          createFragment: ({ content }) => ({
-            id: genId(),
-            type: "fragment",
-            content,
-          }),
         })
       : [],
   };

@@ -2,6 +2,7 @@ import { ElementData } from "@elllphnt/elementa-base";
 import { Project } from "../../../../infrastructure/_.js";
 import { ComponentElementModel } from "./component.js";
 import { ContainerElementModel } from "./container.js";
+import { FragmentElementModel } from "./fragment.js";
 import { MediaElementModel } from "./media.js";
 import { PrimitiveElementModel } from "./primitive/primitive.js";
 import { SlotElementModel } from "./slot.js";
@@ -15,6 +16,7 @@ export type ElementModel =
   | PrimitiveElementModel
   | SlotElementModel
   | TextElementModel
+  | FragmentElementModel
   | VectorElementModel;
 
 export function createElementModel({

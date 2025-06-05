@@ -15,7 +15,7 @@ export class HookStateInstance extends BaseStateInstance<HookState> {
   }
 
   get use() {
-    return this.module?.value.default;
+    return this.module?.value?.default;
   }
   get use$() {
     return (

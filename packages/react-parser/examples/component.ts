@@ -1,6 +1,6 @@
 import { writeFileSync } from "fs";
 import { join } from "path";
-import { parseComponentModule } from "../src";
+import { parseComponentModule } from "../src/index.js";
 
 const componentModule = `
 
@@ -31,7 +31,10 @@ export function Dashboard({color}:DashboardProps) {
 export default Dashboard;
 `;
 
-const module = parseComponentModule(componentModule);
+const module = parseComponentModule({
+  code: componentModule,
+  getStylesheet: () => {},
+});
 writeFileSync(
   join("local", "component", `static.json`),
   JSON.stringify(module, null, 2)

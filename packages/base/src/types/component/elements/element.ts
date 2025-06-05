@@ -7,7 +7,11 @@ import {
   ContainerElementData,
   containerElementDataSchema,
 } from "./container.js";
-import { FragmentElementData } from "./fragment.js";
+import {
+  ExpressionElementData,
+  expressionElementDataSchema,
+} from "./expression.js";
+import { FragmentElementData, fragmentElementDataSchema } from "./fragment.js";
 import { MediaElementData, mediaElementDataSchema } from "./media.js";
 import {
   PrimitiveElementData,
@@ -27,6 +31,7 @@ export type ElementData =
   | SlotElementData
   | TextElementData
   | VectorElementData
+  | ExpressionElementData
   | FragmentElementData;
 
 // Schemas
@@ -40,5 +45,7 @@ export const elementDataSchema: z.ZodType<ElementData> = z.lazy(() =>
     slotElementDataSchema,
     textElementDataSchema,
     vectorElementDataSchema,
+    expressionElementDataSchema,
+    fragmentElementDataSchema,
   ])
 ) as any as z.ZodType<ElementData>;

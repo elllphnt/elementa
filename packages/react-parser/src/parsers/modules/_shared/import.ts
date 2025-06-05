@@ -1,5 +1,5 @@
 import { ImportDeclaration, Node } from "ts-morph";
-import { ParsedModule } from "../../../module/module";
+import { ParsedModule } from "../../../module/module.js";
 
 export function extractImport(
   statement: ImportDeclaration,

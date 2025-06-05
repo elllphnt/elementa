@@ -180,11 +180,10 @@ export class ComponentModel extends Model<ComponentData> implements Component {
     const { stage, preview } = editors || {};
 
     this._state.setRecord(stateData);
-    this.template.restore(
-      template || {
-        id: "template",
-      }
-    );
+    this.template.restore({
+      ...template,
+      id: "template", // Ensure template ID is always "template"
+    });
     this._props.restore(props || []);
     this._fragments.restore(fragments || []);
     this._states.restore(states || []);

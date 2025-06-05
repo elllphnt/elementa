@@ -10,10 +10,10 @@ import {
   CodeResourceType,
   ParsedCodeModule,
   ParsedCodeResource,
-} from "../../../module/code_module";
-import { ParsedModule } from "../../../module/module";
-import { extractImport } from "../_shared/import";
-import { isStandaloneIdentifier } from "./_utils/identifier";
+} from "../../../module/code_module.js";
+import { ParsedModule } from "../../../module/module.js";
+import { extractImport } from "../_shared/import.js";
+import { isStandaloneIdentifier } from "./_utils/identifier.js";
 
 export function parseCodeModule(code: string): ParsedCodeModule {
   const project = new Project({

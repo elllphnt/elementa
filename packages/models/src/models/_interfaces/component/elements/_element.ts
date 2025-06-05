@@ -1,5 +1,6 @@
 import { ComponentElement } from "./component.js";
 import { ContainerElement } from "./container.js";
+import { FragmentElement } from "./fragment.js";
 import { MediaElement } from "./media.js";
 import { PrimitiveElement } from "./primitive/_.js";
 import { SlotElement } from "./slot.js";
@@ -13,4 +14,5 @@ export type Element =
   | MediaElement
   | SlotElement
   | TextElement
-  | VectorElement;
+  | VectorElement
+  | FragmentElement;

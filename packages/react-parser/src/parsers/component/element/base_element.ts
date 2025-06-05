@@ -4,9 +4,9 @@ import {
   ResolvableOrEvaluable,
   StyleSheetData,
 } from "@elllphnt/elementa-base";
+import { genId } from "../utils.js";
 import { parseClassExpression } from "./utils/class_expression.js";
 import { generate } from "./utils/generate.js";
-import { genId } from "../utils.js";
 
 export type GetStylesheet = (
   classes: string[],
@@ -35,6 +35,7 @@ export function parseBaseElementNode<T extends string>({
     if (!t.isJSXAttribute(attr)) return;
 
     const attrName = attr.name.name;
+    console.log("Found attribute:", attrName);
 
     // Handle "id" attribute
     if (attrName === "id" && attr.value) {
