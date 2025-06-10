@@ -8,21 +8,21 @@ import {
 } from "@elllphnt/elementa-utils";
 import { Observable, combineLatest, filter, map, tap } from "rxjs";
 import { File, Project } from "~/project/_.js";
-import { Stylesheet } from "../../../_interfaces/style/stylesheet.js";
 import { Style } from "../../../../_interfaces/style/stylesheet/style.js";
-import { StyleModel } from "./style.js";
-import { StyleFragmentRegistryModel } from "./style_fragment_registry.js";
+import { Stylesheet } from "../../../_interfaces/style/stylesheet.js";
+import { StatefulStyle } from "./style.js";
+import { StatefulStyleFragmentRegistry } from "./style_fragment_registry.js";
 
-export class StylesheetModel
+export class StatefulStylesheet
   extends Model<StyleSheetData>
   implements Stylesheet
 {
   readonly project: Project;
   readonly file: File | undefined;
-  readonly fragmentRegistry: StyleFragmentRegistryModel;
+  readonly fragmentRegistry: StatefulStyleFragmentRegistry;
 
   private _state: RecordState<Omit<StyleSheetData, "styles">>;
-  private _styles: AggregatedModelRecord<StyleModel>;
+  private _styles: AggregatedModelRecord<StatefulStyle>;
 
   get className(): string {
     return this.key;
@@ -61,7 +61,7 @@ export class StylesheetModel
     } else {
       this.project = rest.project;
     }
-    this.fragmentRegistry = new StyleFragmentRegistryModel({
+    this.fragmentRegistry = new StatefulStyleFragmentRegistry({
       init: fragments || [],
     });
 
@@ -77,7 +77,7 @@ export class StylesheetModel
     this._styles = new AggregatedModelRecord({
       init: styles || {},
       create: (data) =>
-        new StyleModel({
+        new StatefulStyle({
           init: data,
           project: this.project,
           fragmentRegistry: this.fragmentRegistry,
@@ -112,7 +112,7 @@ export class StylesheetModel
     let style = this._styles.state.record[selector];
 
     if (!style && create) {
-      style = new StyleModel({
+      style = new StatefulStyle({
         init: {},
         project: this.project,
         fragmentRegistry: this.fragmentRegistry,
@@ -131,7 +131,7 @@ export class StylesheetModel
       map((record) => record[selector]),
       tap((style) => {
         if (!style && create) {
-          const newStyle = new StyleModel({
+          const newStyle = new StatefulStyle({
             init: {},
             project: this.project,
             fragmentRegistry: this.fragmentRegistry,
@@ -181,7 +181,7 @@ export class StylesheetModel
 
   addStyle(selector: string): void {
     if (!this._styles.state.record[selector]) {
-      const style = new StyleModel({
+      const style = new StatefulStyle({
         init: {},
         project: this.project,
         fragmentRegistry: this.fragmentRegistry,

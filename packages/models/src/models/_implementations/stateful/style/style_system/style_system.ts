@@ -7,12 +7,12 @@ import {
 import { combineLatest, Observable } from "rxjs";
 import { ColorSchemeSet, StyleSystem, ViewportSet } from "~/models/style/_.js";
 import { File, Project } from "~/project/_.js";
-import { BaseModel } from "../../_base.js";
-import { ColorSchemeSetModel } from "./color_scheme_set.js";
-import { ViewportSetModel } from "./viewport_set.js";
+import { StatefulModel } from "../../_base.js";
+import { StatefulColorSchemeSet } from "./color_scheme_set.js";
+import { StatefulViewportSet } from "./viewport_set.js";
 
-export class StyleSystemModel
-  extends BaseModel<StyleSystemData>
+export class StatefulStyleSystem
+  extends StatefulModel<StyleSystemData>
   implements StyleSystem
 {
   project: Project;
@@ -59,11 +59,11 @@ export class StyleSystemModel
       init: stateData,
     });
 
-    this.colorSchemes = new ColorSchemeSetModel({
+    this.colorSchemes = new StatefulColorSchemeSet({
       init: colorSchemes || { source: "system" },
     });
 
-    this.viewports = new ViewportSetModel({
+    this.viewports = new StatefulViewportSet({
       init: viewports || { source: "breakpoints" },
     });
 

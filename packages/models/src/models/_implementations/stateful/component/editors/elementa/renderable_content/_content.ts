@@ -1,28 +1,28 @@
 import { RenderableContentData } from "@elllphnt/elementa-base";
 import { Project } from "../../../../../../../infrastructure/_.js";
-import { AppRenderableContentModel } from "./app.js";
-import { ComponentRenderableContentModel } from "./component.js";
-import { FragmentRenderableContentModel } from "./fragment.js";
+import { StatefulAppRenderableContent } from "./app.js";
+import { StatefulComponentRenderableContent } from "./component.js";
+import { StatefulFragmentRenderableContent } from "./fragment.js";
 
-export type RenderableContentModel =
-  | AppRenderableContentModel
-  | ComponentRenderableContentModel
-  | FragmentRenderableContentModel;
+export type StatefulRenderableContent =
+  | StatefulAppRenderableContent
+  | StatefulComponentRenderableContent
+  | StatefulFragmentRenderableContent;
 
-export function createRenderableContentModel({
+export function StatefulcreateRenderableContent({
   init,
   project,
 }: {
   init: RenderableContentData;
   project: Project;
-}): RenderableContentModel {
+}): StatefulRenderableContent {
   switch (init.type) {
     case "app":
-      return new AppRenderableContentModel({ init, project });
+      return new StatefulAppRenderableContent({ init, project });
     case "component":
-      return new ComponentRenderableContentModel({ init, project });
+      return new StatefulComponentRenderableContent({ init, project });
     case "fragment":
-      return new FragmentRenderableContentModel({ init, project });
+      return new StatefulFragmentRenderableContent({ init, project });
     default:
       throw new Error(`Unknown renderable content type: ${(init as any).type}`);
   }

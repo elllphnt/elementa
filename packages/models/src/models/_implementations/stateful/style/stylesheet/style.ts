@@ -22,7 +22,7 @@ import { Project } from "~/project/_.js";
 import { Style } from "../../../../_interfaces/style/stylesheet/style.js";
 import { StyleFragmentRegistry } from "../../../../_interfaces/style/stylesheet/style_fragment_registry.js";
 
-export class StyleModel extends Model<StyleData> implements Style {
+export class StatefulStyle extends Model<StyleData> implements Style {
   readonly project: Project;
   readonly fragmentRegistry: StyleFragmentRegistry;
 

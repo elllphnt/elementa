@@ -13,17 +13,20 @@ import { SlotFill } from "~/models/_shared/_.js";
 import { Element, ElementEnvironment } from "~/models/component/_.js";
 import { File, Project } from "~/project/_.js";
 import { CssStyleSheet, StylesheetCssStyleSheet } from "../../../../css/_.js";
-import { ElementModel, createElementModel } from "../elements/_element.js";
-import { StylesheetModel } from "../style/stylesheet/stylesheet.js";
+import {
+  StatefulElement,
+  StatefulcreateElement,
+} from "../elements/_element.js";
+import { StatefulStylesheet } from "../style/stylesheet/stylesheet.js";
 
-export class SlotFillModel extends Model<SlotFillData> implements SlotFill {
+export class StatefulSlotFill extends Model<SlotFillData> implements SlotFill {
   readonly environment: ElementEnvironment;
   readonly cssStyleSheet: StylesheetCssStyleSheet;
 
   // private properties
   private _state: RecordState<Omit<SlotFillData, "content">>;
-  private _stylesheet: StylesheetModel;
-  private _content: AggregatedModelList<ElementModel>;
+  private _stylesheet: StatefulStylesheet;
+  private _content: AggregatedModelList<StatefulElement>;
 
   // getters
   get content(): Element[] {
@@ -91,7 +94,7 @@ export class SlotFillModel extends Model<SlotFillData> implements SlotFill {
     super({ key: keyManager.next("slot-fill") });
 
     this.environment = environment;
-    this._stylesheet = new StylesheetModel({
+    this._stylesheet = new StatefulStylesheet({
       init: init.stylesheet || {},
       project: environment.project,
     });
@@ -112,7 +115,7 @@ export class SlotFillModel extends Model<SlotFillData> implements SlotFill {
     this._content = new AggregatedModelList({
       init: init.content || [],
       create: (data) =>
-        createElementModel({
+        StatefulcreateElement({
           init: data,
           environment,
         }),

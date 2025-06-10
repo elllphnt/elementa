@@ -7,10 +7,10 @@ import {
   ComponentRenderableContent,
   FileModelAdaptor,
 } from "../../../../../../_.js";
-import { BaseRenderableContentModel } from "./_base.js";
+import { StatefulBaseRenderableContent } from "./_base.js";
 
-export class ComponentRenderableContentModel
-  extends BaseRenderableContentModel<ComponentRenderableContentData>
+export class StatefulComponentRenderableContent
+  extends StatefulBaseRenderableContent<ComponentRenderableContentData>
   implements ComponentRenderableContent
 {
   private _state: RecordState<Omit<ComponentRenderableContentData, "type">>;

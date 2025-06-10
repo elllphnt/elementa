@@ -5,10 +5,10 @@ import {
 import { combineLatestMerged } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import { ElementEnvironment, TextElement } from "~/models/component/_.js";
-import { BaseElementModel } from "./_base.js";
+import { StatefulBaseElement } from "./_base.js";
 
-export class TextElementModel
-  extends BaseElementModel<TextElementData>
+export class StatefulTextElement
+  extends StatefulBaseElement<TextElementData>
   implements TextElement
 {
   // getters

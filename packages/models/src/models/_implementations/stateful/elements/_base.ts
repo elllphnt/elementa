@@ -15,14 +15,14 @@ import {
 import { combineLatest, Observable, of } from "rxjs";
 import { BaseElement, ElementEnvironment } from "~/models/component/_.js";
 import { CssStyleSheet, StylesheetCssStyleSheet } from "../../../../css/_.js";
-import { IdentifiableModel } from "../_shared/identifiable.js";
-import { StylesheetModel } from "../style/stylesheet/stylesheet.js";
+import { StatefulIdentifiable } from "../_shared/identifiable.js";
+import { StatefulStylesheet } from "../style/stylesheet/stylesheet.js";
 
-export abstract class BaseElementModel<
+export abstract class StatefulBaseElement<
     T extends BaseElementData<string>,
     K extends keyof T = never
   >
-  extends IdentifiableModel<T>
+  extends StatefulIdentifiable<T>
   implements BaseElement<T["type"]>
 {
   // readonly properties
@@ -31,7 +31,7 @@ export abstract class BaseElementModel<
   readonly cssStyleSheet: StylesheetCssStyleSheet;
 
   // private properties
-  private _stylesheet: StylesheetModel;
+  private _stylesheet: StatefulStylesheet;
   protected _state: RecordState<Omit<T, "id" | "type" | "stylesheet" | K>>;
 
   // getters for properties
@@ -188,7 +188,7 @@ export abstract class BaseElementModel<
     this.type = type;
     this.environment = environment;
 
-    this._stylesheet = new StylesheetModel({
+    this._stylesheet = new StatefulStylesheet({
       init: stylesheet ?? {},
       project: environment.project,
     });

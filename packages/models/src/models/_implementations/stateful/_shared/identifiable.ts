@@ -1,10 +1,10 @@
 import { IdentifiableData } from "@elllphnt/elementa-base";
 import { Observable, of } from "rxjs";
 import { Identifiable } from "~/models/_shared/_.js";
-import { BaseModel } from "../_base.js";
+import { StatefulModel } from "../_base.js";
 
-export abstract class IdentifiableModel<D extends IdentifiableData>
-  extends BaseModel<D>
+export abstract class StatefulIdentifiable<D extends IdentifiableData>
+  extends StatefulModel<D>
   implements Identifiable
 {
   readonly id: string;

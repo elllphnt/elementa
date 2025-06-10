@@ -2,10 +2,10 @@ import { ValueStateData } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
 import { Component } from "../../../../_interfaces/component/component.js";
 import { ValueState } from "../../../../_interfaces/component/states/value.js";
-import { BaseStateModel } from "./_base.js";
+import { StatefulBaseState } from "./_base.js";
 
-export class ValueStateModel
-  extends BaseStateModel<ValueStateData>
+export class StatefulValueState
+  extends StatefulBaseState<ValueStateData>
   implements ValueState
 {
   // getters

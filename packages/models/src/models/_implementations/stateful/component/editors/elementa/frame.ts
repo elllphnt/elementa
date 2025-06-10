@@ -1,35 +1,35 @@
 import { CornerData, ElementaFrameData } from "@elllphnt/elementa-base";
 import {
-  OptionalModel,
   RecordState,
+  StatefulOptional,
   combineLatestMerged,
   keyManager,
 } from "@elllphnt/elementa-utils";
 import { Observable, combineLatest } from "rxjs";
 import { ElementaFrame, ElementaStage } from "../../../../../_.js";
-import { IdentifiableModel } from "../../../_shared/identifiable.js";
+import { StatefulIdentifiable } from "../../../_shared/identifiable.js";
 import {
-  RenderableContentModel,
-  createRenderableContentModel,
+  StatefulRenderableContent,
+  StatefulcreateRenderableContent,
 } from "./renderable_content/_content.js";
-import { RenderingContextModel } from "./rendering_context.js";
+import { StatefulRenderingContext } from "./rendering_context.js";
 
-export class ElementaFrameModel
-  extends IdentifiableModel<ElementaFrameData>
+export class StatefulElementaFrame
+  extends StatefulIdentifiable<ElementaFrameData>
   implements ElementaFrame
 {
   readonly stage: ElementaStage;
-  readonly context: RenderingContextModel;
+  readonly context: StatefulRenderingContext;
 
   private _state: RecordState<
     Omit<ElementaFrameData, "id" | "renderingContext" | "content">
   >;
-  private _content: OptionalModel<RenderableContentModel>;
+  private _content: StatefulOptional<StatefulRenderableContent>;
 
-  get content(): RenderableContentModel | undefined {
+  get content(): StatefulRenderableContent | undefined {
     return this._content.state.value;
   }
-  get content$(): Observable<RenderableContentModel | undefined> {
+  get content$(): Observable<StatefulRenderableContent | undefined> {
     return this._content.state.value$;
   }
 
@@ -113,14 +113,14 @@ export class ElementaFrameModel
 
     this.stage = stage;
 
-    this.context = new RenderingContextModel({
+    this.context = new StatefulRenderingContext({
       init: context ?? {},
     });
 
-    this._content = new OptionalModel({
+    this._content = new StatefulOptional({
       init: content,
       create: (data) =>
-        createRenderableContentModel({
+        StatefulcreateRenderableContent({
           init: data,
           project: this.stage.project,
         }),

@@ -11,9 +11,9 @@ import {
   ElementEnvironment,
   PrimitiveSubElement,
 } from "~/models/component/_.js";
-import { StylesheetModel } from "../../style/stylesheet/stylesheet.js";
+import { StatefulStylesheet } from "../../style/stylesheet/stylesheet.js";
 
-export class PrimitiveSubElementModel
+export class StatefulPrimitiveSubElement
   extends Model<PrimitiveSubElementData>
   implements PrimitiveSubElement
 {
@@ -21,7 +21,7 @@ export class PrimitiveSubElementModel
   readonly cssStyleSheet: StylesheetCssStyleSheet;
 
   // private properties
-  private _stylesheet: StylesheetModel;
+  private _stylesheet: StatefulStylesheet;
   private _state: RecordState<Omit<PrimitiveSubElementData, "stylesheet">>;
 
   get interactions(): Record<string, Expression> | undefined {
@@ -63,7 +63,7 @@ export class PrimitiveSubElementModel
 
     const { stylesheet, ...stateData } = init;
 
-    this._stylesheet = new StylesheetModel({
+    this._stylesheet = new StatefulStylesheet({
       init: stylesheet ?? {},
       project: environment.project,
     });

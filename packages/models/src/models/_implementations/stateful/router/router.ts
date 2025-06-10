@@ -9,23 +9,23 @@ import { Observable, combineLatest, map } from "rxjs";
 import { genId } from "~/_lib/id.js";
 import { File } from "~/project/_.js";
 import { Router } from "../../../_interfaces/router/app.js";
-import { AppBlueprintModel } from "./blueprint/blueprint.js";
-import { RouteTreeModel } from "./route_tree.js";
+import { StatefulAppBlueprint } from "./blueprint/blueprint.js";
+import { StatefulRouteTree } from "./route_tree.js";
 
-export class RouterModel
+export class StatefulRouter
   extends Model<RouterData>
-  implements Router<RouteTreeModel>
+  implements Router<StatefulRouteTree>
 {
   readonly file: File;
-  readonly blueprint: AppBlueprintModel;
+  readonly blueprint: StatefulAppBlueprint;
 
   private _state: RecordState<Omit<RouterData, "routes" | "variables">>;
-  private _routes: AggregatedModelList<RouteTreeModel>;
+  private _routes: AggregatedModelList<StatefulRouteTree>;
 
-  get routes(): RouteTreeModel[] {
+  get routes(): StatefulRouteTree[] {
     return this._routes.state.items;
   }
-  get routes$(): Observable<RouteTreeModel[]> {
+  get routes$(): Observable<StatefulRouteTree[]> {
     return this._routes.state.items$;
   }
 
@@ -62,7 +62,7 @@ export class RouterModel
     super();
 
     this.file = file;
-    this.blueprint = new AppBlueprintModel({
+    this.blueprint = new StatefulAppBlueprint({
       init: init.editors?.blueprint ?? {},
     });
 
@@ -74,7 +74,7 @@ export class RouterModel
 
     this._routes = new AggregatedModelList({
       init: routes || [],
-      create: (data) => new RouteTreeModel({ init: data, app: this }),
+      create: (data) => new StatefulRouteTree({ init: data, app: this }),
       dataRef: (d) => d.id,
       modelRef: (m) => m.id,
     });
@@ -85,8 +85,8 @@ export class RouterModel
     });
   }
 
-  createRoute(init: Omit<RouteTreeData, "id" | "children">): RouteTreeModel {
-    const route = new RouteTreeModel({
+  createRoute(init: Omit<RouteTreeData, "id" | "children">): StatefulRouteTree {
+    const route = new StatefulRouteTree({
       init: {
         ...init,
         id: genId(),
@@ -96,13 +96,13 @@ export class RouterModel
     return route;
   }
 
-  addRoutes(routes: RouteTreeModel[]): void {
+  addRoutes(routes: StatefulRouteTree[]): void {
     this._routes.state.append(routes);
   }
-  insertRoutes(index: number, routes: RouteTreeModel[]): void {
+  insertRoutes(index: number, routes: StatefulRouteTree[]): void {
     this._routes.state.insertAt(index, routes);
   }
-  removeRoutes(routes: RouteTreeModel[]): void {
+  removeRoutes(routes: StatefulRouteTree[]): void {
     const set = new Set(routes);
     this._routes.state.remove((r) => set.has(r));
   }

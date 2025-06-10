@@ -9,22 +9,22 @@ import {
 import { Observable, combineLatest } from "rxjs";
 import { Project } from "../../../../../../infrastructure/_.js";
 import { ElementaFrame, ElementaStage } from "../../../../../_.js";
-import { ElementaFrameModel } from "./frame.js";
+import { StatefulElementaFrame } from "./frame.js";
 
-export class ElementaStageModel
+export class StatefulElementaStage
   extends Model<ElementaStageData>
   implements ElementaStage
 {
   readonly project: Project;
 
   private _state: RecordState<Omit<ElementaStageData, "frames">>;
-  private _frames: AggregatedModelList<ElementaFrameModel>;
+  private _frames: AggregatedModelList<StatefulElementaFrame>;
 
-  get frames(): ElementaFrameModel[] {
+  get frames(): StatefulElementaFrame[] {
     return this._frames.state.items;
   }
 
-  get frames$(): Observable<ElementaFrameModel[]> {
+  get frames$(): Observable<StatefulElementaFrame[]> {
     return this._frames.state.items$;
   }
 
@@ -62,7 +62,7 @@ export class ElementaStageModel
 
     this._frames = new AggregatedModelList({
       init: frames || [],
-      create: (data) => new ElementaFrameModel({ init: data, stage: this }),
+      create: (data) => new StatefulElementaFrame({ init: data, stage: this }),
       dataRef: (data) => data.id,
       modelRef: (model) => model.id,
     });

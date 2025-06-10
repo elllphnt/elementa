@@ -7,10 +7,10 @@ import {
   Router,
   RouterRenderableContent,
 } from "../../../../../../_.js";
-import { BaseRenderableContentModel } from "./_base.js";
+import { StatefulBaseRenderableContent } from "./_base.js";
 
-export class AppRenderableContentModel
-  extends BaseRenderableContentModel<AppRenderableContentData>
+export class StatefulAppRenderableContent
+  extends StatefulBaseRenderableContent<AppRenderableContentData>
   implements RouterRenderableContent
 {
   private _state: RecordState<Omit<AppRenderableContentData, "type">>;

@@ -2,10 +2,10 @@ import { BlueprintNodeData } from "@elllphnt/elementa-base";
 import { combineLatestMerged, RecordState } from "@elllphnt/elementa-utils";
 import { Observable, of } from "rxjs";
 import { BlueprintNode } from "~/models/_.js";
-import { IdentifiableModel } from "../../_shared/_.js";
+import { StatefulIdentifiable } from "../../_shared/_.js";
 
-export class BlueprintNodeModel
-  extends IdentifiableModel<BlueprintNodeData>
+export class StatefulBlueprintNode
+  extends StatefulIdentifiable<BlueprintNodeData>
   implements BlueprintNode
 {
   private _state: RecordState<Omit<BlueprintNodeData, "id" | "__crdtAtomic">>;

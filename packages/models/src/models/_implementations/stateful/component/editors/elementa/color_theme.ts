@@ -3,7 +3,7 @@ import { Model, RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import { ColorTheme } from "../../../../../_.js";
 
-export class ColorThemeModel
+export class StatefulColorTheme
   extends Model<ColorThemeData>
   implements ColorTheme
 {

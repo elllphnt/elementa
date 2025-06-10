@@ -7,7 +7,7 @@ import { Model } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable, map } from "rxjs";
 import { StyleFragmentRegistry } from "~/models/_.js";
 
-export class StyleFragmentRegistryModel
+export class StatefulStyleFragmentRegistry
   extends Model<StyleFragmentData[]>
   implements StyleFragmentRegistry
 {

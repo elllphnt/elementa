@@ -8,17 +8,17 @@ import {
 import { combineLatest, map, Observable } from "rxjs";
 import { Typeface, TypefaceSheet } from "~/models/style/_.js";
 import { File, Project } from "~/project/_.js";
-import { BaseModel } from "../../_base.js";
-import { TypefaceModel } from "./typeface.js";
+import { StatefulModel } from "../../_base.js";
+import { StatefulTypeface } from "./typeface.js";
 
-export class TypefaceSheetModel
-  extends BaseModel<TypefaceSheetData>
+export class StatefulTypefaceSheet
+  extends StatefulModel<TypefaceSheetData>
   implements TypefaceSheet
 {
   project: Project;
 
   private _state: RecordState<Omit<TypefaceSheetData, "typefaces">>;
-  private _typefaces: AggregatedModelList<TypefaceModel>;
+  private _typefaces: AggregatedModelList<StatefulTypeface>;
 
   get typefaces(): Typeface[] {
     return this._typefaces.state.items;
@@ -56,7 +56,7 @@ export class TypefaceSheetModel
 
     this._typefaces = new AggregatedModelList({
       init: typefaces || [],
-      create: (data) => new TypefaceModel({ init: data }),
+      create: (data) => new StatefulTypeface({ init: data }),
       dataRef: (d) => d.id,
       modelRef: (m) => m.id,
     });

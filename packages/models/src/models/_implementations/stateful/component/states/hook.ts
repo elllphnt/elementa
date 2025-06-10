@@ -2,10 +2,10 @@ import { Expression, HookStateData } from "@elllphnt/elementa-base";
 import { Observable, map } from "rxjs";
 import { Component } from "../../../../_interfaces/component/component.js";
 import { HookState } from "../../../../_interfaces/component/states/hook.js";
-import { BaseStateModel } from "./_base.js";
+import { StatefulBaseState } from "./_base.js";
 
-export class HookStateModel
-  extends BaseStateModel<HookStateData>
+export class StatefulHookState
+  extends StatefulBaseState<HookStateData>
   implements HookState
 {
   // getters

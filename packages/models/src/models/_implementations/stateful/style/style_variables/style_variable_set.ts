@@ -12,15 +12,15 @@ import {
 } from "@elllphnt/elementa-utils";
 import { combineLatest, map, Observable } from "rxjs";
 import { StyleVariable, StyleVariableSet } from "~/models/style/_.js";
-import { IdentifiableModel } from "../../_shared/identifiable.js";
-import { StyleVariableModel } from "./style_variable.js";
+import { StatefulIdentifiable } from "../../_shared/identifiable.js";
+import { StatefulStyleVariable } from "./style_variable.js";
 
-export class StyleVariableSetModel
-  extends IdentifiableModel<StyleVariableSetData>
+export class StatefulStyleVariableSet
+  extends StatefulIdentifiable<StyleVariableSetData>
   implements StyleVariableSet
 {
   private _state: RecordState<Omit<StyleVariableSetData, "id" | "variables">>;
-  private _variables: AggregatedModelList<StyleVariableModel>;
+  private _variables: AggregatedModelList<StatefulStyleVariable>;
 
   get name(): string {
     return this._state.entry("name") || "";
@@ -82,7 +82,7 @@ export class StyleVariableSetModel
 
     this._variables = new AggregatedModelList({
       init: variables || [],
-      create: (data) => new StyleVariableModel({ init: data }),
+      create: (data) => new StatefulStyleVariable({ init: data }),
       dataRef: (d) => d.id,
       modelRef: (m) => m.id,
     });

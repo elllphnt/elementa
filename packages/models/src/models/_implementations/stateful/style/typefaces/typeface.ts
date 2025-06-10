@@ -6,10 +6,10 @@ import {
 } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import { Typeface } from "~/models/style/_.js";
-import { IdentifiableModel } from "../../_shared/identifiable.js";
+import { StatefulIdentifiable } from "../../_shared/identifiable.js";
 
-export class TypefaceModel
-  extends IdentifiableModel<TypefaceData>
+export class StatefulTypeface
+  extends StatefulIdentifiable<TypefaceData>
   implements Typeface
 {
   private _state: RecordState<Omit<TypefaceData, "id">>;

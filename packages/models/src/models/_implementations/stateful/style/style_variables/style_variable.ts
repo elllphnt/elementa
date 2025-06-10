@@ -6,10 +6,10 @@ import {
 } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import { StyleVariable } from "~/models/style/_.js";
-import { IdentifiableModel } from "../../_shared/identifiable.js";
+import { StatefulIdentifiable } from "../../_shared/identifiable.js";
 
-export class StyleVariableModel
-  extends IdentifiableModel<StyleVariableData>
+export class StatefulStyleVariable
+  extends StatefulIdentifiable<StyleVariableData>
   implements StyleVariable
 {
   private _state: RecordState<Omit<StyleVariableData, "id">>;

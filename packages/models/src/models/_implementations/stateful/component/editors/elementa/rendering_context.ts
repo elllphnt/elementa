@@ -12,15 +12,15 @@ import {
 } from "@elllphnt/elementa-utils";
 import { Observable, combineLatest } from "rxjs";
 import { RenderingContext } from "../../../../../_.js";
-import { ColorThemeModel } from "./color_theme.js";
-import { ViewportModel } from "./viewport.js";
+import { StatefulColorTheme } from "./color_theme.js";
+import { StatefulViewport } from "./viewport.js";
 
-export class RenderingContextModel
+export class StatefulRenderingContext
   extends Model<RenderingContextData>
   implements RenderingContext
 {
-  readonly theme: ColorThemeModel;
-  readonly viewport: ViewportModel;
+  readonly theme: StatefulColorTheme;
+  readonly viewport: StatefulViewport;
 
   private _state: RecordState<
     Omit<RenderingContextData, "theme" | "viewport" | "styleModifiers">
@@ -82,8 +82,8 @@ export class RenderingContextModel
     const { theme, viewport, styleModifiers, ...stateData } = init;
     super({ key: keyManager.next("rendering-context") });
 
-    this.theme = new ColorThemeModel({ init: theme ?? {} });
-    this.viewport = new ViewportModel({ init: viewport ?? {} });
+    this.theme = new StatefulColorTheme({ init: theme ?? {} });
+    this.viewport = new StatefulViewport({ init: viewport ?? {} });
 
     this._state = new RecordState({
       init: stateData,

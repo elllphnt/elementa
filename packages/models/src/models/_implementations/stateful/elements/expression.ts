@@ -2,10 +2,10 @@ import { ExpressionElementData } from "@elllphnt/elementa-base";
 import { combineLatestMerged } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import { ElementEnvironment, ExpressionElement } from "~/models/component/_.js";
-import { BaseElementModel } from "./_base.js";
+import { StatefulBaseElement } from "./_base.js";
 
-export class ExpressionElementModel
-  extends BaseElementModel<ExpressionElementData>
+export class StatefulExpressionElement
+  extends StatefulBaseElement<ExpressionElementData>
   implements ExpressionElement
 {
   get expression(): string | undefined {

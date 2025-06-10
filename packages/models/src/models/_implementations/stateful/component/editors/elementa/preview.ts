@@ -5,8 +5,8 @@ import {
 } from "@elllphnt/elementa-base";
 import {
   Model,
-  OptionalModel,
   RecordState,
+  StatefulOptional,
   combineLatestMerged,
   keyManager,
 } from "@elllphnt/elementa-utils";
@@ -14,20 +14,20 @@ import { Observable, combineLatest, map } from "rxjs";
 import { Project } from "../../../../../../infrastructure/_.js";
 import { ElementaPreview } from "../../../../../_.js";
 import {
-  RenderableContentModel,
-  createRenderableContentModel,
+  StatefulRenderableContent,
+  StatefulcreateRenderableContent,
 } from "./renderable_content/_content.js";
-import { RenderingContextModel } from "./rendering_context.js";
+import { StatefulRenderingContext } from "./rendering_context.js";
 
-export class ElementaPreviewModel
+export class StatefulElementaPreview
   extends Model<ElementaPreviewData>
   implements ElementaPreview
 {
   readonly project: Project;
-  readonly context: RenderingContextModel;
+  readonly context: StatefulRenderingContext;
 
   private _state: RecordState<Omit<ElementaPreviewData, "context" | "content">>;
-  private _content: OptionalModel<RenderableContentModel>;
+  private _content: StatefulOptional<StatefulRenderableContent>;
 
   get content() {
     return this._content.state.value;
@@ -108,13 +108,14 @@ export class ElementaPreviewModel
 
     this.project = project;
 
-    this.context = new RenderingContextModel({
+    this.context = new StatefulRenderingContext({
       init: context ?? {},
     });
 
-    this._content = new OptionalModel({
+    this._content = new StatefulOptional({
       init: content,
-      create: (data) => createRenderableContentModel({ init: data, project }),
+      create: (data) =>
+        StatefulcreateRenderableContent({ init: data, project }),
     });
 
     this._state = new RecordState({

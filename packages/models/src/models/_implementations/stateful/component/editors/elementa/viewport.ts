@@ -3,7 +3,7 @@ import { keyManager, Model, RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import { Viewport } from "../../../../../_.js";
 
-export class ViewportModel extends Model<ViewportData> implements Viewport {
+export class StatefulViewport extends Model<ViewportData> implements Viewport {
   private _state: RecordState<Partial<ViewportData>>;
 
   get height(): number | undefined {

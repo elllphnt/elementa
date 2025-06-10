@@ -2,10 +2,10 @@ import { DataInputData } from "@elllphnt/elementa-base";
 import { RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import { DataInput } from "~/models/component/_.js";
-import { BaseModel } from "../_base.js";
+import { StatefulModel } from "../_base.js";
 
-export class DataInputModel
-  extends BaseModel<DataInputData>
+export class StatefulDataInput
+  extends StatefulModel<DataInputData>
   implements DataInput
 {
   private _state: RecordState<DataInputData>;

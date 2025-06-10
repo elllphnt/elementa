@@ -6,23 +6,23 @@ import {
 } from "@elllphnt/elementa-utils";
 import { Observable, combineLatest, map } from "rxjs";
 import { RouteTree } from "../../../_interfaces/router/route_tree.js";
-import { IdentifiableModel } from "../_shared/identifiable.js";
-import { RouterModel } from "./router.js";
+import { StatefulIdentifiable } from "../_shared/identifiable.js";
+import { StatefulRouter } from "./router.js";
 
-export class RouteTreeModel
-  extends IdentifiableModel<RouteTreeData>
-  implements RouteTree<RouteTreeModel>
+export class StatefulRouteTree
+  extends StatefulIdentifiable<RouteTreeData>
+  implements RouteTree<StatefulRouteTree>
 {
-  readonly app: RouterModel;
+  readonly app: StatefulRouter;
 
   private _state: RecordState<Omit<RouteTreeData, "children" | "id">>;
-  private _children: AggregatedModelList<RouteTreeModel>;
+  private _children: AggregatedModelList<StatefulRouteTree>;
 
-  get children(): RouteTreeModel[] {
+  get children(): StatefulRouteTree[] {
     return this._children.state.items;
   }
 
-  get children$(): Observable<RouteTreeModel[]> {
+  get children$(): Observable<StatefulRouteTree[]> {
     return this._children.state.items$;
   }
 
@@ -196,7 +196,7 @@ export class RouteTreeModel
     ]);
   }
 
-  constructor({ init, app }: { init: RouteTreeData; app: RouterModel }) {
+  constructor({ init, app }: { init: RouteTreeData; app: StatefulRouter }) {
     const { children, id, ...stateData } = init;
     super({ id });
 
@@ -208,7 +208,7 @@ export class RouteTreeModel
 
     this._children = new AggregatedModelList({
       init: children || [],
-      create: (data) => new RouteTreeModel({ init: data, app }),
+      create: (data) => new StatefulRouteTree({ init: data, app }),
       dataRef: (d) => d.id,
       modelRef: (m) => m.id,
     });
@@ -251,13 +251,13 @@ export class RouteTreeModel
     this._state.set("parentId", id);
   }
 
-  addRoutes(routes: RouteTreeModel[]): void {
+  addRoutes(routes: StatefulRouteTree[]): void {
     this._children.state.append(routes);
   }
-  insertRoutes(index: number, routes: RouteTreeModel[]): void {
+  insertRoutes(index: number, routes: StatefulRouteTree[]): void {
     this._children.state.insertAt(index, routes);
   }
-  removeRoutes(routes: RouteTreeModel[]): void {
+  removeRoutes(routes: StatefulRouteTree[]): void {
     const set = new Set(routes);
     this._children.state.remove((r) => set.has(r));
   }

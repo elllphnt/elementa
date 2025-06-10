@@ -8,16 +8,16 @@ import {
 import { combineLatest, map, Observable } from "rxjs";
 import { Keyframe, KeyframeSheet } from "~/models/style/_.js";
 import { File, Project } from "~/project/_.js";
-import { BaseModel } from "../../_base.js";
+import { StatefulModel } from "../../_base.js";
 
-export class KeyframeSheetModel
-  extends BaseModel<KeyframeSheetData>
+export class StatefulKeyframeSheet
+  extends StatefulModel<KeyframeSheetData>
   implements KeyframeSheet
 {
   project: Project;
 
   private _state: RecordState<Omit<KeyframeSheetData, "keyframes">>;
-  private _keyframes: AggregatedModelList<KeyframeModel>;
+  private _keyframes: AggregatedModelList<StatefulKeyframe>;
 
   get keyframes(): Keyframe[] {
     return this._keyframes.state.items;
@@ -55,7 +55,7 @@ export class KeyframeSheetModel
 
     this._keyframes = new AggregatedModelList({
       init: keyframes || [],
-      create: (data) => new KeyframeModel({ init: data }),
+      create: (data) => new StatefulKeyframe({ init: data }),
       dataRef: (d) => d.id,
       modelRef: (m) => m.id,
     });
@@ -78,7 +78,7 @@ export class KeyframeSheetModel
 
   addKeyframe(keyframe: Keyframe): void {
     // Convert the keyframe to data and add it
-    this._keyframes.add((keyframe as KeyframeModel).data);
+    this._keyframes.add((keyframe as StatefulKeyframe).data);
   }
 
   removeKeyframe(id: string): void {

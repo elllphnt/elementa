@@ -12,15 +12,15 @@ import {
   Element,
   ElementEnvironment,
 } from "~/models/component/_.js";
-import { BaseElementModel } from "./_base.js";
-import { createElementModel, ElementModel } from "./_element.js";
+import { StatefulBaseElement } from "./_base.js";
+import { StatefulcreateElement, StatefulElement } from "./_element.js";
 
-export class ContainerElementModel
-  extends BaseElementModel<ContainerElementData, "content">
+export class StatefulContainerElement
+  extends StatefulBaseElement<ContainerElementData, "content">
   implements ContainerElement
 {
   // private properties
-  private _content: AggregatedModelList<ElementModel>;
+  private _content: AggregatedModelList<StatefulElement>;
 
   // getters
   get content(): Element[] {
@@ -92,7 +92,7 @@ export class ContainerElementModel
     this._content = new AggregatedModelList({
       init: content || [],
       create: (data) =>
-        createElementModel({
+        StatefulcreateElement({
           init: data,
           environment: this.environment,
         }),

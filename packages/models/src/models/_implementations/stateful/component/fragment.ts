@@ -11,12 +11,15 @@ import { combineLatest, map, Observable, switchMap } from "rxjs";
 import { CssStyleSheet } from "../../../../css/_.js";
 import { Component, Element, Fragment } from "../../../_.js";
 import { makeFragmentUrl } from "../../../_interfaces/component/fragment/url.js";
-import { DataInputModel } from "../_shared/data_input.js";
-import { IdentifiableModel } from "../_shared/identifiable.js";
-import { createElementModel, ElementModel } from "../elements/_element.js";
+import { StatefulDataInput } from "../_shared/data_input.js";
+import { StatefulIdentifiable } from "../_shared/identifiable.js";
+import {
+  StatefulcreateElement,
+  StatefulElement,
+} from "../elements/_element.js";
 
-export class FragmentModel
-  extends IdentifiableModel<FragmentData>
+export class StatefulFragment
+  extends StatefulIdentifiable<FragmentData>
   implements Fragment
 {
   component: Component;
@@ -32,8 +35,8 @@ export class FragmentModel
   protected _state: RecordState<
     Omit<FragmentData, "id" | "content" | "params">
   >;
-  private _content: AggregatedModelList<ElementModel>;
-  private _params: AggregatedModelList<DataInputModel>;
+  private _content: AggregatedModelList<StatefulElement>;
+  private _params: AggregatedModelList<StatefulDataInput>;
 
   // properties
   get content(): Element[] {
@@ -44,11 +47,11 @@ export class FragmentModel
     return this._content.state.items$;
   }
 
-  get params(): DataInputModel[] {
+  get params(): StatefulDataInput[] {
     return this._params.state.items;
   }
 
-  get params$(): Observable<DataInputModel[]> {
+  get params$(): Observable<StatefulDataInput[]> {
     return this._params.state.items$;
   }
 
@@ -115,7 +118,7 @@ export class FragmentModel
     this._content = new AggregatedModelList({
       init: content || [],
       create: (data) =>
-        createElementModel({
+        StatefulcreateElement({
           init: data,
           project: component.file.project,
         }),

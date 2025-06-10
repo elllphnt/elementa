@@ -9,15 +9,15 @@ import {
   ElementEnvironment,
   SlotElement,
 } from "~/models/component/_.js";
-import { BaseElementModel } from "./_base.js";
-import { createElementModel, ElementModel } from "./_element.js";
+import { StatefulBaseElement } from "./_base.js";
+import { StatefulcreateElement, StatefulElement } from "./_element.js";
 
-export class SlotElementModel
-  extends BaseElementModel<SlotElementData, "placeholder">
+export class StatefulSlotElement
+  extends StatefulBaseElement<SlotElementData, "placeholder">
   implements SlotElement
 {
   // private properties
-  private _placeholder: AggregatedModelList<ElementModel>;
+  private _placeholder: AggregatedModelList<StatefulElement>;
 
   // getters
   get placeholder(): Element[] {
@@ -69,7 +69,7 @@ export class SlotElementModel
     this._placeholder = new AggregatedModelList({
       init: placeholder || [],
       create: (data) =>
-        createElementModel({
+        StatefulcreateElement({
           init: data,
           environment: this.environment,
         }),

@@ -4,7 +4,7 @@ import { Observable, of } from "rxjs";
 import { Project } from "../../../../../../../infrastructure/_.js";
 import { BaseRenderableContent } from "../../../../../../_.js";
 
-export abstract class BaseRenderableContentModel<
+export abstract class StatefulBaseRenderableContent<
     D extends BaseRenderableContentData<string>
   >
   extends Model<D>

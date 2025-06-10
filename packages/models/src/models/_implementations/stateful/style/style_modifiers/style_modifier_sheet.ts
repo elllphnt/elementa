@@ -14,17 +14,17 @@ import {
   StyleModifierSheet,
 } from "~/models/style/_.js";
 import { File, Project } from "~/project/_.js";
-import { BaseModel } from "../../_base.js";
-import { StyleModifierDefinitionModel } from "./style_modifier_definition.js";
+import { StatefulModel } from "../../_base.js";
+import { StatefulStyleModifierDefinition } from "./style_modifier_definition.js";
 
-export class StyleModifierSheetModel
-  extends BaseModel<StyleModifierSheetData>
+export class StatefulStyleModifierSheet
+  extends StatefulModel<StyleModifierSheetData>
   implements StyleModifierSheet
 {
   project: Project;
 
   private _state: RecordState<Omit<StyleModifierSheetData, "modifiers">>;
-  private _modifiers: AggregatedModelList<StyleModifierDefinitionModel>;
+  private _modifiers: AggregatedModelList<StatefulStyleModifierDefinition>;
 
   get modifiers(): StyleModifierDefinition[] {
     return this._modifiers.state.items;
@@ -62,7 +62,7 @@ export class StyleModifierSheetModel
 
     this._modifiers = new AggregatedModelList({
       init: modifiers || [],
-      create: (data) => new StyleModifierDefinitionModel({ init: data }),
+      create: (data) => new StatefulStyleModifierDefinition({ init: data }),
       dataRef: (d) => d.id,
       modelRef: (m) => m.id,
     });

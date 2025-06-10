@@ -20,15 +20,15 @@ import { SlotFill } from "~/models/_shared/_.js";
 import { ComponentElement, ElementEnvironment } from "~/models/component/_.js";
 import { FileModelAdaptor } from "~/project/_.js";
 import { CssStyleSheet } from "../../../../css/_.js";
-import { SlotFillModel } from "../_shared/slot_fill.js";
-import { BaseElementModel } from "./_base.js";
+import { StatefulSlotFill } from "../_shared/slot_fill.js";
+import { StatefulBaseElement } from "./_base.js";
 
-export class ComponentElementModel
-  extends BaseElementModel<ComponentElementData, "fills">
+export class StatefulComponentElement
+  extends StatefulBaseElement<ComponentElementData, "fills">
   implements ComponentElement
 {
   // private properties
-  private _fills: AggregatedModelRecord<SlotFillModel>;
+  private _fills: AggregatedModelRecord<StatefulSlotFill>;
 
   // getters
   get componentUrl(): string | undefined {
@@ -127,7 +127,7 @@ export class ComponentElementModel
     this._fills = new AggregatedModelRecord({
       init: fills || {},
       create: (data, key) =>
-        new SlotFillModel({
+        new StatefulSlotFill({
           init: data,
           environment,
           cssStyleSheetTarget: this.fillCssStylesheetTargetKey(key),
@@ -162,7 +162,7 @@ export class ComponentElementModel
     }
 
     if (create) {
-      const newFill = new SlotFillModel({
+      const newFill = new StatefulSlotFill({
         init: {},
         environment: this.environment,
         cssStyleSheetTarget: this.fillCssStylesheetTargetKey(id),
@@ -182,7 +182,7 @@ export class ComponentElementModel
       map((record) => record[id]),
       tap((fill) => {
         if (!fill && create) {
-          const newFill = new SlotFillModel({
+          const newFill = new StatefulSlotFill({
             init: {},
             environment: this.environment,
             cssStyleSheetTarget: this.fillCssStylesheetTargetKey(id),

@@ -2,10 +2,10 @@ import { VectorElementData, VectorNodeData } from "@elllphnt/elementa-base";
 import { combineLatestMerged } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import { ElementEnvironment, VectorElement } from "~/models/component/_.js";
-import { BaseElementModel } from "./_base.js";
+import { StatefulBaseElement } from "./_base.js";
 
-export class VectorElementModel
-  extends BaseElementModel<VectorElementData>
+export class StatefulVectorElement
+  extends StatefulBaseElement<VectorElementData>
   implements VectorElement
 {
   // getters

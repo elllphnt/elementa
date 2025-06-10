@@ -2,10 +2,10 @@ import { MediaData, MediaElementData } from "@elllphnt/elementa-base";
 import { combineLatestMerged } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import { ElementEnvironment, MediaElement } from "~/models/component/_.js";
-import { BaseElementModel } from "./_base.js";
+import { StatefulBaseElement } from "./_base.js";
 
-export class MediaElementModel
-  extends BaseElementModel<MediaElementData>
+export class StatefulMediaElement
+  extends StatefulBaseElement<MediaElementData>
   implements MediaElement
 {
   // getters

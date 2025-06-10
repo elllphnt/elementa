@@ -1,22 +1,22 @@
 import { StateData } from "@elllphnt/elementa-base";
 import { Component } from "../../../../_interfaces/component/component.js";
-import { HookStateModel } from "./hook.js";
-import { ValueStateModel } from "./value.js";
+import { StatefulHookState } from "./hook.js";
+import { StatefulValueState } from "./value.js";
 
-export type StateModel = ValueStateModel | HookStateModel;
+export type StatefulState = StatefulValueState | StatefulHookState;
 
-export function createStateModel({
+export function StatefulcreateState({
   init,
   component,
 }: {
   init: StateData;
   component: Component;
-}): StateModel {
+}): StatefulState {
   switch (init.type) {
     case "value":
-      return new ValueStateModel({ init, component });
+      return new StatefulValueState({ init, component });
     case "hook":
-      return new HookStateModel({ init, component });
+      return new StatefulHookState({ init, component });
     default:
       throw new Error(`Unknown state type: ${(init as any).type}`);
   }

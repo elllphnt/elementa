@@ -7,10 +7,10 @@ import {
   FragmentElement,
 } from "~/models/component/_.js";
 import { CssStyleSheet } from "../../../../css/_.js";
-import { BaseElementModel } from "./_base.js";
+import { StatefulBaseElement } from "./_base.js";
 
-export class FragmentElementModel
-  extends BaseElementModel<FragmentElementData>
+export class StatefulFragmentElement
+  extends StatefulBaseElement<FragmentElementData>
   implements FragmentElement
 {
   // getters

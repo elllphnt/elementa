@@ -11,17 +11,17 @@ import {
 import { combineLatest, map, Observable } from "rxjs";
 import { StyleVariableSet, StyleVariableSheet } from "~/models/style/_.js";
 import { File, Project } from "~/project/_.js";
-import { BaseModel } from "../../_base.js";
-import { StyleVariableSetModel } from "./style_variable_set.js";
+import { StatefulModel } from "../../_base.js";
+import { StatefulStyleVariableSet } from "./style_variable_set.js";
 
-export class StyleVariableSheetModel
-  extends BaseModel<StyleVariableSheetData>
+export class StatefulStyleVariableSheet
+  extends StatefulModel<StyleVariableSheetData>
   implements StyleVariableSheet
 {
   project: Project;
 
   private _state: RecordState<Omit<StyleVariableSheetData, "variableSets">>;
-  private _variableSets: AggregatedModelList<StyleVariableSetModel>;
+  private _variableSets: AggregatedModelList<StatefulStyleVariableSet>;
 
   get variableSets(): StyleVariableSet[] {
     return this._variableSets.state.items;
@@ -59,7 +59,7 @@ export class StyleVariableSheetModel
 
     this._variableSets = new AggregatedModelList({
       init: variableSets || [],
-      create: (data) => new StyleVariableSetModel({ init: data }),
+      create: (data) => new StatefulStyleVariableSet({ init: data }),
       dataRef: (d) => d.id,
       modelRef: (m) => m.id,
     });

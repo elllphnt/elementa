@@ -3,13 +3,13 @@ import { assert, keyManager, RecordState } from "@elllphnt/elementa-utils";
 import { Observable, of } from "rxjs";
 import { Component } from "../../../../_interfaces/component/component.js";
 import { BaseState } from "../../../../_interfaces/component/states/_base.js";
-import { IdentifiableModel } from "../../_shared/identifiable.js";
+import { StatefulIdentifiable } from "../../_shared/identifiable.js";
 
-export abstract class BaseStateModel<
+export abstract class StatefulBaseState<
     T extends BaseStateData<string>,
     K extends keyof T = never
   >
-  extends IdentifiableModel<T>
+  extends StatefulIdentifiable<T>
   implements BaseState<T["type"]>
 {
   // readonly properties

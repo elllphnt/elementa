@@ -9,17 +9,20 @@ import {
 import { Observable, combineLatest, map } from "rxjs";
 import { Component } from "~/models/component/_.js";
 import { File } from "~/project/_.js";
-import { DataInputModel } from "../_shared/data_input.js";
-import { ElementaPreviewModel } from "./editors/elementa/preview.js";
-import { ElementaStageModel } from "./editors/elementa/stage.js";
-import { FragmentModel } from "./fragment.js";
-import { StateModel, createStateModel } from "./states/_state.js";
+import { StatefulDataInput } from "../_shared/data_input.js";
+import { StatefulElementaPreview } from "./editors/elementa/preview.js";
+import { StatefulElementaStage } from "./editors/elementa/stage.js";
+import { StatefulFragment } from "./fragment.js";
+import { StatefulState, StatefulcreateState } from "./states/_state.js";
 
-export class ComponentModel extends Model<ComponentData> implements Component {
+export class StatefulComponent
+  extends Model<ComponentData>
+  implements Component
+{
   readonly file: File;
-  readonly template: FragmentModel;
-  readonly stage: ElementaStageModel;
-  readonly preview: ElementaPreviewModel;
+  readonly template: StatefulFragment;
+  readonly stage: StatefulElementaStage;
+  readonly preview: StatefulElementaPreview;
 
   private _state: RecordState<
     Omit<
@@ -27,9 +30,9 @@ export class ComponentModel extends Model<ComponentData> implements Component {
       "template" | "props" | "fragments" | "states" | "stage" | "preview"
     >
   >;
-  private _props: AggregatedModelList<DataInputModel>;
-  private _states: AggregatedModelList<StateModel>;
-  private _fragments: AggregatedModelList<FragmentModel>;
+  private _props: AggregatedModelList<StatefulDataInput>;
+  private _states: AggregatedModelList<StatefulState>;
+  private _fragments: AggregatedModelList<StatefulFragment>;
 
   constructor({ init, file }: { init: ComponentData; file: File }) {
     const { template, props, fragments, states, editors, ...stateData } = init;
@@ -39,11 +42,11 @@ export class ComponentModel extends Model<ComponentData> implements Component {
     this.file = file;
 
     // Create stage and preview first
-    this.stage = new ElementaStageModel({
+    this.stage = new StatefulElementaStage({
       init: stage || {},
       project: file.project,
     });
-    this.preview = new ElementaPreviewModel({
+    this.preview = new StatefulElementaPreview({
       init: preview || {},
       project: file.project,
     });
@@ -53,14 +56,14 @@ export class ComponentModel extends Model<ComponentData> implements Component {
     });
 
     // Create template
-    this.template = new FragmentModel({
+    this.template = new StatefulFragment({
       init: template || { id: "template" },
       component: this,
     });
 
     this._props = new AggregatedModelList({
       init: props || [],
-      create: (data) => new DataInputModel({ init: data }),
+      create: (data) => new StatefulDataInput({ init: data }),
       dataRef: (d) => d.name,
       modelRef: (m) => m.name,
     });
@@ -68,7 +71,7 @@ export class ComponentModel extends Model<ComponentData> implements Component {
     this._fragments = new AggregatedModelList({
       init: fragments || [],
       create: (data) =>
-        new FragmentModel({
+        new StatefulFragment({
           init: data,
           component: this,
         }),
@@ -78,7 +81,7 @@ export class ComponentModel extends Model<ComponentData> implements Component {
 
     this._states = new AggregatedModelList({
       init: states || [],
-      create: (data) => createStateModel({ init: data, component: this }),
+      create: (data) => StatefulcreateState({ init: data, component: this }),
       dataRef: (d) => d.id,
       modelRef: (m) => m.id,
     });
@@ -125,27 +128,27 @@ export class ComponentModel extends Model<ComponentData> implements Component {
     ]);
   }
 
-  get props(): DataInputModel[] {
+  get props(): StatefulDataInput[] {
     return this._props.state.items;
   }
 
-  get props$(): Observable<DataInputModel[]> {
+  get props$(): Observable<StatefulDataInput[]> {
     return this._props.state.items$;
   }
 
-  get fragments(): FragmentModel[] {
+  get fragments(): StatefulFragment[] {
     return this._fragments.state.items;
   }
 
-  get fragments$(): Observable<FragmentModel[]> {
+  get fragments$(): Observable<StatefulFragment[]> {
     return this._fragments.state.items$;
   }
 
-  get states(): StateModel[] {
+  get states(): StatefulState[] {
     return this._states.state.items;
   }
 
-  get states$(): Observable<StateModel[]> {
+  get states$(): Observable<StatefulState[]> {
     return this._states.state.items$;
   }
 
@@ -158,11 +161,11 @@ export class ComponentModel extends Model<ComponentData> implements Component {
   }
 
   // methods
-  fragment(id: string): FragmentModel | undefined {
+  fragment(id: string): StatefulFragment | undefined {
     return this._fragments.state.items.find((fragment) => fragment.id === id);
   }
 
-  fragment$(id: string): Observable<FragmentModel | undefined> {
+  fragment$(id: string): Observable<StatefulFragment | undefined> {
     return this.fragments$.pipe(
       map((fragments) => fragments.find((fragment) => fragment.id === id))
     );

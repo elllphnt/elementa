@@ -25,17 +25,17 @@ import {
   PrimitiveSubElement,
 } from "~/models/component/_.js";
 import { CssStyleSheet } from "../../../../../css/_.js";
-import { BaseElementModel } from "../_base.js";
-import { createElementModel, ElementModel } from "../_element.js";
-import { PrimitiveSubElementModel } from "./sub_element.js";
+import { StatefulBaseElement } from "../_base.js";
+import { StatefulcreateElement, StatefulElement } from "../_element.js";
+import { StatefulPrimitiveSubElement } from "./sub_element.js";
 
-export class PrimitiveElementModel
-  extends BaseElementModel<PrimitiveElementData, "content" | "elements">
+export class StatefulPrimitiveElement
+  extends StatefulBaseElement<PrimitiveElementData, "content" | "elements">
   implements PrimitiveElement
 {
   // private properties
-  private _content: AggregatedModelList<ElementModel>;
-  private _subElements: AggregatedModelRecord<PrimitiveSubElementModel>;
+  private _content: AggregatedModelList<StatefulElement>;
+  private _subElements: AggregatedModelRecord<StatefulPrimitiveSubElement>;
 
   // getters
   get content(): Element[] {
@@ -131,7 +131,7 @@ export class PrimitiveElementModel
     this._content = new AggregatedModelList({
       init: content || [],
       create: (data) =>
-        createElementModel({
+        StatefulcreateElement({
           init: data,
           environment: this.environment,
         }),
@@ -142,7 +142,7 @@ export class PrimitiveElementModel
     this._subElements = new AggregatedModelRecord({
       init: elements || {},
       create: (data) =>
-        new PrimitiveSubElementModel({
+        new StatefulPrimitiveSubElement({
           init: data,
           environment: this.environment,
         }),
@@ -185,7 +185,7 @@ export class PrimitiveElementModel
     let element = this._subElements.state.record[name];
 
     if (!element && create) {
-      element = new PrimitiveSubElementModel({
+      element = new StatefulPrimitiveSubElement({
         init: {},
         environment: this.environment,
       });
@@ -205,7 +205,7 @@ export class PrimitiveElementModel
       map((record) => record[name]),
       tap((element) => {
         if (!element && create) {
-          const newElement = new PrimitiveSubElementModel({
+          const newElement = new StatefulPrimitiveSubElement({
             init: {},
             environment: this.environment,
           });

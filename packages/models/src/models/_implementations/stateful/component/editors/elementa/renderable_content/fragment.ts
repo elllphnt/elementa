@@ -3,10 +3,10 @@ import { combineLatestMerged, RecordState } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
 import { Project } from "../../../../../../../infrastructure/_.js";
 import { Fragment, FragmentRenderableContent } from "../../../../../../_.js";
-import { BaseRenderableContentModel } from "./_base.js";
+import { StatefulBaseRenderableContent } from "./_base.js";
 
-export class FragmentRenderableContentModel
-  extends BaseRenderableContentModel<FragmentRenderableContentData>
+export class StatefulFragmentRenderableContent
+  extends StatefulBaseRenderableContent<FragmentRenderableContentData>
   implements FragmentRenderableContent
 {
   private _state: RecordState<Omit<FragmentRenderableContentData, "type">>;
