@@ -1,0 +1,140 @@
+import { FragmentData } from "@elllphnt/elementa-base";
+import {
+  AggregatedModelList,
+  combineLatestArrays,
+  combineLatestMerged,
+  combineLatestOrEmpty,
+  keyManager,
+  RecordState,
+} from "@elllphnt/elementa-utils";
+import { combineLatest, map, Observable, switchMap } from "rxjs";
+import { CssStyleSheet } from "../../../../css/_.js";
+import { Component, Element, Fragment } from "../../../_.js";
+import { makeFragmentUrl } from "../../../_interfaces/component/fragment/url.js";
+import { DataInputModel } from "../_shared/data_input.js";
+import { IdentifiableModel } from "../_shared/identifiable.js";
+import { createElementModel, ElementModel } from "../elements/_element.js";
+
+export class FragmentModel
+  extends IdentifiableModel<FragmentData>
+  implements Fragment
+{
+  component: Component;
+
+  get url(): string {
+    return makeFragmentUrl({
+      projectId: this.component.file.project.id,
+      fileId: this.component.file.id,
+      fragmentId: this.id,
+    });
+  }
+
+  protected _state: RecordState<
+    Omit<FragmentData, "id" | "content" | "params">
+  >;
+  private _content: AggregatedModelList<ElementModel>;
+  private _params: AggregatedModelList<DataInputModel>;
+
+  // properties
+  get content(): Element[] {
+    return this._content.state.items;
+  }
+
+  get content$(): Observable<Element[]> {
+    return this._content.state.items$;
+  }
+
+  get params(): DataInputModel[] {
+    return this._params.state.items;
+  }
+
+  get params$(): Observable<DataInputModel[]> {
+    return this._params.state.items$;
+  }
+
+  get allCssStylesheets(): CssStyleSheet[] {
+    return [...this.content.flatMap((c) => c.allCssStylesheets)];
+  }
+  get allCssStylesheets$(): Observable<CssStyleSheet[]> {
+    return combineLatestArrays([
+      this.content$.pipe(
+        switchMap((c) =>
+          combineLatestOrEmpty(c.map((c) => c.allCssStylesheets$))
+        ),
+        map((c) => c.flat())
+      ),
+    ]);
+  }
+
+  get slotIds(): string[] {
+    return this.content.flatMap((c) => c.slotIds);
+  }
+
+  get slotIds$(): Observable<string[]> {
+    return this.content$.pipe(
+      switchMap((c) => combineLatestOrEmpty(c.map((c) => c.slotIds$))),
+      map((slotIdsArrays) => slotIdsArrays.flat())
+    );
+  }
+
+  // data getters
+  get data(): FragmentData {
+    return {
+      ...super._data,
+      ...this._state.record,
+      content: this._content.data,
+    };
+  }
+
+  get data$(): Observable<FragmentData> {
+    return combineLatestMerged([
+      super._data$,
+      this._state.record$,
+      combineLatest({
+        content: this._content.data$,
+      }),
+    ]);
+  }
+
+  constructor({
+    init,
+    component,
+  }: {
+    init: FragmentData;
+    component: Component;
+  }) {
+    const { id, content, ...stateData } = init;
+    super({ id, key: keyManager.next("fragment") });
+
+    this.component = component;
+
+    this._state = new RecordState({
+      init: stateData,
+    });
+
+    this._content = new AggregatedModelList({
+      init: content || [],
+      create: (data) =>
+        createElementModel({
+          init: data,
+          project: component.file.project,
+        }),
+      dataRef: (d) => d.id,
+      modelRef: (m) => m.id,
+    });
+
+    this.addDisposer(() => {
+      this._state.dispose();
+      this._content.dispose();
+    });
+  }
+
+  // restore method
+  restore(data: FragmentData): void {
+    const { id, content, ...stateData } = data;
+    super.restore({ id });
+
+    this._state.setRecord(stateData);
+    this._content.restore(content || []);
+  }
+}

@@ -1,50 +1,83 @@
-// entity
-export function makeElementaEntityResourceId({
-  componentUrl,
-  entityId,
-}: {
-  componentUrl: string;
-  entityId: string;
-}) {
-  return `${encodeURIComponent(componentUrl)}:${entityId}`;
-}
-export function parseElementaEntityResourceId(resourceId: string) {
-  const [componentUrl, ...entityId] = resourceId.split(":");
-  if (!componentUrl || !entityId.length) {
-    console.error(`Invalid entity resource id: ${resourceId}`);
-    return undefined;
-  }
+import { assert } from "@elllphnt/elementa-utils";
 
+export type FileUrlStruct = {
+  projectId?: string;
+  fileId: string;
+};
+export type AbsoluteFileUrlStruct = {
+  projectId: string;
+  fileId: string;
+};
+
+export function makeFileUrl({ projectId, fileId }: FileUrlStruct) {
+  if (projectId) {
+    return `file:${projectId}/${fileId}`;
+  } else {
+    return `file:${fileId}`;
+  }
+}
+export function parseFileUrl(url: string): FileUrlStruct {
+  const parts = url.slice(5).split("/", 2);
+  if (!parts.length) {
+    return {
+      fileId: "",
+    };
+  } else if (parts.length === 1) {
+    return {
+      fileId: parts[0],
+    };
+  } else {
+    return {
+      projectId: parts[0],
+      fileId: parts[1],
+    };
+  }
+}
+export function parseAbsoluteFileUrl(url: string): AbsoluteFileUrlStruct {
+  const parts = url.slice(5).split("/", 2);
   return {
-    componentUrl: decodeURIComponent(componentUrl),
-    entityId: entityId.join(":"),
+    projectId: parts[0] || "",
+    fileId: parts[1] || "",
   };
 }
+export function isFileUrl(url: string): boolean {
+  return url.startsWith("file:");
+}
+export function isRelativeFileUrl(url: string): boolean {
+  return url.startsWith("file:") && !url.includes("/");
+}
+export function isAbsoluteFileUrl(url: string): boolean {
+  return url.startsWith("file:") && url.includes("/");
+}
 
-// url
-export function makeElementaUrl({
-  resourceType,
-  resourceId,
+export function toAbsoluteFileUrl({
+  url,
+  projectId,
 }: {
-  resourceType: string;
-  resourceId: string;
-}) {
-  return `elementa:${resourceType}:${resourceId}`;
-}
-export function isElementaUrl(url: string) {
-  return url.startsWith("elementa:");
-}
-export function parseElementaUrl(url: string) {
-  if (!isElementaUrl(url)) {
-    console.error(`Invalid elementa url: ${url}`);
-    return undefined;
+  projectId: string;
+  url: string;
+}): string {
+  if (!isRelativeFileUrl(url)) {
+    return url;
   }
+  const { fileId } = parseFileUrl(url);
+  return makeFileUrl({ projectId, fileId });
+}
+export function toRelativeFileUrl({
+  url,
+  projectId,
+}: {
+  url: string;
+  projectId?: string;
+}): string {
+  if (!isAbsoluteFileUrl(url)) {
+    return url;
+  }
+  const { fileId, projectId: urlProjectId } = parseFileUrl(url);
+  assert(
+    projectId === urlProjectId,
+    `Project ID mismatch: expected ${projectId}, got ${urlProjectId}`
+  );
 
-  const key = url.slice("elementa:".length);
-  const [resourceType, ...resourceId] = key.split(":");
-
-  return {
-    resourceType,
-    resourceId: resourceId.join(":"),
-  };
+  return makeFileUrl({ fileId });
 }

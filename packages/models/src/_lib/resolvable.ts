@@ -16,7 +16,7 @@ import {
   switchMap,
   tap,
 } from "rxjs/operators";
-import { Infrastructure } from "../infrastructure/interfaces/infrastructure.js";
+import { Infrastructure } from "../infrastructure/infrastructure.js";
 
 export interface ResolvableValueState<T> {
   value?: T;

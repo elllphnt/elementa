@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { genId } from "~/_lib/id.js";
-import { AppModel } from "~/index.js";
+import { RouterModel } from "~/index.js";
 
 describe("Plain App Model", () => {
-  let app: AppModel;
+  let app: RouterModel;
 
   beforeEach(() => {
-    app = new AppModel({
+    app = new RouterModel({
       init: {},
       file: {
         project: {
