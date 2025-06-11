@@ -1,6 +1,5 @@
 import { StaticReference } from "@elllphnt/elementa-base";
-import { Project } from "~/project/_.js";
-import { Infrastructure } from "./infrastructure.js";
+import { Infrastructure, Project } from "@elllphnt/elementa-core";
 
 export class SingleProjectInfrastructure extends Infrastructure {
   private _project: Project;

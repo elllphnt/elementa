@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "tsBuildInfoFile": "build/.tsbuildinfo",
+    "tsBuildInfoFile": "./build/.tsbuildinfo",
     "baseUrl": ".",
     "strict": false,
     "strictFunctionTypes": false,
@@ -9,6 +9,6 @@
       "~/*": ["./src/*"]
     }
   },
-  "exclude": ["src/models/_implementations/crdt"],
+  "exclude": ["./src/models/_crdt", "./src/models/crdt"],
   "references": []
 }
