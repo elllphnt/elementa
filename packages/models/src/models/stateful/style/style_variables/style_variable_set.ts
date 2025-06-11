@@ -10,7 +10,7 @@ import {
   keyManager,
   RecordState,
 } from "@elllphnt/elementa-utils";
-import { combineLatest, map, Observable } from "rxjs";
+import { combineLatest, Observable } from "rxjs";
 import { StatefulIdentifiable } from "../../_shared/identifiable.js";
 import { StatefulStyleVariable } from "./style_variable.js";
 
@@ -92,16 +92,6 @@ export class StatefulStyleVariableSet
     });
   }
 
-  variable(id: string): StyleVariable | undefined {
-    return this._variables.state.items.find((v) => v.id === id);
-  }
-
-  variable$(id: string): Observable<StyleVariable | undefined> {
-    return this.variables$.pipe(
-      map((variables) => variables.find((v) => v.id === id))
-    );
-  }
-
   setName(name: string): void {
     this._state.set("name", name);
   }
@@ -115,8 +105,8 @@ export class StatefulStyleVariableSet
   addVariable(variable: StatefulStyleVariable) {
     return this._variables.state.add(variable);
   }
-  removeVariable(id: string): void {
-    this._variables.state.remove((v) => v.id === id);
+  removeVariable(index: number): void {
+    this._variables.state.removeAt(index);
   }
 
   restore(data: StyleVariableSetData): void {

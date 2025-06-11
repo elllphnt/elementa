@@ -3,7 +3,7 @@ import { Observable } from "rxjs";
 import { Project } from "~/project/_.js";
 import { Identifiable } from "../_shared/_.js";
 
-export interface StyleVariable extends Identifiable {
+export interface StyleVariable {
   name: string | undefined;
   name$: Observable<string | undefined>;
 
@@ -29,15 +29,12 @@ export interface StyleVariableSet extends Identifiable {
   variables: StyleVariable[];
   variables$: Observable<StyleVariable[]>;
 
-  variable(id: string): StyleVariable | undefined;
-  variable$(id: string): Observable<StyleVariable | undefined>;
-
   setName(name: string): void;
   setDatatype(datatype: StyleDataType | undefined): void;
   setModes(modes: ElllSelectorData[] | undefined): void;
 
   addVariable(data: StyleVariable): void;
-  removeVariable(id: string): void;
+  removeVariable(index: number): void;
 }
 
 export interface StyleVariableSheet {
