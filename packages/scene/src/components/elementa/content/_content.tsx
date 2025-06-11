@@ -1,13 +1,13 @@
 import { JSX } from "react";
 import {
-  AppRenderableContentRenderable,
   ComponentRenderableContentRenderable,
   FragmentRenderableContentRenderable,
   RenderableContentRenderable,
-} from "../../../renderables/_";
-import { AppRenderableContentComponent } from "./app";
-import { ComponentRenderableContentComponent } from "./component";
-import { FragmentRenderableContentComponent } from "./fragment";
+  RouterRenderableContentRenderable,
+} from "../../../renderables/_.js";
+import { ComponentRenderableContentComponent } from "./component.js";
+import { FragmentRenderableContentComponent } from "./fragment.js";
+import { RouterRenderableContentComponent } from "./router.js";
 
 export function RenderableContentComponent({
   content,
@@ -21,10 +21,10 @@ export function RenderableContentComponent({
           content={content as ComponentRenderableContentRenderable}
         />
       );
-    case "app":
+    case "router":
       return (
-        <AppRenderableContentComponent
-          content={content as AppRenderableContentRenderable}
+        <RouterRenderableContentComponent
+          content={content as RouterRenderableContentRenderable}
         />
       );
     case "fragment":

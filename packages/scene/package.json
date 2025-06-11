@@ -41,7 +41,7 @@
     "dependencies": {
         "@elllphnt/elementa-base": "workspace:*",
         "@elllphnt/elementa-css": "workspace:*",
-        "@elllphnt/elementa-models": "workspace:*",
+        "@elllphnt/elementa-core": "workspace:*",
         "@elllphnt/elementa-react-utils": "workspace:*",
         "@elllphnt/elementa-runtime": "workspace:*",
         "@elllphnt/elementa-utils": "workspace:*",

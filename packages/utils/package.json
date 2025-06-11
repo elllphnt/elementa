@@ -19,6 +19,6 @@
     "peerDependencies": {
         "rxjs": "^7.8.2",
         "yjs": "^13.6.26",
-        "@elllphnt/crdt": "^0.1.2"
+        "@elllphnt/crdt": "^0.1.3"
     }
 }

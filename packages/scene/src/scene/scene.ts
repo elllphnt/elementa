@@ -1,4 +1,4 @@
-import { Fragment, Project } from "@elllphnt/elementa-models";
+import { Fragment, Project } from "@elllphnt/elementa-core";
 import { Disposable, pairwiseOrEmpty } from "@elllphnt/elementa-utils";
 import { Subscription } from "rxjs";
 import { DomStyleSheetManager } from "../style/_.js";
@@ -52,7 +52,7 @@ export class Scene extends Disposable {
       return;
     }
 
-    const subscription = project.styleManager.stylesheets$
+    const subscription = project.styleManager.cssStylesheets$
       .pipe(pairwiseOrEmpty())
       .subscribe(([prev, next]) => {
         next.forEach((s) =>
@@ -94,7 +94,7 @@ export class Scene extends Disposable {
       });
 
     this._fragments.set(fragment, { refCount: 1, subscription });
-    this._registerProject(fragment.component.file.project);
+    this._registerProject(fragment.environment.project);
   }
   unregisterFragment(fragment: Fragment): void {
     const tracked = this._fragments.get(fragment);
@@ -103,7 +103,7 @@ export class Scene extends Disposable {
     if (--tracked.refCount === 0) {
       tracked.subscription.unsubscribe();
       this._fragments.delete(fragment);
-      this._unregisterProject(fragment.component.file.project);
+      this._unregisterProject(fragment.environment.project);
     }
   }
 }

@@ -2,7 +2,6 @@ import { FragmentEnvironment } from "@elllphnt/elementa-runtime";
 import { PropsWithChildren, memo, useEffect } from "react";
 import { useNamespace } from "../../hooks/namespace.js";
 import { FragmentRenderable } from "../../renderables/fragment.js";
-import { FragmentFragmentsNamespaceProvider } from "./fragments.js";
 import { PropsNamespaceProvider } from "./props.js";
 import { StatesNamespaceProvider } from "./states/states.js";
 
@@ -40,10 +39,8 @@ export const FragmentNamespaceProvider = memo(function ({
         isolated={root}
       >
         <StatesNamespaceProvider environment={environment}>
-          <FragmentFragmentsNamespaceProvider fragment={fragment}>
-            <EnvironmentNamespaceConsumer fragment={environment} />
-            {children}
-          </FragmentFragmentsNamespaceProvider>
+          <EnvironmentNamespaceConsumer fragment={environment} />
+          {children}
         </StatesNamespaceProvider>
       </PropsNamespaceProvider>
     );

@@ -13,8 +13,10 @@ import {
   combineLatestArrays,
   combineLatestOrEmpty,
   Disposable,
+  reconcileList,
 } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
+import { StylesheetCssStyleSheet } from "~/css/_.js";
 import { Stylesheet } from "../../models/_.js";
 import { Project } from "../project.js";
 import { ColorSchemeManager } from "./color_scheme.js";
@@ -81,6 +83,9 @@ export class StyleManager extends Disposable {
   private _modifiersByName$ = new BehaviorSubject<
     Record<string, StyleModifierDefinitionData>
   >({});
+  private _systemCssStylesheets = new BehaviorSubject<
+    StylesheetCssStyleSheet[]
+  >([]);
 
   // Stylesheets
 
@@ -109,11 +114,11 @@ export class StyleManager extends Disposable {
     );
   }
 
-  get stylesheets() {
-    return this.systemStylesheets;
+  get cssStylesheets() {
+    return this._systemCssStylesheets.value;
   }
-  get stylesheets$() {
-    return this.systemStylesheets$;
+  get cssStylesheets$() {
+    return this._systemCssStylesheets.asObservable();
   }
 
   // Variable Values
@@ -218,11 +223,30 @@ export class StyleManager extends Disposable {
         this._modifiersByName$.next(newModifiersByName);
       }
     );
+    const systemCssStylesheetsSubscription = this.systemStylesheets$.subscribe(
+      (stylesheets) => {
+        const [nextStylesheets, removed] = reconcileList({
+          sources: stylesheets,
+          targets: this._systemCssStylesheets.value,
+          sourceRef: (s) => s,
+          targetRef: (s) => s.stylesheet,
+          create: (stylesheet) =>
+            new StylesheetCssStyleSheet({
+              target: "style-system",
+              stylesheet,
+            }),
+        });
+
+        this._systemCssStylesheets.next(nextStylesheets);
+        removed.forEach((r) => r.dispose());
+      }
+    );
 
     this.addDisposer(() => {
       this._variableValues$.complete();
       this._modifiersByName$.complete();
       modifiersByNameSubscription.unsubscribe();
+      systemCssStylesheetsSubscription.unsubscribe();
       this.colorSchemeManager.dispose();
       this.viewportManager.dispose();
     });

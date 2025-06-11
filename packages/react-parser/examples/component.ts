@@ -1,5 +1,3 @@
-import { writeFileSync } from "fs";
-import { join } from "path";
 import { parseComponentModule } from "../src/index.js";
 
 const componentModule = `
@@ -10,6 +8,23 @@ interface DashboardProps {
   color?: string;
   blue: string;
 }
+
+function useState<T>(initialValue: T): [T, (value: T) => void] {
+  let state = initialValue;
+  const setState = (value: T) => {
+    state = value;
+  };
+  return [state, setState];
+}
+
+const elllFor = (props: { data: any; as: string }) => {
+  const { data, as } = props;
+  return data.map((item: any, index: number) => (
+    <div key={index} data-elll-for={as}>
+      {item}
+    </div>
+  ));
+};
 
 export function Dashboard({color}:DashboardProps) {
   const state = useState(true);
@@ -31,11 +46,7 @@ export function Dashboard({color}:DashboardProps) {
 export default Dashboard;
 `;
 
-const module = parseComponentModule({
-  code: componentModule,
-  getStylesheet: () => {},
+parseComponentModule({
+  sourceCode: componentModule,
+  // getStylesheet: () => {},
 });
-writeFileSync(
-  join("local", "component", `static.json`),
-  JSON.stringify(module, null, 2)
-);

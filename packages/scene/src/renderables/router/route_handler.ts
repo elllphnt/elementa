@@ -1,4 +1,4 @@
-import { Component, FileModelAdaptor } from "@elllphnt/elementa-models";
+import { Component, FileModelAdaptor } from "@elllphnt/elementa-core";
 import {
   ComponentInstance,
   ModelInstanceAdaptor,
@@ -19,7 +19,7 @@ export class RouteHandlerRenderable extends InstanceRenderable<PageRouteHandler>
         ModelInstanceAdaptor<
           Component,
           ComponentInstance,
-          FileModelAdaptor<Component>
+          FileModelAdaptor<"component">
         >
       >
     | undefined
@@ -31,7 +31,7 @@ export class RouteHandlerRenderable extends InstanceRenderable<PageRouteHandler>
         ModelInstanceAdaptor<
           Component,
           ComponentInstance,
-          FileModelAdaptor<Component>
+          FileModelAdaptor<"component">
         >
       >
     | undefined
@@ -43,7 +43,7 @@ export class RouteHandlerRenderable extends InstanceRenderable<PageRouteHandler>
         ModelInstanceAdaptor<
           Component,
           ComponentInstance,
-          FileModelAdaptor<Component>
+          FileModelAdaptor<"component">
         >
       >
     | undefined
@@ -55,7 +55,7 @@ export class RouteHandlerRenderable extends InstanceRenderable<PageRouteHandler>
         ModelInstanceAdaptor<
           Component,
           ComponentInstance,
-          FileModelAdaptor<Component>
+          FileModelAdaptor<"component">
         >
       >
     | undefined
@@ -115,7 +115,7 @@ export class RouteHandlerRenderable extends InstanceRenderable<PageRouteHandler>
             ModelInstanceAdaptor<
               Component,
               ComponentInstance,
-              FileModelAdaptor<Component>
+              FileModelAdaptor<"component">
             >
           >({
             instanceAdaptor,
@@ -139,7 +139,7 @@ export class RouteHandlerRenderable extends InstanceRenderable<PageRouteHandler>
             ModelInstanceAdaptor<
               Component,
               ComponentInstance,
-              FileModelAdaptor<Component>
+              FileModelAdaptor<"component">
             >
           >({
             instanceAdaptor,
@@ -163,7 +163,7 @@ export class RouteHandlerRenderable extends InstanceRenderable<PageRouteHandler>
             ModelInstanceAdaptor<
               Component,
               ComponentInstance,
-              FileModelAdaptor<Component>
+              FileModelAdaptor<"component">
             >
           >({
             instanceAdaptor,
@@ -187,7 +187,7 @@ export class RouteHandlerRenderable extends InstanceRenderable<PageRouteHandler>
             ModelInstanceAdaptor<
               Component,
               ComponentInstance,
-              FileModelAdaptor<Component>
+              FileModelAdaptor<"component">
             >
           >({
             instanceAdaptor,

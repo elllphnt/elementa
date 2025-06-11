@@ -1,7 +1,7 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { JSX } from "react";
-import { ComponentRenderableContentRenderable } from "../../../renderables/_";
-import { ComponentComponent } from "../../component/_";
+import { ComponentRenderableContentRenderable } from "../../../renderables/_.js";
+import { ComponentComponent } from "../../component/_.js";
 
 export function ComponentRenderableContentComponent({
   content,

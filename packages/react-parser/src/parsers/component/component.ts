@@ -2,33 +2,25 @@ import {
   ComponentData,
   DataInputData,
   FragmentData,
-  HookStateData,
+  StateData,
 } from "@elllphnt/elementa-base";
 import {
+  ArrowFunction,
   FunctionDeclaration,
+  FunctionExpression,
   Node,
-  PropertyDeclaration,
-  PropertySignature,
-  SyntaxKind,
 } from "ts-morph";
+import { ComponentNode, isComponentNode, isHookName } from "../modules/_.js";
 import { GetStylesheet } from "./element/_.js";
-import { parseElementsFromJSX } from "./element/element.js";
-import { extractArgValue, genId } from "./utils.js";
+import { genId } from "./utils.js";
 
-export function parseComponent({
+export function parseComponentFunctionParams({
   node,
-  getStylesheet,
+  componentData,
 }: {
-  node: FunctionDeclaration;
-  getStylesheet: GetStylesheet;
-}): ComponentData | undefined {
-  const name = node.getName();
-  if (!name) return;
-
-  const body = node.getBody();
-  if (!body) return;
-
-  // Props: inspect the type of the first parameter and extract its fields
+  node: ArrowFunction | FunctionExpression | FunctionDeclaration;
+  componentData: ComponentData;
+}) {
   const params = node.getParameters();
   const propsInputs: DataInputData[] = [];
   if (params.length > 0) {
@@ -58,10 +50,8 @@ export function parseComponent({
 
         // Determine if the property is required (no question token)
         const required = !(
-          (Node.isPropertySignature(decl) &&
-            (decl as PropertySignature).hasQuestionToken()) ||
-          (Node.isPropertyDeclaration(decl) &&
-            (decl as PropertyDeclaration).hasQuestionToken())
+          (Node.isPropertySignature(decl) && decl.hasQuestionToken()) ||
+          (Node.isPropertyDeclaration(decl) && decl.hasQuestionToken())
         );
 
         propsInputs.push({
@@ -74,88 +64,198 @@ export function parseComponent({
       }
     }
   }
-
-  // States
-  const states: HookStateData[] = [];
-  const variableStatements = body.getChildrenOfKind(
-    SyntaxKind.VariableStatement
-  );
-  const expressionStatements = body.getChildrenOfKind(
-    SyntaxKind.ExpressionStatement
-  );
-  for (const variableStatement of variableStatements) {
-    const decl = variableStatement.getDeclarations()[0];
-    const alias = decl.getName();
-    const init = decl.getInitializer();
-    if (init && Node.isCallExpression(init)) {
-      const fn = init.getExpression().getText();
-      if (/^use[A-Z]/.test(fn)) {
-        const args = init.getArguments().map((arg) => extractArgValue(arg));
-        states.push({
-          id: genId(),
-          type: "hook",
-          varName: alias,
-          hookUrl: {
-            __dependency: fn,
-          } as any,
-          args,
-        });
-      }
-    }
+  componentData.props = propsInputs;
+}
+export function parseFragmentFunction({
+  id,
+  node,
+  getStylesheet,
+}: {
+  id: string;
+  node: FunctionDeclaration;
+  getStylesheet: GetStylesheet;
+}): FragmentData {
+  const fragmentData: FragmentData = {
+    id,
+  };
+  return fragmentData;
+}
+export function parseStateExpression({
+  name,
+  callee,
+}: {
+  name?: string;
+  callee: string;
+}): StateData {
+  const stateData: StateData = {
+    id: genId(),
+    name: name || "",
+    varName: name || "",
+    type: "hook",
+    hookUrl: {
+      __dep: callee,
+    } as any,
+  };
+  return stateData;
+}
+export function parseComponentFunctionBody({
+  node,
+  componentData,
+  getStylesheet,
+}: {
+  node: ArrowFunction | FunctionExpression | FunctionDeclaration;
+  componentData: ComponentData;
+  getStylesheet: GetStylesheet;
+}) {
+  const body = node.getBody();
+  if (!Node.isBlock(body)) {
+    throw Error(
+      `Expected a block body for component function, got ${body?.getKindName()}`
+    );
   }
-  for (const expressionStatement of expressionStatements) {
-    const expr = expressionStatement.getExpression();
-    if (Node.isCallExpression(expr)) {
-      const fn = expr.getExpression().getText();
-      if (/^use[A-Z]/.test(fn)) {
-        const args = expr.getArguments().map((arg) => extractArgValue(arg));
-        const varName = expr
-          .getFirstChildByKind(SyntaxKind.Identifier)
-          ?.getText();
-        if (varName) {
-          states.push({
-            id: genId(),
-            type: "hook",
-            hookUrl: {
-              __dependency: fn,
-            } as any,
-            args,
+
+  const fragmentIdMap: Record<string, string> = {};
+  function getFragmentId(name: string): string {
+    let id = fragmentIdMap[name];
+    if (!id) {
+      id = genId();
+      fragmentIdMap[name] = id;
+    }
+    return id;
+  }
+
+  for (const statement of body.getStatements()) {
+    if (Node.isFunctionDeclaration(statement)) {
+      const name = statement.getName();
+      if (!name?.startsWith("__elll_fragment_")) {
+        throw Error(
+          `Unexpected function declaration in component body: ${name}`
+        );
+      }
+
+      const fragmentId = getFragmentId(name);
+      const fragmentData = parseFragmentFunction({
+        id: fragmentId,
+        node: statement,
+        getStylesheet,
+      });
+      componentData.fragments = [
+        ...(componentData.fragments || []),
+        fragmentData,
+      ];
+    } else if (Node.isVariableStatement(statement)) {
+      const declarations = statement.getDeclarations();
+      for (const decl of declarations) {
+        const initializer = decl.getInitializer();
+        if (Node.isCallExpression(initializer)) {
+          const callee = initializer.getFirstChild();
+          const calleeName = callee?.getText();
+          if (!calleeName || !isHookName(calleeName)) {
+            throw Error(
+              `Unexpected CallExpression in variable declaration: ${calleeName}`
+            );
+          }
+          const name = decl.getName();
+          const state = parseStateExpression({
+            name,
+            callee: calleeName,
           });
+          componentData.states = [...(componentData.states || []), state];
+        } else {
+          throw Error(
+            `Unexpected initializer in variable declaration: ${initializer?.getText()}`
+          );
         }
       }
+    } else if (Node.isExpressionStatement(statement)) {
+      const expression = statement.getExpression();
+      if (Node.isCallExpression(expression)) {
+        const callee = expression.getFirstChild();
+        if (Node.isIdentifier(callee) && isHookName(callee.getText())) {
+          const state = parseStateExpression({
+            callee: callee.getText(),
+          });
+          componentData.states = [...(componentData.states || []), state];
+        } else {
+          throw Error(
+            `Unexpected CallExpression in expression statement: ${callee?.getText()}`
+          );
+        }
+      } else {
+        throw Error(
+          `Unexpected expression in expression statement: ${expression.getText()}`
+        );
+      }
+    } else if (Node.isReturnStatement(statement)) {
+      const returnExpr = statement.getExpression();
+      if (returnExpr && Node.isCallExpression(returnExpr)) {
+        const callee = returnExpr.getFirstChild();
+        const calleeName = callee?.getText();
+        if (calleeName?.startsWith("__elll_fragment_")) {
+          componentData.template = {
+            id: getFragmentId(calleeName),
+            type: "fragment",
+            fragmentId: getFragmentId(calleeName),
+          };
+        } else {
+          componentData.template = {
+            id: genId(),
+            type: "expression",
+            expression: returnExpr.getText(),
+          };
+        }
+      }
+    } else {
+      throw Error(
+        `Unexpected statement in component function body: ${statement.getKindName()}`
+      );
     }
   }
+}
 
-  // Fragments
-  const fragments: FragmentData[] = [];
-
-  // Template
-  const returnExpr = body
-    .getDescendantsOfKind(SyntaxKind.ReturnStatement)[0]
-    ?.getExpression();
-  const fragment: FragmentData = {
-    id: genId(),
-    content: returnExpr
-      ? parseElementsFromJSX({
-          code: returnExpr.getText(),
-          getStylesheet,
-          createFragment: ({ content }) => {
-            const fragment: FragmentData = {
-              id: genId(),
-              content,
-            };
-            fragments.push(fragment);
-            return fragment;
-          },
-        })
-      : [],
-  };
-
-  const componentData: ComponentData = {
-    name,
-    props: propsInputs,
-    states,
-    template: fragment,
-  };
+export function parseComponentFunction({
+  node,
+  getStylesheet,
+  init,
+}: {
+  node: ArrowFunction | FunctionExpression | FunctionDeclaration;
+  getStylesheet: GetStylesheet;
+  init?: ComponentData;
+}): ComponentData {
+  const componentData: ComponentData = { ...init };
+  parseComponentFunctionParams({ node, componentData });
+  parseComponentFunctionBody({ node, componentData, getStylesheet });
   return componentData;
+}
+
+export function parseComponent({
+  node,
+  getStylesheet,
+  init,
+}: {
+  node: ComponentNode;
+  getStylesheet: GetStylesheet;
+  init?: ComponentData;
+}): ComponentData {
+  if (Node.isCallExpression(node)) {
+    const callee = node.getFirstChild();
+    let calleeName: string | undefined;
+    if (Node.isIdentifier(callee)) {
+      calleeName = callee.getText();
+    } else if (Node.isPropertyAccessExpression(callee)) {
+      calleeName = callee.getName();
+    }
+    if (calleeName === "memo") {
+      const expression = node.getExpression();
+      if (isComponentNode(expression)) {
+        return parseComponent({ node: expression, getStylesheet, init });
+      } else {
+        throw Error(`Unexpected expression in memo ${expression.getText()}`);
+      }
+    } else {
+      throw Error(`Unexpected CallExpression as component ${calleeName}(...)`);
+    }
+  } else {
+    return parseComponentFunction({ node, getStylesheet, init });
+  }
 }

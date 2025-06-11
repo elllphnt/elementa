@@ -1,4 +1,4 @@
-import { CssStyleSheet } from "@elllphnt/elementa-models";
+import { CssStyleSheet } from "@elllphnt/elementa-core";
 import { Disposable } from "@elllphnt/elementa-utils";
 import { createDomStyleSheetAdaptor } from "./_lib.js";
 import { DomStyleSheetAdaptor } from "./adaptors/stylesheet.js";

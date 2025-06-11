@@ -1,16 +1,16 @@
 import {
-  AppRenderableContentInstance,
   ComponentRenderableContentInstance,
   FragmentRenderableContentInstance,
   RenderableContentInstance,
+  RouterRenderableContentInstance,
 } from "@elllphnt/elementa-runtime";
 import { Scene } from "../../../scene/scene.js";
-import { AppRenderableContentRenderable } from "./app.js";
 import { ComponentRenderableContentRenderable } from "./component.js";
 import { FragmentRenderableContentRenderable } from "./fragment.js";
+import { RouterRenderableContentRenderable } from "./router.js";
 
 export type RenderableContentRenderable =
-  | AppRenderableContentRenderable
+  | RouterRenderableContentRenderable
   | ComponentRenderableContentRenderable
   | FragmentRenderableContentRenderable;
 
@@ -21,8 +21,8 @@ export function createRenderableContentRenderable({
   scene: Scene;
   instance: RenderableContentInstance;
 }): RenderableContentRenderable {
-  if (instance instanceof AppRenderableContentInstance) {
-    return new AppRenderableContentRenderable({ scene, instance });
+  if (instance instanceof RouterRenderableContentInstance) {
+    return new RouterRenderableContentRenderable({ scene, instance });
   } else if (instance instanceof ComponentRenderableContentInstance) {
     return new ComponentRenderableContentRenderable({ scene, instance });
   } else if (instance instanceof FragmentRenderableContentInstance) {

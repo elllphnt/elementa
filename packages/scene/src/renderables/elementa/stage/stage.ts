@@ -1,4 +1,4 @@
-import { TextCssStyleSheet } from "@elllphnt/elementa-models";
+import { TextCssStyleSheet } from "@elllphnt/elementa-core";
 import { ElementaStageInstance } from "@elllphnt/elementa-runtime";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, combineLatest, map } from "rxjs";

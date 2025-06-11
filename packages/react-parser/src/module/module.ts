@@ -6,6 +6,7 @@ export type ParsedResource<T extends string = string> = {
 export type ParsedModule<R extends ParsedResource = ParsedResource> = {
   imports: Record<string, [string, string]>; // specifier alias -> [import path, specifier]
   types: Record<string, string>; // type name -> type definition
+  utils: Record<string, string>;
   resources: Record<string, R>;
   main?: string;
 };

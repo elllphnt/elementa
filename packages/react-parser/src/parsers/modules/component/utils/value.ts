@@ -39,6 +39,23 @@ export function getValueFromNode(node: Node): ResolvedValueNode | undefined {
         : undefined;
     }
   }
+  // varaiable statements
+  else if (Node.isVariableStatement(node)) {
+    const declarations = node.getDeclarations();
+    if (declarations.length !== 1) return undefined;
+    const firstDeclaration = declarations[0];
+    const name = firstDeclaration.getName();
+    const exp = firstDeclaration.getInitializer();
+    if (exp) {
+      const fn = getValueFromNode(exp);
+      return fn
+        ? {
+            name,
+            node: fn.node,
+          }
+        : undefined;
+    }
+  }
   // identifiers
   else if (Node.isIdentifier(node)) {
     const symbol = node.getSymbol();

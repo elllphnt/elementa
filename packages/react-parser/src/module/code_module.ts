@@ -1,10 +1,10 @@
 import { generateImportStatements } from "./_utils/import.js";
 import { compileModule, ParsedModule, ParsedResource } from "./module.js";
 
-export type CodeResourceType = "component" | "hook" | "context" | "routine";
+export type CodeResourceType = "component" | "hook" | "context" | "module";
 export type ParsedCodeResource<T extends CodeResourceType = CodeResourceType> =
   ParsedResource<T> & {
-    source: string;
+    content: string;
     dependencies: string[];
   };
 export type ParsedCodeModule = ParsedModule<ParsedCodeResource>;
@@ -35,13 +35,17 @@ export function compileCodeResource({
       const path = getResourcePath(dep);
       imports[path] = imports[path] || {};
       imports[path]["default"] = dep;
+    } else if (dep in module.utils) {
+      const path = getResourcePath(module.utils[dep]);
+      imports[path] = imports[path] || {};
+      imports[path][dep] = dep;
     }
   }
 
   const source = [
     generateImportStatements(imports),
     ...typeDefs,
-    resource.source,
+    resource.content,
   ].join("\n");
 
   return source;
@@ -75,7 +79,7 @@ export function compileCodeModule({
       component: _compileCodeResource,
       hook: _compileCodeResource,
       context: _compileCodeResource,
-      routine: _compileCodeResource,
+      module: _compileCodeResource,
     },
   });
 }

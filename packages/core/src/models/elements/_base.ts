@@ -12,6 +12,7 @@ import { Identifiable } from "../_shared/_.js";
 
 export interface BaseElement<T extends string> extends Identifiable {
   type: T;
+  updated$: Observable<any>;
 
   environment: RenderingEnvironment;
   cssStyleSheet: StylesheetCssStyleSheet;

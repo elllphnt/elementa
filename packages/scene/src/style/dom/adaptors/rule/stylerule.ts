@@ -1,5 +1,5 @@
+import { CssStyleRule } from "@elllphnt/elementa-core";
 import { CssStyleData } from "@elllphnt/elementa-css";
-import { CssStyleRule } from "@elllphnt/elementa-models";
 import {
   DeepPartial,
   Disposable,

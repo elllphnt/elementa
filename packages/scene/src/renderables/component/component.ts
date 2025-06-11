@@ -1,12 +1,28 @@
-import { ComponentInstance } from "@elllphnt/elementa-runtime";
-import { Observable, of } from "rxjs";
+import {
+  ComponentInstance,
+  ExpressionElementInstance,
+  FragmentElementInstance,
+} from "@elllphnt/elementa-runtime";
+import { BehaviorSubject, Observable, of } from "rxjs";
 import { Scene } from "../../scene/scene.js";
-import { FragmentRenderable } from "../fragment.js";
+import {
+  ExpressionElementRenderable,
+  FragmentElementRenderable,
+} from "../element/_.js";
 import { InstanceRenderable } from "../instance.js";
 import { Renderable } from "../renderable.js";
 
 export class ComponentRenderable extends InstanceRenderable<ComponentInstance> {
-  readonly template: FragmentRenderable;
+  private _template$ = new BehaviorSubject<
+    ExpressionElementRenderable | FragmentElementRenderable | undefined
+  >(undefined);
+
+  get template() {
+    return this._template$.value;
+  }
+  get template$() {
+    return this._template$.asObservable();
+  }
 
   get renderables(): Renderable[] {
     return [];
@@ -23,9 +39,40 @@ export class ComponentRenderable extends InstanceRenderable<ComponentInstance> {
     instance: ComponentInstance;
   }) {
     super({ scene, instance });
-    this.template = new FragmentRenderable({
-      scene: this.scene,
-      instance: this.instance.template,
+
+    const templateSubscription = this.instance.template$.subscribe(
+      (template) => {
+        const prev = this._template$.value;
+        if (template) {
+          switch (template.type) {
+            case "fragment": {
+              this._template$.next(
+                new FragmentElementRenderable({
+                  scene: this.scene,
+                  instance: template as FragmentElementInstance,
+                })
+              );
+              break;
+            }
+            case "expression": {
+              this._template$.next(
+                new ExpressionElementRenderable({
+                  scene: this.scene,
+                  instance: template as ExpressionElementInstance,
+                })
+              );
+              break;
+            }
+          }
+        } else {
+          this._template$.next(undefined);
+        }
+        prev?.dispose();
+      }
+    );
+
+    this.addDisposer(() => {
+      templateSubscription.unsubscribe();
     });
   }
 }

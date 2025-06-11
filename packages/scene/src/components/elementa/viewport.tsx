@@ -8,7 +8,7 @@ import {
   useLayoutEffect,
   useRef,
 } from "react";
-import { ElementaStageRenderable } from "../../renderables/_";
+import { ElementaStageRenderable } from "../../renderables/_.js";
 
 export const Viewport = memo(function Viewport({
   stage,

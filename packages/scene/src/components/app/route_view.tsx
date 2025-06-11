@@ -2,7 +2,7 @@ import {
   AsyncResourceStatus,
   Component,
   FileModelAdaptor,
-} from "@elllphnt/elementa-models";
+} from "@elllphnt/elementa-core";
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import {
   ComponentInstance,
@@ -21,7 +21,7 @@ type RouteViewProps = {
     ModelInstanceAdaptor<
       Component,
       ComponentInstance,
-      FileModelAdaptor<Component>
+      FileModelAdaptor<"component">
     >
   >;
 };

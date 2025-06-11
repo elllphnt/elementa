@@ -18,11 +18,11 @@ export class OptionalCrdtModel<M extends CrdtModel<any>> extends Disposable {
     create,
   }: {
     crdt: CrdtOf<M> | undefined;
-    create: (crdt: CrdtOf<M>) => M;
+    create: (crdt: CrdtOf<M>, init?: boolean) => M;
   }) {
     super();
 
-    const initial = crdt ? create(crdt) : undefined;
+    const initial = crdt ? create(crdt, true) : undefined;
     this._model$ = new BehaviorSubject<M | undefined>(initial);
 
     this.addDisposer(() => {

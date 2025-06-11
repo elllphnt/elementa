@@ -178,6 +178,10 @@ export abstract class StatefulBaseElement<
   abstract get data(): T;
   abstract get data$(): Observable<T>;
 
+  get updated$() {
+    return this.data$ as Observable<any>;
+  }
+
   // constructor
   constructor({
     init,

@@ -2,15 +2,15 @@ import { useObservable } from "@elllphnt/elementa-react-utils";
 import { createRouter, Outlet, RouterProvider } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { JSX, memo, useMemo } from "react";
-import { AppRenderable } from "../../renderables/app/app.js";
+import { RouterRenderable } from "../../renderables/router/router.js";
 
-export const AppComponent = memo(function ({
-  app,
+export const RouterComponent = memo(function ({
+  router,
 }: {
-  app: AppRenderable;
+  router: RouterRenderable;
 }): JSX.Element {
-  const routeTree = useObservable(app.tsRootRoute$, app.tsRootRoute);
-  const router = useMemo(() => {
+  const routeTree = useObservable(router.tsRootRoute$, router.tsRootRoute);
+  const tsRouter = useMemo(() => {
     if (!routeTree) {
       return undefined;
     }
@@ -22,15 +22,15 @@ export const AppComponent = memo(function ({
         </>
       ),
     });
-    const router = createRouter({ routeTree, history: app.history });
-    return router;
+    const tsRouter = createRouter({ routeTree, history: router.history });
+    return tsRouter;
   }, [routeTree]);
 
-  if (router) {
-    return <RouterProvider router={router} />;
+  if (tsRouter) {
+    return <RouterProvider router={tsRouter} />;
   } else {
     return <></>;
   }
 });
 
-export default AppComponent;
+export default RouterComponent;

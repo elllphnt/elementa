@@ -56,4 +56,28 @@ export class AggregatedCrdtModelRecord<
       Object.values(this._models$.value).forEach((m) => m.dispose());
     });
   }
+
+  set(key: string, model: M): void {
+    // update models list first manually to ensure the same instance of model get reused during reconciliation.
+    this._models$.next({
+      ...this.models,
+      [key]: model,
+    });
+    // then update state
+    this.state.set(key, model.crdt as any);
+  }
+
+  remove(key: string): void {
+    const model = this.models[key];
+    if (model) {
+      // update models list first manually
+      const nextModels = { ...this.models };
+      delete nextModels[key];
+      this._models$.next(nextModels);
+      // then update state
+      this.state.remove(key);
+      // dispose the removed model
+      model.dispose();
+    }
+  }
 }

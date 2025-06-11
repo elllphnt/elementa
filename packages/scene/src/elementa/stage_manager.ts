@@ -1,10 +1,10 @@
-import { ElementaStage } from "@elllphnt/elementa-models";
+import { ElementaStage } from "@elllphnt/elementa-core";
 import { ElementaStageInstance, Runtime } from "@elllphnt/elementa-runtime";
 import { createElement } from "react";
 import { createRoot } from "react-dom/client";
 import { ElementaStageComponent } from "../components/_.js";
-import { Scene } from "../scene/scene.js";
 import { ElementaStageRenderable } from "../renderables/_.js";
+import { Scene } from "../scene/scene.js";
 
 export class ElementaStageManager {
   readonly root: HTMLElement;

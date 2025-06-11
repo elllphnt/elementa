@@ -319,18 +319,24 @@ export function standardizeComponentMemoCallExpression(node: CallExpression) {
     );
   }
 
-  const componentText = args[0].getText();
-  const comparePropsText = args[1]?.getText() as string | undefined;
-  const componentNode = node.replaceWithText(componentText);
-  addStatementsBeforeNode(
-    componentNode,
-    "__elll_configure_component('memoized');"
-  );
-  if (comparePropsText) {
+  let componentNode: Node;
+  // eslint-disable-next-line no-constant-condition
+  if (0) {
+    const componentText = args[0].getText();
+    const comparePropsText = args[1]?.getText() as string | undefined;
+    componentNode = node.replaceWithText(componentText);
     addStatementsBeforeNode(
       componentNode,
-      `__elll_configure_component('compareProps', ${comparePropsText});`
+      "__elll_configure_component('memoized');"
     );
+    if (comparePropsText) {
+      addStatementsBeforeNode(
+        componentNode,
+        `__elll_configure_component('compareProps', ${comparePropsText});`
+      );
+    }
+  } else {
+    componentNode = args[0];
   }
 
   const fn = getValueFromNode(componentNode);

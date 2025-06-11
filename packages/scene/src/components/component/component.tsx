@@ -1,6 +1,7 @@
+import { useObservable } from "@elllphnt/elementa-react-utils";
 import { JSX, memo } from "react";
 import { ComponentRenderable } from "../../renderables/component/component.js";
-import { FragmentComponent } from "../fragment/fragment.js";
+import { ElementComponent } from "../elements/_.js";
 
 export const ComponentComponent = memo(function ({
   component,
@@ -9,9 +10,12 @@ export const ComponentComponent = memo(function ({
   component: ComponentRenderable;
   onRef?: (element: HTMLElement | null, key?: string) => void;
 }): JSX.Element {
-  return (
-    <FragmentComponent fragment={component.template} onRef={onRef} isolated />
-  );
+  const template = useObservable(component.template$, component.template);
+  if (template) {
+    return <ElementComponent element={template} onRef={onRef} />;
+  } else {
+    return <></>;
+  }
 });
 
 export default ComponentComponent;

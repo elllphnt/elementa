@@ -12,22 +12,24 @@ import { RouterInstance } from "../../../router/_.js";
 import { BaseRenderableContentInstance } from "./_base.js";
 
 export class RouterRenderableContentInstance extends BaseRenderableContentInstance<RouterRenderableContent> {
-  private _app$ = new BehaviorSubject<RouterInstance | undefined>(undefined);
+  private _router$ = new BehaviorSubject<RouterInstance | undefined>(undefined);
 
-  app$ = this._app$.asObservable();
-  get app(): RouterInstance | undefined {
-    return this._app$.getValue();
+  router$ = this._router$.asObservable();
+  get router(): RouterInstance | undefined {
+    return this._router$.getValue();
   }
 
   get diagnosticLevel(): number {
-    return Math.max(this.ownDiagnosticLevel, this.app?.diagnosticLevel ?? 0);
+    return Math.max(this.ownDiagnosticLevel, this.router?.diagnosticLevel ?? 0);
   }
 
   get diagnosticLevel$(): Observable<number> {
     return combineLatest([
       this.ownDiagnosticLevel$,
-      this.app$.pipe(switchMap((app) => app?.diagnosticLevel$ ?? of(0))),
-    ]).pipe(map(([own, app]) => Math.max(own, app)));
+      this.router$.pipe(
+        switchMap((router) => router?.diagnosticLevel$ ?? of(0))
+      ),
+    ]).pipe(map(([own, router]) => Math.max(own, router)));
   }
 
   constructor({
@@ -42,12 +44,12 @@ export class RouterRenderableContentInstance extends BaseRenderableContentInstan
       environment,
     });
 
-    const appSubscription = this.model.router$
+    const routerSubscription = this.model.router$
       .pipe(switchMap((f) => f?.model$ ?? of(undefined)))
       .subscribe((model) => {
-        const current = this.app;
+        const current = this.router;
         if (model) {
-          this._app$.next(
+          this._router$.next(
             new RouterInstance({
               model,
               environment,
@@ -55,7 +57,7 @@ export class RouterRenderableContentInstance extends BaseRenderableContentInstan
             })
           );
         } else {
-          this._app$.next(undefined);
+          this._router$.next(undefined);
         }
 
         if (current) {
@@ -64,8 +66,8 @@ export class RouterRenderableContentInstance extends BaseRenderableContentInstan
       });
 
     this.addDisposer(() => {
-      this._app$.complete();
-      appSubscription.unsubscribe();
+      this._router$.complete();
+      routerSubscription.unsubscribe();
     });
   }
 }

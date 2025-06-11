@@ -14,7 +14,7 @@ import {
   StylesheetCssStyleSheet,
 } from "@elllphnt/elementa-core";
 import { CrdtRecordState, keyManager } from "@elllphnt/elementa-utils";
-import { Observable, of } from "rxjs";
+import { Observable, of, Subject } from "rxjs";
 import * as y from "yjs";
 import { CrdtIdentifiable } from "../_shared/identifiable.js";
 import { CrdtStylesheet } from "../style/stylesheet/stylesheet.js";
@@ -29,6 +29,7 @@ export abstract class CrdtBaseElement<T extends BaseElementData<string>>
 
   private _stylesheet: CrdtStylesheet;
   protected _state: CrdtRecordState<Omit<T, "id" | "type" | "stylesheet">>;
+  private _updated$ = new Subject();
 
   get allCssStylesheets(): CssStyleSheet[] {
     return [this.cssStyleSheet];
@@ -132,6 +133,10 @@ export abstract class CrdtBaseElement<T extends BaseElementData<string>>
     return this._baseState.entry$("tabIndex");
   }
 
+  get updated$() {
+    return this._updated$.asObservable();
+  }
+
   constructor({
     crdt,
     type,
@@ -170,10 +175,16 @@ export abstract class CrdtBaseElement<T extends BaseElementData<string>>
 
     this._state = new CrdtRecordState(crdt);
 
+    const observer = () => {
+      this._updated$.next(crdt.toJSON());
+    };
+    crdt.observeDeep(observer);
+
     this.addDisposer(() => {
       this._state.dispose();
       this._stylesheet.dispose();
       this.cssStyleSheet.dispose();
+      crdt.unobserveDeep(observer);
     });
   }
 

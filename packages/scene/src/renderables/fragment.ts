@@ -9,7 +9,6 @@ import { SlotRenderable } from "./slot.js";
 
 export class FragmentRenderable extends InstanceRenderable<FragmentInstance> {
   private _content$ = new BehaviorSubject<ElementRenderable[]>([]);
-  private _fragments$ = new BehaviorSubject<FragmentRenderable[]>([]);
   private _slots$ = new BehaviorSubject<SlotRenderable[]>([]);
 
   get content$(): Observable<ElementRenderable[]> {
@@ -17,13 +16,6 @@ export class FragmentRenderable extends InstanceRenderable<FragmentInstance> {
   }
   get content(): ElementRenderable[] {
     return this._content$.value;
-  }
-
-  get fragments$() {
-    return this._fragments$.asObservable();
-  }
-  get fragments() {
-    return this._fragments$.value;
   }
 
   get renderables(): ElementRenderable[] {
@@ -61,33 +53,14 @@ export class FragmentRenderable extends InstanceRenderable<FragmentInstance> {
       removed.forEach((s) => s.dispose());
     });
 
-    const fragmentSubscription = this.instance.environment.fragments$.subscribe(
-      (fragments) => {
-        const [newFragments, removed] = reconcileList({
-          sources: fragments,
-          targets: this.fragments,
-          sourceRef: (s) => s,
-          targetRef: (t) => t.instance,
-          create: (instance) => new FragmentRenderable({ scene, instance }),
-        });
-        this._fragments$.next(newFragments);
-        removed.forEach((s) => s.dispose());
-      }
-    );
-
     this.scene.registerFragment(this.instance.model);
 
     this.addDisposer(() => {
       contentSubscription.unsubscribe();
-      fragmentSubscription.unsubscribe();
 
       this.content.forEach((instance) => instance.dispose());
       this._content$.next([]);
       this._content$.complete();
-
-      this.fragments.forEach((instance) => instance.dispose());
-      this._fragments$.next([]);
-      this._fragments$.complete();
 
       this.scene.unregisterFragment(this.instance.model);
     });

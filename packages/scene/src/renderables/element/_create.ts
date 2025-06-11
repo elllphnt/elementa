@@ -2,6 +2,8 @@ import {
   ComponentElementInstance,
   ContainerElementInstance,
   ElementInstance,
+  ExpressionElementInstance,
+  FragmentElementInstance,
   MediaElementInstance,
   PrimitiveElementInstance,
   SlotElementInstance,
@@ -12,6 +14,8 @@ import element from "../../components/elements/element.js";
 import { Scene } from "../../scene/scene.js";
 import { ComponentElementRenderable } from "./component.js";
 import { ContainerElementRenderable } from "./container.js";
+import { ExpressionElementRenderable } from "./expression.js";
+import { FragmentElementRenderable } from "./fragment.js";
 import { MediaElementRenderable } from "./media.js";
 import { PrimitiveElementRenderable } from "./primitive.js";
 import { SlotElementRenderable } from "./slot.js";
@@ -65,6 +69,18 @@ export function createElementRenderable({
     case "vector":
       return new VectorElementRenderable({
         instance: instance as VectorElementInstance,
+        scene,
+      });
+
+    case "fragment":
+      return new FragmentElementRenderable({
+        instance: instance as FragmentElementInstance,
+        scene,
+      });
+
+    case "expression":
+      return new ExpressionElementRenderable({
+        instance: instance as ExpressionElementInstance,
         scene,
       });
 

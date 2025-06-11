@@ -13,10 +13,10 @@ function RecursionAlert({
   url: string;
 }) {
   const component =
-    fragment.instance.model.component.file.project.infrastructure.component(
+    fragment.instance.model.environment.component?.file.project.infrastructure.component(
       url
     );
-  const name = useObservable(component?.file.name$, component.file?.name);
+  const name = useObservable(component?.file.name$, component?.file?.name);
 
   return (
     <div

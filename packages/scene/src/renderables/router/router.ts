@@ -1,4 +1,4 @@
-import { AppInstance } from "@elllphnt/elementa-runtime";
+import { RouterInstance } from "@elllphnt/elementa-runtime";
 import { debounce, reconcileList } from "@elllphnt/elementa-utils";
 import {
   createRootRoute,
@@ -11,8 +11,8 @@ import { Scene } from "../../scene/scene.js";
 import { Renderable } from "../renderable.js";
 import { RouteTreeRenderable } from "./route.js";
 
-export class AppRenderable extends Renderable {
-  readonly instance: AppInstance;
+export class RouterRenderable extends Renderable {
+  readonly instance: RouterInstance;
   readonly history: RouterHistory;
 
   private _routes$ = new BehaviorSubject<RouteTreeRenderable[]>([]);
@@ -45,7 +45,7 @@ export class AppRenderable extends Renderable {
     history,
   }: {
     scene: Scene;
-    instance: AppInstance;
+    instance: RouterInstance;
     history: RouterHistory;
   }) {
     super({ scene });

@@ -1,49 +1,85 @@
 import {
+  ArrowFunction,
+  CallExpression,
   FunctionDeclaration,
+  FunctionExpression,
   Node,
-  Project,
-  ScriptTarget,
   SyntaxKind,
-  VariableStatement,
 } from "ts-morph";
+import { ParsedCodeModule } from "../../../module/code_module.js";
+import { extractImport } from "../_shared/_.js";
 import {
-  CodeResourceType,
-  ParsedCodeModule,
-  ParsedCodeResource,
-} from "../../../module/code_module.js";
-import { ParsedModule } from "../../../module/module.js";
-import { extractImport } from "../_shared/import.js";
-import { isStandaloneIdentifier } from "./_utils/identifier.js";
+  findNearestIdentifierDeclaration,
+  isIdentifierReference,
+} from "../component/_.js";
+import {
+  resolveDefaultExportValueNode,
+  resolveRootValueNodes,
+} from "../component/utils/export.js";
+import { isInNode } from "../component/utils/navigation.js";
+import { createSingleFileProject } from "../component/utils/source_file.js";
 
-export function parseCodeModule(code: string): ParsedCodeModule {
-  const project = new Project({
-    compilerOptions: {
-      target: ScriptTarget.ESNext,
-      allowJs: true,
-      jsx: 2, // React
-    },
-    useInMemoryFileSystem: true,
-  });
+export function isComponentName(name: string): boolean {
+  return /^[A-Z][a-zA-Z0-9]*$/.test(name);
+}
 
-  const file = project.createSourceFile("module.tsx", code, {
-    overwrite: true,
+export type ComponentNode =
+  | FunctionDeclaration
+  | ArrowFunction
+  | FunctionExpression
+  | CallExpression;
+export function isComponentNode(node: Node): node is ComponentNode {
+  if (
+    Node.isFunctionDeclaration(node) ||
+    Node.isArrowFunction(node) ||
+    Node.isFunctionExpression(node)
+  ) {
+    return true;
+  } else if (Node.isCallExpression(node)) {
+    const callee = node.getFirstChild();
+    const expression = node.getExpression();
+    let calleeName: string | undefined;
+    if (Node.isIdentifier(callee)) {
+      calleeName = callee.getText();
+    } else if (Node.isPropertyAccessExpression(callee)) {
+      calleeName = callee.getName();
+    }
+    return (
+      (calleeName === "memo" || calleeName === "forwardRef") &&
+      isComponentNode(expression)
+    );
+  }
+  return false;
+}
+export function isHookName(name: string): boolean {
+  return /^use[A-Z]/.test(name);
+}
+export function isContextName(name: string): boolean {
+  return /^[A-Z][a-zA-Z0-9]*Context$/.test(name);
+}
+export function isContextContent(content: string): boolean {
+  return content.includes("createContext");
+}
+
+export function parseCodeModule({ sourceCode }: { sourceCode: string }) {
+  const { sourceFile } = createSingleFileProject(sourceCode, {
+    name: "module.tsx",
   });
+  const valueNodes = resolveRootValueNodes(sourceFile);
+  const defaultExportNode = resolveDefaultExportValueNode(sourceFile);
 
   const module: ParsedCodeModule = {
     imports: {},
     types: {},
     resources: {},
+    utils: {},
+    main: defaultExportNode?.name,
   };
 
-  const statements = file.getStatements();
+  const statements = sourceFile.getStatements();
   for (const statement of statements) {
     if (Node.isImportDeclaration(statement)) {
       extractImport(statement, module);
-    } else if (
-      Node.isFunctionDeclaration(statement) ||
-      Node.isVariableStatement(statement)
-    ) {
-      extractResource(statement, module);
     } else if (
       Node.isTypeAliasDeclaration(statement) ||
       Node.isInterfaceDeclaration(statement) ||
@@ -55,89 +91,99 @@ export function parseCodeModule(code: string): ParsedCodeModule {
     }
   }
 
-  const exportDeclarations = file.getDefaultExportSymbol()?.getDeclarations();
-  for (const exportDeclaration of exportDeclarations ?? []) {
-    if (Node.isFunctionDeclaration(exportDeclaration)) {
-      const name = exportDeclaration.getName();
-      if (name) {
-        module.main = name;
-      }
-    } else if (Node.isVariableStatement(exportDeclaration)) {
-      const declarations = exportDeclaration.getDeclarations();
-      if (declarations.length > 0) {
-        const name = declarations[0].getName();
-        if (name) {
-          module.main = name;
-        }
-      }
-    } else if (Node.isExportAssignment(exportDeclaration)) {
-      const expression = exportDeclaration.getExpression();
-      if (Node.isIdentifier(expression)) {
-        module.main = expression.getText();
-      } else if (Node.isArrowFunction(expression)) {
-        console.warn("Anonymous export default expressions are not supported.");
-      }
+  const utilsStatements: string[] = [];
+  const utilsExports: string[] = [];
+  const utilsDependencies: string[] = [];
+
+  for (const { node, name } of valueNodes) {
+    if (!name) continue;
+
+    const { content, dependencies } = extractContent({ name, node });
+    if (isHookName(name)) {
+      module.resources[name] = {
+        type: "hook",
+        content: exportContent(name, content, true),
+        dependencies,
+      };
+      continue;
+    } else if (isContextName(name) && isContextContent(content)) {
+      module.resources[name] = {
+        type: "context",
+        content: exportContent(name, content, true),
+        dependencies,
+      };
+      continue;
+    } else if (isComponentName(name) && isComponentNode(node)) {
+      module.resources[name] = {
+        type: "component",
+        content: exportContent(name, content, true),
+        dependencies,
+      };
+      continue;
+    } else {
+      utilsStatements.push(exportContent(name, content));
+      utilsExports.push(name);
+      utilsDependencies.push(...dependencies);
     }
   }
 
+  module.resources["utils"] = {
+    type: "module",
+    content: utilsStatements.join("\n"),
+    dependencies: Array.from(new Set(utilsDependencies)),
+  };
+  module.utils = Object.fromEntries(
+    utilsExports.map((name) => [name, `utils`])
+  );
+
   return module;
 }
-export function extractResource(
-  node: FunctionDeclaration | VariableStatement,
-  module: ParsedCodeModule
-) {
-  const name = Node.isFunctionDeclaration(node)
-    ? node.getName()
-    : node.getDeclarations()[0]?.getName();
 
-  if (!name) return;
+export function extractContent({ name, node }: { name: string; node: Node }) {
+  const dependencies = new Set(
+    node
+      .getDescendantsOfKind(SyntaxKind.Identifier)
+      .filter((identifier) => {
+        if (!isIdentifierReference(identifier)) return false;
+        const nearestDeclaration = findNearestIdentifierDeclaration(identifier);
+        return nearestDeclaration && !isInNode(nearestDeclaration, node);
+      })
+      .map((identifier) => identifier.getText())
+  );
 
-  // Hook: useXxx
-  if (/^use[A-Z]/.test(name)) {
-    extractCodeResource({ type: "hook", name, node, module });
-  } else if (/^[A-Z][a-zA-Z0-9]*Context$/.test(name)) {
-    extractCodeResource({ type: "context", name, node, module });
-  } else if (/^[A-Z]/.test(name)) {
-    extractCodeResource({ type: "component", name, node, module });
-  } else {
-    extractCodeResource({ type: "routine", name, node, module });
-  }
+  const content = Node.isExpression(node)
+    ? `const ${name} = ${node.getText()}`
+    : cleanContent(node.getText());
+
+  return {
+    content,
+    dependencies: Array.from(dependencies),
+  };
 }
-export function extractCodeResource<T extends CodeResourceType>({
-  type,
-  name,
-  node,
-  module,
-}: {
-  type: T;
-  name: string;
-  node: Node;
-  module: ParsedModule<ParsedCodeResource<T>>;
-}) {
-  const dependencies = new Set<string>();
 
-  node.getDescendantsOfKind(SyntaxKind.Identifier).forEach((identifier) => {
-    if (!isStandaloneIdentifier(identifier)) return;
-    const definitions = identifier.getDefinitionNodes();
-    if (definitions.length === 0) return;
-    if (definitions.some((d) => node.containsRange(d.getStart(), d.getEnd())))
-      return;
-    dependencies.add(identifier.getText());
-  });
-
-  const rawSource = node.getText();
-  const cleanedSource = rawSource
+export function cleanContent(content: string) {
+  return content
     .replace(/\bexport\s+default\s+/, "") // handles: export default function...
     .replace(/\bexport\s+/, "") // handles: export function...
     .replace(/\bdefault\s+/, ""); // just in case it's standalone
+}
 
-  const source = Node.isVariableStatement(node)
-    ? [cleanedSource, `export default ${name};`].join("\n")
-    : `export default ${cleanedSource};`;
-
-  module.resources[name] = {
-    type,
-    source,
-    dependencies: Array.from(dependencies),
-  };
+export function exportContent(
+  name: string,
+  content: string,
+  asDefault?: boolean
+): string {
+  const isVariableStatement =
+    content.startsWith("const ") ||
+    content.startsWith("let ") ||
+    content.startsWith("var ");
+  if (asDefault) {
+    if (isVariableStatement) {
+      return [content, `export default ${name};`].join("\n");
+    } else {
+      return `export default ${content}`;
+    }
+  } else {
+    return `export ${content}`;
+  }
 }

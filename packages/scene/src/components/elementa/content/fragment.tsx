@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import { FragmentRenderableContentRenderable } from "../../../renderables/_";
+import { FragmentRenderableContentRenderable } from "../../../renderables/_.js";
 
 export function FragmentRenderableContentComponent({
   content,
