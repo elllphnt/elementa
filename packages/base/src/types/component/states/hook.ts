@@ -1,14 +1,14 @@
 import { z } from "zod";
-import { Resolvable, resolvableSchema } from "../../_primitives/_.js";
 import {
-  Evaluable,
-  evaluableSchema,
-} from "../../_primitives/dynamic/evaluable.js";
+  ResolvableOrEvaluable,
+  resolvableSchema,
+} from "../../_primitives/_.js";
+import { evaluableSchema } from "../../_primitives/dynamic/evaluable.js";
 import { BaseStateData, baseStateDataSchema } from "./_base.js";
 
 export type HookStateData = BaseStateData<"hook"> & {
   hookUrl?: string;
-  args?: (Evaluable<any> | Resolvable<any>)[];
+  args?: ResolvableOrEvaluable<any>[];
 };
 
 // Schemas

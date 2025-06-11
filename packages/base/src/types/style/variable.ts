@@ -1,25 +1,33 @@
 import { z } from "zod";
 import { StyleDataType } from "../_primitives/_.js";
+import {
+  CrdtAtomic,
+  crdtAtomicSchema,
+  IdentifiableData,
+} from "../_shared/_.js";
 import { type ElllSelectorData, elllSelectorDataSchema } from "./modifier.js";
 
 // Types
 
-export type StyleVariableData = {
+export type StyleVariableData = CrdtAtomic<["values"]> & {
   name?: string;
   values?: Record<string, any>;
 };
 
-export type StyleVariableSetData = {
-  id: string;
+export type StyleVariableSetData = IdentifiableData & {
   name: string;
   datatype?: StyleDataType;
   modes?: ElllSelectorData[];
   variables: StyleVariableData[];
 };
 
+export type StyleVariableSheetData = {
+  variables: StyleVariableSetData[];
+};
+
 // Schemas
 
-export const styleVariableDataSchema = z.object({
+export const styleVariableDataSchema = crdtAtomicSchema(["values"]).extend({
   name: z.string().optional(),
   values: z.record(z.any()).optional(),
 });
@@ -31,3 +39,7 @@ export const styleVariableSetDataSchema = z.object({
   modes: z.array(elllSelectorDataSchema).optional(),
   variables: z.array(styleVariableDataSchema),
 });
+
+export const styleVariableSheetSchema = {
+  variables: z.array(styleVariableSetDataSchema),
+};

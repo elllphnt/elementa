@@ -1,14 +1,11 @@
 import { getOrCreateYArray } from "@elllphnt/crdt";
+import { Blueprint, BlueprintNode } from "@elllphnt/elementa-core";
 import { AggregatedCrdtModelList, CrdtModel } from "@elllphnt/elementa-utils";
 import { Observable, distinctUntilChanged, map } from "rxjs";
 import * as y from "yjs";
-import { AppBlueprint, BlueprintNode } from "~/models/_.js";
 import { CrdtBlueprintNode } from "./node.js";
 
-export class CrdtAppBlueprint
-  extends CrdtModel<y.Map<any>>
-  implements AppBlueprint
-{
+export class CrdtBlueprint extends CrdtModel<y.Map<any>> implements Blueprint {
   private readonly _nodes: AggregatedCrdtModelList<CrdtBlueprintNode>;
 
   get nodes(): BlueprintNode[] {
@@ -77,6 +74,6 @@ export class CrdtAppBlueprint
   }
 
   protected factory(crdt: y.Map<any>): this {
-    return new CrdtAppBlueprint(crdt, { initialized: true }) as this;
+    return new CrdtBlueprint(crdt, { initialized: true }) as this;
   }
 }

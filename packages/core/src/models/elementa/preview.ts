@@ -1,12 +1,11 @@
 import { CornerData, CornerName } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
-import { Project } from "~/project/_.js";
+import { RenderingEnvironment } from "~/rendering/_.js";
 import { RenderableContent } from "./renderable_content/_.js";
 import { RenderingContext } from "./rendering_context.js";
 
 export interface ElementaPreview {
-  project: Project;
-
+  environment: RenderingEnvironment;
   context: RenderingContext;
 
   content: RenderableContent | undefined;

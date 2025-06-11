@@ -1,12 +1,12 @@
 import { ensureField } from "@elllphnt/crdt";
+import { BlueprintNode } from "@elllphnt/elementa-core";
 import { CrdtRecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import * as y from "yjs";
-import { BlueprintNode } from "~/models/_.js";
-import { CrdtIdentifiableModel } from "../../_shared/identifiable.js";
+import { CrdtIdentifiable } from "../_shared/identifiable.js";
 
 export class CrdtBlueprintNode
-  extends CrdtIdentifiableModel
+  extends CrdtIdentifiable
   implements BlueprintNode
 {
   private _state: CrdtRecordState<{

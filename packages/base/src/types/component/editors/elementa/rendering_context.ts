@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { ColorData } from "../../../_primitives/_.js";
+import { CrdtAtomic, crdtAtomicSchema } from "../../../_shared/_.js";
 import {
   OverflowValue,
   StyleModifierData,
@@ -8,7 +9,7 @@ import {
 
 // Types
 
-export type ColorThemeData = {
+export type ColorThemeData = CrdtAtomic<["foreground", "background"]> & {
   scheme?: string;
   foreground?: ColorData;
   background?: ColorData;
@@ -20,7 +21,7 @@ export type ViewportData = {
   overflow?: OverflowValue;
 };
 
-export type RenderingContextData = {
+export type RenderingContextData = CrdtAtomic<["styleModifiers[*]"]> & {
   theme?: ColorThemeData;
   viewport?: ViewportData;
   viewportEnabled?: boolean;
@@ -30,7 +31,10 @@ export type RenderingContextData = {
 
 // Schemas
 
-export const colorThemeDataSchema = z.object({
+export const colorThemeDataSchema = crdtAtomicSchema([
+  "foreground",
+  "background",
+]).extend({
   scheme: z.string().optional(),
   foreground: z.any().optional(),
   background: z.any().optional(),
@@ -42,7 +46,9 @@ export const viewportDataSchema = z.object({
   overflow: z.string().optional(),
 });
 
-export const renderingContextDataSchema = z.object({
+export const renderingContextDataSchema = crdtAtomicSchema([
+  "styleModifiers[*]",
+]).extend({
   theme: colorThemeDataSchema.optional(),
   viewport: viewportDataSchema.optional(),
   viewportEnabled: z.boolean().optional(),

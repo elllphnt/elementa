@@ -9,6 +9,6 @@
       "~/*": ["./src/*"]
     }
   },
-  "exclude": ["./src/models/_crdt", "./src/models/crdt"],
+  "exclude": ["src/models/__crdt"],
   "references": []
 }

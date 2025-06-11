@@ -1,17 +1,16 @@
 import { getOrCreateYArray } from "@elllphnt/crdt";
 import { RouteTreeData } from "@elllphnt/elementa-base";
+import { Router, RouteTree } from "@elllphnt/elementa-core";
 import {
   AggregatedCrdtModelList,
   CrdtRecordState,
 } from "@elllphnt/elementa-utils";
-import { Observable, map } from "rxjs";
+import { map, Observable } from "rxjs";
 import * as y from "yjs";
-import { Router } from "../../_interfaces/router/app.js";
-import { RouteTree } from "../../_interfaces/router/route_tree.js";
-import { CrdtIdentifiableModel } from "../_shared/identifiable.js";
+import { CrdtIdentifiable } from "../_shared/identifiable.js";
 
 export class CrdtRouteTree
-  extends CrdtIdentifiableModel
+  extends CrdtIdentifiable
   implements RouteTree<CrdtRouteTree>
 {
   readonly app: Router;

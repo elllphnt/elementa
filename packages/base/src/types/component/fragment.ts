@@ -1,3 +1,4 @@
+import { DataInputData } from "../_shared/_.js";
 import {
   IdentifiableData,
   identifiableDataSchema,
@@ -11,6 +12,7 @@ import {
 export type FragmentData = IdentifiableData &
   ElementContainerData & {
     providers?: ProviderData[];
+    props?: DataInputData[];
   };
 
 // Schemas

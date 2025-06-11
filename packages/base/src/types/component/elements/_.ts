@@ -3,6 +3,7 @@ export * from "./_common/_.js";
 export * from "./component.js";
 export * from "./container.js";
 export * from "./element.js";
+export * from "./expression.js";
 export * from "./fragment.js";
 export * from "./media.js";
 export * from "./primitive.js";

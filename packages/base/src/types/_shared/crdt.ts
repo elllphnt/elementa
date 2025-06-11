@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 // Types
-export type CrdtAtomic = {
-  __crdtAtomic: string[];
+export type CrdtAtomic<T extends [...string[]]> = {
+  __crdtAtomic: T;
 };
 
 // Schemas

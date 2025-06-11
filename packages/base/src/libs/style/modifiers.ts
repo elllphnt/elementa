@@ -16,6 +16,7 @@ export const systemModifiers = {
     type: StyleModifierType.Element,
     signature: [StyleDataType.String],
     selector: [".elll-condition-$1"],
+    __crdtAtomic: ["signature", "selector"],
   },
   raw: {
     id: "system:raw",
@@ -23,6 +24,7 @@ export const systemModifiers = {
     type: StyleModifierType.Context,
     signature: [StyleDataType.String],
     selector: ["$1"],
+    __crdtAtomic: ["signature", "selector"],
   },
 } satisfies Record<string, StyleModifierDefinitionData>;
 

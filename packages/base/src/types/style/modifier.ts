@@ -1,5 +1,10 @@
 import { z } from "zod";
 import { StyleDataType } from "../_primitives/_.js";
+import {
+  CrdtAtomic,
+  crdtAtomicSchema,
+  IdentifiableData,
+} from "../_shared/_.js";
 
 // Types
 
@@ -8,14 +13,16 @@ export enum StyleModifierType {
   Element = "element",
 }
 
-export type StyleModifierDefinitionData = {
-  id: string;
-  name: string;
-  type: StyleModifierType;
-  signature?: StyleDataType[];
-  predecence?: number;
-  selector?: string[];
-};
+export type StyleModifierDefinitionData = CrdtAtomic<
+  ["signature", "selector"]
+> &
+  IdentifiableData & {
+    name: string;
+    type: StyleModifierType;
+    signature?: StyleDataType[];
+    predecence?: number;
+    selector?: string[];
+  };
 
 export type StyleModifierData = {
   name: string;
@@ -24,9 +31,16 @@ export type StyleModifierData = {
 
 export type ElllSelectorData = StyleModifierData[];
 
+export type StyleModifierSheetData = CrdtAtomic<["modifiers[*]"]> & {
+  modifiers: StyleModifierDefinitionData[];
+};
+
 // Schemas
 
-export const styleModifierDefinitionDataSchema = z.object({
+export const styleModifierDefinitionDataSchema = crdtAtomicSchema([
+  "signature",
+  "selector",
+]).extend({
   id: z.string(),
   name: z.string(),
   type: z.enum([StyleModifierType.Context, StyleModifierType.Element]),
@@ -41,3 +55,9 @@ export const styleModifierDataSchema = z.object({
 });
 
 export const elllSelectorDataSchema = z.array(styleModifierDataSchema);
+
+export const styleModifierSheetSchema = crdtAtomicSchema([
+  "modifiers[*]",
+]).extend({
+  modifiers: z.array(styleModifierDefinitionDataSchema).default([]),
+});

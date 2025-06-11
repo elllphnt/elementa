@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { IdentifiableData } from "../_shared/_.js";
 import type { StyleData } from "./stylesheet/_.js";
 import {
   StyleFragmentData,
@@ -8,16 +9,18 @@ import {
 // Types
 
 export type KeyFrameData = {
-  key?: string;
   offset?: number;
   style?: StyleData;
 };
 
-export type KeyframeSetData = {
-  id?: string;
+export type KeyframeSetData = IdentifiableData & {
   name?: string;
   keyframes?: KeyFrameData[];
   styleFragments?: StyleFragmentData[];
+};
+
+export type KeyframeSheetData = {
+  keyframes: KeyframeSetData[];
 };
 
 // Schemas
@@ -33,4 +36,8 @@ export const keyframeSetDataSchema = z.object({
   name: z.string().optional(),
   keyframes: z.array(keyFrameDataSchema).optional(),
   styleFragments: z.array(styleFragmentDataSchema).optional(),
+});
+
+export const keyframeSheetSchema = z.object({
+  keyframes: z.array(keyframeSetDataSchema).default([]),
 });

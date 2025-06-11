@@ -24,13 +24,13 @@ import { VectorElementData, vectorElementDataSchema } from "./vector.js";
 // Types
 
 export type ElementData =
-  | ComponentElementData
   | ContainerElementData
-  | MediaElementData
-  | PrimitiveElementData
-  | SlotElementData
   | TextElementData
   | VectorElementData
+  | SlotElementData
+  | MediaElementData
+  | ComponentElementData
+  | PrimitiveElementData
   | ExpressionElementData
   | FragmentElementData;
 

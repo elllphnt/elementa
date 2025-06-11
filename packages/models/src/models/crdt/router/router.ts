@@ -1,12 +1,10 @@
 import { getOrCreateYArray, getOrCreateYMap } from "@elllphnt/crdt";
 import { RouteTreeData } from "@elllphnt/elementa-base";
+import { File, genId, Router } from "@elllphnt/elementa-core";
 import { AggregatedCrdtModelList, CrdtModel } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
-import { genId } from "~/_lib/id.js";
-import { File } from "~/project/_.js";
-import { Router } from "../../_interfaces/router/app.js";
-import { CrdtAppBlueprint } from "./blueprint/_.js";
+import { CrdtBlueprint } from "../blueprint/_.js";
 import { CrdtRouteTree } from "./route_tree.js";
 
 export class CrdtAppModel
@@ -14,7 +12,7 @@ export class CrdtAppModel
   implements Router<CrdtRouteTree>
 {
   readonly file: File;
-  readonly blueprint: CrdtAppBlueprint;
+  readonly blueprint: CrdtBlueprint;
 
   private readonly _routes: AggregatedCrdtModelList<CrdtRouteTree>;
   private readonly _routesById$ = new BehaviorSubject<
@@ -30,7 +28,7 @@ export class CrdtAppModel
 
     const editors = getOrCreateYMap(crdt, "editors");
     const blueprintMap = getOrCreateYMap(editors, "blueprint");
-    this.blueprint = new CrdtAppBlueprint(blueprintMap, { initialized });
+    this.blueprint = new CrdtBlueprint(blueprintMap, { initialized });
 
     this._routes = new AggregatedCrdtModelList({
       crdt: getOrCreateYArray<y.Map<any>>(crdt, "routes"),

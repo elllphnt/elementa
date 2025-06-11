@@ -1,12 +1,12 @@
 import { RouteTreeData } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
 import { File } from "~/project/_.js";
-import { AppBlueprint } from "../blueprint/bleuprint.js";
+import { Blueprint } from "../blueprint/bleuprint.js";
 import { RouteTree } from "./route_tree.js"; // make sure Route is updated too
 
 export interface Router<R extends RouteTree = RouteTree> {
   file: File;
-  blueprint: AppBlueprint;
+  blueprint: Blueprint;
 
   routes: R[];
   routes$: Observable<R[]>;

@@ -1,9 +1,4 @@
-import {
-  ElllSelectorData,
-  StyleDataType,
-  StyleVariableData,
-  StyleVariableSetData,
-} from "@elllphnt/elementa-base";
+import { ElllSelectorData, StyleDataType } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
 import { Project } from "~/project/_.js";
 import { Identifiable } from "../_shared/_.js";
@@ -41,7 +36,7 @@ export interface StyleVariableSet extends Identifiable {
   setDatatype(datatype: StyleDataType | undefined): void;
   setModes(modes: ElllSelectorData[] | undefined): void;
 
-  addVariable(data: StyleVariableData): StyleVariable;
+  addVariable(data: StyleVariable): void;
   removeVariable(id: string): void;
 }
 
@@ -57,6 +52,6 @@ export interface StyleVariableSheet {
   variableSetByName(name: string): StyleVariableSet | undefined;
   variableSetByName$(name: string): Observable<StyleVariableSet | undefined>;
 
-  addVariableSet(data: StyleVariableSetData): StyleVariableSet;
+  addVariableSet(data: StyleVariableSet): void;
   removeVariableSet(id: string): void;
 }

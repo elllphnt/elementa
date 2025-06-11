@@ -8,16 +8,6 @@ export interface StyleModifierSheet {
   modifiers: StyleModifierDefinitionData[];
   modifiers$: Observable<StyleModifierDefinitionData[]>;
 
-  modifier(id: string): StyleModifierDefinitionData | undefined;
-  modifier$(id: string): Observable<StyleModifierDefinitionData | undefined>;
-
-  modifierByName(name: string): StyleModifierDefinitionData | undefined;
-  modifierByName$(
-    name: string
-  ): Observable<StyleModifierDefinitionData | undefined>;
-
-  addModifier(
-    definition: StyleModifierDefinitionData
-  ): StyleModifierDefinitionData;
+  addModifier(definition: StyleModifierDefinitionData): void;
   removeModifier(id: string): void;
 }

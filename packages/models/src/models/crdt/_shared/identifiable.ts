@@ -1,10 +1,9 @@
 import { ensureField } from "@elllphnt/crdt";
+import { genId, Identifiable } from "@elllphnt/elementa-core";
 import { CrdtModel } from "@elllphnt/elementa-utils";
 import * as y from "yjs";
-import { genId } from "~/_lib/id.js";
-import { Identifiable } from "../../_interfaces/_shared/identifiable.js";
 
-export abstract class CrdtIdentifiableModel
+export abstract class CrdtIdentifiable
   extends CrdtModel<y.Map<any>>
   implements Identifiable
 {

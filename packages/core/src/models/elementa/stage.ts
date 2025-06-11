@@ -4,7 +4,7 @@ import { RenderingEnvironment } from "~/rendering/_.js";
 import { ElementaFrame } from "./frame.js";
 
 export interface ElementaStage {
-  host: RenderingEnvironment;
+  environment: RenderingEnvironment;
 
   frames: ElementaFrame[];
   frames$: Observable<ElementaFrame[]>;

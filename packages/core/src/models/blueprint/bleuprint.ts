@@ -12,7 +12,7 @@ export interface BlueprintNode {
   setPosition(pos: { x: number; y: number }): void;
 }
 
-export interface AppBlueprint {
+export interface Blueprint {
   nodes: BlueprintNode[];
   nodes$: Observable<BlueprintNode[]>;
 

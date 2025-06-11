@@ -122,7 +122,7 @@ export class StyleManager extends Disposable {
     const values = this._variableValues$.getValue();
     return values[selector]?.[varRef.__var];
   }
-  variableValue$(
+  varRefValue$(
     selector: string,
     varRef: VarRef
   ): Observable<StyleDataData | undefined> {

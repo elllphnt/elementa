@@ -12,7 +12,7 @@
     }
   },
   "include": ["src"],
-  "exclude": ["./src/models/_crdt", "./src/models/crdt"],
+  "exclude": ["./src/models/_crdt"],
 
   "references": []
 }

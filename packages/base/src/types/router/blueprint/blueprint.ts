@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { CrdtAtomic, crdtAtomicSchema } from "../../../_shared/_.js";
+import { CrdtAtomic, crdtAtomicSchema } from "../../_shared/_.js";
 
 // Types
 
-export type BlueprintNodeData = CrdtAtomic & {
+export type BlueprintNodeData = CrdtAtomic<["position"]> & {
   id: string;
   position: {
     x: number;
@@ -11,7 +11,7 @@ export type BlueprintNodeData = CrdtAtomic & {
   };
 };
 
-export type AppBlueprintData = {
+export type BlueprintData = {
   nodes?: BlueprintNodeData[];
 };
 

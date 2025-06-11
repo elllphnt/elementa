@@ -1,11 +1,11 @@
 import { Observable } from "rxjs";
 import { Project } from "~/project/_.js";
 import { Identifiable } from "../_shared/_.js";
+import { StyleFragmentRegistry } from "./stylesheet/_.js";
 import { Style } from "./stylesheet/style.js";
 
-export interface Keyframe extends Identifiable {
+export interface Keyframe {
   style: Style;
-  style$: Observable<Style>;
 
   offset: number | undefined;
   offset$: Observable<number | undefined>;
@@ -13,15 +13,26 @@ export interface Keyframe extends Identifiable {
   setOffset(offset: number | undefined): void;
 }
 
-export interface KeyframeSheet {
-  project: Project;
+export interface KeyframeSet extends Identifiable {
+  style: Style;
+  fragmentRegistry: StyleFragmentRegistry;
 
   keyframes: Keyframe[];
   keyframes$: Observable<Keyframe[]>;
 
-  keyframe(id: string): Keyframe | undefined;
-  keyframe$(id: string): Observable<Keyframe | undefined>;
-
   addKeyframe(keyframe: Keyframe): void;
-  removeKeyframe(id: string): void;
+  removeKeyframe(index: number): void;
+}
+
+export interface KeyframeSheet {
+  project: Project;
+
+  keyframeSets: KeyframeSet[];
+  keyframeSets$: Observable<KeyframeSet[]>;
+
+  keyframeSet(id: string): KeyframeSet | undefined;
+  keyframeSet$(id: string): Observable<KeyframeSet | undefined>;
+
+  addKeyframeSet(keyframe: KeyframeSet): void;
+  removeKeyframeSet(id: string): void;
 }

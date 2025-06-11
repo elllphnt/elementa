@@ -1,4 +1,9 @@
 import { z } from "zod";
+import {
+  CrdtAtomic,
+  crdtAtomicSchema,
+  IdentifiableData,
+} from "../_shared/_.js";
 
 // Types
 
@@ -18,11 +23,15 @@ export type TypefaceDefinition = {
   category?: string;
 };
 
-export type TypefaceData = {
-  id: string;
-  name: string;
-  definition?: TypefaceDefinition;
-  variants?: string[];
+export type TypefaceData = CrdtAtomic<["definition"]> &
+  IdentifiableData & {
+    name: string;
+    definition?: TypefaceDefinition;
+    variants?: string[];
+  };
+
+export type TypefaceSheetData = {
+  typefaces: TypefaceData[];
 };
 
 // Schemas
@@ -41,9 +50,11 @@ export const typefaceDefinitionSchema = z.object({
   category: z.string().optional(),
 });
 
-export const typefaceDataSchema = z.object({
+export const typefaceDataSchema = crdtAtomicSchema(["definition"]).extend({
   id: z.string(),
   name: z.string(),
   definition: typefaceDefinitionSchema.optional(),
   variants: z.array(z.string()).optional(),
 });
+
+export const typefaceSheetSchema = z.array(typefaceDataSchema);

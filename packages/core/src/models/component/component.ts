@@ -2,6 +2,7 @@ import { Observable } from "rxjs";
 import { File } from "~/project/_.js";
 import { DataInput } from "../_shared/data_input.js";
 import { ElementaPreview, ElementaStage } from "../elementa/_.js";
+import { ExpressionElement, FragmentElement } from "../elements/_.js";
 import { Fragment } from "../fragment/fragment.js";
 import { State } from "../states/_.js";
 
@@ -11,7 +12,8 @@ export interface Component {
   stage: ElementaStage;
   preview: ElementaPreview;
 
-  template: Fragment;
+  template: FragmentElement | ExpressionElement | undefined;
+  template$: Observable<FragmentElement | ExpressionElement | undefined>;
 
   props$: Observable<DataInput[]>;
   props: DataInput[];
