@@ -1,4 +1,4 @@
-import { Fragment } from "@elllphnt/elementa-models";
+import { Fragment } from "@elllphnt/elementa-core";
 import { combineLatestOrEmpty, reconcileList } from "@elllphnt/elementa-utils";
 import {
   BehaviorSubject,
@@ -7,23 +7,24 @@ import {
   map,
   switchMap,
 } from "rxjs";
+import { ElementInstance } from "../elements/_.js";
 import { createElementInstance } from "../elements/_element.js";
-import { ElementInstance } from "../elements/element.js";
 import { ElementaInstanceType, Instance } from "../instance.js";
 import { ModelInstance } from "../model.js";
 import { SlotInstance } from "../slot/slot.js";
 import { ChildFragmentEnvironment } from "./environment/child_environment.js";
 import { FragmentEnvironment } from "./environment/environment.js";
+import { FragmentInputResolver } from "./input_resolver/_.js";
 
 export class FragmentFragmentEnvironment extends ChildFragmentEnvironment {
   readonly fragment: Fragment;
 
   get fragmentStack(): string[] {
-    return [...this.parent.fragmentStack, this.fragment.url];
+    return [...this.parent.fragmentStack, this.fragment.id];
   }
   get fragmentStack$(): Observable<string[]> {
     return this.parent.fragmentStack$.pipe(
-      map((stack) => [...stack, this.fragment.url])
+      map((stack) => [...stack, this.fragment.id])
     );
   }
 
@@ -97,21 +98,21 @@ export class FragmentInstance extends ModelInstance<Fragment> {
 
   constructor({
     model,
-    environment,
+    inputResolver,
     parent,
   }: {
     model: Fragment;
-    environment: FragmentEnvironment;
+    inputResolver: FragmentInputResolver;
     parent?: Instance;
   }) {
     super({
       model,
       type: ElementaInstanceType.Fragment,
-      runtime: environment.runtime,
+      runtime: inputResolver.environment.runtime,
       parent,
     });
     this.environment = new FragmentFragmentEnvironment({
-      parent: environment,
+      parent: inputResolver.environment,
       fragment: model,
     });
 

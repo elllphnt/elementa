@@ -1,4 +1,5 @@
-import { Infrastructure, PackageData } from "@elllphnt/elementa-models";
+import { PackageData } from "@elllphnt/elementa-base";
+import { Infrastructure } from "@elllphnt/elementa-core";
 import { Disposable } from "@elllphnt/elementa-utils";
 import { rewriteImports, transpileTsToJs } from "./_utils.js";
 import { Module } from "./module.js";

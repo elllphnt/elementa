@@ -1,9 +1,9 @@
-import { TextElement } from "@elllphnt/elementa-models";
+import { TextElement } from "@elllphnt/elementa-core";
 import { FragmentEnvironment } from "../fragment/environment/environment.js";
 import { Instance } from "../instance.js";
-import { ElementInstance } from "./element.js";
+import { BaseElementInstance } from "./_base.js";
 
-export class TextElementInstance extends ElementInstance<TextElement> {
+export class TextElementInstance extends BaseElementInstance<TextElement> {
   constructor({
     element,
     environment,

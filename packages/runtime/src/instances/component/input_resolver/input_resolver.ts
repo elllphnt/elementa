@@ -1,4 +1,4 @@
-import { SlotFill } from "@elllphnt/elementa-models";
+import { SlotFill } from "@elllphnt/elementa-core";
 import { Observable } from "rxjs";
 import { FragmentEnvironment } from "../../fragment/environment/environment.js";
 

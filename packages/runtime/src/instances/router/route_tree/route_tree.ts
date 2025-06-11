@@ -1,4 +1,4 @@
-import { RouteTree } from "@elllphnt/elementa-models";
+import { RouteTree } from "@elllphnt/elementa-core";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import {
   BehaviorSubject,

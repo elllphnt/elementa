@@ -1,4 +1,4 @@
-import { FragmentRenderableContent } from "@elllphnt/elementa-models";
+import { FragmentRenderableContent } from "@elllphnt/elementa-core";
 import {
   BehaviorSubject,
   combineLatest,
@@ -9,13 +9,13 @@ import {
 } from "rxjs";
 import {
   FragmentEnvironment,
+  FragmentInputResolver,
   FragmentInstance,
 } from "../../../fragment/_.js";
-import { ChildFragmentEnvironment } from "../../../fragment/environment/child_environment.js";
 import { ModelInstance } from "../../../model.js";
 import { ElementaEditorInstanceType } from "../_types.js";
 
-export class FragmentRenderableContentFragmentEnvironment extends ChildFragmentEnvironment {
+export class FragmentRenderableContentInputResolver extends FragmentInputResolver {
   renderableContent: FragmentRenderableContent;
 
   constructor({
@@ -25,21 +25,20 @@ export class FragmentRenderableContentFragmentEnvironment extends ChildFragmentE
     environment: FragmentEnvironment;
     renderableContent: FragmentRenderableContent;
   }) {
-    super({ parent: environment });
+    super({ environment });
     this.renderableContent = renderableContent;
   }
 
   paramValue(name: string): unknown {
     return this.renderableContent.paramValue(name);
   }
-
   paramValue$(name: string): Observable<unknown> {
     return this.renderableContent.paramValue$(name);
   }
 }
 
 export class FragmentRenderableContentInstance extends ModelInstance<FragmentRenderableContent> {
-  environment: FragmentEnvironment;
+  inputResolver: FragmentRenderableContentInputResolver;
 
   private _fragment$ = new BehaviorSubject<FragmentInstance | undefined>(
     undefined
@@ -79,7 +78,7 @@ export class FragmentRenderableContentInstance extends ModelInstance<FragmentRen
       runtime: environment.runtime,
     });
 
-    this.environment = new FragmentRenderableContentFragmentEnvironment({
+    this.inputResolver = new FragmentRenderableContentInputResolver({
       environment,
       renderableContent: this.model,
     });
@@ -90,7 +89,7 @@ export class FragmentRenderableContentInstance extends ModelInstance<FragmentRen
         this._fragment$.next(
           new FragmentInstance({
             model: fragment,
-            environment: this.environment,
+            inputResolver: this.inputResolver,
             parent: this,
           })
         );

@@ -1,11 +1,10 @@
 import { StyleModifierData } from "@elllphnt/elementa-base";
-import { DataInput, SlotFill } from "@elllphnt/elementa-models";
+import { DataInput, SlotFill } from "@elllphnt/elementa-core";
 import { Disposable } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Runtime } from "../../../runtime/runtime.js";
 import { Namespace } from "../../namespace/namespace.js";
 import { StateInstance } from "../../states/_.js";
-import { FragmentInstance } from "../fragment.js";
 
 /**
  * FragmentEnvironment defines the runtime context used during rendering
@@ -42,10 +41,6 @@ export abstract class FragmentEnvironment extends Disposable {
   // Resolve a slot fill for a given slot ID.
   abstract slotFill(id: string): SlotFill | undefined;
   abstract slotFill$(id: string): Observable<SlotFill | undefined>;
-
-  // Fragment instances actively composed inside this environment.
-  abstract get fragments(): FragmentInstance[];
-  abstract get fragments$(): Observable<FragmentInstance[]>;
 
   // Prop value resolution (component-level).
   abstract propValue(varName: string): unknown;

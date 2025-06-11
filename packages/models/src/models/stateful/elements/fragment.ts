@@ -6,7 +6,7 @@ import {
   RenderingEnvironment,
 } from "@elllphnt/elementa-core";
 import { combineLatestMerged } from "@elllphnt/elementa-utils";
-import { Observable, of, switchMap } from "rxjs";
+import { map, Observable, of, switchMap } from "rxjs";
 import { StatefulBaseElement } from "./_base.js";
 
 export class StatefulFragmentElement
@@ -32,6 +32,15 @@ export class StatefulFragmentElement
     );
   }
 
+  paramValue(varName: string) {
+    return this._state.entry("params")?.[varName];
+  }
+  paramValue$(varName: string): Observable<any> {
+    return this._state
+      .entry$("params")
+      .pipe(map((params) => params?.[varName]));
+  }
+
   get allCssStylesheets(): CssStyleSheet[] {
     return [this.cssStyleSheet];
   }
@@ -45,7 +54,6 @@ export class StatefulFragmentElement
       ...super._data,
     };
   }
-
   get data$(): Observable<FragmentElementData> {
     return combineLatestMerged([super._data$]);
   }
@@ -63,5 +71,17 @@ export class StatefulFragmentElement
 
   setFragmentId(id: string | undefined): void {
     this._state.set("fragmentId", id);
+  }
+
+  setParamValue(varName: string, value: any): void {
+    this._state.set("params", {
+      ...this._state.entry("params"),
+      [varName]: value,
+    });
+  }
+  clearParamValue(varName: string): void {
+    const params = { ...this._state.entry("params") };
+    delete params[varName];
+    this._state.set("params", params);
   }
 }

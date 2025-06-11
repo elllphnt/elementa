@@ -1,4 +1,4 @@
-import { AppRenderableContent } from "@elllphnt/elementa-models";
+import { RouterRenderableContent } from "@elllphnt/elementa-core";
 import {
   BehaviorSubject,
   combineLatest,
@@ -7,15 +7,15 @@ import {
   of,
   switchMap,
 } from "rxjs";
-import { AppInstance } from "../../../app/_.js";
 import { FragmentEnvironment } from "../../../fragment/_.js";
+import { RouterInstance } from "../../../router/_.js";
 import { BaseRenderableContentInstance } from "./_base.js";
 
-export class AppRenderableContentInstance extends BaseRenderableContentInstance<AppRenderableContent> {
-  private _app$ = new BehaviorSubject<AppInstance | undefined>(undefined);
+export class RouterRenderableContentInstance extends BaseRenderableContentInstance<RouterRenderableContent> {
+  private _app$ = new BehaviorSubject<RouterInstance | undefined>(undefined);
 
   app$ = this._app$.asObservable();
-  get app(): AppInstance | undefined {
+  get app(): RouterInstance | undefined {
     return this._app$.getValue();
   }
 
@@ -34,7 +34,7 @@ export class AppRenderableContentInstance extends BaseRenderableContentInstance<
     model,
     environment,
   }: {
-    model: AppRenderableContent;
+    model: RouterRenderableContent;
     environment: FragmentEnvironment;
   }) {
     super({
@@ -42,13 +42,13 @@ export class AppRenderableContentInstance extends BaseRenderableContentInstance<
       environment,
     });
 
-    const appSubscription = this.model.app$
+    const appSubscription = this.model.router$
       .pipe(switchMap((f) => f?.model$ ?? of(undefined)))
       .subscribe((model) => {
         const current = this.app;
         if (model) {
           this._app$.next(
-            new AppInstance({
+            new RouterInstance({
               model,
               environment,
               parent: this,

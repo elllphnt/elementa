@@ -1,8 +1,7 @@
 import { StyleModifierData } from "@elllphnt/elementa-base";
-import { DataInput, SlotFill } from "@elllphnt/elementa-models";
+import { DataInput, SlotFill } from "@elllphnt/elementa-core";
 import { Observable } from "rxjs";
 import { StateInstance } from "../../states/_.js";
-import { FragmentInstance } from "../fragment.js";
 import { FragmentEnvironment } from "./environment.js";
 
 /**
@@ -62,15 +61,6 @@ export class ChildFragmentEnvironment extends FragmentEnvironment {
 
   slotFill$(id: string): Observable<SlotFill | undefined> {
     return this.parent.slotFill$(id);
-  }
-
-  // Fragments delegation
-  get fragments(): FragmentInstance[] {
-    return this.parent.fragments;
-  }
-
-  get fragments$(): Observable<FragmentInstance[]> {
-    return this.parent.fragments$;
   }
 
   // Prop value delegation

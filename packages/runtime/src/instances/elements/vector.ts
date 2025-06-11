@@ -1,9 +1,9 @@
-import { VectorElement } from "@elllphnt/elementa-models";
+import { VectorElement } from "@elllphnt/elementa-core";
 import { FragmentEnvironment } from "../fragment/environment/environment.js";
 import { Instance } from "../instance.js";
-import { ElementInstance } from "./element.js";
+import { BaseElementInstance } from "./_base.js";
 
-export class VectorElementInstance extends ElementInstance<VectorElement> {
+export class VectorElementInstance extends BaseElementInstance<VectorElement> {
   constructor({
     element,
     environment,

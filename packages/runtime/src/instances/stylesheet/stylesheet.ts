@@ -1,6 +1,6 @@
 // src/runtime/style/stylesheet_instance.ts
 
-import { Stylesheet } from "@elllphnt/elementa-models";
+import { Stylesheet } from "@elllphnt/elementa-core";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-utils";
 import {
   BehaviorSubject,

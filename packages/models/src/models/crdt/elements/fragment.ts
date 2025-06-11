@@ -5,7 +5,7 @@ import {
   FragmentElement,
   RenderingEnvironment,
 } from "@elllphnt/elementa-core";
-import { Observable, of, switchMap } from "rxjs";
+import { map, Observable, of, switchMap } from "rxjs";
 import * as y from "yjs";
 import { CrdtBaseElement } from "./_base.js";
 
@@ -54,6 +54,29 @@ export class CrdtFragmentElement
 
   setFragmentId(id: string | undefined): void {
     this._state.set("fragmentId", id);
+  }
+
+  paramValue(varName: string): any {
+    return this._state.entry("params")?.[varName];
+  }
+
+  paramValue$(varName: string): Observable<any> {
+    return this._state
+      .entry$("params")
+      .pipe(map((params) => params?.[varName]));
+  }
+
+  setParamValue(varName: string, value: any): void {
+    this._state.set("params", {
+      ...this._state.entry("params"),
+      [varName]: value,
+    });
+  }
+
+  clearParamValue(varName: string): void {
+    const params = { ...this._state.entry("params") };
+    delete params[varName];
+    this._state.set("params", params);
   }
 
   protected factory(crdt: y.Map<any>): this {

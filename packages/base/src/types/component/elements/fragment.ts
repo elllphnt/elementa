@@ -5,6 +5,7 @@ import { BaseElementData, baseElementDataSchema } from "./_base.js";
 
 export type FragmentElementData = BaseElementData<"fragment"> & {
   fragmentId?: string;
+  params?: Record<string, any>;
 };
 
 // Schemas

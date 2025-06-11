@@ -1,5 +1,5 @@
 import { StyleModifierData } from "@elllphnt/elementa-base";
-import { DataInput } from "@elllphnt/elementa-models";
+import { DataInput } from "@elllphnt/elementa-core";
 import { Observable, of } from "rxjs";
 import { StateInstance } from "../../states/_.js";
 import { FragmentEnvironment } from "./environment.js";

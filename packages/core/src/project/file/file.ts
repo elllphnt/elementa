@@ -39,6 +39,10 @@ export abstract class File extends AsyncResource {
     );
   }
 
+  get content() {
+    return this.project.content(this.id);
+  }
+
   constructor({ id, project }: { id: string; project: Project }) {
     super();
 

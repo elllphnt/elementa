@@ -1,4 +1,4 @@
-import { RouteTree } from "@elllphnt/elementa-models";
+import { RouteTree } from "@elllphnt/elementa-core";
 import { FragmentEnvironment } from "../../../fragment/_.js";
 import { ElementaInstanceType, Instance } from "../../../instance.js";
 

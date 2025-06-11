@@ -1,5 +1,5 @@
 import { transform } from "@babel/standalone";
-import { PackageData } from "@elllphnt/elementa-models";
+import { PackageData } from "@elllphnt/elementa-base";
 import {
   JsxEmit,
   ModuleKind,

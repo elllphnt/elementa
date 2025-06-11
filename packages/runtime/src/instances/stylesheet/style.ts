@@ -3,7 +3,7 @@ import {
   stylePropertyConfigMap,
   StylePropertyName,
 } from "@elllphnt/elementa-base";
-import { Style } from "@elllphnt/elementa-models";
+import { Style } from "@elllphnt/elementa-core";
 import { assert } from "@elllphnt/elementa-utils";
 import { combineLatest, map, Observable, of, switchMap } from "rxjs";
 import { ElementaInstanceType, Instance } from "../instance.js";

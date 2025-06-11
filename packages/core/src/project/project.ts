@@ -1,20 +1,24 @@
-import { elementaStandardPaths } from "@elllphnt/elementa-base";
+import { elementaStandardPaths, PackageData } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
-import { toAbsoluteFileUrl, toRelativeFileUrl } from "~/_lib/url.js";
-import { Infrastructure } from "../infrastructure/infrastructure.js";
-import { Content } from "./file/_.js";
-import { File, FileReference } from "./file/file.js";
-import { FileModelType, fileModelTypes } from "./file/file_types.js";
+import { toAbsoluteFileUrl, toRelativeFileUrl } from "~/_lib/_.js";
+import { Infrastructure } from "../infrastructure/_.js";
 import {
+  Content,
+  File,
   FileModelAdaptor,
+  FileModelType,
+  fileModelTypes,
+  FileReference,
   FileReferenceModelAdaptor,
-} from "./file/model_adaptor.js";
-import { StyleManager } from "./style_manager/style_manager.js";
+} from "./file/_.js";
+import { PackageManager } from "./package_manager/_.js";
+import { StyleManager } from "./style_manager/_.js";
 
 export abstract class Project<F extends File = File> {
   id: string;
   readonly infrastructure: Infrastructure;
   readonly styleManager: StyleManager;
+  readonly packageManager: PackageManager;
 
   app = new FileReferenceModelAdaptor({
     fileReference: new FileReference({
@@ -103,6 +107,7 @@ export abstract class Project<F extends File = File> {
     this.id = id;
     this.infrastructure = infrastructure;
     this.styleManager = new StyleManager({ project: this });
+    this.packageManager = new PackageManager({ project: this });
   }
 
   absoluteFileUrl(url: string): string {
@@ -111,4 +116,8 @@ export abstract class Project<F extends File = File> {
   relativeFileUrl(url: string): string {
     return toRelativeFileUrl({ url, projectId: this.id });
   }
+
+  abstract installPackages(
+    packages: Array<Pick<PackageData, "name"> & Partial<PackageData>>
+  ): Promise<PackageData[]>;
 }

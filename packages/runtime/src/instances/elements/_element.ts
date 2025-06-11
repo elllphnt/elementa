@@ -1,9 +1,11 @@
-import { Element } from "@elllphnt/elementa-models";
+import { Element } from "@elllphnt/elementa-core";
 
 import { FragmentEnvironment } from "../fragment/environment/environment.js";
 import { Instance } from "../instance.js";
 import { ComponentElementInstance } from "./component/component.js";
 import { ContainerElementInstance } from "./container.js";
+import { ExpressionElementInstance } from "./expression.js";
+import { FragmentElementInstance } from "./fragment/fragment.js";
 import { MediaElementInstance } from "./media.js";
 import { PrimitiveElementInstance } from "./primitive.js";
 import { SlotElementInstance } from "./slot.js";
@@ -17,6 +19,8 @@ export type ElementInstance =
   | PrimitiveElementInstance
   | SlotElementInstance
   | TextElementInstance
+  | FragmentElementInstance
+  | ExpressionElementInstance
   | VectorElementInstance;
 
 export function createElementInstance({

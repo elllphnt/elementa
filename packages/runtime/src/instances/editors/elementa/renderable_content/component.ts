@@ -1,7 +1,4 @@
-import {
-  ComponentRenderableContent,
-  SlotFill,
-} from "@elllphnt/elementa-models";
+import { ComponentRenderableContent, SlotFill } from "@elllphnt/elementa-core";
 import {
   BehaviorSubject,
   combineLatest,

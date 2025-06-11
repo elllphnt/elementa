@@ -1,4 +1,4 @@
-import { ElementaPreview } from "@elllphnt/elementa-models";
+import { ElementaPreview } from "@elllphnt/elementa-core";
 import {
   BehaviorSubject,
   combineLatest,

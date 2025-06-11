@@ -1,5 +1,5 @@
 import { HookConfig } from "@elllphnt/elementa-base";
-import { HookState } from "@elllphnt/elementa-models";
+import { HookState } from "@elllphnt/elementa-core";
 import { map, of } from "rxjs";
 import { Runtime } from "../../runtime/runtime.js";
 import { Instance } from "../instance.js";

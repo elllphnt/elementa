@@ -2,7 +2,7 @@ import {
   PrimitiveConfig,
   primitiveConfigSchema,
 } from "@elllphnt/elementa-base";
-import { PrimitiveElement } from "@elllphnt/elementa-models";
+import { PrimitiveElement } from "@elllphnt/elementa-core";
 import { combineLatestOrEmpty, reconcileList } from "@elllphnt/elementa-utils";
 import {
   BehaviorSubject,
@@ -16,10 +16,10 @@ import { DiagnosticLevel } from "../../_shared/diagnosticable.js";
 import { Module } from "../../runtime/module_manager/_.js";
 import { FragmentEnvironment } from "../fragment/environment/environment.js";
 import { Instance } from "../instance.js";
-import { createElementInstance } from "./_element.js";
-import { ElementInstance } from "./element.js";
+import { BaseElementInstance } from "./_base.js";
+import { createElementInstance, ElementInstance } from "./_element.js";
 
-export class PrimitiveElementInstance extends ElementInstance<PrimitiveElement> {
+export class PrimitiveElementInstance extends BaseElementInstance<PrimitiveElement> {
   private _content$ = new BehaviorSubject<ElementInstance[]>([]);
   private _config$ = new BehaviorSubject<PrimitiveConfig | undefined>(
     undefined
@@ -35,7 +35,9 @@ export class PrimitiveElementInstance extends ElementInstance<PrimitiveElement> 
   get module(): Module | undefined {
     return this.element.primitiveUrl
       ? this.runtime.moduleManager.module(
-          this.element.project.absoluteFileUrl(this.element.primitiveUrl)
+          this.element.environment.project.absoluteFileUrl(
+            this.element.primitiveUrl
+          )
         )
       : undefined;
   }

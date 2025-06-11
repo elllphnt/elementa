@@ -1,4 +1,4 @@
-import { ComponentElement } from "@elllphnt/elementa-models";
+import { ComponentElement } from "@elllphnt/elementa-core";
 import {
   BehaviorSubject,
   combineLatest,

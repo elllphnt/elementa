@@ -1,11 +1,11 @@
-import { MediaElement } from "@elllphnt/elementa-models";
+import { MediaElement } from "@elllphnt/elementa-core";
 import { FragmentEnvironment } from "../fragment/environment/environment.js";
 import { Instance } from "../instance.js";
-import { ElementInstance } from "./element.js";
+import { BaseElementInstance } from "./_base.js";
 
 export class MediaElementInstance<
   E extends MediaElement = MediaElement
-> extends ElementInstance<E> {
+> extends BaseElementInstance<E> {
   constructor({
     element,
     environment,

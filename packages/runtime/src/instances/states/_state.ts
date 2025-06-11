@@ -1,4 +1,4 @@
-import { HookState, State } from "@elllphnt/elementa-models";
+import { HookState, State } from "@elllphnt/elementa-core";
 import { Runtime } from "../../runtime/runtime.js";
 import { Instance } from "../instance.js";
 import { HookStateInstance } from "./hook.js";

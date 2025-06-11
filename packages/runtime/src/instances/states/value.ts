@@ -1,4 +1,4 @@
-import { ValueState } from "@elllphnt/elementa-models";
+import { ValueState } from "@elllphnt/elementa-core";
 import { Runtime } from "../../runtime/runtime.js";
 import { Instance } from "../instance.js";
 import { BaseStateInstance } from "./_base.js";

@@ -9,5 +9,10 @@ export interface FragmentElement extends BaseElement<"fragment"> {
   fragment: Fragment | undefined;
   fragment$: Observable<Fragment | undefined>;
 
+  paramValue(varName: string): any;
+  paramValue$(varName: string): Observable<any>;
+
   setFragmentId(id: string | undefined): void;
+  setParamValue(varName: string, value: any): void;
+  clearParamValue(varName: string): void;
 }

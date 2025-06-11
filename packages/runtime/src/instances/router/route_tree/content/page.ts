@@ -3,7 +3,7 @@ import {
   FileModelAdaptor,
   RouteTree,
   SlotFill,
-} from "@elllphnt/elementa-models";
+} from "@elllphnt/elementa-core";
 import {
   BehaviorSubject,
   combineLatest,
@@ -43,7 +43,7 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
     | ModelInstanceAdaptor<
         Component,
         ComponentInstance,
-        FileModelAdaptor<Component>
+        FileModelAdaptor<"component">
       >
     | undefined
   >(undefined);
@@ -51,7 +51,7 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
     | ModelInstanceAdaptor<
         Component,
         ComponentInstance,
-        FileModelAdaptor<Component>
+        FileModelAdaptor<"component">
       >
     | undefined
   >(undefined);
@@ -59,7 +59,7 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
     | ModelInstanceAdaptor<
         Component,
         ComponentInstance,
-        FileModelAdaptor<Component>
+        FileModelAdaptor<"component">
       >
     | undefined
   >(undefined);
@@ -67,7 +67,7 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
     | ModelInstanceAdaptor<
         Component,
         ComponentInstance,
-        FileModelAdaptor<Component>
+        FileModelAdaptor<"component">
       >
     | undefined
   >(undefined);
@@ -76,7 +76,7 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
     | ModelInstanceAdaptor<
         Component,
         ComponentInstance,
-        FileModelAdaptor<Component>
+        FileModelAdaptor<"component">
       >
     | undefined
   > {
@@ -86,7 +86,7 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
     | ModelInstanceAdaptor<
         Component,
         ComponentInstance,
-        FileModelAdaptor<Component>
+        FileModelAdaptor<"component">
       >
     | undefined {
     return this._mainView$.value;
@@ -96,7 +96,7 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
     | ModelInstanceAdaptor<
         Component,
         ComponentInstance,
-        FileModelAdaptor<Component>
+        FileModelAdaptor<"component">
       >
     | undefined
   > {
@@ -106,7 +106,7 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
     | ModelInstanceAdaptor<
         Component,
         ComponentInstance,
-        FileModelAdaptor<Component>
+        FileModelAdaptor<"component">
       >
     | undefined {
     return this._errorView$.value;
@@ -116,7 +116,7 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
     | ModelInstanceAdaptor<
         Component,
         ComponentInstance,
-        FileModelAdaptor<Component>
+        FileModelAdaptor<"component">
       >
     | undefined
   > {
@@ -126,7 +126,7 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
     | ModelInstanceAdaptor<
         Component,
         ComponentInstance,
-        FileModelAdaptor<Component>
+        FileModelAdaptor<"component">
       >
     | undefined {
     return this._pendingView$.value;
@@ -136,7 +136,7 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
     | ModelInstanceAdaptor<
         Component,
         ComponentInstance,
-        FileModelAdaptor<Component>
+        FileModelAdaptor<"component">
       >
     | undefined
   > {
@@ -146,7 +146,7 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
     | ModelInstanceAdaptor<
         Component,
         ComponentInstance,
-        FileModelAdaptor<Component>
+        FileModelAdaptor<"component">
       >
     | undefined {
     return this._notFoundView$.value;
@@ -230,7 +230,7 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
           const adaptor = new ModelInstanceAdaptor<
             Component,
             ComponentInstance,
-            FileModelAdaptor<Component>
+            FileModelAdaptor<"component">
           >({
             modelAdaptor,
             runtime: this.runtime,
@@ -256,7 +256,7 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
           const adaptor = new ModelInstanceAdaptor<
             Component,
             ComponentInstance,
-            FileModelAdaptor<Component>
+            FileModelAdaptor<"component">
           >({
             modelAdaptor,
             runtime: this.runtime,
@@ -282,7 +282,7 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
           const adaptor = new ModelInstanceAdaptor<
             Component,
             ComponentInstance,
-            FileModelAdaptor<Component>
+            FileModelAdaptor<"component">
           >({
             modelAdaptor,
             runtime: this.runtime,
@@ -308,7 +308,7 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
           const adaptor = new ModelInstanceAdaptor<
             Component,
             ComponentInstance,
-            FileModelAdaptor<Component>
+            FileModelAdaptor<"component">
           >({
             modelAdaptor,
             runtime: this.runtime,

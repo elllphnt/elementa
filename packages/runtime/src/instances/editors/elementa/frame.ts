@@ -1,4 +1,4 @@
-import { ElementaFrame } from "@elllphnt/elementa-models";
+import { ElementaFrame } from "@elllphnt/elementa-core";
 import {
   BehaviorSubject,
   combineLatest,

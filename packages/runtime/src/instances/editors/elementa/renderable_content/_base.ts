@@ -1,4 +1,4 @@
-import { BaseRenderableContent } from "@elllphnt/elementa-models";
+import { BaseRenderableContent } from "@elllphnt/elementa-core";
 import { FragmentEnvironment } from "../../../fragment/_.js";
 import { ModelInstance } from "../../../model.js";
 import { ElementaEditorInstanceType } from "../_types.js";

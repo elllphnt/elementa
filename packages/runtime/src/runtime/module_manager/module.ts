@@ -1,4 +1,4 @@
-import { File } from "@elllphnt/elementa-models";
+import { File } from "@elllphnt/elementa-core";
 import { Disposable } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, debounceTime, map, Observable } from "rxjs";
 import {

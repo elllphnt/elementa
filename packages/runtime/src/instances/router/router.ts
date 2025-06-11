@@ -1,4 +1,4 @@
-import { App } from "@elllphnt/elementa-models";
+import { Router } from "@elllphnt/elementa-core";
 import { combineLatestOrEmpty, reconcileList } from "@elllphnt/elementa-utils";
 import {
   BehaviorSubject,
@@ -11,8 +11,8 @@ import { FragmentEnvironment } from "../fragment/_.js";
 import { ElementaInstanceType, Instance } from "../instance.js";
 import { RouteTreeInstance } from "./route_tree/route_tree.js";
 
-export class AppInstance extends Instance {
-  readonly app: App;
+export class RouterInstance extends Instance {
+  readonly router: Router;
 
   private _routes$ = new BehaviorSubject<RouteTreeInstance[]>([]);
 
@@ -45,7 +45,7 @@ export class AppInstance extends Instance {
     parent,
     environment,
   }: {
-    model: App;
+    model: Router;
     parent?: Instance;
     environment: FragmentEnvironment;
   }) {
@@ -54,9 +54,9 @@ export class AppInstance extends Instance {
       runtime: environment.runtime,
       parent,
     });
-    this.app = model;
+    this.router = model;
 
-    const routeSubscription = this.app.routes$.subscribe((routes) => {
+    const routeSubscription = this.router.routes$.subscribe((routes) => {
       const [nextRoutes, removed] = reconcileList({
         targets: this.routes,
         sources: routes,

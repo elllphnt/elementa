@@ -1,4 +1,4 @@
-import { SlotElement } from "@elllphnt/elementa-models";
+import { SlotElement } from "@elllphnt/elementa-core";
 import { combineLatestOrEmpty, reconcileList } from "@elllphnt/elementa-utils";
 import {
   BehaviorSubject,
@@ -9,10 +9,10 @@ import {
 } from "rxjs";
 import { FragmentEnvironment } from "../fragment/environment/environment.js";
 import { Instance } from "../instance.js";
-import { createElementInstance } from "./_element.js";
-import { ElementInstance } from "./element.js";
+import { BaseElementInstance } from "./_base.js";
+import { createElementInstance, ElementInstance } from "./_element.js";
 
-export class SlotElementInstance extends ElementInstance<SlotElement> {
+export class SlotElementInstance extends BaseElementInstance<SlotElement> {
   private _placeholder$ = new BehaviorSubject<ElementInstance[]>([]);
 
   get placeholder$(): Observable<ElementInstance[]> {

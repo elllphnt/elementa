@@ -1,4 +1,4 @@
-import { RouteTree } from "@elllphnt/elementa-models";
+import { RouteTree } from "@elllphnt/elementa-core";
 import { combineLatest, map, Observable, of, switchMap } from "rxjs";
 import { FragmentEnvironment } from "../../../fragment/_.js";
 import { Instance } from "../../../instance.js";

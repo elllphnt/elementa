@@ -1,4 +1,4 @@
-import { ElementaStage } from "@elllphnt/elementa-models";
+import { ElementaStage } from "@elllphnt/elementa-core";
 import { combineLatestOrEmpty, reconcileList } from "@elllphnt/elementa-utils";
 import {
   BehaviorSubject,

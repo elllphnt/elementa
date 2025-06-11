@@ -1,11 +1,11 @@
-import { RenderableContent } from "@elllphnt/elementa-models";
+import { RenderableContent } from "@elllphnt/elementa-core";
 import { FragmentEnvironment } from "../../../fragment/_.js";
-import { AppRenderableContentInstance } from "./app.js";
 import { ComponentRenderableContentInstance } from "./component.js";
 import { FragmentRenderableContentInstance } from "./fragment.js";
+import { RouterRenderableContentInstance } from "./router.js";
 
 export type RenderableContentInstance =
-  | AppRenderableContentInstance
+  | RouterRenderableContentInstance
   | FragmentRenderableContentInstance
   | ComponentRenderableContentInstance;
 
@@ -17,8 +17,8 @@ export function createRenderableContentInstance({
   environment: FragmentEnvironment;
 }) {
   switch (model.type) {
-    case "app":
-      return new AppRenderableContentInstance({
+    case "router":
+      return new RouterRenderableContentInstance({
         model,
         environment,
       });

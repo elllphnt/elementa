@@ -1,6 +1,16 @@
-import { Component } from "@elllphnt/elementa-models";
-import { Observable, combineLatest, map } from "rxjs";
-import { FragmentInstance } from "../fragment/_.js";
+import { Component } from "@elllphnt/elementa-core";
+import {
+  BehaviorSubject,
+  Observable,
+  combineLatest,
+  map,
+  of,
+  switchMap,
+} from "rxjs";
+import {
+  ExpressionElementInstance,
+  FragmentElementInstance,
+} from "../elements/_.js";
 import { ElementaInstanceType, Instance } from "../instance.js";
 import { ModelInstance } from "../model.js";
 import { ComponentInstanceFragmentEnvironment } from "./fragment_environment.js";
@@ -8,7 +18,17 @@ import { ComponentInputResolver } from "./input_resolver/input_resolver.js";
 
 export class ComponentInstance extends ModelInstance<Component> {
   readonly fragmentEnvironment: ComponentInstanceFragmentEnvironment;
-  readonly template: FragmentInstance;
+
+  readonly _template$ = new BehaviorSubject<
+    FragmentElementInstance | ExpressionElementInstance | undefined
+  >(undefined);
+
+  get template() {
+    return this._template$.value;
+  }
+  get template$() {
+    return this._template$.asObservable();
+  }
 
   constructor({
     model,
@@ -30,20 +50,56 @@ export class ComponentInstance extends ModelInstance<Component> {
       propResolver: inputResolver,
     });
 
-    this.template = new FragmentInstance({
-      environment: this.fragmentEnvironment,
-      model: model.template,
+    const templateSubscription = this.model.template$.subscribe((template) => {
+      const prev = this._template$.value;
+      if (template) {
+        switch (template.type) {
+          case "fragment":
+            this._template$.next(
+              new FragmentElementInstance({
+                element: template,
+                environment: this.fragmentEnvironment,
+                parent: this,
+              })
+            );
+            break;
+          case "expression":
+            this._template$.next(
+              new ExpressionElementInstance({
+                element: template,
+                environment: this.fragmentEnvironment,
+                parent: this,
+              })
+            );
+            break;
+          default:
+            throw new Error(`Unknown template type ${(template as any).type}`);
+        }
+      } else {
+        this._template$.next(undefined);
+      }
+      prev?.dispose();
+    });
+
+    this.addDisposer(() => {
+      templateSubscription.unsubscribe();
+      this._template$.complete();
     });
   }
 
   get diagnosticLevel(): number {
-    return Math.max(this.ownDiagnosticLevel, this.template.diagnosticLevel);
+    return Math.max(
+      this.ownDiagnosticLevel,
+      this.template?.diagnosticLevel ?? 0
+    );
   }
 
   get diagnosticLevel$(): Observable<number> {
     return combineLatest([
       this.ownDiagnosticLevel$,
-      this.template.diagnosticLevel$,
+      this.template$.pipe(
+        switchMap((template) => template?.diagnosticLevel$ ?? of(0))
+      ),
     ]).pipe(map(([own, template]) => Math.max(own, template)));
   }
 }

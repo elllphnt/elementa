@@ -1,3 +1,4 @@
+import { PackageData } from "@elllphnt/elementa-base";
 import {
   AsyncResourceStatus,
   Content,
@@ -43,7 +44,7 @@ export class InMemoryFile extends File {
     return of(this._data.path);
   }
 
-  get content(): string {
+  get textContent(): string {
     return this._data.content;
   }
 
@@ -55,10 +56,10 @@ export class InMemoryFile extends File {
 }
 export class InMemoryContent extends Content<InMemoryFile> {
   get text(): string {
-    return this.file.content;
+    return this.file.textContent;
   }
   get text$(): Observable<string> {
-    return of(this.file.content);
+    return of(this.file.textContent);
   }
 
   constructor({ file }: { file: InMemoryFile }) {
@@ -82,7 +83,7 @@ export class InMemoryFileModelAdaptor<
   constructor({ file, modelType }: { file: InMemoryFile; modelType: T }) {
     super({ file, modelType });
 
-    const content = this.file.content;
+    const content = this.file.textContent;
     const init = content ? JSON.parse(content) : undefined;
 
     switch (modelType) {
@@ -160,6 +161,9 @@ export class InMemoryProject extends Project<InMemoryFile> {
   private _files = new Map<string, InMemoryFile>();
   private _contents = new Map<string, InMemoryContent>();
   private _fileModelAdaptors = new Map<string, InMemoryFileModelAdaptor>();
+  private _installPackages?: (
+    packages: Array<Pick<PackageData, "name"> & Partial<PackageData>>
+  ) => Promise<PackageData[]>;
 
   file(id: string): InMemoryFile {
     const file = this._files.get(id);
@@ -209,9 +213,13 @@ export class InMemoryProject extends Project<InMemoryFile> {
   constructor({
     data,
     infrastructure,
+    installPackages,
   }: {
     data: InMemoryProjectData;
     infrastructure: Infrastructure;
+    installPackages?: (
+      packages: Array<Pick<PackageData, "name"> & Partial<PackageData>>
+    ) => Promise<PackageData[]>;
   }) {
     super({ id: data.id, infrastructure });
     this._files = new Map(
@@ -220,5 +228,16 @@ export class InMemoryProject extends Project<InMemoryFile> {
         new InMemoryFile({ data, project: this }),
       ])
     );
+    this._installPackages = installPackages;
+  }
+
+  installPackages(
+    packages: Array<Pick<PackageData, "name"> & Partial<PackageData>>
+  ): Promise<PackageData[]> {
+    if (this._installPackages) {
+      return this._installPackages(packages);
+    } else {
+      throw Error(`Method not implemented`);
+    }
   }
 }

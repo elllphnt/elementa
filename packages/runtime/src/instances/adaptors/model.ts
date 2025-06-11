@@ -1,4 +1,4 @@
-import { ModelAdaptor } from "@elllphnt/elementa-models";
+import { ModelAdaptor } from "@elllphnt/elementa-core";
 import { DiagnosticLevel } from "../../_shared/diagnosticable.js";
 import { Runtime } from "../../runtime/runtime.js";
 import { Instance } from "../instance.js";
