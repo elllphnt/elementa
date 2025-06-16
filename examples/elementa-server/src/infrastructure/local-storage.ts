@@ -36,6 +36,10 @@ export class LocalStorageInfrastructure implements Infrastructure {
     this.rootPath = rootPath;
   }
 
+  getRootPath(): string {
+    return this.rootPath;
+  }
+
   async getProjects(): Promise<ProjectData[]> {
     try {
       const entries = await fs.readdir(this.rootPath, { withFileTypes: true });
@@ -86,7 +90,7 @@ export class LocalStorageInfrastructure implements Infrastructure {
       const stat = await fs.stat(fullPath);
       if (stat.isFile()) {
         return {
-          id: fileId,
+          id: encodeURIComponent(filePath),
           path: filePath,
           type: getFileTypeFromPath(filePath),
         };

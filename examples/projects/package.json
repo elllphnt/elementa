@@ -1,0 +1,24 @@
+{
+  "name": "@elllphnt/elll-ui-lib-shadcn",
+  "version": "0.1.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "clean": "rm -rf build && rm -rf dist",
+    "build:only": "tsx scripts/builder/build.ts",
+    "build": "npm run clean && npm run build:only",
+    "watch": "tsx watch scripts/builder/build.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@types/node": "^22.15.30",
+    "globby": "^14.1.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.2",
+    "@elllphnt/elementa-react-parser": "workspace:*"
+  }
+}

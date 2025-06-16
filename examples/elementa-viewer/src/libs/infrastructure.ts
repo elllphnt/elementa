@@ -18,12 +18,48 @@ import {
   type Observable,
 } from "rxjs";
 import { elementaAPI } from "../api";
+import { sseClient } from "../services/sse-client";
 import type { FileData, ProjectData } from "../types";
+
+// Global file change event emitter for infrastructure updates
+export class FileChangeNotifier {
+  private static instance: FileChangeNotifier;
+  private changeSubject = new BehaviorSubject<{
+    projectId: string;
+    filePath: string;
+    timestamp: string;
+  } | null>(null);
+
+  static getInstance(): FileChangeNotifier {
+    if (!FileChangeNotifier.instance) {
+      FileChangeNotifier.instance = new FileChangeNotifier();
+    }
+    return FileChangeNotifier.instance;
+  }
+
+  notifyFileChange(projectId: string, filePath: string): void {
+    this.changeSubject.next({
+      projectId,
+      filePath,
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  getFileChanges$(): Observable<{
+    projectId: string;
+    filePath: string;
+    timestamp: string;
+  } | null> {
+    return this.changeSubject.asObservable();
+  }
+}
 
 export class ServerFileModelAdaptor<
   T extends FileModelType
 > extends StatefulFileModelAdaptor<T, ServerFile> {
   private _data$ = new BehaviorSubject<any>(undefined);
+  private fileChangeNotifier = FileChangeNotifier.getInstance();
+  private fileChangeSubscription: any;
 
   get data(): any {
     return this._data$.getValue();
@@ -35,32 +71,50 @@ export class ServerFileModelAdaptor<
   constructor({ file, modelType }: { file: ServerFile; modelType: T }) {
     super({ file, modelType });
 
-    file.textContentPromise
-      .then((content) => {
-        try {
-          const data = content.trim() ? JSON.parse(content) : {};
-          this._data$.next(data);
-          this.setStatus(AsyncResourceStatus.Resolved);
-        } catch (error) {
-          this._data$.next({});
-          this.setStatus(
-            AsyncResourceStatus.Errored,
-            error instanceof Error ? error : new Error("Invalid JSON format")
-          );
-          console.error(`Error parsing JSON for file ${file.id}:`, error);
+    // Initial load
+    this.loadContent();
+
+    // Listen for file changes
+    this.fileChangeSubscription = this.fileChangeNotifier
+      .getFileChanges$()
+      .subscribe((change) => {
+        if (
+          change &&
+          change.projectId === file.project.id &&
+          change.filePath === file.path
+        ) {
+          console.log(`Reloading model adaptor for file: ${file.path}`);
+          this.loadContent();
         }
-      })
-      .catch((error) => {
-        this._data$.next(undefined);
-        this.setStatus(AsyncResourceStatus.Errored, error);
-        console.error(`Error fetching content for file ${file.id}:`, error);
       });
 
     this.addDisposer(() => {
       this._data$.complete();
+      if (this.fileChangeSubscription) {
+        this.fileChangeSubscription.unsubscribe();
+      }
     });
 
     this.watchData();
+  }
+
+  private loadContent(): void {
+    this.setStatus(AsyncResourceStatus.Pending);
+
+    this.file.content.text$.subscribe((content) => {
+      try {
+        const data = content.trim() ? JSON.parse(content) : {};
+        this._data$.next(data);
+        this.setStatus(AsyncResourceStatus.Resolved);
+      } catch (error) {
+        this._data$.next({});
+        this.setStatus(
+          AsyncResourceStatus.Errored,
+          error instanceof Error ? error : new Error("Invalid JSON format")
+        );
+        console.error(`Error parsing JSON for file ${this.file.id}:`, error);
+      }
+    });
   }
 
   getModel() {
@@ -77,6 +131,9 @@ export class ServerFileModelAdaptor<
 
 export class ServerFileContent extends Content<ServerFile> {
   private _text$ = new BehaviorSubject<string>("");
+  private fileChangeNotifier = FileChangeNotifier.getInstance();
+  private fileChangeSubscription: any;
+  private _refreshing = false;
 
   get text(): string {
     return this._text$.getValue();
@@ -88,27 +145,65 @@ export class ServerFileContent extends Content<ServerFile> {
   constructor({ file }: { file: ServerFile }) {
     super({ file });
 
-    file.textContentPromise
-      .then((content) => {
-        this._text$.next(content);
-        this.setStatus(AsyncResourceStatus.Resolved);
-      })
-      .catch((error) => {
-        this._text$.next("");
-        this.setStatus(AsyncResourceStatus.Errored, error);
-        console.error(`Error fetching content for file ${file.id}:`, error);
+    // Initial load
+    this.loadContent();
+
+    // Listen for file changes
+    this.fileChangeSubscription = this.fileChangeNotifier
+      .getFileChanges$()
+      .subscribe((change) => {
+        if (
+          change &&
+          change.projectId === file.project.id &&
+          change.filePath === file.path
+        ) {
+          console.log(`Reloading content for file: ${file.path}`);
+          this.loadContent();
+        }
       });
 
     this.addDisposer(() => {
       this._text$.complete();
+      if (this.fileChangeSubscription) {
+        this.fileChangeSubscription.unsubscribe();
+      }
     });
+  }
+
+  private loadContent(): void {
+    this.setStatus(AsyncResourceStatus.Pending);
+    this.refresh();
+  }
+
+  async refresh() {
+    if (this._refreshing) {
+      return; // Prevent multiple refreshes
+    }
+    this._refreshing = true;
+
+    try {
+      const content = await elementaAPI.getFileContent(
+        this.file.project.id,
+        this.file.id
+      );
+      this._text$.next(content);
+      this.setStatus(AsyncResourceStatus.Resolved);
+    } catch (error) {
+      this._text$.next("");
+      this.setStatus(
+        AsyncResourceStatus.Errored,
+        error instanceof Error ? error : Error("Unexpected Error")
+      );
+      console.error(`Error fetching content for file ${this.file.id}:`, error);
+    } finally {
+      this._refreshing = false;
+    }
   }
 }
 
 export class ServerFile extends File {
   private _path: string;
   private _type: string;
-  textContentPromise: Promise<string>;
 
   get path(): string {
     return this._path;
@@ -136,16 +231,6 @@ export class ServerFile extends File {
     this._path = fileData.path;
     this._type = fileData.type;
     this.setStatus(AsyncResourceStatus.Resolved);
-    this.textContentPromise = this._fetchContent();
-  }
-
-  private async _fetchContent(): Promise<string> {
-    try {
-      return await elementaAPI.getFileContent(this.project.id, this.id);
-    } catch (error) {
-      console.error(`Error fetching content for file ${this.id}:`, error);
-      throw error;
-    }
   }
 }
 
@@ -170,7 +255,7 @@ export class ServerProject extends Project {
     super({ id, infrastructure });
   }
 
-  file(id: string): File {
+  file(id: string): ServerFile {
     let file = this._files.get(id);
     if (!file) {
       // We need to fetch file data first
@@ -274,11 +359,7 @@ export class ServerProject extends Project {
   content(fileId: string): Content<File> {
     let content = this._content.get(fileId);
     if (!content) {
-      const file = this._files.get(fileId) as ServerFile;
-      if (!file) {
-        throw new Error(`File ${fileId} not found`);
-      }
-      content = new ServerFileContent({ file });
+      content = new ServerFileContent({ file: this.file(fileId) });
       this._content.set(fileId, content);
     }
     return content;
@@ -323,6 +404,18 @@ export class ElementaServerInfrasture extends Infrastructure {
 
   resolveStaticReference<T>(): Promise<T> {
     throw new Error("Method not implemented.");
+  }
+
+  constructor() {
+    super();
+
+    // watch content
+    sseClient.fileEvent$.subscribe((event) => {
+      const content = infrastructure
+        .project(event.projectId)
+        .content(event.id) as ServerFileContent;
+      content.refresh();
+    });
   }
 }
 

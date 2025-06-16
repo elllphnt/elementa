@@ -1,6 +1,6 @@
 import React, { useState } from "react";
+import { Sidebar } from "./components";
 import { FileViewer } from "./components/FileViewer";
-import { Sidebar } from "./components/Sidebar";
 import type { TreeNode } from "./types";
 
 export const App: React.FC = () => {

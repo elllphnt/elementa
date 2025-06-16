@@ -1,0 +1,177 @@
+.settings {
+  padding: var(--spacing-xl);
+  background-color: var(--background-color);
+  min-height: 100vh;
+}
+
+.header {
+  margin-bottom: var(--spacing-xl);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-sm);
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.settingsContainer {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.settingsGrid {
+  display: grid;
+  gap: var(--spacing-xl);
+}
+
+.settingsSection {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.sectionHeader {
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-light);
+  background: var(--background-color);
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-xs);
+}
+
+.sectionDescription {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.sectionContent {
+  padding: var(--spacing-lg);
+}
+
+.settingItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md) 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.settingItem:last-child {
+  border-bottom: none;
+}
+
+.settingInfo {
+  flex: 1;
+}
+
+.settingLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-xs);
+}
+
+.settingDescription {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.settingControl {
+  margin-left: var(--spacing-md);
+}
+
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 3rem;
+  height: 1.5rem;
+}
+
+.toggleInput {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleSlider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--border-color);
+  transition: 0.4s;
+  border-radius: 1.5rem;
+}
+
+.toggleSlider:before {
+  position: absolute;
+  content: "";
+  height: 1.125rem;
+  width: 1.125rem;
+  left: 0.1875rem;
+  bottom: 0.1875rem;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.toggleInput:checked + .toggleSlider {
+  background-color: var(--primary-color);
+}
+
+.toggleInput:checked + .toggleSlider:before {
+  transform: translateX(1.5rem);
+}
+
+.actionButtons {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+  margin-top: var(--spacing-lg);
+}
+
+.profileForm {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.formSection {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 768px) {
+  .settings {
+    padding: var(--spacing-md);
+  }
+
+  .profileForm {
+    grid-template-columns: 1fr;
+  }
+
+  .settingItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .settingControl {
+    margin-left: 0;
+  }
+}

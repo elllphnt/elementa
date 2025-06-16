@@ -1,0 +1,76 @@
+{
+    "routes": [
+        {
+            "id": "dashboard",
+            "path": "/",
+            "mainViewUrl": "views/Dashboard.tsx"
+        },
+        {
+            "id": "patients",
+            "path": "/patients",
+            "mainViewUrl": "views/patients/PatientList.tsx",
+            "children": [
+                {
+                    "id": "patients-new",
+                    "path": "new",
+                    "parentId": "patients",
+                    "mainViewUrl": "views/patients/PatientForm.tsx"
+                },
+                {
+                    "id": "patient-profile",
+                    "path": ":patientId",
+                    "parentId": "patients",
+                    "mainViewUrl": "views/patients/PatientProfile.tsx",
+                    "children": [
+                        {
+                            "id": "patient-edit",
+                            "path": "edit",
+                            "parentId": "patient-profile",
+                            "mainViewUrl": "views/patients/EditPatientForm.tsx"
+                        },
+                        {
+                            "id": "patient-history",
+                            "path": "history",
+                            "parentId": "patient-profile",
+                            "mainViewUrl": "views/patients/PatientHistory.tsx"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "appointments",
+            "path": "/appointments",
+            "mainViewUrl": "views/appointments/AppointmentList.tsx",
+            "children": [
+                {
+                    "id": "appointments-new",
+                    "path": "new",
+                    "parentId": "appointments",
+                    "mainViewUrl": "views/appointments/NewAppointmentForm.tsx"
+                },
+                {
+                    "id": "appointment-view",
+                    "path": ":appointmentId",
+                    "parentId": "appointments",
+                    "mainViewUrl": "views/appointments/AppointmentDetail.tsx"
+                }
+            ]
+        },
+        {
+            "id": "doctors",
+            "path": "/doctors",
+            "mainViewUrl": "views/doctors/DoctorList.tsx"
+        },
+        {
+            "id": "settings",
+            "path": "/settings",
+            "mainViewUrl": "views/Settings.tsx"
+        },
+        {
+            "id": "login",
+            "path": "/auth/login",
+            "mainViewUrl": "views/auth/Login.tsx"
+        }
+    ]
+}

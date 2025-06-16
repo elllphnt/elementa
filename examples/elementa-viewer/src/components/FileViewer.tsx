@@ -43,24 +43,27 @@ export const FileViewer: React.FC<FileViewerProps> = ({ selectedNode }) => {
     <div className="flex-1 flex flex-col bg-white">
       {/* File Header */}
       <div className="border-b border-gray-200 bg-gray-50 p-4">
-        <div className="flex items-center gap-2">
-          <span className="text-lg">📄</span>
-          <div>
-            <h1 className="text-lg font-semibold text-gray-800">
-              {selectedNode.name}
-            </h1>
-            <p className="text-sm text-gray-600">{selectedNode.path}</p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-lg">📄</span>
+            <div>
+              <h1 className="text-lg font-semibold text-gray-800">
+                {selectedNode.name}
+              </h1>
+              <p className="text-sm text-gray-600">{selectedNode.path}</p>
+            </div>
           </div>
         </div>
       </div>
-
       {/* File Content Area */}
-      <ContentViewer
-        projectId={projectId}
-        fileId={selectedNode.data.id}
-        type={selectedNode.data.type}
-        path={selectedNode.data.path}
-      />
+      <div className="flex-grow">
+        <ContentViewer
+          projectId={projectId}
+          fileId={selectedNode.data.id}
+          type={selectedNode.data.type}
+          path={selectedNode.data.path}
+        />
+      </div>
     </div>
   );
 };
