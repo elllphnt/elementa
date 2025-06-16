@@ -24,7 +24,19 @@ export class FileReferenceModelAdaptor<
   readonly fileReference: FileReference<F>;
   readonly modelType: T;
 
-  fileModelAdaptor$: Observable<FileModelAdaptor<T, F> | undefined>;
+  get fileModelAdaptor$(): Observable<FileModelAdaptor<T, F> | undefined> {
+    return this.fileReference.file$.pipe(
+      map((file) => {
+        if (!file) {
+          return undefined;
+        }
+        return this.fileReference.project.fileModelAdaptor(
+          this.modelType,
+          file.id
+        );
+      })
+    );
+  }
   get fileModelAdaptor(): FileModelAdaptor<T, F> | undefined {
     const file = this.fileReference.file;
     return file
@@ -51,17 +63,5 @@ export class FileReferenceModelAdaptor<
     super();
     this.fileReference = fileReference;
     this.modelType = modelType;
-
-    this.fileModelAdaptor$ = this.fileReference.file$.pipe(
-      map((file) => {
-        if (!file) {
-          return undefined;
-        }
-        return this.fileReference.project.fileModelAdaptor(
-          this.modelType,
-          file.id
-        );
-      })
-    );
   }
 }

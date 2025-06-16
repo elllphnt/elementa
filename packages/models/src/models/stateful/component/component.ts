@@ -152,7 +152,19 @@ export class StatefulComponent
       modelRef: (m) => m.id,
     });
 
+    // watch fragments
+    const fragmentSubscription = this._fragments.state.items$.subscribe(
+      (fragments) => {
+        const fragmentsById = Object.fromEntries(
+          fragments.map((f) => [f.id, f])
+        );
+        this._fragmentById$.next(fragmentsById);
+      }
+    );
+
     this.addDisposer(() => {
+      fragmentSubscription.unsubscribe();
+
       this.stage.dispose();
       this.preview.dispose();
       this._template.dispose();

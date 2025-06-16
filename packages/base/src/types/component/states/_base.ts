@@ -12,8 +12,9 @@ export type BaseStateData<T extends string> = IdentifiableData & {
 
 // Schemas
 
-export const baseStateDataSchema = identifiableDataSchema.extend({
-  type: z.string(),
-  name: z.string().optional(),
-  varName: z.string().optional(),
-});
+export const baseStateDataSchema = (type: string) =>
+  identifiableDataSchema.extend({
+    type: z.literal(type),
+    name: z.string().optional(),
+    varName: z.string().optional(),
+  });

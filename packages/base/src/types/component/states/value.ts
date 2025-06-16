@@ -13,8 +13,7 @@ export type ValueStateData = BaseStateData<"value"> & {
 
 // Schemas
 
-export const valueStateDataSchema = baseStateDataSchema.extend({
-  type: z.literal("value"),
+export const valueStateDataSchema = baseStateDataSchema("value").extend({
   init: z
     .union([evaluableSchema(z.any()), resolvableSchema(z.any())])
     .optional(),

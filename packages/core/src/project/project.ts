@@ -110,6 +110,10 @@ export abstract class Project<F extends File = File> {
     this.packageManager = new PackageManager({ project: this });
   }
 
+  init() {
+    this.styleManager.init();
+  }
+
   absoluteFileUrl(url: string): string {
     return toAbsoluteFileUrl({ url, projectId: this.id });
   }

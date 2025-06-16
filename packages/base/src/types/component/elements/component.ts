@@ -20,11 +20,12 @@ export type SlotFillData = StylableData &
   InteractiveData &
   ElementContainerData & {};
 
-export type ComponentElementData = BaseElementData<"component"> & {
-  componentUrl?: string;
-  props?: Record<string, ResolvableOrEvaluable<any>>;
-  fills?: Record<string, SlotFillData>;
-};
+export type ComponentElementData = BaseElementData<"component"> &
+  ElementContainerData & {
+    componentUrl?: string;
+    props?: Record<string, ResolvableOrEvaluable<any>>;
+    fills?: Record<string, SlotFillData>;
+  };
 
 // Schemas
 

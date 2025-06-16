@@ -7,7 +7,7 @@ import * as y from "yjs";
 import { CrdtBlueprint } from "../blueprint/_.js";
 import { CrdtRouteTree } from "./route_tree.js";
 
-export class CrdtAppModel
+export class CrdtRouter
   extends CrdtModel<y.Map<any>>
   implements Router<CrdtRouteTree>
 {
@@ -19,10 +19,15 @@ export class CrdtAppModel
     Record<string, CrdtRouteTree>
   >({});
 
-  constructor(
-    crdt: y.Map<any>,
-    { file, initialized }: { file: File; initialized?: boolean }
-  ) {
+  constructor({
+    crdt,
+    file,
+    initialized,
+  }: {
+    crdt: y.Map<any>;
+    file: File;
+    initialized?: boolean;
+  }) {
     super({ crdt });
     this.file = file;
 
@@ -119,9 +124,6 @@ export class CrdtAppModel
   }
 
   protected factory(crdt: y.Map<any>): this {
-    return new CrdtAppModel(crdt, {
-      file: this.file,
-      initialized: true,
-    }) as this;
+    return new CrdtRouter({ crdt, file: this.file, initialized: true }) as this;
   }
 }

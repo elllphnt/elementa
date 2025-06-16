@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 import { FileModelAdaptor } from "~/project/_.js";
 import { Identifiable } from "../_shared/identifiable.js";
-import { Router } from "./app.js";
+import { Router } from "./router.js";
 
 export interface RouteTree<R extends RouteTree = RouteTree<any>>
   extends Identifiable {

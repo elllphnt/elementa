@@ -1,3 +1,4 @@
+import { createReferenceString } from "../references.js";
 import { generateImportStatements } from "./_utils/import.js";
 import { compileModule, ParsedModule, ParsedResource } from "./module.js";
 
@@ -42,8 +43,16 @@ export function compileCodeResource({
     }
   }
 
+  // apply ref string
+  const importsWithRef = Object.fromEntries(
+    Object.entries(imports).map(([key, value]) => [
+      createReferenceString(key),
+      value,
+    ])
+  );
+
   const source = [
-    generateImportStatements(imports),
+    generateImportStatements(importsWithRef),
     ...typeDefs,
     resource.content,
   ].join("\n");

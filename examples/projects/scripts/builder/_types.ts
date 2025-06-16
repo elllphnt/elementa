@@ -1,8 +1,10 @@
 export type Handler = (
-  srcPath: string,
-  outPath: string,
-  outBase: string
-) => Promise<void>;
+  path: string,
+  content: string
+) => Promise<{
+  path: string;
+  content: string;
+}>;
 
 export type HandlerConfig = {
   test: (path: string) => boolean;

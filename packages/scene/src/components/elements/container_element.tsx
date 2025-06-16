@@ -1,5 +1,4 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { useNamespace } from "../../hooks/namespace.js";
 import { ContainerElementRenderable } from "../../renderables/element/container.js";
 import { BaseElementComponent } from "./_/_base_element.js";
 import ElementComponent from "./element.js";
@@ -26,7 +25,6 @@ export function ContainerElementContent({
   onRef?: (element: HTMLElement | null) => void;
 }) {
   const children = useObservable(element.children$, element.children);
-  const namespace = useNamespace();
 
   return (
     <>

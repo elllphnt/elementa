@@ -19,8 +19,8 @@ export abstract class File extends AsyncResource {
     });
   }
 
-  abstract get path(): string;
-  abstract get path$(): Observable<string>;
+  abstract get path(): string | undefined;
+  abstract get path$(): Observable<string | undefined>;
 
   get name() {
     if (this.path === undefined) {

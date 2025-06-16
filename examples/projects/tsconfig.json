@@ -12,6 +12,7 @@
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "tsBuildInfoFile": "build/.tsbuildinfo"
+    "tsBuildInfoFile": "build/.tsbuildinfo",
+    "jsx": "react-jsx"
   }
 }

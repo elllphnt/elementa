@@ -189,6 +189,13 @@ export class ViewportManager extends Disposable {
     super();
     this.project = project;
 
+    this.addDisposer(() => {
+      this._breakpointBasedDefinitions$.complete();
+      this._breakpointBasedModifiers$.complete();
+    });
+  }
+
+  init() {
     const breakpointSubscription = this.styleSystem$
       .pipe(
         switchMap(
@@ -210,8 +217,6 @@ export class ViewportManager extends Disposable {
 
     this.addDisposer(() => {
       breakpointSubscription.unsubscribe();
-      this._breakpointBasedDefinitions$.complete();
-      this._breakpointBasedModifiers$.complete();
     });
   }
 }

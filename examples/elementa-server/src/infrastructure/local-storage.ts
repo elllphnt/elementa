@@ -3,10 +3,7 @@ import * as path from "path";
 import { FileData, Infrastructure, ProjectData } from "../types";
 
 export const getFileTypeFromPath = (filePath: string) => {
-  if (
-    filePath.endsWith(".component.tsx") ||
-    filePath.endsWith(".component.ts")
-  ) {
+  if (filePath.endsWith(".component.json")) {
     return "component";
   } else if (filePath.endsWith(".hook.ts")) {
     return "hook";
@@ -22,7 +19,7 @@ export const getFileTypeFromPath = (filePath: string) => {
     return "markdown";
   } else if (filePath.endsWith(".json")) {
     return "json";
-  } else if (filePath.endsWith(".ts")) {
+  } else if (filePath.endsWith(".ts") || filePath.endsWith(".tsx")) {
     return "script";
   } else {
     return "text";

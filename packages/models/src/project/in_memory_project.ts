@@ -4,26 +4,13 @@ import {
   Content,
   File,
   FileModelAdaptor,
-  FileModelInterface,
   FileModelType,
-  fileModelTypes,
   Infrastructure,
   Project,
 } from "@elllphnt/elementa-core";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-utils";
 import { combineLatest, map, Observable, of } from "rxjs";
-import {
-  StatefulApp,
-  StatefulComponent,
-  StatefulKeyframeSheet,
-  StatefulPackageSheet,
-  StatefulRouter,
-  StatefulStyleModifierSheet,
-  StatefulStylesheet,
-  StatefulStyleSystem,
-  StatefulStyleVariableSheet,
-  StatefulTypefaceSheet,
-} from "~/models/_.js";
+import { StatefulFileModelAdaptor } from "./file_model_adaptors/_.js";
 
 export type InMemoryFileData = {
   id: string;
@@ -70,85 +57,17 @@ export class InMemoryContent extends Content<InMemoryFile> {
 
 export class InMemoryFileModelAdaptor<
   T extends FileModelType = FileModelType
-> extends FileModelAdaptor<T, InMemoryFile> {
-  private Stateful_: FileModelInterface<T>;
-
-  get model(): FileModelInterface<T> {
-    return this.Stateful_;
-  }
-  get model$(): Observable<FileModelInterface<T>> {
-    return of(this.Stateful_);
+> extends StatefulFileModelAdaptor<T, InMemoryFile> {
+  private _data: any;
+  get data$() {
+    return of(this._data);
   }
 
   constructor({ file, modelType }: { file: InMemoryFile; modelType: T }) {
     super({ file, modelType });
 
     const content = this.file.textContent;
-    const init = content ? JSON.parse(content) : undefined;
-
-    switch (modelType) {
-      case fileModelTypes.app:
-        this.Stateful_ = new StatefulApp({
-          init,
-          file,
-        }) as unknown as FileModelInterface<T>;
-        break;
-      case fileModelTypes.component:
-        this.Stateful_ = new StatefulComponent({
-          init,
-          file,
-        }) as unknown as FileModelInterface<T>;
-        break;
-      case fileModelTypes.keyframeSheet:
-        this.Stateful_ = new StatefulKeyframeSheet({
-          init,
-          file,
-        }) as unknown as FileModelInterface<T>;
-        break;
-      case fileModelTypes.packageSheet:
-        this.Stateful_ = new StatefulPackageSheet({
-          init,
-          file,
-        }) as unknown as FileModelInterface<T>;
-        break;
-      case fileModelTypes.router:
-        this.Stateful_ = new StatefulRouter({
-          init,
-          file,
-        }) as unknown as FileModelInterface<T>;
-        break;
-      case fileModelTypes.styleModifierSheet:
-        this.Stateful_ = new StatefulStyleModifierSheet({
-          init,
-          file,
-        }) as unknown as FileModelInterface<T>;
-        break;
-      case fileModelTypes.styleSystem:
-        this.Stateful_ = new StatefulStyleSystem({
-          init,
-          file,
-        }) as unknown as FileModelInterface<T>;
-        break;
-      case fileModelTypes.styleVariableSheet:
-        this.Stateful_ = new StatefulStyleVariableSheet({
-          init,
-          file,
-        }) as unknown as FileModelInterface<T>;
-        break;
-      case fileModelTypes.stylesheet:
-        this.Stateful_ = new StatefulStylesheet({
-          init,
-          file,
-        }) as unknown as FileModelInterface<T>;
-        break;
-      case fileModelTypes.typefaceSheet:
-        this.Stateful_ = new StatefulTypefaceSheet({
-          init,
-          file,
-        }) as unknown as FileModelInterface<T>;
-        break;
-    }
-
+    this._data = content ? JSON.parse(content) : undefined;
     this.setStatus(AsyncResourceStatus.Resolved);
   }
 }
@@ -229,6 +148,8 @@ export class InMemoryProject extends Project<InMemoryFile> {
       ])
     );
     this._installPackages = installPackages;
+
+    this.init();
   }
 
   installPackages(

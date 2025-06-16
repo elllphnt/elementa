@@ -44,7 +44,7 @@ export class ComponentRenderable extends InstanceRenderable<ComponentInstance> {
       (template) => {
         const prev = this._template$.value;
         if (template) {
-          switch (template.type) {
+          switch (template.element.type) {
             case "fragment": {
               this._template$.next(
                 new FragmentElementRenderable({

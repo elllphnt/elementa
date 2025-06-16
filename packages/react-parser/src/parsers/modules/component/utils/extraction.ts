@@ -68,6 +68,79 @@ export function extractExpressionAsFunction({
   };
 }
 
+export function extractStatementsAsInlineFunctionExpression({
+  statements,
+  isReturn,
+}: {
+  statements: Node[];
+  isReturn?: boolean;
+}) {
+  if (statements.length === 0) {
+    throw new Error("No statements provided for extraction.");
+  }
+
+  const start = statements[0].getStart();
+  const end = statements[statements.length - 1].getEnd();
+
+  function isInStatements(node: Node): boolean {
+    return node.getStart() >= start && node.getEnd() <= end;
+  }
+
+  // If the statements form a return block, we don't need to extract dependents
+  // as there isnt supposed to be any subsequent references
+  const dependents = isReturn
+    ? []
+    : [
+        ...new Set(
+          statements.flatMap((stmt) =>
+            stmt
+              // all identifiers in the statement
+              .getDescendantsOfKind(SyntaxKind.Identifier)
+              // keep identifiers that are declarations and references outside the statements
+              .filter((i) => {
+                if (!isIdentifierDeclaration(i)) return false;
+                const references = ((identifier) => {
+                  const block = getEnclosingBlock(identifier);
+                  const name = identifier.getText();
+                  return block
+                    .getDescendantsOfKind(SyntaxKind.Identifier)
+                    .filter((ident: Identifier) => {
+                      // Check if the identifier matches the name
+                      if (ident.getText() !== name) return false;
+                      // Check if it's a reference, not a declaration
+                      if (isIdentifierDeclaration(ident)) return false;
+                      // Ensure the nearest declaration is the same as the given identifier
+                      const nearest = findNearestIdentifierDeclaration(ident);
+                      return nearest === identifier;
+                    });
+                })(i);
+                // check if any reference is not in the statements
+                return references.some((ref) => !isInStatements(ref));
+              })
+          )
+        ),
+      ];
+
+  const dependentsCode = dependents.length
+    ? `{${dependents.map((i) => i.getText()).join(", ")}}`
+    : "";
+
+  const statementCodes = statements.map((stmt) => stmt.getText());
+  if (dependentsCode) {
+    statementCodes.push(`return ${dependentsCode};`);
+  }
+
+  const inlineFunctionCode = [`(() => {`, ...statementCodes, "})()"].join("\n");
+
+  const referenceCode = dependentsCode
+    ? `const ${dependentsCode} = ${inlineFunctionCode}`
+    : inlineFunctionCode;
+
+  return {
+    referenceCode,
+  };
+}
+
 export function extractStatementsAsFunction({
   name,
   statements,

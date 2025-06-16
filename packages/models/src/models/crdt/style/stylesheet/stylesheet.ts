@@ -29,19 +29,27 @@ export class CrdtStylesheet
 
   constructor({
     crdt,
-    project,
-    file,
     initialized,
-  }: {
-    crdt: y.Map<any>;
-    project: Project;
-    file?: File;
-    initialized?: boolean;
-  }) {
+    ...args
+  }:
+    | {
+        crdt: y.Map<any>;
+        file: File;
+        initialized?: boolean;
+      }
+    | {
+        crdt: y.Map<any>;
+        project: Project;
+        initialized?: boolean;
+      }) {
     super({ key: keyManager.next("stylesheet"), crdt });
 
-    this.project = project;
-    this.file = file;
+    if ("file" in args) {
+      this.file = args.file;
+      this.project = args.file.project;
+    } else {
+      this.project = args.project;
+    }
 
     if (!initialized) {
       ensureField(crdt, "fragments", () => new y.Map());

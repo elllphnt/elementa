@@ -13,8 +13,7 @@ export type HookStateData = BaseStateData<"hook"> & {
 
 // Schemas
 
-export const hookStateDataSchema = baseStateDataSchema.extend({
-  type: z.literal("hook"),
+export const hookStateDataSchema = baseStateDataSchema("hook").extend({
   hookUrl: z.string().optional(),
   args: z
     .array(z.union([evaluableSchema(z.any()), resolvableSchema(z.any())]))

@@ -11,7 +11,7 @@ import {
   Node,
 } from "ts-morph";
 import { ComponentNode, isComponentNode, isHookName } from "../modules/_.js";
-import { GetStylesheet } from "./element/_.js";
+import { GetStylesheet, parseElementsFromJSX } from "./element/_.js";
 import { genId } from "./utils.js";
 
 export function parseComponentFunctionParams({
@@ -43,7 +43,8 @@ export function parseComponentFunctionParams({
           const typeNode = decl.getTypeNode();
           tsType = typeNode?.getText();
         }
-        if (!tsType) {
+        // eslint-disable-next-line no-constant-condition, no-constant-binary-expression
+        if (0 && !tsType) {
           // Fallback: get the textual representation from the resolved type
           tsType = propSymbol.getTypeAtLocation(decl).getText();
         }
@@ -66,6 +67,97 @@ export function parseComponentFunctionParams({
   }
   componentData.props = propsInputs;
 }
+
+export function parseFragmentFunctionParams({
+  node,
+  fragmentData,
+}: {
+  node: FunctionDeclaration;
+  fragmentData: FragmentData;
+}) {
+  const params = node.getParameters();
+  const fragmentParams: DataInputData[] = [];
+
+  if (params.length > 0) {
+    const p = params[0];
+    const paramType = p.getType();
+
+    if (paramType.isObject()) {
+      // Extract each property from the params type
+      for (const propSymbol of paramType.getProperties()) {
+        const declarations = propSymbol.getDeclarations();
+        const decl = declarations[0];
+        const propName = propSymbol.getName();
+
+        // Determine the TypeScript type of the property
+        let tsType: string | undefined;
+        if (
+          Node.isPropertySignature(decl) ||
+          Node.isPropertyDeclaration(decl)
+        ) {
+          const typeNode = decl.getTypeNode();
+          tsType = typeNode?.getText();
+        }
+        if (!tsType) {
+          // Fallback: get the textual representation from the resolved type
+          tsType = propSymbol.getTypeAtLocation(decl).getText();
+        }
+
+        // Determine if the property is required (no question token)
+        const required = !(
+          (Node.isPropertySignature(decl) && decl.hasQuestionToken()) ||
+          (Node.isPropertyDeclaration(decl) && decl.hasQuestionToken())
+        );
+
+        fragmentParams.push({
+          name: propName,
+          varName: propName,
+          tsType,
+          required,
+          defaultValue: undefined,
+        });
+      }
+    }
+  }
+
+  if (fragmentParams.length > 0) {
+    fragmentData.params = fragmentParams;
+  }
+}
+
+export function parseFragmentFunctionBody({
+  node,
+  fragmentData,
+  getStylesheet,
+}: {
+  node: FunctionDeclaration;
+  fragmentData: FragmentData;
+  getStylesheet: GetStylesheet;
+}) {
+  const body = node.getBody();
+  if (!Node.isBlock(body)) {
+    throw Error(`Unexpected fragment body type: ${body?.getKindName()}`);
+  }
+  const statements = body.getStatements();
+  const returnStatement = statements[0];
+  if (statements.length !== 1 || !Node.isReturnStatement(returnStatement)) {
+    throw Error(`Only 1 return statement is allowed in Fragment function body`);
+  }
+
+  const expression = returnStatement.getExpression();
+  if (expression) {
+    const content = parseElementsFromJSX({
+      code: expression.getText(),
+      getStylesheet,
+      createFragment: ({ content }) => ({
+        id: genId(),
+        content,
+      }),
+    });
+    fragmentData.content = content;
+  }
+}
+
 export function parseFragmentFunction({
   id,
   node,
@@ -78,8 +170,30 @@ export function parseFragmentFunction({
   const fragmentData: FragmentData = {
     id,
   };
+
+  parseFragmentFunctionParams({ node, fragmentData });
+  parseFragmentFunctionBody({ node, fragmentData, getStylesheet });
+
   return fragmentData;
 }
+
+export function parseInlineStateExpression({
+  name,
+  fn,
+}: {
+  name?: string;
+  fn: ArrowFunction | FunctionExpression;
+}): StateData {
+  const stateData: StateData = {
+    id: genId(),
+    name: name || "",
+    varName: name || "",
+    type: "inline",
+    script: fn.getBodyText(),
+  };
+  return stateData;
+}
+
 export function parseStateExpression({
   name,
   callee,
@@ -93,7 +207,7 @@ export function parseStateExpression({
     varName: name || "",
     type: "hook",
     hookUrl: {
-      __dep: callee,
+      __dependency: callee,
     } as any,
   };
   return stateData;
@@ -148,19 +262,36 @@ export function parseComponentFunctionBody({
       for (const decl of declarations) {
         const initializer = decl.getInitializer();
         if (Node.isCallExpression(initializer)) {
-          const callee = initializer.getFirstChild();
+          let callee = initializer.getFirstChild();
+          while (Node.isParenthesizedExpression(callee)) {
+            callee = callee.getExpression();
+          }
+
           const calleeName = callee?.getText();
-          if (!calleeName || !isHookName(calleeName)) {
+
+          // Check for inline state pattern: (()=>{...script})()
+          if (
+            Node.isArrowFunction(callee) ||
+            Node.isFunctionExpression(callee)
+          ) {
+            const name = decl.getName();
+            const state = parseInlineStateExpression({
+              name,
+              fn: callee,
+            });
+            componentData.states = [...(componentData.states || []), state];
+          } else if (!calleeName || !isHookName(calleeName)) {
             throw Error(
               `Unexpected CallExpression in variable declaration: ${calleeName}`
             );
+          } else {
+            const name = decl.getName();
+            const state = parseStateExpression({
+              name,
+              callee: calleeName,
+            });
+            componentData.states = [...(componentData.states || []), state];
           }
-          const name = decl.getName();
-          const state = parseStateExpression({
-            name,
-            callee: calleeName,
-          });
-          componentData.states = [...(componentData.states || []), state];
         } else {
           throw Error(
             `Unexpected initializer in variable declaration: ${initializer?.getText()}`

@@ -1,4 +1,5 @@
 import { ComponentData } from "@elllphnt/elementa-base";
+import { createReferenceString } from "../references.js";
 import { compileCodeResource, ParsedCodeResource } from "./code_module.js";
 import { compileModule, ParsedModule, ParsedResource } from "./module.js";
 
@@ -35,14 +36,14 @@ export function compileComponentResource({
 
           if (dependency in module.imports) {
             const [path, specifier] = module.imports[dependency];
+            let adjustedPath = createReferenceString(getAdjustedPath(path));
             if (specifier !== "default") {
-              throw new Error(
-                `Unexpected import specifier "${specifier}" for dependency "${dependency}". Expected "default".`
-              );
+              adjustedPath += `?specifier=${specifier}`;
             }
-            obj[key] = getAdjustedPath(path);
+            obj[key] = adjustedPath;
           } else if (dependency in module.resources) {
-            obj[key] = getResourcePath(dependency);
+            const path = getResourcePath(dependency);
+            obj[key] = createReferenceString(path);
           } else {
             throw new Error(
               `Dependency "${dependency}" not found in module imports or resources.`

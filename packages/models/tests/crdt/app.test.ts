@@ -1,18 +1,18 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import * as y from "yjs";
 import { genId } from "~/_lib/id.js";
-import { CrdtAppModel } from "~/index.js";
+import { CrdtRouter } from "~/index.js";
 
 describe("CRDT App Model", () => {
   let doc: y.Doc;
   let root: y.Map<any>;
-  let app: CrdtAppModel;
+  let app: CrdtRouter;
 
   beforeEach(() => {
     doc = new y.Doc();
     root = doc.getMap("app");
 
-    app = new CrdtAppModel(root, {
+    app = new CrdtRouter(root, {
       project: {
         absoluteFileUrl: (url: string) => url,
         infrastructure: {

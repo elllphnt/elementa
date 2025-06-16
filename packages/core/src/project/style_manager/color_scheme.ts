@@ -145,7 +145,9 @@ export class ColorSchemeManager extends Disposable {
   constructor({ project }: { project: Project }) {
     super();
     this.project = project;
+  }
 
+  init() {
     const nameSubscription = this.colorSchemes$.subscribe((schemes) => {
       this._colorSchemeByName$.next(
         Object.fromEntries(schemes.map((scheme) => [scheme.name, scheme]))

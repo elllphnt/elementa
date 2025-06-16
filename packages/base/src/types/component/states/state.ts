@@ -1,14 +1,14 @@
-import { HookStateData } from "./hook.js";
-import { ValueStateData } from "./value.js";
 import { z } from "zod";
-import { valueStateDataSchema } from "./value.js";
-import { hookStateDataSchema } from "./hook.js";
+import { HookStateData, hookStateDataSchema } from "./hook.js";
+import { InlineStateData, inlineStateDataSchema } from "./inline.js";
+import { ValueStateData, valueStateDataSchema } from "./value.js";
 
-export type StateData = ValueStateData | HookStateData;
+export type StateData = ValueStateData | HookStateData | InlineStateData;
 
 // Schemas
 
-export const stateDataSchema = z.union([
+export const stateDataSchema = z.discriminatedUnion("type", [
   valueStateDataSchema,
   hookStateDataSchema,
+  inlineStateDataSchema,
 ]);

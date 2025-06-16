@@ -1,40 +1,42 @@
-import { Node, Project, ScriptTarget } from "ts-morph";
-import { ParsedCodeResource } from "../../../module/code_module.js";
+import { Node } from "ts-morph";
 import { ParsedComponentModule } from "../../../module/component_module.js";
-import { ParsedModule } from "../../../module/module.js";
-import { GetStylesheet } from "../../component/_.js";
-import { parseComponent } from "../../component/component.js";
-import { extractImport } from "../_shared/import.js";
-import { extractType } from "../_shared/type.js";
-import { extractContent } from "../code/code.js";
+import { parseComponent } from "../../component/_.js";
+import { extractImport } from "../_shared/_.js";
+import {
+  exportContent,
+  extractContent,
+  isComponentName,
+  isComponentNode,
+  isHookName,
+} from "../code/_.js";
+import {
+  resolveDefaultExportValueNode,
+  resolveRootValueNodes,
+} from "./utils/export.js";
+import { createSingleFileProject } from "./utils/source_file.js";
 
 export function parseComponentModule({
-  code,
-  getStylesheet,
-}: {
-  code: string;
-  getStylesheet: GetStylesheet;
-}): ParsedComponentModule {
-  const project = new Project({
-    compilerOptions: {
-      target: ScriptTarget.ESNext,
-      allowJs: true,
-      jsx: 2,
-    },
-    useInMemoryFileSystem: true,
+  sourceCode,
+}: // getStylesheet,
+{
+  sourceCode: string;
+  // getStylesheet: GetStylesheet;
+}) {
+  const { sourceFile } = createSingleFileProject(sourceCode, {
+    name: "module.tsx",
   });
-
-  const file = project.createSourceFile("module.tsx", code, {
-    overwrite: true,
-  });
+  const valueNodes = resolveRootValueNodes(sourceFile);
+  const defaultExportNode = resolveDefaultExportValueNode(sourceFile);
 
   const module: ParsedComponentModule = {
     imports: {},
     types: {},
     resources: {},
+    utils: {},
+    main: defaultExportNode?.name,
   };
 
-  const statements = file.getStatements();
+  const statements = sourceFile.getStatements();
   for (const statement of statements) {
     if (Node.isImportDeclaration(statement)) {
       extractImport(statement, module);
@@ -43,44 +45,29 @@ export function parseComponentModule({
       Node.isInterfaceDeclaration(statement) ||
       Node.isEnumDeclaration(statement)
     ) {
-      extractType(statement, module);
-    } else if (Node.isFunctionDeclaration(statement)) {
       const name = statement.getName();
-      if (!name) continue;
-
-      if (/^use[A-Z]/.test(name)) {
-        extractContent({
-          node: statement,
-          module: module as ParsedModule<ParsedCodeResource<"hook">>,
-          type: "hook",
-          name,
-        });
-      } else {
-        const component = parseComponent({ node: statement, getStylesheet });
-        if (component) {
-          module.resources[name] = {
-            type: "component",
-            data: component,
-          };
-        }
-      }
+      const source = statement.getText();
+      module.types[name] = source;
     }
   }
 
-  const exportDeclarations = file.getDefaultExportSymbol()?.getDeclarations();
-  for (const exportDecl of exportDeclarations ?? []) {
-    if (Node.isFunctionDeclaration(exportDecl)) {
-      const name = exportDecl.getName();
-      if (name) module.main = name;
-    } else if (Node.isExportAssignment(exportDecl)) {
-      const expr = exportDecl.getExpression();
-      if (Node.isIdentifier(expr)) {
-        module.main = expr.getText();
-      } else {
-        console.warn(
-          "Anonymous default export not supported in ComponentModule."
-        );
-      }
+  for (const { node, name } of valueNodes) {
+    if (!name) continue;
+
+    const { content, dependencies } = extractContent({ name, node });
+    if (isHookName(name)) {
+      module.resources[name] = {
+        type: "hook",
+        content: exportContent(name, content, true),
+        dependencies,
+      };
+      continue;
+    } else if (isComponentName(name) && isComponentNode(node)) {
+      module.resources[name] = {
+        type: "component",
+        data: parseComponent({ node, getStylesheet: () => ({}) }),
+      };
+      continue;
     }
   }
 

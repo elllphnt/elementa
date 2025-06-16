@@ -15,7 +15,7 @@ import {
 import { resolveDefaultExportValueNode } from "./utils/export.js";
 import {
   extractExpressionAsFunction,
-  extractStatementsAsFunction,
+  extractStatementsAsInlineFunctionExpression,
 } from "./utils/extraction.js";
 import {
   freeNameInScope,
@@ -23,7 +23,7 @@ import {
   rewriteIdentifier,
   rewriteIdentifierReferences,
 } from "./utils/identifier.js";
-import { getEnclosingBlock, isInNode } from "./utils/navigation.js";
+import { getEnclosingBlock } from "./utils/navigation.js";
 import { restructureBindingPattern } from "./utils/refactoring.js";
 import { hasReturnBranch } from "./utils/return.js";
 import { createSingleFileProject } from "./utils/source_file.js";
@@ -195,7 +195,6 @@ function isReturnFragmentOrState(ret: ReturnStatement): boolean {
 }
 
 export function extractStates(node: Block) {
-  const sourceFile = node.getSourceFile();
   const batch: Statement[] = [];
   const statements = node.getStatements();
   let hasReturn = false;
@@ -233,18 +232,11 @@ export function extractStates(node: Block) {
       hasReturn = false;
       return;
     }
-    const containingStatement = sourceFile
-      .getStatements()
-      .find((s) => isInNode(node, s));
-    const index = containingStatement?.getChildIndex() ?? 0;
-    const stateName = getUniqueNameInScope(sourceFile, "useState", 1);
-    const { functionCode, referenceCode } = extractStatementsAsFunction({
-      name: stateName,
+    const { referenceCode } = extractStatementsAsInlineFunctionExpression({
       statements: batch,
-      targetScope: sourceFile,
       isReturn: hasReturn,
     });
-    sourceFile.insertStatements(index, functionCode);
+
     const stmt = batch[0].replaceWithText(referenceCode);
     for (let i = 1; i < batch.length; i++) {
       batch[i].remove();
@@ -267,7 +259,10 @@ export function extractStates(node: Block) {
       }
     } else if (Node.isExpressionStatement(stmt) && hasReturn) {
       const expr = stmt.getExpression();
-      stmt.replaceWithText(`return ${expr.getText()};`);
+      const name = getUniqueNameInScope(node, "state", 1);
+      stmt.replaceWithText(
+        `const ${name}= ${expr.getText()};\nreturn ${name};`
+      );
     }
 
     batch.length = 0;

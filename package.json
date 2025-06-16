@@ -8,7 +8,8 @@
     "workspaces": [
         "app",
         "examples/*",
-        "packages/*"
+        "packages/*",
+        "libraries/*"
     ],
     "devDependencies": {
         "@eslint/js": "^9.26.0",

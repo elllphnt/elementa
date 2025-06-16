@@ -213,6 +213,18 @@ export class StyleManager extends Disposable {
     this.colorSchemeManager = new ColorSchemeManager({ project });
     this.viewportManager = new ViewportManager({ project });
 
+    this.addDisposer(() => {
+      this._variableValues$.complete();
+      this._modifiersByName$.complete();
+      this.colorSchemeManager.dispose();
+      this.viewportManager.dispose();
+    });
+  }
+
+  init() {
+    this.colorSchemeManager.init();
+    this.viewportManager.init();
+
     const modifiersByNameSubscription = this.modifiers$.subscribe(
       (modifiers) => {
         const newModifiersByName: Record<string, StyleModifierDefinitionData> =
@@ -243,12 +255,8 @@ export class StyleManager extends Disposable {
     );
 
     this.addDisposer(() => {
-      this._variableValues$.complete();
-      this._modifiersByName$.complete();
       modifiersByNameSubscription.unsubscribe();
       systemCssStylesheetsSubscription.unsubscribe();
-      this.colorSchemeManager.dispose();
-      this.viewportManager.dispose();
     });
   }
 

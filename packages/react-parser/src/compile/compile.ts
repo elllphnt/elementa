@@ -1,11 +1,4 @@
-import { compileCodeModule } from "../module/code_module.js";
 import { compileComponentModule } from "../module/component_module.js";
-import { CompiledModule } from "../module/module.js";
-import {
-  parseCodeModule,
-  parseComponentModule,
-  standardizeComponent,
-} from "../parsers/_.js";
 
 export type ElllResource = {
   name: string;
@@ -13,38 +6,11 @@ export type ElllResource = {
   content: string;
 };
 
-export function compileToElll({
-  tsx,
-  css = "",
-}: {
-  tsx: string;
-  css?: string;
-}): CompiledModule<string> {
-  const parsedCodeModule = parseCodeModule({ sourceCode: tsx });
-  const resources = compileCodeModule({
-    module: parsedCodeModule,
+export function compileComponentModuleToElll({ source }: { source: string }) {
+  const subResources = compileComponentModule({
+    module: parsedComponentModule,
     getAdjustedPath: (_, path) => path,
-    getResourcePath: (_, toResource) => `<<REF:${toResource}>>`,
+    getResourcePath: (_, toResource) =>
+      resourcePrefix + makeSubName(toResource),
   });
-  // transpile component resources to ELLL format
-  for (const [name, resource] of Object.entries(resources)) {
-    if (resource.type !== "component") continue;
-    delete resources[name];
-    const standardized = standardizeComponent(resource.content);
-    const parsedComponentModule = parseComponentModule({
-      sourceCode: standardized,
-    });
-    const makeSubName = (sub: string) => `${name}/${sub}`;
-    const subResources = compileComponentModule({
-      module: parsedComponentModule,
-      getAdjustedPath: (_, path) => path,
-      getResourcePath: (_, toResource) => `<<REF:${makeSubName(toResource)}>>`,
-    });
-    for (const [subName, subResource] of Object.entries(subResources)) {
-      const key = `${makeSubName(subName)}`;
-      resources[key] = subResource;
-    }
-  }
-
-  return resources;
 }

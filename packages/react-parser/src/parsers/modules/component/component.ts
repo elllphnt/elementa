@@ -1,19 +1,54 @@
+import { ComponentData } from "@elllphnt/elementa-base";
 import { Node } from "ts-morph";
-import { ParsedComponentModule } from "../../../module/component_module.js";
+import { createReferenceString } from "../../../references.js";
 import { parseComponent } from "../../component/_.js";
-import { extractImport } from "../_shared/_.js";
-import {
-  exportContent,
-  extractContent,
-  isComponentName,
-  isComponentNode,
-  isHookName,
-} from "../code/_.js";
-import {
-  resolveDefaultExportValueNode,
-  resolveRootValueNodes,
-} from "./utils/export.js";
+import { extractImportNew } from "../_shared/_.js";
+import { isComponentName, isComponentNode } from "../code/_.js";
+import { standardizeComponent } from "./standardize.js";
+import { resolveDefaultExportValueNode } from "./utils/export.js";
 import { createSingleFileProject } from "./utils/source_file.js";
+
+function compileComponentModule({
+  data,
+  imports,
+}: {
+  data: ComponentData;
+  imports: Record<string, [string, string]>;
+  types: Record<string, string>;
+}): ComponentData {
+  function traverse(obj: any) {
+    if (typeof obj === "object" && obj !== null) {
+      for (const key in obj) {
+        const value = obj[key];
+        if (
+          typeof value === "object" &&
+          value !== null &&
+          "__dependency" in value
+        ) {
+          const dependency = obj[key]["__dependency"];
+
+          if (dependency in imports) {
+            const [path, specifier] = imports[dependency];
+            let adjustedPath = createReferenceString(path);
+            if (specifier !== "default") {
+              adjustedPath += `?specifier=${specifier}`;
+            }
+            obj[key] = adjustedPath;
+          } else {
+            throw new Error(
+              `Dependency "${dependency}" not found in module imports or resources.`
+            );
+          }
+        } else {
+          traverse(obj[key]);
+        }
+      }
+    }
+  }
+  traverse(data);
+
+  return data;
+}
 
 export function parseComponentModule({
   sourceCode,
@@ -22,24 +57,36 @@ export function parseComponentModule({
   sourceCode: string;
   // getStylesheet: GetStylesheet;
 }) {
-  const { sourceFile } = createSingleFileProject(sourceCode, {
-    name: "module.tsx",
-  });
-  const valueNodes = resolveRootValueNodes(sourceFile);
+  const { sourceFile } = createSingleFileProject(
+    standardizeComponent(sourceCode),
+    {
+      name: "module.tsx",
+    }
+  );
   const defaultExportNode = resolveDefaultExportValueNode(sourceFile);
 
-  const module: ParsedComponentModule = {
-    imports: {},
-    types: {},
-    resources: {},
-    utils: {},
-    main: defaultExportNode?.name,
-  };
+  if (!defaultExportNode) {
+    throw new Error("No default export found in component module.");
+  }
+  const { name, node } = defaultExportNode;
+  if (!name || !isComponentName(name)) {
+    throw new Error(
+      `Default export does not have a valid component name. Found: ${name}.`
+    );
+  } else if (!isComponentNode(node)) {
+    throw new Error(
+      `Default export is not a valid component node. Found: ${node.getText()}.`
+    );
+  }
+
+  const parsedComponent = parseComponent({ node, getStylesheet: () => ({}) });
+  const imports: Record<string, [string, string]> = {};
+  const types: Record<string, string> = {};
 
   const statements = sourceFile.getStatements();
   for (const statement of statements) {
     if (Node.isImportDeclaration(statement)) {
-      extractImport(statement, module);
+      extractImportNew(statement, imports);
     } else if (
       Node.isTypeAliasDeclaration(statement) ||
       Node.isInterfaceDeclaration(statement) ||
@@ -47,29 +94,13 @@ export function parseComponentModule({
     ) {
       const name = statement.getName();
       const source = statement.getText();
-      module.types[name] = source;
+      types[name] = source;
     }
   }
 
-  for (const { node, name } of valueNodes) {
-    if (!name) continue;
-
-    const { content, dependencies } = extractContent({ name, node });
-    if (isHookName(name)) {
-      module.resources[name] = {
-        type: "hook",
-        content: exportContent(name, content, true),
-        dependencies,
-      };
-      continue;
-    } else if (isComponentName(name) && isComponentNode(node)) {
-      module.resources[name] = {
-        type: "component",
-        data: parseComponent({ node, getStylesheet: () => ({}) }),
-      };
-      continue;
-    }
-  }
-
-  return module;
+  return compileComponentModule({
+    data: parsedComponent,
+    imports,
+    types,
+  });
 }

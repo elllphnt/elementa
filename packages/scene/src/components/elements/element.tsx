@@ -3,6 +3,10 @@ import { useObservable } from "@elllphnt/elementa-react-utils";
 import { memo } from "react";
 import { NamespaceContext } from "../../contexts/namespace.js";
 import { useNamespace } from "../../hooks/namespace.js";
+import {
+  ExpressionElementRenderable,
+  FragmentElementRenderable,
+} from "../../renderables/_.js";
 import { ComponentElementRenderable } from "../../renderables/element/component.js";
 import { ContainerElementRenderable } from "../../renderables/element/container.js";
 import { ElementRenderable } from "../../renderables/element/element.js";
@@ -14,6 +18,8 @@ import { VectorElementRenderable } from "../../renderables/element/vector.js";
 import { ElementErrorBoundary } from "./_/_error_boundary.js";
 import ComponentElementComponent from "./components/component_element.js";
 import { ContainerElementComponent } from "./container_element.js";
+import { ExpressionElementComponent } from "./expression.js";
+import { FragmentElementComponent } from "./fragment.js";
 import { MediaElementComponent } from "./media/media_element.js";
 import PrimitiveElementComponent from "./primitive_element.js";
 import { SlotElementComponent } from "./slot_element.js";
@@ -61,6 +67,18 @@ function RawElement({
     case "vector": {
       const vectorElement = element as VectorElementRenderable;
       return <VectorElementComponent element={vectorElement} onRef={onRef} />;
+    }
+    case "fragment": {
+      const fragmentElement = element as FragmentElementRenderable;
+      return (
+        <FragmentElementComponent element={fragmentElement} onRef={onRef} />
+      );
+    }
+    case "expression": {
+      const expressionElement = element as ExpressionElementRenderable;
+      return (
+        <ExpressionElementComponent element={expressionElement} onRef={onRef} />
+      );
     }
     default:
       return null;

@@ -107,7 +107,12 @@ export function extractElementsFromNode({
       }
       // 9) Anything else → custom component
       return [
-        parseComponentElementNode({ name: tagName, node, getStylesheet }),
+        parseComponentElementNode({
+          name: tagName,
+          node,
+          getStylesheet,
+          createFragment,
+        }),
       ];
     } else if (t.isJSXMemberExpression(tagNode)) {
       return [parseMemberExpressionElementNode({ node, getStylesheet })];
