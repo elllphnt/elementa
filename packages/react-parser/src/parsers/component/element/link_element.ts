@@ -114,14 +114,12 @@ export function parseLinkElementNode({
   // Extract all child elements (flattening fragments as needed).
   const childrenElements: ElementData[] = [];
   node.children.forEach((child) => {
-    if (t.isJSXElement(child) || t.isJSXFragment(child)) {
-      const parsedChildren = extractElementsFromNode({
-        node: child as t.Node,
-        getStylesheet,
-        createFragment,
-      });
-      parsedChildren.forEach((el) => childrenElements.push(el));
-    }
+    const parsedChildren = extractElementsFromNode({
+      node: child as t.Node,
+      getStylesheet,
+      createFragment,
+    });
+    parsedChildren.forEach((el) => childrenElements.push(el));
   });
 
   // If there’s exactly one element inside <a>, attach link there.

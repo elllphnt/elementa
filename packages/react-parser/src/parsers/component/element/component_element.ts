@@ -31,14 +31,11 @@ export function parseComponentElementNode({
   );
 
   return {
-    __componentElement: {
-      ...base,
-      url: {
-        __dependency: name,
-      } as any,
-      content,
-      tag: undefined,
-      type: undefined,
-    },
-  } as any;
+    ...base,
+    componentUrl: {
+      __dependency: name,
+    } as any,
+    content,
+    tag: undefined,
+  };
 }

@@ -335,6 +335,12 @@ export function parseComponentFunctionBody({
             expression: returnExpr.getText(),
           };
         }
+      } else if (returnExpr) {
+        componentData.template = {
+          id: genId(),
+          type: "expression",
+          expression: returnExpr.getText(),
+        };
       }
     } else {
       throw Error(

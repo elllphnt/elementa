@@ -137,7 +137,20 @@ function isStateDeclarationOrCall(stmt: Statement): boolean {
       );
     if (!allParamsAreIdentifiers) return false;
 
-    return /^use[A-Z]/.test(fnText);
+    // Check name is state name
+    if (!/^use[A-Z]/.test(fnText)) return false;
+
+    // Ensure nameNode is restructured
+    const nameNode = decls[0].getNameNode();
+    if (
+      Node.isObjectBindingPattern(nameNode) ||
+      Node.isArrayBindingPattern(nameNode)
+    ) {
+      const block = getEnclosingBlock(stmt);
+      const name = getUniqueNameInScope(block, "state", 1);
+      restructureBindingPattern(nameNode, name);
+      return true;
+    }
   } else if (Node.isExpressionStatement(stmt)) {
     const expr = stmt.getExpression();
     if (!Node.isCallExpression(expr)) return false;
@@ -241,7 +254,6 @@ export function extractStates(node: Block) {
     for (let i = 1; i < batch.length; i++) {
       batch[i].remove();
     }
-
     if (Node.isVariableStatement(stmt)) {
       const decl = stmt.getDeclarationList().getDeclarations()[0];
       const nameNode = decl.getNameNode();
@@ -262,6 +274,10 @@ export function extractStates(node: Block) {
       const name = getUniqueNameInScope(node, "state", 1);
       stmt.replaceWithText(
         `const ${name}= ${expr.getText()};\nreturn ${name};`
+      );
+    } else {
+      throw Error(
+        `Unexpected ${stmt.getKindName()} state node: ${stmt.getText()}`
       );
     }
 

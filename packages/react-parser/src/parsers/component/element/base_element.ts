@@ -5,10 +5,10 @@ import {
   StyleSheetData,
 } from "@elllphnt/elementa-base";
 import { genId } from "../utils.js";
-import { parseClassExpression } from "./utils/class_expression.js";
 import { generate } from "./utils/generate.js";
 
 export type GetStylesheet = (
+  id: string,
   classes: string[],
   conditionals: Record<string, string>
 ) => StyleSheetData;
@@ -31,46 +31,45 @@ export function parseBaseElementNode<T extends string>({
     tag: tagName,
   };
 
+  let id: string | undefined;
+
   node.openingElement.attributes.forEach((attr) => {
     if (!t.isJSXAttribute(attr)) return;
-
     const attrName = attr.name.name;
-    console.log("Found attribute:", attrName);
 
     // Handle "id" attribute
     if (attrName === "id" && attr.value) {
       if (t.isStringLiteral(attr.value)) {
-        baseElement.id = attr.value.value;
+        id = attr.value.value;
       } else if (t.isJSXExpressionContainer(attr.value)) {
         const expr = attr.value.expression;
         if (t.isStringLiteral(expr)) {
-          baseElement.id = expr.value;
+          id = expr.value;
         }
       }
     }
 
-    // Handle "className" attribute
-    if (attrName === "className" && attr.value) {
-      // Case: className="foo bar"
-      if (t.isStringLiteral(attr.value)) {
-        const classes = attr.value.value.split(/\s+/).filter((s) => s);
-        baseElement.stylesheet = getStylesheet(classes, {});
-      }
-      // Case: className={"foo bar"} or complex expression
-      else if (t.isJSXExpressionContainer(attr.value)) {
-        const expr = attr.value.expression;
-        if (t.isStringLiteral(expr)) {
-          const classes = expr.value.split(/\s+/).filter((s) => s);
-          baseElement.stylesheet = getStylesheet(classes, {});
-        } else {
-          // Complex expression: clsx(...), cx(...), conditional, array, object, etc.
-          const { classes, conditionals } = parseClassExpression(
-            expr as t.Expression
-          );
-          baseElement.stylesheet = getStylesheet(classes, conditionals);
-        }
-      }
-    }
+    // if (attrName === "className" && attr.value) {
+    //   // Case: className="foo bar"
+    //   if (t.isStringLiteral(attr.value)) {
+    //     const classes = attr.value.value.split(/\s+/).filter((s) => s);
+    //     baseElement.stylesheet = getStylesheet(id, classes, {});
+    //   }
+    //   // Case: className={"foo bar"} or complex expression
+    //   else if (t.isJSXExpressionContainer(attr.value)) {
+    //     const expr = attr.value.expression;
+    //     if (t.isStringLiteral(expr)) {
+    //       const classes = expr.value.split(/\s+/).filter((s) => s);
+    //       baseElement.stylesheet = getStylesheet(id, classes, {});
+    //     } else {
+    //       // Complex expression: clsx(...), cx(...), conditional, array, object, etc.
+    //       const { classes, conditionals } = parseClassExpression(
+    //         expr as t.Expression
+    //       );
+    //       baseElement.stylesheet = getStylesheet(id, classes, conditionals);
+    //     }
+    //   }
+    // }
 
     // Handle interaction attributes (onXxx)
     if (
@@ -182,6 +181,11 @@ export function parseBaseElementNode<T extends string>({
       }
     }
   });
+
+  if (id) {
+    baseElement.name = id;
+    baseElement.stylesheet = getStylesheet(id, [], {});
+  }
 
   return baseElement;
 }

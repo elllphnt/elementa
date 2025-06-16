@@ -2,115 +2,177 @@ import {
   baseSelector,
   GetModifierDefinition,
   stringifyElllSelector,
-  stringifyStyleModifier,
   StyleData,
-  StyleModifierData,
   StyleSheetData,
   systemModifiers,
 } from "@elllphnt/elementa-base";
-import postcss, { AtRule, Declaration, Rule } from "postcss";
-import { genId } from "./component/_.js";
+import postcss, { Root } from "postcss";
 
-export type ParsedKeyFrameData = {
-  offset: number;
-  style: Record<string, string>;
-};
 export type ParsedKeyFrameSetData = {
   name: string;
-  keyframes: ParsedKeyFrameData[];
+  frames: Record<string, Record<string, string>>;
 };
 export type ParsedStyleRule = {
-  selector: string;
+  selector: string[];
   style: Record<string, string>;
 };
 
 export type ParsedCssModule = {
-  styles?: ParsedStyleRule[];
+  stylesheets?: Record<string, ParsedStyleRule[]>;
   keyframeSets?: ParsedKeyFrameSetData[];
 };
 
-export function parseCssModule(css: string): ParsedCssModule {
-  const root = postcss.parse(css);
-
-  const styles: ParsedStyleRule[] = [];
-  const keyframeSets: ParsedKeyFrameSetData[] = [];
-
-  root.walk((node) => {
-    if (node.type === "rule") {
-      const rule = node as Rule;
-      const style: Record<string, string> = {};
-
-      rule.walkDecls((decl: Declaration) => {
-        style[decl.prop] = decl.value;
-      });
-
-      styles.push({
-        selector: rule.selector,
-        style,
-      });
-    }
-
-    if (node.type === "atrule" && node.name === "keyframes") {
-      const atRule = node as AtRule;
-      const frames: ParsedKeyFrameData[] = [];
-
-      atRule.walkRules((frameRule) => {
-        const offsetRaw = frameRule.selector;
-        const style: Record<string, string> = {};
-
-        frameRule.walkDecls((decl: Declaration) => {
-          style[decl.prop] = decl.value;
-        });
-
-        for (const part of offsetRaw.split(",")) {
-          const trimmed = part.trim();
-          let offset = parseFloat(trimmed.replace("%", "")) / 100;
-          if (trimmed === "from") offset = 0;
-          if (trimmed === "to") offset = 1;
-
-          frames.push({ offset, style });
-        }
-      });
-
-      keyframeSets.push({
-        name: atRule.params,
-        keyframes: frames,
-      });
-    }
-  });
-
-  return {
-    styles: styles.length ? styles : undefined,
-    keyframeSets: keyframeSets.length ? keyframeSets : undefined,
-  };
+function isIdSelector(selector: string): boolean {
+  const idSelectorRe = /#-?[_A-Za-z][A-Za-z0-9_-]*/g;
+  return idSelectorRe.test(selector);
 }
 
-const hasClass = (selector: string, className: string) =>
+/**
+ * Merge parts from left-to-right:
+ * - If a part contains '&', replace every '&' with the current result.
+ * - Else if it’s a combinator (> + ~), append directly.
+ * - Otherwise, join as a descendant with a space.
+ */
+function flattenSegments(segments: string[]): string {
+  if (segments.length === 0) return "";
+
+  let result = segments[0];
+  for (let i = 1; i < segments.length; i++) {
+    const part = segments[i];
+
+    if (part.includes("&")) {
+      // replace & with whatever we've built so far
+      result = part.replace(/&/g, result);
+    } else if (/^[>+~]/.test(part)) {
+      // combinator glued on
+      result = `${result}${part}`;
+    } else {
+      // plain descendant
+      result = `${result} ${part}`;
+    }
+  }
+  return result;
+}
+
+export function parseCssModule(css: string): ParsedCssModule {
+  const root = postcss.parse(css) as Root;
+  const stylesheets: Record<string, ParsedStyleRule[]> = {};
+  const keyframeSets: ParsedKeyFrameSetData[] = [];
+
+  function addRule(id: string, rule: ParsedStyleRule) {
+    if (Object.keys(rule.style).length === 0) return; // Skip empty rules
+    if (!stylesheets[id]) stylesheets[id] = [];
+    stylesheets[id].push(rule);
+  }
+
+  function processNode(
+    node: postcss.ChildNode,
+    id?: string,
+    selectors: string[] = []
+  ) {
+    switch (node.type) {
+      case "rule": {
+        node.selectors.map((selector) => {
+          let thisId = id;
+          const thisSelector = [...selectors];
+          if (isIdSelector(selector)) {
+            thisId = selector.slice(1);
+          } else {
+            thisSelector.push(selector);
+          }
+          const style: Record<string, string> = {};
+          node.nodes.forEach((child) => {
+            if (child.type === "decl") {
+              style[child.prop] = child.value;
+            } else {
+              processNode(child, thisId, thisSelector);
+            }
+          });
+
+          if (thisId) {
+            addRule(thisId, {
+              selector: thisSelector,
+              style,
+            });
+          }
+        });
+        break;
+      }
+      case "atrule": {
+        if (
+          node.name === "media" ||
+          node.name === "supports" ||
+          node.name === "layer"
+        ) {
+          const selector = `@${node.name} ${node.params}`;
+          const style: Record<string, string> = {};
+
+          const thisSelector = [...selectors, selector];
+
+          node.nodes?.forEach((child) => {
+            if (child.type === "decl") {
+              style[child.prop] = child.value;
+            } else {
+              processNode(child, id, thisSelector);
+            }
+          });
+
+          if (id) {
+            addRule(id, {
+              selector: thisSelector,
+              style,
+            });
+          }
+        } else if (node.name === "keyframes") {
+          const keyframeSet: ParsedKeyFrameSetData = {
+            name: node.params,
+            frames: {},
+          };
+          node.nodes?.forEach((frame) => {
+            if (frame.type === "rule") {
+              const frameSelector = frame.selectors.join(", ");
+              const frameStyle: Record<string, string> = {};
+              frame.nodes.forEach((child) => {
+                if (child.type === "decl") {
+                  frameStyle[child.prop] = child.value;
+                }
+              });
+              keyframeSet.frames[frameSelector] = frameStyle;
+            }
+          });
+          keyframeSets.push(keyframeSet);
+        }
+        break;
+      }
+    }
+  }
+
+  root.nodes.forEach((n) => processNode(n));
+  return { stylesheets, keyframeSets };
+}
+
+export const hasClass = (selector: string, className: string) =>
   new RegExp(`(?:^|[\\s>+~])\\.${className}(?=[^\\w-]|$)`).test(selector);
+export const hasId = (selector: string, id: string) =>
+  new RegExp(`(?:^|[\\s>+~])\\#${id}(?=[^\\w-]|$)`).test(selector);
 
 function cssSelectorToElllSelector({
   selector,
-  base,
   getModifierDefinition,
 }: {
-  selector: string;
-  base: string;
+  selector: string[];
   getModifierDefinition: GetModifierDefinition;
 }) {
-  const escaped = base.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const nestableSelector = selector
-    .replace(new RegExp(`${escaped}(?![a-zA-Z0-9_-])`, "g"), "&")
-    .trim();
-  console.log("Converted selector:", { nestableSelector, base, selector });
-  if (!nestableSelector || nestableSelector === "&") {
-    return "";
-  }
-  const modifier: StyleModifierData = {
-    name: systemModifiers.raw.name,
-    args: [nestableSelector],
-  };
+  const flattenedSelector = flattenSegments(selector).trim();
+  if (!flattenedSelector) return baseSelector;
+
   const [elllSelector, error] = stringifyElllSelector({
-    selector: [modifier],
+    selector: [
+      {
+        name: systemModifiers.raw.name,
+        args: [flattenedSelector],
+      },
+    ],
     getModifierDefinition,
   });
   if (error) {
@@ -123,42 +185,37 @@ function cssSelectorToElllSelector({
 }
 
 export function getStylesFromCssModule({
-  className,
+  id,
   cssModule,
   getModifierDefinition,
 }: {
+  id: string;
   cssModule: ParsedCssModule;
-  className: string;
   getModifierDefinition: GetModifierDefinition;
 }): Record<string, StyleData> {
-  const matchedRules =
-    cssModule.styles?.filter((rule) => {
-      return hasClass(rule.selector, className);
-    }) || [];
-  if (matchedRules.length === 0) return {};
-
   const styles: Record<string, StyleData> = {};
-  for (const rule of matchedRules) {
+  const rules = cssModule.stylesheets?.[id] || [];
+
+  for (const rule of rules) {
     const selector = cssSelectorToElllSelector({
       selector: rule.selector,
-      base: `.${className}`,
       getModifierDefinition,
     });
     const style: StyleData = {
       __raw: rule.style,
     };
-    styles[selector] = style;
+    styles[selector || baseSelector] = style;
   }
 
   return styles;
 }
 
 export function getStylesheetFromCssModule({
-  classes,
-  conditionals,
+  id,
   module,
   getModifierDefinition,
 }: {
+  id: string;
   classes: string[];
   conditionals: Record<string, string>;
   module: ParsedCssModule;
@@ -168,50 +225,48 @@ export function getStylesheetFromCssModule({
   stylesheet.styles = {};
   stylesheet.conditions = {};
 
-  for (const className of classes) {
-    const styles = getStylesFromCssModule({
-      className,
-      cssModule: module,
-      getModifierDefinition,
-    });
-    for (const [selector, style] of Object.entries(styles)) {
-      stylesheet.styles[selector || baseSelector] = {
-        ...stylesheet.styles[selector],
-        ...style,
-      };
-    }
-  }
-
-  for (const [className, expression] of Object.entries(conditionals)) {
-    const styles = getStylesFromCssModule({
-      className,
-      cssModule: module,
-      getModifierDefinition,
-    });
-    const conditionId = genId();
-    const conditionModifier: StyleModifierData = {
-      name: systemModifiers.condition.name,
-      args: [conditionId],
+  const styles = getStylesFromCssModule({
+    id,
+    cssModule: module,
+    getModifierDefinition,
+  });
+  for (const [selector, style] of Object.entries(styles)) {
+    stylesheet.styles[selector || baseSelector] = {
+      ...stylesheet.styles[selector],
+      ...style,
     };
-    const [conditionModifierString, error] = stringifyStyleModifier({
-      modifier: conditionModifier,
-      getModifierDefinition,
-    });
-    if (error) {
-      throw new Error("Error converting condition modifier to string:", error);
-    }
-
-    for (const [selector, style] of Object.entries(styles)) {
-      const selectorWithCondition = [selector, conditionModifierString]
-        .filter(Boolean)
-        .join(":");
-      stylesheet.styles[selectorWithCondition] = {
-        ...stylesheet.styles[selectorWithCondition],
-        ...style,
-      };
-    }
-    stylesheet.conditions[conditionId] = expression;
   }
+
+  // for (const [className, expression] of Object.entries(conditionals)) {
+  //   const styles = getStylesFromCssModule({
+  //     className,
+  //     cssModule: module,
+  //     getModifierDefinition,
+  //   });
+  //   const conditionId = genId();
+  //   const conditionModifier: StyleModifierData = {
+  //     name: systemModifiers.condition.name,
+  //     args: [conditionId],
+  //   };
+  //   const [conditionModifierString, error] = stringifyStyleModifier({
+  //     modifier: conditionModifier,
+  //     getModifierDefinition,
+  //   });
+  //   if (error) {
+  //     throw new Error("Error converting condition modifier to string:", error);
+  //   }
+
+  //   for (const [selector, style] of Object.entries(styles)) {
+  //     const selectorWithCondition = [selector, conditionModifierString]
+  //       .filter(Boolean)
+  //       .join(":");
+  //     stylesheet.styles[selectorWithCondition] = {
+  //       ...stylesheet.styles[selectorWithCondition],
+  //       ...style,
+  //     };
+  //   }
+  //   stylesheet.conditions[conditionId] = expression;
+  // }
 
   return stylesheet;
 }

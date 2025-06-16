@@ -1,7 +1,7 @@
 import { ComponentData } from "@elllphnt/elementa-base";
 import { Node } from "ts-morph";
 import { createReferenceString } from "../../../references.js";
-import { parseComponent } from "../../component/_.js";
+import { GetStylesheet, parseComponent } from "../../component/_.js";
 import { extractImportNew } from "../_shared/_.js";
 import { isComponentName, isComponentNode } from "../code/_.js";
 import { standardizeComponent } from "./standardize.js";
@@ -52,17 +52,15 @@ function compileComponentModule({
 
 export function parseComponentModule({
   sourceCode,
-}: // getStylesheet,
-{
+  getStylesheet,
+}: {
   sourceCode: string;
-  // getStylesheet: GetStylesheet;
+  getStylesheet: GetStylesheet;
 }) {
-  const { sourceFile } = createSingleFileProject(
-    standardizeComponent(sourceCode),
-    {
-      name: "module.tsx",
-    }
-  );
+  const standardized = standardizeComponent(sourceCode);
+  const { sourceFile } = createSingleFileProject(standardized, {
+    name: "module.tsx",
+  });
   const defaultExportNode = resolveDefaultExportValueNode(sourceFile);
 
   if (!defaultExportNode) {
@@ -79,7 +77,7 @@ export function parseComponentModule({
     );
   }
 
-  const parsedComponent = parseComponent({ node, getStylesheet: () => ({}) });
+  const parsedComponent = parseComponent({ node, getStylesheet });
   const imports: Record<string, [string, string]> = {};
   const types: Record<string, string> = {};
 

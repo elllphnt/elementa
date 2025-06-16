@@ -1,8 +1,8 @@
 import * as t from "@babel/types";
 import { ElementData } from "@elllphnt/elementa-base";
+import { genId } from "../utils.js";
 import { GetStylesheet } from "./base_element.js";
 import { generate } from "./utils/generate.js";
-import { genId } from "../utils.js";
 
 export function parseExpressionContainerNode({
   node,
@@ -10,9 +10,11 @@ export function parseExpressionContainerNode({
   node: t.JSXExpressionContainer;
   getStylesheet: GetStylesheet;
 }): ElementData {
+  const expression = generate(node.expression).code;
+
   return {
     id: genId(),
-    type: "text",
-    text: `Expression Container not implemented yet: ${generate(node)}`,
+    type: "expression",
+    expression,
   };
 }
