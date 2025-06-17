@@ -1,6 +1,7 @@
+import clsx from "clsx";
 import React from "react";
-import Layout from "../../components/layout/layout.component";
-import usePortfolio from "../../hooks/usePortfolio.hook";
+import Layout from "../../components/layout/layout.component.js";
+import usePortfolio from "../../hooks/usePortfolio.hook.js";
 import "./portfolio.component.css";
 
 const Portfolio: React.FC = () => {
@@ -41,8 +42,10 @@ const Portfolio: React.FC = () => {
               {categories.map((category) => (
                 <button
                   key={category}
-                  id="filter-tab"
-                  className={selectedCategory === category ? "active" : ""}
+                  id={`filter-tab-${category
+                    .toLowerCase()
+                    .replace(/\s+/g, "-")}`}
+                  className={clsx({ active: selectedCategory === category })}
                   onClick={() => setSelectedCategory(category)}
                 >
                   {category}

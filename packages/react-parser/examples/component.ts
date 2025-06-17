@@ -1,33 +1,26 @@
 import { parseComponentModule } from "../src/index.js";
 
 const componentModule = `
-
 import React from "react";
+import {useUser} from "hooks";
 
 interface DashboardProps {
   color?: string;
   blue: string;
 }
 
-function useState<T>(initialValue: T): [T, (value: T) => void] {
-  let state = initialValue;
-  const setState = (value: T) => {
-    state = value;
-  };
-  return [state, setState];
-}
-
-const elllFor = (props: { data: any; as: string }) => {
-  const { data, as } = props;
-  return data.map((item: any, index: number) => (
-    <div key={index} data-elll-for={as}>
-      {item}
-    </div>
-  ));
-};
-
 export function Dashboard({color}:DashboardProps) {
-  const state = useState(true);
+   function ok() {
+    return data.map((item: any, index: number) => {
+      return (
+        <React.Fragment key={index}>
+          {React.createElement("span", {}, item[as])}
+        </React.Fragment>
+      );
+    });
+  }
+
+  const state = useUser({id: "1234"});
   
   return (
   <elll-for data={state} as="name">
@@ -36,6 +29,7 @@ export function Dashboard({color}:DashboardProps) {
         Hello, {"name".trim()} a dashboard component!
       </span>
       </div>
+      {ok()}
       <span className="dashboard" style={{ color }}>
         Hello, {"name".trim()} a dashboard component!
       </span>
@@ -46,7 +40,9 @@ export function Dashboard({color}:DashboardProps) {
 export default Dashboard;
 `;
 
-parseComponentModule({
+const data = parseComponentModule({
   sourceCode: componentModule,
-  // getStylesheet: () => {},
+  getStylesheet: () => ({}),
 });
+
+console.log(JSON.stringify(data, null, 2));

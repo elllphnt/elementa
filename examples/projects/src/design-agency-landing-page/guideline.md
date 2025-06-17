@@ -60,25 +60,31 @@ Example (for a page route):
 
 ### Styling
 
-All styles must be defined in seperate `.css` files and imported into the corresponding component files.
+All styles must be defined in seperate `.css` files of the same name as the component or resource they style but with the `.css` extension. Each component must have its own CSS file, and styles must be scoped to that component or resource.
+
 All elements must be styled via their unique IDs. Use clsx and className to conditionally apply styles based on props and state.
+Never use type selectors like `div`, `span`, or `button` in CSS files for styling.
+
+Always use nested css.
 
 Example:
 
 ```css
 /* home.component.css */
+
 #root {
   /* Base style for the root element */
-}
-#root.active {
-  /* Style for the active state */
+  &.active {
+    /* Style for the active state */
+  }
 }
 ```
 
 ```tsx
+/* home.component.tsx */
+
 import React from "react";
 import clsx from "clsx";
-import "./button.component.css";
 
 export interface ButtonProps {
   active?: boolean; // Optional prop to indicate if the button is active

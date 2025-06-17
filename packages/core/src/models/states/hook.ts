@@ -1,4 +1,3 @@
-import { Expression } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
 import { BaseState } from "./_base.js";
 
@@ -6,9 +5,12 @@ export interface HookState extends BaseState<"hook"> {
   hookUrl: string | undefined;
   hookUrl$: Observable<string | undefined>;
 
-  args: Expression[] | undefined;
-  args$: Observable<Expression[] | undefined>;
+  argMode: "positional" | "named";
+  argMode$: Observable<"positional" | "named">;
 
-  arg(index: number): Expression | undefined;
-  arg$(index: number): Observable<Expression | undefined>;
+  args: Record<string, any>;
+  args$: Observable<Record<string, any>>;
+
+  arg(key: string): any;
+  arg$(key: string): Observable<any>;
 }

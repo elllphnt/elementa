@@ -15,14 +15,18 @@ import { getEnclosingBlock, isInNode } from "./navigation.js";
 
 export function extractExpressionAsFunction({
   name,
+  callee,
   expression,
   targetScope,
   isolated,
+  namedParameters = false,
 }: {
-  name: string;
+  name?: string;
+  callee: string;
   expression: Expression;
   targetScope: Block | SourceFile;
   isolated?: boolean;
+  namedParameters?: boolean; // If true, parameters will be extracted as named parameters
 }) {
   const containingStatement = targetScope
     .getStatements()
@@ -42,7 +46,11 @@ export function extractExpressionAsFunction({
           const declaration = findNearestIdentifierDeclaration(reference);
 
           if (isolated) {
-            return declaration && !isInNode(declaration, expression);
+            return (
+              declaration &&
+              !isInNode(declaration, expression) &&
+              isInNode(declaration, targetScope)
+            );
           } else {
             return (
               declaration &&
@@ -56,11 +64,21 @@ export function extractExpressionAsFunction({
     ),
   ];
 
-  const parametersCode = dependencies.length
+  let parametersCode = dependencies.length
     ? `${dependencies.map((i) => i).join(", ")}`
     : "";
-  const functionCode = `function ${name}(${parametersCode}) { return ${expression.getText()}; }`;
-  const referenceCode = `${name}(${parametersCode})`;
+  if (namedParameters && parametersCode) {
+    parametersCode = `{${parametersCode}}`;
+  }
+  const functionCode = `function ${
+    name || ""
+  }(${parametersCode}) { return ${expression.getText()}; }`;
+  const referenceCode = `${callee}(${parametersCode})`;
+
+  console.log({
+    functionCode,
+    referenceCode,
+  });
 
   return {
     functionCode,
@@ -147,12 +165,14 @@ export function extractStatementsAsFunction({
   targetScope,
   isolated,
   isReturn,
+  namedParameters = false, // If true, parameters will be extracted as named parameters
 }: {
   name: string;
   statements: Node[];
   targetScope: Block | SourceFile;
   isolated?: boolean;
   isReturn?: boolean;
+  namedParameters?: boolean; // If true, parameters will be extracted as named parameters
 }) {
   if (statements.length === 0) {
     throw new Error("No statements provided for extraction.");
@@ -231,9 +251,12 @@ export function extractStatementsAsFunction({
         ),
       ];
 
-  const parametersCode = dependencies.length
+  let parametersCode = dependencies.length
     ? `${dependencies.map((i) => i.getText()).join(", ")}`
     : "";
+  if (namedParameters && parametersCode) {
+    parametersCode = `{${parametersCode}}`;
+  }
   const dependentsCode = dependents.length
     ? `{${dependents.map((i) => i.getText()).join(", ")}}`
     : "";

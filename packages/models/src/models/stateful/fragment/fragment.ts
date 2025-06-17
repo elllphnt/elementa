@@ -7,7 +7,6 @@ import {
 } from "@elllphnt/elementa-core";
 import {
   AggregatedModelList,
-  combineLatestArrays,
   combineLatestMerged,
   combineLatestOrEmpty,
   keyManager,
@@ -54,14 +53,12 @@ export class StatefulFragment
     return [...this.content.flatMap((c) => c.allCssStylesheets)];
   }
   get allCssStylesheets$(): Observable<CssStyleSheet[]> {
-    return combineLatestArrays([
-      this.content$.pipe(
-        switchMap((c) =>
-          combineLatestOrEmpty(c.map((c) => c.allCssStylesheets$))
-        ),
-        map((c) => c.flat())
+    return this.content$.pipe(
+      switchMap((c) =>
+        combineLatestOrEmpty(c.map((c) => c.allCssStylesheets$))
       ),
-    ]);
+      map((c) => c.flat())
+    );
   }
 
   get slotIds(): string[] {

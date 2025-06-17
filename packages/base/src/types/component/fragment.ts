@@ -11,6 +11,8 @@ import {
 
 export type FragmentData = IdentifiableData &
   ElementContainerData & {
+    name?: string;
+    varName?: string;
     providers?: ProviderData[];
     params?: DataInputData[];
   };

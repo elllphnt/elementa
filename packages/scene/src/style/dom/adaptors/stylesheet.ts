@@ -78,6 +78,10 @@ export abstract class DomStyleSheetAdaptor extends Disposable {
       const newMap = new Map(this._htmlStyleElements$.value);
       newMap.set(document, styleElement);
       this._htmlStyleElements$.next(newMap);
+      console.log(
+        `Created new style element for target "${this.target}" in document`,
+        document
+      );
     }
     this.incrementRef(document);
   }

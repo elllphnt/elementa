@@ -12,17 +12,29 @@ function UseHookStateNamespaceProvider({
   state: HookStateInstance;
   use?: (...args: unknown[]) => unknown;
 }>) {
-  const args = useObservable(state.model.args$, state.model.args) ?? [];
+  const args = useObservable(state.model.args$, state.model.args);
+  const argMode = useObservable(state.model.argMode$, state.model.argMode);
   const varName = useObservable(state.model.varName$, state.model.varName);
   const namespace = useNamespace({ clone: true });
 
-  const resolvedArgs = args.map((arg) => {
-    return namespace.resolveValue(arg);
-  });
   let value: unknown;
 
   try {
-    value = use?.(...resolvedArgs);
+    if (argMode === "named") {
+      const resolvedArgs = {} as Record<string, any>;
+      for (const [key, value] of Object.entries(args)) {
+        resolvedArgs[key] = namespace.resolveValue(value);
+      }
+      value = use?.(resolvedArgs);
+    } else {
+      const resolvedArgs = [] as any[];
+      for (const [, value] of Object.entries(args).sort((a, b) => {
+        return a[0].localeCompare(b[0]);
+      })) {
+        resolvedArgs.push(namespace.resolveValue(value));
+      }
+      value = use?.(...resolvedArgs);
+    }
   } catch (e) {
     console.error(e);
   }

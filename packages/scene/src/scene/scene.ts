@@ -82,9 +82,19 @@ export class Scene extends Disposable {
       return;
     }
 
+    console.log(
+      "1- registerFragment",
+      fragment.id,
+      fragment.allCssStylesheets.map((s) => s.target)
+    );
     const subscription = fragment.allCssStylesheets$
       .pipe(pairwiseOrEmpty())
       .subscribe(([prev, next]) => {
+        console.log(
+          "2- registerFragment",
+          fragment.id,
+          next.map((s) => s.target)
+        );
         next.forEach((s) =>
           this.stylesheetDomManager.stylesheetAdaptor(s).useRef(document)
         );

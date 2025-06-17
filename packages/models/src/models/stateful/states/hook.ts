@@ -1,4 +1,4 @@
-import { Expression, HookStateData } from "@elllphnt/elementa-base";
+import { HookStateData } from "@elllphnt/elementa-base";
 import { Component, HookState } from "@elllphnt/elementa-core";
 import { Observable, map } from "rxjs";
 import { StatefulBaseState } from "./_base.js";
@@ -11,17 +11,32 @@ export class StatefulHookState
   get hookUrl(): string | undefined {
     return this._state.entry("hookUrl");
   }
-
   get hookUrl$(): Observable<string | undefined> {
     return this._state.entry$("hookUrl");
   }
 
-  get args(): Expression[] | undefined {
-    return this._state.entry("args");
+  get argMode(): "positional" | "named" {
+    return this._state.entry("argMode") || "named";
+  }
+  get argMode$(): Observable<"positional" | "named"> {
+    return this._state
+      .entry$("argMode")
+      .pipe(map((argMode) => argMode || "named"));
   }
 
-  get args$(): Observable<Expression[] | undefined> {
-    return this._state.entry$("args");
+  get args(): Record<string, any> {
+    return this._state.entry("args") || {};
+  }
+  get args$(): Observable<Record<string, any>> {
+    return this._state.entry$("args").pipe(map((args) => args || {}));
+  }
+
+  // methods
+  arg(key: string): any {
+    return this.args?.[key];
+  }
+  arg$(key: string): Observable<any> {
+    return this.args$.pipe(map((args) => args?.[key]));
   }
 
   // data getters
@@ -31,7 +46,6 @@ export class StatefulHookState
       type: "hook",
     };
   }
-
   get data$(): Observable<HookStateData> {
     return super._data$;
   }
@@ -45,14 +59,5 @@ export class StatefulHookState
     component: Component;
   }) {
     super({ init, component });
-  }
-
-  // methods
-  arg(index: number): Expression | undefined {
-    return this.args?.[index];
-  }
-
-  arg$(index: number): Observable<Expression | undefined> {
-    return this.args$.pipe(map((args) => args?.[index]));
   }
 }

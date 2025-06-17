@@ -13,4 +13,5 @@ export type FragmentElementData = BaseElementData<"fragment"> & {
 export const fragmentElementDataSchema = baseElementDataSchema.extend({
   type: z.literal("fragment"),
   fragmentId: z.string().optional(),
+  params: z.record(z.any()).optional(),
 });

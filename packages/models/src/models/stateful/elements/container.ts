@@ -7,7 +7,6 @@ import {
 } from "@elllphnt/elementa-core";
 import {
   AggregatedModelList,
-  combineLatestArrays,
   combineLatestMerged,
   combineLatestOrEmpty,
 } from "@elllphnt/elementa-utils";
@@ -38,15 +37,15 @@ export class StatefulContainerElement
     ];
   }
   get allCssStylesheets$(): Observable<CssStyleSheet[]> {
-    return combineLatestArrays([
-      of([this.cssStyleSheet]),
-      this.content$.pipe(
+    return combineLatest({
+      cssStyleSheet: of(this.cssStyleSheet),
+      content: this.content$.pipe(
         switchMap((c) =>
           combineLatestOrEmpty(c.map((c) => c.allCssStylesheets$))
         ),
         map((c) => c.flat())
       ),
-    ]);
+    }).pipe(map(({ cssStyleSheet, content }) => [cssStyleSheet, ...content]));
   }
 
   get slotIds(): string[] {

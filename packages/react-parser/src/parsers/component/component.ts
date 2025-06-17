@@ -2,10 +2,13 @@ import {
   ComponentData,
   DataInputData,
   FragmentData,
+  FragmentElementData,
   StateData,
 } from "@elllphnt/elementa-base";
 import {
   ArrowFunction,
+  CallExpression,
+  Expression,
   FunctionDeclaration,
   FunctionExpression,
   Node,
@@ -13,6 +16,64 @@ import {
 import { ComponentNode, isComponentNode, isHookName } from "../modules/_.js";
 import { GetStylesheet, parseElementsFromJSX } from "./element/_.js";
 import { genId } from "./utils.js";
+
+export function parseArguments({
+  node,
+  argModeNamed,
+}: {
+  node: CallExpression;
+  argModeNamed?: boolean;
+}): {
+  args: Record<string, any>;
+  argMode: "positional" | "named";
+} {
+  const args: Record<string, any> = {};
+  const callArgs = node.getArguments();
+
+  if (callArgs.length === 1 && Node.isObjectLiteralExpression(callArgs[0])) {
+    // Named arguments mode
+    const obj = callArgs[0];
+    obj.getProperties().forEach((prop) => {
+      if (Node.isPropertyAssignment(prop)) {
+        const name = prop.getName();
+        const initializer = prop.getInitializer();
+        if (initializer) {
+          if (Node.isStringLiteral(initializer)) {
+            args[name] = initializer.getLiteralValue();
+          } else if (Node.isNumericLiteral(initializer)) {
+            args[name] = initializer.getLiteralValue();
+          } else if (Node.isNullLiteral(initializer)) {
+            args[name] = null;
+          } else if (Node.isBooleanKeyword(initializer)) {
+            args[name] = initializer.getText() === "true";
+          } else if (Node.isExpression(initializer)) {
+            args[name] = {
+              __expression: (initializer as Expression).getText(),
+            };
+          }
+        }
+      } else if (Node.isShorthandPropertyAssignment(prop)) {
+        const name = prop.getName();
+        args[name] = name;
+      }
+    });
+    return { args, argMode: "named" };
+  } else {
+    if (argModeNamed) {
+      throw Error(
+        `Expected named arguments, but received positional arguments: ${callArgs
+          .map((arg) => arg.getText())
+          .join(", ")}`
+      );
+    }
+
+    // Positional arguments mode
+    callArgs.forEach((arg, idx) => {
+      args[idx] = arg.getText();
+    });
+    return { args, argMode: "positional" };
+  }
+}
 
 export function parseComponentFunctionParams({
   node,
@@ -72,7 +133,7 @@ export function parseFragmentFunctionParams({
   node,
   fragmentData,
 }: {
-  node: FunctionDeclaration;
+  node: FunctionExpression | ArrowFunction | FunctionDeclaration;
   fragmentData: FragmentData;
 }) {
   const params = node.getParameters();
@@ -98,10 +159,10 @@ export function parseFragmentFunctionParams({
           const typeNode = decl.getTypeNode();
           tsType = typeNode?.getText();
         }
-        if (!tsType) {
-          // Fallback: get the textual representation from the resolved type
-          tsType = propSymbol.getTypeAtLocation(decl).getText();
-        }
+        // if (!tsType) {
+        //   // Fallback: get the textual representation from the resolved type
+        //   tsType = propSymbol.getTypeAtLocation(decl).getText();
+        // }
 
         // Determine if the property is required (no question token)
         const required = !(
@@ -130,7 +191,7 @@ export function parseFragmentFunctionBody({
   fragmentData,
   getStylesheet,
 }: {
-  node: FunctionDeclaration;
+  node: FunctionExpression | ArrowFunction | FunctionDeclaration;
   fragmentData: FragmentData;
   getStylesheet: GetStylesheet;
 }) {
@@ -164,7 +225,7 @@ export function parseFragmentFunction({
   getStylesheet,
 }: {
   id: string;
-  node: FunctionDeclaration;
+  node: FunctionExpression | ArrowFunction;
   getStylesheet: GetStylesheet;
 }): FragmentData {
   const fragmentData: FragmentData = {
@@ -196,22 +257,43 @@ export function parseInlineStateExpression({
 
 export function parseStateExpression({
   name,
-  callee,
+  call,
 }: {
   name?: string;
-  callee: string;
+  call: CallExpression;
 }): StateData {
+  const args = parseArguments({ node: call });
+  const callee = call.getFirstChild()?.getText();
   const stateData: StateData = {
     id: genId(),
     name: name || "",
     varName: name || "",
     type: "hook",
+    argMode: args.argMode,
+    args: args.args,
     hookUrl: {
       __dependency: callee,
     } as any,
   };
   return stateData;
 }
+export function parseFragmentExpression({
+  fragmentId,
+  call,
+}: {
+  fragmentId: string;
+  call: CallExpression;
+}): FragmentElementData {
+  const args = parseArguments({ node: call, argModeNamed: true });
+  const elementData: FragmentElementData = {
+    id: genId(),
+    type: "fragment",
+    fragmentId,
+    params: args.args,
+  };
+  return elementData;
+}
+
 export function parseComponentFunctionBody({
   node,
   componentData,
@@ -239,27 +321,14 @@ export function parseComponentFunctionBody({
   }
 
   for (const statement of body.getStatements()) {
-    if (Node.isFunctionDeclaration(statement)) {
-      const name = statement.getName();
-      if (!name?.startsWith("__elll_fragment_")) {
-        throw Error(
-          `Unexpected function declaration in component body: ${name}`
-        );
-      }
-
-      const fragmentId = getFragmentId(name);
-      const fragmentData = parseFragmentFunction({
-        id: fragmentId,
-        node: statement,
-        getStylesheet,
-      });
-      componentData.fragments = [
-        ...(componentData.fragments || []),
-        fragmentData,
-      ];
-    } else if (Node.isVariableStatement(statement)) {
+    if (Node.isVariableStatement(statement)) {
       const declarations = statement.getDeclarations();
       for (const decl of declarations) {
+        const nameNode = decl.getNameNode();
+        if (nameNode.getText() === "fragments") {
+          continue; // Skip fragments variable declaration
+        }
+
         const initializer = decl.getInitializer();
         if (Node.isCallExpression(initializer)) {
           let callee = initializer.getFirstChild();
@@ -280,17 +349,17 @@ export function parseComponentFunctionBody({
               fn: callee,
             });
             componentData.states = [...(componentData.states || []), state];
-          } else if (!calleeName || !isHookName(calleeName)) {
-            throw Error(
-              `Unexpected CallExpression in variable declaration: ${calleeName}`
-            );
-          } else {
+          } else if (calleeName && isHookName(calleeName)) {
             const name = decl.getName();
             const state = parseStateExpression({
               name,
-              callee: calleeName,
+              call: initializer,
             });
             componentData.states = [...(componentData.states || []), state];
+          } else {
+            throw Error(
+              `Unexpected CallExpression in variable declaration: ${calleeName}`
+            );
           }
         } else {
           throw Error(
@@ -302,9 +371,10 @@ export function parseComponentFunctionBody({
       const expression = statement.getExpression();
       if (Node.isCallExpression(expression)) {
         const callee = expression.getFirstChild();
-        if (Node.isIdentifier(callee) && isHookName(callee.getText())) {
+        const calleeName = callee?.getText();
+        if (calleeName && isHookName(calleeName)) {
           const state = parseStateExpression({
-            callee: callee.getText(),
+            call: expression,
           });
           componentData.states = [...(componentData.states || []), state];
         } else {
@@ -312,9 +382,66 @@ export function parseComponentFunctionBody({
             `Unexpected CallExpression in expression statement: ${callee?.getText()}`
           );
         }
+      } else if (Node.isBinaryExpression(expression)) {
+        // Handle fragments.fragment_n = function ({...}) {...}
+        const left = expression.getLeft();
+        const right = expression.getRight();
+        const operator = expression.getOperatorToken().getText();
+        if (operator !== "=") {
+          throw Error(
+            `Unexpected binary expression operator in component body: ${operator}`
+          );
+        }
+        // For fragments.fragment_n or fragments["fragment_n"], extract the two identifiers
+        let leftPart1, leftPart2;
+        if (Node.isPropertyAccessExpression(left)) {
+          leftPart1 = left.getExpression();
+          leftPart2 = left.getNameNode();
+        } else if (Node.isElementAccessExpression(left)) {
+          leftPart1 = left.getExpression();
+          leftPart2 = left.getArgumentExpression();
+        } else {
+          throw Error(
+            `Unexpected ${left.getKindName()} left side of binary expression in component body: ${left.getText()}`
+          );
+        }
+        if (leftPart1.getText() !== "fragments") {
+          throw Error(
+            `Unexpected left side of binary expression in component body: ${left.getText()}`
+          );
+        }
+        let name: string | undefined;
+        if (Node.isIdentifier(leftPart2)) {
+          name = leftPart2.getText();
+        } else if (Node.isStringLiteral(leftPart2)) {
+          name = leftPart2.getLiteralValue();
+        } else {
+          throw Error(
+            `Unexpected left side of binary expression in component body: ${left.getText()}`
+          );
+        }
+
+        if (!Node.isFunctionExpression(right) && !Node.isArrowFunction(right)) {
+          throw Error(
+            `Unexpected right side of binary expression in component body: ${right.getText()}`
+          );
+        }
+
+        const fragmentId = getFragmentId(name);
+        const fragmentData = parseFragmentFunction({
+          id: fragmentId,
+          node: right,
+          getStylesheet,
+        });
+        fragmentData.name = name;
+        fragmentData.varName = name;
+        componentData.fragments = [
+          ...(componentData.fragments || []),
+          fragmentData,
+        ];
       } else {
         throw Error(
-          `Unexpected expression in expression statement: ${expression.getText()}`
+          `Unexpected ${expression.getKindName()} in expression statement: ${expression.getText()}`
         );
       }
     } else if (Node.isReturnStatement(statement)) {
@@ -322,11 +449,29 @@ export function parseComponentFunctionBody({
       if (returnExpr && Node.isCallExpression(returnExpr)) {
         const callee = returnExpr.getFirstChild();
         const calleeName = callee?.getText();
-        if (calleeName?.startsWith("__elll_fragment_")) {
+        if (
+          Node.isPropertyAccessExpression(callee) &&
+          calleeName?.startsWith("fragments.")
+        ) {
+          const fragmentName = callee.getNameNode().getText();
+          componentData.template = parseFragmentExpression({
+            fragmentId: getFragmentId(fragmentName),
+            call: returnExpr,
+          });
+        } else if (
+          Node.isElementAccessExpression(callee) &&
+          calleeName?.startsWith("fragments")
+        ) {
+          const fragmentName = callee.getArgumentExpression()?.getText();
+          if (!fragmentName) {
+            throw Error(
+              `Expected a fragment name in element access expression: ${callee.getText()}`
+            );
+          }
           componentData.template = {
-            id: getFragmentId(calleeName),
+            id: genId(),
             type: "fragment",
-            fragmentId: getFragmentId(calleeName),
+            fragmentId: getFragmentId(fragmentName),
           };
         } else {
           componentData.template = {

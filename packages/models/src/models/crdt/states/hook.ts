@@ -1,4 +1,4 @@
-import { Expression, HookStateData } from "@elllphnt/elementa-base";
+import { HookStateData } from "@elllphnt/elementa-base";
 import { Component, HookState } from "@elllphnt/elementa-core";
 import { Observable, map } from "rxjs";
 import * as y from "yjs";
@@ -16,12 +16,22 @@ export class CrdtHookState
     return this._state.entry$("hookUrl");
   }
 
-  get args(): Expression[] | undefined {
-    return this._state.entry("args");
+  get argMode(): "positional" | "named" {
+    return this._state.entry("argMode") || "named";
   }
 
-  get args$(): Observable<Expression[] | undefined> {
-    return this._state.entry$("args");
+  get argMode$(): Observable<"positional" | "named"> {
+    return this._state
+      .entry$("argMode")
+      .pipe(map((argMode) => argMode || "named"));
+  }
+
+  get args(): Record<string, any> {
+    return this._state.entry("args") || {};
+  }
+
+  get args$(): Observable<Record<string, any>> {
+    return this._state.entry$("args").pipe(map((args) => args || {}));
   }
 
   constructor({
@@ -36,12 +46,12 @@ export class CrdtHookState
     super({ crdt, type: "hook", component, initialized });
   }
 
-  arg(index: number): Expression | undefined {
-    return this.args?.[index];
+  arg(key: string): any {
+    return this.args?.[key];
   }
 
-  arg$(index: number): Observable<Expression | undefined> {
-    return this.args$.pipe(map((args) => args?.[index]));
+  arg$(key: string): Observable<any> {
+    return this.args$.pipe(map((args) => args?.[key]));
   }
 
   protected factory(crdt: y.Map<any>): this {

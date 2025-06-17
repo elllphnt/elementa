@@ -12,7 +12,6 @@ import {
 import {
   AggregatedModelList,
   AggregatedModelRecord,
-  combineLatestArrays,
   combineLatestMerged,
   combineLatestOrEmpty,
 } from "@elllphnt/elementa-utils";
@@ -61,15 +60,24 @@ export class StatefulPrimitiveElement
     ];
   }
   get allCssStylesheets$(): Observable<CssStyleSheet[]> {
-    return combineLatestArrays([
-      of([this.cssStyleSheet]),
-      this.content$.pipe(
+    return combineLatest({
+      cssStyleSheet: of(this.cssStyleSheet),
+      content: this.content$.pipe(
+        switchMap((c) =>
+          combineLatestOrEmpty(c.map((c) => c.allCssStylesheets$))
+        ),
+        map((s) => s.flat())
+      ),
+      subElements: this.subElements$.pipe(
         map((s) => Object.values(s).map((s) => s.cssStyleSheet))
       ),
-      this.subElements$.pipe(
-        map((s) => Object.values(s).map((s) => s.cssStyleSheet))
-      ),
-    ]);
+    }).pipe(
+      map(({ cssStyleSheet, content, subElements }) => [
+        cssStyleSheet,
+        ...content,
+        ...subElements,
+      ])
+    );
   }
 
   get primitiveUrl(): string | undefined {

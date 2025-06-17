@@ -33,6 +33,24 @@ import {
 } from "./utils/statements.js";
 import { getValueFromNode } from "./utils/value.js";
 
+const reactNativeHooks = [
+  "useState",
+  "useEffect",
+  "useMemo",
+  "useCallback",
+  "useReducer",
+  "useRef",
+  "useImperativeHandle",
+  "useLayoutEffect",
+  "useDebugValue",
+  "useContext",
+  "useSyncExternalStore",
+  "useDeferredValue",
+  "useTransition",
+  "useId",
+  "useInsertionEffect",
+];
+
 export function standardizeComponentProps(node: ParameterDeclaration) {
   const nameNode = node.getNameNode();
   const block = getEnclosingBlock(nameNode);
@@ -87,14 +105,18 @@ export function extractFragment(
   extractNestedFragments(node);
 
   // extract the fragment
-  const fragmentName = getUniqueNameInScope(targetScope, "__elll_fragment", 1);
+  const fragmentName = getUniqueNameInScope(targetScope, "fragment", 1);
   const { functionCode, referenceCode } = extractExpressionAsFunction({
-    name: fragmentName,
+    callee: `fragments.${fragmentName}`,
     expression: node,
     targetScope,
+    namedParameters: true,
     isolated: true,
   });
-  targetScope.insertStatements(0, functionCode);
+  targetScope.insertStatements(
+    0,
+    `fragments.${fragmentName} = ${functionCode};\n`
+  );
   node.replaceWithText(referenceCode);
 }
 export function extractFragmentsFromNode(node: Node, targetScope: Block) {
@@ -113,9 +135,20 @@ export function extractFragmentsFromNode(node: Node, targetScope: Block) {
 }
 
 function isFragmentDeclaration(stmt: Statement): boolean {
-  if (!Node.isFunctionDeclaration(stmt)) return false;
-  const name = stmt.getName();
-  return !!name?.startsWith("__elll_fragment_");
+  if (Node.isVariableStatement(stmt)) {
+    const decls = stmt.getDeclarationList().getDeclarations();
+    if (decls.length !== 1) return false;
+    const nodeName = decls[0].getNameNode().getText();
+    return nodeName === "fragments";
+  } else if (Node.isExpressionStatement(stmt)) {
+    const expr = stmt.getExpression();
+    if (!Node.isBinaryExpression(expr)) return false;
+    const left = expr.getLeft().getText();
+    const operator = expr.getOperatorToken().getText();
+    return left.startsWith("fragments.") && operator === "=";
+  } else {
+    return false;
+  }
 }
 function isStateDeclarationOrCall(stmt: Statement): boolean {
   if (Node.isVariableStatement(stmt)) {
@@ -125,17 +158,25 @@ function isStateDeclarationOrCall(stmt: Statement): boolean {
     if (!init || !Node.isCallExpression(init)) return false;
     const fnText = init.getExpression().getText();
 
-    // Check if all arguments are identifiers
-    const allParamsAreIdentifiers = init
-      .getArguments()
-      .every(
-        (arg) =>
-          Node.isIdentifier(arg) ||
-          Node.isStringLiteral(arg) ||
-          Node.isNumericLiteral(arg) ||
-          Node.isBooleanKeyword(arg)
-      );
-    if (!allParamsAreIdentifiers) return false;
+    // we skip react native hooks to avoid too many states
+    if (reactNativeHooks.includes(fnText)) {
+      return false;
+    }
+
+    // eslint-disable-next-line no-constant-condition
+    if (0) {
+      // Check if all arguments are identifiers
+      const allParamsAreIdentifiers = init
+        .getArguments()
+        .every(
+          (arg) =>
+            Node.isIdentifier(arg) ||
+            Node.isStringLiteral(arg) ||
+            Node.isNumericLiteral(arg) ||
+            Node.isBooleanKeyword(arg)
+        );
+      if (!allParamsAreIdentifiers) return false;
+    }
 
     // Check name is state name
     if (!/^use[A-Z]/.test(fnText)) return false;
@@ -149,8 +190,8 @@ function isStateDeclarationOrCall(stmt: Statement): boolean {
       const block = getEnclosingBlock(stmt);
       const name = getUniqueNameInScope(block, "state", 1);
       restructureBindingPattern(nameNode, name);
-      return true;
     }
+    return true;
   } else if (Node.isExpressionStatement(stmt)) {
     const expr = stmt.getExpression();
     if (!Node.isCallExpression(expr)) return false;
@@ -191,20 +232,43 @@ function isReturnFragmentOrState(ret: ReturnStatement): boolean {
 
   const fnText = callExpr.getExpression().getText();
 
-  // Check if all arguments are identifiers
-  const allParamsAreIdentifiers = callExpr
-    .getArguments()
-    .every(
-      (arg) =>
-        Node.isIdentifier(arg) ||
-        Node.isPropertyAccessExpression(arg) ||
-        Node.isStringLiteral(arg) ||
-        Node.isNumericLiteral(arg) ||
-        Node.isBooleanKeyword(arg)
-    );
-  if (!allParamsAreIdentifiers) return false;
+  if (!fnText.startsWith("fragments.") && !/^use[A-Z]/.test(fnText)) {
+    return false;
+  }
 
-  return fnText.startsWith("__elll_fragment_") || /^use[A-Z]/.test(fnText);
+  // Not cartain we need this check.
+  // eslint-disable-next-line no-constant-condition
+  if (0) {
+    // Check if all arguments are identifiers or literals
+    const args = callExpr.getArguments();
+    if (args.length === 1 && Node.isObjectLiteralExpression(args[0])) {
+      // ensure all values in the object literal are identifiers or literals
+      return args[0].getProperties().every((prop) => {
+        if (Node.isPropertyAssignment(prop)) {
+          const value = prop.getInitializer();
+          return (
+            Node.isIdentifier(value) ||
+            Node.isStringLiteral(value) ||
+            Node.isNumericLiteral(value) ||
+            Node.isBooleanKeyword(value)
+          );
+        } else if (Node.isShorthandPropertyAssignment(prop)) {
+          return true;
+        }
+      });
+    } else {
+      return args.every(
+        (arg) =>
+          Node.isIdentifier(arg) ||
+          Node.isPropertyAccessExpression(arg) ||
+          Node.isStringLiteral(arg) ||
+          Node.isNumericLiteral(arg) ||
+          Node.isBooleanKeyword(arg)
+      );
+    }
+  } else {
+    return true;
+  }
 }
 
 export function extractStates(node: Block) {
@@ -275,10 +339,6 @@ export function extractStates(node: Block) {
       stmt.replaceWithText(
         `const ${name}= ${expr.getText()};\nreturn ${name};`
       );
-    } else {
-      throw Error(
-        `Unexpected ${stmt.getKindName()} state node: ${stmt.getText()}`
-      );
     }
 
     batch.length = 0;
@@ -297,9 +357,10 @@ export function standardizeComponentFunctionBody(node: Node) {
       `Unexpected node ${node.getKindName()} as function body: ${node.getText()}`
     );
   }
-
+  freeNameInScope(block, "fragments");
   extractFragmentsFromNode(block, block);
   extractStates(block);
+  block.insertStatements(0, "const fragments = {};\n");
 }
 export function standardizeComponentFunction(
   node: ArrowFunction | FunctionExpression | FunctionDeclaration

@@ -11,18 +11,9 @@ import {
 } from "@elllphnt/elementa-core";
 import {
   AggregatedModelRecord,
-  combineLatestArrays,
   combineLatestMerged,
 } from "@elllphnt/elementa-utils";
-import {
-  Observable,
-  combineLatest,
-  filter,
-  map,
-  of,
-  switchMap,
-  tap,
-} from "rxjs";
+import { Observable, combineLatest, filter, map, of, tap } from "rxjs";
 import { StatefulSlotFill } from "../_shared/slot_fill.js";
 import { StatefulBaseElement } from "./_base.js";
 
@@ -80,14 +71,16 @@ export class StatefulComponentElement
   }
 
   get allCssStylesheets$(): Observable<CssStyleSheet[]> {
-    return combineLatestArrays([
-      of([this.cssStyleSheet]),
-      this._fills.state.record$.pipe(
-        switchMap((r) =>
-          combineLatestArrays(Object.values(r).map((f) => f.allCssStylesheets$))
+    return combineLatest({
+      cssStyleSheet: of(this.cssStyleSheet),
+      fills: this._fills.state.record$.pipe(
+        map((fills) =>
+          Object.values(fills).flatMap((fill) => fill.allCssStylesheets)
         )
       ),
-    ]);
+    }).pipe(
+      map(({ cssStyleSheet, fills }) => [cssStyleSheet, ...fills].flat())
+    );
   }
 
   get props(): Record<string, any> | undefined {

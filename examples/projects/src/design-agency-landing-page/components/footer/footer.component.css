@@ -18,53 +18,67 @@
   margin-bottom: 2rem;
 }
 
-#company-info h3 {
-  color: #6366f1;
-  font-size: 1.5rem;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
+#company-info {
+  #company-name {
+    color: #6366f1;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+  }
+
+  #company-description {
+    color: #9ca3af;
+  }
 }
 
-#company-info p {
-  color: #9ca3af;
+#contact-info {
+  #contact-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  #contact-email,
+  #contact-phone {
+    color: #9ca3af;
+    margin-bottom: 0.5rem;
+  }
 }
 
-#contact-info h4,
-#social-links h4 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-}
-
-#contact-info p {
-  color: #9ca3af;
-  margin-bottom: 0.5rem;
+#social-links {
+  #social-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
 }
 
 #social-icons {
   display: flex;
   gap: 1rem;
-}
 
-#social-icons a {
-  color: #9ca3af;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
+  #social-twitter,
+  #social-instagram,
+  #social-linkedin {
+    color: #9ca3af;
+    text-decoration: none;
+    transition: color 0.3s ease;
 
-#social-icons a:hover {
-  color: #6366f1;
+    &:hover {
+      color: #6366f1;
+    }
+  }
 }
 
 #copyright {
   border-top: 1px solid #374151;
   padding-top: 1rem;
   text-align: center;
-}
 
-#copyright p {
-  color: #9ca3af;
-  font-size: 0.9rem;
+  #copyright-text {
+    color: #9ca3af;
+    font-size: 0.9rem;
+  }
 }
 
 @media (max-width: 768px) {
