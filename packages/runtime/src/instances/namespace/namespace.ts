@@ -3,13 +3,31 @@ import { get, set } from "./utils.js";
 
 const expressionRegex = /\{\{([^}]*\}?[^}]*)\}\}/;
 
+/**
+ * Returns true if `name` is a valid JavaScript identifier.
+ * Uses Unicode property escapes (ES2018+) to cover the full spec.
+ *
+ * @param {string} name
+ * @returns {boolean}
+ */
+function isValidJSIdentifier(name) {
+  // ID_Start = any valid identifier-start code point
+  // ID_Continue = any valid identifier-continue code point
+  const identifierRegex = /^[$_\p{ID_Start}][$\p{ID_Continue}]*$/u;
+  return identifierRegex.test(name);
+}
+
 export function evaluateExpressionSafely(
   expression: string,
   context: Record<string, unknown>
 ): unknown {
+  const contextKeys = Object.keys(context)
+    .filter(isValidJSIdentifier)
+    .join(", ");
+  const contextLine = contextKeys ? `const {${contextKeys}} = context;` : "";
   const code = `
     "use strict";
-    const {states, props, item, index} = context;
+    ${contextLine}
     return (${expression});
   `;
 

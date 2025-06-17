@@ -11,7 +11,7 @@ function RawBaseElementComponent({
   element,
   style,
   children,
-  component = "div",
+  component,
   className,
   partKey,
   onRef,
@@ -24,6 +24,14 @@ function RawBaseElementComponent({
   partKey?: string;
   onRef?: (element: HTMLElement | null, key?: string) => void;
 }>): JSX.Element {
+  const tag = useObservable(
+    element.instance.element.tag$,
+    element.instance.element.tag
+  );
+  const name = useObservable(
+    element.instance.element.name$,
+    element.instance.element.name
+  );
   const namespace = useNamespace();
   const ref = useRef<HTMLElement | null>(null);
   const cssStyleSheet = element.instance.element.cssStyleSheet;
@@ -32,7 +40,7 @@ function RawBaseElementComponent({
     cssStyleSheet.stylesheet.conditions$,
     cssStyleSheet.stylesheet.conditions
   );
-  const Component = component as any;
+  const Component = component || tag || ("div" as any);
 
   useEffect(() => {
     if (partKey) {
@@ -61,6 +69,7 @@ function RawBaseElementComponent({
   return (
     <Component
       {...props}
+      elll-name={name}
       __element={typeof Component === "string" ? undefined : element}
       data-entity={`${element.instance.element.type}:${element.instance.element.id}`}
       ref={_ref}

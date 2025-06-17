@@ -21,6 +21,7 @@ import { Stylesheet } from "../../models/_.js";
 import { Project } from "../project.js";
 import { ColorSchemeManager } from "./color_scheme.js";
 import { ViewportManager } from "./viewport.js";
+import { generateClassName } from "./_utils.js";
 
 export function modifierToClassName({
   modifier,
@@ -29,13 +30,14 @@ export function modifierToClassName({
   modifier: StyleModifierData;
   modifierDefinitions: Record<string, StyleModifierDefinitionData>;
 }) {
-  return (
-    "elll-mod-" +
-    stringifyStyleModifier({
-      modifier,
-      getModifierDefinition: (name: string) => modifierDefinitions[name],
-    })
-  );
+  const [str, err] = stringifyStyleModifier({
+    modifier,
+    getModifierDefinition: (name: string) => modifierDefinitions[name],
+  });
+
+  if (err) return "elll-mod-error";
+
+  return "elll-mod-" + generateClassName(str);
 }
 export function elllSelectorToCss({
   selector,

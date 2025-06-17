@@ -2,6 +2,7 @@
     "name": "@elllphnt/elementa-react-utils",
     "version": "0.1.0",
     "description": "A collection of utilities for the repository",
+    "type": "module",
     "main": "build/index.js",
     "types": "build/index.d.ts",
     "scripts": {

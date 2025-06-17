@@ -22,7 +22,7 @@ export function ValueStateNamespaceProvider({
   };
   namespace.set(state.namespaceKey, namespaceValue);
   if (varName) {
-    namespace.set(["states", varName], namespaceValue);
+    namespace.set([varName], namespaceValue);
   }
 
   return (

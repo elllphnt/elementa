@@ -3,7 +3,7 @@ import { SlotsContext } from "../../contexts/slot.js";
 import { FragmentRenderable } from "../../renderables/fragment.js";
 import { SlotRenderable } from "../../renderables/slot.js";
 import ElementComponent from "../elements/element.js";
-import { FragmentNamespaceProvider } from "../namespaces/environment.js";
+import { FragmentEnvironmentNamespaceProvider } from "../namespaces/environment.js";
 
 function RecursionAlert({
   fragment,
@@ -95,10 +95,13 @@ export function FragmentComponent({
   }
 
   return (
-    <FragmentNamespaceProvider fragment={fragment} root={isolated}>
+    <FragmentEnvironmentNamespaceProvider
+      environment={fragment.instance.environment}
+      root={isolated}
+    >
       <SlotsContext.Provider value={slotMap}>
         {jsxContent}
       </SlotsContext.Provider>
-    </FragmentNamespaceProvider>
+    </FragmentEnvironmentNamespaceProvider>
   );
 }

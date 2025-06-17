@@ -8,16 +8,20 @@ interface ContentViewerProps {
   fileId: string;
   type: string;
   path: string;
+  codeOnlyMode?: boolean;
 }
 
 export const ContentViewer: React.FC<ContentViewerProps> = ({
   projectId,
   fileId,
   type,
+  codeOnlyMode = false,
 }) => {
   const url = makeFileUrl({ projectId, fileId });
-  if (type === "component") {
-    return <ComponentViewer url={url} />;
+  if (!codeOnlyMode) {
+    if (type === "component") {
+      return <ComponentViewer url={url} />;
+    }
   }
   return <CodeViewer url={url} />;
 };

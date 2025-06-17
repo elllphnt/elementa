@@ -28,7 +28,7 @@ const runtime = new Runtime({
   moduleManager: new ModuleManager({
     infrastructure,
     moduleHost: new InMemoryModuleHost(),
-    externals: [],
+    externals: ["react", "react-dom"],
   }),
 });
 const environment = new DefaultFragmentEnvironment({ runtime });
@@ -63,8 +63,9 @@ export const ComponentViewer: React.FC<ComponentViewerProps> = ({ url }) => {
   } else if (status === AsyncResourceStatus.Errored) {
     return <div className="content-viewer">Error loading component</div>;
   } else if (renderable) {
+    (window as any).renderable = renderable;
     return (
-      <div className="content-viewer">
+      <div className="content-viewer elementa-preview">
         <ComponentComponent component={renderable} />
       </div>
     );

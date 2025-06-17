@@ -82,6 +82,20 @@ export function createElementInstance({
         parent,
       });
 
+    case "expression":
+      return new ExpressionElementInstance({
+        element: element,
+        environment,
+        parent,
+      });
+
+    case "fragment":
+      return new FragmentElementInstance({
+        element: element,
+        environment,
+        parent,
+      });
+
     default:
       throw new Error(`Unknown element type: ${(element as any).type}`);
   }

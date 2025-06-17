@@ -2,6 +2,7 @@ import { useObservable } from "@elllphnt/elementa-react-utils";
 import { JSX, memo } from "react";
 import { ComponentRenderable } from "../../renderables/component/component.js";
 import { ElementComponent } from "../elements/_.js";
+import { FragmentEnvironmentNamespaceProvider } from "../namespaces/_.js";
 
 export const ComponentComponent = memo(function ({
   component,
@@ -12,7 +13,13 @@ export const ComponentComponent = memo(function ({
 }): JSX.Element {
   const template = useObservable(component.template$, component.template);
   if (template) {
-    return <ElementComponent element={template} onRef={onRef} />;
+    return (
+      <FragmentEnvironmentNamespaceProvider
+        environment={component.instance.fragmentEnvironment}
+      >
+        <ElementComponent element={template} onRef={onRef} />
+      </FragmentEnvironmentNamespaceProvider>
+    );
   } else {
     return <></>;
   }

@@ -2,10 +2,12 @@ import { useObservable } from "@elllphnt/elementa-react-utils";
 import {
   FragmentEnvironment,
   HookStateInstance,
+  InlineStateInstance,
   ValueStateInstance,
 } from "@elllphnt/elementa-runtime";
 import { PropsWithChildren } from "react";
 import { HookStateNamespaceProvider } from "./hook.js";
+import { InlineStateNamespaceProvider } from "./inline.js";
 import { ValueStateNamespaceProvider } from "./value.js";
 
 export function StatesNamespaceProvider({
@@ -40,6 +42,17 @@ export function StatesNamespaceProvider({
           >
             {content}
           </HookStateNamespaceProvider>
+        );
+        break;
+      }
+      case "inline": {
+        content = (
+          <InlineStateNamespaceProvider
+            key={state.key}
+            state={state as InlineStateInstance}
+          >
+            {content}
+          </InlineStateNamespaceProvider>
         );
         break;
       }

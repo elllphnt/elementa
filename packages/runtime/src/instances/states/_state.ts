@@ -1,10 +1,14 @@
-import { HookState, State } from "@elllphnt/elementa-core";
+import { HookState, InlineState, State } from "@elllphnt/elementa-core";
 import { Runtime } from "../../runtime/runtime.js";
 import { Instance } from "../instance.js";
 import { HookStateInstance } from "./hook.js";
+import { InlineStateInstance } from "./inline.js";
 import { ValueStateInstance } from "./value.js";
 
-export type StateInstance = ValueStateInstance | HookStateInstance;
+export type StateInstance =
+  | ValueStateInstance
+  | HookStateInstance
+  | InlineStateInstance;
 
 export function createStateInstance({
   state,
@@ -25,6 +29,12 @@ export function createStateInstance({
     case "hook":
       return new HookStateInstance({
         model: state as HookState,
+        runtime,
+        parent,
+      });
+    case "inline":
+      return new InlineStateInstance({
+        model: state as InlineState,
         runtime,
         parent,
       });

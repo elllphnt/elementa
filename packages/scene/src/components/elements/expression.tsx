@@ -17,5 +17,8 @@ export function ExpressionElementComponent({
   const value = namespace.resolveExpression({
     __expression: expression,
   });
+
+  console.log("Expression", expression, value);
+
   return <>{value}</>;
 }

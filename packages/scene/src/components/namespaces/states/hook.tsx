@@ -29,7 +29,7 @@ function UseHookStateNamespaceProvider({
 
   namespace.set(state.namespaceKey, value);
   if (varName) {
-    namespace.set(["states", varName], value);
+    namespace.set([varName], value);
   }
 
   return (

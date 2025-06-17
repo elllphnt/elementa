@@ -3,6 +3,7 @@ import {
   parseAbsoluteFileUrl,
 } from "@elllphnt/elementa-core";
 import { useObservable } from "@elllphnt/elementa-react-utils";
+import { Editor } from "@monaco-editor/react";
 import React from "react";
 import { infrastructure } from "../libs/infrastructure";
 
@@ -15,6 +16,32 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({ url }) => {
   const status = useObservable(content.status$, content.status);
   const text = useObservable(content.text$, content.text);
   const error = useObservable(content.error$, content.error);
+
+  const getLanguageFromUrl = (url: string) => {
+    const extension = url.split(".").pop()?.toLowerCase();
+
+    switch (extension) {
+      case "ts":
+      case "tsx":
+        return "typescript";
+      case "js":
+      case "jsx":
+        return "javascript";
+      case "json":
+        return "json";
+      case "css":
+        return "css";
+      case "html":
+        return "html";
+      case "md":
+        return "markdown";
+      case "yaml":
+      case "yml":
+        return "yaml";
+      default:
+        return "plaintext";
+    }
+  };
 
   const renderContent = () => {
     switch (status) {
@@ -44,11 +71,20 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({ url }) => {
 
       case AsyncResourceStatus.Resolved:
         return (
-          <div className="w-full h-full bg-gray-50">
-            <pre className="p-4 rounded overflow-auto text-sm font-mono whitespace-pre-wrap">
-              {text || "File is empty"}
-            </pre>
-          </div>
+          <Editor
+            height="100%"
+            language={getLanguageFromUrl(url)}
+            value={text || "// File is empty"}
+            theme="vs-light"
+            options={{
+              readOnly: true,
+              minimap: { enabled: false },
+              scrollBeyondLastLine: false,
+              fontSize: 14,
+              wordWrap: "on",
+              automaticLayout: true,
+            }}
+          />
         );
 
       default:

@@ -1,6 +1,10 @@
 export type Handler = (
   path: string,
-  content: string
+  content: string,
+  context: {
+    srcRoot: string;
+    outRoot: string;
+  }
 ) => Promise<{
   path: string;
   content: string;

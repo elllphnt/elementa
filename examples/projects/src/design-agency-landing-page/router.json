@@ -1,0 +1,33 @@
+{
+    "routes": [
+        {
+            "id": "home",
+            "path": "/",
+            "component": "/views/home/home.component.tsx",
+            "loader": "/views/home/home.loader.ts"
+        },
+        {
+            "id": "about",
+            "path": "/about",
+            "component": "/views/about/about.component.tsx"
+        },
+        {
+            "id": "services",
+            "path": "/services",
+            "component": "/views/services/services.component.tsx",
+            "loader": "/views/services/services.loader.ts"
+        },
+        {
+            "id": "portfolio",
+            "path": "/portfolio",
+            "component": "/views/portfolio/portfolio.component.tsx",
+            "loader": "/views/portfolio/portfolio.loader.ts"
+        },
+        {
+            "id": "contact",
+            "path": "/contact",
+            "component": "/views/contact/contact.component.tsx",
+            "handler": "/views/contact/contact.handler.ts"
+        }
+    ]
+}

@@ -77,6 +77,8 @@ export class StyleRuleDomAdaptor extends Disposable {
         create: true,
       });
 
+      console.log(selector, cssStyleRule);
+
       if (!cssStyleRule) {
         throw new Error("Failed to create CSSStyleRule");
       }

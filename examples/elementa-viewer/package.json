@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
     "@tailwindcss/vite": "^4.1.10",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -17,11 +18,11 @@
   },
   "devDependencies": {
     "@elllphnt/elementa-base": "workspace:*",
-    "@elllphnt/elementa-models": "workspace:*",
     "@elllphnt/elementa-core": "workspace:*",
-    "@elllphnt/elementa-scene": "workspace:*",
-    "@elllphnt/elementa-runtime": "workspace:*",
+    "@elllphnt/elementa-models": "workspace:*",
     "@elllphnt/elementa-react-utils": "workspace:*",
+    "@elllphnt/elementa-runtime": "workspace:*",
+    "@elllphnt/elementa-scene": "workspace:*",
     "@eslint/js": "^9.25.0",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",

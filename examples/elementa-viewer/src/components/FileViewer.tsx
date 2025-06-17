@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import type { TreeNode } from "../types";
 import { ContentViewer } from "./ContentViewer";
 
@@ -7,6 +7,8 @@ interface FileViewerProps {
 }
 
 export const FileViewer: React.FC<FileViewerProps> = ({ selectedNode }) => {
+  const [codeOnlyMode, setCodeOnlyMode] = useState(false);
+
   if (!selectedNode) {
     return (
       <div className="flex-1 flex items-center justify-center bg-white">
@@ -53,6 +55,17 @@ export const FileViewer: React.FC<FileViewerProps> = ({ selectedNode }) => {
               <p className="text-sm text-gray-600">{selectedNode.path}</p>
             </div>
           </div>
+          <div className="flex items-center gap-2">
+            <label className="flex items-center gap-2 text-sm text-gray-600">
+              <input
+                type="checkbox"
+                checked={codeOnlyMode}
+                onChange={(e) => setCodeOnlyMode(e.target.checked)}
+                className="rounded"
+              />
+              Code only
+            </label>
+          </div>
         </div>
       </div>
       {/* File Content Area */}
@@ -62,6 +75,7 @@ export const FileViewer: React.FC<FileViewerProps> = ({ selectedNode }) => {
           fileId={selectedNode.data.id}
           type={selectedNode.data.type}
           path={selectedNode.data.path}
+          codeOnlyMode={codeOnlyMode}
         />
       </div>
     </div>

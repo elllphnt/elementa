@@ -1,6 +1,6 @@
 import { CssSelector } from "@elllphnt/elementa-base";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-utils";
-import { combineLatest, map, Observable, switchMap } from "rxjs";
+import { combineLatest, map, Observable, switchMap, tap } from "rxjs";
 import { Style, Stylesheet } from "../../../models/_.js";
 import { CssStyleRule } from "../../lib/rule/stylerule.js";
 
@@ -65,13 +65,13 @@ export class StylesheetCssStyleRule extends CssStyleRule {
       // Applied in stage
       [
         "@layer content",
+        `.${this.stylesheet.className}`,
         this.modifiers
           .map((modifier) =>
             this.stylesheet.project.styleManager.modifierToClassName(modifier)
           )
           .map((c) => `.${c}`)
           .join(" "),
-        `.${this.stylesheet.className}`,
       ].filter(Boolean),
       // Applied in preview/production
       [
@@ -92,18 +92,20 @@ export class StylesheetCssStyleRule extends CssStyleRule {
       this.modifiers$.pipe(
         switchMap((modifiers) =>
           combineLatest(
-            modifiers.map((modifier) =>
-              this.stylesheet.project.styleManager.modifierToClassName$(
-                modifier
+            modifiers
+              .map((modifier) =>
+                this.stylesheet.project.styleManager.modifierToClassName$(
+                  modifier
+                )
               )
-            )
+              .filter(Boolean)
           )
         ),
         map((classNames) =>
           [
             "@layer content",
-            classNames.map((c) => `.${c}`).join(" "),
             `.${this.stylesheet.className}`,
+            classNames.map((c) => `.${c}$`).join(" "),
           ].filter(Boolean)
         )
       ),
@@ -123,7 +125,14 @@ export class StylesheetCssStyleRule extends CssStyleRule {
         )
       ),
     ]).pipe(
-      map(([intrinsic, stage, selector]) => [intrinsic, stage, selector])
+      map(([intrinsic, stage, selector]) => [intrinsic, stage, selector]),
+      tap((selectors) => {
+        console.log(
+          "Selectors for StylesheetCssStyleRule:",
+          this.stylesheet.className,
+          selectors
+        );
+      })
     );
   }
 

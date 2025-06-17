@@ -40,7 +40,8 @@ export class FileWatcherService extends EventEmitter<FileWatcherEventMap> {
     watcher
       .on("add", (filePath: string, stats?: fs.Stats) => {
         const relativePath = nodepath.relative(this.rootPath, filePath);
-        const [projectName, path] = relativePath.split(nodepath.sep, 2);
+        const [projectName, ...pathPart] = relativePath.split(nodepath.sep);
+        const path = pathPart.join(nodepath.sep);
 
         if (path) {
           const id = encodeURIComponent(path);
@@ -68,7 +69,8 @@ export class FileWatcherService extends EventEmitter<FileWatcherEventMap> {
       })
       .on("change", (filePath: string, stats?: fs.Stats) => {
         const relativePath = nodepath.relative(this.rootPath, filePath);
-        const [projectName, path] = relativePath.split(nodepath.sep, 2);
+        const [projectName, ...pathPart] = relativePath.split(nodepath.sep);
+        const path = pathPart.join(nodepath.sep);
 
         if (path) {
           const id = encodeURIComponent(path);
@@ -96,7 +98,8 @@ export class FileWatcherService extends EventEmitter<FileWatcherEventMap> {
       })
       .on("unlink", (filePath: string) => {
         const relativePath = nodepath.relative(this.rootPath, filePath);
-        const [projectName, path] = relativePath.split(nodepath.sep, 2);
+        const [projectName, ...pathPart] = relativePath.split(nodepath.sep);
+        const path = pathPart.join(nodepath.sep);
 
         if (path) {
           const id = encodeURIComponent(path);
@@ -116,7 +119,8 @@ export class FileWatcherService extends EventEmitter<FileWatcherEventMap> {
       })
       .on("unlinkDir", (dirPath: string) => {
         const relativePath = nodepath.relative(this.rootPath, dirPath);
-        const [projectName, path] = relativePath.split(nodepath.sep, 2);
+        const [projectName, ...pathPart] = relativePath.split(nodepath.sep);
+        const path = pathPart.join(nodepath.sep);
 
         if (path) {
           const projectId = encodeURIComponent(projectName);

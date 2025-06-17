@@ -1,5 +1,7 @@
+import { replaceReferences } from "@elllphnt/elementa-react-parser";
+import * as fsSync from "fs";
 import * as fs from "fs/promises";
-import * as path from "path";
+import nodepath, * as path from "path";
 import { FileData, Infrastructure, ProjectData } from "../types";
 
 export const getFileTypeFromPath = (filePath: string) => {
@@ -106,11 +108,53 @@ export class LocalStorageInfrastructure implements Infrastructure {
   ): Promise<string | null> {
     try {
       const projectName = decodeURIComponent(projectId);
+      const projectDir = path.join(this.rootPath, projectName);
       const filePath = decodeURIComponent(fileId);
       const fullPath = path.join(this.rootPath, projectName, filePath);
-
       const content = await fs.readFile(fullPath, "utf-8");
-      return content;
+      const dirPath = path.dirname(fullPath);
+
+      const updatedContent = replaceReferences(content, (ref) => {
+        let path: string;
+        if (ref.startsWith(".")) {
+          path = nodepath.resolve(dirPath, ref);
+        } else if (ref.startsWith("~/")) {
+          path = nodepath.resolve(projectDir, ref.slice(2));
+        } else {
+          // package reference
+          return ref;
+        }
+
+        if (path.endsWith(".js")) {
+          path = path.slice(0, -3); // Remove .js extension
+        }
+
+        let filePath: string | undefined;
+        for (const ext of ["", ".json", ".ts", ".tsx", ".js", ".jsx"]) {
+          const candidatePath = path + ext;
+          if (fsSync.existsSync(path + ext)) {
+            filePath = candidatePath;
+            break;
+          }
+        }
+
+        if (!filePath) {
+          console.error(`File not found for reference: ${ref}`, {
+            ref,
+            projectDir,
+            dirPath,
+            fullPath,
+          });
+          throw new Error(`Failed to resolve reference: ${ref}`);
+        }
+
+        const relativePath = nodepath.relative(projectDir, filePath);
+        return `file:${encodeURIComponent(projectName)}/${encodeURIComponent(
+          relativePath
+        )}`;
+      });
+
+      return updatedContent;
     } catch (error) {
       console.error("Error getting file content:", error);
       return null;

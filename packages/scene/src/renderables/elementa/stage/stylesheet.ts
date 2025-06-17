@@ -11,7 +11,7 @@ export type Theme = {
 export const css = (theme: Theme) =>
   resetCss() +
   /* css */ `
-    @layer content, editor;
+    @layer base, content, editor;
     
     html, body {
         height: 100vh;

@@ -1,9 +1,19 @@
-import { parseComponentModule } from "@elllphnt/elementa-react-parser";
+import { compileComponentToElll } from "@elllphnt/elementa-react-parser";
+import nodepath from "path";
 import { Handler } from "../_types.js";
+import { readFile } from "../_utils.js";
 
-export const transpileComponent: Handler = async (path, content) => {
-  const componentData = parseComponentModule({ sourceCode: content });
+export const transpileComponent: Handler = async (path, content, context) => {
+  const cssPath = path.replace(/\.tsx$/, ".css");
   const outPath = path.replace(/\.tsx$/, ".json");
+
+  const cssFullPath = nodepath.join(context.srcRoot, cssPath);
+  const cssContent = readFile(cssFullPath);
+
+  const componentData = compileComponentToElll({
+    tsx: content,
+    css: cssContent,
+  });
 
   return {
     path: outPath,
