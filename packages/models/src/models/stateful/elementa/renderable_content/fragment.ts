@@ -1,8 +1,8 @@
 import { FragmentRenderableContentData } from "@elllphnt/elementa-base";
 import {
+  ElementaEnvironment,
   Fragment,
   FragmentRenderableContent,
-  RenderingEnvironment,
 } from "@elllphnt/elementa-core";
 import { combineLatestMerged, RecordState } from "@elllphnt/elementa-utils";
 import { map, Observable, of, switchMap } from "rxjs";
@@ -66,7 +66,7 @@ export class StatefulFragmentRenderableContent
     environment,
   }: {
     init: FragmentRenderableContentData;
-    environment: RenderingEnvironment;
+    environment: ElementaEnvironment;
   }) {
     const { type, ...stateData } = init;
     super({ init: { type }, environment: environment });

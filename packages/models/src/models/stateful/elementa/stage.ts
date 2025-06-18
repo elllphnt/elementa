@@ -1,8 +1,8 @@
 import { ElementaFrameData, ElementaStageData } from "@elllphnt/elementa-base";
 import {
+  ElementaEnvironment,
   ElementaFrame,
   ElementaStage,
-  RenderingEnvironment,
 } from "@elllphnt/elementa-core";
 import {
   AggregatedModelList,
@@ -18,7 +18,7 @@ export class StatefulElementaStage
   extends Model<ElementaStageData>
   implements ElementaStage
 {
-  readonly environment: RenderingEnvironment;
+  readonly environment: ElementaEnvironment;
 
   private _state: RecordState<Omit<ElementaStageData, "frames">>;
   private _frames: AggregatedModelList<StatefulElementaFrame>;
@@ -52,7 +52,7 @@ export class StatefulElementaStage
     environment,
   }: {
     init: ElementaStageData;
-    environment: RenderingEnvironment;
+    environment: ElementaEnvironment;
   }) {
     const { frames, ...stateData } = init;
     super({ key: keyManager.next("elementa-stage") });

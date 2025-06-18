@@ -9,8 +9,8 @@ import {
 } from "rxjs";
 import { Runtime } from "../../../runtime/runtime.js";
 import {
-  DefaultFragmentEnvironment,
-  FragmentEnvironment,
+  DefaultElementRuntimeEnvironment,
+  ElementRuntimeEnvironment,
 } from "../../fragment/_.js";
 import { Instance } from "../../instance.js";
 import { ModelInstance } from "../../model.js";
@@ -20,7 +20,7 @@ import {
   RenderableContentInstance,
 } from "./renderable_content/_.js";
 
-export class ElementaPreviewFragmentEnvironment extends DefaultFragmentEnvironment {
+export class ElementaPreviewFragmentEnvironment extends DefaultElementRuntimeEnvironment {
   preview: ElementaPreview;
 
   get styleModifiers() {
@@ -42,9 +42,8 @@ export class ElementaPreviewFragmentEnvironment extends DefaultFragmentEnvironme
   }
 }
 
-export class ElementaViewerComponentStateInstance extends ModelInstance<ElementaPreview> {
-  environment: FragmentEnvironment;
-
+export class ElementaPreviewInstance extends ModelInstance<ElementaPreview> {
+  environment: ElementRuntimeEnvironment;
   private _content$ = new BehaviorSubject<
     RenderableContentInstance | undefined
   >(undefined);
@@ -82,7 +81,7 @@ export class ElementaViewerComponentStateInstance extends ModelInstance<Elementa
     model: ElementaPreview;
   }) {
     super({
-      type: ElementaEditorInstanceType.EditorState,
+      type: ElementaEditorInstanceType.Frame,
       runtime,
       parent,
       model,
@@ -108,7 +107,6 @@ export class ElementaViewerComponentStateInstance extends ModelInstance<Elementa
         current.dispose();
       }
     });
-
     this.addDisposer(() => {
       contentSubscription.unsubscribe();
       this._content$.complete();

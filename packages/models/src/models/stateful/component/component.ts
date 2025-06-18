@@ -1,10 +1,9 @@
 import { ComponentData } from "@elllphnt/elementa-base";
 import {
   Component,
+  ComponentElementEnvironment,
+  ComponentElementaEnvironment,
   File,
-  Fragment,
-  Project,
-  RenderingEnvironment,
 } from "@elllphnt/elementa-core";
 import {
   AggregatedModelList,
@@ -14,41 +13,22 @@ import {
   combineLatestMerged,
   keyManager,
 } from "@elllphnt/elementa-utils";
-import { BehaviorSubject, Observable, combineLatest, map, of } from "rxjs";
+import { BehaviorSubject, Observable, combineLatest, map } from "rxjs";
 import { StatefulDataInput } from "../_shared/data_input.js";
-import { StatefulElementaPreview } from "../elementa/preview.js";
+import { StatefulElementaViewer as StatefulElementaPreview } from "../elementa/preview.js";
 import { StatefulElementaStage } from "../elementa/stage.js";
 import { StatefulExpressionElement } from "../elements/expression.js";
 import { StatefulFragmentElement } from "../elements/fragment.js";
 import { StatefulFragment } from "../fragment/fragment.js";
 import { StatefulState, StatefulcreateState } from "../states/_.js";
 
-export class ComponentRenderingEnvironment implements RenderingEnvironment {
-  project: Project;
-
-  component: Component;
-  component$: Observable<Component>;
-
-  fragment(id: string): Fragment | undefined {
-    return this.component.fragment(id);
-  }
-  fragment$(id: string): Observable<Fragment | undefined> {
-    return this.component.fragment$(id);
-  }
-
-  constructor({ component }: { component: Component }) {
-    this.project = component.file.project;
-    this.component = component;
-    this.component$ = of(component);
-  }
-}
-
 export class StatefulComponent
   extends Model<ComponentData>
   implements Component
 {
   readonly file: File;
-  readonly environment: ComponentRenderingEnvironment;
+  readonly elementaEnvironment: ComponentElementaEnvironment;
+  readonly elementEnvironment: ComponentElementEnvironment;
   readonly stage: StatefulElementaStage;
   readonly preview: StatefulElementaPreview;
 
@@ -80,24 +60,34 @@ export class StatefulComponent
     return this._template.state.value$;
   }
 
+  get slotIds(): string[] {
+    return this.elementEnvironment.slotIds;
+  }
+  get slotIds$(): Observable<string[]> {
+    return this.elementEnvironment.slotIds$;
+  }
+
   constructor({ init, file }: { init: ComponentData; file: File }) {
     const { template, props, fragments, states, editors, ...stateData } = init;
     const { stage, preview } = editors || {};
     super({ key: keyManager.next("component") });
 
     this.file = file;
-    this.environment = new ComponentRenderingEnvironment({
+    this.elementaEnvironment = new ComponentElementaEnvironment({
+      component: this,
+    });
+    this.elementEnvironment = new ComponentElementEnvironment({
       component: this,
     });
 
     // Create stage and preview first
     this.stage = new StatefulElementaStage({
       init: stage || {},
-      environment: this.environment,
+      environment: this.elementaEnvironment,
     });
     this.preview = new StatefulElementaPreview({
       init: preview || {},
-      environment: this.environment,
+      environment: this.elementaEnvironment,
     });
 
     this._state = new RecordState({
@@ -114,12 +104,12 @@ export class StatefulComponent
           case "fragment":
             return new StatefulFragmentElement({
               init: data,
-              environment: this.environment,
+              environment: this.elementEnvironment,
             });
           case "expression":
             return new StatefulExpressionElement({
               init: data,
-              environment: this.environment,
+              environment: this.elementEnvironment,
             });
           default:
             throw new Error(`Unknown template type: ${(data as any).type}`);
@@ -139,7 +129,7 @@ export class StatefulComponent
       create: (data) =>
         new StatefulFragment({
           init: data,
-          environment: this.environment,
+          environment: this.elementEnvironment,
         }),
       dataRef: (d) => d.id,
       modelRef: (m) => m.id,

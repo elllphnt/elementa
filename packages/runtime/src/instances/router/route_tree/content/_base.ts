@@ -1,5 +1,5 @@
 import { RouteTree } from "@elllphnt/elementa-core";
-import { FragmentEnvironment } from "../../../fragment/_.js";
+import { ElementRuntimeEnvironment } from "../../../fragment/_.js";
 import { ElementaInstanceType, Instance } from "../../../instance.js";
 
 export abstract class BaseRouteHandler<V extends string> extends Instance {
@@ -12,7 +12,7 @@ export abstract class BaseRouteHandler<V extends string> extends Instance {
     parent,
     variant,
   }: {
-    environment: FragmentEnvironment;
+    environment: ElementRuntimeEnvironment;
     routeTree: RouteTree;
     parent?: Instance;
     variant: V;

@@ -1,10 +1,10 @@
 import { ElementaFrameData } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
-import { RenderingEnvironment } from "~/rendering/_.js";
+import { ElementaEnvironment } from "./environment.js";
 import { ElementaFrame } from "./frame.js";
 
 export interface ElementaStage {
-  environment: RenderingEnvironment;
+  environment: ElementaEnvironment;
 
   frames: ElementaFrame[];
   frames$: Observable<ElementaFrame[]>;

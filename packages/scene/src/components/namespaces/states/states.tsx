@@ -1,6 +1,6 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import {
-  FragmentEnvironment,
+  ComponentInstance,
   HookStateInstance,
   InlineStateInstance,
   ValueStateInstance,
@@ -12,11 +12,11 @@ import { ValueStateNamespaceProvider } from "./value.js";
 
 export function StatesNamespaceProvider({
   children,
-  environment,
+  component,
 }: PropsWithChildren<{
-  environment: FragmentEnvironment;
+  component: ComponentInstance;
 }>) {
-  const states = useObservable(environment.states$, environment.states);
+  const states = useObservable(component.states$, component.states);
   let content = <>{children}</>;
 
   // reverse the states order so that the first state becomes the outermost provider

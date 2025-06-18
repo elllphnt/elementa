@@ -1,5 +1,5 @@
 import { VectorElementData, VectorNodeData } from "@elllphnt/elementa-base";
-import { RenderingEnvironment, VectorElement } from "@elllphnt/elementa-core";
+import { ElementEnvironment, VectorElement } from "@elllphnt/elementa-core";
 import { Observable } from "rxjs";
 import * as y from "yjs";
 import { CrdtBaseElement } from "./_base.js";
@@ -22,7 +22,7 @@ export class CrdtVectorElement
     initialized,
   }: {
     crdt: y.Map<any>;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
     initialized?: boolean;
   }) {
     super({ crdt, type: "vector", environment, initialized });

@@ -1,8 +1,5 @@
 import { ExpressionElementData } from "@elllphnt/elementa-base";
-import {
-  ExpressionElement,
-  RenderingEnvironment,
-} from "@elllphnt/elementa-core";
+import { ElementEnvironment, ExpressionElement } from "@elllphnt/elementa-core";
 import { combineLatestMerged } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import { StatefulBaseElement } from "./_base.js";
@@ -32,7 +29,7 @@ export class StatefulExpressionElement
     environment,
   }: {
     init: ExpressionElementData;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
   }) {
     super({ init, environment });
   }

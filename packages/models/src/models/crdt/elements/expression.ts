@@ -1,8 +1,5 @@
 import { ExpressionElementData } from "@elllphnt/elementa-base";
-import {
-  ExpressionElement,
-  RenderingEnvironment,
-} from "@elllphnt/elementa-core";
+import { ElementEnvironment, ExpressionElement } from "@elllphnt/elementa-core";
 import { Observable } from "rxjs";
 import * as y from "yjs";
 import { CrdtBaseElement } from "./_base.js";
@@ -25,7 +22,7 @@ export class CrdtExpressionElement
     initialized,
   }: {
     crdt: y.Map<any>;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
     initialized?: boolean;
   }) {
     super({ crdt, type: "expression", environment, initialized });

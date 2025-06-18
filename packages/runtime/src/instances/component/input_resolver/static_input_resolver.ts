@@ -1,6 +1,6 @@
 import { SlotFill } from "@elllphnt/elementa-core";
 import { Observable, of } from "rxjs";
-import { FragmentEnvironment } from "../../fragment/_.js";
+import { ElementRuntimeEnvironment } from "../../fragment/_.js";
 import { ComponentInputResolver } from "./input_resolver.js";
 
 export class StaticComponentInputResolver extends ComponentInputResolver {
@@ -25,7 +25,7 @@ export class StaticComponentInputResolver extends ComponentInputResolver {
     props,
     slotFills,
   }: {
-    environment: FragmentEnvironment;
+    environment: ElementRuntimeEnvironment;
     props?: { [key: string]: unknown };
     slotFills?: { [key: string]: SlotFill | undefined };
   }) {

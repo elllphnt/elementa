@@ -4,7 +4,7 @@ import {
   ContainerElement,
   CssStyleSheet,
   Element,
-  RenderingEnvironment,
+  ElementEnvironment,
 } from "@elllphnt/elementa-core";
 import {
   AggregatedCrdtModelList,
@@ -25,7 +25,6 @@ export class CrdtContainerElement
   get content(): Element[] {
     return this._content.models;
   }
-
   get content$(): Observable<Element[]> {
     return this._content.models$;
   }
@@ -66,7 +65,7 @@ export class CrdtContainerElement
     initialized,
   }: {
     crdt: y.Map<any>;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
     initialized?: boolean;
   }) {
     super({ crdt, type: "container", environment, initialized });

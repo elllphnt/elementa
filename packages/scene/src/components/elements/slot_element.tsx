@@ -1,6 +1,4 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { useNamespace } from "../../hooks/namespace.js";
-import { useSlot } from "../../hooks/slot.js";
 import { ElementRenderable } from "../../renderables/element/element.js";
 import { SlotElementRenderable } from "../../renderables/element/slot.js";
 import { BaseElementComponent } from "./_/_base_element.js";
@@ -10,17 +8,16 @@ import ElementComponent from "./element.js";
 export function SlotElementComponent({
   element,
   partKey,
-  onRef,
 }: {
   element: SlotElementRenderable;
   partKey?: string;
-  onRef?: (element: HTMLElement | null, key?: string) => void;
+  onRef?: (element: HTMLElement | null) => void;
 }) {
-  const namespace = useNamespace();
-  const slot = useSlot(element.instance.element.id);
-  const slotFill = useObservable(slot?.instance.fill$, slot?.instance.fill);
-  const className = slotFill?.cssStyleSheet.className;
-  const content = useObservable(slot?.content$, slot?.content) || [];
+  // const namespace = useNamespace();
+  // const slot = useSlot(element.instance.element.id);
+  // const slotFill = useObservable(slot?.instance.fill$, slot?.instance.fill);
+  // const className = slotFill?.cssStyleSheet.className;
+  // const content = useObservable(slot?.content$, slot?.content) || [];
   // const dynamicStyles =
   //   useObservable(
   //     slotFill?.stylesheet.dynamicStyles$,
@@ -50,15 +47,15 @@ export function SlotElementComponent({
       //   "elementa-element-slot-empty": !content.length,
       //   ...dynamicClasses,
       // })}
-      onRef={(ref) => {
-        if (partKey) {
-          slot?.setHtmlElement(partKey, ref);
-        } else {
-          slot?.setHtmlElement(ref);
-        }
-      }}
+      // onRef={(ref) => {
+      //   if (partKey) {
+      //     slot?.setHtmlElement(partKey, ref);
+      //   } else {
+      //     slot?.setHtmlElement(ref);
+      //   }
+      // }}
     >
-      <SlotElementContent element={element} content={content} />
+      {/* <SlotElementContent element={element} content={content} /> */}
     </BaseElementComponent>
   );
 }
@@ -66,7 +63,6 @@ export function SlotElementComponent({
 export function SlotElementContent({
   element,
   content,
-  onRef,
 }: {
   element: SlotElementRenderable;
   content: ElementRenderable[];

@@ -9,7 +9,7 @@ import {
   of,
   switchMap,
 } from "rxjs";
-import { FragmentEnvironment } from "../../fragment/_.js";
+import { ElementRuntimeEnvironment } from "../../fragment/_.js";
 import { ElementaInstanceType, Instance } from "../../instance.js";
 import { ModelInstance } from "../../model.js";
 import { RouteHandler } from "./content/_content.js";
@@ -55,7 +55,7 @@ export class RouteTreeInstance extends ModelInstance<RouteTree> {
     model,
     parent,
   }: {
-    environment: FragmentEnvironment;
+    environment: ElementRuntimeEnvironment;
     model: RouteTree;
     parent?: Instance;
   }) {

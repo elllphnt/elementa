@@ -5,17 +5,29 @@ import {
 import {
   ComponentElement,
   CssStyleSheet,
+  Element,
+  ElementEnvironment,
   FileModelAdaptor,
-  RenderingEnvironment,
   SlotFill,
 } from "@elllphnt/elementa-core";
 import {
+  AggregatedModelList,
   AggregatedModelRecord,
   combineLatestMerged,
+  combineLatestOrEmpty,
 } from "@elllphnt/elementa-utils";
-import { Observable, combineLatest, filter, map, of, tap } from "rxjs";
+import {
+  combineLatest,
+  filter,
+  map,
+  Observable,
+  of,
+  switchMap,
+  tap,
+} from "rxjs";
 import { StatefulSlotFill } from "../_shared/slot_fill.js";
 import { StatefulBaseElement } from "./_base.js";
+import { StatefulcreateElement, StatefulElement } from "./_element.js";
 
 export class StatefulComponentElement
   extends StatefulBaseElement<ComponentElementData, "fills">
@@ -23,12 +35,19 @@ export class StatefulComponentElement
 {
   // private properties
   private _fills: AggregatedModelRecord<StatefulSlotFill>;
+  private _content: AggregatedModelList<StatefulElement>;
 
   // getters
+  get content(): Element[] {
+    return this._content.state.items;
+  }
+  get content$(): Observable<Element[]> {
+    return this._content.state.items$;
+  }
+
   get componentUrl(): string | undefined {
     return this._state.entry("componentUrl");
   }
-
   get componentUrl$(): Observable<string | undefined> {
     return this._state.entry$("componentUrl");
   }
@@ -64,6 +83,7 @@ export class StatefulComponentElement
   get allCssStylesheets(): CssStyleSheet[] {
     return [
       this.cssStyleSheet,
+      ...this.content.flatMap((c) => c.allCssStylesheets),
       ...Object.values(this._fills.state.record).flatMap(
         (fill) => fill.allCssStylesheets
       ),
@@ -73,13 +93,21 @@ export class StatefulComponentElement
   get allCssStylesheets$(): Observable<CssStyleSheet[]> {
     return combineLatest({
       cssStyleSheet: of(this.cssStyleSheet),
+      content: this.content$.pipe(
+        switchMap((content) =>
+          combineLatestOrEmpty(content.map((c) => c.allCssStylesheets$))
+        ),
+        map((cssStylesheets) => cssStylesheets.flat())
+      ),
       fills: this._fills.state.record$.pipe(
         map((fills) =>
           Object.values(fills).flatMap((fill) => fill.allCssStylesheets)
         )
       ),
     }).pipe(
-      map(({ cssStyleSheet, fills }) => [cssStyleSheet, ...fills].flat())
+      map(({ cssStyleSheet, content, fills }) =>
+        [cssStyleSheet, ...content, ...fills].flat()
+      )
     );
   }
 
@@ -114,11 +142,22 @@ export class StatefulComponentElement
     environment,
   }: {
     init: ComponentElementData;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
   }) {
     super({ init, environment });
 
-    const { fills } = init;
+    const { fills, content } = init;
+
+    this._content = new AggregatedModelList({
+      init: content || [],
+      create: (data) =>
+        StatefulcreateElement({
+          init: data,
+          environment: this.environment,
+        }),
+      dataRef: (d) => d.id,
+      modelRef: (d) => d.id,
+    });
 
     this._fills = new AggregatedModelRecord({
       init: fills || {},

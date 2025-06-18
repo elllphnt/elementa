@@ -1,6 +1,6 @@
 import { RouteTree } from "@elllphnt/elementa-core";
 import { combineLatest, map, Observable, of, switchMap } from "rxjs";
-import { FragmentEnvironment } from "../../../fragment/_.js";
+import { ElementRuntimeEnvironment } from "../../../fragment/_.js";
 import { Instance } from "../../../instance.js";
 import { BaseRouteHandler } from "./_base.js";
 
@@ -46,7 +46,7 @@ export class FunctionRouteHandler extends BaseRouteHandler<"function"> {
     routeTree,
     parent,
   }: {
-    environment: FragmentEnvironment;
+    environment: ElementRuntimeEnvironment;
     routeTree: RouteTree;
     parent?: Instance;
   }) {

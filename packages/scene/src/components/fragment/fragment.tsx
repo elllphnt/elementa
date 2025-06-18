@@ -1,22 +1,14 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { SlotsContext } from "../../contexts/slot.js";
+import { NamespaceContext } from "../../contexts/namespace.js";
+import { useNamespace } from "../../hooks/namespace.js";
 import { FragmentRenderable } from "../../renderables/fragment.js";
-import { SlotRenderable } from "../../renderables/slot.js";
 import ElementComponent from "../elements/element.js";
-import { FragmentEnvironmentNamespaceProvider } from "../namespaces/environment.js";
 
-function RecursionAlert({
-  fragment,
-  url,
-}: {
-  fragment: FragmentRenderable;
-  url: string;
-}) {
-  const component =
-    fragment.instance.model.environment.component?.file.project.infrastructure.component(
-      url
-    );
-  const name = useObservable(component?.file.name$, component?.file?.name);
+function RecursionAlert({ fragment }: { fragment: FragmentRenderable }) {
+  const name = useObservable(
+    fragment.instance.model.name$,
+    fragment.instance.model.name
+  );
 
   return (
     <div
@@ -32,15 +24,16 @@ function RecursionAlert({
       }}
     >
       <p style={{ fontWeight: "bold" }}>
-        Recursive component detected: {name || "Unnamed component"}
+        Recursive fragment detected: {name || fragment.instance.model.id}
       </p>
       <br />
       <div style={{ opacity: 0.8 }}>
         <p>
-          This component is attempting to render itself, which will cause an
+          This fragment is attempting to render itself, which will cause an
           infinite loop.
         </p>
-        <p>URL: {url}</p>
+        <p>Name: {name || "No name"}</p>
+        <p>ID: {fragment.instance.model.id}</p>
       </div>
     </div>
   );
@@ -48,60 +41,27 @@ function RecursionAlert({
 
 export function FragmentComponent({
   fragment,
-  isolated,
-  onRef,
+  params,
 }: {
   fragment: FragmentRenderable;
-  isolated?: boolean;
-  onRef?: (element: HTMLElement | null, key?: string) => void;
+  params: Record<string, any>;
 }) {
-  const slots = useObservable(fragment.slots$, fragment.slots);
+  const namespace = useNamespace({ clone: true });
   const content = useObservable(fragment.content$, fragment.content);
-  const recursion = useObservable(
-    fragment.instance.recursion$,
-    fragment.instance.recursion
-  );
 
-  if (recursion) {
-    return <RecursionAlert fragment={fragment} url={recursion} />;
+  if (fragment.instance.recursive) {
+    return <RecursionAlert fragment={fragment} />;
   }
 
-  const slotMap = slots.reduce((map, slot) => {
-    map[slot.instance.slotId] = slot;
-    return map;
-  }, {} as Record<string, SlotRenderable>);
-
-  let jsxContent = <></>;
-
-  if (content.length === 1) {
-    const element = content[0];
-    jsxContent = (
-      <ElementComponent key={element.key} element={element} onRef={onRef} />
-    );
-  } else {
-    jsxContent = (
-      <>
-        {content.map((element) => (
-          <ElementComponent
-            key={element.key}
-            element={element}
-            onRef={(e, key) =>
-              onRef?.(e, [element.key, key].filter(Boolean).join(":"))
-            }
-          />
-        ))}
-      </>
-    );
+  for (const [key, value] of Object.entries(params)) {
+    namespace.set(key, value);
   }
 
   return (
-    <FragmentEnvironmentNamespaceProvider
-      environment={fragment.instance.environment}
-      root={isolated}
-    >
-      <SlotsContext.Provider value={slotMap}>
-        {jsxContent}
-      </SlotsContext.Provider>
-    </FragmentEnvironmentNamespaceProvider>
+    <NamespaceContext.Provider value={namespace}>
+      {content.map((element) => (
+        <ElementComponent key={element.key} element={element} />
+      ))}
+    </NamespaceContext.Provider>
   );
 }

@@ -1,6 +1,6 @@
-import { RenderingEnvironment } from "~/rendering/_.js";
+import { ElementaEnvironment } from "../environment.js";
 
 export interface BaseRenderableContent<T extends string> {
   type: T;
-  environment: RenderingEnvironment;
+  environment: ElementaEnvironment;
 }

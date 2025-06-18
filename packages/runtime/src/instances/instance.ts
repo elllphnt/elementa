@@ -14,7 +14,7 @@ export enum ElementaInstanceType {
   Component = "component",
   Fragment = "fragment",
   Element = "element",
-  Slot = "slot",
+  SlotFill = "slot-fill",
   State = "state",
   StyleSheet = "stylesheet",
   Style = "style",

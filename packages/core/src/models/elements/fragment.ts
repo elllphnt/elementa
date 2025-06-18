@@ -9,6 +9,9 @@ export interface FragmentElement extends BaseElement<"fragment"> {
   fragment: Fragment | undefined;
   fragment$: Observable<Fragment | undefined>;
 
+  params: Record<string, any>;
+  params$: Observable<Record<string, any>>;
+
   paramValue(varName: string): any;
   paramValue$(varName: string): Observable<any>;
 

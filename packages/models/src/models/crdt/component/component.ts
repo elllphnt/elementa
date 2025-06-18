@@ -6,10 +6,9 @@ import {
 import { ComponentData } from "@elllphnt/elementa-base";
 import {
   Component,
+  ComponentElementEnvironment,
+  ComponentElementaEnvironment,
   File,
-  Fragment,
-  Project,
-  RenderingEnvironment,
 } from "@elllphnt/elementa-core";
 import {
   AggregatedCrdtModelList,
@@ -18,7 +17,7 @@ import {
   OptionalCrdtModel,
   keyManager,
 } from "@elllphnt/elementa-utils";
-import { BehaviorSubject, Observable, map, of } from "rxjs";
+import { BehaviorSubject, Observable, map } from "rxjs";
 import * as y from "yjs";
 import { CrdtDataInput } from "../_shared/data_input.js";
 import { CrdtElementaPreview } from "../elementa/preview.js";
@@ -28,29 +27,10 @@ import { CrdtFragmentElement } from "../elements/fragment.js";
 import { CrdtFragment } from "../fragment/fragment.js";
 import { CrdtState, CrdtcreateState } from "../states/_.js";
 
-export class CrdtComponentRenderingEnvironment implements RenderingEnvironment {
-  project: Project;
-
-  component: Component;
-  component$: Observable<Component>;
-
-  fragment(id: string): Fragment | undefined {
-    return this.component.fragment(id);
-  }
-  fragment$(id: string): Observable<Fragment | undefined> {
-    return this.component.fragment$(id);
-  }
-
-  constructor({ component }: { component: Component }) {
-    this.project = component.file.project;
-    this.component = component;
-    this.component$ = of(component);
-  }
-}
-
 export class CrdtComponent extends CrdtModel<y.Map<any>> implements Component {
   readonly file: File;
-  readonly environment: CrdtComponentRenderingEnvironment;
+  readonly elementEnvironment: ComponentElementEnvironment;
+  readonly elementaEnvironment: ComponentElementaEnvironment;
   readonly stage: CrdtElementaStage;
   readonly preview: CrdtElementaPreview;
 
@@ -91,7 +71,10 @@ export class CrdtComponent extends CrdtModel<y.Map<any>> implements Component {
     super({ key: keyManager.next("component"), crdt });
 
     this.file = file;
-    this.environment = new CrdtComponentRenderingEnvironment({
+    this.elementEnvironment = new ComponentElementEnvironment({
+      component: this,
+    });
+    this.elementaEnvironment = new ComponentElementaEnvironment({
       component: this,
     });
 
@@ -109,12 +92,12 @@ export class CrdtComponent extends CrdtModel<y.Map<any>> implements Component {
 
     this.stage = new CrdtElementaStage({
       crdt: stageMap,
-      environment: this.environment,
+      environment: this.elementaEnvironment,
       initialized,
     });
     this.preview = new CrdtElementaPreview({
       crdt: previewMap,
-      environment: this.environment,
+      environment: this.elementaEnvironment,
       initialized,
     });
 
@@ -131,13 +114,13 @@ export class CrdtComponent extends CrdtModel<y.Map<any>> implements Component {
           case "fragment":
             return new CrdtFragmentElement({
               crdt,
-              environment: this.environment,
+              environment: this.elementEnvironment,
               initialized: init && initialized,
             });
           case "expression":
             return new CrdtExpressionElement({
               crdt,
-              environment: this.environment,
+              environment: this.elementEnvironment,
               initialized: init && initialized,
             });
           default:
@@ -157,7 +140,7 @@ export class CrdtComponent extends CrdtModel<y.Map<any>> implements Component {
       create: (crdt, init) =>
         new CrdtFragment({
           crdt,
-          environment: this.environment,
+          environment: this.elementEnvironment,
           initialized: init && initialized,
         }),
     });
@@ -194,10 +177,16 @@ export class CrdtComponent extends CrdtModel<y.Map<any>> implements Component {
     });
   }
 
+  get slotIds() {
+    return this.elementEnvironment.slotIds;
+  }
+  get slotIds$() {
+    return this.elementEnvironment.slotIds$;
+  }
+
   get props(): CrdtDataInput[] {
     return this._props.models;
   }
-
   get props$(): Observable<CrdtDataInput[]> {
     return this._props.models$;
   }

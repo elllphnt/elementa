@@ -20,6 +20,15 @@ function UseHookStateNamespaceProvider({
   let value: unknown;
 
   try {
+    console.log("UseHookStateNamespaceProvider", {
+      args,
+      argMode,
+      varName,
+      use,
+      module: state.module,
+      resolved: state.module?.resolved,
+      error: state.module?.error,
+    });
     if (argMode === "named") {
       const resolvedArgs = {} as Record<string, any>;
       for (const [key, value] of Object.entries(args)) {

@@ -25,7 +25,7 @@ export function transpileTsToJs(content: string): string {
 }
 
 function isLocalImport(source: string): boolean {
-  return source.startsWith("local:");
+  return source.startsWith("file:");
 }
 function isExternalImport(source: string, external: string[]): boolean {
   return external.some((m) => source === m || source.startsWith(m + "/"));
@@ -50,15 +50,18 @@ function esmShModuleUrl(
     path ? "/" + path : ""
   }?external=${externals.join(",")}`;
 }
+
 export function rewriteImports({
   content,
   packages,
   externals,
+  importMap,
   resolveLocalImport,
 }: {
   content: string;
   packages: PackageData[];
   externals: string[];
+  importMap: Record<string, string>;
   resolveLocalImport: (url: string) => string;
 }): [string, string[]] {
   const packageMap = packages.reduce((map, p) => {
@@ -73,23 +76,34 @@ export function rewriteImports({
         visitor: {
           ImportDeclaration(path) {
             const source = path.node.source.value as string;
+
+            // 1. Direct import map match
+            if (source in importMap) {
+              path.node.source.value = importMap[source];
+              return;
+            }
+
+            // 2. Local import
             if (isLocalImport(source)) {
               path.node.source.value = resolveLocalImport(source);
-            } else if (isExternalImport(source, externals)) {
               return;
+            }
+
+            // 3. External import (skip)
+            if (isExternalImport(source, externals)) return;
+
+            // 4. Try resolving package
+            const [pkg, srcPath] = parsePackageImport(source);
+            const version = packageMap[pkg]?.version;
+            if (version) {
+              path.node.source.value = esmShModuleUrl(
+                pkg,
+                version,
+                srcPath,
+                externals
+              );
             } else {
-              const [pkg, srcPath] = parsePackageImport(source);
-              const version = packageMap[pkg]?.version;
-              if (version) {
-                path.node.source.value = esmShModuleUrl(
-                  pkg,
-                  version,
-                  srcPath,
-                  externals
-                );
-              } else {
-                missingPackages.add(pkg);
-              }
+              missingPackages.add(pkg);
             }
           },
         },
@@ -97,9 +111,7 @@ export function rewriteImports({
     ],
   });
 
-  if (result.code == undefined) {
-    throw new Error("Failed to rewrite imports");
-  }
+  if (!result.code) throw new Error("Failed to rewrite imports");
 
   return [result.code, Array.from(missingPackages)];
 }

@@ -1,7 +1,7 @@
 import { Expression, PrimitiveSubElementData } from "@elllphnt/elementa-base";
 import {
+  ElementEnvironment,
   PrimitiveSubElement,
-  RenderingEnvironment,
   StylesheetCssStyleSheet,
 } from "@elllphnt/elementa-core";
 import {
@@ -17,7 +17,7 @@ export class StatefulPrimitiveSubElement
   extends Model<PrimitiveSubElementData>
   implements PrimitiveSubElement
 {
-  readonly environment: RenderingEnvironment;
+  readonly environment: ElementEnvironment;
   readonly cssStyleSheet: StylesheetCssStyleSheet;
 
   // private properties
@@ -54,7 +54,7 @@ export class StatefulPrimitiveSubElement
     cssStyleSheetTarget,
   }: {
     init: PrimitiveSubElementData;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
     cssStyleSheetTarget?: string;
   }) {
     super({ key: keyManager.next("primitive-sub-element") });

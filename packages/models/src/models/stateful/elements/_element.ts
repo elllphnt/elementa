@@ -1,5 +1,5 @@
 import { ElementData } from "@elllphnt/elementa-base";
-import { RenderingEnvironment } from "@elllphnt/elementa-core";
+import { ElementEnvironment } from "@elllphnt/elementa-core";
 import { StatefulComponentElement } from "./component.js";
 import { StatefulContainerElement } from "./container.js";
 import { StatefulExpressionElement } from "./expression.js";
@@ -26,7 +26,7 @@ export function StatefulcreateElement({
   environment,
 }: {
   init: ElementData;
-  environment: RenderingEnvironment;
+  environment: ElementEnvironment;
 }): StatefulElement {
   switch (init.type) {
     case "container":

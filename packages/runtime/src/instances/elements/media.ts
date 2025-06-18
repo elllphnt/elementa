@@ -1,7 +1,7 @@
 import { MediaElement } from "@elllphnt/elementa-core";
-import { FragmentEnvironment } from "../fragment/environment/environment.js";
 import { Instance } from "../instance.js";
 import { BaseElementInstance } from "./_base.js";
+import { ElementRuntimeEnvironment } from "./_environment/environment.js";
 
 export class MediaElementInstance<
   E extends MediaElement = MediaElement
@@ -12,7 +12,7 @@ export class MediaElementInstance<
     parent,
   }: {
     element: E;
-    environment: FragmentEnvironment;
+    environment: ElementRuntimeEnvironment;
     parent?: Instance;
   }) {
     super({

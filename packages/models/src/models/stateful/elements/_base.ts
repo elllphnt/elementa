@@ -9,7 +9,7 @@ import {
 import {
   BaseElement,
   CssStyleSheet,
-  RenderingEnvironment,
+  ElementEnvironment,
   StylesheetCssStyleSheet,
 } from "@elllphnt/elementa-core";
 import {
@@ -31,7 +31,7 @@ export abstract class StatefulBaseElement<
 {
   // readonly properties
   readonly type: T["type"];
-  readonly environment: RenderingEnvironment;
+  readonly environment: ElementEnvironment;
   readonly cssStyleSheet: StylesheetCssStyleSheet;
 
   // private properties
@@ -188,7 +188,7 @@ export abstract class StatefulBaseElement<
     environment,
   }: {
     init: Omit<T, K>;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
   }) {
     const { id, type, stylesheet, ...stateData } = init as T;
     super({ id, key: keyManager.next("element") });

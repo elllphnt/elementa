@@ -2,27 +2,22 @@ import {
   useManyObservables,
   useObservable,
 } from "@elllphnt/elementa-react-utils";
-import { FragmentEnvironment, Namespace } from "@elllphnt/elementa-runtime";
+import { ComponentInstance, Namespace } from "@elllphnt/elementa-runtime";
 import { PropsWithChildren } from "react";
 import { NamespaceContext } from "../../contexts/namespace.js";
 import { useNamespace } from "../../hooks/namespace.js";
 
 export function PropsNamespaceProvider({
   children,
-  environment,
-  data,
-  isolated,
+  component,
 }: PropsWithChildren<{
-  environment: FragmentEnvironment;
-  data?: unknown;
-  isolated?: boolean;
+  component: ComponentInstance;
 }>) {
   const upstreamNamespace = useNamespace();
-  const downstreamNamespace = isolated
-    ? new Namespace()
-    : new Namespace(upstreamNamespace.content);
+  const downstreamNamespace = new Namespace();
 
-  const props = useObservable(environment?.props$, environment?.props) ?? [];
+  const props =
+    useObservable(component.model.props$, component.model.props) ?? [];
   const propsKey = props.map((prop) => prop.key).join(".");
 
   const propIdentifiers = useManyObservables(
@@ -32,10 +27,10 @@ export function PropsNamespaceProvider({
   );
   const propValues = useManyObservables(
     propIdentifiers.map((prop) =>
-      prop ? environment.propValue$(prop) : undefined
+      prop ? component.propValue$(prop) : undefined
     ),
     propIdentifiers.map((prop) =>
-      prop ? environment.propValue(prop) : undefined
+      prop ? component.propValue(prop) : undefined
     ),
     propsKey
   );
@@ -49,12 +44,6 @@ export function PropsNamespaceProvider({
       downstreamNamespace.set(["props", identifier], value);
     }
   });
-
-  if (data) {
-    Object.entries(data).forEach(([key, value]) => {
-      downstreamNamespace.set(["props", key], value);
-    });
-  }
 
   return (
     <NamespaceContext.Provider value={downstreamNamespace}>

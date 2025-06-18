@@ -10,9 +10,9 @@ import {
 import {
   CssStyleSheet,
   Element,
+  ElementEnvironment,
   PrimitiveElement,
   PrimitiveSubElement,
-  RenderingEnvironment,
 } from "@elllphnt/elementa-core";
 import {
   AggregatedCrdtModelList,
@@ -100,7 +100,7 @@ export class CrdtPrimitiveElement
     initialized,
   }: {
     crdt: y.Map<any>;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
     initialized?: boolean;
   }) {
     super({ crdt, type: "primitive", environment, initialized });

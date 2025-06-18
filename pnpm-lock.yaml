@@ -93,12 +93,6 @@ importers:
       '@elllphnt/elementa-viewer':
         specifier: workspace:*
         version: link:../packages/viewer
-      react:
-        specifier: ^19.0.0
-        version: 19.1.0
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.1.0(react@19.1.0)
     devDependencies:
       '@eslint/js':
         specifier: ^9.22.0
@@ -124,6 +118,12 @@ importers:
       globals:
         specifier: ^16.0.0
         version: 16.2.0
+      react:
+        specifier: ^19.0.0
+        version: 19.1.0
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.1.0(react@19.1.0)
       typescript:
         specifier: ~5.7.2
         version: 5.7.3
@@ -132,6 +132,61 @@ importers:
         version: 8.34.0(eslint@9.28.0(jiti@2.4.2))(typescript@5.7.3)
       vite:
         specifier: ^6.3.1
+        version: 6.3.5(@types/node@22.15.30)(jiti@2.4.2)(lightningcss@1.30.1)(tsx@4.19.4)
+
+  appp:
+    dependencies:
+      '@elllphnt/elementa-models':
+        specifier: workspace:*
+        version: link:../packages/models
+      '@elllphnt/elementa-runtime':
+        specifier: workspace:*
+        version: link:../packages/runtime
+      '@elllphnt/elementa-scene':
+        specifier: workspace:*
+        version: link:../packages/scene
+      '@elllphnt/elementa-viewer':
+        specifier: workspace:*
+        version: link:../packages/viewer
+      react:
+        specifier: ^19.1.0
+        version: 19.1.0
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.1.0(react@19.1.0)
+    devDependencies:
+      '@eslint/js':
+        specifier: ^9.25.0
+        version: 9.28.0
+      '@types/react':
+        specifier: ^19.1.2
+        version: 19.1.7
+      '@types/react-dom':
+        specifier: ^19.1.2
+        version: 19.1.6(@types/react@19.1.7)
+      '@vitejs/plugin-react':
+        specifier: ^4.4.1
+        version: 4.5.1(vite@6.3.5(@types/node@22.15.30)(jiti@2.4.2)(lightningcss@1.30.1)(tsx@4.19.4))
+      eslint:
+        specifier: ^9.25.0
+        version: 9.28.0(jiti@2.4.2)
+      eslint-plugin-react-hooks:
+        specifier: ^5.2.0
+        version: 5.2.0(eslint@9.28.0(jiti@2.4.2))
+      eslint-plugin-react-refresh:
+        specifier: ^0.4.19
+        version: 0.4.20(eslint@9.28.0(jiti@2.4.2))
+      globals:
+        specifier: ^16.0.0
+        version: 16.2.0
+      typescript:
+        specifier: ~5.8.3
+        version: 5.8.3
+      typescript-eslint:
+        specifier: ^8.30.1
+        version: 8.34.0(eslint@9.28.0(jiti@2.4.2))(typescript@5.8.3)
+      vite:
+        specifier: ^6.3.5
         version: 6.3.5(@types/node@22.15.30)(jiti@2.4.2)(lightningcss@1.30.1)(tsx@4.19.4)
 
   examples/apps:

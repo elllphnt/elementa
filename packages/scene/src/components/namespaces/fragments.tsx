@@ -1,0 +1,47 @@
+import {
+  useManyObservables,
+  useObservable,
+} from "@elllphnt/elementa-react-utils";
+import { PropsWithChildren } from "react";
+import { NamespaceContext } from "../../contexts/namespace.js";
+import { useNamespace } from "../../hooks/namespace.js";
+import { ComponentRenderable } from "../../renderables/_.js";
+import { FragmentComponent } from "../fragment/_.js";
+
+export function FragmentsNamespaceProvider({
+  children,
+  component,
+}: PropsWithChildren<{
+  component: ComponentRenderable;
+}>) {
+  const namespace = useNamespace({ clone: true });
+
+  const fragments =
+    useObservable(component.fragments$, component.fragments) ?? [];
+  const propsKey = fragments.map((prop) => prop.key).join(".");
+
+  const fragmentVarNames = useManyObservables(
+    fragments.map((fragment) => fragment.instance.model.varName$),
+    fragments.map((fragment) => fragment.instance.model.varName),
+    propsKey
+  );
+
+  for (let i = 0; i < fragments.length; i++) {
+    const fragment = fragments[i];
+    const varName = fragmentVarNames[i];
+    const value = (params: Record<string, any>) => {
+      return <FragmentComponent fragment={fragment} params={params} />;
+    };
+
+    namespace.set(["fragments", fragment.instance.model.id], value);
+    if (varName) {
+      namespace.set(["fragments", varName], value);
+    }
+  }
+
+  return (
+    <NamespaceContext.Provider value={namespace}>
+      {children}
+    </NamespaceContext.Provider>
+  );
+}

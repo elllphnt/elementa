@@ -1,5 +1,5 @@
 import { MediaData, MediaElementData } from "@elllphnt/elementa-base";
-import { MediaElement, RenderingEnvironment } from "@elllphnt/elementa-core";
+import { ElementEnvironment, MediaElement } from "@elllphnt/elementa-core";
 import { combineLatestMerged } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import { StatefulBaseElement } from "./_base.js";
@@ -51,7 +51,7 @@ export class StatefulMediaElement
     environment,
   }: {
     init: MediaElementData;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
   }) {
     super({ init, environment });
   }

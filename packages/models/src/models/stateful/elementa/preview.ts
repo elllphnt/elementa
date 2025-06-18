@@ -3,7 +3,7 @@ import {
   CornerName,
   ElementaPreviewData,
 } from "@elllphnt/elementa-base";
-import { ElementaPreview, RenderingEnvironment } from "@elllphnt/elementa-core";
+import { ElementaEnvironment, ElementaPreview } from "@elllphnt/elementa-core";
 import {
   Model,
   OptionalModel,
@@ -18,11 +18,11 @@ import {
 } from "./renderable_content/_content.js";
 import { StatefulRenderingContext } from "./rendering_context.js";
 
-export class StatefulElementaPreview
+export class StatefulElementaViewer
   extends Model<ElementaPreviewData>
   implements ElementaPreview
 {
-  readonly environment: RenderingEnvironment;
+  readonly environment: ElementaEnvironment;
   readonly context: StatefulRenderingContext;
 
   private _state: RecordState<Omit<ElementaPreviewData, "context" | "content">>;
@@ -100,7 +100,7 @@ export class StatefulElementaPreview
     environment,
   }: {
     init: ElementaPreviewData;
-    environment: RenderingEnvironment;
+    environment: ElementaEnvironment;
   }) {
     const { context, content, ...stateData } = init;
     super({ key: keyManager.next("elementa-preview") });

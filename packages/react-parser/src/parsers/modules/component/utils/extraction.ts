@@ -75,11 +75,6 @@ export function extractExpressionAsFunction({
   }(${parametersCode}) { return ${expression.getText()}; }`;
   const referenceCode = `${callee}(${parametersCode})`;
 
-  console.log({
-    functionCode,
-    referenceCode,
-  });
-
   return {
     functionCode,
     referenceCode,

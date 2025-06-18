@@ -30,7 +30,13 @@ export function parseArguments({
   const args: Record<string, any> = {};
   const callArgs = node.getArguments();
 
-  if (callArgs.length === 1 && Node.isObjectLiteralExpression(callArgs[0])) {
+  if (callArgs.length === 0) {
+    // No arguments provided
+    return { args, argMode: argModeNamed ? "named" : "positional" };
+  } else if (
+    callArgs.length === 1 &&
+    Node.isObjectLiteralExpression(callArgs[0])
+  ) {
     // Named arguments mode
     const obj = callArgs[0];
     obj.getProperties().forEach((prop) => {

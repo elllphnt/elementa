@@ -1,8 +1,8 @@
 import { ComponentRenderableContentData } from "@elllphnt/elementa-base";
 import {
   ComponentRenderableContent,
+  ElementaEnvironment,
   FileModelAdaptor,
-  RenderingEnvironment,
 } from "@elllphnt/elementa-core";
 import { CrdtRecordState } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
@@ -65,7 +65,7 @@ export class CrdtComponentRenderableContent
     initialized,
   }: {
     crdt: y.Map<any>;
-    environment: RenderingEnvironment;
+    environment: ElementaEnvironment;
     initialized?: boolean;
   }) {
     super({

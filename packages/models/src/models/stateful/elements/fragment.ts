@@ -1,9 +1,9 @@
 import { FragmentElementData } from "@elllphnt/elementa-base";
 import {
   CssStyleSheet,
+  ElementEnvironment,
   Fragment,
   FragmentElement,
-  RenderingEnvironment,
 } from "@elllphnt/elementa-core";
 import { combineLatestMerged } from "@elllphnt/elementa-utils";
 import { map, Observable, of, switchMap } from "rxjs";
@@ -32,13 +32,18 @@ export class StatefulFragmentElement
     );
   }
 
+  get params(): Record<string, any> {
+    return this._state.entry("params") || {};
+  }
+  get params$(): Observable<Record<string, any>> {
+    return this._state.entry$("params").pipe(map((params) => params || {}));
+  }
+
   paramValue(varName: string) {
-    return this._state.entry("params")?.[varName];
+    return this.params[varName];
   }
   paramValue$(varName: string): Observable<any> {
-    return this._state
-      .entry$("params")
-      .pipe(map((params) => params?.[varName]));
+    return this.params$.pipe(map((params) => params?.[varName]));
   }
 
   get allCssStylesheets(): CssStyleSheet[] {
@@ -64,7 +69,7 @@ export class StatefulFragmentElement
     environment,
   }: {
     init: FragmentElementData;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
   }) {
     super({ init, environment });
   }

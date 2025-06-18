@@ -1,4 +1,4 @@
-import { SlotInstance } from "@elllphnt/elementa-runtime";
+import { SlotFillInstance } from "@elllphnt/elementa-runtime";
 import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject } from "rxjs";
 import { Scene } from "../scene/scene.js";
@@ -6,7 +6,7 @@ import { createElementRenderable } from "./element/_create.js";
 import { ElementRenderable } from "./element/element.js";
 import { InstanceRenderable } from "./instance.js";
 
-export class SlotRenderable extends InstanceRenderable<SlotInstance> {
+export class SlotRenderable extends InstanceRenderable<SlotFillInstance> {
   private _content$ = new BehaviorSubject<ElementRenderable[]>([]);
 
   get content$() {
@@ -23,7 +23,13 @@ export class SlotRenderable extends InstanceRenderable<SlotInstance> {
     return this.content$;
   }
 
-  constructor({ scene, instance }: { scene: Scene; instance: SlotInstance }) {
+  constructor({
+    scene,
+    instance,
+  }: {
+    scene: Scene;
+    instance: SlotFillInstance;
+  }) {
     super({ instance, scene });
 
     const contentSubscription = this.instance.content$.subscribe((content) => {

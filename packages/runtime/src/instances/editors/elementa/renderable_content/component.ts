@@ -11,7 +11,7 @@ import {
   ComponentInputResolver,
   ComponentInstance,
 } from "../../../component/_.js";
-import { FragmentEnvironment } from "../../../fragment/_.js";
+import { ElementRuntimeEnvironment } from "../../../fragment/_.js";
 import { BaseRenderableContentInstance } from "./_base.js";
 
 export class ComponentRenderableContentInputResolver extends ComponentInputResolver {
@@ -21,7 +21,7 @@ export class ComponentRenderableContentInputResolver extends ComponentInputResol
     environment,
     renderableContent,
   }: {
-    environment: FragmentEnvironment;
+    environment: ElementRuntimeEnvironment;
     renderableContent: ComponentRenderableContent;
   }) {
     super({ environment });
@@ -78,7 +78,7 @@ export class ComponentRenderableContentInstance extends BaseRenderableContentIns
     environment,
   }: {
     model: ComponentRenderableContent;
-    environment: FragmentEnvironment;
+    environment: ElementRuntimeEnvironment;
   }) {
     super({
       model,

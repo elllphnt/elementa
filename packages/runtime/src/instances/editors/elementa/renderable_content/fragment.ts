@@ -8,7 +8,7 @@ import {
   switchMap,
 } from "rxjs";
 import {
-  FragmentEnvironment,
+  ElementRuntimeEnvironment,
   FragmentInputResolver,
   FragmentInstance,
 } from "../../../fragment/_.js";
@@ -22,7 +22,7 @@ export class FragmentRenderableContentInputResolver extends FragmentInputResolve
     environment,
     renderableContent,
   }: {
-    environment: FragmentEnvironment;
+    environment: ElementRuntimeEnvironment;
     renderableContent: FragmentRenderableContent;
   }) {
     super({ environment });
@@ -70,7 +70,7 @@ export class FragmentRenderableContentInstance extends ModelInstance<FragmentRen
     environment,
   }: {
     model: FragmentRenderableContent;
-    environment: FragmentEnvironment;
+    environment: ElementRuntimeEnvironment;
   }) {
     super({
       type: ElementaEditorInstanceType.RenderableContent,
@@ -89,7 +89,7 @@ export class FragmentRenderableContentInstance extends ModelInstance<FragmentRen
         this._fragment$.next(
           new FragmentInstance({
             model: fragment,
-            inputResolver: this.inputResolver,
+            environment: this.inputResolver.environment,
             parent: this,
           })
         );

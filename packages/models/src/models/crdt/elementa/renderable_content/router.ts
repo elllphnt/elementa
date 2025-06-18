@@ -1,7 +1,7 @@
 import { RouterRenderableContentData } from "@elllphnt/elementa-base";
 import {
+  ElementaEnvironment,
   FileModelAdaptor,
-  RenderingEnvironment,
   RouterRenderableContent,
 } from "@elllphnt/elementa-core";
 import { CrdtRecordState } from "@elllphnt/elementa-utils";
@@ -50,7 +50,7 @@ export class CrdtRouterRenderableContent
     initialized,
   }: {
     crdt: y.Map<any>;
-    environment: RenderingEnvironment;
+    environment: ElementaEnvironment;
     initialized?: boolean;
   }) {
     super({

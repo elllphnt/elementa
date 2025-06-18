@@ -9,8 +9,8 @@ import {
 } from "rxjs";
 import { Runtime } from "../../../runtime/runtime.js";
 import {
-  DefaultFragmentEnvironment,
-  FragmentEnvironment,
+  DefaultElementRuntimeEnvironment,
+  ElementRuntimeEnvironment,
 } from "../../fragment/_.js";
 import { Instance } from "../../instance.js";
 import { ModelInstance } from "../../model.js";
@@ -20,7 +20,7 @@ import {
   RenderableContentInstance,
 } from "./renderable_content/_.js";
 
-export class FrameFragmentEnvironment extends DefaultFragmentEnvironment {
+export class FrameFragmentEnvironment extends DefaultElementRuntimeEnvironment {
   frame: ElementaFrame;
 
   get styleModifiers() {
@@ -37,7 +37,7 @@ export class FrameFragmentEnvironment extends DefaultFragmentEnvironment {
 }
 
 export class ElementaFrameInstance extends ModelInstance<ElementaFrame> {
-  environment: FragmentEnvironment;
+  environment: ElementRuntimeEnvironment;
   private _content$ = new BehaviorSubject<
     RenderableContentInstance | undefined
   >(undefined);

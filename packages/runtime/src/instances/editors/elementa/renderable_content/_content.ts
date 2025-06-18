@@ -1,5 +1,5 @@
 import { RenderableContent } from "@elllphnt/elementa-core";
-import { FragmentEnvironment } from "../../../fragment/_.js";
+import { ElementRuntimeEnvironment } from "../../../fragment/_.js";
 import { ComponentRenderableContentInstance } from "./component.js";
 import { FragmentRenderableContentInstance } from "./fragment.js";
 import { RouterRenderableContentInstance } from "./router.js";
@@ -14,7 +14,7 @@ export function createRenderableContentInstance({
   environment,
 }: {
   model: RenderableContent;
-  environment: FragmentEnvironment;
+  environment: ElementRuntimeEnvironment;
 }) {
   switch (model.type) {
     case "router":

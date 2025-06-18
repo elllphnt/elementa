@@ -1,7 +1,7 @@
 import { ExpressionElement } from "@elllphnt/elementa-core";
-import { FragmentEnvironment } from "../fragment/environment/environment.js";
 import { Instance } from "../instance.js";
 import { BaseElementInstance } from "./_base.js";
+import { ElementRuntimeEnvironment } from "./_environment/environment.js";
 
 export class ExpressionElementInstance extends BaseElementInstance<ExpressionElement> {
   constructor({
@@ -10,7 +10,7 @@ export class ExpressionElementInstance extends BaseElementInstance<ExpressionEle
     parent,
   }: {
     element: ExpressionElement;
-    environment: FragmentEnvironment;
+    environment: ElementRuntimeEnvironment;
     parent?: Instance;
   }) {
     super({

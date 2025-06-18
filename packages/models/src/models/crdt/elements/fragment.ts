@@ -1,9 +1,9 @@
 import { FragmentElementData } from "@elllphnt/elementa-base";
 import {
   CssStyleSheet,
+  ElementEnvironment,
   Fragment,
   FragmentElement,
-  RenderingEnvironment,
 } from "@elllphnt/elementa-core";
 import { map, Observable, of, switchMap } from "rxjs";
 import * as y from "yjs";
@@ -40,13 +40,20 @@ export class CrdtFragmentElement
     return of([this.cssStyleSheet]);
   }
 
+  get params(): Record<string, any> {
+    return this._state.entry("params") || {};
+  }
+  get params$(): Observable<Record<string, any>> {
+    return this._state.entry$("params").pipe(map((params) => params || {}));
+  }
+
   constructor({
     crdt,
     environment,
     initialized,
   }: {
     crdt: y.Map<any>;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
     initialized?: boolean;
   }) {
     super({ crdt, type: "fragment", environment, initialized });
@@ -57,13 +64,11 @@ export class CrdtFragmentElement
   }
 
   paramValue(varName: string): any {
-    return this._state.entry("params")?.[varName];
+    return this.params[varName];
   }
 
   paramValue$(varName: string): Observable<any> {
-    return this._state
-      .entry$("params")
-      .pipe(map((params) => params?.[varName]));
+    return this.params$.pipe(map((params) => params?.[varName]));
   }
 
   setParamValue(varName: string, value: any): void {

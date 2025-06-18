@@ -58,30 +58,34 @@ function shouldRebuild(filePath: string, buildInfo: BuildInfo): boolean {
 }
 
 async function buildFile(file: string, buildInfo: BuildInfo): Promise<void> {
-  const relativePath = path.relative(SRC_DIR, file);
-  console.log(`→ Building: ${relativePath}`);
+  try {
+    const relativePath = path.relative(SRC_DIR, file);
+    console.log(`→ Building: ${relativePath}`);
 
-  const content = fs.readFileSync(file, "utf-8");
+    const content = fs.readFileSync(file, "utf-8");
 
-  // Find matching handler
-  const handler = handlers.find((h) => h.test(file));
-  if (!handler) {
-    console.warn(`No handler found for: ${relativePath}`);
-    return;
+    // Find matching handler
+    const handler = handlers.find((h) => h.test(file));
+    if (!handler) {
+      console.warn(`No handler found for: ${relativePath}`);
+      return;
+    }
+
+    const out = await handler.handle(relativePath, content, {
+      srcRoot: SRC_DIR,
+      outRoot: OUT_DIR,
+    });
+    const outPath = path.join(OUT_DIR, out.path);
+    writeFile(outPath, out.content);
+
+    // Update build info
+    buildInfo[file] = {
+      lastBuilt: Date.now(),
+      outputPath: out.path,
+    };
+  } catch (error) {
+    console.error(`Error building ${file}:`, error);
   }
-
-  const out = await handler.handle(relativePath, content, {
-    srcRoot: SRC_DIR,
-    outRoot: OUT_DIR,
-  });
-  const outPath = path.join(OUT_DIR, out.path);
-  writeFile(outPath, out.content);
-
-  // Update build info
-  buildInfo[file] = {
-    lastBuilt: Date.now(),
-    outputPath: out.path,
-  };
 }
 
 async function buildAll(): Promise<void> {
@@ -153,7 +157,7 @@ async function watch(): Promise<void> {
 }
 
 async function main() {
-  // await buildAll();
+  await buildAll();
   await watch();
 }
 

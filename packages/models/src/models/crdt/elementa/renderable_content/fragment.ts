@@ -1,8 +1,8 @@
 import { FragmentRenderableContentData } from "@elllphnt/elementa-base";
 import {
+  ElementaEnvironment,
   Fragment,
   FragmentRenderableContent,
-  RenderingEnvironment,
 } from "@elllphnt/elementa-core";
 import { CrdtRecordState } from "@elllphnt/elementa-utils";
 import { map, Observable, of, switchMap } from "rxjs";
@@ -57,7 +57,7 @@ export class CrdtFragmentRenderableContent
     initialized,
   }: {
     crdt: y.Map<any>;
-    environment: RenderingEnvironment;
+    environment: ElementaEnvironment;
     initialized?: boolean;
   }) {
     super({

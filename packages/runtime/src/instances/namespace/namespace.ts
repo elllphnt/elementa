@@ -34,7 +34,12 @@ export function evaluateExpressionSafely(
   try {
     const fn = new Function("context", code);
     return fn(context);
-  } catch {
+  } catch (error) {
+    console.error("Error evaluating expression:", {
+      expression,
+      context,
+      error,
+    });
     return undefined;
   }
 }

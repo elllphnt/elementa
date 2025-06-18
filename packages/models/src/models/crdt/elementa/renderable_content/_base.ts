@@ -1,6 +1,6 @@
 import {
   BaseRenderableContent,
-  RenderingEnvironment,
+  ElementaEnvironment,
 } from "@elllphnt/elementa-core";
 import { CrdtModel, keyManager } from "@elllphnt/elementa-utils";
 import * as y from "yjs";
@@ -10,7 +10,7 @@ export abstract class CrdtBaseRenderableContent<T extends string>
   implements BaseRenderableContent<T>
 {
   type: T;
-  environment: RenderingEnvironment;
+  environment: ElementaEnvironment;
 
   constructor({
     crdt,
@@ -20,7 +20,7 @@ export abstract class CrdtBaseRenderableContent<T extends string>
   }: {
     crdt: y.Map<any>;
     type: T;
-    environment: RenderingEnvironment;
+    environment: ElementaEnvironment;
     initialized?: boolean;
   }) {
     super({ key: keyManager.next("renderable-content"), crdt });

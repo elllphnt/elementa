@@ -4,7 +4,7 @@ import {
   CornerName,
   ElementaPreviewData,
 } from "@elllphnt/elementa-base";
-import { ElementaPreview, RenderingEnvironment } from "@elllphnt/elementa-core";
+import { ElementaEnvironment, ElementaPreview } from "@elllphnt/elementa-core";
 import {
   CrdtModel,
   CrdtRecordState,
@@ -23,7 +23,7 @@ export class CrdtElementaPreview
   extends CrdtModel<y.Map<any>>
   implements ElementaPreview
 {
-  readonly environment: RenderingEnvironment;
+  readonly environment: ElementaEnvironment;
   readonly context: CrdtRenderingContext;
 
   private _state: CrdtRecordState<
@@ -87,7 +87,7 @@ export class CrdtElementaPreview
     initialized,
   }: {
     crdt: y.Map<any>;
-    environment: RenderingEnvironment;
+    environment: ElementaEnvironment;
     initialized?: boolean;
   }) {
     super({ key: keyManager.next("elementa-preview"), crdt });

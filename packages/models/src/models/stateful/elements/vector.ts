@@ -1,5 +1,5 @@
 import { VectorElementData, VectorNodeData } from "@elllphnt/elementa-base";
-import { RenderingEnvironment, VectorElement } from "@elllphnt/elementa-core";
+import { ElementEnvironment, VectorElement } from "@elllphnt/elementa-core";
 import { combineLatestMerged } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import { StatefulBaseElement } from "./_base.js";
@@ -35,7 +35,7 @@ export class StatefulVectorElement
     environment,
   }: {
     init: VectorElementData;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
   }) {
     super({ init, environment });
   }

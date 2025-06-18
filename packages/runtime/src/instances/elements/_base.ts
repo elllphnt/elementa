@@ -1,14 +1,14 @@
 import { Element } from "@elllphnt/elementa-core";
 import { combineLatest, map, Observable } from "rxjs";
-import { FragmentEnvironment } from "../fragment/environment/environment.js";
 import { ElementaInstanceType, Instance } from "../instance.js";
 import { StyleSheetInstance } from "../stylesheet/stylesheet.js";
 import { ElementInstance } from "./_element.js";
+import { ElementRuntimeEnvironment } from "./_environment/environment.js";
 
 export abstract class BaseElementInstance<
   E extends Element = Element
 > extends Instance {
-  readonly environment: FragmentEnvironment;
+  readonly environment: ElementRuntimeEnvironment;
   readonly element: E;
   readonly stylesheet: StyleSheetInstance;
 
@@ -35,7 +35,7 @@ export abstract class BaseElementInstance<
     parent,
   }: {
     element: E;
-    environment: FragmentEnvironment;
+    environment: ElementRuntimeEnvironment;
     parent?: Instance;
   }) {
     super({

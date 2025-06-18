@@ -2,7 +2,7 @@ import { ensureField, getOrCreateYArray } from "@elllphnt/crdt";
 import { SlotElementData } from "@elllphnt/elementa-base";
 import {
   Element,
-  RenderingEnvironment,
+  ElementEnvironment,
   SlotElement,
 } from "@elllphnt/elementa-core";
 import { AggregatedCrdtModelList } from "@elllphnt/elementa-utils";
@@ -39,7 +39,7 @@ export class CrdtSlotElement
     initialized,
   }: {
     crdt: y.Map<any>;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
     initialized?: boolean;
   }) {
     super({ crdt, type: "slot", environment, initialized });

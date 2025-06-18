@@ -5,7 +5,7 @@ import { Scene } from "../scene/scene.js";
 import { ElementRenderable } from "./element/_.js";
 import { createElementRenderable } from "./element/_create.js";
 import { InstanceRenderable } from "./instance.js";
-import { SlotRenderable } from "./slot.js";
+import { SlotRenderable } from "./slot_fill.js";
 
 export class FragmentRenderable extends InstanceRenderable<FragmentInstance> {
   private _content$ = new BehaviorSubject<ElementRenderable[]>([]);

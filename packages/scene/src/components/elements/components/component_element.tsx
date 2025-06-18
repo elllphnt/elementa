@@ -4,6 +4,24 @@ import { ComponentElementRenderable } from "../../../renderables/element/compone
 import { Renderable } from "../../../renderables/renderable.js";
 import ComponentComponent from "../../component/component.js";
 import { ComponentPlaceHolder } from "./placeholder.js";
+import { ElementComponent } from "../element.js";
+
+export function ComponentElementContent({
+  element,
+}: {
+  element: ComponentElementRenderable;
+  onRef?: (element: HTMLElement | null) => void;
+}) {
+  const children = useObservable(element.children$, element.children);
+
+  return (
+    <>
+      {children.map((child) => (
+        <ElementComponent key={child.key} element={child} />
+      ))}
+    </>
+  );
+}
 
 export function ComponentElementComponentContent({
   element,
@@ -18,7 +36,11 @@ export function ComponentElementComponentContent({
     return <></>;
   }
 
-  return <ComponentComponent component={component} onRef={onRef} />;
+  return (
+    <ComponentComponent component={component} onRef={onRef}>
+      <ComponentElementContent element={element} onRef={onRef} />
+    </ComponentComponent>
+  );
 }
 
 export function ComponentElementComponent({

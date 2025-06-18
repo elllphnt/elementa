@@ -7,10 +7,10 @@ import {
   Observable,
   switchMap,
 } from "rxjs";
-import { FragmentEnvironment } from "../fragment/environment/environment.js";
 import { Instance } from "../instance.js";
 import { BaseElementInstance } from "./_base.js";
 import { createElementInstance, ElementInstance } from "./_element.js";
+import { ElementRuntimeEnvironment } from "./_environment/environment.js";
 
 export class SlotElementInstance extends BaseElementInstance<SlotElement> {
   private _placeholder$ = new BehaviorSubject<ElementInstance[]>([]);
@@ -48,7 +48,7 @@ export class SlotElementInstance extends BaseElementInstance<SlotElement> {
     parent,
   }: {
     element: SlotElement;
-    environment: FragmentEnvironment;
+    environment: ElementRuntimeEnvironment;
     parent?: Instance;
   }) {
     super({

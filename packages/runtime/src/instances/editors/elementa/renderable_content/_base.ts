@@ -1,5 +1,5 @@
 import { BaseRenderableContent } from "@elllphnt/elementa-core";
-import { FragmentEnvironment } from "../../../fragment/_.js";
+import { ElementRuntimeEnvironment } from "../../../fragment/_.js";
 import { ModelInstance } from "../../../model.js";
 import { ElementaEditorInstanceType } from "../_types.js";
 
@@ -11,7 +11,7 @@ export class BaseRenderableContentInstance<
     environment,
   }: {
     model: M;
-    environment: FragmentEnvironment;
+    environment: ElementRuntimeEnvironment;
   }) {
     super({
       model,

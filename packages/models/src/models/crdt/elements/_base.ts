@@ -10,7 +10,7 @@ import {
 import {
   BaseElement,
   CssStyleSheet,
-  RenderingEnvironment,
+  ElementEnvironment,
   StylesheetCssStyleSheet,
 } from "@elllphnt/elementa-core";
 import { CrdtRecordState, keyManager } from "@elllphnt/elementa-utils";
@@ -24,7 +24,7 @@ export abstract class CrdtBaseElement<T extends BaseElementData<string>>
   implements BaseElement<T["type"]>
 {
   readonly type: T["type"];
-  readonly environment: RenderingEnvironment;
+  readonly environment: ElementEnvironment;
   readonly cssStyleSheet: StylesheetCssStyleSheet;
 
   private _stylesheet: CrdtStylesheet;
@@ -145,7 +145,7 @@ export abstract class CrdtBaseElement<T extends BaseElementData<string>>
   }: {
     crdt: y.Map<any>;
     type: T["type"];
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
     initialized?: boolean;
   }) {
     super({ crdt, key: keyManager.next("element"), initialized });

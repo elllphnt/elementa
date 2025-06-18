@@ -7,7 +7,7 @@ import {
   Observable,
   switchMap,
 } from "rxjs";
-import { FragmentEnvironment } from "../fragment/_.js";
+import { ElementRuntimeEnvironment } from "../fragment/_.js";
 import { ElementaInstanceType, Instance } from "../instance.js";
 import { RouteTreeInstance } from "./route_tree/route_tree.js";
 
@@ -47,7 +47,7 @@ export class RouterInstance extends Instance {
   }: {
     model: Router;
     parent?: Instance;
-    environment: FragmentEnvironment;
+    environment: ElementRuntimeEnvironment;
   }) {
     super({
       type: ElementaInstanceType.App,

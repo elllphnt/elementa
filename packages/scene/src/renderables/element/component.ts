@@ -1,14 +1,24 @@
 import { ComponentElementInstance } from "@elllphnt/elementa-runtime";
-import { BehaviorSubject, map } from "rxjs";
+import { reconcileList } from "@elllphnt/elementa-utils";
+import { BehaviorSubject, map, Observable } from "rxjs";
 import { Scene } from "../../scene/scene.js";
 import { ComponentRenderable } from "../component/component.js";
 import { Renderable } from "../renderable.js";
+import { createElementRenderable } from "./_create.js";
 import { ElementRenderable } from "./element.js";
 
 export class ComponentElementRenderable extends ElementRenderable<ComponentElementInstance> {
   private _component$ = new BehaviorSubject<ComponentRenderable | undefined>(
     undefined
   );
+  private _children$ = new BehaviorSubject<ElementRenderable[]>([]);
+
+  get children$(): Observable<ElementRenderable[]> {
+    return this._children$.asObservable();
+  }
+  get children(): ElementRenderable[] {
+    return this._children$.value;
+  }
 
   get component$() {
     return this._component$;
@@ -63,11 +73,29 @@ export class ComponentElementRenderable extends ElementRenderable<ComponentEleme
       }
     );
 
+    const childrenSubscription = this.instance.content$.subscribe(
+      (children) => {
+        const [newChildren, removed] = reconcileList({
+          sources: children,
+          targets: this.children,
+          sourceRef: (s) => s,
+          targetRef: (t) => t.instance,
+          create: (instance) => createElementRenderable({ scene, instance }),
+        });
+        this._children$.next(newChildren);
+        removed.forEach((s) => s.dispose());
+      }
+    );
+
     this.addDisposer(() => {
       this.component?.dispose();
       templateSubscription.unsubscribe();
       this._component$.complete();
       this._component$.next(undefined);
+
+      this._children$.complete();
+      childrenSubscription.unsubscribe();
+      this.children.forEach((child) => child.dispose());
     });
   }
 }

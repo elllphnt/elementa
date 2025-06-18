@@ -6,4 +6,4 @@ export * from "./fragment.js";
 export * from "./instance.js";
 export * from "./renderable.js";
 export * from "./router/_.js";
-export * from "./slot.js";
+export * from "./slot_fill.js";

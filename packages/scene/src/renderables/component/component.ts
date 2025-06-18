@@ -9,6 +9,7 @@ import {
   ExpressionElementRenderable,
   FragmentElementRenderable,
 } from "../element/_.js";
+import { FragmentRenderable } from "../fragment.js";
 import { InstanceRenderable } from "../instance.js";
 import { Renderable } from "../renderable.js";
 
@@ -16,12 +17,20 @@ export class ComponentRenderable extends InstanceRenderable<ComponentInstance> {
   private _template$ = new BehaviorSubject<
     ExpressionElementRenderable | FragmentElementRenderable | undefined
   >(undefined);
+  private _fragments$ = new BehaviorSubject<FragmentRenderable[]>([]);
 
   get template() {
     return this._template$.value;
   }
   get template$() {
     return this._template$.asObservable();
+  }
+
+  get fragments(): FragmentRenderable[] {
+    return this._fragments$.value;
+  }
+  get fragments$(): Observable<FragmentRenderable[]> {
+    return this._fragments$.asObservable();
   }
 
   get renderables(): Renderable[] {
@@ -71,8 +80,22 @@ export class ComponentRenderable extends InstanceRenderable<ComponentInstance> {
       }
     );
 
+    const fragmentsSubscription = this.instance.fragments$.subscribe(
+      (fragments) => {
+        const newFragments = fragments.map(
+          (fragment) =>
+            new FragmentRenderable({
+              scene: this.scene,
+              instance: fragment,
+            })
+        );
+        this._fragments$.next(newFragments);
+      }
+    );
+
     this.addDisposer(() => {
       templateSubscription.unsubscribe();
+      fragmentsSubscription.unsubscribe();
     });
   }
 }

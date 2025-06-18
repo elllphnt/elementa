@@ -1,8 +1,8 @@
 import { ComponentRenderableContentData } from "@elllphnt/elementa-base";
 import {
   ComponentRenderableContent,
+  ElementaEnvironment,
   FileModelAdaptor,
-  RenderingEnvironment,
 } from "@elllphnt/elementa-core";
 import { combineLatestMerged, RecordState } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
@@ -23,22 +23,38 @@ export class StatefulComponentRenderableContent
   }
 
   get component(): FileModelAdaptor<"component"> | undefined {
-    return this.componentUrl
-      ? this.environment.project.infrastructure.component(
-          this.environment.project.absoluteFileUrl(this.componentUrl)
-        )
-      : undefined;
+    if (this.componentUrl === "default") {
+      return this.environment.defaultComponentUrl
+        ? this.environment.project.infrastructure.component(
+            this.environment.defaultComponentUrl
+          )
+        : undefined;
+    } else if (this.componentUrl) {
+      return this.environment.project.infrastructure.component(
+        this.environment.project.absoluteFileUrl(this.componentUrl)
+      );
+    } else {
+      return undefined;
+    }
   }
 
   get component$(): Observable<FileModelAdaptor<"component"> | undefined> {
-    return this.componentUrl$.pipe(
-      map((url) =>
-        url
-          ? this.environment.project.infrastructure.component(
-              this.environment.project.absoluteFileUrl(url)
-            )
-          : undefined
-      )
+    return this._state.entry$("componentUrl").pipe(
+      map((url) => {
+        if (url === "default") {
+          return this.environment.defaultComponentUrl
+            ? this.environment.project.infrastructure.component(
+                this.environment.defaultComponentUrl
+              )
+            : undefined;
+        } else if (url) {
+          return this.environment.project.infrastructure.component(
+            this.environment.project.absoluteFileUrl(url)
+          );
+        } else {
+          return undefined;
+        }
+      })
     );
   }
 
@@ -74,7 +90,7 @@ export class StatefulComponentRenderableContent
     environment,
   }: {
     init: ComponentRenderableContentData;
-    environment: RenderingEnvironment;
+    environment: ElementaEnvironment;
   }) {
     const { type, ...stateData } = init;
     super({

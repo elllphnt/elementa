@@ -1,5 +1,5 @@
 import { MediaData, MediaElementData } from "@elllphnt/elementa-base";
-import { MediaElement, RenderingEnvironment } from "@elllphnt/elementa-core";
+import { ElementEnvironment, MediaElement } from "@elllphnt/elementa-core";
 import { Observable } from "rxjs";
 import * as y from "yjs";
 import { CrdtBaseElement } from "./_base.js";
@@ -38,7 +38,7 @@ export class CrdtMediaElement
     initialized,
   }: {
     crdt: y.Map<any>;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
     initialized?: boolean;
   }) {
     super({ crdt, type: "media", environment, initialized });

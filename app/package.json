@@ -10,14 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
     "@elllphnt/elementa-scene": "workspace:*",
     "@elllphnt/elementa-models": "workspace:*",
     "@elllphnt/elementa-viewer": "workspace:*",
     "@elllphnt/elementa-runtime": "workspace:*"
   },
   "devDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "@eslint/js": "^9.22.0",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",

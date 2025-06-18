@@ -1,24 +1,34 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { JSX, memo } from "react";
+import { JSX, memo, PropsWithChildren } from "react";
 import { ComponentRenderable } from "../../renderables/component/component.js";
 import { ElementComponent } from "../elements/_.js";
-import { FragmentEnvironmentNamespaceProvider } from "../namespaces/_.js";
+import {
+  PropsNamespaceProvider,
+  StatesNamespaceProvider,
+} from "../namespaces/_.js";
+import { ChildrenNamespaceProvider } from "../namespaces/children.js";
+import { FragmentsNamespaceProvider } from "../namespaces/fragments.js";
 
 export const ComponentComponent = memo(function ({
   component,
   onRef,
-}: {
+  children,
+}: PropsWithChildren<{
   component: ComponentRenderable;
   onRef?: (element: HTMLElement | null, key?: string) => void;
-}): JSX.Element {
+}>): JSX.Element {
   const template = useObservable(component.template$, component.template);
   if (template) {
     return (
-      <FragmentEnvironmentNamespaceProvider
-        environment={component.instance.fragmentEnvironment}
-      >
-        <ElementComponent element={template} onRef={onRef} />
-      </FragmentEnvironmentNamespaceProvider>
+      <PropsNamespaceProvider component={component.instance}>
+        <ChildrenNamespaceProvider childrenProps={children}>
+          <FragmentsNamespaceProvider component={component}>
+            <StatesNamespaceProvider component={component.instance}>
+              <ElementComponent element={template} onRef={onRef} />
+            </StatesNamespaceProvider>
+          </FragmentsNamespaceProvider>
+        </ChildrenNamespaceProvider>
+      </PropsNamespaceProvider>
     );
   } else {
     return <></>;

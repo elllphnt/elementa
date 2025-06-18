@@ -1,14 +1,14 @@
 import { Observable } from "rxjs";
-import { FragmentEnvironment } from "../environment/_.js";
+import { ElementRuntimeEnvironment } from "../../elements/_environment/_.js";
 
 /**
  * A binding layer for resolving params during fragment rendering.
  * Used by FragmentInstance to abstract over different param contexts.
  */
 export abstract class FragmentInputResolver {
-  readonly environment: FragmentEnvironment;
+  readonly environment: ElementRuntimeEnvironment;
 
-  constructor({ environment }: { environment: FragmentEnvironment }) {
+  constructor({ environment }: { environment: ElementRuntimeEnvironment }) {
     this.environment = environment;
   }
 

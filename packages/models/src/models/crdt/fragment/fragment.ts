@@ -2,13 +2,14 @@ import { ensureField, getOrCreateYArray } from "@elllphnt/crdt";
 import {
   CssStyleSheet,
   Element,
+  ElementEnvironment,
   Fragment,
-  RenderingEnvironment,
 } from "@elllphnt/elementa-core";
 import {
   AggregatedCrdtModelList,
   combineLatestArrays,
   combineLatestOrEmpty,
+  CrdtRecordState,
   keyManager,
 } from "@elllphnt/elementa-utils";
 import { map, Observable, switchMap } from "rxjs";
@@ -18,15 +19,31 @@ import { CrdtIdentifiable } from "../_shared/identifiable.js";
 import { CrdtcreateElement, CrdtElement } from "../elements/_element.js";
 
 export class CrdtFragment extends CrdtIdentifiable implements Fragment {
-  environment: RenderingEnvironment;
+  environment: ElementEnvironment;
 
+  private _state: CrdtRecordState<Omit<Fragment, "id" | "content" | "params">>;
   private _content: AggregatedCrdtModelList<CrdtElement>;
   private _params: AggregatedCrdtModelList<CrdtDataInput>;
+
+  // properties
+
+  get name(): string | undefined {
+    return this._state.entry("name");
+  }
+  get name$(): Observable<string | undefined> {
+    return this._state.entry$("name");
+  }
+
+  get varName(): string | undefined {
+    return this._state.entry("varName");
+  }
+  get varName$(): Observable<string | undefined> {
+    return this._state.entry$("varName");
+  }
 
   get content(): Element[] {
     return this._content.models;
   }
-
   get content$(): Observable<Element[]> {
     return this._content.models$;
   }
@@ -34,7 +51,6 @@ export class CrdtFragment extends CrdtIdentifiable implements Fragment {
   get params(): CrdtDataInput[] {
     return this._params.models;
   }
-
   get params$(): Observable<CrdtDataInput[]> {
     return this._params.models$;
   }
@@ -71,7 +87,7 @@ export class CrdtFragment extends CrdtIdentifiable implements Fragment {
     initialized,
   }: {
     crdt: y.Map<any>;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
     initialized?: boolean;
   }) {
     super({ crdt, key: keyManager.next("fragment"), initialized });
@@ -83,6 +99,9 @@ export class CrdtFragment extends CrdtIdentifiable implements Fragment {
       ensureField(crdt, "params", () => new y.Array());
     }
 
+    this._state = new CrdtRecordState<
+      Omit<Fragment, "id" | "content" | "params">
+    >(crdt);
     this._content = new AggregatedCrdtModelList({
       crdt: getOrCreateYArray<y.Map<any>>(crdt, "content"),
       create: (crdt, init) =>

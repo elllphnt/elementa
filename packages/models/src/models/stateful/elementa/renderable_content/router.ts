@@ -1,7 +1,7 @@
 import { RouterRenderableContentData } from "@elllphnt/elementa-base";
 import {
+  ElementaEnvironment,
   FileModelAdaptor,
-  RenderingEnvironment,
   RouterRenderableContent,
 } from "@elllphnt/elementa-core";
 import { combineLatestMerged, RecordState } from "@elllphnt/elementa-utils";
@@ -76,7 +76,7 @@ export class StatefulRouterRenderableContent
     environment,
   }: {
     init: RouterRenderableContentData;
-    environment: RenderingEnvironment;
+    environment: ElementaEnvironment;
   }) {
     const { type, ...stateData } = init;
 

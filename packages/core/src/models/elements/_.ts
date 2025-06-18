@@ -1,5 +1,6 @@
 export * from "./_base.js";
 export * from "./_element.js";
+export * from "./_environment.js";
 export * from "./component.js";
 export * from "./container.js";
 export * from "./expression.js";

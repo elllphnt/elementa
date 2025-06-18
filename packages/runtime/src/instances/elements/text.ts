@@ -1,7 +1,7 @@
 import { TextElement } from "@elllphnt/elementa-core";
-import { FragmentEnvironment } from "../fragment/environment/environment.js";
 import { Instance } from "../instance.js";
 import { BaseElementInstance } from "./_base.js";
+import { ElementRuntimeEnvironment } from "./_environment/environment.js";
 
 export class TextElementInstance extends BaseElementInstance<TextElement> {
   constructor({
@@ -10,7 +10,7 @@ export class TextElementInstance extends BaseElementInstance<TextElement> {
     parent,
   }: {
     element: TextElement;
-    environment: FragmentEnvironment;
+    environment: ElementRuntimeEnvironment;
     parent?: Instance;
   }) {
     super({

@@ -7,9 +7,9 @@ import { Expression, SlotFillData } from "@elllphnt/elementa-base";
 import {
   CssStyleSheet,
   Element,
+  ElementEnvironment,
   File,
   Project,
-  RenderingEnvironment,
   SlotFill,
   StylesheetCssStyleSheet,
 } from "@elllphnt/elementa-core";
@@ -27,7 +27,7 @@ import { CrdtElement, CrdtcreateElement } from "../elements/_element.js";
 import { CrdtStylesheet } from "../style/stylesheet/stylesheet.js";
 
 export class CrdtSlotFill extends CrdtModel<y.Map<any>> implements SlotFill {
-  readonly environment: RenderingEnvironment;
+  readonly environment: ElementEnvironment;
   readonly cssStyleSheet: StylesheetCssStyleSheet;
 
   // private properties
@@ -77,7 +77,7 @@ export class CrdtSlotFill extends CrdtModel<y.Map<any>> implements SlotFill {
     initialized,
   }: {
     crdt: y.Map<any>;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
     cssStyleSheetTarget?: string;
     initialized?: boolean;
   }) {

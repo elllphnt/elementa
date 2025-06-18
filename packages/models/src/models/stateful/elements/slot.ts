@@ -1,7 +1,7 @@
 import { SlotElementData } from "@elllphnt/elementa-base";
 import {
   Element,
-  RenderingEnvironment,
+  ElementEnvironment,
   SlotElement,
 } from "@elllphnt/elementa-core";
 import {
@@ -61,7 +61,7 @@ export class StatefulSlotElement
     environment,
   }: {
     init: SlotElementData;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
   }) {
     const { placeholder, ...elementData } = init;
     super({ init: elementData, environment });

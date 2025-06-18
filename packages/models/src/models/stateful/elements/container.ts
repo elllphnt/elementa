@@ -3,7 +3,7 @@ import {
   ContainerElement,
   CssStyleSheet,
   Element,
-  RenderingEnvironment,
+  ElementEnvironment,
 } from "@elllphnt/elementa-core";
 import {
   AggregatedModelList,
@@ -25,7 +25,6 @@ export class StatefulContainerElement
   get content(): Element[] {
     return this._content.state.items;
   }
-
   get content$(): Observable<Element[]> {
     return this._content.state.items$;
   }
@@ -83,7 +82,7 @@ export class StatefulContainerElement
     environment,
   }: {
     init: ContainerElementData;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
   }) {
     const { content, ...elementData } = init;
     super({ init: elementData, environment });

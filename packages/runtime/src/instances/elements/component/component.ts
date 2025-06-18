@@ -1,4 +1,5 @@
 import { ComponentElement } from "@elllphnt/elementa-core";
+import { reconcileList } from "@elllphnt/elementa-utils";
 import {
   BehaviorSubject,
   combineLatest,
@@ -8,9 +9,10 @@ import {
   switchMap,
 } from "rxjs";
 import { ComponentInstance } from "../../component/_.js";
-import { FragmentEnvironment } from "../../fragment/environment/environment.js";
 import { Instance } from "../../instance.js";
 import { BaseElementInstance } from "../_base.js";
+import { createElementInstance, ElementInstance } from "../_element.js";
+import { ElementRuntimeEnvironment } from "../_environment/environment.js";
 import { ComponentElementComponentPropResolver } from "./component_prop_resolver.js";
 
 export class ComponentElementInstance<
@@ -20,12 +22,20 @@ export class ComponentElementInstance<
   private _component$ = new BehaviorSubject<ComponentInstance | undefined>(
     undefined
   );
+  private _content$ = new BehaviorSubject<ElementInstance[]>([]);
 
   get component$() {
     return this._component$.asObservable();
   }
   get component() {
     return this._component$.value;
+  }
+
+  get content$(): Observable<ElementInstance[]> {
+    return this._content$;
+  }
+  get content(): ElementInstance[] {
+    return this._content$.value;
   }
 
   get diagnosticLevel(): number {
@@ -50,7 +60,7 @@ export class ComponentElementInstance<
     parent,
   }: {
     element: E;
-    environment: FragmentEnvironment;
+    environment: ElementRuntimeEnvironment;
     parent?: Instance;
   }) {
     super({
@@ -81,8 +91,33 @@ export class ComponentElementInstance<
         }
       });
 
+    const contentSubscription = this.element.content$.subscribe((content) => {
+      const [newContent, removed] = reconcileList({
+        targets: this.content,
+        sources: content,
+        sourceRef: (c) => c,
+        targetRef: (c) => c.element,
+        create: (content) => {
+          const instance = createElementInstance({
+            element: content,
+            environment: this.environment,
+            parent: this,
+          });
+          return instance;
+        },
+      });
+      this._content$.next(newContent);
+      removed.forEach((instance) => {
+        instance.dispose();
+      });
+    });
+
     this.addDisposer(() => {
       componentSubscription.unsubscribe();
+      contentSubscription.unsubscribe();
+      this.content.forEach((instance) => instance.dispose());
+      this._content$.next([]);
+      this._content$.complete();
     });
   }
 }

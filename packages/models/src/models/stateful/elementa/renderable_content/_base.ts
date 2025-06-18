@@ -1,7 +1,7 @@
 import { BaseRenderableContentData } from "@elllphnt/elementa-base";
 import {
   BaseRenderableContent,
-  RenderingEnvironment,
+  ElementaEnvironment,
 } from "@elllphnt/elementa-core";
 import { keyManager, Model } from "@elllphnt/elementa-utils";
 import { Observable, of } from "rxjs";
@@ -13,7 +13,7 @@ export abstract class StatefulBaseRenderableContent<
   implements BaseRenderableContent<D["type"]>
 {
   type: D["type"];
-  environment: RenderingEnvironment;
+  environment: ElementaEnvironment;
 
   get _data(): BaseRenderableContentData<D["type"]> {
     return {
@@ -34,7 +34,7 @@ export abstract class StatefulBaseRenderableContent<
     init: {
       type: D["type"];
     };
-    environment: RenderingEnvironment;
+    environment: ElementaEnvironment;
   }) {
     super({ key: keyManager.next("renderable-content") });
     this.environment = environment;

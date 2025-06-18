@@ -5,9 +5,9 @@ import {
 import {
   CssStyleSheet,
   Element,
+  ElementEnvironment,
   PrimitiveElement,
   PrimitiveSubElement,
-  RenderingEnvironment,
 } from "@elllphnt/elementa-core";
 import {
   AggregatedModelList,
@@ -131,7 +131,7 @@ export class StatefulPrimitiveElement
     environment,
   }: {
     init: PrimitiveElementData;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
   }) {
     const { content, elements, ...elementData } = init;
     super({ init: elementData, environment });

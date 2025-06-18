@@ -7,14 +7,14 @@ import {
 } from "@elllphnt/elementa-base";
 import { Observable } from "rxjs";
 import { CssStyleSheet, StylesheetCssStyleSheet } from "~/css/_.js";
-import { RenderingEnvironment } from "~/rendering/_.js";
 import { Identifiable } from "../_shared/_.js";
+import { ElementEnvironment } from "./_environment.js";
 
 export interface BaseElement<T extends string> extends Identifiable {
   type: T;
   updated$: Observable<any>;
 
-  environment: RenderingEnvironment;
+  environment: ElementEnvironment;
   cssStyleSheet: StylesheetCssStyleSheet;
 
   allCssStylesheets: CssStyleSheet[];

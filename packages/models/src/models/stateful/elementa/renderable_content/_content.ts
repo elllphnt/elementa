@@ -1,5 +1,5 @@
 import { RenderableContentData } from "@elllphnt/elementa-base";
-import { RenderingEnvironment } from "@elllphnt/elementa-core";
+import { ElementaEnvironment } from "@elllphnt/elementa-core";
 import { StatefulComponentRenderableContent } from "./component.js";
 import { StatefulFragmentRenderableContent } from "./fragment.js";
 import { StatefulRouterRenderableContent } from "./router.js";
@@ -14,7 +14,7 @@ export function StatefulcreateRenderableContent({
   environment,
 }: {
   init: RenderableContentData;
-  environment: RenderingEnvironment;
+  environment: ElementaEnvironment;
 }): StatefulRenderableContent {
   switch (init.type) {
     case "router":

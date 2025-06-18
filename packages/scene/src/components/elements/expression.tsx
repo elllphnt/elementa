@@ -18,7 +18,5 @@ export function ExpressionElementComponent({
     __expression: expression,
   });
 
-  console.log("Expression", expression, value);
-
   return <>{value}</>;
 }

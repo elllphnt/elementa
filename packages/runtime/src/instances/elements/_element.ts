@@ -1,7 +1,7 @@
 import { Element } from "@elllphnt/elementa-core";
 
-import { FragmentEnvironment } from "../fragment/environment/environment.js";
 import { Instance } from "../instance.js";
+import { ElementRuntimeEnvironment } from "./_environment/environment.js";
 import { ComponentElementInstance } from "./component/component.js";
 import { ContainerElementInstance } from "./container.js";
 import { ExpressionElementInstance } from "./expression.js";
@@ -29,7 +29,7 @@ export function createElementInstance({
   parent,
 }: {
   element: Element;
-  environment: FragmentEnvironment;
+  environment: ElementRuntimeEnvironment;
   parent?: Instance;
 }): ElementInstance {
   switch (element.type) {

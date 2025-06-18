@@ -2,7 +2,7 @@ import {
   ResolvableOrEvaluable,
   TextElementData,
 } from "@elllphnt/elementa-base";
-import { RenderingEnvironment, TextElement } from "@elllphnt/elementa-core";
+import { ElementEnvironment, TextElement } from "@elllphnt/elementa-core";
 import { combineLatestMerged } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import { StatefulBaseElement } from "./_base.js";
@@ -38,7 +38,7 @@ export class StatefulTextElement
     environment,
   }: {
     init: TextElementData;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
   }) {
     super({ init, environment });
   }

@@ -11,6 +11,7 @@ export class ModuleManager extends Disposable {
   private infrastructure: Infrastructure;
   private moduleHost: ModuleHost;
   private externals: string[];
+  private importMap: Record<string, string>;
 
   private evaluationCounter = 1;
   private _modules = new Map<string, Module>();
@@ -19,15 +20,18 @@ export class ModuleManager extends Disposable {
     infrastructure,
     moduleHost: moduleHost,
     externals,
+    importMap,
   }: {
     infrastructure: Infrastructure;
     moduleHost: ModuleHost;
     externals: string[];
+    importMap?: Record<string, string>;
   }) {
     super();
     this.infrastructure = infrastructure;
     this.moduleHost = moduleHost;
     this.externals = externals;
+    this.importMap = importMap || {};
   }
 
   private addModule(url: string) {
@@ -67,6 +71,7 @@ export class ModuleManager extends Disposable {
           content: jsCode,
           packages,
           externals: this.externals,
+          importMap: this.importMap,
           resolveLocalImport: (src) => {
             const absoluteUrl = project.absoluteFileUrl(src);
             if (!absoluteUrl) {

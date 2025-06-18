@@ -1,15 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AsyncResourceStatus } from "@elllphnt/elementa-core";
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import {
-  ComponentComponent,
   ComponentRenderable,
   DomStyleSheetManager,
+  ElementaRenderableManager,
   Scene,
 } from "@elllphnt/elementa-scene";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
   ComponentInstance,
-  DefaultFragmentEnvironment,
+  DefaultElementRuntimeEnvironment,
   InMemoryModuleHost,
   ModuleManager,
   Runtime,
@@ -31,9 +32,11 @@ const runtime = new Runtime({
     externals: ["react", "react-dom"],
   }),
 });
-const environment = new DefaultFragmentEnvironment({ runtime });
+const environment = new DefaultElementRuntimeEnvironment({ runtime });
 
 export const ComponentViewer: React.FC<ComponentViewerProps> = ({ url }) => {
+  const [manager, setManager] =
+    React.useState<ElementaRenderableManager | null>(null);
   const componentAdaptor = infrastructure.component(url);
   const component = useObservable(
     componentAdaptor.model$,
@@ -56,6 +59,13 @@ export const ComponentViewer: React.FC<ComponentViewerProps> = ({ url }) => {
       : null;
   }, [component]);
 
+  useEffect(() => {
+    if (component?.preview && manager) {
+      const [, key] = manager.addPreview(component.preview);
+      manager.activateRenderable(key);
+    }
+  }, [manager, component]);
+
   if (!component) return <></>;
 
   if (status === AsyncResourceStatus.Pending) {
@@ -65,9 +75,21 @@ export const ComponentViewer: React.FC<ComponentViewerProps> = ({ url }) => {
   } else if (renderable) {
     (window as any).renderable = renderable;
     return (
-      <div className="content-viewer elementa-preview">
-        <ComponentComponent component={renderable} />
-      </div>
+      <iframe
+        key={url}
+        style={{ height: "100%", width: "100%", border: "none" }}
+        src="http://localhost:5174/editor"
+        onLoad={(event) => {
+          const iframe = event.currentTarget as HTMLIFrameElement;
+          const window = iframe.contentWindow;
+          if (window) {
+            const manager = (window as any).init({
+              infrastructure,
+            }) as ElementaRenderableManager;
+            setManager(manager);
+          }
+        }}
+      />
     );
   }
 

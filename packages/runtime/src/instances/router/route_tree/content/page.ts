@@ -17,7 +17,7 @@ import {
   ComponentInputResolver,
   ComponentInstance,
 } from "../../../component/_.js";
-import { FragmentEnvironment } from "../../../fragment/_.js";
+import { ElementRuntimeEnvironment } from "../../../fragment/_.js";
 import { Instance } from "../../../instance.js";
 import { BaseRouteHandler } from "./_base.js";
 
@@ -211,7 +211,7 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
     routeTree,
     parent,
   }: {
-    environment: FragmentEnvironment;
+    environment: ElementRuntimeEnvironment;
     routeTree: RouteTree;
     parent?: Instance;
   }) {

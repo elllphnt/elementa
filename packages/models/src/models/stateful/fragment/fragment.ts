@@ -2,8 +2,8 @@ import { FragmentData } from "@elllphnt/elementa-base";
 import {
   CssStyleSheet,
   Element,
+  ElementEnvironment,
   Fragment,
-  RenderingEnvironment,
 } from "@elllphnt/elementa-core";
 import {
   AggregatedModelList,
@@ -24,7 +24,7 @@ export class StatefulFragment
   extends StatefulIdentifiable<FragmentData>
   implements Fragment
 {
-  environment: RenderingEnvironment;
+  environment: ElementEnvironment;
 
   protected _state: RecordState<
     Omit<FragmentData, "id" | "content" | "params">
@@ -33,10 +33,24 @@ export class StatefulFragment
   private _params: AggregatedModelList<StatefulDataInput>;
 
   // properties
+
+  get name(): string | undefined {
+    return this._state.record.name;
+  }
+  get name$(): Observable<string | undefined> {
+    return this._state.record$.pipe(map((r) => r.name));
+  }
+
+  get varName(): string | undefined {
+    return this._state.record.varName;
+  }
+  get varName$(): Observable<string | undefined> {
+    return this._state.record$.pipe(map((r) => r.varName));
+  }
+
   get content(): Element[] {
     return this._content.state.items;
   }
-
   get content$(): Observable<Element[]> {
     return this._content.state.items$;
   }
@@ -44,7 +58,6 @@ export class StatefulFragment
   get params(): StatefulDataInput[] {
     return this._params.state.items;
   }
-
   get params$(): Observable<StatefulDataInput[]> {
     return this._params.state.items$;
   }
@@ -96,7 +109,7 @@ export class StatefulFragment
     environment,
   }: {
     init: FragmentData;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
   }) {
     const { id, content, ...stateData } = init;
     super({ id, key: keyManager.next("fragment") });

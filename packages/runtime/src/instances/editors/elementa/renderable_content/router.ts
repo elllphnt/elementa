@@ -7,7 +7,7 @@ import {
   of,
   switchMap,
 } from "rxjs";
-import { FragmentEnvironment } from "../../../fragment/_.js";
+import { ElementRuntimeEnvironment } from "../../../fragment/_.js";
 import { RouterInstance } from "../../../router/_.js";
 import { BaseRenderableContentInstance } from "./_base.js";
 
@@ -37,7 +37,7 @@ export class RouterRenderableContentInstance extends BaseRenderableContentInstan
     environment,
   }: {
     model: RouterRenderableContent;
-    environment: FragmentEnvironment;
+    environment: ElementRuntimeEnvironment;
   }) {
     super({
       model,

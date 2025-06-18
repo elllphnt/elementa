@@ -1,8 +1,8 @@
 import { ensureField, getOrCreateYMap } from "@elllphnt/crdt";
 import { Expression } from "@elllphnt/elementa-base";
 import {
+  ElementEnvironment,
   PrimitiveSubElement,
-  RenderingEnvironment,
   StylesheetCssStyleSheet,
 } from "@elllphnt/elementa-core";
 import {
@@ -18,7 +18,7 @@ export class CrdtPrimitiveSubElement
   extends CrdtModel<y.Map<any>>
   implements PrimitiveSubElement
 {
-  readonly environment: RenderingEnvironment;
+  readonly environment: ElementEnvironment;
   readonly cssStyleSheet: StylesheetCssStyleSheet;
 
   private _stylesheet: CrdtStylesheet;
@@ -41,7 +41,7 @@ export class CrdtPrimitiveSubElement
     initialized,
   }: {
     crdt: y.Map<any>;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
     cssStyleSheetTarget?: string;
     initialized?: boolean;
   }) {

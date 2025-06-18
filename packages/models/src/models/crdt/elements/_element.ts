@@ -1,4 +1,4 @@
-import { RenderingEnvironment } from "@elllphnt/elementa-core";
+import { ElementEnvironment } from "@elllphnt/elementa-core";
 import * as y from "yjs";
 import { CrdtComponentElement } from "./component.js";
 import { CrdtContainerElement } from "./container.js";
@@ -27,7 +27,7 @@ export function CrdtcreateElement({
   initialized,
 }: {
   crdt: y.Map<any>;
-  environment: RenderingEnvironment;
+  environment: ElementEnvironment;
   initialized?: boolean;
 }): CrdtElement {
   const type = crdt.get("type");

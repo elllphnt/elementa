@@ -1,4 +1,4 @@
-import { ElementaViewerComponentStateInstance } from "@elllphnt/elementa-runtime";
+import { ElementaPreviewInstance } from "@elllphnt/elementa-runtime";
 import { BehaviorSubject } from "rxjs";
 import { Scene } from "../../../scene/scene.js";
 import { Renderable } from "../../renderable.js";
@@ -7,8 +7,8 @@ import {
   RenderableContentRenderable,
 } from "../renderable_content/_.js";
 
-export class ElementaViewerRenderable extends Renderable {
-  readonly instance: ElementaViewerComponentStateInstance;
+export class ElementaPreviewRenderable extends Renderable {
+  readonly instance: ElementaPreviewInstance;
   private _content$ = new BehaviorSubject<
     RenderableContentRenderable | undefined
   >(undefined);
@@ -26,7 +26,7 @@ export class ElementaViewerRenderable extends Renderable {
     instance,
   }: {
     scene: Scene;
-    instance: ElementaViewerComponentStateInstance;
+    instance: ElementaPreviewInstance;
   }) {
     super({ scene });
     this.instance = instance;

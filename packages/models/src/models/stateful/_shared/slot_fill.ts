@@ -2,9 +2,9 @@ import { Expression, SlotFillData } from "@elllphnt/elementa-base";
 import {
   CssStyleSheet,
   Element,
+  ElementEnvironment,
   File,
   Project,
-  RenderingEnvironment,
   SlotFill,
   StylesheetCssStyleSheet,
 } from "@elllphnt/elementa-core";
@@ -25,7 +25,7 @@ import {
 import { StatefulStylesheet } from "../style/stylesheet/stylesheet.js";
 
 export class StatefulSlotFill extends Model<SlotFillData> implements SlotFill {
-  readonly environment: RenderingEnvironment;
+  readonly environment: ElementEnvironment;
   readonly cssStyleSheet: StylesheetCssStyleSheet;
 
   // private properties
@@ -93,7 +93,7 @@ export class StatefulSlotFill extends Model<SlotFillData> implements SlotFill {
     cssStyleSheetTarget,
   }: {
     init: SlotFillData;
-    environment: RenderingEnvironment;
+    environment: ElementEnvironment;
     cssStyleSheetTarget?: string;
   }) {
     super({ key: keyManager.next("slot-fill") });

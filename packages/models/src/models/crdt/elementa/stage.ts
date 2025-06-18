@@ -1,9 +1,9 @@
 import { ensureField, getOrCreateYArray } from "@elllphnt/crdt";
 import { ElementaFrameData, ElementaStageData } from "@elllphnt/elementa-base";
 import {
+  ElementaEnvironment,
   ElementaFrame,
   ElementaStage,
-  RenderingEnvironment,
   genId,
 } from "@elllphnt/elementa-core";
 import {
@@ -20,7 +20,7 @@ export class CrdtElementaStage
   extends CrdtModel<y.Map<any>>
   implements ElementaStage
 {
-  readonly environment: RenderingEnvironment;
+  readonly environment: ElementaEnvironment;
 
   private _state: CrdtRecordState<Omit<ElementaStageData, "frames">>;
   private _frames: AggregatedCrdtModelList<CrdtElementaFrame>;
@@ -39,7 +39,7 @@ export class CrdtElementaStage
     initialized,
   }: {
     crdt: y.Map<any>;
-    environment: RenderingEnvironment;
+    environment: ElementaEnvironment;
     initialized?: boolean;
   }) {
     super({ key: keyManager.next("elementa-stage"), crdt });

@@ -1,6 +1,6 @@
 import { SlotFill } from "@elllphnt/elementa-core";
 import { Observable } from "rxjs";
-import { FragmentEnvironment } from "../../fragment/environment/environment.js";
+import { ElementRuntimeEnvironment } from "../../elements/_environment/environment.js";
 
 /**
  * A binding layer for resolving props and slots during component rendering.
@@ -8,9 +8,9 @@ import { FragmentEnvironment } from "../../fragment/environment/environment.js";
  * (e.g., route-based rendering vs nested component element rendering).
  */
 export abstract class ComponentInputResolver {
-  readonly environment: FragmentEnvironment;
+  readonly environment: ElementRuntimeEnvironment;
 
-  constructor({ environment }: { environment: FragmentEnvironment }) {
+  constructor({ environment }: { environment: ElementRuntimeEnvironment }) {
     this.environment = environment;
   }
 

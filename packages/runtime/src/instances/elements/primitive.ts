@@ -14,10 +14,10 @@ import {
 } from "rxjs";
 import { DiagnosticLevel } from "../../_shared/diagnosticable.js";
 import { Module } from "../../runtime/module_manager/_.js";
-import { FragmentEnvironment } from "../fragment/environment/environment.js";
 import { Instance } from "../instance.js";
 import { BaseElementInstance } from "./_base.js";
 import { createElementInstance, ElementInstance } from "./_element.js";
+import { ElementRuntimeEnvironment } from "./_environment/environment.js";
 
 export class PrimitiveElementInstance extends BaseElementInstance<PrimitiveElement> {
   private _content$ = new BehaviorSubject<ElementInstance[]>([]);
@@ -102,7 +102,7 @@ export class PrimitiveElementInstance extends BaseElementInstance<PrimitiveEleme
     parent,
   }: {
     element: PrimitiveElement;
-    environment: FragmentEnvironment;
+    environment: ElementRuntimeEnvironment;
     parent?: Instance;
   }) {
     super({

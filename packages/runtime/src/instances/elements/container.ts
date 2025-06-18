@@ -7,10 +7,10 @@ import {
   Observable,
   switchMap,
 } from "rxjs";
-import { FragmentEnvironment } from "../fragment/environment/environment.js";
 import { Instance } from "../instance.js";
 import { BaseElementInstance } from "./_base.js";
 import { createElementInstance, ElementInstance } from "./_element.js";
+import { ElementRuntimeEnvironment } from "./_environment/environment.js";
 
 export class ContainerElementInstance extends BaseElementInstance<ContainerElement> {
   private _content$ = new BehaviorSubject<ElementInstance[]>([]);
@@ -46,7 +46,7 @@ export class ContainerElementInstance extends BaseElementInstance<ContainerEleme
     parent,
   }: {
     element: ContainerElement;
-    environment: FragmentEnvironment;
+    environment: ElementRuntimeEnvironment;
     parent?: Instance;
   }) {
     super({
