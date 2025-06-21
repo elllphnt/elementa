@@ -23,10 +23,10 @@ export class StatefulComponentRenderableContent
   }
 
   get component(): FileModelAdaptor<"component"> | undefined {
-    if (this.componentUrl === "default") {
-      return this.environment.defaultComponentUrl
+    if (this.componentUrl === "host") {
+      return this.environment.hostUrl
         ? this.environment.project.infrastructure.component(
-            this.environment.defaultComponentUrl
+            this.environment.hostUrl
           )
         : undefined;
     } else if (this.componentUrl) {
@@ -41,10 +41,10 @@ export class StatefulComponentRenderableContent
   get component$(): Observable<FileModelAdaptor<"component"> | undefined> {
     return this._state.entry$("componentUrl").pipe(
       map((url) => {
-        if (url === "default") {
-          return this.environment.defaultComponentUrl
+        if (url === "host") {
+          return this.environment.hostUrl
             ? this.environment.project.infrastructure.component(
-                this.environment.defaultComponentUrl
+                this.environment.hostUrl
               )
             : undefined;
         } else if (url) {

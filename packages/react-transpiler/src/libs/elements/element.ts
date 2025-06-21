@@ -11,6 +11,8 @@ import { transpilePrimitiveElement } from "./primitive.js";
 import { transpileSlotElement } from "./slot.js";
 import { transpileTextElement } from "./text.js";
 import { transpileVectorElement } from "./vector.js";
+import { transpileFragmentElement } from "./fragment.js";
+import { transpileExpressionElement } from "./expression.js";
 
 export function transpileElementVariant(
   data: ElementData,
@@ -31,6 +33,10 @@ export function transpileElementVariant(
       return transpileMediaElement(data, context);
     case "vector":
       return transpileVectorElement(data, context);
+    case "fragment":
+      return transpileFragmentElement(data, context);
+    case "expression":
+      return transpileExpressionElement(data, context);
     default:
       throw new Error(`Unknown element type: ${(data as any).type}`);
   }

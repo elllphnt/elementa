@@ -14,20 +14,38 @@ export function parseReferences(content: string): string[] {
   }
   return references;
 }
-export function replaceReferences(
+export async function replaceReferences(
   content: string,
-  replace: (ref: string) => string,
+  replace: (ref: string) => string | Promise<string>,
   filter?: (ref: string) => boolean
-): string {
-  return content.replace(REFERENCE_REGEX, (original, ref) => {
-    if (filter && !filter(ref)) {
-      return original; // Skip replacement if filter is provided and does not match
+): Promise<string> {
+  let result = "";
+  let lastIndex = 0;
+
+  for (const match of content.matchAll(REFERENCE_REGEX)) {
+    const original = match[0];
+    const ref = match[1];
+    const matchIndex = match.index;
+
+    if (matchIndex === undefined) {
+      continue; // Skip if index is undefined
     }
 
-    const replacement = replace(ref);
-    if (replacement === undefined) {
-      throw new Error(`Reference "${ref}" not found`);
+    result += content.substring(lastIndex, matchIndex);
+
+    if (filter && !filter(ref)) {
+      result += original; // Skip replacement if filter is provided and does not match
+    } else {
+      const replacement = await replace(ref);
+      if (replacement === undefined) {
+        throw new Error(`Reference "${ref}" not found`);
+      }
+      result += replacement;
     }
-    return replacement;
-  });
+
+    lastIndex = matchIndex + original.length;
+  }
+
+  result += content.substring(lastIndex);
+  return result;
 }

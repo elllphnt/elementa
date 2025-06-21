@@ -9,18 +9,7 @@ test("should render transpiled component correctly", async () => {
   const component: ComponentData = {
     template: {
       id: "root",
-      content: [
-        {
-          id: "slot-1",
-          type: "slot",
-          mode: "outlet",
-        },
-        {
-          id: "slot-2",
-          type: "slot",
-          mode: "fill",
-        },
-      ],
+      type: "fragment",
     },
   };
 

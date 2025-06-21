@@ -24,13 +24,30 @@ export function transpileHookState(
     name: { capitalize: true },
   });
 
-  const args = (data.args ?? []).map((arg) => transpileDynamic(arg, context));
+  const argMode = data.argMode || "named";
+  const args = Object.entries(data.args ?? {})
+    .map(([key, arg]) => [key, transpileDynamic(arg, context)] as const)
+    .sort((a, b) => a[0].localeCompare(b[0]));
 
   return {
     generate: (env) => {
       const hookName = env.getModuleName(hook.key);
-      const argList = args.map((a) => a.generate(env)).join(", ");
-      return `const ${data.name} = ${hookName}(${argList});`;
+      let expression: string;
+      if (argMode === "positional") {
+        const argList = args.map((a) => a[1].generate(env)).join(", ");
+        expression = `${hookName}(${argList})`;
+      } else {
+        const argObject = args
+          .map(([key, arg]) => `${key}: ${arg.generate(env)}`)
+          .join(", ");
+        expression = `${hookName}({ ${argObject} })`;
+      }
+
+      if (data.name) {
+        return `const ${data.name} = ${expression};`;
+      } else {
+        return `${expression};`;
+      }
     },
   };
 }

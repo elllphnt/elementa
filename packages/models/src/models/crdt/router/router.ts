@@ -1,10 +1,18 @@
 import { getOrCreateYArray, getOrCreateYMap } from "@elllphnt/crdt";
 import { RouteTreeData } from "@elllphnt/elementa-base";
-import { File, genId, Router } from "@elllphnt/elementa-core";
+import {
+  ElementaEnvironment,
+  ElementaPreview,
+  File,
+  genId,
+  Router,
+  RouterElementaEnvironment,
+} from "@elllphnt/elementa-core";
 import { AggregatedCrdtModelList, CrdtModel } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs";
 import * as y from "yjs";
 import { CrdtBlueprint } from "../blueprint/_.js";
+import { CrdtElementaPreview } from "../elementa/_.js";
 import { CrdtRouteTree } from "./route_tree.js";
 
 export class CrdtRouter
@@ -13,6 +21,8 @@ export class CrdtRouter
 {
   readonly file: File;
   readonly blueprint: CrdtBlueprint;
+  readonly elementaEnvironment: ElementaEnvironment;
+  readonly preview: ElementaPreview;
 
   private readonly _routes: AggregatedCrdtModelList<CrdtRouteTree>;
   private readonly _routesById$ = new BehaviorSubject<
@@ -34,6 +44,14 @@ export class CrdtRouter
     const editors = getOrCreateYMap(crdt, "editors");
     const blueprintMap = getOrCreateYMap(editors, "blueprint");
     this.blueprint = new CrdtBlueprint(blueprintMap, { initialized });
+    this.elementaEnvironment = new RouterElementaEnvironment({
+      router: this,
+    });
+    this.preview = new CrdtElementaPreview({
+      crdt: getOrCreateYMap(crdt, "preview"),
+      environment: this.elementaEnvironment,
+      initialized,
+    });
 
     this._routes = new AggregatedCrdtModelList({
       crdt: getOrCreateYArray<y.Map<any>>(crdt, "routes"),

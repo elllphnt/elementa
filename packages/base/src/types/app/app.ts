@@ -4,6 +4,6 @@ export type AppData = {
   routerUrl?: string;
 };
 
-export const appDataSchema = z.object({
-  name: z.string().optional(),
+export const appSchema = z.object({
+  routerUrl: z.string().optional(),
 });

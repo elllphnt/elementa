@@ -10,7 +10,7 @@ export type RouterData = {
 
 // Schemas
 
-export const appSchema = z.object({
+export const routerSchema = z.object({
   routes: z.array(routeTreeDataSchema).optional(),
   editors: z.record(z.record(z.any())).optional(),
 });

@@ -1,5 +1,12 @@
 import { RouteTreeData, RouterData } from "@elllphnt/elementa-base";
-import { File, Router, genId } from "@elllphnt/elementa-core";
+import {
+  ElementaEnvironment,
+  ElementaPreview,
+  File,
+  Router,
+  RouterElementaEnvironment,
+  genId,
+} from "@elllphnt/elementa-core";
 import {
   AggregatedModelList,
   Model,
@@ -9,6 +16,7 @@ import {
 import { Observable, combineLatest, map } from "rxjs";
 import { StatefulAppBlueprint } from "./blueprint/blueprint.js";
 import { StatefulRouteTree } from "./route_tree.js";
+import { StatefulElementaPreview } from "../elementa/_.js";
 
 export class StatefulRouter
   extends Model<RouterData>
@@ -16,6 +24,8 @@ export class StatefulRouter
 {
   readonly file: File;
   readonly blueprint: StatefulAppBlueprint;
+  readonly preview: ElementaPreview;
+  readonly elementaEnvironment: ElementaEnvironment;
 
   private _state: RecordState<Omit<RouterData, "routes" | "variables">>;
   private _routes: AggregatedModelList<StatefulRouteTree>;
@@ -60,8 +70,15 @@ export class StatefulRouter
     super();
 
     this.file = file;
+    this.elementaEnvironment = new RouterElementaEnvironment({
+      router: this,
+    });
     this.blueprint = new StatefulAppBlueprint({
       init: init.editors?.blueprint ?? {},
+    });
+    this.preview = new StatefulElementaPreview({
+      init: init.editors?.preview ?? {},
+      environment: this.elementaEnvironment,
     });
 
     const { routes, ...stateData } = init;

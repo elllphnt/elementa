@@ -9,15 +9,23 @@ import { TestTranspilerContext, writeTestModule } from "./_utils.js";
 
 test("should render transpiled component correctly", async () => {
   const component: ComponentData = {
+    fragments: [
+      {
+        id: "root",
+        content: [
+          {
+            id: "text-1",
+            type: "text",
+            text: "Hello World",
+          },
+        ],
+      },
+    ],
     template: {
       id: "root",
-      content: [
-        {
-          id: "text-1",
-          type: "text",
-          text: "Hello World",
-        },
-      ],
+      type: "fragment",
+      fragmentId: "root",
+      params: {},
     },
   };
 

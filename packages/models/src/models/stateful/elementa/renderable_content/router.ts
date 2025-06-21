@@ -23,22 +23,37 @@ export class StatefulRouterRenderableContent
   }
 
   get router(): FileModelAdaptor<"router"> | undefined {
-    const absoluteUrl = this.routerUrl
-      ? this.environment.project.absoluteFileUrl(this.routerUrl)
-      : undefined;
-    return absoluteUrl
-      ? this.environment.project.infrastructure.router(absoluteUrl)
-      : undefined;
+    if (this.routerUrl === "host") {
+      return this.environment.hostUrl
+        ? this.environment.project.infrastructure.router(
+            this.environment.hostUrl
+          )
+        : undefined;
+    } else if (this.routerUrl) {
+      return this.environment.project.infrastructure.router(
+        this.environment.project.absoluteFileUrl(this.routerUrl)
+      );
+    } else {
+      return undefined;
+    }
   }
   get router$(): Observable<FileModelAdaptor<"router"> | undefined> {
     return this.routerUrl$.pipe(
-      map((url) =>
-        url
-          ? this.environment.project.infrastructure.router(
-              this.environment.project.absoluteFileUrl(url)
-            )
-          : undefined
-      )
+      map((url) => {
+        if (url === "host") {
+          return this.environment.hostUrl
+            ? this.environment.project.infrastructure.router(
+                this.environment.hostUrl
+              )
+            : undefined;
+        } else if (url) {
+          return this.environment.project.infrastructure.router(
+            this.environment.project.absoluteFileUrl(url)
+          );
+        } else {
+          return undefined;
+        }
+      })
     );
   }
 

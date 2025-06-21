@@ -14,9 +14,11 @@ export function transpileFragment(
     data.providers?.map((provider) => transpileProvider(provider, context)) ??
     [];
 
+  const params = data.params ?? [];
+
   return {
     generate: (env) => {
-      // 1. Generate JSX for inner content
+      // Generate inner JSX
       let contentCode: string;
       if (content.length === 0) {
         contentCode = "<></>";
@@ -27,7 +29,7 @@ export function transpileFragment(
         contentCode = ["<>", ...codes, "</>"].join("\n");
       }
 
-      // 2. Wrap in providers (from inside-out)
+      // Wrap in providers (inside-out)
       for (let i = providers.length - 1; i >= 0; i--) {
         contentCode = providers[i].generate(env, [
           {
@@ -36,8 +38,24 @@ export function transpileFragment(
         ]);
       }
 
-      // 3. Return raw JSX
-      return contentCode;
+      // Build function params
+      let paramDecl = "";
+      if (params.length > 0) {
+        const props: string[] = params.map((param) => {
+          return param.name;
+        });
+        paramDecl = `{ ${props.join(", ")} }`;
+      }
+
+      return `(${paramDecl}) => {\n  return (\n${indent(contentCode)}\n  );\n}`;
     },
   };
+}
+
+function indent(code: string, spaces = 4): string {
+  const pad = " ".repeat(spaces);
+  return code
+    .split("\n")
+    .map((line) => pad + line)
+    .join("\n");
 }

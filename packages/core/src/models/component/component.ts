@@ -52,7 +52,7 @@ export class ComponentElementaEnvironment implements ElementaEnvironment {
     return this.component.file.project;
   }
 
-  get defaultComponentUrl(): string | undefined {
+  get hostUrl(): string | undefined {
     return this.component.file.url;
   }
 
@@ -65,6 +65,9 @@ export class ComponentElementaEnvironment implements ElementaEnvironment {
 
   constructor({ component }: { component: Component }) {
     this.component = component;
+  }
+  get defaultRouterUrl(): string | undefined {
+    throw new Error("Method not implemented.");
   }
 }
 

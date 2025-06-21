@@ -15,7 +15,7 @@ import {
 } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable, combineLatest, map } from "rxjs";
 import { StatefulDataInput } from "../_shared/data_input.js";
-import { StatefulElementaViewer as StatefulElementaPreview } from "../elementa/preview.js";
+import { StatefulElementaPreview } from "../elementa/preview.js";
 import { StatefulElementaStage } from "../elementa/stage.js";
 import { StatefulExpressionElement } from "../elements/expression.js";
 import { StatefulFragmentElement } from "../elements/fragment.js";

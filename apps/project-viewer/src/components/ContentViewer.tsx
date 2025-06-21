@@ -1,0 +1,30 @@
+import { makeFileUrl } from "@elllphnt/elementa-core";
+import React from "react";
+import { CodeViewer } from "./CodeViewer.js";
+import { ComponentViewer } from "./ComponentViewer.js";
+import { RouterViewer } from "./RouterViewer.js";
+
+interface ContentViewerProps {
+  projectId: string;
+  fileId: string;
+  type: string;
+  path: string;
+  codeOnlyMode?: boolean;
+}
+
+export const ContentViewer: React.FC<ContentViewerProps> = ({
+  projectId,
+  fileId,
+  type,
+  codeOnlyMode = false,
+}) => {
+  const url = makeFileUrl({ projectId, fileId });
+  if (!codeOnlyMode) {
+    if (type === "component") {
+      return <ComponentViewer url={url} />;
+    } else if (type === "router") {
+      return <RouterViewer url={url} />;
+    }
+  }
+  return <CodeViewer url={url} />;
+};

@@ -5,7 +5,7 @@ import { Fragment } from "../fragment/_.js";
 export interface ElementaEnvironment {
   project: Project;
 
-  get defaultComponentUrl(): string | undefined;
+  get hostUrl(): string | undefined;
 
   fragment(id: string): Fragment | undefined;
   fragment$(id: string): Observable<Fragment | undefined>;

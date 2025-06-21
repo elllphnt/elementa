@@ -18,7 +18,7 @@ import {
 } from "./renderable_content/_content.js";
 import { StatefulRenderingContext } from "./rendering_context.js";
 
-export class StatefulElementaViewer
+export class StatefulElementaPreview
   extends Model<ElementaPreviewData>
   implements ElementaPreview
 {
