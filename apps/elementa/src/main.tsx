@@ -15,7 +15,7 @@ import * as React from "react";
 if (import.meta.env.DEV) {
   (document as any).domain = "localhost";
 }
-console.log("Elementa Stage Manager initialized", (document as any).domain);
+console.log("Elementa Scene Manager initialized");
 
 (window as any).React = React;
 
@@ -37,7 +37,6 @@ function createReactProxyModule(): string {
 }
 
 const reactScript = createReactProxyModule();
-console.log({ reactScript });
 const reactModuleUrl = URL.createObjectURL(
   new Blob([reactScript], { type: "application/javascript" })
 );
