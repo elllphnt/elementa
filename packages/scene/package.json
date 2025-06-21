@@ -30,9 +30,9 @@
         "babel-plugin-module-resolver": "^5.0.0",
         "jsdom": "^26.1.0",
         "react": "^19.0.0",
-        "tsc-watch": "^6.2.0",
+        "tsc-watch": "^6.2.1",
         "tscpaths": "^0.0.9",
-        "vitest": "^3.1.2"
+        "vitest": "^3.2.2"
     },
     "peerDependencies": {
         "rxjs": "^7.8.1",
@@ -40,8 +40,8 @@
     },
     "dependencies": {
         "@elllphnt/elementa-base": "workspace:*",
-        "@elllphnt/elementa-css": "workspace:*",
         "@elllphnt/elementa-core": "workspace:*",
+        "@elllphnt/elementa-css": "workspace:*",
         "@elllphnt/elementa-react-utils": "workspace:*",
         "@elllphnt/elementa-runtime": "workspace:*",
         "@elllphnt/elementa-utils": "workspace:*",

@@ -1,6 +1,3 @@
 packages:
-  - app
-  - appp
-  - examples/*
+  - apps/*
   - packages/*
-  - libraries/*

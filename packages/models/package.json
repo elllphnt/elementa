@@ -16,11 +16,11 @@
         "test": "vitest"
     },
     "dependencies": {
-        "@elllphnt/elementa-core": "workspace:*",
         "@elllphnt/elementa-base": "workspace:*",
+        "@elllphnt/elementa-core": "workspace:*",
         "@elllphnt/elementa-css": "workspace:*",
         "@elllphnt/elementa-utils": "workspace:*",
-        "rxjs": "^7.8.1",
+        "rxjs": "^7.8.2",
         "yjs": "^13.6.26"
     },
     "peerDependencies": {

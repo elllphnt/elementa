@@ -17,8 +17,8 @@
         "test:run": "vitest --run"
     },
     "peerDependencies": {
+        "@elllphnt/crdt": "^0.1.3",
         "rxjs": "^7.8.2",
-        "yjs": "^13.6.26",
-        "@elllphnt/crdt": "^0.1.3"
+        "yjs": "^13.6.26"
     }
 }
