@@ -12,7 +12,9 @@ import {
 } from "@elllphnt/elementa-scene";
 import * as React from "react";
 
-(document as any).domain = "localhost";
+if (import.meta.env.DEV) {
+  (document as any).domain = "localhost";
+}
 console.log("Elementa Stage Manager initialized", (document as any).domain);
 
 (window as any).React = React;

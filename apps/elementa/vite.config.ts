@@ -15,9 +15,4 @@ export default defineConfig({
       },
     },
   ],
-  build: {
-    rollupOptions: {
-      external: ["react", "react-dom", "react-dom/client"],
-    },
-  },
 });
