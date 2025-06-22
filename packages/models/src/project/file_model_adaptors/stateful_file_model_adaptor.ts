@@ -52,93 +52,97 @@ export abstract class StatefulFileModelAdaptor<
     const dataSubscription = this.data$.subscribe((data) => {
       const prev = this._model$.value;
       if (data !== undefined) {
-        switch (this.modelType) {
-          case fileModelTypes.app:
-            this._model$.next(
-              new StatefulApp({
-                init: data,
-                file: this.file,
-              }) as unknown as FileModelInterface<T>
-            );
-            break;
-          case fileModelTypes.component:
-            this._model$.next(
-              new StatefulComponent({
-                init: data,
-                file: this.file,
-              }) as unknown as FileModelInterface<T>
-            );
-            break;
-          case fileModelTypes.keyframeSheet:
-            this._model$.next(
-              new StatefulKeyframeSheet({
-                init: data,
-                file: this.file,
-              }) as unknown as FileModelInterface<T>
-            );
-            break;
-          case fileModelTypes.packageSheet:
-            this._model$.next(
-              new StatefulPackageSheet({
-                init: data,
-                file: this.file,
-              }) as unknown as FileModelInterface<T>
-            );
-            break;
-          case fileModelTypes.router:
-            this._model$.next(
-              new StatefulRouter({
-                init: data,
-                file: this.file,
-              }) as unknown as FileModelInterface<T>
-            );
-            break;
-          case fileModelTypes.styleModifierSheet:
-            this._model$.next(
-              new StatefulStyleModifierSheet({
-                init: data,
-                file: this.file,
-              }) as unknown as FileModelInterface<T>
-            );
-            break;
-          case fileModelTypes.styleSystem:
-            this._model$.next(
-              new StatefulStyleSystem({
-                init: data,
-                file: this.file,
-              }) as unknown as FileModelInterface<T>
-            );
-            break;
-          case fileModelTypes.styleVariableSheet:
-            this._model$.next(
-              new StatefulStyleVariableSheet({
-                init: data,
-                file: this.file,
-              }) as unknown as FileModelInterface<T>
-            );
-            break;
-          case fileModelTypes.stylesheet:
-            this._model$.next(
-              new StatefulStylesheet({
-                init: data,
-                file: this.file,
-              }) as unknown as FileModelInterface<T>
-            );
-            break;
-          case fileModelTypes.typefaceSheet:
-            this._model$.next(
-              new StatefulTypefaceSheet({
-                init: data,
-                file: this.file,
-              }) as unknown as FileModelInterface<T>
-            );
-            break;
+        if (prev && "restore" in prev && typeof prev.restore === "function") {
+          prev.restore(data);
+        } else {
+          switch (this.modelType) {
+            case fileModelTypes.app:
+              this._model$.next(
+                new StatefulApp({
+                  init: data,
+                  file: this.file,
+                }) as unknown as FileModelInterface<T>
+              );
+              break;
+            case fileModelTypes.component:
+              this._model$.next(
+                new StatefulComponent({
+                  init: data,
+                  file: this.file,
+                }) as unknown as FileModelInterface<T>
+              );
+              break;
+            case fileModelTypes.keyframeSheet:
+              this._model$.next(
+                new StatefulKeyframeSheet({
+                  init: data,
+                  file: this.file,
+                }) as unknown as FileModelInterface<T>
+              );
+              break;
+            case fileModelTypes.packageSheet:
+              this._model$.next(
+                new StatefulPackageSheet({
+                  init: data,
+                  file: this.file,
+                }) as unknown as FileModelInterface<T>
+              );
+              break;
+            case fileModelTypes.router:
+              this._model$.next(
+                new StatefulRouter({
+                  init: data,
+                  file: this.file,
+                }) as unknown as FileModelInterface<T>
+              );
+              break;
+            case fileModelTypes.styleModifierSheet:
+              this._model$.next(
+                new StatefulStyleModifierSheet({
+                  init: data,
+                  file: this.file,
+                }) as unknown as FileModelInterface<T>
+              );
+              break;
+            case fileModelTypes.styleSystem:
+              this._model$.next(
+                new StatefulStyleSystem({
+                  init: data,
+                  file: this.file,
+                }) as unknown as FileModelInterface<T>
+              );
+              break;
+            case fileModelTypes.styleVariableSheet:
+              this._model$.next(
+                new StatefulStyleVariableSheet({
+                  init: data,
+                  file: this.file,
+                }) as unknown as FileModelInterface<T>
+              );
+              break;
+            case fileModelTypes.stylesheet:
+              this._model$.next(
+                new StatefulStylesheet({
+                  init: data,
+                  file: this.file,
+                }) as unknown as FileModelInterface<T>
+              );
+              break;
+            case fileModelTypes.typefaceSheet:
+              this._model$.next(
+                new StatefulTypefaceSheet({
+                  init: data,
+                  file: this.file,
+                }) as unknown as FileModelInterface<T>
+              );
+              break;
+          }
         }
       } else {
         this._model$.next(undefined);
-      }
-      if (prev && "dispose" in prev && typeof prev.dispose === "function") {
-        prev.dispose();
+        if (prev && "dispose" in prev && typeof prev.dispose === "function") {
+          prev.dispose();
+        }
       }
     });
 

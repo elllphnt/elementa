@@ -1,0 +1,84 @@
+@import url(./base.css);
+@import url(./colors.css);
+
+@import "tailwindcss";
+
+@custom-variant hover (&:hover);
+
+@theme {
+  /* Color */
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  /* Text */
+
+  --text-*: initial;
+  --text-xs: 11px;
+  --text-xs--line-height: 1.4;
+  --text-sm: 12px;
+  --text-sm--line-height: 1.4;
+  --text-base: 13px;
+  --text-base--line-height: 1.4;
+  --text-lg: 15px;
+  --text-lg--line-height: 1.4;
+  --text-xl: 18px;
+  --text-xl--line-height: 1.4;
+  --text-2xl: 20px;
+  --text-2xl--line-height: 1.4;
+  --text-3xl: 24px;
+  --text-3xl--line-height: 1.4;
+  --text-4xl: 30px;
+  --text-4xl--line-height: 1.4;
+  --text-5xl: 36px;
+  --text-5xl--line-height: 1.4;
+  --text-6xl: 48px;
+  --text-6xl--line-height: 1.4;
+  --text-7xl: 64px;
+  --text-7xl--line-height: 1.4;
+  --text-8xl: 80px;
+  --text-8xl--line-height: 1.4;
+  --text-9xl: 96px;
+  --text-9xl--line-height: 1.4;
+}
+
+@theme inline {
+  /* Color */
+  --color-pm-100: var(--color-primary-100);
+  --color-pm-200: var(--color-primary-200);
+  --color-pm-300: var(--color-primary-300);
+  --color-pm-400: var(--color-primary-400);
+  --color-pm-500: var(--color-primary-500);
+  --color-pm: var(--color-primary-300);
+  --color-pm-ctr: #ffffff;
+
+  --color-bg-100: var(--color-background-100);
+  --color-bg-200: var(--color-background-200);
+  --color-bg-300: var(--color-background-300);
+  --color-bg-400: var(--color-background-400);
+  --color-bg: var(--color-background);
+  --color-bg-ctr: var(--color-foreground-500);
+
+  --color-fg-100: var(--color-foreground-100);
+  --color-fg-200: var(--color-foreground-200);
+  --color-fg-300: var(--color-foreground-300);
+  --color-fg-400: var(--color-foreground-400);
+  --color-fg-500: var(--color-foreground-500);
+  --color-fg: var(--color-foreground);
+  --color-fg-ctr: #ffffff;
+
+  --color-red: var(--color-red);
+  --color-red-ctr: #ffffff;
+
+  --color-green: var(--color-green);
+  --color-green-ctr: #ffffff;
+
+  --color-yellow: var(--color-yellow);
+  --color-yellow-ctr: #ffffff;
+
+  --color-purple: var(--color-purple);
+  --color-purple-ctr: #ffffff;
+
+  --color-blue: var(--color-blue);
+  --color-blue-ctr: #ffffff;
+}
