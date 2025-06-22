@@ -1,4 +1,7 @@
 packages:
   - apps/*
-  - packages/*
-  - tools/*
+  - packages/models/*
+  - packages/system/*
+  - packages/tools/*
+  - packages/utils/*
+  - workflows/*

@@ -1,0 +1,12 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "build/.tsbuildinfo",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "rootDir": "src",
+    "outDir": "build",
+    "jsx": "react-jsx"
+  },
+  "include": ["src"],
+  "references": []
+}
