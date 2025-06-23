@@ -1,0 +1,734 @@
+{
+  "props": [],
+  "fragments": [
+    {
+      "id": "qacgwhwr",
+      "params": [
+        {
+          "name": "handleSubmit",
+          "varName": "handleSubmit",
+          "required": true
+        },
+        {
+          "name": "submitError",
+          "varName": "submitError",
+          "required": true
+        },
+        {
+          "name": "formData",
+          "varName": "formData",
+          "required": true
+        },
+        {
+          "name": "handleInputChange",
+          "varName": "handleInputChange",
+          "required": true
+        },
+        {
+          "name": "errors",
+          "varName": "errors",
+          "required": true
+        },
+        {
+          "name": "handleEmergencyContactChange",
+          "varName": "handleEmergencyContactChange",
+          "required": true
+        },
+        {
+          "name": "loading",
+          "varName": "loading",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "qbdq5jsz",
+          "type": "component",
+          "componentUrl": "<<REF:../../components/Layout.component.js>>",
+          "content": [
+            {
+              "id": "dd7kk36t",
+              "type": "container",
+              "tag": "div",
+              "content": [
+                {
+                  "id": "d2s6vxvv",
+                  "type": "container",
+                  "tag": "div",
+                  "content": [
+                    {
+                      "id": "no7gfzyp",
+                      "type": "container",
+                      "tag": "div",
+                      "content": [
+                        {
+                          "id": "zvw3626q",
+                          "type": "container",
+                          "tag": "form",
+                          "interactions": {
+                            "submit": {
+                              "__expression": "handleSubmit"
+                            }
+                          },
+                          "content": [
+                            {
+                              "id": "epsp13o7",
+                              "type": "expression",
+                              "expression": "submitError && fragments.fragment_2({\n  submitError\n})"
+                            },
+                            {
+                              "id": "c7xkjjlj",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "dw8m9660",
+                                  "type": "text",
+                                  "tag": "h3",
+                                  "text": "Personal Information",
+                                  "marks": []
+                                },
+                                {
+                                  "id": "td57jd5p",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "content": [
+                                    {
+                                      "id": "jgasm47f",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "content": [
+                                        {
+                                          "id": "fsf2rpx5",
+                                          "type": "text",
+                                          "tag": "label",
+                                          "text": "First Name *",
+                                          "marks": []
+                                        },
+                                        {
+                                          "id": "qje3ci4b",
+                                          "type": "container",
+                                          "tag": "input",
+                                          "interactions": {
+                                            "change": {
+                                              "__expression": "e => handleInputChange(\"firstName\", e.target.value)"
+                                            }
+                                          },
+                                          "name": "firstName",
+                                          "stylesheet": {
+                                            "styles": {},
+                                            "conditions": {}
+                                          },
+                                          "content": []
+                                        },
+                                        {
+                                          "id": "plqy3dux",
+                                          "type": "expression",
+                                          "expression": "errors.firstName && fragments.fragment_3({\n  errors\n})"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "id": "znetu0nb",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "content": [
+                                        {
+                                          "id": "l1xtkni5",
+                                          "type": "text",
+                                          "tag": "label",
+                                          "text": "Last Name *",
+                                          "marks": []
+                                        },
+                                        {
+                                          "id": "n5887p33",
+                                          "type": "container",
+                                          "tag": "input",
+                                          "interactions": {
+                                            "change": {
+                                              "__expression": "e => handleInputChange(\"lastName\", e.target.value)"
+                                            }
+                                          },
+                                          "name": "lastName",
+                                          "stylesheet": {
+                                            "styles": {},
+                                            "conditions": {}
+                                          },
+                                          "content": []
+                                        },
+                                        {
+                                          "id": "pqthikv9",
+                                          "type": "expression",
+                                          "expression": "errors.lastName && fragments.fragment_4({\n  errors\n})"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "id": "zxtrz13d",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "content": [
+                                        {
+                                          "id": "b2b3ud96",
+                                          "type": "text",
+                                          "tag": "label",
+                                          "text": "Email *",
+                                          "marks": []
+                                        },
+                                        {
+                                          "id": "nli1sjj9",
+                                          "type": "container",
+                                          "tag": "input",
+                                          "interactions": {
+                                            "change": {
+                                              "__expression": "e => handleInputChange(\"email\", e.target.value)"
+                                            }
+                                          },
+                                          "name": "email",
+                                          "stylesheet": {
+                                            "styles": {},
+                                            "conditions": {}
+                                          },
+                                          "content": []
+                                        },
+                                        {
+                                          "id": "vexncgzf",
+                                          "type": "expression",
+                                          "expression": "errors.email && fragments.fragment_5({\n  errors\n})"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "id": "u2olo32j",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "content": [
+                                        {
+                                          "id": "pzzu33q2",
+                                          "type": "text",
+                                          "tag": "label",
+                                          "text": "Phone Number *",
+                                          "marks": []
+                                        },
+                                        {
+                                          "id": "g5wt6wwx",
+                                          "type": "container",
+                                          "tag": "input",
+                                          "interactions": {
+                                            "change": {
+                                              "__expression": "e => handleInputChange(\"phone\", e.target.value)"
+                                            }
+                                          },
+                                          "name": "phone",
+                                          "stylesheet": {
+                                            "styles": {},
+                                            "conditions": {}
+                                          },
+                                          "content": []
+                                        },
+                                        {
+                                          "id": "bekoo1f3",
+                                          "type": "expression",
+                                          "expression": "errors.phone && fragments.fragment_6({\n  errors\n})"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "id": "jo3s2u5q",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "content": [
+                                        {
+                                          "id": "x5pptjjc",
+                                          "type": "text",
+                                          "tag": "label",
+                                          "text": "Date of Birth *",
+                                          "marks": []
+                                        },
+                                        {
+                                          "id": "a0giuk2u",
+                                          "type": "container",
+                                          "tag": "input",
+                                          "interactions": {
+                                            "change": {
+                                              "__expression": "e => handleInputChange(\"dateOfBirth\", e.target.value)"
+                                            }
+                                          },
+                                          "name": "dateOfBirth",
+                                          "stylesheet": {
+                                            "styles": {},
+                                            "conditions": {}
+                                          },
+                                          "content": []
+                                        },
+                                        {
+                                          "id": "vn1lfpjg",
+                                          "type": "expression",
+                                          "expression": "errors.dateOfBirth && fragments.fragment_7({\n  errors\n})"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "bp8q2y85",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "content": [
+                                    {
+                                      "id": "k8dbgett",
+                                      "type": "text",
+                                      "tag": "label",
+                                      "text": "Address *",
+                                      "marks": []
+                                    },
+                                    {
+                                      "id": "mvt6e95w",
+                                      "type": "container",
+                                      "tag": "textarea",
+                                      "interactions": {
+                                        "change": {
+                                          "__expression": "e => handleInputChange(\"address\", e.target.value)"
+                                        }
+                                      },
+                                      "name": "address",
+                                      "stylesheet": {
+                                        "styles": {},
+                                        "conditions": {}
+                                      },
+                                      "content": []
+                                    },
+                                    {
+                                      "id": "o613jgvc",
+                                      "type": "expression",
+                                      "expression": "errors.address && fragments.fragment_8({\n  errors\n})"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": "k2mpveqg",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "c55yc0fp",
+                                  "type": "text",
+                                  "tag": "h3",
+                                  "text": "Emergency Contact",
+                                  "marks": []
+                                },
+                                {
+                                  "id": "y0vhk0xj",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "content": [
+                                    {
+                                      "id": "rd5ax2b9",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "content": [
+                                        {
+                                          "id": "qi4rbsvm",
+                                          "type": "text",
+                                          "tag": "label",
+                                          "text": "Contact Name",
+                                          "marks": []
+                                        },
+                                        {
+                                          "id": "woleorkj",
+                                          "type": "container",
+                                          "tag": "input",
+                                          "interactions": {
+                                            "change": {
+                                              "__expression": "e => handleEmergencyContactChange(\"name\", e.target.value)"
+                                            }
+                                          },
+                                          "name": "emergencyName",
+                                          "stylesheet": {
+                                            "styles": {},
+                                            "conditions": {}
+                                          },
+                                          "content": []
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "id": "v2b99xzl",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "content": [
+                                        {
+                                          "id": "wi05mgm9",
+                                          "type": "text",
+                                          "tag": "label",
+                                          "text": "Contact Phone",
+                                          "marks": []
+                                        },
+                                        {
+                                          "id": "yt18ojfa",
+                                          "type": "container",
+                                          "tag": "input",
+                                          "interactions": {
+                                            "change": {
+                                              "__expression": "e => handleEmergencyContactChange(\"phone\", e.target.value)"
+                                            }
+                                          },
+                                          "name": "emergencyPhone",
+                                          "stylesheet": {
+                                            "styles": {},
+                                            "conditions": {}
+                                          },
+                                          "content": []
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "id": "x4h21dbx",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "content": [
+                                        {
+                                          "id": "glb5ybh7",
+                                          "type": "text",
+                                          "tag": "label",
+                                          "text": "Relationship",
+                                          "marks": []
+                                        },
+                                        {
+                                          "id": "vd5r2qbn",
+                                          "type": "container",
+                                          "tag": "input",
+                                          "interactions": {
+                                            "change": {
+                                              "__expression": "e => handleEmergencyContactChange(\"relationship\", e.target.value)"
+                                            }
+                                          },
+                                          "name": "emergencyRelationship",
+                                          "stylesheet": {
+                                            "styles": {},
+                                            "conditions": {}
+                                          },
+                                          "content": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": "hwfc6yue",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "nhta5wte",
+                                  "type": "text",
+                                  "text": "Cancel",
+                                  "link": {
+                                    "type": "href",
+                                    "href": "/patients"
+                                  }
+                                },
+                                {
+                                  "id": "hmof7co5",
+                                  "type": "container",
+                                  "tag": "button",
+                                  "content": [
+                                    {
+                                      "id": "okv4n2gn",
+                                      "type": "expression",
+                                      "expression": "loading ? \"Creating...\" : \"Create Patient\""
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_9",
+      "varName": "fragment_9"
+    },
+    {
+      "id": "rpoogrtl",
+      "params": [
+        {
+          "name": "errors",
+          "varName": "errors",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "r21dbd9g",
+          "type": "text",
+          "tag": "p",
+          "text": "{{ errors.address }}",
+          "marks": []
+        }
+      ],
+      "name": "fragment_8",
+      "varName": "fragment_8"
+    },
+    {
+      "id": "ja59ampz",
+      "params": [
+        {
+          "name": "errors",
+          "varName": "errors",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "meoj3a3x",
+          "type": "text",
+          "tag": "p",
+          "text": "{{ errors.dateOfBirth }}",
+          "marks": []
+        }
+      ],
+      "name": "fragment_7",
+      "varName": "fragment_7"
+    },
+    {
+      "id": "lyyx3wom",
+      "params": [
+        {
+          "name": "errors",
+          "varName": "errors",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "ra028tlr",
+          "type": "text",
+          "tag": "p",
+          "text": "{{ errors.phone }}",
+          "marks": []
+        }
+      ],
+      "name": "fragment_6",
+      "varName": "fragment_6"
+    },
+    {
+      "id": "gu4b3osv",
+      "params": [
+        {
+          "name": "errors",
+          "varName": "errors",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "batwjthe",
+          "type": "text",
+          "tag": "p",
+          "text": "{{ errors.email }}",
+          "marks": []
+        }
+      ],
+      "name": "fragment_5",
+      "varName": "fragment_5"
+    },
+    {
+      "id": "zs0ytlk1",
+      "params": [
+        {
+          "name": "errors",
+          "varName": "errors",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "to8a1pci",
+          "type": "text",
+          "tag": "p",
+          "text": "{{ errors.lastName }}",
+          "marks": []
+        }
+      ],
+      "name": "fragment_4",
+      "varName": "fragment_4"
+    },
+    {
+      "id": "l3zvyfzr",
+      "params": [
+        {
+          "name": "errors",
+          "varName": "errors",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "lshg257q",
+          "type": "text",
+          "tag": "p",
+          "text": "{{ errors.firstName }}",
+          "marks": []
+        }
+      ],
+      "name": "fragment_3",
+      "varName": "fragment_3"
+    },
+    {
+      "id": "jtkh6v4o",
+      "params": [
+        {
+          "name": "submitError",
+          "varName": "submitError",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "b43o5e3p",
+          "type": "container",
+          "tag": "div",
+          "content": [
+            {
+              "id": "lw7bvcn4",
+              "type": "container",
+              "tag": "div",
+              "content": [
+                {
+                  "id": "rzvq60rr",
+                  "type": "expression",
+                  "expression": "submitError"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_2",
+      "varName": "fragment_2"
+    },
+    {
+      "id": "flgz3g5w",
+      "params": [
+        {
+          "name": "setSubmitSuccess",
+          "varName": "setSubmitSuccess",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "urp83b8i",
+          "type": "component",
+          "componentUrl": "<<REF:../../components/Layout.component.js>>",
+          "content": [
+            {
+              "id": "ew8lt21a",
+              "type": "container",
+              "tag": "div",
+              "content": [
+                {
+                  "id": "m7gmk3gv",
+                  "type": "container",
+                  "tag": "div",
+                  "content": [
+                    {
+                      "id": "pxipz9re",
+                      "type": "text",
+                      "text": "Patient Created Successfully!"
+                    }
+                  ]
+                },
+                {
+                  "id": "rgcljz13",
+                  "type": "text",
+                  "tag": "p",
+                  "text": "The patient has been added to the system.",
+                  "marks": []
+                },
+                {
+                  "id": "wzvik9vb",
+                  "type": "container",
+                  "tag": "div",
+                  "content": [
+                    {
+                      "id": "ou3hskfn",
+                      "type": "container",
+                      "tag": "button",
+                      "interactions": {
+                        "click": {
+                          "__expression": "() => setSubmitSuccess(false)"
+                        }
+                      },
+                      "content": [
+                        {
+                          "id": "mowg5zve",
+                          "type": "text",
+                          "text": "Add Another Patient"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "h4vdea51",
+                      "type": "text",
+                      "text": "View All Patients",
+                      "link": {
+                        "type": "href",
+                        "href": "/patients"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_1",
+      "varName": "fragment_1"
+    }
+  ],
+  "states": [
+    {
+      "id": "rso0iarh",
+      "name": "state_1",
+      "varName": "state_1",
+      "type": "hook",
+      "argMode": "positional",
+      "args": {},
+      "hookUrl": "<<REF:../../hooks/usePatients.hook.js>>"
+    },
+    {
+      "id": "styobsvv",
+      "name": "state_2",
+      "varName": "state_2",
+      "type": "inline",
+      "script": "const [formData, setFormData] = useState<PatientFormData>({\n  firstName: \"\",\n  lastName: \"\",\n  email: \"\",\n  phone: \"\",\n  dateOfBirth: \"\",\n  address: \"\",\n  emergencyContact: {\n    name: \"\",\n    phone: \"\",\n    relationship: \"\",\n  },\n});\nconst [errors, setErrors] = useState<Partial<PatientFormData>>({});\nconst [submitError, setSubmitError] = useState<string | null>(null);\nconst [submitSuccess, setSubmitSuccess] = useState(false);\nconst validateForm = (): boolean => {\n  const newErrors: Partial<PatientFormData> = {};\n\n  if (!formData.firstName.trim())\n    newErrors.firstName = \"First name is required\";\n  if (!formData.lastName.trim()) newErrors.lastName = \"Last name is required\";\n  if (!formData.email.trim()) newErrors.email = \"Email is required\";\n  else if (!/\\S+@\\S+\\.\\S+/.test(formData.email))\n    newErrors.email = \"Email is invalid\";\n  if (!formData.phone.trim()) newErrors.phone = \"Phone number is required\";\n  if (!formData.dateOfBirth)\n    newErrors.dateOfBirth = \"Date of birth is required\";\n  if (!formData.address.trim()) newErrors.address = \"Address is required\";\n\n  setErrors(newErrors);\n  return Object.keys(newErrors).length === 0;\n};\nconst handleSubmit = async (e: React.FormEvent) => {\n  e.preventDefault();\n\n  if (!validateForm()) return;\n\n  try {\n    setSubmitError(null);\n    await state_1.createPatient(formData);\n    setSubmitSuccess(true);\n    // Reset form\n    setFormData({\n      firstName: \"\",\n      lastName: \"\",\n      email: \"\",\n      phone: \"\",\n      dateOfBirth: \"\",\n      address: \"\",\n      emergencyContact: {\n        name: \"\",\n        phone: \"\",\n        relationship: \"\",\n      },\n    });\n  } catch (error) {\n    setSubmitError(\"Failed to create patient. Please try again.\");\n  }\n};\nconst handleInputChange = (field: keyof PatientFormData, value: string) => {\n  setFormData((prev) => ({\n    ...prev,\n    [field]: value,\n  }));\n  // Clear error when user starts typing\n  if (errors[field]) {\n    setErrors((prev) => ({\n      ...prev,\n      [field]: undefined,\n    }));\n  }\n};\nconst handleEmergencyContactChange = (\n  field: keyof PatientFormData[\"emergencyContact\"],\n  value: string\n) => {\n  setFormData((prev) => ({\n    ...prev,\n    emergencyContact: {\n      ...prev.emergencyContact,\n      [field]: value,\n    },\n  }));\n};\nif (submitSuccess) {\n  return (\n    fragments.fragment_1({ setSubmitSuccess })\n  );\n}\nreturn (\n  fragments.fragment_9({ handleSubmit, submitError, formData, handleInputChange, errors, handleEmergencyContactChange, loading: state_1.loading })\n);"
+    }
+  ],
+  "template": {
+    "id": "hh445hgv",
+    "type": "expression",
+    "expression": "state_2"
+  },
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "component",
+        "componentUrl": "host"
+      }
+    }
+  }
+}

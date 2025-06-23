@@ -1,0 +1,337 @@
+{
+  "props": [],
+  "fragments": [
+    {
+      "id": "riy2bqw9",
+      "content": [
+        {
+          "id": "rg3q92it",
+          "type": "container",
+          "tag": "footer",
+          "name": "root",
+          "stylesheet": {
+            "styles": {
+              "__base__": {
+                "__raw": {
+                  "background": "#1f2937",
+                  "color": "white",
+                  "padding": "3rem 0 1rem",
+                  "margin-top": "4rem"
+                }
+              }
+            },
+            "conditions": {}
+          },
+          "content": [
+            {
+              "id": "qw2km4mx",
+              "type": "container",
+              "tag": "div",
+              "name": "container",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "max-width": "1200px",
+                      "margin": "0 auto",
+                      "padding": "0 2rem"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "z6vrtlxj",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "footer-content",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "display": "grid",
+                          "grid-template-columns": "repeat(auto-fit, minmax(250px, 1fr))",
+                          "gap": "2rem",
+                          "margin-bottom": "2rem"
+                        }
+                      },
+                      "raw-[%40media%20(max-width%3A%20768px)]": {
+                        "__raw": {
+                          "grid-template-columns": "1fr",
+                          "text-align": "center"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "lftgbg06",
+                      "type": "container",
+                      "tag": "div",
+                      "name": "company-info",
+                      "stylesheet": {
+                        "styles": {},
+                        "conditions": {}
+                      },
+                      "content": [
+                        {
+                          "id": "xe6k0wvb",
+                          "type": "text",
+                          "tag": "h3",
+                          "name": "company-name",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "color": "#6366f1",
+                                  "font-size": "1.5rem",
+                                  "font-weight": "800",
+                                  "margin-bottom": "0.5rem"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "text": "DesignCo",
+                          "marks": []
+                        },
+                        {
+                          "id": "q0d8f17q",
+                          "type": "text",
+                          "tag": "p",
+                          "name": "company-description",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "color": "#9ca3af"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "text": "Creating exceptional digital experiences",
+                          "marks": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": "kgvyp3c6",
+                      "type": "container",
+                      "tag": "div",
+                      "name": "contact-info",
+                      "stylesheet": {
+                        "styles": {},
+                        "conditions": {}
+                      },
+                      "content": [
+                        {
+                          "id": "tk2qgc8o",
+                          "type": "text",
+                          "tag": "h4",
+                          "name": "contact-title",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "font-size": "1.1rem",
+                                  "font-weight": "600",
+                                  "margin-bottom": "1rem"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "text": "Contact",
+                          "marks": []
+                        },
+                        {
+                          "id": "alhr3diw",
+                          "type": "text",
+                          "tag": "p",
+                          "name": "contact-email",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "color": "#9ca3af",
+                                  "margin-bottom": "0.5rem"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "text": "hello@designco.com",
+                          "marks": []
+                        },
+                        {
+                          "id": "f083ro1t",
+                          "type": "text",
+                          "tag": "p",
+                          "name": "contact-phone",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "color": "#9ca3af",
+                                  "margin-bottom": "0.5rem"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "text": "+1 (555) 123-4567",
+                          "marks": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": "szfgkg9g",
+                      "type": "container",
+                      "tag": "div",
+                      "name": "social-links",
+                      "stylesheet": {
+                        "styles": {},
+                        "conditions": {}
+                      },
+                      "content": [
+                        {
+                          "id": "i1cg2evn",
+                          "type": "text",
+                          "tag": "h4",
+                          "name": "social-title",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "font-size": "1.1rem",
+                                  "font-weight": "600",
+                                  "margin-bottom": "1rem"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "text": "Follow Us",
+                          "marks": []
+                        },
+                        {
+                          "id": "a7rr0m6c",
+                          "type": "container",
+                          "tag": "div",
+                          "name": "social-icons",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "display": "flex",
+                                  "gap": "1rem"
+                                }
+                              },
+                              "raw-[%40media%20(max-width%3A%20768px)]": {
+                                "__raw": {
+                                  "justify-content": "center"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "content": [
+                            {
+                              "id": "lzu53dms",
+                              "type": "text",
+                              "text": "Twitter",
+                              "link": {
+                                "type": "href",
+                                "href": "#"
+                              }
+                            },
+                            {
+                              "id": "grcc5ts9",
+                              "type": "text",
+                              "text": "Instagram",
+                              "link": {
+                                "type": "href",
+                                "href": "#"
+                              }
+                            },
+                            {
+                              "id": "msd448p9",
+                              "type": "text",
+                              "text": "LinkedIn",
+                              "link": {
+                                "type": "href",
+                                "href": "#"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "dg77c338",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "copyright",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "border-top": "1px solid #374151",
+                          "padding-top": "1rem",
+                          "text-align": "center"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "k19vgsn4",
+                      "type": "text",
+                      "tag": "p",
+                      "name": "copyright-text",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "color": "#9ca3af",
+                              "font-size": "0.9rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "text": "© 2025 DesignCo. All rights reserved.",
+                      "marks": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_1",
+      "varName": "fragment_1"
+    }
+  ],
+  "template": {
+    "id": "gq6m1la5",
+    "type": "fragment",
+    "fragmentId": "riy2bqw9",
+    "params": {}
+  },
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "component",
+        "componentUrl": "host"
+      }
+    }
+  }
+}

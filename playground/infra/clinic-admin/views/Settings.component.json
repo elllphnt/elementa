@@ -1,0 +1,715 @@
+{
+  "props": [],
+  "fragments": [
+    {
+      "id": "jolz8zun",
+      "params": [
+        {
+          "name": "saved",
+          "varName": "saved",
+          "required": true
+        },
+        {
+          "name": "settings",
+          "varName": "settings",
+          "required": true
+        },
+        {
+          "name": "handleSettingChange",
+          "varName": "handleSettingChange",
+          "required": true
+        },
+        {
+          "name": "days",
+          "varName": "days",
+          "required": true
+        },
+        {
+          "name": "handleBusinessHoursChange",
+          "varName": "handleBusinessHoursChange",
+          "required": true
+        },
+        {
+          "name": "handleSave",
+          "varName": "handleSave",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "vn1j2h5q",
+          "type": "component",
+          "componentUrl": "<<REF:../components/Layout.component.js>>",
+          "content": [
+            {
+              "id": "jzy7t1ni",
+              "type": "container",
+              "tag": "div",
+              "content": [
+                {
+                  "id": "oroyxagd",
+                  "type": "expression",
+                  "expression": "saved && fragments.fragment_1()"
+                },
+                {
+                  "id": "hh9wie4f",
+                  "type": "container",
+                  "tag": "div",
+                  "content": [
+                    {
+                      "id": "tl0cuwqf",
+                      "type": "container",
+                      "tag": "div",
+                      "content": [
+                        {
+                          "id": "wnm0r27y",
+                          "type": "container",
+                          "tag": "div",
+                          "content": [
+                            {
+                              "id": "hhfxpn06",
+                              "type": "text",
+                              "tag": "h3",
+                              "text": "Clinic Information",
+                              "marks": []
+                            },
+                            {
+                              "id": "vpj66onk",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "krngy8jk",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "content": [
+                                    {
+                                      "id": "set1fhhe",
+                                      "type": "text",
+                                      "tag": "label",
+                                      "text": "Clinic Name",
+                                      "marks": []
+                                    },
+                                    {
+                                      "id": "cb98114j",
+                                      "type": "container",
+                                      "tag": "input",
+                                      "interactions": {
+                                        "change": {
+                                          "__expression": "e => handleSettingChange(\"clinicName\", e.target.value)"
+                                        }
+                                      },
+                                      "name": "clinicName",
+                                      "stylesheet": {
+                                        "styles": {},
+                                        "conditions": {}
+                                      },
+                                      "content": []
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "zovcnanm",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "content": [
+                                    {
+                                      "id": "b9ygapjl",
+                                      "type": "text",
+                                      "tag": "label",
+                                      "text": "Phone Number",
+                                      "marks": []
+                                    },
+                                    {
+                                      "id": "ws1jeyu1",
+                                      "type": "container",
+                                      "tag": "input",
+                                      "interactions": {
+                                        "change": {
+                                          "__expression": "e => handleSettingChange(\"clinicPhone\", e.target.value)"
+                                        }
+                                      },
+                                      "name": "clinicPhone",
+                                      "stylesheet": {
+                                        "styles": {},
+                                        "conditions": {}
+                                      },
+                                      "content": []
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "tx0tfcoj",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "content": [
+                                    {
+                                      "id": "n8ky9w66",
+                                      "type": "text",
+                                      "tag": "label",
+                                      "text": "Email Address",
+                                      "marks": []
+                                    },
+                                    {
+                                      "id": "ce0buqsn",
+                                      "type": "container",
+                                      "tag": "input",
+                                      "interactions": {
+                                        "change": {
+                                          "__expression": "e => handleSettingChange(\"clinicEmail\", e.target.value)"
+                                        }
+                                      },
+                                      "name": "clinicEmail",
+                                      "stylesheet": {
+                                        "styles": {},
+                                        "conditions": {}
+                                      },
+                                      "content": []
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "o13luior",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "content": [
+                                    {
+                                      "id": "omtfutti",
+                                      "type": "text",
+                                      "tag": "label",
+                                      "text": "Address",
+                                      "marks": []
+                                    },
+                                    {
+                                      "id": "fh6hecgo",
+                                      "type": "container",
+                                      "tag": "textarea",
+                                      "interactions": {
+                                        "change": {
+                                          "__expression": "e => handleSettingChange(\"clinicAddress\", e.target.value)"
+                                        }
+                                      },
+                                      "name": "clinicAddress",
+                                      "stylesheet": {
+                                        "styles": {},
+                                        "conditions": {}
+                                      },
+                                      "content": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "cmlwv7ux",
+                      "type": "container",
+                      "tag": "div",
+                      "content": [
+                        {
+                          "id": "pcim25j1",
+                          "type": "container",
+                          "tag": "div",
+                          "content": [
+                            {
+                              "id": "zt613lo2",
+                              "type": "text",
+                              "tag": "h3",
+                              "text": "Business Hours",
+                              "marks": []
+                            },
+                            {
+                              "id": "zjftkole",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "agheb29b",
+                                  "type": "expression",
+                                  "expression": "days.map(day => {\n  const daySettings = settings.businessHours[day.key as keyof typeof settings.businessHours];\n  return fragments.fragment_4({\n    day,\n    daySettings,\n    handleBusinessHoursChange\n  });\n})"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "b4fvwfsh",
+                      "type": "container",
+                      "tag": "div",
+                      "content": [
+                        {
+                          "id": "sah8z4k2",
+                          "type": "container",
+                          "tag": "div",
+                          "content": [
+                            {
+                              "id": "xbcacpby",
+                              "type": "text",
+                              "tag": "h3",
+                              "text": "Appointment Settings",
+                              "marks": []
+                            },
+                            {
+                              "id": "qd9fgn4v",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "a94v2el6",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "content": [
+                                    {
+                                      "id": "gndnucc5",
+                                      "type": "text",
+                                      "tag": "label",
+                                      "text": "Default Appointment Duration (minutes)",
+                                      "marks": []
+                                    },
+                                    {
+                                      "id": "qod7h5be",
+                                      "type": "container",
+                                      "tag": "select",
+                                      "interactions": {
+                                        "change": {
+                                          "__expression": "e => handleSettingChange(\"appointmentDuration\", parseInt(e.target.value))"
+                                        }
+                                      },
+                                      "name": "appointmentDuration",
+                                      "stylesheet": {
+                                        "styles": {},
+                                        "conditions": {}
+                                      },
+                                      "content": [
+                                        {
+                                          "id": "lji7zbts",
+                                          "type": "container",
+                                          "tag": "option",
+                                          "content": [
+                                            {
+                                              "id": "b63oyrh9",
+                                              "type": "text",
+                                              "text": "15 minutes"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "id": "r76z3j8e",
+                                          "type": "container",
+                                          "tag": "option",
+                                          "content": [
+                                            {
+                                              "id": "n33bv2c2",
+                                              "type": "text",
+                                              "text": "30 minutes"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "id": "uy4x9e2j",
+                                          "type": "container",
+                                          "tag": "option",
+                                          "content": [
+                                            {
+                                              "id": "zlyk5amk",
+                                              "type": "text",
+                                              "text": "45 minutes"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "id": "a3ng8gto",
+                                          "type": "container",
+                                          "tag": "option",
+                                          "content": [
+                                            {
+                                              "id": "umh98dz1",
+                                              "type": "text",
+                                              "text": "60 minutes"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "mly606mb",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "content": [
+                                    {
+                                      "id": "pmhr477t",
+                                      "type": "container",
+                                      "tag": "input",
+                                      "interactions": {
+                                        "change": {
+                                          "__expression": "e => handleSettingChange(\"autoConfirmAppointments\", e.target.checked)"
+                                        }
+                                      },
+                                      "name": "autoConfirm",
+                                      "stylesheet": {
+                                        "styles": {},
+                                        "conditions": {}
+                                      },
+                                      "content": []
+                                    },
+                                    {
+                                      "id": "hhr4dhz6",
+                                      "type": "text",
+                                      "tag": "label",
+                                      "text": "Automatically confirm new appointments",
+                                      "marks": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "hgsrkoll",
+                      "type": "container",
+                      "tag": "div",
+                      "content": [
+                        {
+                          "id": "rmwpvkp5",
+                          "type": "container",
+                          "tag": "div",
+                          "content": [
+                            {
+                              "id": "gx8bh6bd",
+                              "type": "text",
+                              "tag": "h3",
+                              "text": "Notification Settings",
+                              "marks": []
+                            },
+                            {
+                              "id": "yobwlar8",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "k0sgpkj6",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "content": [
+                                    {
+                                      "id": "m14kx973",
+                                      "type": "container",
+                                      "tag": "input",
+                                      "interactions": {
+                                        "change": {
+                                          "__expression": "e => handleSettingChange(\"emailNotifications\", e.target.checked)"
+                                        }
+                                      },
+                                      "name": "emailNotifications",
+                                      "stylesheet": {
+                                        "styles": {},
+                                        "conditions": {}
+                                      },
+                                      "content": []
+                                    },
+                                    {
+                                      "id": "lcrce8sd",
+                                      "type": "text",
+                                      "tag": "label",
+                                      "text": "Send email notifications to patients",
+                                      "marks": []
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "cgav2qjq",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "content": [
+                                    {
+                                      "id": "k0htpdr8",
+                                      "type": "container",
+                                      "tag": "input",
+                                      "interactions": {
+                                        "change": {
+                                          "__expression": "e => handleSettingChange(\"smsNotifications\", e.target.checked)"
+                                        }
+                                      },
+                                      "name": "smsNotifications",
+                                      "stylesheet": {
+                                        "styles": {},
+                                        "conditions": {}
+                                      },
+                                      "content": []
+                                    },
+                                    {
+                                      "id": "kt0gm6ok",
+                                      "type": "text",
+                                      "tag": "label",
+                                      "text": "Send SMS notifications to patients",
+                                      "marks": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "vhpychs6",
+                      "type": "container",
+                      "tag": "div",
+                      "content": [
+                        {
+                          "id": "yo7bnvjx",
+                          "type": "container",
+                          "tag": "button",
+                          "interactions": {
+                            "click": {
+                              "__expression": "handleSave"
+                            }
+                          },
+                          "content": [
+                            {
+                              "id": "j238f6vp",
+                              "type": "text",
+                              "text": "Save Settings"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_5",
+      "varName": "fragment_5"
+    },
+    {
+      "id": "gfrxsfu7",
+      "params": [
+        {
+          "name": "day",
+          "varName": "day",
+          "required": true
+        },
+        {
+          "name": "daySettings",
+          "varName": "daySettings",
+          "required": true
+        },
+        {
+          "name": "handleBusinessHoursChange",
+          "varName": "handleBusinessHoursChange",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "j9bi5ji2",
+          "type": "container",
+          "tag": "div",
+          "content": [
+            {
+              "id": "wpqffw7n",
+              "type": "container",
+              "tag": "div",
+              "content": [
+                {
+                  "id": "coa2priu",
+                  "type": "text",
+                  "tag": "span",
+                  "text": "{{ day.label }}",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "id": "k5eozqn4",
+              "type": "container",
+              "tag": "div",
+              "content": [
+                {
+                  "id": "wp1kaalq",
+                  "type": "container",
+                  "tag": "input",
+                  "interactions": {
+                    "change": {
+                      "__expression": "e => handleBusinessHoursChange(day.key, \"closed\", !e.target.checked)"
+                    }
+                  },
+                  "content": []
+                },
+                {
+                  "id": "pdy5he2k",
+                  "type": "text",
+                  "tag": "span",
+                  "text": "Open",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "id": "ts9dz6fv",
+              "type": "expression",
+              "expression": "!daySettings.closed && fragments.fragment_2({\n  daySettings,\n  handleBusinessHoursChange,\n  day\n})"
+            },
+            {
+              "id": "wplf2wsw",
+              "type": "expression",
+              "expression": "daySettings.closed && fragments.fragment_3()"
+            }
+          ]
+        }
+      ],
+      "name": "fragment_4",
+      "varName": "fragment_4"
+    },
+    {
+      "id": "goglqbq3",
+      "content": [
+        {
+          "id": "cksswe6l",
+          "type": "text",
+          "tag": "span",
+          "text": "Closed",
+          "marks": []
+        }
+      ],
+      "name": "fragment_3",
+      "varName": "fragment_3"
+    },
+    {
+      "id": "bwpzag0a",
+      "params": [
+        {
+          "name": "daySettings",
+          "varName": "daySettings",
+          "required": true
+        },
+        {
+          "name": "handleBusinessHoursChange",
+          "varName": "handleBusinessHoursChange",
+          "required": true
+        },
+        {
+          "name": "day",
+          "varName": "day",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "yoyvnsx6",
+          "type": "container",
+          "tag": "input",
+          "interactions": {
+            "change": {
+              "__expression": "e => handleBusinessHoursChange(day.key, \"start\", e.target.value)"
+            }
+          },
+          "content": []
+        },
+        {
+          "id": "yu8wsdfz",
+          "type": "text",
+          "tag": "span",
+          "text": "to",
+          "marks": []
+        },
+        {
+          "id": "pc95li6v",
+          "type": "container",
+          "tag": "input",
+          "interactions": {
+            "change": {
+              "__expression": "e => handleBusinessHoursChange(day.key, \"end\", e.target.value)"
+            }
+          },
+          "content": []
+        }
+      ],
+      "name": "fragment_2",
+      "varName": "fragment_2"
+    },
+    {
+      "id": "mx2lj20c",
+      "content": [
+        {
+          "id": "e3cip2q8",
+          "type": "container",
+          "tag": "div",
+          "content": [
+            {
+              "id": "ni4161t0",
+              "type": "container",
+              "tag": "div",
+              "content": [
+                {
+                  "id": "k6aqtlnw",
+                  "type": "text",
+                  "text": "Settings saved successfully!"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_1",
+      "varName": "fragment_1"
+    }
+  ],
+  "states": [
+    {
+      "id": "myca59zu",
+      "name": "state_1",
+      "varName": "state_1",
+      "type": "inline",
+      "script": "const [settings, setSettings] = useState({\n  clinicName: \"City Medical Center\",\n  clinicAddress: \"123 Healthcare Drive, Medical City, MC 12345\",\n  clinicPhone: \"+1-555-0100\",\n  clinicEmail: \"info@citymedical.com\",\n  businessHours: {\n    monday: { start: \"08:00\", end: \"18:00\", closed: false },\n    tuesday: { start: \"08:00\", end: \"18:00\", closed: false },\n    wednesday: { start: \"08:00\", end: \"18:00\", closed: false },\n    thursday: { start: \"08:00\", end: \"18:00\", closed: false },\n    friday: { start: \"08:00\", end: \"18:00\", closed: false },\n    saturday: { start: \"09:00\", end: \"15:00\", closed: false },\n    sunday: { start: \"09:00\", end: \"15:00\", closed: true },\n  },\n  appointmentDuration: 30,\n  autoConfirmAppointments: false,\n  emailNotifications: true,\n  smsNotifications: false,\n});\nconst [saved, setSaved] = useState(false);\nconst handleSettingChange = (key: string, value: any) => {\n  setSettings((prev) => ({\n    ...prev,\n    [key]: value,\n  }));\n};\nconst handleBusinessHoursChange = (\n  day: string,\n  field: string,\n  value: any\n) => {\n  setSettings((prev) => ({\n    ...prev,\n    businessHours: {\n      ...prev.businessHours,\n      [day]: {\n        ...prev.businessHours[day as keyof typeof prev.businessHours],\n        [field]: value,\n      },\n    },\n  }));\n};\nconst handleSave = () => {\n  // In a real app, this would save to an API\n  setSaved(true);\n  setTimeout(() => setSaved(false), 3000);\n};\nconst days = [\n  { key: \"monday\", label: \"Monday\" },\n  { key: \"tuesday\", label: \"Tuesday\" },\n  { key: \"wednesday\", label: \"Wednesday\" },\n  { key: \"thursday\", label: \"Thursday\" },\n  { key: \"friday\", label: \"Friday\" },\n  { key: \"saturday\", label: \"Saturday\" },\n  { key: \"sunday\", label: \"Sunday\" },\n];\nreturn { settings, saved, handleSettingChange, handleBusinessHoursChange, handleSave, days };"
+    }
+  ],
+  "template": {
+    "id": "cwogf2f4",
+    "type": "fragment",
+    "fragmentId": "jolz8zun",
+    "params": {
+      "saved": {
+        "__expression": "state_1.saved"
+      },
+      "settings": {
+        "__expression": "state_1.settings"
+      },
+      "handleSettingChange": {
+        "__expression": "state_1.handleSettingChange"
+      },
+      "days": {
+        "__expression": "state_1.days"
+      },
+      "handleBusinessHoursChange": {
+        "__expression": "state_1.handleBusinessHoursChange"
+      },
+      "handleSave": {
+        "__expression": "state_1.handleSave"
+      }
+    }
+  },
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "component",
+        "componentUrl": "host"
+      }
+    }
+  }
+}

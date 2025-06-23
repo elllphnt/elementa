@@ -1,0 +1,488 @@
+{
+  "props": [],
+  "fragments": [
+    {
+      "id": "fj5nv5ws",
+      "params": [
+        {
+          "name": "patients",
+          "varName": "patients",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "hlubt66j",
+          "type": "component",
+          "componentUrl": "<<REF:../../components/Layout.component.js>>",
+          "content": [
+            {
+              "id": "gmuidz83",
+              "type": "container",
+              "tag": "div",
+              "content": [
+                {
+                  "id": "vf6zyg60",
+                  "type": "container",
+                  "tag": "div",
+                  "content": [
+                    {
+                      "id": "bgzg0je8",
+                      "type": "text",
+                      "tag": "h2",
+                      "text": "All Patients",
+                      "marks": []
+                    },
+                    {
+                      "id": "cjyp47cm",
+                      "type": "text",
+                      "tag": "p",
+                      "text": "Manage patient records and information",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "id": "jizvjuqq",
+                  "type": "text",
+                  "text": "Add New Patient",
+                  "link": {
+                    "type": "href",
+                    "href": "/patients/new"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "qz7zk46d",
+              "type": "container",
+              "tag": "div",
+              "content": [
+                {
+                  "id": "vczyfs3y",
+                  "type": "container",
+                  "tag": "ul",
+                  "content": [
+                    {
+                      "id": "wf42km9v",
+                      "type": "expression",
+                      "expression": "patients.map(patient => fragments.fragment_6({\n  patient\n}))"
+                    }
+                  ]
+                },
+                {
+                  "id": "mnvico82",
+                  "type": "expression",
+                  "expression": "patients.length === 0 && fragments.fragment_7()"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_8",
+      "varName": "fragment_8"
+    },
+    {
+      "id": "pzixdpqj",
+      "content": [
+        {
+          "id": "ioyldgq6",
+          "type": "container",
+          "tag": "div",
+          "content": [
+            {
+              "id": "m11b4bd9",
+              "type": "container",
+              "tag": "div",
+              "content": [
+                {
+                  "id": "w65jargf",
+                  "type": "text",
+                  "text": "No patients found"
+                }
+              ]
+            },
+            {
+              "id": "k21kcxpq",
+              "type": "text",
+              "tag": "p",
+              "text": "Get started by adding your first patient.",
+              "marks": []
+            },
+            {
+              "id": "govtwc2r",
+              "type": "text",
+              "text": "Add New Patient",
+              "link": {
+                "type": "href",
+                "href": "/patients/new"
+              }
+            }
+          ]
+        }
+      ],
+      "name": "fragment_7",
+      "varName": "fragment_7"
+    },
+    {
+      "id": "ht1c0e8u",
+      "params": [
+        {
+          "name": "patient",
+          "varName": "patient",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "w7ixr48g",
+          "type": "container",
+          "tag": "li",
+          "content": [
+            {
+              "id": "u45q0pmf",
+              "type": "container",
+              "tag": "div",
+              "content": [
+                {
+                  "id": "kiwua1cn",
+                  "type": "container",
+                  "tag": "div",
+                  "content": [
+                    {
+                      "id": "avxdgrqs",
+                      "type": "container",
+                      "tag": "div",
+                      "content": [
+                        {
+                          "id": "a612no99",
+                          "type": "container",
+                          "tag": "div",
+                          "content": [
+                            {
+                              "id": "mhrncpyj",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "aaqdkkv8",
+                                  "type": "text",
+                                  "tag": "span",
+                                  "text": "{{ patient.firstName[0] }}\n                    {{ patient.lastName[0] }}",
+                                  "marks": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "kahy1gkc",
+                          "type": "container",
+                          "tag": "div",
+                          "content": [
+                            {
+                              "id": "ybxgcp9b",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "mplyrkso",
+                                  "type": "expression",
+                                  "expression": "patient.firstName"
+                                },
+                                {
+                                  "id": "mffha4h6",
+                                  "type": "expression",
+                                  "expression": "patient.lastName"
+                                }
+                              ]
+                            },
+                            {
+                              "id": "maqnuatv",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "z00rvo38",
+                                  "type": "expression",
+                                  "expression": "patient.email"
+                                },
+                                {
+                                  "id": "njs8lv63",
+                                  "type": "text",
+                                  "text": "•"
+                                },
+                                {
+                                  "id": "jfwj9nnl",
+                                  "type": "expression",
+                                  "expression": "patient.phone"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "mhxhvihu",
+                      "type": "container",
+                      "tag": "div",
+                      "content": [
+                        {
+                          "id": "o67w1mtm",
+                          "type": "container",
+                          "tag": "div",
+                          "content": [
+                            {
+                              "id": "isqfbrp5",
+                              "type": "text",
+                              "text": "DOB:"
+                            },
+                            {
+                              "id": "fu01rhxs",
+                              "type": "expression",
+                              "expression": "\" \""
+                            },
+                            {
+                              "id": "xwoliqo8",
+                              "type": "expression",
+                              "expression": "new Date(patient.dateOfBirth).toLocaleDateString()"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "hz4gp7hf",
+                          "type": "container",
+                          "tag": "div",
+                          "content": [
+                            {
+                              "id": "y1ykg9uq",
+                              "type": "text",
+                              "text": "Registered:"
+                            },
+                            {
+                              "id": "jgqigbes",
+                              "type": "expression",
+                              "expression": "\" \""
+                            },
+                            {
+                              "id": "xi6xbtah",
+                              "type": "expression",
+                              "expression": "new Date(patient.createdAt).toLocaleDateString()"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "a4wkk2t8",
+                  "type": "expression",
+                  "expression": "patient.medicalHistory.length > 0 && fragments.fragment_5({\n  patient\n})"
+                }
+              ],
+              "link": {
+                "type": "href",
+                "href": {
+                  "__expression": "`/patients/${patient.id}`"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "name": "fragment_6",
+      "varName": "fragment_6"
+    },
+    {
+      "id": "l8oodaki",
+      "params": [
+        {
+          "name": "patient",
+          "varName": "patient",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "nnljf8it",
+          "type": "container",
+          "tag": "div",
+          "content": [
+            {
+              "id": "akc7otfe",
+              "type": "container",
+              "tag": "div",
+              "content": [
+                {
+                  "id": "e1w8f2ff",
+                  "type": "expression",
+                  "expression": "patient.medicalHistory.slice(0, 3).map((condition, index) => fragments.fragment_3({\n  index,\n  condition\n}))"
+                },
+                {
+                  "id": "o0z7n6tb",
+                  "type": "expression",
+                  "expression": "patient.medicalHistory.length > 3 && fragments.fragment_4({\n  patient\n})"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_5",
+      "varName": "fragment_5"
+    },
+    {
+      "id": "xps0te31",
+      "params": [
+        {
+          "name": "patient",
+          "varName": "patient",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "w5w4r1ei",
+          "type": "text",
+          "tag": "span",
+          "text": "+{{ patient.medicalHistory.length - 3 }} more",
+          "marks": []
+        }
+      ],
+      "name": "fragment_4",
+      "varName": "fragment_4"
+    },
+    {
+      "id": "jkk30ak0",
+      "params": [
+        {
+          "name": "index",
+          "varName": "index",
+          "required": true
+        },
+        {
+          "name": "condition",
+          "varName": "condition",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "edkpcz30",
+          "type": "text",
+          "tag": "span",
+          "text": "{{ condition }}",
+          "marks": []
+        }
+      ],
+      "name": "fragment_3",
+      "varName": "fragment_3"
+    },
+    {
+      "id": "vc1c2u84",
+      "params": [
+        {
+          "name": "error",
+          "varName": "error",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "yycohyxz",
+          "type": "component",
+          "componentUrl": "<<REF:../../components/Layout.component.js>>",
+          "content": [
+            {
+              "id": "dit9zmay",
+              "type": "container",
+              "tag": "div",
+              "content": [
+                {
+                  "id": "gmeovb59",
+                  "type": "container",
+                  "tag": "div",
+                  "content": [
+                    {
+                      "id": "p7hfbubl",
+                      "type": "text",
+                      "text": "Error:"
+                    },
+                    {
+                      "id": "rilahq0c",
+                      "type": "expression",
+                      "expression": "error"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_2",
+      "varName": "fragment_2"
+    },
+    {
+      "id": "iew2ka3l",
+      "content": [
+        {
+          "id": "awh98jh9",
+          "type": "component",
+          "componentUrl": "<<REF:../../components/Layout.component.js>>",
+          "content": [
+            {
+              "id": "kzn80jk5",
+              "type": "container",
+              "tag": "div",
+              "content": [
+                {
+                  "id": "ohzz4pl0",
+                  "type": "container",
+                  "tag": "div",
+                  "content": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_1",
+      "varName": "fragment_1"
+    }
+  ],
+  "states": [
+    {
+      "id": "u1qseaz9",
+      "name": "state_1",
+      "varName": "state_1",
+      "type": "hook",
+      "argMode": "positional",
+      "args": {},
+      "hookUrl": "<<REF:../../hooks/usePatients.hook.js>>"
+    },
+    {
+      "id": "a886ispt",
+      "name": "state_2",
+      "varName": "state_2",
+      "type": "inline",
+      "script": "if (state_1.loading) {\n  return (\n    fragments.fragment_1()\n  );\n}\nif (state_1.error) {\n  return (\n    fragments.fragment_2({ error: state_1.error })\n  );\n}\nreturn (\n  fragments.fragment_8({ patients: state_1.patients })\n);"
+    }
+  ],
+  "template": {
+    "id": "ow30vr91",
+    "type": "expression",
+    "expression": "state_2"
+  },
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "component",
+        "componentUrl": "host"
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@repo/packup",
+  "version": "1.0.0",
+  "keywords": [],
+  "author": "",
+  "type": "module",
+  "license": "ISC",
+  "bin": {
+    "packup": "./index.ts"
+  }
+}

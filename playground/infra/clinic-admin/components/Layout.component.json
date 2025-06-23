@@ -1,0 +1,165 @@
+{
+  "props": [],
+  "fragments": [
+    {
+      "id": "famkfppt",
+      "content": [
+        {
+          "id": "m0mde248",
+          "type": "container",
+          "tag": "div",
+          "content": [
+            {
+              "id": "b65r51pt",
+              "type": "container",
+              "tag": "nav",
+              "content": [
+                {
+                  "id": "gxnm7rkj",
+                  "type": "container",
+                  "tag": "div",
+                  "content": [
+                    {
+                      "id": "aomvycmp",
+                      "type": "container",
+                      "tag": "div",
+                      "content": [
+                        {
+                          "id": "h3tl1unw",
+                          "type": "container",
+                          "tag": "div",
+                          "content": [
+                            {
+                              "id": "ueie972d",
+                              "type": "text",
+                              "tag": "h1",
+                              "text": "Clinic Admin",
+                              "marks": []
+                            }
+                          ]
+                        },
+                        {
+                          "id": "v77bx20s",
+                          "type": "container",
+                          "tag": "div",
+                          "content": [
+                            {
+                              "id": "tr0h54ml",
+                              "type": "text",
+                              "text": "Dashboard",
+                              "link": {
+                                "type": "href",
+                                "href": "/"
+                              }
+                            },
+                            {
+                              "id": "ddxkt9x8",
+                              "type": "text",
+                              "text": "Patients",
+                              "link": {
+                                "type": "href",
+                                "href": "/patients"
+                              }
+                            },
+                            {
+                              "id": "e4u0frp9",
+                              "type": "text",
+                              "text": "Appointments",
+                              "link": {
+                                "type": "href",
+                                "href": "/appointments"
+                              }
+                            },
+                            {
+                              "id": "xulr1xae",
+                              "type": "text",
+                              "text": "Doctors",
+                              "link": {
+                                "type": "href",
+                                "href": "/doctors"
+                              }
+                            },
+                            {
+                              "id": "pay9h5lk",
+                              "type": "text",
+                              "text": "Settings",
+                              "link": {
+                                "type": "href",
+                                "href": "/settings"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "nb9lwnvr",
+              "type": "container",
+              "tag": "main",
+              "content": [
+                {
+                  "id": "xioeb6aj",
+                  "type": "expression",
+                  "expression": "props.title && fragments.fragment_1()"
+                },
+                {
+                  "id": "e2bl3phx",
+                  "type": "container",
+                  "tag": "div",
+                  "content": [
+                    {
+                      "id": "ysqmh0bk",
+                      "type": "expression",
+                      "expression": "props.children"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_2",
+      "varName": "fragment_2"
+    },
+    {
+      "id": "zrgtvbys",
+      "content": [
+        {
+          "id": "peqfzwrs",
+          "type": "container",
+          "tag": "div",
+          "content": [
+            {
+              "id": "fghxa618",
+              "type": "text",
+              "tag": "h2",
+              "text": "{{ props.title }}",
+              "marks": []
+            }
+          ]
+        }
+      ],
+      "name": "fragment_1",
+      "varName": "fragment_1"
+    }
+  ],
+  "template": {
+    "id": "h4jyowz4",
+    "type": "fragment",
+    "fragmentId": "famkfppt",
+    "params": {}
+  },
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "component",
+        "componentUrl": "host"
+      }
+    }
+  }
+}

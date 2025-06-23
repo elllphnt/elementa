@@ -1,0 +1,31 @@
+{
+  "props": [],
+  "fragments": [
+    {
+      "id": "jw48byoi",
+      "content": [
+        {
+          "id": "f9zzc52w",
+          "type": "text",
+          "text": "Hello World"
+        }
+      ],
+      "name": "fragment_1",
+      "varName": "fragment_1"
+    }
+  ],
+  "template": {
+    "id": "u78oaxtl",
+    "type": "fragment",
+    "fragmentId": "jw48byoi",
+    "params": {}
+  },
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "component",
+        "componentUrl": "host"
+      }
+    }
+  }
+}

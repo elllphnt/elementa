@@ -1,0 +1,692 @@
+{
+  "props": [],
+  "fragments": [
+    {
+      "id": "m4fak4zg",
+      "params": [
+        {
+          "name": "categories",
+          "varName": "categories",
+          "required": true
+        },
+        {
+          "name": "selectedCategory",
+          "varName": "selectedCategory",
+          "required": true
+        },
+        {
+          "name": "setSelectedCategory",
+          "varName": "setSelectedCategory",
+          "required": true
+        },
+        {
+          "name": "portfolio",
+          "varName": "portfolio",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "dce7epj6",
+          "type": "component",
+          "componentUrl": "<<REF:../../components/layout/layout.component.js>>",
+          "content": [
+            {
+              "id": "g82h7quv",
+              "type": "container",
+              "tag": "div",
+              "name": "root",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "min-height": "100vh"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "zrl73m1n",
+                  "type": "container",
+                  "tag": "section",
+                  "name": "hero",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "background": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                          "color": "white",
+                          "padding": "5rem 0",
+                          "text-align": "center"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "b0oc6d9r",
+                      "type": "container",
+                      "tag": "div",
+                      "name": "hero-container",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "max-width": "800px",
+                              "margin": "0 auto",
+                              "padding": "0 2rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "content": [
+                        {
+                          "id": "e6pkw67x",
+                          "type": "text",
+                          "tag": "h1",
+                          "name": "hero-title",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "font-size": "3rem",
+                                  "font-weight": "800",
+                                  "margin-bottom": "1.5rem"
+                                }
+                              },
+                              "raw-[%40media%20(max-width%3A%20768px)]": {
+                                "__raw": {
+                                  "font-size": "2rem"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "text": "Our Portfolio",
+                          "marks": []
+                        },
+                        {
+                          "id": "s9zxhrfs",
+                          "type": "text",
+                          "tag": "p",
+                          "name": "hero-subtitle",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "font-size": "1.25rem",
+                                  "line-height": "1.6",
+                                  "color": "#e0e7ff"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "text": "Discover our latest projects and see how we've helped businesses\n              transform their digital presence.",
+                          "marks": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "d77dxkyl",
+                  "type": "container",
+                  "tag": "section",
+                  "name": "portfolio-section",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "padding": "5rem 0",
+                          "background": "#f8fafc"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "zqhwf4fc",
+                      "type": "container",
+                      "tag": "div",
+                      "name": "portfolio-container",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "max-width": "1200px",
+                              "margin": "0 auto",
+                              "padding": "0 2rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "content": [
+                        {
+                          "id": "pb0pdg5j",
+                          "type": "container",
+                          "tag": "div",
+                          "name": "filter-tabs",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "display": "flex",
+                                  "justify-content": "center",
+                                  "gap": "1rem",
+                                  "margin-bottom": "3rem",
+                                  "flex-wrap": "wrap"
+                                }
+                              },
+                              "raw-[%40media%20(max-width%3A%20768px)]": {
+                                "__raw": {
+                                  "justify-content": "stretch"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "content": [
+                            {
+                              "id": "b4yr7zvh",
+                              "type": "expression",
+                              "expression": "categories.map(category => fragments.fragment_2({\n  category,\n  selectedCategory,\n  setSelectedCategory\n}))"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "y5ggosog",
+                          "type": "container",
+                          "tag": "div",
+                          "name": "portfolio-grid",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "display": "grid",
+                                  "grid-template-columns": "repeat(auto-fit, minmax(400px, 1fr))",
+                                  "gap": "2rem"
+                                }
+                              },
+                              "raw-[%40media%20(max-width%3A%20768px)]": {
+                                "__raw": {
+                                  "grid-template-columns": "1fr"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "content": [
+                            {
+                              "id": "a93usc8i",
+                              "type": "expression",
+                              "expression": "portfolio.map(item => fragments.fragment_4({\n  item\n}))"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_5",
+      "varName": "fragment_5"
+    },
+    {
+      "id": "xbiqkk6b",
+      "params": [
+        {
+          "name": "item",
+          "varName": "item",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "f6ltxuj4",
+          "type": "container",
+          "tag": "div",
+          "name": "portfolio-item",
+          "stylesheet": {
+            "styles": {
+              "__base__": {
+                "__raw": {
+                  "background": "white",
+                  "border-radius": "1rem",
+                  "overflow": "hidden",
+                  "box-shadow": "0 4px 6px rgba(0, 0, 0, 0.05)",
+                  "transition": "all 0.3s ease"
+                }
+              }
+            },
+            "conditions": {}
+          },
+          "content": [
+            {
+              "id": "ea8n0iv0",
+              "type": "container",
+              "tag": "div",
+              "name": "portfolio-image",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "height": "250px",
+                      "background": "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                      "position": "relative",
+                      "overflow": "hidden"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "fo9omf5p",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "image-placeholder",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "position": "absolute",
+                          "top": "50%",
+                          "left": "50%",
+                          "transform": "translate(-50%, -50%)",
+                          "color": "white",
+                          "font-size": "1.5rem",
+                          "font-weight": "600",
+                          "background": "rgba(0, 0, 0, 0.2)",
+                          "padding": "0.5rem 1rem",
+                          "border-radius": "0.5rem"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "elcaqbot",
+                      "type": "expression",
+                      "expression": "item.category"
+                    }
+                  ]
+                },
+                {
+                  "id": "z0yn9bsp",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "portfolio-overlay",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "position": "absolute",
+                          "top": "0",
+                          "left": "0",
+                          "right": "0",
+                          "bottom": "0",
+                          "background": "rgba(0, 0, 0, 0.8)",
+                          "color": "white",
+                          "display": "flex",
+                          "flex-direction": "column",
+                          "justify-content": "center",
+                          "align-items": "center",
+                          "opacity": "0",
+                          "transition": "opacity 0.3s ease",
+                          "text-align": "center",
+                          "padding": "2rem"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "ykft8puj",
+                      "type": "text",
+                      "tag": "h3",
+                      "name": "portfolio-item-title",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "font-size": "1.5rem",
+                              "font-weight": "700",
+                              "margin-bottom": "0.5rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "text": "{{ item.title }}",
+                      "marks": []
+                    },
+                    {
+                      "id": "tz9ek18o",
+                      "type": "text",
+                      "tag": "p",
+                      "name": "portfolio-item-category",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "color": "#d1d5db",
+                              "margin-bottom": "1.5rem",
+                              "font-size": "0.9rem",
+                              "text-transform": "uppercase",
+                              "letter-spacing": "0.05em"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "text": "{{ item.category }}",
+                      "marks": []
+                    },
+                    {
+                      "id": "ynto2out",
+                      "type": "container",
+                      "tag": "button",
+                      "name": "view-project",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "background": "#6366f1",
+                              "color": "white",
+                              "border": "none",
+                              "padding": "0.75rem 1.5rem",
+                              "border-radius": "0.5rem",
+                              "font-weight": "600",
+                              "cursor": "pointer",
+                              "transition": "background 0.3s ease"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "content": [
+                        {
+                          "id": "mcagylnz",
+                          "type": "text",
+                          "text": "View Project"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "jzp78hib",
+              "type": "container",
+              "tag": "div",
+              "name": "portfolio-info",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "padding": "1.5rem"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "t6cx9s34",
+                  "type": "text",
+                  "tag": "h3",
+                  "name": "portfolio-title",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "font-size": "1.25rem",
+                          "font-weight": "700",
+                          "color": "#1f2937",
+                          "margin-bottom": "0.5rem"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "text": "{{ item.title }}",
+                  "marks": []
+                },
+                {
+                  "id": "zivg3cne",
+                  "type": "text",
+                  "tag": "p",
+                  "name": "portfolio-description",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "color": "#6b7280",
+                          "line-height": "1.6",
+                          "margin-bottom": "1rem",
+                          "font-size": "0.95rem"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "text": "{{ item.description }}",
+                  "marks": []
+                },
+                {
+                  "id": "smlylgo9",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "portfolio-tags",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "display": "flex",
+                          "flex-wrap": "wrap",
+                          "gap": "0.5rem"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "p98mecd0",
+                      "type": "expression",
+                      "expression": "item.tags.map(tag => fragments.fragment_3({\n  tag\n}))"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_4",
+      "varName": "fragment_4"
+    },
+    {
+      "id": "rzrzfcih",
+      "params": [
+        {
+          "name": "tag",
+          "varName": "tag",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "t2jcvekk",
+          "type": "text",
+          "tag": "span",
+          "name": "portfolio-tag",
+          "stylesheet": {
+            "styles": {
+              "__base__": {
+                "__raw": {
+                  "background": "#6366f1",
+                  "color": "white",
+                  "font-size": "0.75rem",
+                  "font-weight": "600",
+                  "padding": "0.25rem 0.75rem",
+                  "border-radius": "1rem",
+                  "text-transform": "uppercase",
+                  "letter-spacing": "0.05em"
+                }
+              }
+            },
+            "conditions": {}
+          },
+          "text": "{{ tag }}",
+          "marks": []
+        }
+      ],
+      "name": "fragment_3",
+      "varName": "fragment_3"
+    },
+    {
+      "id": "q5d63b5c",
+      "params": [
+        {
+          "name": "category",
+          "varName": "category",
+          "required": true
+        },
+        {
+          "name": "selectedCategory",
+          "varName": "selectedCategory",
+          "required": true
+        },
+        {
+          "name": "setSelectedCategory",
+          "varName": "setSelectedCategory",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "hbgg1uki",
+          "type": "container",
+          "tag": "button",
+          "interactions": {
+            "click": {
+              "__expression": "() => setSelectedCategory(category)"
+            }
+          },
+          "content": [
+            {
+              "id": "lrug73ob",
+              "type": "expression",
+              "expression": "category"
+            }
+          ]
+        }
+      ],
+      "name": "fragment_2",
+      "varName": "fragment_2"
+    },
+    {
+      "id": "aiqw325a",
+      "content": [
+        {
+          "id": "rz3h9eo0",
+          "type": "component",
+          "componentUrl": "<<REF:../../components/layout/layout.component.js>>",
+          "content": [
+            {
+              "id": "apsiyxr5",
+              "type": "container",
+              "tag": "div",
+              "name": "loading",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "min-height": "80vh",
+                      "display": "flex",
+                      "align-items": "center",
+                      "justify-content": "center"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "qs3ka13v",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "spinner",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "width": "50px",
+                          "height": "50px",
+                          "border": "4px solid #e5e7eb",
+                          "border-top": "4px solid #6366f1",
+                          "border-radius": "50%",
+                          "animation": "spin 1s linear infinite"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_1",
+      "varName": "fragment_1"
+    }
+  ],
+  "states": [
+    {
+      "id": "f3tqlrsd",
+      "name": "state_1",
+      "varName": "state_1",
+      "type": "hook",
+      "argMode": "positional",
+      "args": {},
+      "hookUrl": "<<REF:../../hooks/usePortfolio.hook.js>>"
+    },
+    {
+      "id": "km771y3x",
+      "name": "state_2",
+      "varName": "state_2",
+      "type": "inline",
+      "script": "if (state_1.isLoading) {\n  return (\n    fragments.fragment_1()\n  );\n}\nreturn (\n  fragments.fragment_5({ categories: state_1.categories, selectedCategory: state_1.selectedCategory, setSelectedCategory: state_1.setSelectedCategory, portfolio: state_1.portfolio })\n);"
+    }
+  ],
+  "template": {
+    "id": "a5nnjca5",
+    "type": "expression",
+    "expression": "state_2"
+  },
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "component",
+        "componentUrl": "host"
+      }
+    }
+  }
+}

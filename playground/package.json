@@ -1,0 +1,21 @@
+{
+  "name": "@repo/playground",
+  "version": "1.0.0",
+  "keywords": [],
+  "author": "",
+  "type": "module",
+  "license": "ISC",
+  "description": "",
+  "scripts": {
+    "dev": "tsx --watch ./src/index.ts -w"
+  },
+  "dependencies": {
+    "@elllphnt/elementa-base": "workspace:*",
+    "@elllphnt/elementa-react-parser": "workspace:*",
+    "@elllphnt/elementa-generator": "workspace:*",
+    "@types/lodash.debounce": "^4.0.9",
+    "chokidar": "^3.6.0",
+    "globby": "^14.1.0",
+    "lodash.debounce": "^4.0.8"
+  }
+}

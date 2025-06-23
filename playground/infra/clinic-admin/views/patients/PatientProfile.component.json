@@ -1,0 +1,1054 @@
+{
+  "props": [],
+  "fragments": [
+    {
+      "id": "vu1r83ng",
+      "params": [
+        {
+          "name": "patient",
+          "varName": "patient",
+          "required": true
+        },
+        {
+          "name": "upcomingAppointments",
+          "varName": "upcomingAppointments",
+          "required": true
+        },
+        {
+          "name": "pastAppointments",
+          "varName": "pastAppointments",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "vfd299vq",
+          "type": "component",
+          "componentUrl": "<<REF:../../components/Layout.component.js>>",
+          "content": [
+            {
+              "id": "ycwx2cp9",
+              "type": "container",
+              "tag": "div",
+              "content": [
+                {
+                  "id": "l0qpxhid",
+                  "type": "container",
+                  "tag": "div",
+                  "content": [
+                    {
+                      "id": "l12o29f7",
+                      "type": "container",
+                      "tag": "div",
+                      "content": [
+                        {
+                          "id": "egagqsb7",
+                          "type": "container",
+                          "tag": "div",
+                          "content": [
+                            {
+                              "id": "w5ecyd2t",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "ujzxf9ph",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "content": [
+                                    {
+                                      "id": "jqbgobwl",
+                                      "type": "text",
+                                      "tag": "span",
+                                      "text": "{{ patient.firstName[0] }}\n                    {{ patient.lastName[0] }}",
+                                      "marks": []
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "xw917zp4",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "content": [
+                                    {
+                                      "id": "b6w138vk",
+                                      "type": "text",
+                                      "tag": "h1",
+                                      "text": "{{ patient.firstName }} {{ patient.lastName }}",
+                                      "marks": []
+                                    },
+                                    {
+                                      "id": "w88xj2zy",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "content": [
+                                        {
+                                          "id": "je0agpck",
+                                          "type": "text",
+                                          "tag": "span",
+                                          "text": "{{ patient.email }}",
+                                          "marks": []
+                                        },
+                                        {
+                                          "id": "vlee96y9",
+                                          "type": "text",
+                                          "tag": "span",
+                                          "text": "•",
+                                          "marks": []
+                                        },
+                                        {
+                                          "id": "pk2swd30",
+                                          "type": "text",
+                                          "tag": "span",
+                                          "text": "{{ patient.phone }}",
+                                          "marks": []
+                                        },
+                                        {
+                                          "id": "to02mx2a",
+                                          "type": "text",
+                                          "tag": "span",
+                                          "text": "•",
+                                          "marks": []
+                                        },
+                                        {
+                                          "id": "vpsev9k0",
+                                          "type": "text",
+                                          "tag": "span",
+                                          "text": "DOB: {{ new Date(patient.dateOfBirth).toLocaleDateString() }}",
+                                          "marks": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": "j6x2g58u",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "bop6dntk",
+                                  "type": "text",
+                                  "text": "Edit Patient",
+                                  "link": {
+                                    "type": "href",
+                                    "href": {
+                                      "__expression": "`/patients/${patient.id}/edit`"
+                                    }
+                                  }
+                                },
+                                {
+                                  "id": "yv66fqmn",
+                                  "type": "text",
+                                  "text": "View History",
+                                  "link": {
+                                    "type": "href",
+                                    "href": {
+                                      "__expression": "`/patients/${patient.id}/history`"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "zxhwh6b9",
+                  "type": "container",
+                  "tag": "div",
+                  "content": [
+                    {
+                      "id": "ars0yad6",
+                      "type": "container",
+                      "tag": "div",
+                      "content": [
+                        {
+                          "id": "k1mib6hd",
+                          "type": "container",
+                          "tag": "div",
+                          "content": [
+                            {
+                              "id": "ssll7nez",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "w3fd1ybq",
+                                  "type": "text",
+                                  "tag": "h3",
+                                  "text": "Patient Information",
+                                  "marks": []
+                                }
+                              ]
+                            },
+                            {
+                              "id": "qb2za1mt",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "yq847kio",
+                                  "type": "container",
+                                  "tag": "dl",
+                                  "content": [
+                                    {
+                                      "id": "quu8yf1z",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "content": [
+                                        {
+                                          "id": "ervbc4av",
+                                          "type": "container",
+                                          "tag": "dt",
+                                          "content": [
+                                            {
+                                              "id": "v5bcvut4",
+                                              "type": "text",
+                                              "text": "Full name"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "id": "cs1gkvec",
+                                          "type": "container",
+                                          "tag": "dd",
+                                          "content": [
+                                            {
+                                              "id": "zemswev9",
+                                              "type": "expression",
+                                              "expression": "patient.firstName"
+                                            },
+                                            {
+                                              "id": "b9u62q5u",
+                                              "type": "expression",
+                                              "expression": "patient.lastName"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "id": "lmqvje4r",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "content": [
+                                        {
+                                          "id": "ho13wvf3",
+                                          "type": "container",
+                                          "tag": "dt",
+                                          "content": [
+                                            {
+                                              "id": "obg9s7tm",
+                                              "type": "text",
+                                              "text": "Email address"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "id": "af9cfdlq",
+                                          "type": "container",
+                                          "tag": "dd",
+                                          "content": [
+                                            {
+                                              "id": "et6m8smz",
+                                              "type": "expression",
+                                              "expression": "patient.email"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "id": "bapsphgk",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "content": [
+                                        {
+                                          "id": "sj5r85n6",
+                                          "type": "container",
+                                          "tag": "dt",
+                                          "content": [
+                                            {
+                                              "id": "xaup1qxi",
+                                              "type": "text",
+                                              "text": "Phone number"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "id": "bt25v1zd",
+                                          "type": "container",
+                                          "tag": "dd",
+                                          "content": [
+                                            {
+                                              "id": "a3mdrr7a",
+                                              "type": "expression",
+                                              "expression": "patient.phone"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "id": "xytpual2",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "content": [
+                                        {
+                                          "id": "bndli0vm",
+                                          "type": "container",
+                                          "tag": "dt",
+                                          "content": [
+                                            {
+                                              "id": "xscqcawa",
+                                              "type": "text",
+                                              "text": "Date of birth"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "id": "klcraufu",
+                                          "type": "container",
+                                          "tag": "dd",
+                                          "content": [
+                                            {
+                                              "id": "m8x2299i",
+                                              "type": "expression",
+                                              "expression": "new Date(patient.dateOfBirth).toLocaleDateString()"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "id": "vs0tymww",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "content": [
+                                        {
+                                          "id": "q1fcjf9b",
+                                          "type": "container",
+                                          "tag": "dt",
+                                          "content": [
+                                            {
+                                              "id": "skwf57to",
+                                              "type": "text",
+                                              "text": "Address"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "id": "qu5c35xa",
+                                          "type": "container",
+                                          "tag": "dd",
+                                          "content": [
+                                            {
+                                              "id": "ek86nd7q",
+                                              "type": "expression",
+                                              "expression": "patient.address"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "s1326pmi",
+                          "type": "container",
+                          "tag": "div",
+                          "content": [
+                            {
+                              "id": "mhh8mgos",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "nta2lpk3",
+                                  "type": "text",
+                                  "tag": "h3",
+                                  "text": "Emergency Contact",
+                                  "marks": []
+                                }
+                              ]
+                            },
+                            {
+                              "id": "obsd0c4g",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "y99ub2fp",
+                                  "type": "container",
+                                  "tag": "dl",
+                                  "content": [
+                                    {
+                                      "id": "yiyhe2ph",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "content": [
+                                        {
+                                          "id": "qswxv595",
+                                          "type": "container",
+                                          "tag": "dt",
+                                          "content": [
+                                            {
+                                              "id": "yffzda6o",
+                                              "type": "text",
+                                              "text": "Name"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "id": "fn2zd6i1",
+                                          "type": "container",
+                                          "tag": "dd",
+                                          "content": [
+                                            {
+                                              "id": "flciuikl",
+                                              "type": "expression",
+                                              "expression": "patient.emergencyContact.name || \"Not provided\""
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "id": "zsqbowyp",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "content": [
+                                        {
+                                          "id": "yv4ng10s",
+                                          "type": "container",
+                                          "tag": "dt",
+                                          "content": [
+                                            {
+                                              "id": "sbpop62l",
+                                              "type": "text",
+                                              "text": "Phone"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "id": "pf1b9b30",
+                                          "type": "container",
+                                          "tag": "dd",
+                                          "content": [
+                                            {
+                                              "id": "anr1p7bd",
+                                              "type": "expression",
+                                              "expression": "patient.emergencyContact.phone || \"Not provided\""
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "id": "ffumjm15",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "content": [
+                                        {
+                                          "id": "xrl9h205",
+                                          "type": "container",
+                                          "tag": "dt",
+                                          "content": [
+                                            {
+                                              "id": "o35ouf58",
+                                              "type": "text",
+                                              "text": "Relationship"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "id": "l61doalh",
+                                          "type": "container",
+                                          "tag": "dd",
+                                          "content": [
+                                            {
+                                              "id": "qou07six",
+                                              "type": "expression",
+                                              "expression": "patient.emergencyContact.relationship || \"Not provided\""
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "pb7txkmk",
+                          "type": "container",
+                          "tag": "div",
+                          "content": [
+                            {
+                              "id": "h00ln4gr",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "snd2vg2h",
+                                  "type": "text",
+                                  "tag": "h3",
+                                  "text": "Medical History",
+                                  "marks": []
+                                }
+                              ]
+                            },
+                            {
+                              "id": "fq61i5g3",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "xify1laq",
+                                  "type": "expression",
+                                  "expression": "patient.medicalHistory.length > 0 ? fragments.fragment_4({\n  patient\n}) : fragments.fragment_5()"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "hnxtffmf",
+                      "type": "container",
+                      "tag": "div",
+                      "content": [
+                        {
+                          "id": "kurts41b",
+                          "type": "container",
+                          "tag": "div",
+                          "content": [
+                            {
+                              "id": "gliijz12",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "ai9yy010",
+                                  "type": "text",
+                                  "tag": "h3",
+                                  "text": "Upcoming Appointments",
+                                  "marks": []
+                                }
+                              ]
+                            },
+                            {
+                              "id": "au89he6d",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "y1p4xcvo",
+                                  "type": "expression",
+                                  "expression": "upcomingAppointments.length > 0 ? upcomingAppointments.slice(0, 3).map(appointment => fragments.fragment_6({\n  appointment\n})) : fragments.fragment_7()"
+                                }
+                              ]
+                            },
+                            {
+                              "id": "n9uh6dj2",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "y0ez8wk1",
+                                  "type": "text",
+                                  "text": "Schedule New Appointment",
+                                  "link": {
+                                    "type": "href",
+                                    "href": {
+                                      "__expression": "`/appointments/new?patientId=${patient.id}`"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "gkk44qz4",
+                          "type": "container",
+                          "tag": "div",
+                          "content": [
+                            {
+                              "id": "hi2p3572",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "udq4cf6j",
+                                  "type": "text",
+                                  "tag": "h3",
+                                  "text": "Recent Appointments",
+                                  "marks": []
+                                }
+                              ]
+                            },
+                            {
+                              "id": "kod9iqrv",
+                              "type": "container",
+                              "tag": "div",
+                              "content": [
+                                {
+                                  "id": "wnx1tzrr",
+                                  "type": "expression",
+                                  "expression": "pastAppointments.length > 0 ? pastAppointments.slice(0, 3).map(appointment => fragments.fragment_9({\n  appointment\n})) : fragments.fragment_10()"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_11",
+      "varName": "fragment_11"
+    },
+    {
+      "id": "dcmti9h6",
+      "content": [
+        {
+          "id": "i44q8fux",
+          "type": "container",
+          "tag": "div",
+          "content": [
+            {
+              "id": "vmp08ftd",
+              "type": "text",
+              "text": "No past appointments"
+            }
+          ]
+        }
+      ],
+      "name": "fragment_10",
+      "varName": "fragment_10"
+    },
+    {
+      "id": "meqi0095",
+      "params": [
+        {
+          "name": "appointment",
+          "varName": "appointment",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "t1bwt7ur",
+          "type": "container",
+          "tag": "div",
+          "content": [
+            {
+              "id": "akqe7o64",
+              "type": "container",
+              "tag": "div",
+              "content": [
+                {
+                  "id": "lpjga6mj",
+                  "type": "container",
+                  "tag": "div",
+                  "content": [
+                    {
+                      "id": "sx4u8uu9",
+                      "type": "container",
+                      "tag": "div",
+                      "content": [
+                        {
+                          "id": "ko8k8gf8",
+                          "type": "expression",
+                          "expression": "appointment.type.charAt(0).toUpperCase() + appointment.type.slice(1)"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "duti65ol",
+                      "type": "container",
+                      "tag": "div",
+                      "content": [
+                        {
+                          "id": "ncayq4h9",
+                          "type": "expression",
+                          "expression": "appointment.date"
+                        },
+                        {
+                          "id": "p1bbucw0",
+                          "type": "text",
+                          "text": "at"
+                        },
+                        {
+                          "id": "ie0aix90",
+                          "type": "expression",
+                          "expression": "appointment.time"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "ol91jylm",
+                      "type": "expression",
+                      "expression": "appointment.diagnosis && fragments.fragment_8({\n  appointment\n})"
+                    }
+                  ]
+                },
+                {
+                  "id": "zl2cqt5b",
+                  "type": "text",
+                  "tag": "span",
+                  "text": "{{ appointment.status }}",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_9",
+      "varName": "fragment_9"
+    },
+    {
+      "id": "s7ojc01y",
+      "params": [
+        {
+          "name": "appointment",
+          "varName": "appointment",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "yjbo9znk",
+          "type": "container",
+          "tag": "div",
+          "content": [
+            {
+              "id": "l7i1b5xv",
+              "type": "text",
+              "text": "Diagnosis:"
+            },
+            {
+              "id": "v172wxfv",
+              "type": "expression",
+              "expression": "appointment.diagnosis"
+            }
+          ]
+        }
+      ],
+      "name": "fragment_8",
+      "varName": "fragment_8"
+    },
+    {
+      "id": "lk1w8k6e",
+      "content": [
+        {
+          "id": "rhmh1s8c",
+          "type": "container",
+          "tag": "div",
+          "content": [
+            {
+              "id": "jcyaifo2",
+              "type": "text",
+              "text": "No upcoming appointments"
+            }
+          ]
+        }
+      ],
+      "name": "fragment_7",
+      "varName": "fragment_7"
+    },
+    {
+      "id": "wixwoiui",
+      "params": [
+        {
+          "name": "appointment",
+          "varName": "appointment",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "ajgdo6y5",
+          "type": "container",
+          "tag": "div",
+          "content": [
+            {
+              "id": "lwleyapl",
+              "type": "container",
+              "tag": "div",
+              "content": [
+                {
+                  "id": "v8hmkooi",
+                  "type": "container",
+                  "tag": "div",
+                  "content": [
+                    {
+                      "id": "yt61oov9",
+                      "type": "container",
+                      "tag": "div",
+                      "content": [
+                        {
+                          "id": "x94146ms",
+                          "type": "expression",
+                          "expression": "appointment.type.charAt(0).toUpperCase() + appointment.type.slice(1)"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "px7v4kqi",
+                      "type": "container",
+                      "tag": "div",
+                      "content": [
+                        {
+                          "id": "cc0g0un9",
+                          "type": "expression",
+                          "expression": "appointment.date"
+                        },
+                        {
+                          "id": "l2wl1xh0",
+                          "type": "text",
+                          "text": "at"
+                        },
+                        {
+                          "id": "c7lcv17k",
+                          "type": "expression",
+                          "expression": "appointment.time"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "u7e1ue0z",
+                      "type": "container",
+                      "tag": "div",
+                      "content": [
+                        {
+                          "id": "pymhnm5i",
+                          "type": "expression",
+                          "expression": "appointment.notes"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "j7b2krrt",
+                  "type": "text",
+                  "tag": "span",
+                  "text": "{{ appointment.status }}",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_6",
+      "varName": "fragment_6"
+    },
+    {
+      "id": "cig8r80m",
+      "content": [
+        {
+          "id": "cnvp5dvx",
+          "type": "text",
+          "tag": "p",
+          "text": "No medical history recorded",
+          "marks": []
+        }
+      ],
+      "name": "fragment_5",
+      "varName": "fragment_5"
+    },
+    {
+      "id": "d86dih1u",
+      "params": [
+        {
+          "name": "patient",
+          "varName": "patient",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "n22x8n5c",
+          "type": "container",
+          "tag": "div",
+          "content": [
+            {
+              "id": "m9j0gv9s",
+              "type": "expression",
+              "expression": "patient.medicalHistory.map((condition, index) => fragments.fragment_3({\n  index,\n  condition\n}))"
+            }
+          ]
+        }
+      ],
+      "name": "fragment_4",
+      "varName": "fragment_4"
+    },
+    {
+      "id": "c54b0mj9",
+      "params": [
+        {
+          "name": "index",
+          "varName": "index",
+          "required": true
+        },
+        {
+          "name": "condition",
+          "varName": "condition",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "nn59xhhl",
+          "type": "text",
+          "tag": "span",
+          "text": "{{ condition }}",
+          "marks": []
+        }
+      ],
+      "name": "fragment_3",
+      "varName": "fragment_3"
+    },
+    {
+      "id": "drskuaud",
+      "content": [
+        {
+          "id": "l4tnxilm",
+          "type": "component",
+          "componentUrl": "<<REF:../../components/Layout.component.js>>",
+          "content": [
+            {
+              "id": "hs282b7f",
+              "type": "container",
+              "tag": "div",
+              "content": [
+                {
+                  "id": "n9jdymaa",
+                  "type": "container",
+                  "tag": "div",
+                  "content": [
+                    {
+                      "id": "lht8ou2e",
+                      "type": "text",
+                      "text": "Patient with ID"
+                    },
+                    {
+                      "id": "adq6mcvz",
+                      "type": "expression",
+                      "expression": "props.patientId"
+                    },
+                    {
+                      "id": "sqpgh6ps",
+                      "type": "text",
+                      "text": "not found."
+                    }
+                  ]
+                },
+                {
+                  "id": "vy69j837",
+                  "type": "text",
+                  "text": "Back to Patients",
+                  "link": {
+                    "type": "href",
+                    "href": "/patients"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_2",
+      "varName": "fragment_2"
+    },
+    {
+      "id": "exgoy7iy",
+      "content": [
+        {
+          "id": "m26sczqs",
+          "type": "component",
+          "componentUrl": "<<REF:../../components/Layout.component.js>>",
+          "content": [
+            {
+              "id": "a8a02h38",
+              "type": "container",
+              "tag": "div",
+              "content": [
+                {
+                  "id": "e9n6kul4",
+                  "type": "container",
+                  "tag": "div",
+                  "content": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_1",
+      "varName": "fragment_1"
+    }
+  ],
+  "states": [
+    {
+      "id": "mt57uw02",
+      "name": "state_1",
+      "varName": "state_1",
+      "type": "hook",
+      "argMode": "positional",
+      "args": {},
+      "hookUrl": "<<REF:../../hooks/usePatients.hook.js>>"
+    },
+    {
+      "id": "fvz8mv2t",
+      "name": "state_2",
+      "varName": "state_2",
+      "type": "hook",
+      "argMode": "positional",
+      "args": {},
+      "hookUrl": "<<REF:../../hooks/useAppointments.hook.js>>"
+    },
+    {
+      "id": "n751qdjs",
+      "name": "state_3",
+      "varName": "state_3",
+      "type": "inline",
+      "script": "const patient = state_1.getPatientById(props.patientId);\nconst appointments = state_2.getAppointmentsByPatientId(props.patientId);\nconst upcomingAppointments = appointments\n  .filter((apt) => {\n    const aptDate = new Date(apt.date);\n    const today = new Date();\n    return aptDate >= today && apt.status !== \"cancelled\";\n  })\n  .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());\nconst pastAppointments = appointments\n  .filter((apt) => {\n    const aptDate = new Date(apt.date);\n    const today = new Date();\n    return aptDate < today || apt.status === \"completed\";\n  })\n  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());\nif (state_1.patientLoading || state_2.appointmentsLoading) {\n  return (\n    fragments.fragment_1()\n  );\n}\nif (!patient) {\n  return (\n    fragments.fragment_2()\n  );\n}\nreturn (\n  fragments.fragment_11({ patient, upcomingAppointments, pastAppointments })\n);"
+    }
+  ],
+  "template": {
+    "id": "voydl1nr",
+    "type": "expression",
+    "expression": "state_3"
+  },
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "component",
+        "componentUrl": "host"
+      }
+    }
+  }
+}

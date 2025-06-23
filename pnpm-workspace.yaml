@@ -5,3 +5,4 @@ packages:
   - packages/tools/*
   - packages/utils/*
   - workflows/*
+  - playground

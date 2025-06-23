@@ -1,0 +1,18 @@
+{
+  "name": "@repo/compile",
+  "version": "1.0.0",
+  "keywords": [],
+  "author": "",
+  "type": "module",
+  "license": "ISC",
+  "description": "",
+  "scripts": {
+    "dev": "tsx ./src/index.ts"
+  },
+  "dependencies": {
+    "globby": "^14.1.0",
+    "chokidar": "^3.6.0",
+    "@elllphnt/elementa-react-parser": "workspace:*",
+    "@elllphnt/elementa-base": "workspace:*"
+  }
+}

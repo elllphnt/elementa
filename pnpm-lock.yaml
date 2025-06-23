@@ -439,6 +439,55 @@ importers:
         specifier: ^3.2.2
         version: 3.2.4(@types/node@22.15.32)(@vitest/ui@3.1.2)(jiti@2.4.2)(jsdom@26.1.0)(lightningcss@1.30.1)(tsx@4.20.3)
 
+  packages/tools/generator:
+    dependencies:
+      '@babel/generator':
+        specifier: ^7.27.3
+        version: 7.27.5
+      '@babel/parser':
+        specifier: ^7.27.3
+        version: 7.27.5
+      '@babel/traverse':
+        specifier: ^7.27.3
+        version: 7.27.4
+      '@babel/types':
+        specifier: ^7.27.3
+        version: 7.27.6
+      '@elllphnt/elementa-base':
+        specifier: workspace:*
+        version: link:../../system/base
+      '@elllphnt/elementa-react-transpiler':
+        specifier: workspace:*
+        version: link:../transpiler
+      '@paralleldrive/cuid2':
+        specifier: ^2.2.2
+        version: 2.2.2
+      md5:
+        specifier: ^2.3.0
+        version: 2.3.0
+      postcss:
+        specifier: ^8.5.4
+        version: 8.5.6
+      ts-morph:
+        specifier: ^26.0.0
+        version: 26.0.0
+      zod:
+        specifier: ^3.25.67
+        version: 3.25.67
+    devDependencies:
+      '@repo/packup':
+        specifier: workspace:^
+        version: link:../../../workflows/packup
+      '@types/babel__generator':
+        specifier: ^7.27.0
+        version: 7.27.0
+      '@types/babel__traverse':
+        specifier: ^7.20.7
+        version: 7.20.7
+      deepmerge:
+        specifier: ^4.3.1
+        version: 4.3.1
+
   packages/tools/parser:
     dependencies:
       '@babel/generator':
@@ -506,7 +555,55 @@ importers:
         specifier: ^13.6.26
         version: 13.6.27
 
-  workflows/compiler:
+  playground:
+    dependencies:
+      '@elllphnt/elementa-base':
+        specifier: workspace:*
+        version: link:../packages/system/base
+      '@elllphnt/elementa-generator':
+        specifier: workspace:*
+        version: link:../packages/tools/generator
+      '@elllphnt/elementa-react-parser':
+        specifier: workspace:*
+        version: link:../packages/tools/parser
+      '@types/lodash.debounce':
+        specifier: ^4.0.9
+        version: 4.0.9
+      chokidar:
+        specifier: ^3.6.0
+        version: 3.6.0
+      globby:
+        specifier: ^14.1.0
+        version: 14.1.0
+      lodash.debounce:
+        specifier: ^4.0.8
+        version: 4.0.8
+
+  workflows/builder:
+    dependencies:
+      '@elllphnt/elementa-base':
+        specifier: workspace:*
+        version: link:../../packages/system/base
+      '@elllphnt/elementa-generator':
+        specifier: workspace:*
+        version: link:../../packages/tools/generator
+      '@elllphnt/elementa-react-parser':
+        specifier: workspace:*
+        version: link:../../packages/tools/parser
+      '@types/lodash.debounce':
+        specifier: ^4.0.9
+        version: 4.0.9
+      chokidar:
+        specifier: ^3.6.0
+        version: 3.6.0
+      globby:
+        specifier: ^14.1.0
+        version: 14.1.0
+      lodash.debounce:
+        specifier: ^4.0.8
+        version: 4.0.8
+
+  workflows/compile:
     dependencies:
       '@elllphnt/elementa-base':
         specifier: workspace:*
@@ -521,20 +618,7 @@ importers:
         specifier: ^14.1.0
         version: 14.1.0
 
-  workflows/parser:
-    dependencies:
-      '@elllphnt/elementa-base':
-        specifier: workspace:*
-        version: link:../../packages/system/base
-      '@elllphnt/elementa-react-parser':
-        specifier: workspace:*
-        version: link:../../packages/tools/parser
-      chokidar:
-        specifier: ^3.6.0
-        version: 3.6.0
-      globby:
-        specifier: ^14.1.0
-        version: 14.1.0
+  workflows/packup: {}
 
 packages:
 
@@ -1470,6 +1554,9 @@ packages:
   '@types/json5@0.0.29':
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
 
+  '@types/lodash.debounce@4.0.9':
+    resolution: {integrity: sha512-Ma5JcgTREwpLRwMM+XwBR7DaWe96nC38uCBDFKZWbNKD+osjVzdpnUSwBcqCptrp16sSOLBAUb50Car5I0TCsQ==}
+
   '@types/lodash@4.17.18':
     resolution: {integrity: sha512-KJ65INaxqxmU6EoCiJmRPZC9H9RVWCRd349tXM2M3O5NA7cY6YL7c0bHAHQ93NOfTObEQ004kd2QVHs/r0+m4g==}
 
@@ -1894,6 +1981,9 @@ packages:
     resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
     engines: {node: '>=10'}
 
+  charenc@0.0.2:
+    resolution: {integrity: sha512-yrLQ/yVUFXkzg7EDQsPieE/53+0RlaWTs+wBrvW36cyilJ2SaDWfl4Yj7MtLTXleV9uEKefbAGUPv2/iWSooRA==}
+
   check-error@2.1.1:
     resolution: {integrity: sha512-OAlb+T7V4Op9OwdkjmguYRqncdlx5JiofwOAUkmTF+jNdHwzTaTs4sRAGpzLF3oOz5xAyDGrPgeIDFQmDOTiJw==}
     engines: {node: '>= 16'}
@@ -1995,6 +2085,9 @@ packages:
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
+
+  crypt@0.0.2:
+    resolution: {integrity: sha512-mCxBlsHFYh9C+HVpiEacem8FEBnMXgU9gy4zmNC+SXAZNB/1idgp/aulFJ4FgCi7GPEVbfyng092GqL2k2rmow==}
 
   css.escape@1.5.1:
     resolution: {integrity: sha512-YUifsXXuknHlUsmlgyY0PKzgPOr7/FjCePfHNt0jxm83wHZi44VDMQ7/fGNkjY3/jV1MC+1CmZbaHzugyeRtpg==}
@@ -3082,6 +3175,9 @@ packages:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
     engines: {node: '>=10'}
 
+  lodash.debounce@4.0.8:
+    resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
+
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
 
@@ -3130,6 +3226,9 @@ packages:
 
   math-random@1.0.4:
     resolution: {integrity: sha512-rUxjysqif/BZQH2yhd5Aaq7vXMSx9NdEsQcyA07uEzIvxgI7zIr33gGsh+RU0/XjmQpCW7RsVof1vlkvQVCK5A==}
+
+  md5@2.3.0:
+    resolution: {integrity: sha512-T1GITYmFaKuO91vxyoQMFETst+O71VUPEU3ze5GNzDm0OWdP8v1ziTaAEPUr/3kLsY3Sftgz242A1SetQiDL7g==}
 
   media-typer@0.3.0:
     resolution: {integrity: sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==}
@@ -5220,6 +5319,10 @@ snapshots:
 
   '@types/json5@0.0.29': {}
 
+  '@types/lodash.debounce@4.0.9':
+    dependencies:
+      '@types/lodash': 4.17.18
+
   '@types/lodash@4.17.18': {}
 
   '@types/mime@1.3.5': {}
@@ -5929,6 +6032,8 @@ snapshots:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
 
+  charenc@0.0.2: {}
+
   check-error@2.1.1: {}
 
   chokidar@1.7.0:
@@ -6040,6 +6145,8 @@ snapshots:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
+
+  crypt@0.0.2: {}
 
   css.escape@1.5.1: {}
 
@@ -7287,6 +7394,8 @@ snapshots:
     dependencies:
       p-locate: 5.0.0
 
+  lodash.debounce@4.0.8: {}
+
   lodash.merge@4.6.2: {}
 
   lodash@4.17.21: {}
@@ -7325,6 +7434,12 @@ snapshots:
 
   math-random@1.0.4:
     optional: true
+
+  md5@2.3.0:
+    dependencies:
+      charenc: 0.0.2
+      crypt: 0.0.2
+      is-buffer: 1.1.6
 
   media-typer@0.3.0: {}
 

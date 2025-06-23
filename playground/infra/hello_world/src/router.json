@@ -1,0 +1,16 @@
+{
+  "routes": [
+    {
+      "id": "y13wnva1",
+      "path": "/"
+    }
+  ],
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "router",
+        "routerUrl": "host"
+      }
+    }
+  }
+}
