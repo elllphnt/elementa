@@ -1,0 +1,179 @@
+{
+  "props": [],
+  "fragments": [
+    {
+      "id": "emou6fr0",
+      "content": [
+        {
+          "id": "o58fqwvd",
+          "type": "container",
+          "tag": "section",
+          "name": "root",
+          "stylesheet": {
+            "styles": {
+              "__base__": {
+                "__raw": {
+                  "background": "linear-gradient(135deg, #1f2937 0%, #374151 100%)",
+                  "color": "white",
+                  "padding": "5rem 0"
+                }
+              }
+            },
+            "conditions": {}
+          },
+          "content": [
+            {
+              "id": "sv2jb5is",
+              "type": "container",
+              "tag": "div",
+              "name": "container",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "max-width": "800px",
+                      "margin": "0 auto",
+                      "padding": "0 2rem",
+                      "text-align": "center"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "ntzefmih",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "content",
+                  "stylesheet": {
+                    "styles": {},
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "r03dphoh",
+                      "type": "text",
+                      "tag": "h2",
+                      "name": "title",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "font-size": "2.5rem",
+                              "font-weight": "800",
+                              "margin-bottom": "1rem",
+                              "background": "linear-gradient(45deg, #ffffff, #e0e7ff)",
+                              "background-clip": "text",
+                              "-webkit-background-clip": "text",
+                              "-webkit-text-fill-color": "transparent"
+                            }
+                          },
+                          "raw-[%40media%20(max-width%3A%20768px)]": {
+                            "__raw": {
+                              "font-size": "2rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "text": "Ready to Start Your Project?",
+                      "marks": []
+                    },
+                    {
+                      "id": "hxx3mgzo",
+                      "type": "text",
+                      "tag": "p",
+                      "name": "description",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "font-size": "1.2rem",
+                              "line-height": "1.6",
+                              "margin-bottom": "2.5rem",
+                              "color": "#d1d5db"
+                            }
+                          },
+                          "raw-[%40media%20(max-width%3A%20768px)]": {
+                            "__raw": {
+                              "font-size": "1.1rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "text": "Let's collaborate to bring your vision to life. Get in touch with us\n            today and let's discuss how we can help you achieve your goals.",
+                      "marks": []
+                    },
+                    {
+                      "id": "a4dybd8t",
+                      "type": "container",
+                      "tag": "div",
+                      "name": "buttons",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "display": "flex",
+                              "gap": "1rem",
+                              "justify-content": "center",
+                              "flex-wrap": "wrap"
+                            }
+                          },
+                          "raw-[%40media%20(max-width%3A%20768px)]": {
+                            "__raw": {
+                              "flex-direction": "column",
+                              "align-items": "center"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "content": [
+                        {
+                          "id": "skivr0qj",
+                          "type": "text",
+                          "text": "Get Started",
+                          "link": {
+                            "type": "href",
+                            "href": "/contact"
+                          }
+                        },
+                        {
+                          "id": "wsftjo24",
+                          "type": "text",
+                          "text": "View Our Work",
+                          "link": {
+                            "type": "href",
+                            "href": "/portfolio"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_1",
+      "varName": "fragment_1"
+    }
+  ],
+  "template": {
+    "id": "srq8iv8o",
+    "type": "fragment",
+    "fragmentId": "emou6fr0",
+    "params": {}
+  },
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "component",
+        "componentUrl": "host"
+      }
+    }
+  }
+}

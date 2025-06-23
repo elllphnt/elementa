@@ -39,7 +39,7 @@ export async function generateRouter({
   }
 
   await context.out.write(
-    routerPath,
+    routeTreePath,
     generateRouteTreeScript({ routes: relativeRoutes })
   );
   await context.out.write(

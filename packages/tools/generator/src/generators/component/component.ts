@@ -1,7 +1,8 @@
 import { ComponentData, componentSchema } from "@elllphnt/elementa-base";
 import { transpileComponent } from "@elllphnt/elementa-react-transpiler";
+import { moduleRelativePath } from "../../_utils/path.js";
 import { GeneratorContext } from "../../context/context.js";
-import { jsAppPaths } from "../../js_app/paths.js";
+import { generateResource } from "../resource/resource.js";
 import { BuilderComponentTranspilerContext } from "./context.js";
 
 export async function generateComponent({
@@ -25,17 +26,32 @@ export async function generateComponent({
   const component = componentSchema.parse(
     JSON.parse(componentContent)
   ) as ComponentData;
-  const transpilerContext = new BuilderComponentTranspilerContext();
+  const transpilerContext = new BuilderComponentTranspilerContext({ url });
   const transpilation = transpileComponent(component, transpilerContext);
   const environment = await transpilerContext.resolveEnvironment();
   const componentCode = transpilation.generate(environment);
 
+  const cssCode = transpilerContext.getStylesheetCode();
+  const cssImportPath = moduleRelativePath(
+    transpilerContext.modulePath,
+    transpilerContext.cssPath
+  );
+  await context.out.write(transpilerContext.cssPath, cssCode);
+
   const moduleCode = [
     transpilerContext.importMap.toCode(),
+    `import "${cssImportPath}";`,
     `const Component = ${componentCode};`,
     `export default Component;`,
   ].join("\n");
 
-  const componentPath = jsAppPaths.resource(url);
-  await context.out.write(componentPath, moduleCode);
+  await context.out.write(transpilerContext.modulePath, moduleCode);
+
+  for (const dep of transpilerContext.dependencies) {
+    await generateResource({
+      url: dep,
+      context,
+      generatedResources,
+    });
+  }
 }

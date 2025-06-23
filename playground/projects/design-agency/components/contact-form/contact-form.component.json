@@ -1,0 +1,922 @@
+{
+  "props": [],
+  "fragments": [
+    {
+      "id": "q4j9h9oj",
+      "params": [
+        {
+          "name": "handleSubmit",
+          "varName": "handleSubmit",
+          "required": true
+        },
+        {
+          "name": "error",
+          "varName": "error",
+          "required": true
+        },
+        {
+          "name": "formData",
+          "varName": "formData",
+          "required": true
+        },
+        {
+          "name": "handleChange",
+          "varName": "handleChange",
+          "required": true
+        },
+        {
+          "name": "isSubmitting",
+          "varName": "isSubmitting",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "mjwnvmxb",
+          "type": "container",
+          "tag": "div",
+          "name": "root",
+          "stylesheet": {
+            "styles": {
+              "__base__": {
+                "__raw": {
+                  "padding": "3rem"
+                }
+              },
+              "raw-[%40media%20(max-width%3A%20768px)]": {
+                "__raw": {
+                  "padding": "2rem"
+                }
+              }
+            },
+            "conditions": {}
+          },
+          "content": [
+            {
+              "id": "bjjjg9rp",
+              "type": "container",
+              "tag": "form",
+              "interactions": {
+                "submit": {
+                  "__expression": "handleSubmit"
+                }
+              },
+              "name": "contact-form",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "max-width": "100%"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "guvf3tao",
+                  "type": "text",
+                  "tag": "h2",
+                  "name": "form-title",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "font-size": "1.75rem",
+                          "font-weight": "700",
+                          "color": "#1f2937",
+                          "margin-bottom": "2rem",
+                          "text-align": "center"
+                        }
+                      },
+                      "raw-[%40media%20(max-width%3A%20768px)]": {
+                        "__raw": {
+                          "font-size": "1.5rem"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "text": "Send us a message",
+                  "marks": []
+                },
+                {
+                  "id": "h38ld71l",
+                  "type": "expression",
+                  "expression": "error && fragments.fragment_2({\n  error\n})"
+                },
+                {
+                  "id": "y2kp9vpw",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "form-row",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "display": "grid",
+                          "grid-template-columns": "1fr 1fr",
+                          "gap": "1.5rem",
+                          "margin-bottom": "1.5rem"
+                        }
+                      },
+                      "raw-[%40media%20(max-width%3A%20768px)]": {
+                        "__raw": {
+                          "grid-template-columns": "1fr",
+                          "gap": "0"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "j3sbme8v",
+                      "type": "container",
+                      "tag": "div",
+                      "name": "form-group",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "margin-bottom": "1.5rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "content": [
+                        {
+                          "id": "il7m928r",
+                          "type": "text",
+                          "tag": "label",
+                          "name": "form-label",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "display": "block",
+                                  "font-weight": "600",
+                                  "color": "#374151",
+                                  "margin-bottom": "0.5rem",
+                                  "font-size": "0.9rem"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "text": "Name *",
+                          "marks": []
+                        },
+                        {
+                          "id": "l0w3w3jy",
+                          "type": "container",
+                          "tag": "input",
+                          "interactions": {
+                            "change": {
+                              "__expression": "handleChange"
+                            }
+                          },
+                          "name": "form-input",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "width": "100%",
+                                  "padding": "0.75rem",
+                                  "border": "2px solid #e5e7eb",
+                                  "border-radius": "0.5rem",
+                                  "font-size": "1rem",
+                                  "transition": "border-color 0.3s ease",
+                                  "background": "white"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "content": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": "qqijbk6m",
+                      "type": "container",
+                      "tag": "div",
+                      "name": "form-group",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "margin-bottom": "1.5rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "content": [
+                        {
+                          "id": "z73az72u",
+                          "type": "text",
+                          "tag": "label",
+                          "name": "form-label",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "display": "block",
+                                  "font-weight": "600",
+                                  "color": "#374151",
+                                  "margin-bottom": "0.5rem",
+                                  "font-size": "0.9rem"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "text": "Email *",
+                          "marks": []
+                        },
+                        {
+                          "id": "gobej4tt",
+                          "type": "container",
+                          "tag": "input",
+                          "interactions": {
+                            "change": {
+                              "__expression": "handleChange"
+                            }
+                          },
+                          "name": "form-input",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "width": "100%",
+                                  "padding": "0.75rem",
+                                  "border": "2px solid #e5e7eb",
+                                  "border-radius": "0.5rem",
+                                  "font-size": "1rem",
+                                  "transition": "border-color 0.3s ease",
+                                  "background": "white"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "content": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "elqucd54",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "form-group",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "margin-bottom": "1.5rem"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "c4up3tgn",
+                      "type": "text",
+                      "tag": "label",
+                      "name": "form-label",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "display": "block",
+                              "font-weight": "600",
+                              "color": "#374151",
+                              "margin-bottom": "0.5rem",
+                              "font-size": "0.9rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "text": "Company",
+                      "marks": []
+                    },
+                    {
+                      "id": "zllzst10",
+                      "type": "container",
+                      "tag": "input",
+                      "interactions": {
+                        "change": {
+                          "__expression": "handleChange"
+                        }
+                      },
+                      "name": "form-input",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "width": "100%",
+                              "padding": "0.75rem",
+                              "border": "2px solid #e5e7eb",
+                              "border-radius": "0.5rem",
+                              "font-size": "1rem",
+                              "transition": "border-color 0.3s ease",
+                              "background": "white"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "content": []
+                    }
+                  ]
+                },
+                {
+                  "id": "v885rz6c",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "form-group",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "margin-bottom": "1.5rem"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "d7c6ta12",
+                      "type": "text",
+                      "tag": "label",
+                      "name": "form-label",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "display": "block",
+                              "font-weight": "600",
+                              "color": "#374151",
+                              "margin-bottom": "0.5rem",
+                              "font-size": "0.9rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "text": "Service Interested In",
+                      "marks": []
+                    },
+                    {
+                      "id": "qsqbf2yf",
+                      "type": "container",
+                      "tag": "select",
+                      "interactions": {
+                        "change": {
+                          "__expression": "handleChange"
+                        }
+                      },
+                      "name": "form-select",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "width": "100%",
+                              "padding": "0.75rem",
+                              "border": "2px solid #e5e7eb",
+                              "border-radius": "0.5rem",
+                              "font-size": "1rem",
+                              "transition": "border-color 0.3s ease",
+                              "background": "white"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "content": [
+                        {
+                          "id": "nn5eera1",
+                          "type": "container",
+                          "tag": "option",
+                          "content": [
+                            {
+                              "id": "rgd2efik",
+                              "type": "text",
+                              "text": "Select a service"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "znyrrl37",
+                          "type": "container",
+                          "tag": "option",
+                          "content": [
+                            {
+                              "id": "tln7vxmm",
+                              "type": "text",
+                              "text": "Brand Identity Design"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "bidkrqlr",
+                          "type": "container",
+                          "tag": "option",
+                          "content": [
+                            {
+                              "id": "gdgwy4uv",
+                              "type": "text",
+                              "text": "Web Design & Development"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "ggfcuxw6",
+                          "type": "container",
+                          "tag": "option",
+                          "content": [
+                            {
+                              "id": "ia4oc8ou",
+                              "type": "text",
+                              "text": "Digital Strategy"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "ua3zqz0d",
+                          "type": "container",
+                          "tag": "option",
+                          "content": [
+                            {
+                              "id": "e17rg3zj",
+                              "type": "text",
+                              "text": "E-commerce Solutions"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "yg0u7e4x",
+                          "type": "container",
+                          "tag": "option",
+                          "content": [
+                            {
+                              "id": "hm2myxb0",
+                              "type": "text",
+                              "text": "Other"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "zbhbrjhk",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "form-group",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "margin-bottom": "1.5rem"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "wrg4id5o",
+                      "type": "text",
+                      "tag": "label",
+                      "name": "form-label",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "display": "block",
+                              "font-weight": "600",
+                              "color": "#374151",
+                              "margin-bottom": "0.5rem",
+                              "font-size": "0.9rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "text": "Budget Range",
+                      "marks": []
+                    },
+                    {
+                      "id": "pgxsn4ua",
+                      "type": "container",
+                      "tag": "select",
+                      "interactions": {
+                        "change": {
+                          "__expression": "handleChange"
+                        }
+                      },
+                      "name": "form-select",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "width": "100%",
+                              "padding": "0.75rem",
+                              "border": "2px solid #e5e7eb",
+                              "border-radius": "0.5rem",
+                              "font-size": "1rem",
+                              "transition": "border-color 0.3s ease",
+                              "background": "white"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "content": [
+                        {
+                          "id": "taxb6g58",
+                          "type": "container",
+                          "tag": "option",
+                          "content": [
+                            {
+                              "id": "t8sqmmxb",
+                              "type": "text",
+                              "text": "Select budget range"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "v5hl9qmm",
+                          "type": "container",
+                          "tag": "option",
+                          "content": [
+                            {
+                              "id": "e8qthlrr",
+                              "type": "text",
+                              "text": "Under $5,000"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "uhdirb6n",
+                          "type": "container",
+                          "tag": "option",
+                          "content": [
+                            {
+                              "id": "d21mtlyj",
+                              "type": "text",
+                              "text": "$5,000 - $10,000"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "qail87xf",
+                          "type": "container",
+                          "tag": "option",
+                          "content": [
+                            {
+                              "id": "h97h904k",
+                              "type": "text",
+                              "text": "$10,000 - $25,000"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "emr0r3s3",
+                          "type": "container",
+                          "tag": "option",
+                          "content": [
+                            {
+                              "id": "qcp1eejx",
+                              "type": "text",
+                              "text": "$25,000 - $50,000"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "vhwx3kiz",
+                          "type": "container",
+                          "tag": "option",
+                          "content": [
+                            {
+                              "id": "lexef5l9",
+                              "type": "text",
+                              "text": "Over $50,000"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "d3jjwxyd",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "form-group",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "margin-bottom": "1.5rem"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "it8hadt8",
+                      "type": "text",
+                      "tag": "label",
+                      "name": "form-label",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "display": "block",
+                              "font-weight": "600",
+                              "color": "#374151",
+                              "margin-bottom": "0.5rem",
+                              "font-size": "0.9rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "text": "Message *",
+                      "marks": []
+                    },
+                    {
+                      "id": "p02o8mam",
+                      "type": "container",
+                      "tag": "textarea",
+                      "interactions": {
+                        "change": {
+                          "__expression": "handleChange"
+                        }
+                      },
+                      "name": "form-textarea",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "resize": "vertical",
+                              "min-height": "120px"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "content": []
+                    }
+                  ]
+                },
+                {
+                  "id": "qwd6sjpo",
+                  "type": "container",
+                  "tag": "button",
+                  "name": "submit-button",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "width": "100%",
+                          "background": "#6366f1",
+                          "color": "white",
+                          "border": "none",
+                          "padding": "1rem 2rem",
+                          "border-radius": "0.75rem",
+                          "font-size": "1.1rem",
+                          "font-weight": "600",
+                          "cursor": "pointer",
+                          "transition": "all 0.3s ease",
+                          "margin-top": "1rem"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "jiek6pfz",
+                      "type": "expression",
+                      "expression": "isSubmitting ? \"Sending...\" : \"Send Message\""
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_3",
+      "varName": "fragment_3"
+    },
+    {
+      "id": "rq8926gg",
+      "params": [
+        {
+          "name": "error",
+          "varName": "error",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "cipmbjnl",
+          "type": "container",
+          "tag": "div",
+          "name": "error-message",
+          "stylesheet": {
+            "styles": {
+              "__base__": {
+                "__raw": {
+                  "background": "#fef2f2",
+                  "border": "1px solid #fecaca",
+                  "color": "#dc2626",
+                  "padding": "1rem",
+                  "border-radius": "0.5rem",
+                  "margin-bottom": "1.5rem",
+                  "font-size": "0.9rem"
+                }
+              }
+            },
+            "conditions": {}
+          },
+          "content": [
+            {
+              "id": "d5l1nohy",
+              "type": "expression",
+              "expression": "error"
+            }
+          ]
+        }
+      ],
+      "name": "fragment_2",
+      "varName": "fragment_2"
+    },
+    {
+      "id": "alyhfaek",
+      "content": [
+        {
+          "id": "zrt8vwtd",
+          "type": "container",
+          "tag": "div",
+          "name": "root",
+          "stylesheet": {
+            "styles": {
+              "__base__": {
+                "__raw": {
+                  "padding": "3rem"
+                }
+              },
+              "raw-[%40media%20(max-width%3A%20768px)]": {
+                "__raw": {
+                  "padding": "2rem"
+                }
+              }
+            },
+            "conditions": {}
+          },
+          "content": [
+            {
+              "id": "vdlrscts",
+              "type": "container",
+              "tag": "div",
+              "name": "success-message",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "text-align": "center",
+                      "padding": "3rem"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "phsqdkqd",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "success-icon",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "width": "80px",
+                          "height": "80px",
+                          "background": "#10b981",
+                          "color": "white",
+                          "border-radius": "50%",
+                          "display": "flex",
+                          "align-items": "center",
+                          "justify-content": "center",
+                          "font-size": "2rem",
+                          "font-weight": "bold",
+                          "margin": "0 auto 1.5rem"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "vigy013c",
+                      "type": "text",
+                      "text": "✓"
+                    }
+                  ]
+                },
+                {
+                  "id": "ms6bo2gz",
+                  "type": "text",
+                  "tag": "h3",
+                  "name": "success-title",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "font-size": "1.5rem",
+                          "font-weight": "700",
+                          "color": "#1f2937",
+                          "margin-bottom": "1rem"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "text": "Message Sent!",
+                  "marks": []
+                },
+                {
+                  "id": "mszkrgoa",
+                  "type": "text",
+                  "tag": "p",
+                  "name": "success-text",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "color": "#6b7280",
+                          "line-height": "1.6"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "text": "Thank you for reaching out. We'll get back to you within 24 hours.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_1",
+      "varName": "fragment_1"
+    }
+  ],
+  "states": [
+    {
+      "id": "p8xgqfo4",
+      "name": "state_1",
+      "varName": "state_1",
+      "type": "hook",
+      "argMode": "positional",
+      "args": {},
+      "hookUrl": "<<REF:~/hooks/useContactForm.hook.js>>"
+    },
+    {
+      "id": "xyjlukx1",
+      "name": "state_2",
+      "varName": "state_2",
+      "type": "inline",
+      "script": "if (state_1.isSubmitted) {\n  return (\n    fragments.fragment_1()\n  );\n}\nreturn (\n  fragments.fragment_3({ handleSubmit: state_1.handleSubmit, error: state_1.error, formData: state_1.formData, handleChange: state_1.handleChange, isSubmitting: state_1.isSubmitting })\n);"
+    }
+  ],
+  "template": {
+    "id": "u1scnxpu",
+    "type": "expression",
+    "expression": "state_2"
+  },
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "component",
+        "componentUrl": "host"
+      }
+    }
+  }
+}

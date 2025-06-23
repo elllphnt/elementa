@@ -15,9 +15,14 @@ export function transpileComponent(
 
   const states = data.states?.map((state) => transpileState(state, context));
   const fragments =
-    data.fragments?.map(
-      (fragment) => [fragment.id, transpileFragment(fragment, context)] as const
-    ) || [];
+    data.fragments?.flatMap((fragment) => {
+      const result = transpileFragment(fragment, context);
+      const entries = [[fragment.id, result] as const];
+      if (fragment.varName) {
+        entries.push([fragment.varName, result] as const);
+      }
+      return entries;
+    }) || [];
 
   return {
     generate: (env) => {
@@ -36,9 +41,9 @@ export function transpileComponent(
 
       return [
         `(props) => {`,
-        ...stateCode,
         `const fills = props.__fills || {};`,
         `const fragments = ${fragmentsCode};`,
+        ...stateCode,
         `return (${templateCode})`,
         `}`,
       ].join("\n");

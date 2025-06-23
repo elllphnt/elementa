@@ -1,0 +1,715 @@
+{
+  "props": [],
+  "fragments": [
+    {
+      "id": "ceuh9c95",
+      "content": [
+        {
+          "id": "k8d0fscs",
+          "type": "component",
+          "componentUrl": "<<REF:../../components/layout/layout.component.js>>",
+          "content": [
+            {
+              "id": "n6nvx74v",
+              "type": "container",
+              "tag": "div",
+              "name": "root",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "min-height": "100vh"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "y4g010ne",
+                  "type": "container",
+                  "tag": "section",
+                  "name": "hero",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "background": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                          "color": "white",
+                          "padding": "5rem 0",
+                          "text-align": "center"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "f9yyb31h",
+                      "type": "container",
+                      "tag": "div",
+                      "name": "hero-container",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "max-width": "800px",
+                              "margin": "0 auto",
+                              "padding": "0 2rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "content": [
+                        {
+                          "id": "aj5le8rx",
+                          "type": "text",
+                          "tag": "h1",
+                          "name": "hero-title",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "font-size": "3rem",
+                                  "font-weight": "800",
+                                  "margin-bottom": "1.5rem"
+                                }
+                              },
+                              "raw-[%40media%20(max-width%3A%20768px)]": {
+                                "__raw": {
+                                  "font-size": "2rem"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "text": "Get In Touch",
+                          "marks": []
+                        },
+                        {
+                          "id": "bmkskoz7",
+                          "type": "text",
+                          "tag": "p",
+                          "name": "hero-subtitle",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "font-size": "1.25rem",
+                                  "line-height": "1.6",
+                                  "color": "#e0e7ff"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "text": "Ready to start your project? Let's discuss how we can help bring\n              your vision to life.",
+                          "marks": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "ops8xbz1",
+                  "type": "container",
+                  "tag": "section",
+                  "name": "contact-section",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "padding": "5rem 0",
+                          "background": "#f8fafc"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "eb1o7vlt",
+                      "type": "container",
+                      "tag": "div",
+                      "name": "contact-container",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "max-width": "1200px",
+                              "margin": "0 auto",
+                              "padding": "0 2rem",
+                              "display": "grid",
+                              "grid-template-columns": "1fr 1fr",
+                              "gap": "4rem",
+                              "align-items": "start"
+                            }
+                          },
+                          "raw-[%40media%20(max-width%3A%20768px)]": {
+                            "__raw": {
+                              "grid-template-columns": "1fr",
+                              "gap": "2rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "content": [
+                        {
+                          "id": "yj21em72",
+                          "type": "container",
+                          "tag": "div",
+                          "name": "contact-info",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "background": "white",
+                                  "padding": "3rem",
+                                  "border-radius": "1rem",
+                                  "box-shadow": "0 4px 6px rgba(0, 0, 0, 0.05)"
+                                }
+                              },
+                              "raw-[%40media%20(max-width%3A%20768px)]": {
+                                "__raw": {
+                                  "padding": "2rem"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "content": [
+                            {
+                              "id": "wlv2fbbx",
+                              "type": "text",
+                              "tag": "h2",
+                              "name": "contact-info-title",
+                              "stylesheet": {
+                                "styles": {
+                                  "__base__": {
+                                    "__raw": {
+                                      "font-size": "2rem",
+                                      "font-weight": "800",
+                                      "color": "#1f2937",
+                                      "margin-bottom": "1rem"
+                                    }
+                                  },
+                                  "raw-[%40media%20(max-width%3A%20768px)]": {
+                                    "__raw": {
+                                      "font-size": "1.5rem"
+                                    }
+                                  }
+                                },
+                                "conditions": {}
+                              },
+                              "text": "Let's Start a Conversation",
+                              "marks": []
+                            },
+                            {
+                              "id": "jz2a8hb5",
+                              "type": "text",
+                              "tag": "p",
+                              "name": "contact-info-description",
+                              "stylesheet": {
+                                "styles": {
+                                  "__base__": {
+                                    "__raw": {
+                                      "color": "#6b7280",
+                                      "line-height": "1.6",
+                                      "margin-bottom": "2.5rem"
+                                    }
+                                  }
+                                },
+                                "conditions": {}
+                              },
+                              "text": "We'd love to hear about your project and discuss how we can\n                help. Reach out to us and we'll get back to you within 24 hours.",
+                              "marks": []
+                            },
+                            {
+                              "id": "p291zhh8",
+                              "type": "container",
+                              "tag": "div",
+                              "name": "contact-methods",
+                              "stylesheet": {
+                                "styles": {
+                                  "__base__": {
+                                    "__raw": {
+                                      "margin-bottom": "2.5rem"
+                                    }
+                                  }
+                                },
+                                "conditions": {}
+                              },
+                              "content": [
+                                {
+                                  "id": "y61aw1r0",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "name": "contact-method",
+                                  "stylesheet": {
+                                    "styles": {
+                                      "__base__": {
+                                        "__raw": {
+                                          "display": "flex",
+                                          "align-items": "flex-start",
+                                          "gap": "1rem",
+                                          "margin-bottom": "2rem"
+                                        }
+                                      }
+                                    },
+                                    "conditions": {}
+                                  },
+                                  "content": [
+                                    {
+                                      "id": "ir4p7yf7",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "name": "contact-icon",
+                                      "stylesheet": {
+                                        "styles": {
+                                          "__base__": {
+                                            "__raw": {
+                                              "font-size": "1.5rem",
+                                              "background": "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                                              "width": "50px",
+                                              "height": "50px",
+                                              "border-radius": "0.75rem",
+                                              "display": "flex",
+                                              "align-items": "center",
+                                              "justify-content": "center",
+                                              "flex-shrink": "0"
+                                            }
+                                          }
+                                        },
+                                        "conditions": {}
+                                      },
+                                      "content": [
+                                        {
+                                          "id": "okqw4uvr",
+                                          "type": "text",
+                                          "text": "📧"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "id": "fdxjsq0r",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "name": "contact-details",
+                                      "stylesheet": {
+                                        "styles": {},
+                                        "conditions": {}
+                                      },
+                                      "content": [
+                                        {
+                                          "id": "fgopezk8",
+                                          "type": "text",
+                                          "tag": "h3",
+                                          "name": "contact-method-title",
+                                          "stylesheet": {
+                                            "styles": {
+                                              "__base__": {
+                                                "__raw": {
+                                                  "font-size": "1.1rem",
+                                                  "font-weight": "600",
+                                                  "color": "#1f2937",
+                                                  "margin-bottom": "0.25rem"
+                                                }
+                                              }
+                                            },
+                                            "conditions": {}
+                                          },
+                                          "text": "Email",
+                                          "marks": []
+                                        },
+                                        {
+                                          "id": "cwchhlf4",
+                                          "type": "text",
+                                          "tag": "p",
+                                          "name": "contact-method-value",
+                                          "stylesheet": {
+                                            "styles": {
+                                              "__base__": {
+                                                "__raw": {
+                                                  "color": "#6b7280",
+                                                  "line-height": "1.5"
+                                                }
+                                              }
+                                            },
+                                            "conditions": {}
+                                          },
+                                          "text": "hello@designco.com",
+                                          "marks": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "e8njp1cz",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "name": "contact-method",
+                                  "stylesheet": {
+                                    "styles": {
+                                      "__base__": {
+                                        "__raw": {
+                                          "display": "flex",
+                                          "align-items": "flex-start",
+                                          "gap": "1rem",
+                                          "margin-bottom": "2rem"
+                                        }
+                                      }
+                                    },
+                                    "conditions": {}
+                                  },
+                                  "content": [
+                                    {
+                                      "id": "j6zubrk9",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "name": "contact-icon",
+                                      "stylesheet": {
+                                        "styles": {
+                                          "__base__": {
+                                            "__raw": {
+                                              "font-size": "1.5rem",
+                                              "background": "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                                              "width": "50px",
+                                              "height": "50px",
+                                              "border-radius": "0.75rem",
+                                              "display": "flex",
+                                              "align-items": "center",
+                                              "justify-content": "center",
+                                              "flex-shrink": "0"
+                                            }
+                                          }
+                                        },
+                                        "conditions": {}
+                                      },
+                                      "content": [
+                                        {
+                                          "id": "jqy1dzw2",
+                                          "type": "text",
+                                          "text": "📞"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "id": "r99w69oq",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "name": "contact-details",
+                                      "stylesheet": {
+                                        "styles": {},
+                                        "conditions": {}
+                                      },
+                                      "content": [
+                                        {
+                                          "id": "ppy9t511",
+                                          "type": "text",
+                                          "tag": "h3",
+                                          "name": "contact-method-title",
+                                          "stylesheet": {
+                                            "styles": {
+                                              "__base__": {
+                                                "__raw": {
+                                                  "font-size": "1.1rem",
+                                                  "font-weight": "600",
+                                                  "color": "#1f2937",
+                                                  "margin-bottom": "0.25rem"
+                                                }
+                                              }
+                                            },
+                                            "conditions": {}
+                                          },
+                                          "text": "Phone",
+                                          "marks": []
+                                        },
+                                        {
+                                          "id": "iak4u66c",
+                                          "type": "text",
+                                          "tag": "p",
+                                          "name": "contact-method-value",
+                                          "stylesheet": {
+                                            "styles": {
+                                              "__base__": {
+                                                "__raw": {
+                                                  "color": "#6b7280",
+                                                  "line-height": "1.5"
+                                                }
+                                              }
+                                            },
+                                            "conditions": {}
+                                          },
+                                          "text": "+1 (555) 123-4567",
+                                          "marks": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "bq5zx5h1",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "name": "contact-method",
+                                  "stylesheet": {
+                                    "styles": {
+                                      "__base__": {
+                                        "__raw": {
+                                          "display": "flex",
+                                          "align-items": "flex-start",
+                                          "gap": "1rem",
+                                          "margin-bottom": "2rem"
+                                        }
+                                      }
+                                    },
+                                    "conditions": {}
+                                  },
+                                  "content": [
+                                    {
+                                      "id": "zu9jk38r",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "name": "contact-icon",
+                                      "stylesheet": {
+                                        "styles": {
+                                          "__base__": {
+                                            "__raw": {
+                                              "font-size": "1.5rem",
+                                              "background": "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                                              "width": "50px",
+                                              "height": "50px",
+                                              "border-radius": "0.75rem",
+                                              "display": "flex",
+                                              "align-items": "center",
+                                              "justify-content": "center",
+                                              "flex-shrink": "0"
+                                            }
+                                          }
+                                        },
+                                        "conditions": {}
+                                      },
+                                      "content": [
+                                        {
+                                          "id": "guzhe8mx",
+                                          "type": "text",
+                                          "text": "📍"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "id": "l4d4sc71",
+                                      "type": "container",
+                                      "tag": "div",
+                                      "name": "contact-details",
+                                      "stylesheet": {
+                                        "styles": {},
+                                        "conditions": {}
+                                      },
+                                      "content": [
+                                        {
+                                          "id": "vy4h0o7q",
+                                          "type": "text",
+                                          "tag": "h3",
+                                          "name": "contact-method-title",
+                                          "stylesheet": {
+                                            "styles": {
+                                              "__base__": {
+                                                "__raw": {
+                                                  "font-size": "1.1rem",
+                                                  "font-weight": "600",
+                                                  "color": "#1f2937",
+                                                  "margin-bottom": "0.25rem"
+                                                }
+                                              }
+                                            },
+                                            "conditions": {}
+                                          },
+                                          "text": "Office",
+                                          "marks": []
+                                        },
+                                        {
+                                          "id": "hgwmtf83",
+                                          "type": "text",
+                                          "tag": "p",
+                                          "name": "contact-method-value",
+                                          "stylesheet": {
+                                            "styles": {
+                                              "__base__": {
+                                                "__raw": {
+                                                  "color": "#6b7280",
+                                                  "line-height": "1.5"
+                                                }
+                                              }
+                                            },
+                                            "conditions": {}
+                                          },
+                                          "text": "123 Design Street\n                      \n                      Creative District, CD 12345",
+                                          "marks": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": "x240jmqk",
+                              "type": "container",
+                              "tag": "div",
+                              "name": "social-section",
+                              "stylesheet": {
+                                "styles": {
+                                  "__base__": {
+                                    "__raw": {
+                                      "border-top": "1px solid #e5e7eb",
+                                      "padding-top": "2rem"
+                                    }
+                                  }
+                                },
+                                "conditions": {}
+                              },
+                              "content": [
+                                {
+                                  "id": "znulngjc",
+                                  "type": "text",
+                                  "tag": "h3",
+                                  "name": "social-title",
+                                  "stylesheet": {
+                                    "styles": {
+                                      "__base__": {
+                                        "__raw": {
+                                          "font-size": "1.1rem",
+                                          "font-weight": "600",
+                                          "color": "#1f2937",
+                                          "margin-bottom": "1rem"
+                                        }
+                                      }
+                                    },
+                                    "conditions": {}
+                                  },
+                                  "text": "Follow Us",
+                                  "marks": []
+                                },
+                                {
+                                  "id": "m9oneqto",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "name": "social-links",
+                                  "stylesheet": {
+                                    "styles": {
+                                      "__base__": {
+                                        "__raw": {
+                                          "display": "flex",
+                                          "gap": "1rem",
+                                          "flex-wrap": "wrap"
+                                        }
+                                      }
+                                    },
+                                    "conditions": {}
+                                  },
+                                  "content": [
+                                    {
+                                      "id": "a7y4nnta",
+                                      "type": "text",
+                                      "text": "Twitter",
+                                      "link": {
+                                        "type": "href",
+                                        "href": "#"
+                                      }
+                                    },
+                                    {
+                                      "id": "dbgfsq2f",
+                                      "type": "text",
+                                      "text": "Instagram",
+                                      "link": {
+                                        "type": "href",
+                                        "href": "#"
+                                      }
+                                    },
+                                    {
+                                      "id": "dd6qcwog",
+                                      "type": "text",
+                                      "text": "LinkedIn",
+                                      "link": {
+                                        "type": "href",
+                                        "href": "#"
+                                      }
+                                    },
+                                    {
+                                      "id": "peddtwm4",
+                                      "type": "text",
+                                      "text": "Dribbble",
+                                      "link": {
+                                        "type": "href",
+                                        "href": "#"
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "lgcxwn2h",
+                          "type": "container",
+                          "tag": "div",
+                          "name": "form-section",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "background": "white",
+                                  "border-radius": "1rem",
+                                  "box-shadow": "0 4px 6px rgba(0, 0, 0, 0.05)"
+                                }
+                              },
+                              "raw-[%40media%20(max-width%3A%20768px)]": {
+                                "__raw": {
+                                  "padding": "2rem"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "content": [
+                            {
+                              "id": "dj0b50j7",
+                              "type": "component",
+                              "componentUrl": "<<REF:../../components/contact-form/contact-form.component.js>>",
+                              "content": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_1",
+      "varName": "fragment_1"
+    }
+  ],
+  "template": {
+    "id": "be354cou",
+    "type": "fragment",
+    "fragmentId": "ceuh9c95",
+    "params": {}
+  },
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "component",
+        "componentUrl": "host"
+      }
+    }
+  }
+}

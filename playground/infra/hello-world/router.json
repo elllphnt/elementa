@@ -1,0 +1,17 @@
+{
+  "routes": [
+    {
+      "id": "tp7ns3iy",
+      "path": "/",
+      "mainViewUrl": "<<REF:~/views/home.component.tsx>>"
+    }
+  ],
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "router",
+        "routerUrl": "host"
+      }
+    }
+  }
+}

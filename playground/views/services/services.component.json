@@ -1,0 +1,1089 @@
+{
+  "props": [],
+  "fragments": [
+    {
+      "id": "i29shlhr",
+      "params": [
+        {
+          "name": "services",
+          "varName": "services",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "c44s8rub",
+          "type": "component",
+          "componentUrl": "<<REF:../../components/layout/layout.component.js>>",
+          "content": [
+            {
+              "id": "tmv9a24w",
+              "type": "container",
+              "tag": "div",
+              "name": "root",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "min-height": "100vh"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "whpfk1c8",
+                  "type": "container",
+                  "tag": "section",
+                  "name": "hero",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "background": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                          "color": "white",
+                          "padding": "5rem 0",
+                          "text-align": "center"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "x0kxanpm",
+                      "type": "container",
+                      "tag": "div",
+                      "name": "hero-container",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "max-width": "800px",
+                              "margin": "0 auto",
+                              "padding": "0 2rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "content": [
+                        {
+                          "id": "fhc32mxp",
+                          "type": "text",
+                          "tag": "h1",
+                          "name": "hero-title",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "font-size": "3rem",
+                                  "font-weight": "800",
+                                  "margin-bottom": "1.5rem"
+                                }
+                              },
+                              "raw-[%40media%20(max-width%3A%20768px)]": {
+                                "__raw": {
+                                  "font-size": "2rem"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "text": "Our Services",
+                          "marks": []
+                        },
+                        {
+                          "id": "izgtrwqk",
+                          "type": "text",
+                          "tag": "p",
+                          "name": "hero-subtitle",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "font-size": "1.25rem",
+                                  "line-height": "1.6",
+                                  "color": "#e0e7ff"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "text": "Comprehensive design and strategy solutions to help your business\n              thrive in the digital world.",
+                          "marks": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "e9wuh70t",
+                  "type": "container",
+                  "tag": "section",
+                  "name": "services-section",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "padding": "5rem 0",
+                          "background": "#f8fafc"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "xp377xbb",
+                      "type": "container",
+                      "tag": "div",
+                      "name": "services-container",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "max-width": "1200px",
+                              "margin": "0 auto",
+                              "padding": "0 2rem",
+                              "display": "grid",
+                              "gap": "3rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "content": [
+                        {
+                          "id": "fbdkwi42",
+                          "type": "expression",
+                          "expression": "services.map(service => fragments.fragment_3({\n  service\n}))"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "yim6f3qp",
+                  "type": "container",
+                  "tag": "section",
+                  "name": "process",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "padding": "5rem 0",
+                          "background": "white"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "xuhbhh23",
+                      "type": "container",
+                      "tag": "div",
+                      "name": "process-container",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "max-width": "1200px",
+                              "margin": "0 auto",
+                              "padding": "0 2rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "content": [
+                        {
+                          "id": "j4wvbe40",
+                          "type": "text",
+                          "tag": "h2",
+                          "name": "process-title",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "font-size": "2.5rem",
+                                  "font-weight": "800",
+                                  "color": "#1f2937",
+                                  "text-align": "center",
+                                  "margin-bottom": "3rem"
+                                }
+                              },
+                              "raw-[%40media%20(max-width%3A%20768px)]": {
+                                "__raw": {
+                                  "font-size": "2rem"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "text": "Our Process",
+                          "marks": []
+                        },
+                        {
+                          "id": "r2qdkr2r",
+                          "type": "container",
+                          "tag": "div",
+                          "name": "process-steps",
+                          "stylesheet": {
+                            "styles": {
+                              "__base__": {
+                                "__raw": {
+                                  "display": "grid",
+                                  "grid-template-columns": "repeat(auto-fit, minmax(200px, 1fr))",
+                                  "gap": "2rem"
+                                }
+                              }
+                            },
+                            "conditions": {}
+                          },
+                          "content": [
+                            {
+                              "id": "az6zrlpf",
+                              "type": "container",
+                              "tag": "div",
+                              "name": "process-step",
+                              "stylesheet": {
+                                "styles": {
+                                  "__base__": {
+                                    "__raw": {
+                                      "text-align": "center",
+                                      "padding": "2rem 1rem"
+                                    }
+                                  }
+                                },
+                                "conditions": {}
+                              },
+                              "content": [
+                                {
+                                  "id": "ucchl8io",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "name": "step-number",
+                                  "stylesheet": {
+                                    "styles": {
+                                      "__base__": {
+                                        "__raw": {
+                                          "width": "60px",
+                                          "height": "60px",
+                                          "background": "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                                          "color": "white",
+                                          "border-radius": "50%",
+                                          "display": "flex",
+                                          "align-items": "center",
+                                          "justify-content": "center",
+                                          "font-size": "1.5rem",
+                                          "font-weight": "bold",
+                                          "margin": "0 auto 1.5rem"
+                                        }
+                                      }
+                                    },
+                                    "conditions": {}
+                                  },
+                                  "content": [
+                                    {
+                                      "id": "l00rjktc",
+                                      "type": "text",
+                                      "text": "1"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "h3avm963",
+                                  "type": "text",
+                                  "tag": "h3",
+                                  "name": "step-title",
+                                  "stylesheet": {
+                                    "styles": {
+                                      "__base__": {
+                                        "__raw": {
+                                          "font-size": "1.25rem",
+                                          "font-weight": "700",
+                                          "color": "#1f2937",
+                                          "margin-bottom": "1rem"
+                                        }
+                                      }
+                                    },
+                                    "conditions": {}
+                                  },
+                                  "text": "Discovery",
+                                  "marks": []
+                                },
+                                {
+                                  "id": "jg8d67nn",
+                                  "type": "text",
+                                  "tag": "p",
+                                  "name": "step-description",
+                                  "stylesheet": {
+                                    "styles": {
+                                      "__base__": {
+                                        "__raw": {
+                                          "color": "#6b7280",
+                                          "line-height": "1.6"
+                                        }
+                                      }
+                                    },
+                                    "conditions": {}
+                                  },
+                                  "text": "We start by understanding your business, goals, and target\n                  audience.",
+                                  "marks": []
+                                }
+                              ]
+                            },
+                            {
+                              "id": "cdxc1kmy",
+                              "type": "container",
+                              "tag": "div",
+                              "name": "process-step",
+                              "stylesheet": {
+                                "styles": {
+                                  "__base__": {
+                                    "__raw": {
+                                      "text-align": "center",
+                                      "padding": "2rem 1rem"
+                                    }
+                                  }
+                                },
+                                "conditions": {}
+                              },
+                              "content": [
+                                {
+                                  "id": "olrgkr8v",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "name": "step-number",
+                                  "stylesheet": {
+                                    "styles": {
+                                      "__base__": {
+                                        "__raw": {
+                                          "width": "60px",
+                                          "height": "60px",
+                                          "background": "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                                          "color": "white",
+                                          "border-radius": "50%",
+                                          "display": "flex",
+                                          "align-items": "center",
+                                          "justify-content": "center",
+                                          "font-size": "1.5rem",
+                                          "font-weight": "bold",
+                                          "margin": "0 auto 1.5rem"
+                                        }
+                                      }
+                                    },
+                                    "conditions": {}
+                                  },
+                                  "content": [
+                                    {
+                                      "id": "diugay77",
+                                      "type": "text",
+                                      "text": "2"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "uwgylrd2",
+                                  "type": "text",
+                                  "tag": "h3",
+                                  "name": "step-title",
+                                  "stylesheet": {
+                                    "styles": {
+                                      "__base__": {
+                                        "__raw": {
+                                          "font-size": "1.25rem",
+                                          "font-weight": "700",
+                                          "color": "#1f2937",
+                                          "margin-bottom": "1rem"
+                                        }
+                                      }
+                                    },
+                                    "conditions": {}
+                                  },
+                                  "text": "Strategy",
+                                  "marks": []
+                                },
+                                {
+                                  "id": "m1aivopr",
+                                  "type": "text",
+                                  "tag": "p",
+                                  "name": "step-description",
+                                  "stylesheet": {
+                                    "styles": {
+                                      "__base__": {
+                                        "__raw": {
+                                          "color": "#6b7280",
+                                          "line-height": "1.6"
+                                        }
+                                      }
+                                    },
+                                    "conditions": {}
+                                  },
+                                  "text": "We develop a comprehensive strategy and roadmap for your\n                  project.",
+                                  "marks": []
+                                }
+                              ]
+                            },
+                            {
+                              "id": "y7ojrnm0",
+                              "type": "container",
+                              "tag": "div",
+                              "name": "process-step",
+                              "stylesheet": {
+                                "styles": {
+                                  "__base__": {
+                                    "__raw": {
+                                      "text-align": "center",
+                                      "padding": "2rem 1rem"
+                                    }
+                                  }
+                                },
+                                "conditions": {}
+                              },
+                              "content": [
+                                {
+                                  "id": "oxm0znxv",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "name": "step-number",
+                                  "stylesheet": {
+                                    "styles": {
+                                      "__base__": {
+                                        "__raw": {
+                                          "width": "60px",
+                                          "height": "60px",
+                                          "background": "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                                          "color": "white",
+                                          "border-radius": "50%",
+                                          "display": "flex",
+                                          "align-items": "center",
+                                          "justify-content": "center",
+                                          "font-size": "1.5rem",
+                                          "font-weight": "bold",
+                                          "margin": "0 auto 1.5rem"
+                                        }
+                                      }
+                                    },
+                                    "conditions": {}
+                                  },
+                                  "content": [
+                                    {
+                                      "id": "pn174hsr",
+                                      "type": "text",
+                                      "text": "3"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "bertzkvk",
+                                  "type": "text",
+                                  "tag": "h3",
+                                  "name": "step-title",
+                                  "stylesheet": {
+                                    "styles": {
+                                      "__base__": {
+                                        "__raw": {
+                                          "font-size": "1.25rem",
+                                          "font-weight": "700",
+                                          "color": "#1f2937",
+                                          "margin-bottom": "1rem"
+                                        }
+                                      }
+                                    },
+                                    "conditions": {}
+                                  },
+                                  "text": "Design",
+                                  "marks": []
+                                },
+                                {
+                                  "id": "jncsp2mm",
+                                  "type": "text",
+                                  "tag": "p",
+                                  "name": "step-description",
+                                  "stylesheet": {
+                                    "styles": {
+                                      "__base__": {
+                                        "__raw": {
+                                          "color": "#6b7280",
+                                          "line-height": "1.6"
+                                        }
+                                      }
+                                    },
+                                    "conditions": {}
+                                  },
+                                  "text": "We create beautiful, functional designs that align with your\n                  brand.",
+                                  "marks": []
+                                }
+                              ]
+                            },
+                            {
+                              "id": "a5ou1znx",
+                              "type": "container",
+                              "tag": "div",
+                              "name": "process-step",
+                              "stylesheet": {
+                                "styles": {
+                                  "__base__": {
+                                    "__raw": {
+                                      "text-align": "center",
+                                      "padding": "2rem 1rem"
+                                    }
+                                  }
+                                },
+                                "conditions": {}
+                              },
+                              "content": [
+                                {
+                                  "id": "wwgo3ox7",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "name": "step-number",
+                                  "stylesheet": {
+                                    "styles": {
+                                      "__base__": {
+                                        "__raw": {
+                                          "width": "60px",
+                                          "height": "60px",
+                                          "background": "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                                          "color": "white",
+                                          "border-radius": "50%",
+                                          "display": "flex",
+                                          "align-items": "center",
+                                          "justify-content": "center",
+                                          "font-size": "1.5rem",
+                                          "font-weight": "bold",
+                                          "margin": "0 auto 1.5rem"
+                                        }
+                                      }
+                                    },
+                                    "conditions": {}
+                                  },
+                                  "content": [
+                                    {
+                                      "id": "kkysludf",
+                                      "type": "text",
+                                      "text": "4"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "o19683zv",
+                                  "type": "text",
+                                  "tag": "h3",
+                                  "name": "step-title",
+                                  "stylesheet": {
+                                    "styles": {
+                                      "__base__": {
+                                        "__raw": {
+                                          "font-size": "1.25rem",
+                                          "font-weight": "700",
+                                          "color": "#1f2937",
+                                          "margin-bottom": "1rem"
+                                        }
+                                      }
+                                    },
+                                    "conditions": {}
+                                  },
+                                  "text": "Development",
+                                  "marks": []
+                                },
+                                {
+                                  "id": "qbb12acq",
+                                  "type": "text",
+                                  "tag": "p",
+                                  "name": "step-description",
+                                  "stylesheet": {
+                                    "styles": {
+                                      "__base__": {
+                                        "__raw": {
+                                          "color": "#6b7280",
+                                          "line-height": "1.6"
+                                        }
+                                      }
+                                    },
+                                    "conditions": {}
+                                  },
+                                  "text": "We bring designs to life with clean, efficient code.",
+                                  "marks": []
+                                }
+                              ]
+                            },
+                            {
+                              "id": "jrl0ypon",
+                              "type": "container",
+                              "tag": "div",
+                              "name": "process-step",
+                              "stylesheet": {
+                                "styles": {
+                                  "__base__": {
+                                    "__raw": {
+                                      "text-align": "center",
+                                      "padding": "2rem 1rem"
+                                    }
+                                  }
+                                },
+                                "conditions": {}
+                              },
+                              "content": [
+                                {
+                                  "id": "g5ywuhvr",
+                                  "type": "container",
+                                  "tag": "div",
+                                  "name": "step-number",
+                                  "stylesheet": {
+                                    "styles": {
+                                      "__base__": {
+                                        "__raw": {
+                                          "width": "60px",
+                                          "height": "60px",
+                                          "background": "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                                          "color": "white",
+                                          "border-radius": "50%",
+                                          "display": "flex",
+                                          "align-items": "center",
+                                          "justify-content": "center",
+                                          "font-size": "1.5rem",
+                                          "font-weight": "bold",
+                                          "margin": "0 auto 1.5rem"
+                                        }
+                                      }
+                                    },
+                                    "conditions": {}
+                                  },
+                                  "content": [
+                                    {
+                                      "id": "jpp7ron4",
+                                      "type": "text",
+                                      "text": "5"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "pf2yru8o",
+                                  "type": "text",
+                                  "tag": "h3",
+                                  "name": "step-title",
+                                  "stylesheet": {
+                                    "styles": {
+                                      "__base__": {
+                                        "__raw": {
+                                          "font-size": "1.25rem",
+                                          "font-weight": "700",
+                                          "color": "#1f2937",
+                                          "margin-bottom": "1rem"
+                                        }
+                                      }
+                                    },
+                                    "conditions": {}
+                                  },
+                                  "text": "Launch",
+                                  "marks": []
+                                },
+                                {
+                                  "id": "kzxmyztu",
+                                  "type": "text",
+                                  "tag": "p",
+                                  "name": "step-description",
+                                  "stylesheet": {
+                                    "styles": {
+                                      "__base__": {
+                                        "__raw": {
+                                          "color": "#6b7280",
+                                          "line-height": "1.6"
+                                        }
+                                      }
+                                    },
+                                    "conditions": {}
+                                  },
+                                  "text": "We launch your project and provide ongoing support.",
+                                  "marks": []
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_4",
+      "varName": "fragment_4"
+    },
+    {
+      "id": "f7gbhsuu",
+      "params": [
+        {
+          "name": "service",
+          "varName": "service",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "khlvcyuf",
+          "type": "container",
+          "tag": "div",
+          "name": "service-card",
+          "stylesheet": {
+            "styles": {
+              "__base__": {
+                "__raw": {
+                  "background": "white",
+                  "border-radius": "1rem",
+                  "padding": "3rem",
+                  "box-shadow": "0 4px 6px rgba(0, 0, 0, 0.05)",
+                  "display": "grid",
+                  "grid-template-columns": "auto 1fr",
+                  "gap": "2rem",
+                  "align-items": "start",
+                  "transition": "all 0.3s ease"
+                }
+              },
+              "raw-[%40media%20(max-width%3A%20768px)]": {
+                "__raw": {
+                  "grid-template-columns": "1fr",
+                  "text-align": "center",
+                  "gap": "1.5rem"
+                }
+              }
+            },
+            "conditions": {}
+          },
+          "content": [
+            {
+              "id": "yn16qldz",
+              "type": "container",
+              "tag": "div",
+              "name": "service-icon",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "font-size": "4rem",
+                      "background": "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                      "width": "100px",
+                      "height": "100px",
+                      "border-radius": "50%",
+                      "display": "flex",
+                      "align-items": "center",
+                      "justify-content": "center",
+                      "flex-shrink": "0"
+                    }
+                  },
+                  "raw-[%40media%20(max-width%3A%20768px)]": {
+                    "__raw": {
+                      "justify-self": "center"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "jyqsw3p3",
+                  "type": "expression",
+                  "expression": "service.icon"
+                }
+              ]
+            },
+            {
+              "id": "d9s1tlzi",
+              "type": "container",
+              "tag": "div",
+              "name": "service-content",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "min-width": "0"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "jssz20rm",
+                  "type": "text",
+                  "tag": "h2",
+                  "name": "service-title",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "font-size": "1.75rem",
+                          "font-weight": "700",
+                          "color": "#1f2937",
+                          "margin-bottom": "1rem"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "text": "{{ service.title }}",
+                  "marks": []
+                },
+                {
+                  "id": "wpcq2h97",
+                  "type": "text",
+                  "tag": "p",
+                  "name": "service-description",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "color": "#6b7280",
+                          "line-height": "1.6",
+                          "margin-bottom": "2rem"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "text": "{{ service.description }}",
+                  "marks": []
+                },
+                {
+                  "id": "ihs2lzx9",
+                  "type": "container",
+                  "tag": "ul",
+                  "name": "service-features",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "list-style": "none",
+                          "padding": "0",
+                          "margin": "0 0 2rem 0",
+                          "display": "grid",
+                          "grid-template-columns": "repeat(auto-fit, minmax(250px, 1fr))",
+                          "gap": "0.5rem"
+                        }
+                      },
+                      "raw-[%40media%20(max-width%3A%20768px)]": {
+                        "__raw": {
+                          "grid-template-columns": "1fr"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "q50g9o3b",
+                      "type": "expression",
+                      "expression": "service.features.map((feature, index) => fragments.fragment_2({\n  index,\n  feature\n}))"
+                    }
+                  ]
+                },
+                {
+                  "id": "zi93n6pf",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "service-pricing",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "display": "flex",
+                          "align-items": "baseline",
+                          "gap": "0.5rem"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "dedjjukp",
+                      "type": "text",
+                      "tag": "span",
+                      "name": "price-label",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "color": "#6b7280",
+                              "font-size": "0.9rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "text": "Starting at",
+                      "marks": []
+                    },
+                    {
+                      "id": "laaa8com",
+                      "type": "text",
+                      "tag": "span",
+                      "name": "price",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "font-size": "1.5rem",
+                              "font-weight": "700",
+                              "color": "#6366f1"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "text": "{{ service.price }}",
+                      "marks": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_3",
+      "varName": "fragment_3"
+    },
+    {
+      "id": "hw9dad4m",
+      "params": [
+        {
+          "name": "index",
+          "varName": "index",
+          "required": true
+        },
+        {
+          "name": "feature",
+          "varName": "feature",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "t65qfqfh",
+          "type": "container",
+          "tag": "li",
+          "name": "service-feature",
+          "stylesheet": {
+            "styles": {
+              "__base__": {
+                "__raw": {
+                  "color": "#374151",
+                  "padding": "0.5rem 0",
+                  "position": "relative",
+                  "padding-left": "1.5rem"
+                }
+              }
+            },
+            "conditions": {}
+          },
+          "content": [
+            {
+              "id": "nnod2pqj",
+              "type": "expression",
+              "expression": "feature"
+            }
+          ]
+        }
+      ],
+      "name": "fragment_2",
+      "varName": "fragment_2"
+    },
+    {
+      "id": "pulssykb",
+      "content": [
+        {
+          "id": "abtub3um",
+          "type": "component",
+          "componentUrl": "<<REF:../../components/layout/layout.component.js>>",
+          "content": [
+            {
+              "id": "xk9i3h9z",
+              "type": "container",
+              "tag": "div",
+              "name": "loading",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "min-height": "80vh",
+                      "display": "flex",
+                      "align-items": "center",
+                      "justify-content": "center"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "d56e7lz7",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "spinner",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "width": "50px",
+                          "height": "50px",
+                          "border": "4px solid #e5e7eb",
+                          "border-top": "4px solid #6366f1",
+                          "border-radius": "50%",
+                          "animation": "spin 1s linear infinite"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_1",
+      "varName": "fragment_1"
+    }
+  ],
+  "states": [
+    {
+      "id": "noq27nb7",
+      "name": "state_1",
+      "varName": "state_1",
+      "type": "hook",
+      "argMode": "positional",
+      "args": {},
+      "hookUrl": "<<REF:../../hooks/useServices.hook.js>>"
+    },
+    {
+      "id": "f5li597h",
+      "name": "state_2",
+      "varName": "state_2",
+      "type": "inline",
+      "script": "if (state_1.isLoading) {\n  return (\n    fragments.fragment_1()\n  );\n}\nreturn (\n  fragments.fragment_4({ services: state_1.services })\n);"
+    }
+  ],
+  "template": {
+    "id": "fxd156oq",
+    "type": "expression",
+    "expression": "state_2"
+  },
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "component",
+        "componentUrl": "host"
+      }
+    }
+  }
+}

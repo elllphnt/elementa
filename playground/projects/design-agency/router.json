@@ -1,0 +1,41 @@
+{
+  "routes": [
+    {
+      "id": "w9u8uwge",
+      "path": "/",
+      "loader": "~/views/home/home.loader.ts",
+      "component": "~/views/home/home.component.tsx"
+    },
+    {
+      "id": "raw5g9fd",
+      "path": "/about",
+      "component": "~/views/about/about.component.tsx"
+    },
+    {
+      "id": "gket5ir5",
+      "path": "/services",
+      "loader": "~/views/services/services.loader.ts",
+      "component": "~/views/services/services.component.tsx"
+    },
+    {
+      "id": "hz6swtxa",
+      "path": "/portfolio",
+      "loader": "~/views/portfolio/portfolio.loader.ts",
+      "component": "~/views/portfolio/portfolio.component.tsx"
+    },
+    {
+      "id": "t2ow5hec",
+      "path": "/contact",
+      "handler": "~/views/contact/contact.handler.ts",
+      "component": "~/views/contact/contact.component.tsx"
+    }
+  ],
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "router",
+        "routerUrl": "host"
+      }
+    }
+  }
+}

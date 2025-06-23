@@ -21,7 +21,6 @@ export function transpileHookState(
 
   const hook = context.useModule({
     url: data.hookUrl,
-    name: { capitalize: true },
   });
 
   const argMode = data.argMode || "named";

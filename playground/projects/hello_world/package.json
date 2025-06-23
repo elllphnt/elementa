@@ -1,8 +1,0 @@
-{
-    "scripts": {
-        "dev": "elementa-build --watch"
-    },
-    "dependencies": {
-        "@repo/build": "workspace:*"
-    }
-}

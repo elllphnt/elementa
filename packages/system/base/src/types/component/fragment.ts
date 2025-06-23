@@ -1,9 +1,10 @@
-import { DataInputData } from "../_shared/_.js";
+import { z } from "zod";
+import { DataInputData, dataInputDataSchema } from "../_shared/_.js";
 import {
   IdentifiableData,
   identifiableDataSchema,
 } from "../_shared/identifiable.js";
-import { ProviderData } from "../provider/_.js";
+import { ProviderData, providerDataSchema } from "../provider/_.js";
 import {
   ElementContainerData,
   elementContainerDataSchema,
@@ -21,4 +22,9 @@ export type FragmentData = IdentifiableData &
 
 export const fragmentDataSchema = identifiableDataSchema
   .merge(elementContainerDataSchema)
-  .extend({});
+  .extend({
+    name: z.string().optional(),
+    varName: z.string().optional(),
+    providers: z.array(providerDataSchema).optional(),
+    params: z.array(dataInputDataSchema).optional(),
+  });

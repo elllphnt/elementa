@@ -1,0 +1,179 @@
+{
+  "props": [],
+  "fragments": [
+    {
+      "id": "brq1gsq2",
+      "content": [
+        {
+          "id": "nx068d1u",
+          "type": "container",
+          "tag": "nav",
+          "name": "root",
+          "stylesheet": {
+            "styles": {
+              "__base__": {
+                "__raw": {
+                  "display": "flex",
+                  "align-items": "center"
+                }
+              }
+            },
+            "conditions": {}
+          },
+          "content": [
+            {
+              "id": "tuz4fpcx",
+              "type": "container",
+              "tag": "ul",
+              "name": "nav-list",
+              "stylesheet": {
+                "styles": {
+                  "raw-[%40media%20(max-width%3A%20768px)]": {
+                    "__raw": {
+                      "flex-direction": "column",
+                      "gap": "1rem",
+                      "text-align": "center"
+                    }
+                  },
+                  "__base__": {
+                    "__raw": {
+                      "display": "flex",
+                      "list-style": "none",
+                      "gap": "2rem",
+                      "margin": "0",
+                      "padding": "0"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "gw3ctbq0",
+                  "type": "container",
+                  "tag": "li",
+                  "name": "nav-item-home",
+                  "stylesheet": {
+                    "styles": {},
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "jh6ryzea",
+                      "type": "text",
+                      "text": "Home",
+                      "link": {
+                        "type": "href",
+                        "href": "/"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "akdfpfmj",
+                  "type": "container",
+                  "tag": "li",
+                  "name": "nav-item-about",
+                  "stylesheet": {
+                    "styles": {},
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "haosr23k",
+                      "type": "text",
+                      "text": "About",
+                      "link": {
+                        "type": "href",
+                        "href": "/about"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "yien3be2",
+                  "type": "container",
+                  "tag": "li",
+                  "name": "nav-item-services",
+                  "stylesheet": {
+                    "styles": {},
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "fflfie39",
+                      "type": "text",
+                      "text": "Services",
+                      "link": {
+                        "type": "href",
+                        "href": "/services"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "len8c8dg",
+                  "type": "container",
+                  "tag": "li",
+                  "name": "nav-item-portfolio",
+                  "stylesheet": {
+                    "styles": {},
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "denhq0fm",
+                      "type": "text",
+                      "text": "Portfolio",
+                      "link": {
+                        "type": "href",
+                        "href": "/portfolio"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "tp3786cu",
+                  "type": "container",
+                  "tag": "li",
+                  "name": "nav-item-contact",
+                  "stylesheet": {
+                    "styles": {},
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "ru0ltrwe",
+                      "type": "text",
+                      "text": "Contact",
+                      "link": {
+                        "type": "href",
+                        "href": "/contact"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_1",
+      "varName": "fragment_1"
+    }
+  ],
+  "template": {
+    "id": "xgmyht7f",
+    "type": "fragment",
+    "fragmentId": "brq1gsq2",
+    "params": {}
+  },
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "component",
+        "componentUrl": "host"
+      }
+    }
+  }
+}

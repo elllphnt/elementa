@@ -1,0 +1,277 @@
+{
+  "props": [],
+  "fragments": [
+    {
+      "id": "cllvnbuf",
+      "content": [
+        {
+          "id": "a8j42s8s",
+          "type": "container",
+          "tag": "section",
+          "name": "root",
+          "stylesheet": {
+            "styles": {
+              "__base__": {
+                "__raw": {
+                  "padding": "5rem 0",
+                  "background": "#f8fafc"
+                }
+              }
+            },
+            "conditions": {}
+          },
+          "content": [
+            {
+              "id": "he62g66r",
+              "type": "container",
+              "tag": "div",
+              "name": "container",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "max-width": "1200px",
+                      "margin": "0 auto",
+                      "padding": "0 2rem"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "jnr28a0p",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "header",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "text-align": "center",
+                          "margin-bottom": "3rem"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "wqobtceu",
+                      "type": "text",
+                      "tag": "h2",
+                      "name": "section-title",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "font-size": "2.5rem",
+                              "font-weight": "800",
+                              "color": "#1f2937",
+                              "margin-bottom": "1rem"
+                            }
+                          },
+                          "raw-[%40media%20(max-width%3A%20768px)]": {
+                            "__raw": {
+                              "font-size": "2rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "text": "Our Services",
+                      "marks": []
+                    },
+                    {
+                      "id": "h1zuky9g",
+                      "type": "text",
+                      "tag": "p",
+                      "name": "section-subtitle",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "font-size": "1.2rem",
+                              "color": "#6b7280",
+                              "max-width": "600px",
+                              "margin": "0 auto",
+                              "line-height": "1.6"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "text": "We offer comprehensive design solutions to help your business grow",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "id": "mxztx2zt",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "services-grid",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "display": "grid",
+                          "grid-template-columns": "repeat(auto-fit, minmax(300px, 1fr))",
+                          "gap": "2rem"
+                        }
+                      },
+                      "raw-[%40media%20(max-width%3A%20768px)]": {
+                        "__raw": {
+                          "grid-template-columns": "1fr"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "qd3cwig0",
+                      "type": "expression",
+                      "expression": "props.services.map(service => fragments.fragment_1({\n  service\n}))"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_2",
+      "varName": "fragment_2"
+    },
+    {
+      "id": "w28foxkx",
+      "params": [
+        {
+          "name": "service",
+          "varName": "service",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "cnuo2809",
+          "type": "container",
+          "tag": "div",
+          "name": "service-card",
+          "stylesheet": {
+            "styles": {
+              "__base__": {
+                "__raw": {
+                  "background": "white",
+                  "padding": "2.5rem",
+                  "border-radius": "1rem",
+                  "text-align": "center",
+                  "box-shadow": "0 4px 6px rgba(0, 0, 0, 0.05)",
+                  "transition": "all 0.3s ease",
+                  "border": "1px solid #e5e7eb"
+                }
+              },
+              "raw-[%40media%20(max-width%3A%20768px)]": {
+                "__raw": {
+                  "padding": "2rem"
+                }
+              }
+            },
+            "conditions": {}
+          },
+          "content": [
+            {
+              "id": "m3taf52v",
+              "type": "container",
+              "tag": "div",
+              "name": "service-icon",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "font-size": "3rem",
+                      "margin-bottom": "1.5rem",
+                      "background": "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                      "width": "80px",
+                      "height": "80px",
+                      "border-radius": "50%",
+                      "display": "flex",
+                      "align-items": "center",
+                      "justify-content": "center",
+                      "margin": "0 auto 1.5rem"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "wy3iexap",
+                  "type": "expression",
+                  "expression": "service.icon"
+                }
+              ]
+            },
+            {
+              "id": "cavnjqmh",
+              "type": "text",
+              "tag": "h3",
+              "name": "service-title",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "font-size": "1.5rem",
+                      "font-weight": "700",
+                      "color": "#1f2937",
+                      "margin-bottom": "1rem"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "text": "{{ service.title }}",
+              "marks": []
+            },
+            {
+              "id": "g3vjyugg",
+              "type": "text",
+              "tag": "p",
+              "name": "service-description",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "color": "#6b7280",
+                      "line-height": "1.6"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "text": "{{ service.description }}",
+              "marks": []
+            }
+          ]
+        }
+      ],
+      "name": "fragment_1",
+      "varName": "fragment_1"
+    }
+  ],
+  "template": {
+    "id": "c60j8vqw",
+    "type": "fragment",
+    "fragmentId": "cllvnbuf",
+    "params": {}
+  },
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "component",
+        "componentUrl": "host"
+      }
+    }
+  }
+}

@@ -10,7 +10,7 @@ export function transpileExpressionElement(
   const expression = data.expression;
   return {
     generate: () => {
-      return expression ? `</>{${expression}}</>` : `<></>`;
+      return expression ? `<>{${expression}}</>` : `<></>`;
     },
   };
 }

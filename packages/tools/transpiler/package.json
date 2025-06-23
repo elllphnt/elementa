@@ -17,6 +17,7 @@
     "pub": "npm run test:run && npm run clean && npm run build:dist && npm run packup && cd dist && npm publish"
   },
   "dependencies": {
-    "@elllphnt/elementa-base": "workspace:*"
+    "@elllphnt/elementa-base": "workspace:*",
+    "@elllphnt/elementa-css": "workspace:*"
   }
 }

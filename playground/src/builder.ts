@@ -3,22 +3,25 @@ import fs from "fs/promises";
 import debouce from "lodash.debounce";
 import path from "path";
 import { generateApp } from "./generate/generate.js";
-import { parseAll, parseFile } from "./parse/parse.js";
+import { parseAll, parseFile, clearCache } from "./parse/parse.js";
 
 async function buildProject({
   name,
   projectsDir,
   infraDir,
   appsDir,
+  incremental = true,
 }: {
   name: string;
   projectsDir: string;
   infraDir: string;
   appsDir?: string;
+  incremental?: boolean;
 }): Promise<void> {
   await parseAll({
     srcDir: path.join(projectsDir, name),
     outDir: path.join(infraDir, name),
+    incremental,
   });
   if (appsDir) {
     // only generate app if .elll/app file exists
@@ -43,21 +46,33 @@ async function buildAllProjects({
   projectsDir,
   infraDir,
   appsDir,
+  filter,
+  incremental = true,
 }: {
   projectsDir: string;
   infraDir: string;
   appsDir?: string;
+  filter?: (projectName: string) => boolean;
+  incremental?: boolean;
 }): Promise<void> {
   const projects = await fs.readdir(projectsDir, { withFileTypes: true });
   for (const project of projects) {
     if (project.isDirectory()) {
       const projectName = project.name;
+
+      // Apply filter if provided
+      if (filter && !filter(projectName)) {
+        console.log(`⏭️  Skipping project: ${projectName} (filtered out)`);
+        continue;
+      }
+
       console.log(`🔧 Building project: ${projectName}`);
       await buildProject({
         name: projectName,
         projectsDir,
         infraDir,
         appsDir,
+        incremental,
       });
     }
   }
@@ -77,11 +92,12 @@ async function watchProjects({
     ignoreInitial: true,
   });
 
-  function splitPath(filePath: string): [projectName: string, path: string] {
-    const relativePath = path.relative(projectsDir, filePath);
+  function splitPath(
+    relativePath: string
+  ): [projectName: string, path: string] {
     const parts = relativePath.split(path.sep);
     if (parts.length < 2) {
-      throw new Error(`Invalid file path: ${filePath}`);
+      throw new Error(`Invalid file path: ${relativePath}`);
     }
     return [parts[0], parts.slice(1).join(path.sep)];
   }
@@ -97,6 +113,7 @@ async function watchProjects({
           srcDir: path.join(projectsDir, projectName),
           outDir: path.join(infraDir, projectName),
           filePath,
+          // Don't use cache for watch mode - always rebuild changed files
         });
       } catch (error) {
         console.error(
@@ -106,6 +123,12 @@ async function watchProjects({
       }
     })
     .on("change", async (filePath) => {
+      console.log(`📂 File change: ${filePath}`, {
+        projectsDir,
+        filePath,
+        relativePath: path.relative(projectsDir, filePath),
+      });
+
       const [projectName, relativePath] = splitPath(
         path.relative(projectsDir, filePath)
       );
@@ -115,10 +138,28 @@ async function watchProjects({
           srcDir: path.join(projectsDir, projectName),
           outDir: path.join(infraDir, projectName),
           filePath,
+          // Don't use cache for watch mode - always rebuild changed files
         });
       } catch (error) {
         console.error(
           `❌ Error handling file change in ${projectName} ${relativePath}:`,
+          error
+        );
+      }
+    })
+    .on("unlink", async (filePath) => {
+      const [projectName, relativePath] = splitPath(
+        path.relative(projectsDir, filePath)
+      );
+      try {
+        console.log(`🗑️  File deleted in ${projectName}: ${relativePath}`);
+        // Remove from cache when file is deleted
+        const { IncrementalCache } = await import("./parse/_cache.js");
+        const cache = new IncrementalCache(path.join(infraDir, projectName));
+        cache.removeFromCache(filePath);
+      } catch (error) {
+        console.error(
+          `❌ Error handling file deletion in ${projectName} ${relativePath}:`,
           error
         );
       }
@@ -139,11 +180,12 @@ async function watchInfra({
     ignoreInitial: true,
   });
 
-  function splitPath(filePath: string): [projectName: string, path: string] {
-    const relativePath = path.relative(infraDir, filePath);
+  function splitPath(
+    relativePath: string
+  ): [projectName: string, path: string] {
     const parts = relativePath.split(path.sep);
     if (parts.length < 2) {
-      throw new Error(`Invalid file path: ${filePath}`);
+      throw new Error(`Invalid file path: ${relativePath}`);
     }
     return [parts[0], parts.slice(1).join(path.sep)];
   }
@@ -182,22 +224,56 @@ async function watchInfra({
     });
 }
 
+/**
+ * Clear build cache for all projects
+ */
+export async function clearAllCaches({
+  projectsDir,
+  infraDir,
+}: {
+  projectsDir: string;
+  infraDir: string;
+}): Promise<void> {
+  const projects = await fs.readdir(projectsDir, { withFileTypes: true });
+  for (const project of projects) {
+    if (project.isDirectory()) {
+      const projectName = project.name;
+      console.log(`🗑️  Clearing cache for project: ${projectName}`);
+      await clearCache(path.join(infraDir, projectName));
+    }
+  }
+}
+
 export async function run({
   projectsDir,
   infraDir,
   appsDir,
   watch,
+  filter,
+  incremental = true,
+  force = false,
 }: {
   projectsDir: string;
   infraDir: string;
   appsDir?: string;
   watch?: boolean;
+  filter?: (projectName: string) => boolean;
+  incremental?: boolean;
+  force?: boolean;
 }) {
   try {
+    // Clear cache if force rebuild is requested
+    if (force && incremental) {
+      console.log("🗑️  Force rebuild requested, clearing all caches...");
+      await clearAllCaches({ projectsDir, infraDir });
+    }
+
     await buildAllProjects({
       projectsDir,
       infraDir,
       appsDir,
+      filter,
+      incremental,
     });
   } catch (error) {
     console.error("❌ Error during initial build:", error);

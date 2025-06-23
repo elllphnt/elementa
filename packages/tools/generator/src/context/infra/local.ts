@@ -8,6 +8,32 @@ import fs from "fs/promises";
 import nodepath from "path";
 import { ElementaInfrastructure, ElementaReferencedFileData } from "./infra.js";
 
+export const getFileTypeFromPath = (filePath: string) => {
+  const fileName = nodepath.basename(filePath);
+  if (fileName === "router.json") {
+    return "router";
+  } else if (filePath.endsWith(".component.json")) {
+    return "component";
+  } else if (filePath.endsWith(".hook.ts")) {
+    return "hook";
+  } else if (filePath.endsWith(".context.ts")) {
+    return "context";
+  } else if (filePath.endsWith(".loader.ts")) {
+    return "loader";
+  } else if (filePath.endsWith(".handler.ts")) {
+    return "handler";
+  } else if (filePath.endsWith(".script.ts")) {
+    return "script";
+  } else if (filePath.endsWith(".md")) {
+    return "markdown";
+  } else if (filePath.endsWith(".json")) {
+    return "json";
+  } else if (filePath.endsWith(".ts") || filePath.endsWith(".tsx")) {
+    return "script";
+  } else {
+    return "text";
+  }
+};
 export function makeLocalFsFileUrl({
   path,
   projectName,
@@ -100,6 +126,7 @@ export function createLocalFsInfrastructure(
       return {
         url: absoluteUrl,
         path: path,
+        type: getFileTypeFromPath(path),
       };
     },
     async getFileAtPath(
@@ -113,6 +140,7 @@ export function createLocalFsInfrastructure(
       return {
         url: absoluteUrl,
         path: path,
+        type: getFileTypeFromPath(path),
       };
     },
   };

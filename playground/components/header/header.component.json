@@ -1,0 +1,122 @@
+{
+  "props": [],
+  "fragments": [
+    {
+      "id": "g4jbwp5g",
+      "content": [
+        {
+          "id": "bv3iexkm",
+          "type": "container",
+          "tag": "header",
+          "name": "root",
+          "stylesheet": {
+            "styles": {
+              "__base__": {
+                "__raw": {
+                  "background": "white",
+                  "box-shadow": "0 2px 10px rgba(0, 0, 0, 0.1)",
+                  "position": "sticky",
+                  "top": "0",
+                  "z-index": "100",
+                  "padding": "1rem 0"
+                }
+              }
+            },
+            "conditions": {}
+          },
+          "content": [
+            {
+              "id": "eksgecrr",
+              "type": "container",
+              "tag": "div",
+              "name": "container",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "max-width": "1200px",
+                      "margin": "0 auto",
+                      "padding": "0 2rem",
+                      "display": "flex",
+                      "justify-content": "space-between",
+                      "align-items": "center"
+                    }
+                  },
+                  "raw-[%40media%20(max-width%3A%20768px)]": {
+                    "__raw": {
+                      "flex-direction": "column",
+                      "gap": "1rem"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "eupl0tnt",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "logo",
+                  "stylesheet": {
+                    "styles": {},
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "qzt9ttso",
+                      "type": "text",
+                      "tag": "h1",
+                      "name": "logo-text",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "color": "#6366f1",
+                              "font-size": "2rem",
+                              "font-weight": "800",
+                              "letter-spacing": "-0.025em"
+                            }
+                          },
+                          "raw-[%40media%20(max-width%3A%20768px)]": {
+                            "__raw": {
+                              "font-size": "1.5rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "text": "DesignCo",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "id": "n04b051f",
+                  "type": "component",
+                  "componentUrl": "<<REF:~/components/navigation/navigation.component.js>>",
+                  "content": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_1",
+      "varName": "fragment_1"
+    }
+  ],
+  "template": {
+    "id": "c5qoshqh",
+    "type": "fragment",
+    "fragmentId": "g4jbwp5g",
+    "params": {}
+  },
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "component",
+        "componentUrl": "host"
+      }
+    }
+  }
+}

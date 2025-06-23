@@ -1,0 +1,166 @@
+{
+  "props": [],
+  "fragments": [
+    {
+      "id": "mv0ehcmh",
+      "params": [
+        {
+          "name": "hero",
+          "varName": "hero",
+          "required": true
+        },
+        {
+          "name": "services",
+          "varName": "services",
+          "required": true
+        },
+        {
+          "name": "portfolio",
+          "varName": "portfolio",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "gs34fkrq",
+          "type": "component",
+          "componentUrl": "<<REF:../../components/layout/layout.component.js>>",
+          "content": [
+            {
+              "id": "y1rz6xyp",
+              "type": "container",
+              "tag": "div",
+              "name": "root",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "min-height": "100vh"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "bxsqn339",
+                  "type": "component",
+                  "componentUrl": "<<REF:../../components/hero/hero.component.js>>",
+                  "content": []
+                },
+                {
+                  "id": "mv5spy8w",
+                  "type": "component",
+                  "componentUrl": "<<REF:../../components/service-preview/service-preview.component.js>>",
+                  "content": []
+                },
+                {
+                  "id": "v9wwhk5e",
+                  "type": "component",
+                  "componentUrl": "<<REF:../../components/portfolio-preview/portfolio-preview.component.js>>",
+                  "content": []
+                },
+                {
+                  "id": "lkl7r8dk",
+                  "type": "component",
+                  "componentUrl": "<<REF:../../components/call-to-action/call-to-action.component.js>>",
+                  "content": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_2",
+      "varName": "fragment_2"
+    },
+    {
+      "id": "vfqroqmm",
+      "content": [
+        {
+          "id": "a1uslhky",
+          "type": "component",
+          "componentUrl": "<<REF:../../components/layout/layout.component.js>>",
+          "content": [
+            {
+              "id": "bohvuidm",
+              "type": "container",
+              "tag": "div",
+              "name": "loading",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "min-height": "80vh",
+                      "display": "flex",
+                      "align-items": "center",
+                      "justify-content": "center"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "pqm9i0bo",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "spinner",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "width": "50px",
+                          "height": "50px",
+                          "border": "4px solid #e5e7eb",
+                          "border-top": "4px solid #6366f1",
+                          "border-radius": "50%",
+                          "animation": "spin 1s linear infinite"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_1",
+      "varName": "fragment_1"
+    }
+  ],
+  "states": [
+    {
+      "id": "p1sntdw3",
+      "name": "state_1",
+      "varName": "state_1",
+      "type": "hook",
+      "argMode": "positional",
+      "args": {},
+      "hookUrl": "<<REF:../../hooks/useHomeData.hook.js>>"
+    },
+    {
+      "id": "ygrbt14d",
+      "name": "state_2",
+      "varName": "state_2",
+      "type": "inline",
+      "script": "if (state_1.isLoading) {\n  return (\n    fragments.fragment_1()\n  );\n}\nreturn (\n  fragments.fragment_2({ hero: state_1.hero, services: state_1.services, portfolio: state_1.portfolio })\n);"
+    }
+  ],
+  "template": {
+    "id": "dz7x3nz1",
+    "type": "expression",
+    "expression": "state_2"
+  },
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "component",
+        "componentUrl": "host"
+      }
+    }
+  }
+}

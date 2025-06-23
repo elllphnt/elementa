@@ -7,6 +7,11 @@ interface BuilderConfig {
   projectsDir: string;
   infraDir: string;
   appsDir?: string;
+  filter?: {
+    include?: string | string[];
+    exclude?: string | string[];
+    pattern?: string;
+  };
 }
 
 function loadConfig(configPath: string): BuilderConfig {
@@ -50,9 +55,67 @@ function parseArgs(): { watch: boolean; configPath: string } {
   return { watch, configPath };
 }
 
+function createFilter(
+  filterConfig?: BuilderConfig["filter"]
+): ((projectName: string) => boolean) | undefined {
+  if (!filterConfig) return undefined;
+
+  return (projectName: string): boolean => {
+    // Check include patterns
+    if (filterConfig.include) {
+      const includePatterns = Array.isArray(filterConfig.include)
+        ? filterConfig.include
+        : [filterConfig.include];
+
+      const included = includePatterns.some((pattern) => {
+        if (pattern.includes("*") || pattern.includes("?")) {
+          // Simple glob pattern matching
+          const regexPattern = pattern.replace(/\*/g, ".*").replace(/\?/g, ".");
+          return new RegExp(`^${regexPattern}$`).test(projectName);
+        }
+        return projectName === pattern;
+      });
+
+      if (!included) return false;
+    }
+
+    // Check exclude patterns
+    if (filterConfig.exclude) {
+      const excludePatterns = Array.isArray(filterConfig.exclude)
+        ? filterConfig.exclude
+        : [filterConfig.exclude];
+
+      const excluded = excludePatterns.some((pattern) => {
+        if (pattern.includes("*") || pattern.includes("?")) {
+          // Simple glob pattern matching
+          const regexPattern = pattern.replace(/\*/g, ".*").replace(/\?/g, ".");
+          return new RegExp(`^${regexPattern}$`).test(projectName);
+        }
+        return projectName === pattern;
+      });
+
+      if (excluded) return false;
+    }
+
+    // Check regex pattern
+    if (filterConfig.pattern) {
+      try {
+        const regex = new RegExp(filterConfig.pattern);
+        if (!regex.test(projectName)) return false;
+      } catch {
+        console.warn(`⚠️  Invalid regex pattern: ${filterConfig.pattern}`);
+        return true;
+      }
+    }
+
+    return true;
+  };
+}
+
 async function main() {
   const { watch, configPath } = parseArgs();
   const config = loadConfig(configPath);
+  const filter = createFilter(config.filter);
 
   console.log(`🚀 Starting builder with config: ${configPath}`);
   console.log(`📂 Projects directory: ${config.projectsDir}`);
@@ -60,12 +123,16 @@ async function main() {
   if (config.appsDir) {
     console.log(`📂 Apps directory: ${config.appsDir}`);
   }
+  if (config.filter) {
+    console.log(`🔍 Filter config: ${JSON.stringify(config.filter)}`);
+  }
 
   run({
     projectsDir: config.projectsDir,
     infraDir: config.infraDir,
     appsDir: config.appsDir,
     watch,
+    filter,
   });
 }
 

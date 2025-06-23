@@ -530,6 +530,9 @@ importers:
       '@elllphnt/elementa-base':
         specifier: workspace:*
         version: link:../../system/base
+      '@elllphnt/elementa-css':
+        specifier: workspace:*
+        version: link:../../system/css
 
   packages/utils/react:
     dependencies:

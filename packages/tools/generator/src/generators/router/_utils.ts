@@ -48,6 +48,9 @@ export function toRelativeRoute({
   if (route.notFoundViewFile) {
     relative.notFoundViewPath = resourceRelativeUrl(route.notFoundViewFile.url);
   }
+  if (route.loaderFile) {
+    relative.loaderPath = resourceRelativeUrl(route.loaderFile.url);
+  }
 
   return relative;
 }

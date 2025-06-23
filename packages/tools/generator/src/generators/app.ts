@@ -1,6 +1,8 @@
 import {
   AppData,
   appSchema,
+  elementaStandardPaths,
+  PackageSheetData,
   parseFileUrl,
   RouterData,
   routerSchema,
@@ -73,11 +75,24 @@ export async function generateJsApp({
   });
 
   // generate import map
+  const importMap: Record<string, string> = {};
+  const packagesFile = await context.infra.getFileAtPath(
+    projectId,
+    elementaStandardPaths.packages
+  );
+  if (packagesFile) {
+    const packagesContent = await context.infra.read(packagesFile.url);
+    const sheet: PackageSheetData = JSON.parse(packagesContent.trim() || "{}");
+    context.log("debug", "Retrieved packages data.", { packages: sheet });
+    for (const pkg of sheet.packages) {
+      importMap[pkg.name] = `https://esm.sh/${pkg.name}@${pkg.version}`;
+    }
+  }
 
   const jsApp: JsAppConfig = {
     id: fileId,
     routes: [...pageJsRoutes, ...handlerJsRoutes],
-    importMap: {},
+    importMap,
   };
   context.out.write(jsAppPaths.config, JSON.stringify(jsApp, null, 2));
   context.log("debug", "Generated JS app config.", { jsApp });

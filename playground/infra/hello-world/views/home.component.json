@@ -1,0 +1,33 @@
+{
+  "props": [],
+  "fragments": [
+    {
+      "id": "ffcoe1kk",
+      "content": [
+        {
+          "id": "bagjpoo9",
+          "type": "text",
+          "tag": "h1",
+          "text": "Home",
+          "marks": []
+        }
+      ],
+      "name": "fragment_1",
+      "varName": "fragment_1"
+    }
+  ],
+  "template": {
+    "id": "d3pj7s34",
+    "type": "fragment",
+    "fragmentId": "ffcoe1kk",
+    "params": {}
+  },
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "component",
+        "componentUrl": "host"
+      }
+    }
+  }
+}

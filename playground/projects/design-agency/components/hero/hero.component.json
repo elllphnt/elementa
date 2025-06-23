@@ -1,0 +1,251 @@
+{
+  "props": [],
+  "fragments": [
+    {
+      "id": "f550k7pg",
+      "content": [
+        {
+          "id": "fzd5cv2q",
+          "type": "container",
+          "tag": "section",
+          "name": "root",
+          "stylesheet": {
+            "styles": {
+              "__base__": {
+                "__raw": {
+                  "background": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                  "color": "white",
+                  "padding": "5rem 0",
+                  "min-height": "80vh",
+                  "display": "flex",
+                  "align-items": "center"
+                }
+              }
+            },
+            "conditions": {}
+          },
+          "content": [
+            {
+              "id": "uhx9j3se",
+              "type": "container",
+              "tag": "div",
+              "name": "container",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "max-width": "1200px",
+                      "margin": "0 auto",
+                      "padding": "0 2rem",
+                      "display": "grid",
+                      "grid-template-columns": "1fr 1fr",
+                      "gap": "4rem",
+                      "align-items": "center"
+                    }
+                  },
+                  "raw-[%40media%20(max-width%3A%20768px)]": {
+                    "__raw": {
+                      "grid-template-columns": "1fr",
+                      "gap": "2rem",
+                      "text-align": "center"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "y6t2km3d",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "content",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "max-width": "600px"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "ico60zcd",
+                      "type": "text",
+                      "tag": "h1",
+                      "name": "title",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "font-size": "3.5rem",
+                              "font-weight": "800",
+                              "line-height": "1.1",
+                              "margin-bottom": "1.5rem",
+                              "background": "linear-gradient(45deg, #ffffff, #e0e7ff)",
+                              "background-clip": "text",
+                              "-webkit-background-clip": "text",
+                              "-webkit-text-fill-color": "transparent"
+                            }
+                          },
+                          "raw-[%40media%20(max-width%3A%20768px)]": {
+                            "__raw": {
+                              "font-size": "2.5rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "text": "{{ props.data.title }}",
+                      "marks": []
+                    },
+                    {
+                      "id": "o5aus6xu",
+                      "type": "text",
+                      "tag": "p",
+                      "name": "subtitle",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "font-size": "1.25rem",
+                              "line-height": "1.6",
+                              "margin-bottom": "2rem",
+                              "color": "#e0e7ff"
+                            }
+                          },
+                          "raw-[%40media%20(max-width%3A%20768px)]": {
+                            "__raw": {
+                              "font-size": "1.1rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "text": "{{ props.data.subtitle }}",
+                      "marks": []
+                    },
+                    {
+                      "id": "iaz2mqq0",
+                      "type": "expression",
+                      "expression": "props.data.buttonText",
+                      "link": {
+                        "type": "href",
+                        "href": {
+                          "__expression": "props.data.buttonLink"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "of9qq6rv",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "visual",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "display": "flex",
+                          "justify-content": "center",
+                          "align-items": "center"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "u6twgetd",
+                      "type": "container",
+                      "tag": "div",
+                      "name": "hero-graphic",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "width": "400px",
+                              "height": "400px",
+                              "background": "linear-gradient(45deg, #6366f1, #8b5cf6, #06b6d4)",
+                              "border-radius": "2rem",
+                              "position": "relative",
+                              "overflow": "hidden",
+                              "box-shadow": "0 25px 50px rgba(0, 0, 0, 0.2)"
+                            }
+                          },
+                          "raw-[%40media%20(max-width%3A%20768px)]": {
+                            "__raw": {
+                              "width": "300px",
+                              "height": "300px"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "content": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_2",
+      "varName": "fragment_2"
+    },
+    {
+      "id": "vetkrrzr",
+      "content": [
+        {
+          "id": "i2a5qaoh",
+          "type": "container",
+          "tag": "div",
+          "name": "root",
+          "stylesheet": {
+            "styles": {
+              "__base__": {
+                "__raw": {
+                  "background": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                  "color": "white",
+                  "padding": "5rem 0",
+                  "min-height": "80vh",
+                  "display": "flex",
+                  "align-items": "center"
+                }
+              }
+            },
+            "conditions": {}
+          },
+          "content": []
+        }
+      ],
+      "name": "fragment_1",
+      "varName": "fragment_1"
+    }
+  ],
+  "states": [
+    {
+      "id": "opz05a71",
+      "name": "state_1",
+      "varName": "state_1",
+      "type": "inline",
+      "script": "if (!props.data) {\n  return fragments.fragment_1();\n}\nreturn (\n  fragments.fragment_2()\n);"
+    }
+  ],
+  "template": {
+    "id": "qp2v6h3f",
+    "type": "expression",
+    "expression": "state_1"
+  },
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "component",
+        "componentUrl": "host"
+      }
+    }
+  }
+}

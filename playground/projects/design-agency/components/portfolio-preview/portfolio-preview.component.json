@@ -1,0 +1,363 @@
+{
+  "props": [],
+  "fragments": [
+    {
+      "id": "vemtibcg",
+      "content": [
+        {
+          "id": "rye8tiuy",
+          "type": "container",
+          "tag": "section",
+          "name": "root",
+          "stylesheet": {
+            "styles": {
+              "__base__": {
+                "__raw": {
+                  "padding": "5rem 0",
+                  "background": "white"
+                }
+              }
+            },
+            "conditions": {}
+          },
+          "content": [
+            {
+              "id": "vnjxs3k0",
+              "type": "container",
+              "tag": "div",
+              "name": "container",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "max-width": "1200px",
+                      "margin": "0 auto",
+                      "padding": "0 2rem"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "l6zqzdf4",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "header",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "text-align": "center",
+                          "margin-bottom": "3rem"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "pzhl07y9",
+                      "type": "text",
+                      "tag": "h2",
+                      "name": "section-title",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "font-size": "2.5rem",
+                              "font-weight": "800",
+                              "color": "#1f2937",
+                              "margin-bottom": "1rem"
+                            }
+                          },
+                          "raw-[%40media%20(max-width%3A%20768px)]": {
+                            "__raw": {
+                              "font-size": "2rem"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "text": "Featured Work",
+                      "marks": []
+                    },
+                    {
+                      "id": "se8hxxl9",
+                      "type": "text",
+                      "tag": "p",
+                      "name": "section-subtitle",
+                      "stylesheet": {
+                        "styles": {
+                          "__base__": {
+                            "__raw": {
+                              "font-size": "1.2rem",
+                              "color": "#6b7280",
+                              "max-width": "600px",
+                              "margin": "0 auto",
+                              "line-height": "1.6"
+                            }
+                          }
+                        },
+                        "conditions": {}
+                      },
+                      "text": "A selection of our recent projects",
+                      "marks": []
+                    }
+                  ]
+                },
+                {
+                  "id": "yeffaf6e",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "portfolio-grid",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "display": "grid",
+                          "grid-template-columns": "repeat(auto-fit, minmax(350px, 1fr))",
+                          "gap": "2rem",
+                          "margin-bottom": "3rem"
+                        }
+                      },
+                      "raw-[%40media%20(max-width%3A%20768px)]": {
+                        "__raw": {
+                          "grid-template-columns": "1fr"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "tl9olj44",
+                      "type": "expression",
+                      "expression": "props.portfolio.map(item => fragments.fragment_1({\n  item\n}))"
+                    }
+                  ]
+                },
+                {
+                  "id": "zhcv44ak",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "view-all",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "text-align": "center"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "wli62t8n",
+                      "type": "text",
+                      "text": "View All Projects",
+                      "link": {
+                        "type": "href",
+                        "href": "/portfolio"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_2",
+      "varName": "fragment_2"
+    },
+    {
+      "id": "hs7wwkct",
+      "params": [
+        {
+          "name": "item",
+          "varName": "item",
+          "required": true
+        }
+      ],
+      "content": [
+        {
+          "id": "kzmvd28a",
+          "type": "container",
+          "tag": "div",
+          "name": "portfolio-card",
+          "stylesheet": {
+            "styles": {
+              "__base__": {
+                "__raw": {
+                  "background": "white",
+                  "border-radius": "1rem",
+                  "overflow": "hidden",
+                  "box-shadow": "0 4px 6px rgba(0, 0, 0, 0.05)",
+                  "transition": "all 0.3s ease",
+                  "border": "1px solid #e5e7eb"
+                }
+              }
+            },
+            "conditions": {}
+          },
+          "content": [
+            {
+              "id": "tb6irfj8",
+              "type": "container",
+              "tag": "div",
+              "name": "portfolio-image",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "height": "200px",
+                      "background": "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                      "position": "relative",
+                      "overflow": "hidden"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "ksxpj4ml",
+                  "type": "container",
+                  "tag": "div",
+                  "name": "image-placeholder",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "position": "absolute",
+                          "top": "50%",
+                          "left": "50%",
+                          "transform": "translate(-50%, -50%)",
+                          "color": "white",
+                          "font-size": "1.5rem",
+                          "font-weight": "600",
+                          "background": "rgba(0, 0, 0, 0.2)",
+                          "padding": "0.5rem 1rem",
+                          "border-radius": "0.5rem"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "content": [
+                    {
+                      "id": "dvj6dlui",
+                      "type": "expression",
+                      "expression": "item.category"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "hr0tosy2",
+              "type": "container",
+              "tag": "div",
+              "name": "portfolio-content",
+              "stylesheet": {
+                "styles": {
+                  "__base__": {
+                    "__raw": {
+                      "padding": "1.5rem"
+                    }
+                  }
+                },
+                "conditions": {}
+              },
+              "content": [
+                {
+                  "id": "gqe828zg",
+                  "type": "text",
+                  "tag": "span",
+                  "name": "portfolio-category",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "background": "#6366f1",
+                          "color": "white",
+                          "font-size": "0.8rem",
+                          "font-weight": "600",
+                          "padding": "0.25rem 0.75rem",
+                          "border-radius": "1rem",
+                          "text-transform": "uppercase",
+                          "letter-spacing": "0.05em"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "text": "{{ item.category }}",
+                  "marks": []
+                },
+                {
+                  "id": "we6qpqqk",
+                  "type": "text",
+                  "tag": "h3",
+                  "name": "portfolio-title",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "font-size": "1.25rem",
+                          "font-weight": "700",
+                          "color": "#1f2937",
+                          "margin": "1rem 0 0.5rem"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "text": "{{ item.title }}",
+                  "marks": []
+                },
+                {
+                  "id": "g4015zy0",
+                  "type": "text",
+                  "tag": "p",
+                  "name": "portfolio-description",
+                  "stylesheet": {
+                    "styles": {
+                      "__base__": {
+                        "__raw": {
+                          "color": "#6b7280",
+                          "line-height": "1.6"
+                        }
+                      }
+                    },
+                    "conditions": {}
+                  },
+                  "text": "{{ item.description }}",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "fragment_1",
+      "varName": "fragment_1"
+    }
+  ],
+  "template": {
+    "id": "e23hfz3h",
+    "type": "fragment",
+    "fragmentId": "vemtibcg",
+    "params": {}
+  },
+  "editors": {
+    "preview": {
+      "content": {
+        "type": "component",
+        "componentUrl": "host"
+      }
+    }
+  }
+}
