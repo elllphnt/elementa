@@ -3,11 +3,8 @@ import { Model, RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 
 export class App extends Model<RecordState<AppData>> {
-  readonly file: any; // TODO: Fix typing
-
-  constructor({ state, file }: { state: RecordState<AppData>; file: any }) {
+  constructor({ state }: { state: RecordState<AppData> }) {
     super({ state });
-    this.file = file;
   }
 
   get routerUrl(): string | undefined {

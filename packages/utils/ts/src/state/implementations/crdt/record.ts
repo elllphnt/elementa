@@ -1,13 +1,26 @@
+import { getOrCreateYArray, getOrCreateYMap } from "@elllphnt/crdt";
 import { BehaviorSubject, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import * as y from "yjs";
+import { ArrayKeyOf, ObjectKeyOf } from "../../../types/object.js";
+import { ListState } from "../../list.js";
 import { RecordState } from "../../record.js";
+import { State } from "../../state.js";
+import { AggregatedStateList } from "../../state_list.js";
+import { AggregatedStateRecord } from "../../state_record.js";
+import { ValueState } from "../../value.js";
+import { CrdtListState } from "./list.js";
+import { AggregatedCrdtStateList } from "./state_list.js";
+import { AggregatedCrdtStateRecord } from "./state_record.js";
+import { CrdtValueState } from "./value.js";
 
 export class CrdtRecordState<
   T extends Record<string, unknown>
 > extends RecordState<T> {
   private readonly map: y.Map<any>;
   private readonly subject$: BehaviorSubject<T>;
+
+  private _subStates: Record<string, State> = {};
 
   constructor(map: y.Map<any>) {
     super();
@@ -21,7 +34,20 @@ export class CrdtRecordState<
     this.subject$ = new BehaviorSubject(initial as T);
 
     this.observer = this.observer.bind(this);
-    this.map.observe(this.observer);
+
+    this.addInitializer(() => {
+      this.map.observe(this.observer);
+      this.addDisposer(() => {
+        this.map.unobserve(this.observer);
+      });
+    });
+
+    this.addDisposer(() => {
+      for (const key in this._subStates) {
+        this._subStates[key].dispose();
+      }
+      this.subject$.complete();
+    });
   }
 
   private observer(event: y.YMapEvent<any>) {
@@ -77,6 +103,77 @@ export class CrdtRecordState<
     Object.entries(data).forEach(([k, v]) => {
       this.map.set(k, v);
     });
+  }
+
+  getRecordState<K extends ObjectKeyOf<Required<T>>>(
+    key: K
+  ): RecordState<NonNullable<T[K]>> {
+    if (this._subStates[key as string]) {
+      throw new Error(
+        `Record state for key "${key as string}" already exists.`
+      );
+    }
+
+    const nestedMap = getOrCreateYMap(this.map, key as string);
+    const state = new CrdtRecordState(nestedMap) as RecordState<
+      NonNullable<T[K]>
+    >;
+    this._subStates[key as string] = state;
+    return state;
+  }
+  getListState<K extends ArrayKeyOf<Required<T>>>(key: K) {
+    if (this._subStates[key as string]) {
+      throw new Error(`List state for key "${key as string}" already exists.`);
+    }
+
+    const nestedArray = getOrCreateYArray(this.map, key as string);
+    const state = new CrdtListState(nestedArray) as ListState<any>;
+    this._subStates[key as string] = state;
+    return state;
+  }
+  getAggregatedStateRecord<K extends ObjectKeyOf<Required<T>>>(
+    key: K
+  ): AggregatedStateRecord<RecordState<any>> {
+    if (this._subStates[key as string]) {
+      throw new Error(
+        `Aggregated state for key "${key as string}" already exists.`
+      );
+    }
+
+    const nestedMap = getOrCreateYMap(this.map, key as string);
+    const state = new AggregatedCrdtStateRecord(
+      nestedMap,
+      () => new CrdtRecordState(new y.Map()) as RecordState<any>
+    ) as AggregatedStateRecord<RecordState<any>>;
+    this._subStates[key as string] = state;
+    return state;
+  }
+  getAggregatedStateList<K extends ArrayKeyOf<Required<T>>>(
+    key: K
+  ): AggregatedStateList<RecordState<any>> {
+    if (this._subStates[key as string]) {
+      throw new Error(
+        `Aggregated state for key "${key as string}" already exists.`
+      );
+    }
+
+    const nestedArray = getOrCreateYArray(this.map, key as string);
+    const state = new AggregatedCrdtStateList(
+      nestedArray as y.Array<any>,
+      () => new CrdtRecordState(new y.Map()) as RecordState<any>
+    ) as AggregatedStateList<RecordState<any>>;
+    this._subStates[key as string] = state;
+    return state;
+  }
+  getValueState<K extends keyof T>(key: K): ValueState<T[K]> {
+    if (this._subStates[key as string]) {
+      throw new Error(`Value state for key "${key as string}" already exists.`);
+    }
+
+    const currentValue = this.map.get(key as string) as T[K];
+    const state = new CrdtValueState(this.map, key as string, currentValue);
+    this._subStates[key as string] = state;
+    return state;
   }
 
   dispose(): void {

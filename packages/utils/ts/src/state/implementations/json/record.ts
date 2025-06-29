@@ -1,11 +1,21 @@
 import { BehaviorSubject, Observable } from "rxjs";
 import { map } from "rxjs/operators";
+import { ArrayKeyOf, ObjectKeyOf } from "../../../types/object.js";
+import { ListState } from "../../list.js";
 import { RecordState } from "../../record.js";
+import { AggregatedStateList } from "../../state_list.js";
+import { AggregatedStateRecord } from "../../state_record.js";
+import { ValueState } from "../../value.js";
+import { JsonListState } from "./list.js";
+import { AggregatedJsonStateList } from "./state_list.js";
+import { AggregatedJsonStateRecord } from "./state_record.js";
+import { JsonValueState } from "./value.js";
 
 export class JsonRecordState<
   T extends Record<string, unknown>
 > extends RecordState<T> {
   private readonly subject$: BehaviorSubject<T>;
+  private _subStates: Record<string, any> = {};
 
   constructor(init: T) {
     super();
@@ -13,6 +23,8 @@ export class JsonRecordState<
 
     this.addDisposer(() => {
       this.subject$.complete();
+      // Dispose nested states
+      Object.values(this._subStates).forEach((state) => state?.dispose?.());
     });
   }
 
@@ -60,5 +72,68 @@ export class JsonRecordState<
 
   setRecord(data: T): void {
     this.subject$.next({ ...data });
+  }
+
+  getRecordState<K extends ObjectKeyOf<Required<T>>>(
+    key: K
+  ): RecordState<NonNullable<T[K]>> {
+    if (this._subStates[key as string]) {
+      return this._subStates[key as string];
+    }
+
+    const nestedState = new JsonRecordState({} as NonNullable<T[K]>);
+    this._subStates[key as string] = nestedState;
+    return nestedState;
+  }
+
+  getListState<K extends ArrayKeyOf<Required<T>>>(key: K) {
+    if (this._subStates[key as string]) {
+      return this._subStates[key as string];
+    }
+
+    const nestedState = new JsonListState([]) as ListState<any>;
+    this._subStates[key as string] = nestedState;
+    return nestedState;
+  }
+
+  getAggregatedStateRecord<K extends ObjectKeyOf<Required<T>>>(
+    key: K
+  ): AggregatedStateRecord<RecordState<any>> {
+    if (this._subStates[key as string]) {
+      return this._subStates[key as string];
+    }
+
+    const nestedState = new AggregatedJsonStateRecord(
+      {},
+      () => new JsonRecordState({}) as RecordState<any>
+    );
+    this._subStates[key as string] = nestedState;
+    return nestedState;
+  }
+
+  getAggregatedStateList<K extends ArrayKeyOf<Required<T>>>(
+    key: K
+  ): AggregatedStateList<RecordState<any>> {
+    if (this._subStates[key as string]) {
+      return this._subStates[key as string];
+    }
+
+    const nestedState = new AggregatedJsonStateList(
+      [],
+      () => new JsonRecordState({}) as RecordState<any>
+    );
+    this._subStates[key as string] = nestedState;
+    return nestedState;
+  }
+
+  getValueState<K extends keyof T>(key: K): ValueState<T[K]> {
+    if (this._subStates[key as string]) {
+      return this._subStates[key as string];
+    }
+
+    const currentValue = this.subject$.value[key];
+    const nestedState = new JsonValueState<T[K]>(currentValue);
+    this._subStates[key as string] = nestedState;
+    return nestedState;
   }
 }

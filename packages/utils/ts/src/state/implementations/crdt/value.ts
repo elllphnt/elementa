@@ -4,13 +4,13 @@ import { ValueState } from "../../value.js";
 
 export class CrdtValueState<T> extends ValueState<T> {
   private readonly map: y.Map<any>;
-  private readonly key: string;
+  private readonly propertyKey: string;
   private readonly subject$: BehaviorSubject<T>;
 
   constructor(map: y.Map<any>, key: string, initialValue: T) {
     super();
     this.map = map;
-    this.key = key;
+    this.propertyKey = key;
 
     // Initialize with existing value or provided initial value
     const current = map.has(key) ? map.get(key) : initialValue;
@@ -26,8 +26,8 @@ export class CrdtValueState<T> extends ValueState<T> {
   }
 
   private observer(event: y.YMapEvent<any>) {
-    if (event.changes.keys.has(this.key)) {
-      this.subject$.next(this.map.get(this.key));
+    if (event.changes.keys.has(this.propertyKey)) {
+      this.subject$.next(this.map.get(this.propertyKey));
     }
   }
 
@@ -40,6 +40,6 @@ export class CrdtValueState<T> extends ValueState<T> {
   }
 
   setValue(data: T): void {
-    this.map.set(this.key, data);
+    this.map.set(this.propertyKey, data);
   }
 }
