@@ -1,5 +1,5 @@
+import { makeFileUrl } from "@elllphnt/elementa-base";
 import { map, Observable } from "rxjs";
-import { makeFileUrl } from "~/_lib/url.js";
 import { Project } from "../project.js";
 import { AsyncResource } from "../resource.js";
 

@@ -1,5 +1,5 @@
 import { StyleSystemData } from "@elllphnt/elementa-base";
-import { Model, RecordState } from "@elllphnt/elementa-utils";
+import { Model, RecordState } from "@elllphnt/elementa-kernel";
 import { map, Observable } from "rxjs";
 import { File } from "~/project/file/file.js";
 import { FileModelAdaptor } from "~/project/file/model_adaptor.js";

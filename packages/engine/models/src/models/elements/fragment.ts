@@ -1,5 +1,5 @@
 import { FragmentElementData } from "@elllphnt/elementa-base";
-import { RecordState } from "@elllphnt/elementa-utils";
+import { RecordState } from "@elllphnt/elementa-kernel";
 import { map, Observable, of, switchMap } from "rxjs";
 import { CssStyleSheet } from "~/css/lib/stylesheet.js";
 import { Fragment } from "../fragment/fragment.js";

@@ -1,10 +1,10 @@
 import { Observable } from "rxjs";
-import { Lifecycle } from "../../core/lifecycle.js";
-import { ArrayKeyOf, ObjectKeyOf } from "../../lang/types/object.js";
 import { ListState } from "./list.js";
 import { AggregatedStateList } from "./state_list.js";
 import { AggregatedStateRecord } from "./state_record.js";
 import { ValueState } from "./value.js";
+import { Lifecycle } from "../lifecycle.js";
+import { ArrayKeyOf, ObjectKeyOf } from "@elllphnt/elementa-lang-utils";
 
 export abstract class RecordState<
   T extends Record<string, any>

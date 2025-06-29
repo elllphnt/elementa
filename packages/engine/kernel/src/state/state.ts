@@ -1,3 +1,3 @@
-import { Lifecycle } from "../../core/_.js";
+import { Lifecycle } from "../lifecycle.js";
 
 export abstract class State extends Lifecycle {}

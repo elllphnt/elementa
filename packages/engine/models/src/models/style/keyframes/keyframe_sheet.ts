@@ -3,11 +3,11 @@ import {
   AggregatedModelList,
   Model,
   RecordState,
-} from "@elllphnt/elementa-utils";
+} from "@elllphnt/elementa-kernel";
 import { map, Observable } from "rxjs";
-import { KeyframeSet } from "./keyframe_set.js";
-import { Project } from "~/project/project.js";
 import { File } from "~/project/file/file.js";
+import { Project } from "~/project/project.js";
+import { KeyframeSet } from "./keyframe_set.js";
 
 export class KeyframeSheet extends Model<RecordState<KeyframeSheetData>> {
   project: Project;

@@ -2,7 +2,7 @@ import {
   ViewportDefinitionData,
   ViewportSetData,
 } from "@elllphnt/elementa-base";
-import { Model, RecordState } from "@elllphnt/elementa-utils";
+import { Model, RecordState } from "@elllphnt/elementa-kernel";
 import { map, Observable } from "rxjs";
 
 export class ViewportSet extends Model<RecordState<ViewportSetData>> {

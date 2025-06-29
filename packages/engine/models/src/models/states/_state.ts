@@ -1,4 +1,4 @@
-import { RecordState } from "@elllphnt/elementa-utils";
+import { RecordState } from "@elllphnt/elementa-kernel";
 import { Component } from "../component/component.js";
 import { HookState } from "./hook.js";
 import { InlineState } from "./inline.js";

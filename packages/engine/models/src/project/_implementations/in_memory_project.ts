@@ -1,5 +1,5 @@
 import { PackageData } from "@elllphnt/elementa-base";
-import { combineLatestOrEmpty } from "@elllphnt/elementa-utils";
+import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 import { combineLatest, map, Observable, of } from "rxjs";
 import { Infrastructure } from "~/infrastructure/infrastructure.js";
 import { Content } from "../file/content.js";

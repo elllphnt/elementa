@@ -1,14 +1,11 @@
-import { BlueprintData } from "@elllphnt/elementa-base";
-import {
-  AggregatedModelList,
-  Model,
-  RecordState,
-} from "@elllphnt/elementa-utils";
+import { BlueprintData, genId } from "@elllphnt/elementa-base";
+import { AggregatedModelList, RecordState } from "@elllphnt/elementa-kernel";
 import { Observable, distinctUntilChanged, map } from "rxjs";
-import { genId } from "~/_lib/id.js";
+import { Project } from "~/project/project.js";
+import { ProjectModel } from "../project.js";
 import { BlueprintNode } from "./node.js";
 
-export class Blueprint extends Model<RecordState<BlueprintData>> {
+export class Blueprint extends ProjectModel<RecordState<BlueprintData>> {
   private readonly _nodes: AggregatedModelList<RecordState<any>, BlueprintNode>;
 
   get nodes(): BlueprintNode[] {
@@ -18,12 +15,18 @@ export class Blueprint extends Model<RecordState<BlueprintData>> {
     return this._nodes.models$;
   }
 
-  constructor({ state }: { state: RecordState<BlueprintData> }) {
-    super({ state });
+  constructor({
+    state,
+    project,
+  }: {
+    state: RecordState<BlueprintData>;
+    project: Project;
+  }) {
+    super({ state, project });
 
     this._nodes = new AggregatedModelList({
       state: state.getAggregatedStateList("nodes"),
-      create: (itemState) => new BlueprintNode({ state: itemState }),
+      create: (itemState) => new BlueprintNode({ state: itemState, project }),
     });
 
     this.addDisposer(() => this._nodes.dispose());
@@ -41,6 +44,7 @@ export class Blueprint extends Model<RecordState<BlueprintData>> {
     };
     const node = new BlueprintNode({
       state: { ...nodeData } as any, // TODO: Fix proper state
+      project: this.project,
     });
     this._nodes.add(node);
     return node;

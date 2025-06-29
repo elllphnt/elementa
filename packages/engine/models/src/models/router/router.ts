@@ -1,9 +1,9 @@
-import { RouterData, RouteTreeData } from "@elllphnt/elementa-base";
+import { genId, RouterData, RouteTreeData } from "@elllphnt/elementa-base";
 import {
   AggregatedModelList,
   Model,
   RecordState,
-} from "@elllphnt/elementa-utils";
+} from "@elllphnt/elementa-kernel";
 import {
   BehaviorSubject,
   distinctUntilChanged,
@@ -11,7 +11,6 @@ import {
   Observable,
   of,
 } from "rxjs";
-import { genId } from "~/_lib/id.js";
 import { File } from "~/project/file/file.js";
 import { Blueprint } from "../blueprint/blueprint.js";
 import { ElementaEnvironment } from "../elementa/environment.js";

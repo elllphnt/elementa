@@ -1,5 +1,5 @@
 import { MediaData, MediaElementData } from "@elllphnt/elementa-base";
-import { RecordState } from "@elllphnt/elementa-utils";
+import { RecordState } from "@elllphnt/elementa-kernel";
 import { Observable } from "rxjs";
 import { BaseElement } from "./_base.js";
 import { ElementEnvironment } from "./_environment.js";

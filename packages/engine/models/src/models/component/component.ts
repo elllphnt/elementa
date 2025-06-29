@@ -1,25 +1,25 @@
 import { ComponentData } from "@elllphnt/elementa-base";
 import {
   AggregatedModelList,
-  Model,
   OptionalModel,
   RecordState,
-} from "@elllphnt/elementa-utils";
+} from "@elllphnt/elementa-kernel";
 import { BehaviorSubject, map, Observable } from "rxjs";
-import { File } from "~/project/file/file.js";
-import { DataInput } from "../_shared/data_input.js";
+import { Project } from "~/project/project.js";
 import { ElementaEnvironment } from "../elementa/environment.js";
 import { ElementaPreview } from "../elementa/preview.js";
 import { ElementaStage } from "../elementa/stage.js";
 import { Element } from "../elements/_element.js";
 import { ElementEnvironment } from "../elements/_environment.js";
 import { Fragment } from "../fragment/fragment.js";
+import { DataInput } from "../primitives/data_input.js";
+import { ProjectModel } from "../project.js";
 import { createState, State } from "../states/_state.js";
 
 export class ComponentElementEnvironment implements ElementEnvironment {
   component: Component;
   get project() {
-    return this.component.file.project;
+    return this.component.project;
   }
 
   private _slotIds$ = new BehaviorSubject<string[]>([]);
@@ -54,11 +54,11 @@ export class ComponentElementEnvironment implements ElementEnvironment {
 export class ComponentElementaEnvironment implements ElementaEnvironment {
   component: Component;
   get project() {
-    return this.component.file.project;
+    return this.component.project;
   }
 
   get hostUrl(): string | undefined {
-    return this.component.file.url;
+    return this.component.url;
   }
 
   fragment(id: string): Fragment | undefined {
@@ -76,12 +76,12 @@ export class ComponentElementaEnvironment implements ElementaEnvironment {
   }
 }
 
-export class Component extends Model<RecordState<ComponentData>> {
-  readonly file: File;
+export class Component extends ProjectModel<RecordState<ComponentData>> {
   readonly elementEnvironment: ComponentElementEnvironment;
   readonly elementaEnvironment: ComponentElementaEnvironment;
   readonly stage: ElementaStage;
   readonly preview: ElementaPreview;
+  readonly url?: string;
 
   // TODO: Update these to use proper AggregatedModelList typing
   readonly _template: OptionalModel<RecordState<any>, Element>;
@@ -100,15 +100,17 @@ export class Component extends Model<RecordState<ComponentData>> {
   }
 
   constructor({
+    url,
     state,
-    file,
+    project,
   }: {
     state: RecordState<ComponentData>;
-    file: File;
+    project: Project;
+    url?: string;
   }) {
-    super({ state });
+    super({ state, project });
 
-    this.file = file;
+    this.url = url;
     this.elementEnvironment = new ComponentElementEnvironment({
       component: this,
     });

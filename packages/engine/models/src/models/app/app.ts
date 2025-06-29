@@ -1,27 +1,31 @@
 import { AppData } from "@elllphnt/elementa-base";
-import { Model, RecordState } from "@elllphnt/elementa-utils";
+import { RecordState } from "@elllphnt/elementa-kernel";
 import { Observable } from "rxjs";
+import { Project } from "~/project/project.js";
+import { ProjectModel } from "../project.js";
 
-export class App extends Model<RecordState<AppData>> {
-  constructor({ state }: { state: RecordState<AppData> }) {
-    super({ state });
+export class App extends ProjectModel<RecordState<AppData>> {
+  constructor({
+    state,
+    project,
+  }: {
+    state: RecordState<AppData>;
+    project: Project;
+  }) {
+    super({ state, project });
   }
 
   get routerUrl(): string | undefined {
     return this.state.entry("routerUrl");
   }
-
   get routerUrl$(): Observable<string | undefined> {
     return this.state.entry$("routerUrl");
   }
 
-  get router(): any {
-    // TODO: Fix typing
+  get router() {
     return undefined;
   }
-
-  get router$(): Observable<any> {
-    // TODO: Fix typing
+  get router$() {
     return this.state.entry$("routerUrl");
   }
 

@@ -1,9 +1,8 @@
-import { KeyFrameData, KeyframeSetData } from "@elllphnt/elementa-base";
-import { AggregatedModelList, RecordState } from "@elllphnt/elementa-utils";
+import { genId, KeyFrameData, KeyframeSetData } from "@elllphnt/elementa-base";
+import { AggregatedModelList, RecordState } from "@elllphnt/elementa-kernel";
 import { Observable } from "rxjs";
-import { genId } from "~/_lib/id.js";
 import { Project } from "~/project/project.js";
-import { Identifiable } from "../../_shared/identifiable.js";
+import { Identifiable } from "../../identifiable.js";
 import { StyleFragmentRegistry } from "../stylesheet/style_fragment_registry.js";
 import { Keyframe } from "./keyframe.js";
 

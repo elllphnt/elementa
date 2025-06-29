@@ -1,7 +1,7 @@
 import { RouteTreeData } from "@elllphnt/elementa-base";
-import { AggregatedModelList, RecordState } from "@elllphnt/elementa-utils";
+import { AggregatedModelList, RecordState } from "@elllphnt/elementa-kernel";
 import { map, Observable } from "rxjs";
-import { Identifiable } from "../_shared/identifiable.js";
+import { Identifiable } from "../identifiable.js";
 import { Router } from "./router.js";
 
 export class RouteTree extends Identifiable<RouteTreeData> {

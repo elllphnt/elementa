@@ -2,7 +2,7 @@ import {
   RenderingContextData,
   StyleModifierData,
 } from "@elllphnt/elementa-base";
-import { ListState, Model, RecordState } from "@elllphnt/elementa-utils";
+import { ListState, Model, RecordState } from "@elllphnt/elementa-kernel";
 import { Observable } from "rxjs";
 import { ColorTheme } from "./color_theme.js";
 import { Viewport } from "./viewport.js";

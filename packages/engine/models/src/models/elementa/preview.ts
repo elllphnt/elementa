@@ -3,7 +3,7 @@ import {
   CornerName,
   ElementaPreviewData,
 } from "@elllphnt/elementa-base";
-import { Model, OptionalModel, RecordState } from "@elllphnt/elementa-utils";
+import { Model, OptionalModel, RecordState } from "@elllphnt/elementa-kernel";
 import { Observable, map } from "rxjs";
 import { ElementaEnvironment } from "./environment.js";
 import {

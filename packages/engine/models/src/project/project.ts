@@ -1,7 +1,11 @@
-import { elementaStandardPaths, PackageData } from "@elllphnt/elementa-base";
-import { Lifecycle } from "@elllphnt/elementa-utils";
+import {
+  elementaStandardPaths,
+  PackageData,
+  toAbsoluteFileUrl,
+  toRelativeFileUrl,
+} from "@elllphnt/elementa-base";
+import { Lifecycle } from "@elllphnt/elementa-kernel";
 import { Observable } from "rxjs";
-import { toAbsoluteFileUrl, toRelativeFileUrl } from "~/_lib/url.js";
 import { Infrastructure } from "../infrastructure/infrastructure.js";
 import { Content } from "./file/content.js";
 import { File, FileReference } from "./file/file.js";

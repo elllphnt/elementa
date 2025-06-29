@@ -4,7 +4,7 @@ import {
   StyleModifierType,
   ViewportDefinitionData,
 } from "@elllphnt/elementa-base";
-import { Lifecycle } from "@elllphnt/elementa-utils";
+import { Lifecycle } from "@elllphnt/elementa-kernel";
 import {
   BehaviorSubject,
   combineLatest,

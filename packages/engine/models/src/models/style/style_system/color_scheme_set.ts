@@ -2,7 +2,7 @@ import {
   ColorSchemeDefinitionData,
   ColorSchemeSetData,
 } from "@elllphnt/elementa-base";
-import { Model, RecordState } from "@elllphnt/elementa-utils";
+import { Model, RecordState } from "@elllphnt/elementa-kernel";
 import { map, Observable } from "rxjs";
 
 export class ColorSchemeSet extends Model<RecordState<ColorSchemeSetData>> {

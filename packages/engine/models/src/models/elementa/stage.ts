@@ -3,7 +3,7 @@ import {
   AggregatedModelList,
   Model,
   RecordState,
-} from "@elllphnt/elementa-utils";
+} from "@elllphnt/elementa-kernel";
 import { Observable } from "rxjs";
 import { ElementaEnvironment } from "./environment.js";
 

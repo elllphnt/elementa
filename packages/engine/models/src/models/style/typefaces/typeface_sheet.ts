@@ -3,11 +3,11 @@ import {
   AggregatedModelList,
   Model,
   RecordState,
-} from "@elllphnt/elementa-utils";
+} from "@elllphnt/elementa-kernel";
 import { map, Observable } from "rxjs";
-import { Typeface } from "./typeface.js";
-import { Project } from "~/project/project.js";
 import { File } from "~/project/file/file.js";
+import { Project } from "~/project/project.js";
+import { Typeface } from "./typeface.js";
 
 export class TypefaceSheet extends Model<RecordState<TypefaceSheetData>> {
   project: Project;

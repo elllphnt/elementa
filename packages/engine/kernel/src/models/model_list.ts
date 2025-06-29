@@ -1,9 +1,9 @@
 import { BehaviorSubject } from "rxjs";
-import { Lifecycle } from "../../core/lifecycle.js";
-import { reconcileList } from "../infra/reconciliation.js";
 import { ListState } from "../state/list.js";
 import { State } from "../state/state.js";
 import { Model } from "./model.js";
+import { Lifecycle } from "../lifecycle.js";
+import { reconcileList } from "../reconciliation.js";
 
 export class AggregatedModelList<
   S extends State,

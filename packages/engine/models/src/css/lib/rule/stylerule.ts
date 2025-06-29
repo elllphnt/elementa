@@ -1,6 +1,6 @@
 import { CssSelector } from "@elllphnt/elementa-base";
 import { CssStyleData } from "@elllphnt/elementa-css";
-import { Lifecycle } from "@elllphnt/elementa-utils";
+import { Lifecycle } from "@elllphnt/elementa-kernel";
 import { Observable } from "rxjs";
 
 /**

@@ -5,10 +5,12 @@ import {
 import {
   AggregatedModelList,
   AggregatedModelRecord,
+  RecordState,
+} from "@elllphnt/elementa-kernel";
+import {
   combineLatestArrays,
   combineLatestOrEmpty,
-  RecordState,
-} from "@elllphnt/elementa-utils";
+} from "@elllphnt/elementa-lang-utils";
 import { filter, map, Observable, of, switchMap, tap } from "rxjs";
 import { CssStyleSheet } from "~/css/lib/stylesheet.js";
 import { BaseElement } from "../_base.js";

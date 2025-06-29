@@ -9,15 +9,14 @@ import {
   VarRef,
 } from "@elllphnt/elementa-base";
 import { elllSelectorToCssSelector } from "@elllphnt/elementa-css";
+import { Lifecycle, reconcileList } from "@elllphnt/elementa-kernel";
 import {
   combineLatestArrays,
   combineLatestOrEmpty,
-  Lifecycle,
-  reconcileList,
-} from "@elllphnt/elementa-utils";
+} from "@elllphnt/elementa-lang-utils";
 import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
-import { StylesheetCssStyleSheet } from "~/css/_.js";
-import { Stylesheet } from "~/models/_.js";
+import { StylesheetCssStyleSheet } from "~/css/stylesheets/stylesheet/stylesheet.js";
+import { Stylesheet } from "~/models/style/stylesheet/stylesheet.js";
 import { Project } from "../project.js";
 import { generateClassName } from "./_utils.js";
 import { ColorSchemeManager } from "./color_scheme.js";

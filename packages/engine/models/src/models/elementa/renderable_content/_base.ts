@@ -1,5 +1,5 @@
 import { BaseRenderableContentData } from "@elllphnt/elementa-base";
-import { Model, RecordState } from "@elllphnt/elementa-utils";
+import { Model, RecordState } from "@elllphnt/elementa-kernel";
 import { ElementaEnvironment } from "../environment.js";
 
 export abstract class BaseRenderableContent<

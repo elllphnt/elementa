@@ -1,4 +1,4 @@
-import { RecordState } from "@elllphnt/elementa-utils";
+import { RecordState } from "@elllphnt/elementa-kernel";
 import { ElementaEnvironment } from "../environment.js";
 import { ComponentRenderableContent } from "./component.js";
 import { FragmentRenderableContent } from "./fragment.js";

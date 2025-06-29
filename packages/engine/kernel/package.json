@@ -1,0 +1,26 @@
+{
+    "name": "@elllphnt/elementa-kernel",
+    "version": "0.1.0",
+    "type": "module",
+    "scripts": {
+        "clean": "rm -rf dist build",
+        "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json --verbose",
+        "build:dist": "tsc -p tsconfig.build.json --sourceMap false --declarationMap false && tsc-alias -p tsconfig.build.json --verbose",
+        "build:watch": "tsc -p tsconfig.build.json --watch",
+        "alias:watch": "tsc-alias -p tsconfig.build.json --watch",
+        "watch": "concurrently \"npm run build:watch\" \"npm run alias:watch\"",
+        "packup": "tsx scripts/packup.ts",
+        "pub": "npm run clean && npm run build:dist && npm run packup && cd dist && npm publish",
+        "test": "vitest --run"
+    },
+    "dependencies": {
+        "rxjs": "^7.8.2",
+        "@elllphnt/elementa-lang-utils": "workspace:*"
+    },
+    "exports": {
+        ".": {
+            "import": "./build/index.js",
+            "types": "./build/index.d.ts"
+        }
+    }
+}

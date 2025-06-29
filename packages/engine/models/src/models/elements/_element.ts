@@ -1,6 +1,6 @@
-import { RecordState } from "@elllphnt/elementa-utils";
+import { RecordState } from "@elllphnt/elementa-kernel";
 import { ElementEnvironment } from "./_environment.js";
-import { ComponentElement } from "./component.js";
+import { ComponentElement } from "./component/component.js";
 import { ContainerElement } from "./container.js";
 import { ExpressionElement } from "./expression.js";
 import { FragmentElement } from "./fragment.js";

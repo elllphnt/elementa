@@ -1,18 +1,20 @@
-import { BlueprintNodeData } from "@elllphnt/elementa-base";
-import { RecordState } from "@elllphnt/elementa-utils";
+import { BlueprintNodeData, genId } from "@elllphnt/elementa-base";
+import { RecordState } from "@elllphnt/elementa-kernel";
 import { Observable } from "rxjs";
-import { genId } from "~/_lib/id.js";
-import { Identifiable } from "~/models/_shared/identifiable.js";
+import { Identifiable } from "~/models/identifiable.js";
+import { Project } from "~/project/project.js";
 
 export class BlueprintNode extends Identifiable<BlueprintNodeData> {
   constructor({
     state,
+    project,
     initialized,
   }: {
     state: RecordState<BlueprintNodeData>;
+    project: Project;
     initialized?: boolean;
   }) {
-    super({ state });
+    super({ state, project });
 
     if (!initialized) {
       state.set("id", genId());

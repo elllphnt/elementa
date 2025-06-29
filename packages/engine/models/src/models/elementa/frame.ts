@@ -1,7 +1,7 @@
 import { CornerData, ElementaFrameData } from "@elllphnt/elementa-base";
-import { OptionalModel, RecordState } from "@elllphnt/elementa-utils";
+import { OptionalModel, RecordState } from "@elllphnt/elementa-kernel";
 import { Observable } from "rxjs";
-import { Identifiable } from "../_shared/identifiable.js";
+import { Identifiable } from "../identifiable.js";
 import {
   RenderableContent,
   createRenderableContent,

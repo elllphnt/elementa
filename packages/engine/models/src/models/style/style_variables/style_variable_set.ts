@@ -1,14 +1,14 @@
 import {
   ElllSelectorData,
+  genId,
   StyleDataType,
   StyleVariableData,
   StyleVariableSetData,
 } from "@elllphnt/elementa-base";
-import { AggregatedModelList, RecordState } from "@elllphnt/elementa-utils";
+import { AggregatedModelList, RecordState } from "@elllphnt/elementa-kernel";
 import { map, Observable } from "rxjs";
-import { genId } from "~/_lib/id.js";
+import { Identifiable } from "~/models/identifiable.js";
 import { StyleVariable } from "./style_variable.js";
-import { Identifiable } from "~/models/_shared/identifiable.js";
 
 export class StyleVariableSet extends Identifiable<StyleVariableSetData> {
   private _variables: AggregatedModelList<

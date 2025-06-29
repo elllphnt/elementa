@@ -1,6 +1,6 @@
-import { BehaviorSubject, map, Observable } from "rxjs";
-import { Lifecycle } from "../../core/lifecycle.js";
-import { reconcileMap } from "../infra/reconciliation.js";
+import { BehaviorSubject, Observable } from "rxjs";
+import { Lifecycle } from "~/lifecycle.js";
+import { reconcileList } from "~/reconciliation.js";
 import { State } from "../state/state.js";
 import { AggregatedStateRecord } from "../state/state_record.js";
 import { Model } from "./model.js";
@@ -10,23 +10,15 @@ export class AggregatedModelRecord<
   M extends Model<S>
 > extends Lifecycle {
   readonly state: AggregatedStateRecord<S>;
-  private _models$ = new BehaviorSubject<Record<string, M | undefined>>({});
+  private _models$ = new BehaviorSubject<Record<string, M>>({});
 
   get models() {
-    return Object.fromEntries(
-      Object.entries(this._models$.value).filter(([, value]) => !!value)
-    ) as Record<string, M>;
+    return this._models$.value as Record<string, M | undefined>;
   }
   get models$() {
-    return this._models$
-      .asObservable()
-      .pipe(
-        map((models) =>
-          Object.fromEntries(
-            Object.entries(models).filter(([, value]) => !!value)
-          )
-        )
-      ) as Observable<Record<string, M>>;
+    return this._models$.asObservable() as Observable<
+      Record<string, M | undefined>
+    >;
   }
 
   constructor({
@@ -39,30 +31,48 @@ export class AggregatedModelRecord<
     super();
 
     this.state = state;
-    this._models$ = new BehaviorSubject<Record<string, M | undefined>>(
-      Object.fromEntries(
-        Object.entries(this.state.record).map(([key, entry]) => [
-          key,
-          entry ? create(entry, key, true) : undefined,
-        ])
-      )
-    );
+
+    // Initialize models, filtering out undefined values
+    const initialModels: Record<string, M> = {};
+    for (const [key, entry] of Object.entries(this.state.record)) {
+      if (entry) {
+        initialModels[key] = create(entry, key, true);
+      }
+    }
+    this._models$ = new BehaviorSubject<Record<string, M>>(initialModels);
 
     this.addInitializer(() => {
       const sub = this.state.record$.subscribe((record) => {
-        const [next, removed] = reconcileMap({
-          sources: record,
-          targets: this.models,
-          create: (source, key) => {
-            if (!source) {
-              return undefined;
-            }
-            return create(source, key);
-          },
+        // Transform records to arrays for reconcileList
+        const sourceEntries = Object.entries(record)
+          .filter(([, state]) => state !== undefined)
+          .map(([key, state]) => ({ key, state: state! }));
+
+        const targetEntries = Object.entries(this._models$.value).map(
+          ([key, model]) => ({ key, model })
+        );
+
+        const [newEntries, removedEntries] = reconcileList({
+          sources: sourceEntries,
+          targets: targetEntries,
+          sourceRef: (source) => source.state.key, // Use state.key for uniqueness
+          targetRef: (target) => target.model.state.key, // Use state.key for uniqueness
+          create: (source) => ({
+            key: source.key,
+            model: create(source.state, source.key),
+          }),
         });
 
-        this._models$.next(next);
-        Object.values(removed).forEach((m) => m?.dispose());
+        // Transform back to record
+        const nextModels: Record<string, M> = {};
+        for (const entry of newEntries) {
+          nextModels[entry.key] = entry.model;
+        }
+
+        this._models$.next(nextModels);
+
+        // Dispose removed models
+        removedEntries.forEach((entry) => entry.model.dispose());
       });
 
       this.addDisposer(() => {
@@ -78,21 +88,32 @@ export class AggregatedModelRecord<
     });
   }
 
-  set(key: string, model: M): void {
+  set(key: string, model: M | undefined): void {
+    const currentModel = this.models[key];
+
+    // Dispose old model if it exists and is different from the new one
+    if (currentModel && currentModel !== model) {
+      currentModel.dispose();
+    }
+
     // update models list first manually to ensure the same instance of model get reused during reconciliation.
-    this._models$.next({
-      ...this.models,
-      [key]: model,
-    });
+    const nextModels = { ...this._models$.value };
+    if (model === undefined) {
+      delete nextModels[key];
+    } else {
+      nextModels[key] = model;
+    }
+    this._models$.next(nextModels);
+
     // then update state
-    this.state.set(key, model.state);
+    this.state.set(key, model?.state);
   }
 
   remove(key: string): void {
     const model = this.models[key];
     if (model) {
       // update models list first manually
-      const nextModels = { ...this.models };
+      const nextModels = { ...this._models$.value };
       delete nextModels[key];
       this._models$.next(nextModels);
       // then update state

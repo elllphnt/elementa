@@ -21,7 +21,6 @@
   },
   "devDependencies": {
     "@elllphnt/elementa-base": "workspace:*",
-    "@elllphnt/elementa-core": "workspace:*",
     "@elllphnt/elementa-models": "workspace:*",
     "@elllphnt/elementa-react-utils": "workspace:*",
     "@elllphnt/elementa-runtime": "workspace:*",

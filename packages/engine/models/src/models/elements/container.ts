@@ -1,10 +1,9 @@
 import { ContainerElementData } from "@elllphnt/elementa-base";
+import { AggregatedModelList, RecordState } from "@elllphnt/elementa-kernel";
 import {
-  AggregatedModelList,
   combineLatestArrays,
   combineLatestOrEmpty,
-  RecordState,
-} from "@elllphnt/elementa-utils";
+} from "@elllphnt/elementa-lang-utils";
 import { map, Observable, of, switchMap } from "rxjs";
 import { CssStyleSheet } from "~/css/lib/stylesheet.js";
 import { BaseElement } from "./_base.js";

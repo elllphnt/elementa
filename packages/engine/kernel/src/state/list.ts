@@ -1,5 +1,5 @@
 import { Observable } from "rxjs";
-import { Lifecycle } from "../../core/lifecycle.js";
+import { Lifecycle } from "~/lifecycle.js";
 
 export abstract class ListState<T> extends Lifecycle {
   abstract get items(): T[];

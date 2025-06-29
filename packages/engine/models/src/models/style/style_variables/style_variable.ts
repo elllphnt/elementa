@@ -1,5 +1,5 @@
 import { StyleVariableData } from "@elllphnt/elementa-base";
-import { Model, RecordState } from "@elllphnt/elementa-utils";
+import { Model, RecordState } from "@elllphnt/elementa-kernel";
 import { Observable } from "rxjs";
 
 export class StyleVariable extends Model<RecordState<StyleVariableData>> {

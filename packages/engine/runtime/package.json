@@ -26,8 +26,6 @@
     },
     "dependencies": {
         "@babel/standalone": "^7.26.9",
-        "@elllphnt/elementa-base": "workspace:*",
-        "@elllphnt/elementa-core": "workspace:*",
-        "@elllphnt/elementa-utils": "workspace:*"
+        "@elllphnt/elementa-base": "workspace:*"
     }
 }

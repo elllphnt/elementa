@@ -1,5 +1,5 @@
 import { assert, test } from "vitest";
-import { reconcileList } from "../src/index.js";
+import { reconcileList } from "~/reconciliation.js";
 
 test("returns empty when both targets and sources are empty", () => {
   const [result] = reconcileList({

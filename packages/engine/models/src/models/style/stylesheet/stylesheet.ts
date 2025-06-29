@@ -7,7 +7,7 @@ import {
   AggregatedModelRecord,
   Model,
   RecordState,
-} from "@elllphnt/elementa-utils";
+} from "@elllphnt/elementa-kernel";
 import { filter, map, Observable, tap } from "rxjs";
 import { File } from "~/project/file/file.js";
 import { Project } from "~/project/project.js";

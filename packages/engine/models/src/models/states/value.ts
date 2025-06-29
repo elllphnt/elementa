@@ -1,5 +1,5 @@
 import { ValueStateData } from "@elllphnt/elementa-base";
-import { RecordState } from "@elllphnt/elementa-utils";
+import { RecordState } from "@elllphnt/elementa-kernel";
 import { Observable } from "rxjs";
 import { Component } from "../component/component.js";
 import { BaseState } from "./_base.js";

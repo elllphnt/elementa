@@ -1,4 +1,4 @@
-import { Lifecycle } from "@elllphnt/elementa-utils";
+import { Lifecycle } from "@elllphnt/elementa-kernel";
 import { BehaviorSubject, filter, firstValueFrom, map, timeout } from "rxjs";
 
 /**

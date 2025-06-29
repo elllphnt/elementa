@@ -1,5 +1,5 @@
 import { OverflowValue, ViewportData } from "@elllphnt/elementa-base";
-import { Model, RecordState } from "@elllphnt/elementa-utils";
+import { Model, RecordState } from "@elllphnt/elementa-kernel";
 import { Observable } from "rxjs";
 
 export class Viewport extends Model<RecordState<ViewportData>> {

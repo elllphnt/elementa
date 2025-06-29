@@ -1,7 +1,8 @@
 packages:
   - apps/*
-  - packages/models/*
-  - packages/system/*
+  - packages/engine/*
+  - packages/engine/backends/*
+  - packages/schema/*
   - packages/tools/*
   - packages/utils/*
   - workflows/*

@@ -1,13 +1,13 @@
 import {
   ColorSchemeDefinitionData,
+  genId,
   StyleModifierData,
   StyleModifierDefinitionData,
   StyleModifierType,
 } from "@elllphnt/elementa-base";
-import { Lifecycle } from "@elllphnt/elementa-utils";
+import { Lifecycle } from "@elllphnt/elementa-kernel";
 import { BehaviorSubject, combineLatest, Observable, of } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
-import { genId } from "~/_lib/id.js";
 import { Project } from "../project.js";
 
 export function colorSchemeSystemDefinitions(): ColorSchemeDefinitionData[] {

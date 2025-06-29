@@ -12,7 +12,7 @@ import {
   styleToCss,
   StyleToCssContext,
 } from "@elllphnt/elementa-css";
-import { Model, RecordState } from "@elllphnt/elementa-utils";
+import { Model, RecordState } from "@elllphnt/elementa-kernel";
 import {
   BehaviorSubject,
   combineLatest,
@@ -21,8 +21,8 @@ import {
   of,
   switchMap,
 } from "rxjs";
-import { StyleFragmentRegistry } from "./style_fragment_registry.js";
 import { Project } from "~/project/project.js";
+import { StyleFragmentRegistry } from "./style_fragment_registry.js";
 
 export class Style extends Model<RecordState<StyleData>> {
   readonly selector: string;

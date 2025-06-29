@@ -6,11 +6,11 @@ import {
   LinkData,
   ResolvableOrEvaluable,
 } from "@elllphnt/elementa-base";
-import { RecordState } from "@elllphnt/elementa-utils";
+import { RecordState } from "@elllphnt/elementa-kernel";
 import { Observable, of, Subject } from "rxjs";
 import { CssStyleSheet } from "~/css/lib/stylesheet.js";
 import { StylesheetCssStyleSheet } from "~/css/stylesheets/stylesheet/stylesheet.js";
-import { Identifiable } from "../_shared/identifiable.js";
+import { Identifiable } from "../identifiable.js";
 import { Stylesheet } from "../style/stylesheet/stylesheet.js";
 import { ElementEnvironment } from "./_environment.js";
 

@@ -3,17 +3,16 @@ import {
   ElementData,
   FragmentData,
 } from "@elllphnt/elementa-base";
+import { AggregatedModelList, RecordState } from "@elllphnt/elementa-kernel";
 import {
-  AggregatedModelList,
   combineLatestArrays,
   combineLatestOrEmpty,
-  RecordState,
-} from "@elllphnt/elementa-utils";
+} from "@elllphnt/elementa-lang-utils";
 import { map, Observable, switchMap } from "rxjs";
-import { DataInput } from "../_shared/data_input.js";
-import { Identifiable } from "../_shared/identifiable.js";
 import { createElement, Element } from "../elements/_element.js";
 import { ElementEnvironment } from "../elements/_environment.js";
+import { Identifiable } from "../identifiable.js";
+import { DataInput } from "../primitives/data_input.js";
 
 export class Fragment extends Identifiable<FragmentData> {
   environment: ElementEnvironment;

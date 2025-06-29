@@ -1,5 +1,5 @@
 import { RouterRenderableContentData } from "@elllphnt/elementa-base";
-import { RecordState } from "@elllphnt/elementa-utils";
+import { RecordState } from "@elllphnt/elementa-kernel";
 import { Observable } from "rxjs";
 import { File } from "~/project/file/file.js";
 import { FileModelAdaptor } from "~/project/file/model_adaptor.js";

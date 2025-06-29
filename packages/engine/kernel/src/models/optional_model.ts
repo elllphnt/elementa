@@ -1,5 +1,5 @@
 import { BehaviorSubject, Observable } from "rxjs";
-import { Lifecycle } from "../../core/lifecycle.js";
+import { Lifecycle } from "~/lifecycle.js";
 import { State } from "../state/state.js";
 import { ValueState } from "../state/value.js";
 import { Model } from "./model.js";
@@ -65,6 +65,13 @@ export class OptionalModel<
   }
 
   set(model: M | undefined): void {
+    const currentModel = this._model$.value;
+
+    // Dispose old model if it's different from the new one
+    if (currentModel && currentModel !== model) {
+      currentModel.dispose();
+    }
+
     // update model first manually to ensure the same instance of model get reused during reconciliation.
     this._model$.next(model);
     // then update state

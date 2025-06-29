@@ -16,6 +16,7 @@
     "types": "tsc src/index.ts --declaration --emitDeclarationOnly --outFile schema/index.d.ts"
   },
   "dependencies": {
+    "@paralleldrive/cuid2": "^2.2.2",
     "yup": "^1.4.0",
     "zod": "^3.24.4"
   }

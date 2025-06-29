@@ -1,5 +1,5 @@
 import { SlotElementData } from "@elllphnt/elementa-base";
-import { AggregatedModelList, RecordState } from "@elllphnt/elementa-utils";
+import { AggregatedModelList, RecordState } from "@elllphnt/elementa-kernel";
 import { Observable, of } from "rxjs";
 import { BaseElement } from "./_base.js";
 import { createElement, Element } from "./_element.js";

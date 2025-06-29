@@ -34,17 +34,13 @@
         "tscpaths": "^0.0.9",
         "vitest": "^3.2.2"
     },
-    "peerDependencies": {
-        "rxjs": "^7.8.1",
-        "yjs": "^13.6.26"
-    },
     "dependencies": {
+        "rxjs": "^7.8.1",
+        "yjs": "^13.6.26",
         "@elllphnt/elementa-base": "workspace:*",
-        "@elllphnt/elementa-core": "workspace:*",
         "@elllphnt/elementa-css": "workspace:*",
         "@elllphnt/elementa-react-utils": "workspace:*",
         "@elllphnt/elementa-runtime": "workspace:*",
-        "@elllphnt/elementa-utils": "workspace:*",
         "@tanstack/react-router": "^1.119.0",
         "@tanstack/react-router-devtools": "^1.119.1",
         "classnames": "^2.5.1",

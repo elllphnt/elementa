@@ -1,8 +1,11 @@
-import { TypefaceData, TypefaceDefinition } from "@elllphnt/elementa-base";
-import { RecordState } from "@elllphnt/elementa-utils";
+import {
+  genId,
+  TypefaceData,
+  TypefaceDefinition,
+} from "@elllphnt/elementa-base";
+import { RecordState } from "@elllphnt/elementa-kernel";
 import { map, Observable } from "rxjs";
-import { genId } from "~/_lib/id.js";
-import { Identifiable } from "~/models/_shared/identifiable.js";
+import { Identifiable } from "~/models/identifiable.js";
 
 export class Typeface extends Identifiable<TypefaceData> {
   get name(): string {

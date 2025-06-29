@@ -1,5 +1,5 @@
 import { KeyFrameData } from "@elllphnt/elementa-base";
-import { Model, RecordState } from "@elllphnt/elementa-utils";
+import { Model, RecordState } from "@elllphnt/elementa-kernel";
 import { Observable } from "rxjs";
 import { Project } from "~/project/project.js";
 import { Style } from "../stylesheet/style.js";
