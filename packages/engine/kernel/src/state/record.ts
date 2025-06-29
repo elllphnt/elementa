@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
-import { Lifecycle } from "../core/lifecycle.js";
-import { ArrayKeyOf, ObjectKeyOf } from "../types/object.js";
+import { Lifecycle } from "../../core/lifecycle.js";
+import { ArrayKeyOf, ObjectKeyOf } from "../../lang/types/object.js";
 import { ListState } from "./list.js";
 import { AggregatedStateList } from "./state_list.js";
 import { AggregatedStateRecord } from "./state_record.js";

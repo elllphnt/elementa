@@ -1,5 +1,5 @@
 import { BehaviorSubject, Observable } from "rxjs";
-import { Lifecycle } from "../core/lifecycle.js";
+import { Lifecycle } from "../../core/lifecycle.js";
 import { State } from "../state/state.js";
 import { ValueState } from "../state/value.js";
 import { Model } from "./model.js";

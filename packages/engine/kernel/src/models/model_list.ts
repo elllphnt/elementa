@@ -1,6 +1,6 @@
 import { BehaviorSubject } from "rxjs";
-import { Lifecycle } from "../core/lifecycle.js";
-import { reconcileList } from "../core/reconciliation.js";
+import { Lifecycle } from "../../core/lifecycle.js";
+import { reconcileList } from "../infra/reconciliation.js";
 import { ListState } from "../state/list.js";
 import { State } from "../state/state.js";
 import { Model } from "./model.js";

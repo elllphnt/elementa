@@ -1,6 +1,6 @@
 import { BehaviorSubject, map, Observable } from "rxjs";
-import { Lifecycle } from "../core/lifecycle.js";
-import { reconcileMap } from "../core/reconciliation.js";
+import { Lifecycle } from "../../core/lifecycle.js";
+import { reconcileMap } from "../infra/reconciliation.js";
 import { State } from "../state/state.js";
 import { AggregatedStateRecord } from "../state/state_record.js";
 import { Model } from "./model.js";
