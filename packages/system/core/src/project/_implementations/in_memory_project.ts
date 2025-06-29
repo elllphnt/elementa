@@ -1,11 +1,14 @@
 import { PackageData } from "@elllphnt/elementa-base";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-utils";
 import { combineLatest, map, Observable, of } from "rxjs";
-import { Infrastructure } from "~/infrastructure/_.js";
-import { Content, File, FileModelAdaptor, FileModelType } from "../file/_.js";
+import { Infrastructure } from "~/infrastructure/infrastructure.js";
+import { Content } from "../file/content.js";
+import { File } from "../file/file.js";
+import { FileModelType } from "../file/file_types.js";
+import { FileModelAdaptor } from "../file/model_adaptor.js";
 import { Project } from "../project.js";
 import { AsyncResourceStatus } from "../resource.js";
-import { StatefulFileModelAdaptor } from "./file_model_adaptors/_.js";
+import { StatefulFileModelAdaptor } from "./file_model_adaptors/stateful_file_model_adaptor.js";
 
 export type InMemoryFileData = {
   id: string;

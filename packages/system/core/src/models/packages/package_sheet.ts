@@ -1,7 +1,6 @@
 import { PackageData, PackageSheetData } from "@elllphnt/elementa-base";
 import { Model, RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import { File } from "~/project/_.js";
 
 export class PackageSheet extends Model<RecordState<PackageSheetData>> {
   readonly file: File;

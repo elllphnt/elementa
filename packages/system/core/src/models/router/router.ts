@@ -12,10 +12,10 @@ import {
   of,
 } from "rxjs";
 import { genId } from "~/_lib/id.js";
-import { File } from "~/project/_.js";
-import { Blueprint } from "../blueprint/_.js";
-import { ElementaPreview } from "../elementa/_.js";
+import { File } from "~/project/file/file.js";
+import { Blueprint } from "../blueprint/blueprint.js";
 import { ElementaEnvironment } from "../elementa/environment.js";
+import { ElementaPreview } from "../elementa/preview.js";
 import { RouteTree } from "./route_tree.js";
 
 export class RouterElementaEnvironment implements ElementaEnvironment {

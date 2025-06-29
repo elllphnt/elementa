@@ -21,8 +21,8 @@ import {
   of,
   switchMap,
 } from "rxjs";
-import { Project } from "~/project/_.js";
 import { StyleFragmentRegistry } from "./style_fragment_registry.js";
+import { Project } from "~/project/project.js";
 
 export class Style extends Model<RecordState<StyleData>> {
   readonly selector: string;

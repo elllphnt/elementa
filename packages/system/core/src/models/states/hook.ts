@@ -1,8 +1,8 @@
 import { HookStateData } from "@elllphnt/elementa-base";
 import { RecordState } from "@elllphnt/elementa-utils";
 import { Observable, map } from "rxjs";
-import { Component } from "../component/_.js";
 import { BaseState } from "./_base.js";
+import { Component } from "../component/component.js";
 
 export class HookState extends BaseState<HookStateData> {
   get hookUrl(): string | undefined {

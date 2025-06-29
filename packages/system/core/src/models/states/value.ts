@@ -1,7 +1,7 @@
 import { ValueStateData } from "@elllphnt/elementa-base";
 import { RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import { Component } from "../component/_.js";
+import { Component } from "../component/component.js";
 import { BaseState } from "./_base.js";
 
 export class ValueState extends BaseState<ValueStateData> {

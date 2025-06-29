@@ -7,11 +7,12 @@ import {
   RecordState,
 } from "@elllphnt/elementa-utils";
 import { map, Observable, of, switchMap } from "rxjs";
-import { CssStyleSheet, StylesheetCssStyleSheet } from "~/css/_.js";
-import { Project } from "~/project/_.js";
-import { Element } from "../elements/_.js";
+import { CssStyleSheet } from "~/css/lib/stylesheet.js";
+import { StylesheetCssStyleSheet } from "~/css/stylesheets/stylesheet/stylesheet.js";
+import { Project } from "~/project/project.js";
+import { Element } from "../elements/_element.js";
 import { ElementEnvironment } from "../elements/_environment.js";
-import { Stylesheet } from "../style/_.js";
+import { Stylesheet } from "../style/stylesheet/stylesheet.js";
 
 export class SlotFill extends Model<RecordState<SlotFillData>> {
   readonly environment: ElementEnvironment;

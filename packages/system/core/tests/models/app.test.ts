@@ -2,7 +2,7 @@ import { AppData } from "@elllphnt/elementa-base";
 import { JsonRecordState } from "@elllphnt/elementa-utils";
 import { assert } from "console";
 import { test } from "vitest";
-import { App } from "~/models/_.js";
+import { App } from "~/models/app/app.js";
 
 test("Null App", () => {
   const state = new JsonRecordState<AppData>({});

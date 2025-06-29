@@ -1,5 +1,5 @@
 import { StaticReference } from "@elllphnt/elementa-base";
-import { Project } from "~/project/_.js";
+import { Project } from "~/project/project.js";
 import {
   InMemoryProject,
   InMemoryProjectData,

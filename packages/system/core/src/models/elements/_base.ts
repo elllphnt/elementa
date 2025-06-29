@@ -8,7 +8,8 @@ import {
 } from "@elllphnt/elementa-base";
 import { RecordState } from "@elllphnt/elementa-utils";
 import { Observable, of, Subject } from "rxjs";
-import { CssStyleSheet, StylesheetCssStyleSheet } from "~/css/_.js";
+import { CssStyleSheet } from "~/css/lib/stylesheet.js";
+import { StylesheetCssStyleSheet } from "~/css/stylesheets/stylesheet/stylesheet.js";
 import { Identifiable } from "../_shared/identifiable.js";
 import { Stylesheet } from "../style/stylesheet/stylesheet.js";
 import { ElementEnvironment } from "./_environment.js";

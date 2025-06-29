@@ -5,8 +5,9 @@ import {
   RecordState,
 } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
-import { File, Project } from "~/project/_.js";
 import { KeyframeSet } from "./keyframe_set.js";
+import { Project } from "~/project/project.js";
+import { File } from "~/project/file/file.js";
 
 export class KeyframeSheet extends Model<RecordState<KeyframeSheetData>> {
   project: Project;

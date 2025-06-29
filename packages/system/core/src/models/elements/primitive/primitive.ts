@@ -10,7 +10,7 @@ import {
   RecordState,
 } from "@elllphnt/elementa-utils";
 import { filter, map, Observable, of, switchMap, tap } from "rxjs";
-import { CssStyleSheet } from "~/css/_.js";
+import { CssStyleSheet } from "~/css/lib/stylesheet.js";
 import { BaseElement } from "../_base.js";
 import { createElement, Element } from "../_element.js";
 import { ElementEnvironment } from "../_environment.js";

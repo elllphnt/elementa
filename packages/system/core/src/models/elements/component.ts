@@ -9,8 +9,8 @@ import {
   RecordState,
 } from "@elllphnt/elementa-utils";
 import { map, Observable, of, switchMap } from "rxjs";
-import { CssStyleSheet } from "~/css/_.js";
-import { FileModelAdaptor } from "~/project/_.js";
+import { CssStyleSheet } from "~/css/lib/stylesheet.js";
+import { FileModelAdaptor } from "~/project/file/model_adaptor.js";
 import { SlotFill } from "../_shared/slot_fill.js";
 import { BaseElement } from "./_base.js";
 import { createElement, Element } from "./_element.js";

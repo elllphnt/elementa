@@ -1,16 +1,11 @@
 import { RecordState } from "@elllphnt/elementa-utils";
-// TODO: Update imports as element models are refactored
-// import { ComponentElementModel } from "./component.js";
-// import { ContainerElementModel } from "./container.js";
-import { ExpressionElement } from "./expression.js";
-// import { FragmentElementModel } from "./fragment.js";
-import { MediaElement } from "./media.js";
-// import { PrimitiveElementModel } from "./primitive/primitive.js";
 import { ElementEnvironment } from "./_environment.js";
 import { ComponentElement } from "./component.js";
 import { ContainerElement } from "./container.js";
+import { ExpressionElement } from "./expression.js";
 import { FragmentElement } from "./fragment.js";
-import { PrimitiveElement } from "./primitive/_.js";
+import { MediaElement } from "./media.js";
+import { PrimitiveElement } from "./primitive/primitive.js";
 import { SlotElement } from "./slot.js";
 import { TextElement } from "./text.js";
 import { VectorElement } from "./vector.js";

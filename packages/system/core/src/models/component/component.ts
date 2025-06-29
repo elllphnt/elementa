@@ -6,15 +6,15 @@ import {
   RecordState,
 } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, map, Observable } from "rxjs";
-import { File } from "~/project/_.js";
-import { DataInput } from "../_shared/_.js";
+import { File } from "~/project/file/file.js";
+import { DataInput } from "../_shared/data_input.js";
 import { ElementaEnvironment } from "../elementa/environment.js";
 import { ElementaPreview } from "../elementa/preview.js";
 import { ElementaStage } from "../elementa/stage.js";
-import { Element } from "../elements/_.js";
+import { Element } from "../elements/_element.js";
 import { ElementEnvironment } from "../elements/_environment.js";
 import { Fragment } from "../fragment/fragment.js";
-import { createState, State } from "../states/_.js";
+import { createState, State } from "../states/_state.js";
 
 export class ComponentElementEnvironment implements ElementEnvironment {
   component: Component;

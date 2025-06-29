@@ -4,7 +4,8 @@ import {
 } from "@elllphnt/elementa-base";
 import { Model, RecordState } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
-import { File, Project } from "~/project/_.js";
+import { File } from "~/project/file/file.js";
+import { Project } from "~/project/project.js";
 
 export class StyleModifierSheet extends Model<
   RecordState<StyleModifierSheetData>

@@ -1,7 +1,9 @@
 import { StyleSystemData } from "@elllphnt/elementa-base";
 import { Model, RecordState } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
-import { File, FileModelAdaptor, Project } from "~/project/_.js";
+import { File } from "~/project/file/file.js";
+import { FileModelAdaptor } from "~/project/file/model_adaptor.js";
+import { Project } from "~/project/project.js";
 import { ColorSchemeSet } from "./color_scheme_set.js";
 import { ViewportSet } from "./viewport_set.js";
 

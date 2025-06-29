@@ -1,7 +1,7 @@
 import { FragmentRenderableContentData } from "@elllphnt/elementa-base";
 import { RecordState } from "@elllphnt/elementa-utils";
 import { map, Observable, of, switchMap } from "rxjs";
-import { Fragment } from "../../fragment/_.js";
+import { Fragment } from "~/models/fragment/fragment.js";
 import { ElementaEnvironment } from "../environment.js";
 import { BaseRenderableContent } from "./_base.js";
 

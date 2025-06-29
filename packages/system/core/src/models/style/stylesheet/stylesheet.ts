@@ -9,7 +9,8 @@ import {
   RecordState,
 } from "@elllphnt/elementa-utils";
 import { filter, map, Observable, tap } from "rxjs";
-import { File, Project } from "~/project/_.js";
+import { File } from "~/project/file/file.js";
+import { Project } from "~/project/project.js";
 import { Style } from "./style.js";
 import { StyleFragmentRegistry } from "./style_fragment_registry.js";
 

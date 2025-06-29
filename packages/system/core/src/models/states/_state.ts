@@ -1,5 +1,5 @@
 import { RecordState } from "@elllphnt/elementa-utils";
-import { Component } from "../component/_.js";
+import { Component } from "../component/component.js";
 import { HookState } from "./hook.js";
 import { InlineState } from "./inline.js";
 import { ValueState } from "./value.js";

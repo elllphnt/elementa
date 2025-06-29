@@ -8,7 +8,8 @@ import {
   RecordState,
 } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
-import { File, Project } from "~/project/_.js";
+import { File } from "~/project/file/file.js";
+import { Project } from "~/project/project.js";
 import { StyleVariableSet } from "./style_variable_set.js";
 
 export class StyleVariableSheet extends Model<

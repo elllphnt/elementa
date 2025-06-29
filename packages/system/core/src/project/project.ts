@@ -1,19 +1,17 @@
 import { elementaStandardPaths, PackageData } from "@elllphnt/elementa-base";
 import { Lifecycle } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import { toAbsoluteFileUrl, toRelativeFileUrl } from "~/_lib/_.js";
-import { Infrastructure } from "../infrastructure/_.js";
+import { toAbsoluteFileUrl, toRelativeFileUrl } from "~/_lib/url.js";
+import { Infrastructure } from "../infrastructure/infrastructure.js";
+import { Content } from "./file/content.js";
+import { File, FileReference } from "./file/file.js";
+import { FileModelType, fileModelTypes } from "./file/file_types.js";
 import {
-  Content,
-  File,
   FileModelAdaptor,
-  FileModelType,
-  fileModelTypes,
-  FileReference,
   FileReferenceModelAdaptor,
-} from "./file/_.js";
-import { PackageManager } from "./package_manager/_.js";
-import { StyleManager } from "./style_manager/_.js";
+} from "./file/model_adaptor.js";
+import { PackageManager } from "./package_manager/package_manager.js";
+import { StyleManager } from "./style_manager/style_manager.js";
 
 export abstract class Project<F extends File = File> extends Lifecycle {
   id: string;

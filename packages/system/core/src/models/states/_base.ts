@@ -1,7 +1,7 @@
 import { BaseStateData } from "@elllphnt/elementa-base";
 import { Model, RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import { Component } from "../component/_.js";
+import { Component } from "../component/component.js";
 
 export abstract class BaseState<T extends BaseStateData<string>> extends Model<
   RecordState<T>

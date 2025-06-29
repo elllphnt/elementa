@@ -10,9 +10,9 @@ import {
   RecordState,
 } from "@elllphnt/elementa-utils";
 import { map, Observable, switchMap } from "rxjs";
-import { DataInput } from "../_shared/_.js";
+import { DataInput } from "../_shared/data_input.js";
 import { Identifiable } from "../_shared/identifiable.js";
-import { createElement, Element } from "../elements/_.js";
+import { createElement, Element } from "../elements/_element.js";
 import { ElementEnvironment } from "../elements/_environment.js";
 
 export class Fragment extends Identifiable<FragmentData> {

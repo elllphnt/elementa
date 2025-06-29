@@ -1,5 +1,5 @@
 import { BehaviorSubject, map } from "rxjs";
-import { Stylesheet } from "~/models/style/_.js";
+import { Stylesheet } from "~/models/style/stylesheet/stylesheet.js";
 import { RuleCssStyleSheet } from "../../lib/rule/rule.js";
 import { StylesheetCssStyleRule } from "./rule.js";
 

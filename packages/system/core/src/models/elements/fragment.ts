@@ -1,8 +1,8 @@
 import { FragmentElementData } from "@elllphnt/elementa-base";
 import { RecordState } from "@elllphnt/elementa-utils";
 import { map, Observable, of, switchMap } from "rxjs";
-import { CssStyleSheet } from "~/css/_.js";
-import { Fragment } from "../fragment/_.js";
+import { CssStyleSheet } from "~/css/lib/stylesheet.js";
+import { Fragment } from "../fragment/fragment.js";
 import { BaseElement } from "./_base.js";
 import { ElementEnvironment } from "./_environment.js";
 

@@ -2,7 +2,7 @@ import { BlueprintNodeData } from "@elllphnt/elementa-base";
 import { RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import { genId } from "~/_lib/id.js";
-import { Identifiable } from "~/models/_.js";
+import { Identifiable } from "~/models/_shared/identifiable.js";
 
 export class BlueprintNode extends Identifiable<BlueprintNodeData> {
   constructor({

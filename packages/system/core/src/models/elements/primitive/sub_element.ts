@@ -1,7 +1,7 @@
 import { Expression, PrimitiveSubElementData } from "@elllphnt/elementa-base";
 import { Model, RecordState } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
-import { StylesheetCssStyleSheet } from "~/css/_.js";
+import { StylesheetCssStyleSheet } from "~/css/stylesheets/stylesheet/stylesheet.js";
 import { Stylesheet } from "../../style/stylesheet/stylesheet.js";
 import { ElementEnvironment } from "../_environment.js";
 
