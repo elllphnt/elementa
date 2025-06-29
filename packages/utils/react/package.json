@@ -3,8 +3,6 @@
     "version": "0.1.0",
     "description": "A collection of utilities for the repository",
     "type": "module",
-    "main": "build/index.js",
-    "types": "build/index.d.ts",
     "scripts": {
         "clean": "rm -rf dist build",
         "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json --verbose",
@@ -20,5 +18,11 @@
         "@types/lodash": "^4.14.202",
         "deep-object-diff": "^1.1.9",
         "rxjs": "^7.8.2"
+    },
+    "exports": {
+        ".": {
+            "import": "./build/index.js",
+            "types": "./build/index.d.ts"
+        }
     }
 }
