@@ -1,71 +1,100 @@
-import { getOrCreateYArray, getOrCreateYMap } from "@elllphnt/crdt";
-import { RouteTreeData } from "@elllphnt/elementa-base";
+import { RouterData, RouteTreeData } from "@elllphnt/elementa-base";
 import {
-  ElementaEnvironment,
-  ElementaPreview,
-  File,
-  genId,
-  Router,
-  RouterElementaEnvironment,
-} from "@elllphnt/elementa-core";
-import { AggregatedCrdtModelList, CrdtModel } from "@elllphnt/elementa-utils";
-import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs";
-import * as y from "yjs";
-import { CrdtBlueprint } from "../blueprint/_.js";
-import { CrdtElementaPreview } from "../elementa/_.js";
-import { CrdtRouteTree } from "./route_tree.js";
+  AggregatedModelList,
+  Model,
+  RecordState,
+} from "@elllphnt/elementa-utils";
+import {
+  BehaviorSubject,
+  distinctUntilChanged,
+  map,
+  Observable,
+  of,
+} from "rxjs";
+import { genId } from "~/_lib/id.js";
+import { File } from "~/project/_.js";
+import { Blueprint } from "../blueprint/_.js";
+import { ElementaPreview } from "../elementa/_.js";
+import { ElementaEnvironment } from "../elementa/environment.js";
+import { RouteTree } from "./route_tree.js";
 
-export class CrdtRouter
-  extends CrdtModel<y.Map<any>>
-  implements Router<CrdtRouteTree>
-{
+export class RouterElementaEnvironment implements ElementaEnvironment {
+  router: Router;
+  get project() {
+    return this.router.file.project;
+  }
+
+  get hostUrl(): string | undefined {
+    return this.router.file.url;
+  }
+
+  fragment() {
+    return undefined;
+  }
+  fragment$() {
+    return of(undefined);
+  }
+
+  constructor({ router }: { router: Router }) {
+    this.router = router;
+  }
+  get defaultRouterUrl(): string | undefined {
+    throw new Error("Method not implemented.");
+  }
+}
+
+export class Router extends Model<RecordState<any>> {
   readonly file: File;
-  readonly blueprint: CrdtBlueprint;
+  readonly blueprint: Blueprint;
   readonly elementaEnvironment: ElementaEnvironment;
   readonly preview: ElementaPreview;
 
-  private readonly _routes: AggregatedCrdtModelList<CrdtRouteTree>;
+  private readonly _routes: AggregatedModelList<
+    RecordState<RouteTreeData>,
+    RouteTree
+  >;
   private readonly _routesById$ = new BehaviorSubject<
-    Record<string, CrdtRouteTree>
+    Record<string, RouteTree>
   >({});
 
   constructor({
-    crdt,
+    state,
     file,
     initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<RouterData>;
     file: File;
     initialized?: boolean;
   }) {
-    super({ crdt });
+    super({ state });
     this.file = file;
 
-    const editors = getOrCreateYMap(crdt, "editors");
-    const blueprintMap = getOrCreateYMap(editors, "blueprint");
-    this.blueprint = new CrdtBlueprint(blueprintMap, { initialized });
+    const editorsState = state.getAggregatedStateRecord("editors");
+    this.blueprint = new Blueprint({
+      state: editorsState.entry("bleuprint", true),
+    });
     this.elementaEnvironment = new RouterElementaEnvironment({
       router: this,
     });
-    this.preview = new CrdtElementaPreview({
-      crdt: getOrCreateYMap(crdt, "preview"),
+    this.preview = new ElementaPreview({
+      state: editorsState.entry("preview", true),
       environment: this.elementaEnvironment,
-      initialized,
     });
 
-    this._routes = new AggregatedCrdtModelList({
-      crdt: getOrCreateYArray<y.Map<any>>(crdt, "routes"),
-      create: (entry, init) =>
-        new CrdtRouteTree(entry, {
-          app: this,
-          initialized: init && initialized,
+    this._routes = new AggregatedModelList({
+      state: state.getAggregatedStateList("routes"),
+      create: (state, init) =>
+        new RouteTree({
+          state,
+          router: this,
+          initialized: init || initialized,
         }),
     });
 
     // reactive index
     const sub = this._routes.models$.subscribe((routes) => {
-      const byId: Record<string, CrdtRouteTree> = {};
-      const recurse = (list: CrdtRouteTree[]) => {
+      const byId: Record<string, RouteTree> = {};
+      const recurse = (list: RouteTree[]) => {
         for (const route of list) {
           byId[route.id] = route;
           recurse(route.children);
@@ -82,66 +111,62 @@ export class CrdtRouter
     });
   }
 
-  get routes(): CrdtRouteTree[] {
+  get routes(): RouteTree[] {
     return this._routes.models;
   }
 
-  get routes$(): Observable<CrdtRouteTree[]> {
+  get routes$(): Observable<RouteTree[]> {
     return this._routes.models$;
   }
 
-  createRoute(init: Omit<RouteTreeData, "id" | "children">): CrdtRouteTree {
-    const map = new y.Map();
-    map.set("id", genId());
+  createRoute(init: Omit<RouteTreeData, "id" | "children">): RouteTree {
+    const state = this.state.getRecordState("routes");
+    state.set("id", genId());
     if (init.path != undefined) {
-      map.set("path", init.path);
+      state.set("path", init.path);
     }
     if (init.mainViewUrl != undefined) {
-      map.set("mainViewUrl", init.mainViewUrl);
+      state.set("mainViewUrl", init.mainViewUrl);
     }
     if (init.errorViewUrl != undefined) {
-      map.set("errorViewUrl", init.errorViewUrl);
+      state.set("errorViewUrl", init.errorViewUrl);
     }
     if (init.pendingViewUrl != undefined) {
-      map.set("pendingViewUrl", init.pendingViewUrl);
+      state.set("pendingViewUrl", init.pendingViewUrl);
     }
     if (init.notFoundViewUrl != undefined) {
-      map.set("notFoundViewUrl", init.notFoundViewUrl);
+      state.set("notFoundViewUrl", init.notFoundViewUrl);
     }
     if (init.loaderUrl != undefined) {
-      map.set("loaderUrl", init.loaderUrl);
+      state.set("loaderUrl", init.loaderUrl);
     }
     if (init.handlerUrl != undefined) {
-      map.set("handlerUrl", init.handlerUrl);
+      state.set("handlerUrl", init.handlerUrl);
     }
 
-    return new CrdtRouteTree(map, { app: this });
+    return new RouteTree({ state, router: this, initialized: true });
   }
 
-  addRoutes(routes: CrdtRouteTree[]): void {
-    this._routes.add(routes);
+  addRoutes(routes: RouteTree[]): void {
+    this._routes.add(routes[0]); // TODO: add all routes
   }
 
-  insertRoutes(index: number, routes: CrdtRouteTree[]): void {
-    this._routes.insert(index, routes);
+  insertRoutes(index: number, routes: RouteTree[]): void {
+    this._routes.insertAt(index, routes);
   }
 
-  removeRoutes(routes: CrdtRouteTree[]): void {
-    this._routes.remove(routes);
+  removeRoutes(routes: RouteTree[]): void {
+    this._routes.remove((route) => routes.includes(route));
   }
 
-  route(id: string): CrdtRouteTree | undefined {
+  route(id: string): RouteTree | undefined {
     return this._routesById$.value[id];
   }
 
-  route$(id: string): Observable<CrdtRouteTree | undefined> {
+  route$(id: string): Observable<RouteTree | undefined> {
     return this._routesById$.pipe(
       map((map) => map[id]),
       distinctUntilChanged()
     );
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtRouter({ crdt, file: this.file, initialized: true }) as this;
   }
 }

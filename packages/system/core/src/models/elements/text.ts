@@ -2,40 +2,31 @@ import {
   ResolvableOrEvaluable,
   TextElementData,
 } from "@elllphnt/elementa-base";
-import { ElementEnvironment, TextElement } from "@elllphnt/elementa-core";
+import { RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import * as y from "yjs";
-import { CrdtBaseElement } from "./_base.js";
+import { BaseElement } from "./_base.js";
+import { ElementEnvironment } from "./_environment.js";
 
-export class CrdtTextElement
-  extends CrdtBaseElement<TextElementData>
-  implements TextElement
-{
+export class TextElement extends BaseElement<TextElementData> {
   get text(): ResolvableOrEvaluable<string> | undefined {
-    return this._state.entry("text");
+    return this.state.entry("text");
   }
 
   get text$(): Observable<ResolvableOrEvaluable<string> | undefined> {
-    return this._state.entry$("text");
+    return this.state.entry$("text");
   }
 
   constructor({
-    crdt,
+    state,
     environment,
-    initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<TextElementData>;
     environment: ElementEnvironment;
-    initialized?: boolean;
   }) {
-    super({ crdt, type: "text", environment, initialized });
+    super({ state, type: "text", environment });
   }
 
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtTextElement({
-      crdt,
-      environment: this.environment,
-      initialized: true,
-    }) as this;
+  setText(text: ResolvableOrEvaluable<string> | undefined): void {
+    this.state.set("text", text);
   }
 }

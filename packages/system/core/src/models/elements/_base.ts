@@ -1,4 +1,3 @@
-import { ensureField, getOrCreateYMap } from "@elllphnt/crdt";
 import {
   BaseElementData,
   ElementRepeatData,
@@ -7,28 +6,21 @@ import {
   LinkData,
   ResolvableOrEvaluable,
 } from "@elllphnt/elementa-base";
-import {
-  BaseElement,
-  CssStyleSheet,
-  ElementEnvironment,
-  StylesheetCssStyleSheet,
-} from "@elllphnt/elementa-core";
-import { CrdtRecordState, keyManager } from "@elllphnt/elementa-utils";
+import { RecordState } from "@elllphnt/elementa-utils";
 import { Observable, of, Subject } from "rxjs";
-import * as y from "yjs";
-import { CrdtIdentifiable } from "../_shared/identifiable.js";
-import { CrdtStylesheet } from "../style/stylesheet/stylesheet.js";
+import { CssStyleSheet, StylesheetCssStyleSheet } from "~/css/_.js";
+import { Identifiable } from "../_shared/identifiable.js";
+import { Stylesheet } from "../style/stylesheet/stylesheet.js";
+import { ElementEnvironment } from "./_environment.js";
 
-export abstract class CrdtBaseElement<T extends BaseElementData<string>>
-  extends CrdtIdentifiable
-  implements BaseElement<T["type"]>
-{
+export abstract class BaseElement<
+  T extends BaseElementData<string>
+> extends Identifiable<T> {
   readonly type: T["type"];
   readonly environment: ElementEnvironment;
   readonly cssStyleSheet: StylesheetCssStyleSheet;
 
-  private _stylesheet: CrdtStylesheet;
-  protected _state: CrdtRecordState<Omit<T, "id" | "type" | "stylesheet">>;
+  private _stylesheet: Stylesheet;
   private _updated$ = new Subject();
 
   get allCssStylesheets(): CssStyleSheet[] {
@@ -48,9 +40,7 @@ export abstract class CrdtBaseElement<T extends BaseElementData<string>>
   }
 
   private get _baseState() {
-    return this._state as CrdtRecordState<
-      Omit<BaseElementData<T["type"]>, "id" | "type" | "stylesheet">
-    >;
+    return this.state as RecordState<T>;
   }
 
   get name(): string | undefined {
@@ -138,34 +128,30 @@ export abstract class CrdtBaseElement<T extends BaseElementData<string>>
   }
 
   constructor({
-    crdt,
+    state,
     type,
     environment,
     initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<T>;
     type: T["type"];
     environment: ElementEnvironment;
     initialized?: boolean;
   }) {
-    super({ crdt, key: keyManager.next("element"), initialized });
+    super({ state, initialized });
 
-    if (!initialized) {
-      ensureField(crdt, "type", () => type);
-    }
-
+    this.type = type;
     this.environment = environment;
 
     if (!initialized) {
-      ensureField(crdt, "type", () => type);
-      ensureField(crdt, "stylesheet", () => new y.Map());
+      this.state.set("type" as keyof T, type as T[keyof T]);
     }
 
-    const stylesheetMap = getOrCreateYMap(crdt, "stylesheet");
-    this._stylesheet = new CrdtStylesheet({
-      crdt: stylesheetMap,
+    // TODO: Initialize stylesheet with backend-agnostic state
+    // For now, create a basic stylesheet - this needs proper initialization
+    this._stylesheet = new Stylesheet({
+      state: state as any, // TODO: Fix proper stylesheet state initialization
       project: environment.project,
-      initialized,
     });
 
     this.cssStyleSheet = new StylesheetCssStyleSheet({
@@ -173,27 +159,9 @@ export abstract class CrdtBaseElement<T extends BaseElementData<string>>
       stylesheet: this._stylesheet,
     });
 
-    this._state = new CrdtRecordState(crdt);
-
-    const observer = () => {
-      this._updated$.next(crdt.toJSON());
-    };
-    crdt.observeDeep(observer);
-
     this.addDisposer(() => {
-      this._state.dispose();
       this._stylesheet.dispose();
       this.cssStyleSheet.dispose();
-      crdt.unobserveDeep(observer);
-    });
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new (this.constructor as any)({
-      crdt,
-      type: this.type,
-      environment: this.environment,
-      initialized: true,
     });
   }
 }

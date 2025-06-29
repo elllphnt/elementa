@@ -112,21 +112,6 @@ export abstract class Project<F extends File = File> extends Lifecycle {
     this.packageManager = new PackageManager({ project: this });
   }
 
-  async initialize() {
-    await this.app.initialize();
-    await this.styleSystem.initialize();
-    await this.modifierSheet.initialize();
-    await this.typefaceSheet.initialize();
-    await this.variableSheet.initialize();
-    await this.keyframeSheet.initialize();
-    await this.packageSheet.initialize();
-
-    await this.styleManager.initialize();
-    await this.packageManager.initialize();
-
-    this.setInitialized();
-  }
-
   absoluteFileUrl(url: string): string {
     return toAbsoluteFileUrl({ url, projectId: this.id });
   }

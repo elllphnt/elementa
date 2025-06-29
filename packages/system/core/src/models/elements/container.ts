@@ -1,26 +1,18 @@
-import { ensureField, getOrCreateYArray } from "@elllphnt/crdt";
 import { ContainerElementData } from "@elllphnt/elementa-base";
 import {
-  ContainerElement,
-  CssStyleSheet,
-  Element,
-  ElementEnvironment,
-} from "@elllphnt/elementa-core";
-import {
-  AggregatedCrdtModelList,
+  AggregatedModelList,
   combineLatestArrays,
   combineLatestOrEmpty,
+  RecordState,
 } from "@elllphnt/elementa-utils";
 import { map, Observable, of, switchMap } from "rxjs";
-import * as y from "yjs";
-import { CrdtBaseElement } from "./_base.js";
-import { CrdtcreateElement, CrdtElement } from "./_element.js";
+import { CssStyleSheet } from "~/css/_.js";
+import { BaseElement } from "./_base.js";
+import { createElement, Element } from "./_element.js";
+import { ElementEnvironment } from "./_environment.js";
 
-export class CrdtContainerElement
-  extends CrdtBaseElement<ContainerElementData>
-  implements ContainerElement
-{
-  private _content: AggregatedCrdtModelList<CrdtElement>;
+export class ContainerElement extends BaseElement<ContainerElementData> {
+  private _content: AggregatedModelList<RecordState<any>, Element>;
 
   get content(): Element[] {
     return this._content.models;
@@ -60,40 +52,27 @@ export class CrdtContainerElement
   }
 
   constructor({
-    crdt,
+    state,
     environment,
     initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<ContainerElementData>;
     environment: ElementEnvironment;
     initialized?: boolean;
   }) {
-    super({ crdt, type: "container", environment, initialized });
+    super({ state, type: "container", environment, initialized });
 
-    if (!initialized) {
-      ensureField(crdt, "content", () => new y.Array());
-    }
-
-    this._content = new AggregatedCrdtModelList({
-      crdt: getOrCreateYArray<y.Map<any>>(crdt, "content"),
-      create: (crdt, init) =>
-        CrdtcreateElement({
-          crdt,
+    this._content = new AggregatedModelList<RecordState<any>, Element>({
+      state: state.getAggregatedStateList("content"),
+      create: (state) =>
+        createElement({
+          state,
           environment: this.environment,
-          initialized: init && initialized,
         }),
     });
 
     this.addDisposer(() => {
       this._content.dispose();
     });
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtContainerElement({
-      crdt,
-      environment: this.environment,
-      initialized: true,
-    }) as this;
   }
 }

@@ -1,54 +1,53 @@
 import { MediaData, MediaElementData } from "@elllphnt/elementa-base";
-import { ElementEnvironment, MediaElement } from "@elllphnt/elementa-core";
+import { RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import * as y from "yjs";
-import { CrdtBaseElement } from "./_base.js";
+import { BaseElement } from "./_base.js";
+import { ElementEnvironment } from "./_environment.js";
 
-export class CrdtMediaElement
-  extends CrdtBaseElement<MediaElementData>
-  implements MediaElement
-{
+export class MediaElement extends BaseElement<MediaElementData> {
   get media(): MediaData | undefined {
-    return this._state.entry("media");
+    return this.state.entry("media");
   }
 
   get media$(): Observable<MediaData | undefined> {
-    return this._state.entry$("media");
+    return this.state.entry$("media");
   }
 
   get fit(): MediaElementData["fit"] | undefined {
-    return this._state.entry("fit");
+    return this.state.entry("fit");
   }
 
   get fit$(): Observable<MediaElementData["fit"] | undefined> {
-    return this._state.entry$("fit");
+    return this.state.entry$("fit");
   }
 
   get position(): MediaElementData["position"] | undefined {
-    return this._state.entry("position");
+    return this.state.entry("position");
   }
 
   get position$(): Observable<MediaElementData["position"] | undefined> {
-    return this._state.entry$("position");
+    return this.state.entry$("position");
   }
 
   constructor({
-    crdt,
+    state,
     environment,
-    initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<MediaElementData>;
     environment: ElementEnvironment;
-    initialized?: boolean;
   }) {
-    super({ crdt, type: "media", environment, initialized });
+    super({ state, type: "media", environment });
   }
 
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtMediaElement({
-      crdt,
-      environment: this.environment,
-      initialized: true,
-    }) as this;
+  setMedia(media: MediaData | undefined): void {
+    this.state.set("media", media);
+  }
+
+  setFit(fit: MediaElementData["fit"] | undefined): void {
+    this.state.set("fit", fit);
+  }
+
+  setPosition(position: MediaElementData["position"] | undefined): void {
+    this.state.set("position", position);
   }
 }

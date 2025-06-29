@@ -1,42 +1,29 @@
 import { ExpressionElementData } from "@elllphnt/elementa-base";
-import { ElementEnvironment, ExpressionElement } from "@elllphnt/elementa-core";
+import { RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import * as y from "yjs";
-import { CrdtBaseElement } from "./_base.js";
+import { BaseElement } from "./_base.js";
+import { ElementEnvironment } from "./_environment.js";
 
-export class CrdtExpressionElement
-  extends CrdtBaseElement<ExpressionElementData>
-  implements ExpressionElement
-{
+export class ExpressionElement extends BaseElement<ExpressionElementData> {
   get expression(): string | undefined {
-    return this._state.entry("expression");
+    return this.state.entry("expression");
   }
 
   get expression$(): Observable<string | undefined> {
-    return this._state.entry$("expression");
+    return this.state.entry$("expression");
   }
 
   constructor({
-    crdt,
+    state,
     environment,
-    initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<ExpressionElementData>;
     environment: ElementEnvironment;
-    initialized?: boolean;
   }) {
-    super({ crdt, type: "expression", environment, initialized });
+    super({ state, type: "expression", environment });
   }
 
   setExpression(expression: string | undefined): void {
-    this._state.set("expression", expression);
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtExpressionElement({
-      crdt,
-      environment: this.environment,
-      initialized: true,
-    }) as this;
+    this.state.set("expression", expression);
   }
 }

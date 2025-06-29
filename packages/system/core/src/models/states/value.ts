@@ -1,46 +1,33 @@
 import { ValueStateData } from "@elllphnt/elementa-base";
-import { Component, ValueState } from "@elllphnt/elementa-core";
+import { RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import * as y from "yjs";
-import { CrdtBaseState } from "./_base.js";
+import { Component } from "../component/_.js";
+import { BaseState } from "./_base.js";
 
-export class CrdtValueState
-  extends CrdtBaseState<ValueStateData>
-  implements ValueState
-{
+export class ValueState extends BaseState<ValueStateData> {
   get init(): any {
-    return this._state.entry("init");
+    return this.state.entry("init");
   }
 
   get init$(): Observable<any> {
-    return this._state.entry$("init");
+    return this.state.entry$("init");
   }
 
   get tsType(): string | undefined {
-    return this._state.entry("tsType");
+    return this.state.entry("tsType");
   }
 
   get tsType$(): Observable<string | undefined> {
-    return this._state.entry$("tsType");
+    return this.state.entry$("tsType");
   }
 
   constructor({
-    crdt,
+    state,
     component,
-    initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<ValueStateData>;
     component: Component;
-    initialized?: boolean;
   }) {
-    super({ crdt, type: "value", component, initialized });
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtValueState({
-      crdt,
-      component: this.component,
-      initialized: true,
-    }) as this;
+    super({ state, type: "value", component });
   }
 }

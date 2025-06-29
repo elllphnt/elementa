@@ -1,4 +1,4 @@
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, map, Observable } from "rxjs";
 import { Lifecycle } from "../core/lifecycle.js";
 import { reconcileMap } from "../core/reconciliation.js";
 import { State } from "../state/state.js";
@@ -13,10 +13,20 @@ export class AggregatedModelRecord<
   private _models$ = new BehaviorSubject<Record<string, M | undefined>>({});
 
   get models() {
-    return this._models$.value;
+    return Object.fromEntries(
+      Object.entries(this._models$.value).filter(([, value]) => !!value)
+    ) as Record<string, M>;
   }
   get models$() {
-    return this._models$.asObservable();
+    return this._models$
+      .asObservable()
+      .pipe(
+        map((models) =>
+          Object.fromEntries(
+            Object.entries(models).filter(([, value]) => !!value)
+          )
+        )
+      ) as Observable<Record<string, M>>;
   }
 
   constructor({

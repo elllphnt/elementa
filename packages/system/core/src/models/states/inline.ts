@@ -1,38 +1,25 @@
 import { InlineStateData } from "@elllphnt/elementa-base";
-import { Component, InlineState } from "@elllphnt/elementa-core";
+import { RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import * as y from "yjs";
-import { CrdtBaseState } from "./_base.js";
+import { Component } from "../component/_.js";
+import { BaseState } from "./_base.js";
 
-export class CrdtInlineState
-  extends CrdtBaseState<InlineStateData>
-  implements InlineState
-{
+export class InlineState extends BaseState<InlineStateData> {
   get script(): string | undefined {
-    return this._state.entry("script");
+    return this.state.entry("script");
   }
 
   get script$(): Observable<string | undefined> {
-    return this._state.entry$("script");
+    return this.state.entry$("script");
   }
 
   constructor({
-    crdt,
+    state,
     component,
-    initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<InlineStateData>;
     component: Component;
-    initialized?: boolean;
   }) {
-    super({ crdt, type: "inline", component, initialized });
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtInlineState({
-      crdt,
-      component: this.component,
-      initialized: true,
-    }) as this;
+    super({ state, type: "inline", component });
   }
 }

@@ -1,54 +1,49 @@
 import { OverflowValue, ViewportData } from "@elllphnt/elementa-base";
-import { Viewport } from "@elllphnt/elementa-core";
-import {
-  CrdtModel,
-  CrdtRecordState,
-  keyManager,
-} from "@elllphnt/elementa-utils";
+import { Model, RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import * as y from "yjs";
 
-export class CrdtViewport extends CrdtModel<y.Map<any>> implements Viewport {
-  private _state: CrdtRecordState<ViewportData>;
-
+export class Viewport extends Model<RecordState<ViewportData>> {
   get height(): number | undefined {
-    return this._state.entry("height");
+    return this.state.entry("height");
   }
 
   get height$(): Observable<number | undefined> {
-    return this._state.entry$("height");
+    return this.state.entry$("height");
   }
 
   get width(): number | undefined {
-    return this._state.entry("width");
+    return this.state.entry("width");
   }
 
   get width$(): Observable<number | undefined> {
-    return this._state.entry$("width");
+    return this.state.entry$("width");
   }
 
   get overflow(): OverflowValue | undefined {
-    return this._state.entry("overflow");
+    return this.state.entry("overflow");
   }
 
   get overflow$(): Observable<OverflowValue | undefined> {
-    return this._state.entry$("overflow");
+    return this.state.entry$("overflow");
   }
 
-  constructor({ crdt }: { crdt: y.Map<any>; initialized?: boolean }) {
-    super({ key: keyManager.next("elementa-viewport"), crdt });
-
-    this._state = new CrdtRecordState(crdt);
+  constructor({ state }: { state: RecordState<ViewportData> }) {
+    super({ state });
 
     this.addDisposer(() => {
-      this._state.dispose();
+      this.state.dispose();
     });
   }
 
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtViewport({
-      crdt,
-      initialized: true,
-    }) as this;
+  setHeight(height: number | undefined): void {
+    this.state.set("height", height);
+  }
+
+  setWidth(width: number | undefined): void {
+    this.state.set("width", width);
+  }
+
+  setOverflow(overflow: OverflowValue | undefined): void {
+    this.state.set("overflow", overflow);
   }
 }

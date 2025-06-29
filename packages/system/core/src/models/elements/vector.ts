@@ -1,38 +1,29 @@
 import { VectorElementData, VectorNodeData } from "@elllphnt/elementa-base";
-import { ElementEnvironment, VectorElement } from "@elllphnt/elementa-core";
+import { RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import * as y from "yjs";
-import { CrdtBaseElement } from "./_base.js";
+import { BaseElement } from "./_base.js";
+import { ElementEnvironment } from "./_environment.js";
 
-export class CrdtVectorElement
-  extends CrdtBaseElement<VectorElementData>
-  implements VectorElement
-{
+export class VectorElement extends BaseElement<VectorElementData> {
   get content(): VectorNodeData[] | undefined {
-    return this._state.entry("content");
+    return this.state.entry("content");
   }
 
   get content$(): Observable<VectorNodeData[] | undefined> {
-    return this._state.entry$("content");
+    return this.state.entry$("content");
   }
 
   constructor({
-    crdt,
+    state,
     environment,
-    initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<VectorElementData>;
     environment: ElementEnvironment;
-    initialized?: boolean;
   }) {
-    super({ crdt, type: "vector", environment, initialized });
+    super({ state, environment, type: "vector" });
   }
 
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtVectorElement({
-      crdt,
-      environment: this.environment,
-      initialized: true,
-    }) as this;
+  setContent(content: VectorNodeData[] | undefined): void {
+    this.state.set("content", content);
   }
 }

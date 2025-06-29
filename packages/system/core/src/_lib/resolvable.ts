@@ -41,59 +41,62 @@ export class ResolvableValue<T> extends Lifecycle {
     super();
     this._input$.next(init);
 
+    this.addInitializer(() => {
+      const subscription = this._input$
+        .pipe(
+          distinctUntilChanged(),
+          tap(() => {
+            const prev = this._state$.getValue();
+            this._state$.next({
+              ...prev,
+              resolvingCount: prev.resolvingCount + 1,
+              isResolved: false,
+            });
+          }),
+          switchMap((resolvable) =>
+            (isStaticReference(resolvable)
+              ? from(this.infra.resolveStaticReference<T>(resolvable))
+              : of(resolvable as any as T)
+            ).pipe(
+              tap((resolved) => {
+                const prev = this._state$.getValue();
+                this._state$.next({
+                  ...prev,
+                  value: resolved,
+                  isResolved: true,
+                });
+              }),
+              catchError((error) => {
+                console.error("ResolvableValue: error resolving value", error);
+                const prev = this._state$.getValue();
+                this._state$.next({
+                  ...prev,
+                  value: undefined,
+                  isResolved: false,
+                });
+                return of(undefined as T);
+              }),
+              finalize(() => {
+                const prev = this._state$.getValue();
+                this._state$.next({
+                  ...prev,
+                  resolvingCount: prev.resolvingCount - 1,
+                });
+              })
+            )
+          )
+        )
+        .subscribe();
+
+      this.addDisposer(() => {
+        subscription.unsubscribe();
+      });
+    });
+
     this.addDisposer(() => {
       this._input$.complete();
       this._state$.complete();
     });
-  }
-
-  async initialize(): Promise<void> {
-    const subscription = this._input$
-      .pipe(
-        distinctUntilChanged(),
-        tap(() => {
-          const prev = this._state$.getValue();
-          this._state$.next({
-            ...prev,
-            resolvingCount: prev.resolvingCount + 1,
-            isResolved: false,
-          });
-        }),
-        switchMap((resolvable) =>
-          (isStaticReference(resolvable)
-            ? from(this.infra.resolveStaticReference<T>(resolvable))
-            : of(resolvable as any as T)
-          ).pipe(
-            tap((resolved) => {
-              const prev = this._state$.getValue();
-              this._state$.next({ ...prev, value: resolved, isResolved: true });
-            }),
-            catchError((error) => {
-              console.error("ResolvableValue: error resolving value", error);
-              const prev = this._state$.getValue();
-              this._state$.next({
-                ...prev,
-                value: undefined,
-                isResolved: false,
-              });
-              return of(undefined as T);
-            }),
-            finalize(() => {
-              const prev = this._state$.getValue();
-              this._state$.next({
-                ...prev,
-                resolvingCount: prev.resolvingCount - 1,
-              });
-            })
-          )
-        )
-      )
-      .subscribe();
-
-    this.addDisposer(() => {
-      subscription.unsubscribe();
-    });
-    this.setInitialized();
   }
 
   setValue(resolvable: Resolvable<T>): void {
@@ -146,68 +149,67 @@ export class ResolvableRecord<V> extends Lifecycle {
     super();
     this._input$.next(initRecord);
 
+    this.addInitializer(() => {
+      this._subscription = this._input$
+        .pipe(
+          distinctUntilChanged((a, b) => shallowEqual(a, b)),
+          tap(() => {
+            const prev = this._state$.getValue();
+            this._state$.next({
+              ...prev,
+              resolvingCount: prev.resolvingCount + 1,
+              isResolved: false,
+            });
+          }),
+          switchMap((record) => {
+            const observables: Record<string, Observable<V | undefined>> = {};
+            for (const key in record) {
+              const value = record[key];
+              observables[key] = (
+                isStaticReference(value)
+                  ? from(this.infra.resolveStaticReference<V>(value))
+                  : of(value as any as V)
+              ).pipe(
+                catchError((error) => {
+                  console.error(
+                    "ResolvableRecord: error resolving key",
+                    key,
+                    error
+                  );
+                  return of(undefined as V);
+                })
+              );
+            }
+            return combineLatest(observables).pipe(
+              tap((resolvedRecord) => {
+                const prev = this._state$.getValue();
+                this._state$.next({
+                  value: resolvedRecord,
+                  resolvingCount: prev.resolvingCount,
+                  isResolved: true,
+                });
+              }),
+              finalize(() => {
+                const prev = this._state$.getValue();
+                this._state$.next({
+                  ...prev,
+                  resolvingCount: prev.resolvingCount - 1,
+                });
+              })
+            );
+          })
+        )
+        .subscribe();
+
+      this.addDisposer(() => {
+        this._subscription?.unsubscribe();
+      });
+    });
+
     this.addDisposer(() => {
       this._input$.complete();
       this._state$.complete();
     });
-  }
-
-  async initialize(): Promise<void> {
-    this._subscription = this._input$
-      .pipe(
-        distinctUntilChanged((a, b) => shallowEqual(a, b)),
-        tap(() => {
-          const prev = this._state$.getValue();
-          this._state$.next({
-            ...prev,
-            resolvingCount: prev.resolvingCount + 1,
-            isResolved: false,
-          });
-        }),
-        switchMap((record) => {
-          const observables: Record<string, Observable<V | undefined>> = {};
-          for (const key in record) {
-            const value = record[key];
-            observables[key] = (
-              isStaticReference(value)
-                ? from(this.infra.resolveStaticReference<V>(value))
-                : of(value as any as V)
-            ).pipe(
-              catchError((error) => {
-                console.error(
-                  "ResolvableRecord: error resolving key",
-                  key,
-                  error
-                );
-                return of(undefined as V);
-              })
-            );
-          }
-          return combineLatest(observables).pipe(
-            tap((resolvedRecord) => {
-              const prev = this._state$.getValue();
-              this._state$.next({
-                value: resolvedRecord,
-                resolvingCount: prev.resolvingCount,
-                isResolved: true,
-              });
-            }),
-            finalize(() => {
-              const prev = this._state$.getValue();
-              this._state$.next({
-                ...prev,
-                resolvingCount: prev.resolvingCount - 1,
-              });
-            })
-          );
-        })
-      )
-      .subscribe();
-
-    this.addDisposer(() => {
-      this._subscription?.unsubscribe();
-    });
-    this.setInitialized();
   }
 
   setRecord(record: Record<string, Resolvable<V>>): void {
@@ -260,61 +262,60 @@ export class ResolvableList<V> extends Lifecycle {
     super();
     this._input$.next(initList);
 
+    this.addInitializer(() => {
+      this._subscription = this._input$
+        .pipe(
+          distinctUntilChanged((a, b) => shallowArrayEqual(a, b)),
+          tap(() => {
+            const prev = this._state$.getValue();
+            this._state$.next({
+              ...prev,
+              resolvingCount: prev.resolvingCount + 1,
+              isResolved: false,
+            });
+          }),
+          switchMap((list) => {
+            const observables = list.map((item) =>
+              (isStaticReference(item)
+                ? from(this.infra.resolveStaticReference<V>(item))
+                : of(item as any as V)
+              ).pipe(
+                catchError((error) => {
+                  console.error("ResolvableList: error resolving item", error);
+                  return of(undefined as V);
+                })
+              )
+            );
+            return combineLatest(observables).pipe(
+              tap((resolvedList) => {
+                const prev = this._state$.getValue();
+                this._state$.next({
+                  value: resolvedList,
+                  resolvingCount: prev.resolvingCount,
+                  isResolved: true,
+                });
+              }),
+              finalize(() => {
+                const prev = this._state$.getValue();
+                this._state$.next({
+                  ...prev,
+                  resolvingCount: prev.resolvingCount - 1,
+                });
+              })
+            );
+          })
+        )
+        .subscribe();
+
+      this.addDisposer(() => {
+        this._subscription?.unsubscribe();
+      });
+    });
+
     this.addDisposer(() => {
       this._input$.complete();
       this._state$.complete();
     });
-  }
-
-  async initialize(): Promise<void> {
-    this._subscription = this._input$
-      .pipe(
-        distinctUntilChanged((a, b) => shallowArrayEqual(a, b)),
-        tap(() => {
-          const prev = this._state$.getValue();
-          this._state$.next({
-            ...prev,
-            resolvingCount: prev.resolvingCount + 1,
-            isResolved: false,
-          });
-        }),
-        switchMap((list) => {
-          const observables = list.map((item) =>
-            (isStaticReference(item)
-              ? from(this.infra.resolveStaticReference<V>(item))
-              : of(item as any as V)
-            ).pipe(
-              catchError((error) => {
-                console.error("ResolvableList: error resolving item", error);
-                return of(undefined as V);
-              })
-            )
-          );
-          return combineLatest(observables).pipe(
-            tap((resolvedList) => {
-              const prev = this._state$.getValue();
-              this._state$.next({
-                value: resolvedList,
-                resolvingCount: prev.resolvingCount,
-                isResolved: true,
-              });
-            }),
-            finalize(() => {
-              const prev = this._state$.getValue();
-              this._state$.next({
-                ...prev,
-                resolvingCount: prev.resolvingCount - 1,
-              });
-            })
-          );
-        })
-      )
-      .subscribe();
-
-    this.addDisposer(() => {
-      this._subscription?.unsubscribe();
-    });
-    this.setInitialized();
   }
 
   setList(list: Array<Resolvable<V>>): void {

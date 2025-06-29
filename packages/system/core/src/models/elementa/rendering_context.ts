@@ -1,35 +1,17 @@
 import {
-  ensureField,
-  getOrCreateYArray,
-  getOrCreateYMap,
-} from "@elllphnt/crdt";
-import {
   RenderingContextData,
   StyleModifierData,
 } from "@elllphnt/elementa-base";
-import { RenderingContext } from "@elllphnt/elementa-core";
-import {
-  CrdtListState,
-  CrdtModel,
-  CrdtRecordState,
-  keyManager,
-} from "@elllphnt/elementa-utils";
+import { ListState, Model, RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import * as y from "yjs";
-import { CrdtColorTheme } from "./color_theme.js";
-import { CrdtViewport } from "./viewport.js";
+import { ColorTheme } from "./color_theme.js";
+import { Viewport } from "./viewport.js";
 
-export class CrdtRenderingContext
-  extends CrdtModel<y.Map<any>>
-  implements RenderingContext
-{
-  readonly theme: CrdtColorTheme;
-  readonly viewport: CrdtViewport;
+export class RenderingContext extends Model<RecordState<RenderingContextData>> {
+  readonly theme: ColorTheme;
+  readonly viewport: Viewport;
 
-  private _state: CrdtRecordState<
-    Omit<RenderingContextData, "theme" | "viewport" | "styleModifiers">
-  >;
-  private _styleModifiers: CrdtListState<StyleModifierData>;
+  private _styleModifiers: ListState<StyleModifierData>;
 
   get customStyleModifiers(): StyleModifierData[] {
     return this._styleModifiers.items;
@@ -39,17 +21,17 @@ export class CrdtRenderingContext
   }
 
   get viewportEnabled(): boolean | undefined {
-    return this._state.entry("viewportEnabled");
+    return this.state.entry("viewportEnabled");
   }
   get viewportEnabled$(): Observable<boolean | undefined> {
-    return this._state.entry$("viewportEnabled");
+    return this.state.entry$("viewportEnabled");
   }
 
   get styleModifierEnabled(): boolean | undefined {
-    return this._state.entry("styleModifierEnabled");
+    return this.state.entry("styleModifierEnabled");
   }
   get styleModifierEnabled$(): Observable<boolean | undefined> {
-    return this._state.entry$("styleModifierEnabled");
+    return this.state.entry$("styleModifierEnabled");
   }
 
   get styleModifiers(): StyleModifierData[] {
@@ -59,49 +41,22 @@ export class CrdtRenderingContext
     return this.customStyleModifiers$;
   }
 
-  constructor({
-    crdt,
-    initialized,
-  }: {
-    crdt: y.Map<any>;
-    initialized?: boolean;
-  }) {
-    super({ key: keyManager.next("rendering-context"), crdt });
+  constructor({ state }: { state: RecordState<RenderingContextData> }) {
+    super({ state });
 
-    if (!initialized) {
-      ensureField(crdt, "theme", () => new y.Map());
-      ensureField(crdt, "viewport", () => new y.Map());
-      ensureField(crdt, "__crdtAtomic", () => ["styleModifiers[*]"]);
-    }
-
-    const themeMap = getOrCreateYMap(crdt, "theme");
-    this.theme = new CrdtColorTheme({
-      crdt: themeMap,
-      initialized,
+    this.theme = new ColorTheme({
+      state: state.getRecordState("theme"),
     });
 
-    const viewportMap = getOrCreateYMap(crdt, "viewport");
-    this.viewport = new CrdtViewport({
-      crdt: viewportMap,
-      initialized,
+    this.viewport = new Viewport({
+      state: state.getRecordState("viewport"),
     });
 
-    this._state = new CrdtRecordState(crdt);
-    this._styleModifiers = new CrdtListState(
-      getOrCreateYArray(crdt, "styleModifiers")
-    );
+    this._styleModifiers = state.getListState("styleModifiers");
 
     this.addDisposer(() => {
-      this._state.dispose();
       this.theme.dispose();
       this.viewport.dispose();
     });
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtRenderingContext({
-      crdt,
-      initialized: true,
-    }) as this;
   }
 }

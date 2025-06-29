@@ -1,87 +1,63 @@
-import { ensureField } from "@elllphnt/crdt";
 import { TypefaceData, TypefaceDefinition } from "@elllphnt/elementa-base";
-import { Typeface } from "@elllphnt/elementa-core";
-import {
-  CrdtModel,
-  CrdtRecordState,
-  keyManager,
-} from "@elllphnt/elementa-utils";
+import { RecordState } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
-import * as y from "yjs";
+import { genId } from "~/_lib/id.js";
+import { Identifiable } from "~/models/_.js";
 
-export class CrdtTypeface extends CrdtModel<y.Map<any>> implements Typeface {
-  private _state: CrdtRecordState<TypefaceData>;
-
+export class Typeface extends Identifiable<TypefaceData> {
   get name(): string {
-    return this._state.entry("name") || "";
+    return this.state.entry("name") || "";
   }
 
   get name$(): Observable<string> {
-    return this._state.entry$("name").pipe(map((name) => name || ""));
+    return this.state.entry$("name").pipe(map((name) => name || ""));
   }
 
   get definition(): TypefaceDefinition | undefined {
-    return this._state.entry("definition");
+    return this.state.entry("definition");
   }
 
   get definition$(): Observable<TypefaceDefinition | undefined> {
-    return this._state.entry$("definition");
+    return this.state.entry$("definition");
   }
 
   get variants(): string[] {
-    return this._state.entry("variants") || [];
+    return this.state.entry("variants") || [];
   }
 
   get variants$(): Observable<string[]> {
-    return this._state
+    return this.state
       .entry$("variants")
       .pipe(map((variants) => variants || []));
   }
 
-  get id(): string {
-    return this._state.entry("id") || "";
-  }
-
   constructor({
-    crdt,
+    state,
     initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<TypefaceData>;
     initialized?: boolean;
   }) {
-    super({ key: keyManager.next("typeface"), crdt });
+    super({ state });
 
     if (!initialized) {
-      ensureField(crdt, "id", () =>
-        Math.random().toString(36).substring(2, 10)
-      );
-      ensureField(crdt, "name", () => "");
-      ensureField(crdt, "variants", () => []);
+      state.set("id", genId());
     }
 
-    this._state = new CrdtRecordState(crdt);
-
     this.addDisposer(() => {
-      this._state.dispose();
+      this.state.dispose();
     });
   }
 
   setName(name: string): void {
-    this._state.set("name", name);
+    this.state.set("name", name);
   }
 
   setDefinition(definition: TypefaceDefinition): void {
-    this._state.set("definition", definition);
+    this.state.set("definition", definition);
   }
 
   setVariants(variants: string[]): void {
-    this._state.set("variants", variants);
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtTypeface({
-      crdt,
-      initialized: true,
-    }) as this;
+    this.state.set("variants", variants);
   }
 }

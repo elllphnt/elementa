@@ -1,21 +1,12 @@
-import { ensureField, getOrCreateYArray } from "@elllphnt/crdt";
 import { SlotElementData } from "@elllphnt/elementa-base";
-import {
-  Element,
-  ElementEnvironment,
-  SlotElement,
-} from "@elllphnt/elementa-core";
-import { AggregatedCrdtModelList } from "@elllphnt/elementa-utils";
+import { AggregatedModelList, RecordState } from "@elllphnt/elementa-utils";
 import { Observable, of } from "rxjs";
-import * as y from "yjs";
-import { CrdtBaseElement } from "./_base.js";
-import { CrdtElement, CrdtcreateElement } from "./_element.js";
+import { BaseElement } from "./_base.js";
+import { createElement, Element } from "./_element.js";
+import { ElementEnvironment } from "./_environment.js";
 
-export class CrdtSlotElement
-  extends CrdtBaseElement<SlotElementData>
-  implements SlotElement
-{
-  private _placeholder: AggregatedCrdtModelList<CrdtElement>;
+export class SlotElement extends BaseElement<SlotElementData> {
+  private _placeholder: AggregatedModelList<RecordState<any>, Element>;
 
   get placeholder(): Element[] {
     return this._placeholder.models;
@@ -34,40 +25,27 @@ export class CrdtSlotElement
   }
 
   constructor({
-    crdt,
+    state,
     environment,
     initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<SlotElementData>;
     environment: ElementEnvironment;
     initialized?: boolean;
   }) {
-    super({ crdt, type: "slot", environment, initialized });
+    super({ state, type: "slot", environment, initialized });
 
-    if (!initialized) {
-      ensureField(crdt, "placeholder", () => new y.Array());
-    }
-
-    this._placeholder = new AggregatedCrdtModelList({
-      crdt: getOrCreateYArray<y.Map<any>>(crdt, "placeholder"),
-      create: (crdt, init) =>
-        CrdtcreateElement({
-          crdt,
+    this._placeholder = new AggregatedModelList({
+      state: state.getAggregatedStateList("placeholder"),
+      create: (state) =>
+        createElement({
+          state,
           environment: this.environment,
-          initialized: init && initialized,
         }),
     });
 
     this.addDisposer(() => {
       this._placeholder.dispose();
     });
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtSlotElement({
-      crdt,
-      environment: this.environment,
-      initialized: true,
-    }) as this;
   }
 }

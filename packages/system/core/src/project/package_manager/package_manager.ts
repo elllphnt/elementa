@@ -29,10 +29,6 @@ export class PackageManager extends Lifecycle {
     this.project = project;
   }
 
-  async initialize(): Promise<void> {
-    this.setInitialized();
-  }
-
   getPackages(timeoutTime: number = 60_000) {
     return firstValueFrom(this.packages$.pipe(timeout(timeoutTime)));
   }

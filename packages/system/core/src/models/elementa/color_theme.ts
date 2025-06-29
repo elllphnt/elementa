@@ -1,64 +1,49 @@
-import { ensureField } from "@elllphnt/crdt";
 import { ColorData, ColorThemeData } from "@elllphnt/elementa-base";
-import { ColorTheme } from "@elllphnt/elementa-core";
-import { CrdtModel, CrdtRecordState } from "@elllphnt/elementa-utils";
+import { Model, RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import * as y from "yjs";
 
-export class CrdtColorTheme
-  extends CrdtModel<y.Map<any>>
-  implements ColorTheme
-{
-  private _state: CrdtRecordState<ColorThemeData>;
-
+export class ColorTheme extends Model<RecordState<ColorThemeData>> {
   get scheme(): string | undefined {
-    return this._state.entry("scheme");
+    return this.state.entry("scheme");
   }
 
   get scheme$(): Observable<string | undefined> {
-    return this._state.entry$("scheme");
+    return this.state.entry$("scheme");
   }
 
   get foreground(): ColorData | undefined {
-    return this._state.entry("foreground");
+    return this.state.entry("foreground");
   }
 
   get foreground$(): Observable<ColorData | undefined> {
-    return this._state.entry$("foreground");
+    return this.state.entry$("foreground");
   }
 
   get background(): ColorData | undefined {
-    return this._state.entry("background");
+    return this.state.entry("background");
   }
 
   get background$(): Observable<ColorData | undefined> {
-    return this._state.entry$("background");
+    return this.state.entry$("background");
   }
 
-  constructor({
-    crdt,
-    initialized,
-  }: {
-    crdt: y.Map<any>;
-    initialized?: boolean;
-  }) {
-    super({ crdt });
-
-    if (!initialized) {
-      ensureField(crdt, "__crdtAtomic", () => ["foreground", "background"]);
-    }
-
-    this._state = new CrdtRecordState(crdt);
+  constructor({ state }: { state: RecordState<ColorThemeData> }) {
+    super({ state });
 
     this.addDisposer(() => {
-      this._state.dispose();
+      this.state.dispose();
     });
   }
 
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtColorTheme({
-      crdt,
-      initialized: true,
-    }) as this;
+  setScheme(scheme: string | undefined): void {
+    this.state.set("scheme", scheme);
+  }
+
+  setForeground(foreground: ColorData | undefined): void {
+    this.state.set("foreground", foreground);
+  }
+
+  setBackground(background: ColorData | undefined): void {
+    this.state.set("background", background);
   }
 }

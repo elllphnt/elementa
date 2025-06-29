@@ -1,6 +1,6 @@
 import { IdentifiableData } from "@elllphnt/elementa-base";
-import { genId } from "@elllphnt/elementa-core";
 import { Model, RecordState } from "@elllphnt/elementa-utils";
+import { genId } from "~/_lib/id.js";
 
 export abstract class Identifiable<D extends IdentifiableData> extends Model<
   RecordState<D>

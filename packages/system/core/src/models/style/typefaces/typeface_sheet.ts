@@ -1,30 +1,18 @@
-import { ensureField, getOrCreateYArray } from "@elllphnt/crdt";
-import { TypefaceSheetData } from "@elllphnt/elementa-base";
+import { TypefaceData, TypefaceSheetData } from "@elllphnt/elementa-base";
 import {
-  File,
-  Project,
-  Typeface,
-  TypefaceSheet,
-} from "@elllphnt/elementa-core";
-import {
-  AggregatedCrdtModelList,
-  CrdtModel,
-  CrdtRecordState,
-  keyManager,
+  AggregatedModelList,
+  Model,
+  RecordState,
 } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
-import * as y from "yjs";
-import { CrdtTypeface } from "./typeface.js";
+import { File, Project } from "~/project/_.js";
+import { Typeface } from "./typeface.js";
 
-export class CrdtTypefaceSheet
-  extends CrdtModel<y.Map<any>>
-  implements TypefaceSheet
-{
+export class TypefaceSheet extends Model<RecordState<TypefaceSheetData>> {
   project: Project;
   file: File;
 
-  private _state: CrdtRecordState<Omit<TypefaceSheetData, "typefaces">>;
-  private _typefaces: AggregatedCrdtModelList<CrdtTypeface>;
+  private _typefaces: AggregatedModelList<RecordState<TypefaceData>, Typeface>;
 
   get typefaces(): Typeface[] {
     return this._typefaces.models;
@@ -35,33 +23,26 @@ export class CrdtTypefaceSheet
   }
 
   constructor({
-    crdt,
+    state,
     file,
     initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<TypefaceSheetData>;
     file: File;
     initialized?: boolean;
   }) {
-    super({ key: keyManager.next("typeface-sheet"), crdt });
+    super({ state });
 
     this.project = file.project;
     this.file = file;
 
-    if (!initialized) {
-      ensureField(crdt, "typefaces", () => new y.Array());
-    }
-
-    this._state = new CrdtRecordState(crdt);
-
-    this._typefaces = new AggregatedCrdtModelList({
-      crdt: getOrCreateYArray<y.Map<any>>(crdt, "typefaces"),
-      create: (crdt, init) =>
-        new CrdtTypeface({ crdt, initialized: init && initialized }),
+    this._typefaces = new AggregatedModelList({
+      state: state.getAggregatedStateList("typefaces"),
+      create: (state, init) =>
+        new Typeface({ state, initialized: init && initialized }),
     });
 
     this.addDisposer(() => {
-      this._state.dispose();
       this._typefaces.dispose();
     });
   }
@@ -87,25 +68,10 @@ export class CrdtTypefaceSheet
   }
 
   addTypeface(typeface: Typeface): void {
-    const map = new y.Map();
-    const crdtTypeface = new CrdtTypeface({ crdt: map, initialized: true });
-    crdtTypeface.setName(typeface.name);
-    if (typeface.definition) {
-      crdtTypeface.setDefinition(typeface.definition);
-    }
-    crdtTypeface.setVariants(typeface.variants);
-    this._typefaces.add([crdtTypeface]);
+    this._typefaces.add(typeface);
   }
 
   removeTypeface(id: string): void {
-    this._typefaces.state.remove((t) => t.get("id") === id);
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtTypefaceSheet({
-      crdt,
-      file: this.file,
-      initialized: true,
-    }) as this;
+    this._typefaces.state.remove((s) => s.entry("id") === id);
   }
 }

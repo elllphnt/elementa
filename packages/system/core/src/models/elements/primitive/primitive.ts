@@ -1,37 +1,27 @@
 import {
-  ensureField,
-  getOrCreateYArray,
-  getOrCreateYMap,
-} from "@elllphnt/crdt";
-import {
   PrimitiveElementData,
   ResolvableOrEvaluable,
 } from "@elllphnt/elementa-base";
 import {
-  CssStyleSheet,
-  Element,
-  ElementEnvironment,
-  PrimitiveElement,
-  PrimitiveSubElement,
-} from "@elllphnt/elementa-core";
-import {
-  AggregatedCrdtModelList,
-  AggregatedCrdtModelRecord,
+  AggregatedModelList,
+  AggregatedModelRecord,
   combineLatestArrays,
   combineLatestOrEmpty,
+  RecordState,
 } from "@elllphnt/elementa-utils";
 import { filter, map, Observable, of, switchMap, tap } from "rxjs";
-import * as y from "yjs";
-import { CrdtBaseElement } from "../_base.js";
-import { CrdtcreateElement, CrdtElement } from "../_element.js";
-import { CrdtPrimitiveSubElement } from "./sub_element.js";
+import { CssStyleSheet } from "~/css/_.js";
+import { BaseElement } from "../_base.js";
+import { createElement, Element } from "../_element.js";
+import { ElementEnvironment } from "../_environment.js";
+import { PrimitiveSubElement } from "./sub_element.js";
 
-export class CrdtPrimitiveElement
-  extends CrdtBaseElement<PrimitiveElementData>
-  implements PrimitiveElement
-{
-  private _content: AggregatedCrdtModelList<CrdtElement>;
-  private _subElements: AggregatedCrdtModelRecord<CrdtPrimitiveSubElement>;
+export class PrimitiveElement extends BaseElement<PrimitiveElementData> {
+  private _content: AggregatedModelList<RecordState<any>, Element>;
+  private _subElements: AggregatedModelRecord<
+    RecordState<any>,
+    PrimitiveSubElement
+  >;
 
   get content(): Element[] {
     return this._content.models;
@@ -68,19 +58,19 @@ export class CrdtPrimitiveElement
   }
 
   get primitiveUrl(): string | undefined {
-    return this._state.entry("primitiveUrl");
+    return this.state.entry("primitiveUrl");
   }
 
   get primitiveUrl$(): Observable<string | undefined> {
-    return this._state.entry$("primitiveUrl");
+    return this.state.entry$("primitiveUrl");
   }
 
   get props(): Record<string, any> | undefined {
-    return this._state.entry("props");
+    return this.state.entry("props");
   }
 
   get props$(): Observable<Record<string, any> | undefined> {
-    return this._state.entry$("props");
+    return this.state.entry$("props");
   }
 
   get slotIds(): string[] {
@@ -95,36 +85,30 @@ export class CrdtPrimitiveElement
   }
 
   constructor({
-    crdt,
+    state,
     environment,
     initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<PrimitiveElementData>;
     environment: ElementEnvironment;
     initialized?: boolean;
   }) {
-    super({ crdt, type: "primitive", environment, initialized });
+    super({ state, type: "primitive", environment, initialized });
 
-    if (!initialized) {
-      ensureField(crdt, "content", () => new y.Array());
-      ensureField(crdt, "elements", () => new y.Map());
-    }
-
-    this._content = new AggregatedCrdtModelList({
-      crdt: getOrCreateYArray<y.Map<any>>(crdt, "content"),
-      create: (crdt, init) =>
-        CrdtcreateElement({
-          crdt,
+    this._content = new AggregatedModelList({
+      state: state.getAggregatedStateList("content"),
+      create: (state) =>
+        createElement({
+          state,
           environment: this.environment,
-          initialized: init && initialized,
         }),
     });
 
-    this._subElements = new AggregatedCrdtModelRecord({
-      crdt: getOrCreateYMap(crdt, "elements"),
-      create: (crdt, key, init) =>
-        new CrdtPrimitiveSubElement({
-          crdt,
+    this._subElements = new AggregatedModelRecord({
+      state: state.getAggregatedStateRecord("elements"),
+      create: (state, _, init) =>
+        new PrimitiveSubElement({
+          state,
           environment: this.environment,
           initialized: init && initialized,
         }),
@@ -145,7 +129,7 @@ export class CrdtPrimitiveElement
   }
 
   setPrimitiveUrl(url: string | undefined): void {
-    this._state.set("primitiveUrl", url);
+    this.state.set("primitiveUrl", url);
   }
 
   setProp(key: string, value: ResolvableOrEvaluable<any> | undefined): void {
@@ -157,7 +141,7 @@ export class CrdtPrimitiveElement
       props[key] = value;
     }
 
-    this._state.set("props", props);
+    this.state.set("props", props);
   }
 
   subElement(name: string): PrimitiveSubElement | undefined;
@@ -166,9 +150,8 @@ export class CrdtPrimitiveElement
     let element = this._subElements.models[name];
 
     if (!element && create) {
-      const map = new y.Map();
-      element = new CrdtPrimitiveSubElement({
-        crdt: map,
+      element = new PrimitiveSubElement({
+        state: this._subElements.state.entry(name, true),
         environment: this.environment,
         initialized: true,
       });
@@ -189,9 +172,8 @@ export class CrdtPrimitiveElement
       map((record) => record[name]),
       tap((element) => {
         if (!element && create) {
-          const map = new y.Map();
-          const newElement = new CrdtPrimitiveSubElement({
-            crdt: map,
+          const newElement = new PrimitiveSubElement({
+            state: this._subElements.state.entry(name, true),
             environment: this.environment,
             initialized: true,
           });
@@ -201,24 +183,5 @@ export class CrdtPrimitiveElement
       }),
       filter((element) => !create || !!element)
     );
-  }
-
-  initialize(data: Omit<PrimitiveElementData, "id" | "type">): void {
-    // Set primitive data on CRDT
-    if (data.primitiveUrl !== undefined) {
-      this._state.set("primitiveUrl", data.primitiveUrl);
-    }
-    if (data.props !== undefined) {
-      this._state.set("props", data.props);
-    }
-    // Note: content and elements would need more complex initialization
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtPrimitiveElement({
-      crdt,
-      environment: this.environment,
-      initialized: true,
-    }) as this;
   }
 }

@@ -1,24 +1,18 @@
 import { FragmentElementData } from "@elllphnt/elementa-base";
-import {
-  CssStyleSheet,
-  ElementEnvironment,
-  Fragment,
-  FragmentElement,
-} from "@elllphnt/elementa-core";
+import { RecordState } from "@elllphnt/elementa-utils";
 import { map, Observable, of, switchMap } from "rxjs";
-import * as y from "yjs";
-import { CrdtBaseElement } from "./_base.js";
+import { CssStyleSheet } from "~/css/_.js";
+import { Fragment } from "../fragment/_.js";
+import { BaseElement } from "./_base.js";
+import { ElementEnvironment } from "./_environment.js";
 
-export class CrdtFragmentElement
-  extends CrdtBaseElement<FragmentElementData>
-  implements FragmentElement
-{
+export class FragmentElement extends BaseElement<FragmentElementData> {
   get fragmentId(): string | undefined {
-    return this._state.entry("fragmentId");
+    return this.state.entry("fragmentId");
   }
 
   get fragmentId$(): Observable<string | undefined> {
-    return this._state.entry$("fragmentId");
+    return this.state.entry$("fragmentId");
   }
 
   get fragment(): Fragment | undefined {
@@ -41,26 +35,26 @@ export class CrdtFragmentElement
   }
 
   get params(): Record<string, any> {
-    return this._state.entry("params") || {};
+    return this.state.entry("params") || {};
   }
   get params$(): Observable<Record<string, any>> {
-    return this._state.entry$("params").pipe(map((params) => params || {}));
+    return this.state.entry$("params").pipe(map((params) => params || {}));
   }
 
   constructor({
-    crdt,
+    state,
     environment,
     initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<FragmentElementData>;
     environment: ElementEnvironment;
     initialized?: boolean;
   }) {
-    super({ crdt, type: "fragment", environment, initialized });
+    super({ state, type: "fragment", environment, initialized });
   }
 
   setFragmentId(id: string | undefined): void {
-    this._state.set("fragmentId", id);
+    this.state.set("fragmentId", id);
   }
 
   paramValue(varName: string): any {
@@ -72,23 +66,15 @@ export class CrdtFragmentElement
   }
 
   setParamValue(varName: string, value: any): void {
-    this._state.set("params", {
-      ...this._state.entry("params"),
+    this.state.set("params", {
+      ...this.state.entry("params"),
       [varName]: value,
     });
   }
 
   clearParamValue(varName: string): void {
-    const params = { ...this._state.entry("params") };
+    const params = { ...this.state.entry("params") };
     delete params[varName];
-    this._state.set("params", params);
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtFragmentElement({
-      crdt,
-      environment: this.environment,
-      initialized: true,
-    }) as this;
+    this.state.set("params", params);
   }
 }

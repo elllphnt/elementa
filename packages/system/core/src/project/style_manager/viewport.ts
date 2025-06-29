@@ -189,36 +189,34 @@ export class ViewportManager extends Lifecycle {
     super();
     this.project = project;
 
+    this.addInitializer(() => {
+      const breakpointSubscription = this.styleSystem$
+        .pipe(
+          switchMap(
+            (s) => s?.viewports.breakpoints$ ?? of({} as Record<string, number>)
+          )
+        )
+        .subscribe((breakpoints) => {
+          this._breakpointBasedModifiers$.next(
+            Object.entries(breakpoints).map(([name, value]) =>
+              modifierFromBreakpoint({ id: name, name, value })
+            )
+          );
+          this._breakpointBasedDefinitions$.next(
+            Object.entries(breakpoints).map(([name, value]) =>
+              viewportFromBreakpoint({ name, value })
+            )
+          );
+        });
+
+      this.addDisposer(() => {
+        breakpointSubscription.unsubscribe();
+      });
+    });
+
     this.addDisposer(() => {
       this._breakpointBasedDefinitions$.complete();
       this._breakpointBasedModifiers$.complete();
     });
-  }
-
-  async initialize(): Promise<void> {
-    const breakpointSubscription = this.styleSystem$
-      .pipe(
-        switchMap(
-          (s) => s?.viewports.breakpoints$ ?? of({} as Record<string, number>)
-        )
-      )
-      .subscribe((breakpoints) => {
-        this._breakpointBasedModifiers$.next(
-          Object.entries(breakpoints).map(([name, value]) =>
-            modifierFromBreakpoint({ id: name, name, value })
-          )
-        );
-        this._breakpointBasedDefinitions$.next(
-          Object.entries(breakpoints).map(([name, value]) =>
-            viewportFromBreakpoint({ name, value })
-          )
-        );
-      });
-
-    this.addDisposer(() => {
-      breakpointSubscription.unsubscribe();
-    });
-
-    this.setInitialized();
   }
 }

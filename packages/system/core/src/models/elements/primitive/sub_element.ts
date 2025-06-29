@@ -1,74 +1,53 @@
-import { ensureField, getOrCreateYMap } from "@elllphnt/crdt";
-import { Expression } from "@elllphnt/elementa-base";
-import {
-  ElementEnvironment,
-  PrimitiveSubElement,
-  StylesheetCssStyleSheet,
-} from "@elllphnt/elementa-core";
-import {
-  CrdtModel,
-  CrdtRecordState,
-  keyManager,
-} from "@elllphnt/elementa-utils";
+import { Expression, PrimitiveSubElementData } from "@elllphnt/elementa-base";
+import { Model, RecordState } from "@elllphnt/elementa-utils";
 import { map, Observable } from "rxjs";
-import * as y from "yjs";
-import { CrdtStylesheet } from "../../style/stylesheet/stylesheet.js";
+import { StylesheetCssStyleSheet } from "~/css/_.js";
+import { Stylesheet } from "../../style/stylesheet/stylesheet.js";
+import { ElementEnvironment } from "../_environment.js";
 
-export class CrdtPrimitiveSubElement
-  extends CrdtModel<y.Map<any>>
-  implements PrimitiveSubElement
-{
+export class PrimitiveSubElement extends Model<
+  RecordState<PrimitiveSubElementData>
+> {
   readonly environment: ElementEnvironment;
   readonly cssStyleSheet: StylesheetCssStyleSheet;
 
-  private _stylesheet: CrdtStylesheet;
-  private _state: CrdtRecordState<{
-    interactions?: Record<string, Expression>;
-  }>;
+  private _stylesheet: Stylesheet;
 
   get interactions(): Record<string, Expression> | undefined {
-    return this._state.entry("interactions");
+    return this.state.entry("interactions");
   }
 
   get interactions$(): Observable<Record<string, Expression> | undefined> {
-    return this._state.entry$("interactions");
+    return this.state.entry$("interactions");
   }
 
   constructor({
-    crdt,
+    state,
     environment,
     cssStyleSheetTarget,
     initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<PrimitiveSubElementData>;
     environment: ElementEnvironment;
     cssStyleSheetTarget?: string;
     initialized?: boolean;
   }) {
-    super({ key: keyManager.next("primitive-sub-element"), crdt });
+    super({ state });
 
     this.environment = environment;
 
-    if (!initialized) {
-      ensureField(crdt, "stylesheet", () => new y.Map());
-    }
-
-    const stylesheetMap = getOrCreateYMap(crdt, "stylesheet");
-    this._stylesheet = new CrdtStylesheet({
-      crdt: stylesheetMap,
+    this._stylesheet = new Stylesheet({
+      state: state.getRecordState("stylesheet"),
       project: environment.project,
       initialized,
     });
 
     this.cssStyleSheet = new StylesheetCssStyleSheet({
-      target: cssStyleSheetTarget ?? this.key,
+      target: cssStyleSheetTarget ?? "TODO", // TODO: Generate proper key
       stylesheet: this._stylesheet,
     });
 
-    this._state = new CrdtRecordState(crdt);
-
     this.addDisposer(() => {
-      this._state.dispose();
       this._stylesheet.dispose();
     });
   }
@@ -86,21 +65,12 @@ export class CrdtPrimitiveSubElement
   setInteraction(event: string, interaction: Expression): void {
     const interactions = { ...this.interactions };
     interactions[event] = interaction;
-    this._state.set("interactions", interactions);
+    this.state.set("interactions", interactions);
   }
 
   clearInteraction(event: string): void {
     const interactions = { ...this.interactions };
     delete interactions[event];
-    this._state.set("interactions", interactions);
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtPrimitiveSubElement({
-      crdt,
-      environment: this.environment,
-      cssStyleSheetTarget: this.cssStyleSheet.target,
-      initialized: true,
-    }) as this;
+    this.state.set("interactions", interactions);
   }
 }

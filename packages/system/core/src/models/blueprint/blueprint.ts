@@ -1,12 +1,15 @@
-import { getOrCreateYArray } from "@elllphnt/crdt";
-import { Blueprint, BlueprintNode } from "@elllphnt/elementa-core";
-import { AggregatedCrdtModelList, CrdtModel } from "@elllphnt/elementa-utils";
+import { BlueprintData } from "@elllphnt/elementa-base";
+import {
+  AggregatedModelList,
+  Model,
+  RecordState,
+} from "@elllphnt/elementa-utils";
 import { Observable, distinctUntilChanged, map } from "rxjs";
-import * as y from "yjs";
-import { CrdtBlueprintNode } from "./node.js";
+import { genId } from "~/_lib/id.js";
+import { BlueprintNode } from "./node.js";
 
-export class CrdtBlueprint extends CrdtModel<y.Map<any>> implements Blueprint {
-  private readonly _nodes: AggregatedCrdtModelList<CrdtBlueprintNode>;
+export class Blueprint extends Model<RecordState<BlueprintData>> {
+  private readonly _nodes: AggregatedModelList<RecordState<any>, BlueprintNode>;
 
   get nodes(): BlueprintNode[] {
     return this._nodes.models;
@@ -15,48 +18,43 @@ export class CrdtBlueprint extends CrdtModel<y.Map<any>> implements Blueprint {
     return this._nodes.models$;
   }
 
-  constructor(
-    crdt: y.Map<any>,
-    { initialized }: { initialized?: boolean } = {}
-  ) {
-    super({ crdt });
+  constructor({ state }: { state: RecordState<BlueprintData> }) {
+    super({ state });
 
-    const nodesArray = getOrCreateYArray<y.Map<any>>(crdt, "nodes");
-    this._nodes = new AggregatedCrdtModelList({
-      crdt: nodesArray,
-      create: (entry, init) =>
-        new CrdtBlueprintNode(entry, { initialized: init && initialized }),
+    this._nodes = new AggregatedModelList({
+      state: state.getAggregatedStateList("nodes"),
+      create: (itemState) => new BlueprintNode({ state: itemState }),
     });
 
     this.addDisposer(() => this._nodes.dispose());
   }
 
-  node(id: string): CrdtBlueprintNode | undefined;
-  node(id: string, create: true): CrdtBlueprintNode;
-  node(id: string, create?: boolean): CrdtBlueprintNode | undefined {
+  node(id: string): BlueprintNode | undefined;
+  node(id: string, create: true): BlueprintNode;
+  node(id: string, create?: boolean): BlueprintNode | undefined {
     const existing = this._nodes.models.find((n) => n.id === id);
     if (existing || !create) return existing;
 
-    const node = new y.Map();
-    node.set("id", id);
-    node.set("position", { x: 0, y: 0 });
-    const model = new CrdtBlueprintNode(node, { initialized: true });
-    this._nodes.add([model]);
-    return model;
+    const nodeData = {
+      id: genId(),
+      position: { x: 0, y: 0 },
+    };
+    const node = new BlueprintNode({
+      state: { ...nodeData } as any, // TODO: Fix proper state
+    });
+    this._nodes.add(node);
+    return node;
   }
 
-  node$(id: string): Observable<CrdtBlueprintNode | undefined>;
-  node$(id: string, create: true): Observable<CrdtBlueprintNode>;
-  node$(
-    id: string,
-    create?: boolean
-  ): Observable<CrdtBlueprintNode | undefined> {
+  node$(id: string): Observable<BlueprintNode | undefined>;
+  node$(id: string, create: true): Observable<BlueprintNode>;
+  node$(id: string, create?: boolean): Observable<BlueprintNode | undefined> {
     if (create && !this.node(id)) {
       this.node(id, true);
     }
 
     return this._nodes.models$.pipe(
-      map((list) => list.find((n) => n.id === id)),
+      map((list) => (list as BlueprintNode[]).find((n) => n.id === id)),
       distinctUntilChanged()
     );
   }
@@ -64,16 +62,7 @@ export class CrdtBlueprint extends CrdtModel<y.Map<any>> implements Blueprint {
   removeNode(id: string): void {
     const index = this._nodes.models.findIndex((n) => n.id === id);
     if (index >= 0) {
-      const crdt = this._nodes.models[index].crdt;
-      const array = this._nodes.state.items;
-      const idx = array.indexOf(crdt);
-      if (idx >= 0) {
-        this._nodes.state.removeAt(idx, 1);
-      }
+      this._nodes.removeAt(index, 1);
     }
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtBlueprint(crdt, { initialized: true }) as this;
   }
 }

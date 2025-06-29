@@ -1,49 +1,44 @@
 import { HookStateData } from "@elllphnt/elementa-base";
-import { Component, HookState } from "@elllphnt/elementa-core";
+import { RecordState } from "@elllphnt/elementa-utils";
 import { Observable, map } from "rxjs";
-import * as y from "yjs";
-import { CrdtBaseState } from "./_base.js";
+import { Component } from "../component/_.js";
+import { BaseState } from "./_base.js";
 
-export class CrdtHookState
-  extends CrdtBaseState<HookStateData>
-  implements HookState
-{
+export class HookState extends BaseState<HookStateData> {
   get hookUrl(): string | undefined {
-    return this._state.entry("hookUrl");
+    return this.state.entry("hookUrl");
   }
 
   get hookUrl$(): Observable<string | undefined> {
-    return this._state.entry$("hookUrl");
+    return this.state.entry$("hookUrl");
   }
 
   get argMode(): "positional" | "named" {
-    return this._state.entry("argMode") || "named";
+    return this.state.entry("argMode") || "named";
   }
 
   get argMode$(): Observable<"positional" | "named"> {
-    return this._state
+    return this.state
       .entry$("argMode")
       .pipe(map((argMode) => argMode || "named"));
   }
 
   get args(): Record<string, any> {
-    return this._state.entry("args") || {};
+    return this.state.entry("args") || {};
   }
 
   get args$(): Observable<Record<string, any>> {
-    return this._state.entry$("args").pipe(map((args) => args || {}));
+    return this.state.entry$("args").pipe(map((args) => args || {}));
   }
 
   constructor({
-    crdt,
+    state,
     component,
-    initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<HookStateData>;
     component: Component;
-    initialized?: boolean;
   }) {
-    super({ crdt, type: "hook", component, initialized });
+    super({ state, type: "hook", component });
   }
 
   arg(key: string): any {
@@ -52,13 +47,5 @@ export class CrdtHookState
 
   arg$(key: string): Observable<any> {
     return this.args$.pipe(map((args) => args?.[key]));
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtHookState({
-      crdt,
-      component: this.component,
-      initialized: true,
-    }) as this;
   }
 }

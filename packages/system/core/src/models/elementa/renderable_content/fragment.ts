@@ -1,26 +1,17 @@
 import { FragmentRenderableContentData } from "@elllphnt/elementa-base";
-import {
-  ElementaEnvironment,
-  Fragment,
-  FragmentRenderableContent,
-} from "@elllphnt/elementa-core";
-import { CrdtRecordState } from "@elllphnt/elementa-utils";
+import { RecordState } from "@elllphnt/elementa-utils";
 import { map, Observable, of, switchMap } from "rxjs";
-import * as y from "yjs";
-import { CrdtBaseRenderableContent } from "./_base.js";
+import { Fragment } from "../../fragment/_.js";
+import { ElementaEnvironment } from "../environment.js";
+import { BaseRenderableContent } from "./_base.js";
 
-export class CrdtFragmentRenderableContent
-  extends CrdtBaseRenderableContent<"fragment">
-  implements FragmentRenderableContent
-{
-  private _state: CrdtRecordState<Omit<FragmentRenderableContentData, "type">>;
-
+export class FragmentRenderableContent extends BaseRenderableContent<FragmentRenderableContentData> {
   get fragmentId(): string | undefined {
-    return this._state.entry("fragmentId");
+    return this.state.entry("fragmentId");
   }
 
   get fragmentId$(): Observable<string | undefined> {
-    return this._state.entry$("fragmentId");
+    return this.state.entry$("fragmentId");
   }
 
   get fragment(): Fragment | undefined {
@@ -36,49 +27,32 @@ export class CrdtFragmentRenderableContent
   }
 
   get params(): Record<string, any> | undefined {
-    return this._state.entry("params");
+    return this.state.entry("params");
   }
 
   get params$(): Observable<Record<string, any> | undefined> {
-    return this._state.entry$("params");
+    return this.state.entry$("params");
   }
 
   paramValue(name: string): any | undefined {
-    return this._state.entry("params")?.[name];
+    return this.state.entry("params")?.[name];
   }
 
   paramValue$(name: string): Observable<any | undefined> {
-    return this._state.entry$("params").pipe(map((params) => params?.[name]));
+    return this.state.entry$("params").pipe(map((params) => params?.[name]));
   }
 
   constructor({
-    crdt,
+    state,
     environment,
-    initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<FragmentRenderableContentData>;
     environment: ElementaEnvironment;
-    initialized?: boolean;
   }) {
     super({
-      crdt,
+      state,
       type: "fragment",
       environment,
-      initialized,
     });
-
-    this._state = new CrdtRecordState(crdt);
-
-    this.addDisposer(() => {
-      this._state.dispose();
-    });
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtFragmentRenderableContent({
-      crdt,
-      environment: this.environment,
-      initialized: true,
-    }) as this;
   }
 }

@@ -1,13 +1,5 @@
 import { ElementData, Expression, SlotFillData } from "@elllphnt/elementa-base";
 import {
-  CssStyleSheet,
-  Element,
-  ElementEnvironment,
-  File,
-  Project,
-  StylesheetCssStyleSheet,
-} from "@elllphnt/elementa-core";
-import {
   AggregatedModelList,
   combineLatestArrays,
   combineLatestOrEmpty,
@@ -15,6 +7,11 @@ import {
   RecordState,
 } from "@elllphnt/elementa-utils";
 import { map, Observable, of, switchMap } from "rxjs";
+import { CssStyleSheet, StylesheetCssStyleSheet } from "~/css/_.js";
+import { Project } from "~/project/_.js";
+import { Element } from "../elements/_.js";
+import { ElementEnvironment } from "../elements/_environment.js";
+import { Stylesheet } from "../style/_.js";
 
 export class SlotFill extends Model<RecordState<SlotFillData>> {
   readonly environment: ElementEnvironment;
@@ -57,7 +54,7 @@ export class SlotFill extends Model<RecordState<SlotFillData>> {
     return this.state.entry$("interactions");
   }
 
-  get project(): Project<File> {
+  get project(): Project {
     return this.environment.project;
   }
 
@@ -80,7 +77,7 @@ export class SlotFill extends Model<RecordState<SlotFillData>> {
     });
 
     this._stylesheet = new Stylesheet({
-      init: init.stylesheet || {},
+      state: state.getRecordState("stylesheet"),
       project: environment.project,
     });
   }

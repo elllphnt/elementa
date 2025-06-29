@@ -1,51 +1,36 @@
-import { ensureField } from "@elllphnt/crdt";
-import { BlueprintNode } from "@elllphnt/elementa-core";
-import { CrdtRecordState } from "@elllphnt/elementa-utils";
+import { BlueprintNodeData } from "@elllphnt/elementa-base";
+import { RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import * as y from "yjs";
-import { CrdtIdentifiable } from "../_shared/identifiable.js";
+import { genId } from "~/_lib/id.js";
+import { Identifiable } from "~/models/_.js";
 
-export class CrdtBlueprintNode
-  extends CrdtIdentifiable
-  implements BlueprintNode
-{
-  private _state: CrdtRecordState<{
-    id: string;
-    position: { x: number; y: number };
-  }>;
-
-  constructor(
-    crdt: y.Map<any>,
-    { initialized }: { initialized?: boolean } = {}
-  ) {
-    super({ crdt, initialized });
+export class BlueprintNode extends Identifiable<BlueprintNodeData> {
+  constructor({
+    state,
+    initialized,
+  }: {
+    state: RecordState<BlueprintNodeData>;
+    initialized?: boolean;
+  }) {
+    super({ state });
 
     if (!initialized) {
-      ensureField(crdt, "position", () => ({ x: 0, y: 0 }));
+      state.set("id", genId());
+      state.set("position", { x: 0, y: 0 });
     }
-    ensureField(crdt, "__crdtAtomic", () => ["position"]);
-    this._state = new CrdtRecordState(crdt);
 
-    this.addDisposer(() => this._state.dispose());
-  }
-
-  get id(): string {
-    return this._state.entry("id");
+    this.addDisposer(() => this.state.dispose());
   }
 
   get position(): { x: number; y: number } {
-    return this._state.entry("position");
+    return this.state.entry("position");
   }
 
   get position$(): Observable<{ x: number; y: number }> {
-    return this._state.entry$("position");
+    return this.state.entry$("position");
   }
 
   setPosition(pos: { x: number; y: number }) {
-    this._state.set("position", pos);
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtBlueprintNode(crdt, { initialized: true }) as this;
+    this.state.set("position", pos);
   }
 }

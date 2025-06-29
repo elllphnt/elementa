@@ -12,7 +12,7 @@ import {
   styleToCss,
   StyleToCssContext,
 } from "@elllphnt/elementa-css";
-import { CrdtRecordState, Model, RecordState } from "@elllphnt/elementa-utils";
+import { Model, RecordState } from "@elllphnt/elementa-utils";
 import {
   BehaviorSubject,
   combineLatest,
@@ -29,9 +29,6 @@ export class Style extends Model<RecordState<StyleData>> {
   readonly project: Project;
   readonly fragmentRegistry: StyleFragmentRegistry;
 
-  private _state: CrdtRecordState<
-    UnsettableStyleData & { __raw?: Record<string, string> }
-  >;
   private _css$ = new BehaviorSubject<CssStyleData>({});
 
   get className(): string {
@@ -57,19 +54,18 @@ export class Style extends Model<RecordState<StyleData>> {
 
     // Subscribe to changes and compute CSS
     const cssSubscription = combineLatest([
-      this._state.record$,
+      this.state.record$,
       this.fragmentRegistry.allFragments$,
     ]).subscribe(([properties, fragments]) => {
       const context: StyleToCssContext = {
         getFragment: (type, id) =>
-          fragments.find((f) => f.type === type && f.id === id) as any,
+          fragments?.find((f) => f.type === type && f.id === id) as any,
       };
       const [css] = styleToCss(properties as StyleData, context);
       this._css$.next(css);
     });
 
     this.addDisposer(() => {
-      this._state.dispose();
       this._css$.complete();
       cssSubscription.unsubscribe();
     });
@@ -78,12 +74,12 @@ export class Style extends Model<RecordState<StyleData>> {
   propertyValue<N extends StylePropertyName>(
     property: N
   ): UnsettableStyleData[N] {
-    return this._state.entry(property);
+    return this.state.entry(property);
   }
   propertyValue$<N extends StylePropertyName>(
     property: N
   ): Observable<UnsettableStyleData[N]> {
-    return this._state.entry$(property);
+    return this.state.entry$(property);
   }
 
   propertyValueOrUndefined<N extends StylePropertyName>(
@@ -143,21 +139,21 @@ export class Style extends Model<RecordState<StyleData>> {
   }
 
   get raw(): Record<string, string> {
-    return { ...(this._state.entry("__raw") || {}) };
+    return { ...(this.state.entry("__raw") || {}) };
   }
   get raw$(): Observable<Record<string, string>> {
-    return this._state.entry$("__raw").pipe(map((raw) => raw || {}));
+    return this.state.entry$("__raw").pipe(map((raw) => raw || {}));
   }
 
   setProperty<N extends StylePropertyName>(
     property: N,
     value: StyleData[N]
   ): void {
-    this._state.set(property, value);
+    this.state.set(property, value);
   }
 
   setRaw(raw: Record<string, string>): void {
-    this._state.set("__raw", raw);
+    this.state.set("__raw", raw);
   }
 
   get css(): CssStyleData {

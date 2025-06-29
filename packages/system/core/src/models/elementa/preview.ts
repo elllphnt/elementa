@@ -1,35 +1,24 @@
-import { ensureField, getOrCreateYMap } from "@elllphnt/crdt";
 import {
   CornerData,
   CornerName,
   ElementaPreviewData,
 } from "@elllphnt/elementa-base";
-import { ElementaEnvironment, ElementaPreview } from "@elllphnt/elementa-core";
-import {
-  CrdtModel,
-  CrdtRecordState,
-  OptionalCrdtModel,
-  keyManager,
-} from "@elllphnt/elementa-utils";
+import { Model, OptionalModel, RecordState } from "@elllphnt/elementa-utils";
 import { Observable, map } from "rxjs";
-import * as y from "yjs";
+import { ElementaEnvironment } from "./environment.js";
 import {
-  CrdtRenderableContent,
-  CrdtcreateRenderableContent,
+  RenderableContent,
+  createRenderableContent,
 } from "./renderable_content/_content.js";
-import { CrdtRenderingContext } from "./rendering_context.js";
+import { RenderingContext } from "./rendering_context.js";
 
-export class CrdtElementaPreview
-  extends CrdtModel<y.Map<any>>
-  implements ElementaPreview
-{
+export class ElementaPreview extends Model<
+  RecordState<Omit<ElementaPreviewData, "context" | "content">>
+> {
   readonly environment: ElementaEnvironment;
-  readonly context: CrdtRenderingContext;
+  readonly context: RenderingContext;
 
-  private _state: CrdtRecordState<
-    Omit<ElementaPreviewData, "context" | "content">
-  >;
-  private _content: OptionalCrdtModel<CrdtRenderableContent>;
+  private _content: OptionalModel<RecordState<any>, RenderableContent>;
 
   get content() {
     return this._content.model;
@@ -40,11 +29,11 @@ export class CrdtElementaPreview
   }
 
   get corners(): CornerData<number> | undefined {
-    return this._state.entry("corners");
+    return this.state.entry("corners");
   }
 
   get corners$(): Observable<CornerData<number> | undefined> {
-    return this._state.entry$("corners");
+    return this.state.entry$("corners");
   }
 
   corner(name: CornerName): number | undefined {
@@ -63,7 +52,7 @@ export class CrdtElementaPreview
   }
 
   corner$(name: CornerName): Observable<number | undefined> {
-    return this._state.entry$("corners").pipe(
+    return this.state.entry$("corners").pipe(
       map((corners) => {
         switch (name) {
           case "top-left":
@@ -82,53 +71,34 @@ export class CrdtElementaPreview
   }
 
   constructor({
-    crdt,
+    state,
     environment,
-    initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<Omit<ElementaPreviewData, "context" | "content">>;
     environment: ElementaEnvironment;
-    initialized?: boolean;
   }) {
-    super({ key: keyManager.next("elementa-preview"), crdt });
+    super({ state });
 
     this.environment = environment;
 
-    if (!initialized) {
-      ensureField(crdt, "context", () => new y.Map());
-      ensureField(crdt, "__crdtAtomic", () => ["styleModifiers[*]"]);
-    }
-
-    const contextMap = getOrCreateYMap(crdt, "context");
-    this.context = new CrdtRenderingContext({
-      crdt: contextMap,
-      initialized,
+    // TODO: Initialize context with backend-agnostic state
+    // For now, create a context with empty state - this needs proper initialization
+    this.context = new RenderingContext({
+      state: state as any, // TODO: Fix proper context state initialization
     });
 
-    this._content = new OptionalCrdtModel<CrdtRenderableContent>({
-      crdt,
-      create: (crdt, init) =>
-        CrdtcreateRenderableContent({
-          crdt,
+    this._content = new OptionalModel<RecordState<any>, RenderableContent>({
+      state: state as any, // TODO: Fix proper state typing for optional content
+      create: (state) =>
+        createRenderableContent({
+          state,
           environment,
-          initialized: init && initialized,
         }),
     });
 
-    this._state = new CrdtRecordState(crdt);
-
     this.addDisposer(() => {
-      this._state.dispose();
       this._content.dispose();
       this.context.dispose();
     });
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtElementaPreview({
-      crdt,
-      environment: this.environment,
-      initialized: true,
-    }) as this;
   }
 }

@@ -17,7 +17,7 @@ import {
 } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
 import { StylesheetCssStyleSheet } from "~/css/_.js";
-import { Stylesheet } from "../../_models/_.js";
+import { Stylesheet } from "~/models/_.js";
 import { Project } from "../project.js";
 import { generateClassName } from "./_utils.js";
 import { ColorSchemeManager } from "./color_scheme.js";
@@ -215,50 +215,48 @@ export class StyleManager extends Lifecycle {
     this.colorSchemeManager = new ColorSchemeManager({ project });
     this.viewportManager = new ViewportManager({ project });
 
+    this.addInitializer(() => {
+      const modifiersByNameSubscription = this.modifiers$.subscribe(
+        (modifiers) => {
+          const newModifiersByName: Record<
+            string,
+            StyleModifierDefinitionData
+          > = {};
+          for (const modifier of modifiers) {
+            newModifiersByName[modifier.name] = modifier;
+          }
+          this._modifiersByName$.next(newModifiersByName);
+        }
+      );
+      const systemCssStylesheetsSubscription =
+        this.systemStylesheets$.subscribe((stylesheets) => {
+          const [nextStylesheets, removed] = reconcileList({
+            sources: stylesheets,
+            targets: this._systemCssStylesheets.value,
+            sourceRef: (s) => s,
+            targetRef: (s) => s.stylesheet,
+            create: (stylesheet) =>
+              new StylesheetCssStyleSheet({
+                target: "style-system",
+                stylesheet,
+              }),
+          });
+
+          this._systemCssStylesheets.next(nextStylesheets);
+          removed.forEach((r) => r.dispose());
+        });
+
+      this.addDisposer(() => {
+        modifiersByNameSubscription.unsubscribe();
+        systemCssStylesheetsSubscription.unsubscribe();
+      });
+    });
+
     this.addDisposer(() => {
       this._variableValues$.complete();
       this._modifiersByName$.complete();
       this.colorSchemeManager.dispose();
       this.viewportManager.dispose();
-    });
-  }
-
-  async initialize() {
-    await this.colorSchemeManager.initialize();
-    await this.viewportManager.initialize();
-
-    const modifiersByNameSubscription = this.modifiers$.subscribe(
-      (modifiers) => {
-        const newModifiersByName: Record<string, StyleModifierDefinitionData> =
-          {};
-        for (const modifier of modifiers) {
-          newModifiersByName[modifier.name] = modifier;
-        }
-        this._modifiersByName$.next(newModifiersByName);
-      }
-    );
-    const systemCssStylesheetsSubscription = this.systemStylesheets$.subscribe(
-      (stylesheets) => {
-        const [nextStylesheets, removed] = reconcileList({
-          sources: stylesheets,
-          targets: this._systemCssStylesheets.value,
-          sourceRef: (s) => s,
-          targetRef: (s) => s.stylesheet,
-          create: (stylesheet) =>
-            new StylesheetCssStyleSheet({
-              target: "style-system",
-              stylesheet,
-            }),
-        });
-
-        this._systemCssStylesheets.next(nextStylesheets);
-        removed.forEach((r) => r.dispose());
-      }
-    );
-
-    this.addDisposer(() => {
-      modifiersByNameSubscription.unsubscribe();
-      systemCssStylesheetsSubscription.unsubscribe();
     });
   }
 

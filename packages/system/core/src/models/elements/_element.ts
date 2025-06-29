@@ -1,55 +1,58 @@
-import { ElementEnvironment } from "@elllphnt/elementa-core";
-import * as y from "yjs";
-import { CrdtComponentElement } from "./component.js";
-import { CrdtContainerElement } from "./container.js";
-import { CrdtExpressionElement } from "./expression.js";
-import { CrdtFragmentElement } from "./fragment.js";
-import { CrdtMediaElement } from "./media.js";
-import { CrdtPrimitiveElement } from "./primitive/primitive.js";
-import { CrdtSlotElement } from "./slot.js";
-import { CrdtTextElement } from "./text.js";
-import { CrdtVectorElement } from "./vector.js";
+import { RecordState } from "@elllphnt/elementa-utils";
+// TODO: Update imports as element models are refactored
+// import { ComponentElementModel } from "./component.js";
+// import { ContainerElementModel } from "./container.js";
+import { ExpressionElement } from "./expression.js";
+// import { FragmentElementModel } from "./fragment.js";
+import { MediaElement } from "./media.js";
+// import { PrimitiveElementModel } from "./primitive/primitive.js";
+import { ElementEnvironment } from "./_environment.js";
+import { ComponentElement } from "./component.js";
+import { ContainerElement } from "./container.js";
+import { FragmentElement } from "./fragment.js";
+import { PrimitiveElement } from "./primitive/_.js";
+import { SlotElement } from "./slot.js";
+import { TextElement } from "./text.js";
+import { VectorElement } from "./vector.js";
 
-export type CrdtElement =
-  | CrdtComponentElement
-  | CrdtContainerElement
-  | CrdtMediaElement
-  | CrdtPrimitiveElement
-  | CrdtSlotElement
-  | CrdtTextElement
-  | CrdtFragmentElement
-  | CrdtVectorElement
-  | CrdtExpressionElement;
+export type Element =
+  | ComponentElement
+  | ContainerElement
+  | MediaElement
+  | PrimitiveElement
+  | SlotElement
+  | TextElement
+  | FragmentElement
+  | VectorElement
+  | ExpressionElement;
 
-export function CrdtcreateElement({
-  crdt,
+export function createElement({
+  state,
   environment,
-  initialized,
 }: {
-  crdt: y.Map<any>;
+  state: RecordState<any>;
   environment: ElementEnvironment;
-  initialized?: boolean;
-}): CrdtElement {
-  const type = crdt.get("type");
+}): Element {
+  const type = state.entry("type");
   switch (type) {
     case "container":
-      return new CrdtContainerElement({ crdt, environment, initialized });
+      return new ContainerElement({ state, environment });
     case "text":
-      return new CrdtTextElement({ crdt, environment, initialized });
+      return new TextElement({ state, environment });
     case "vector":
-      return new CrdtVectorElement({ crdt, environment, initialized });
+      return new VectorElement({ state, environment });
     case "slot":
-      return new CrdtSlotElement({ crdt, environment, initialized });
+      return new SlotElement({ state, environment });
     case "media":
-      return new CrdtMediaElement({ crdt, environment, initialized });
+      return new MediaElement({ state, environment });
     case "component":
-      return new CrdtComponentElement({ crdt, environment, initialized });
+      return new ComponentElement({ state, environment });
     case "primitive":
-      return new CrdtPrimitiveElement({ crdt, environment, initialized });
+      return new PrimitiveElement({ state, environment });
     case "fragment":
-      return new CrdtFragmentElement({ crdt, environment, initialized });
+      return new FragmentElement({ state, environment });
     case "expression":
-      return new CrdtExpressionElement({ crdt, environment, initialized });
+      return new ExpressionElement({ state, environment });
     default:
       throw new Error(`Unknown element type: ${type}`);
   }

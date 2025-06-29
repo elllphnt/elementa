@@ -1,43 +1,30 @@
 import {
-  ensureField,
-  getOrCreateYArray,
-  getOrCreateYMap,
-} from "@elllphnt/crdt";
-import {
   ComponentElementData,
   ResolvableOrEvaluable,
 } from "@elllphnt/elementa-base";
 import {
-  ComponentElement,
-  CssStyleSheet,
-  Element,
-  ElementEnvironment,
-  FileModelAdaptor,
-  SlotFill,
-} from "@elllphnt/elementa-core";
-import {
-  AggregatedCrdtModelList,
-  AggregatedCrdtModelRecord,
+  AggregatedModelList,
+  AggregatedModelRecord,
   combineLatestArrays,
+  RecordState,
 } from "@elllphnt/elementa-utils";
-import { filter, map, Observable, of, switchMap, tap } from "rxjs";
-import * as y from "yjs";
-import { CrdtSlotFill } from "../_shared/slot_fill.js";
-import { CrdtBaseElement } from "./_base.js";
-import { CrdtcreateElement, CrdtElement } from "./_element.js";
+import { map, Observable, of, switchMap } from "rxjs";
+import { CssStyleSheet } from "~/css/_.js";
+import { FileModelAdaptor } from "~/project/_.js";
+import { SlotFill } from "../_shared/slot_fill.js";
+import { BaseElement } from "./_base.js";
+import { createElement, Element } from "./_element.js";
+import { ElementEnvironment } from "./_environment.js";
 
-export class CrdtComponentElement
-  extends CrdtBaseElement<ComponentElementData>
-  implements ComponentElement
-{
-  private _fills: AggregatedCrdtModelRecord<CrdtSlotFill>;
-  private _content: AggregatedCrdtModelList<CrdtElement>;
+export class ComponentElement extends BaseElement<ComponentElementData> {
+  private _fills: AggregatedModelRecord<RecordState<any>, SlotFill>;
+  private _content: AggregatedModelList<RecordState<any>, Element>;
 
   get componentUrl(): string | undefined {
-    return this._state.entry("componentUrl");
+    return this.state.entry("componentUrl");
   }
   get componentUrl$(): Observable<string | undefined> {
-    return this._state.entry$("componentUrl");
+    return this.state.entry$("componentUrl");
   }
 
   get component(): FileModelAdaptor<"component"> | undefined {
@@ -96,48 +83,41 @@ export class CrdtComponentElement
       ),
     ]);
   }
-
   get props(): Record<string, any> | undefined {
-    return this._state.entry("props") || {};
+    return this.state.entry("props") || {};
   }
-
   get props$(): Observable<Record<string, any> | undefined> {
-    return this._state.entry$("props");
+    return this.state.entry$("props");
   }
 
   constructor({
-    crdt,
+    state,
     environment,
     initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<ComponentElementData>;
     environment: ElementEnvironment;
     initialized?: boolean;
   }) {
-    super({ crdt, type: "component", environment, initialized });
+    super({ state, type: "component", environment, initialized });
 
-    if (!initialized) {
-      ensureField(crdt, "fills", () => new y.Map());
-    }
-
-    this._fills = new AggregatedCrdtModelRecord({
-      crdt: getOrCreateYMap(crdt, "fills"),
-      create: (crdt, key, init) =>
-        new CrdtSlotFill({
-          crdt,
+    // TODO: Update to proper state-based initialization
+    this._fills = new AggregatedModelRecord({
+      state: state as any, // TODO: Fix proper child state typing
+      create: (childState) =>
+        new SlotFill({
+          state: childState,
           environment,
-          cssStyleSheetTarget: this.fillCssStylesheetTargetKey(key),
-          initialized: init && initialized,
+          cssStyleSheetTarget: "TODO", // TODO: Fix fill CSS stylesheet target
         }),
     });
 
-    this._content = new AggregatedCrdtModelList({
-      crdt: getOrCreateYArray<y.Map<any>>(crdt, "content"),
-      create: (crdt, init) =>
-        CrdtcreateElement({
-          crdt,
-          environment: this.environment,
-          initialized: init && initialized,
+    this._content = new AggregatedModelList({
+      state: state as any, // TODO: Fix proper child state typing
+      create: (childState) =>
+        createElement({
+          state: childState,
+          environment,
         }),
     });
 
@@ -161,48 +141,15 @@ export class CrdtComponentElement
   fill(id: string): SlotFill | undefined;
   fill(id: string, create: true): SlotFill;
   fill(id: string, create?: true): SlotFill | undefined {
-    const fill = this._fills.models[id];
-
-    if (fill) {
-      return fill;
-    }
-
-    if (create) {
-      const map = new y.Map();
-      const newFill = new CrdtSlotFill({
-        crdt: map,
-        environment: this.environment,
-        cssStyleSheetTarget: this.fillCssStylesheetTargetKey(id),
-        initialized: true,
-      });
-
-      this._fills.set(id, newFill);
-      return newFill;
-    }
-
-    return undefined;
+    // TODO: Implement with new AggregatedModelRecord pattern
+    return this._fills.models[id];
   }
 
   fill$(id: string): Observable<SlotFill | undefined>;
   fill$(id: string, create: true): Observable<SlotFill>;
   fill$(id: string, create?: true): Observable<SlotFill | undefined> {
-    return this._fills.models$.pipe(
-      map((record) => record[id]),
-      tap((fill) => {
-        if (!fill && create) {
-          const map = new y.Map();
-          const newFill = new CrdtSlotFill({
-            crdt: map,
-            environment: this.environment,
-            cssStyleSheetTarget: this.fillCssStylesheetTargetKey(id),
-            initialized: true,
-          });
-
-          this._fills.set(id, newFill);
-        }
-      }),
-      filter((fill) => !create || !!fill)
-    );
+    // TODO: Implement with new AggregatedModelRecord pattern
+    return this._fills.models$.pipe(map((record) => record[id]));
   }
 
   setProp(key: string, value: ResolvableOrEvaluable<any> | undefined): void {
@@ -214,18 +161,10 @@ export class CrdtComponentElement
       props[key] = value;
     }
 
-    this._state.set("props", props);
+    this.state.set("props", props);
   }
 
   setComponentUrl(url: string | undefined): void {
-    this._state.set("componentUrl", url);
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtComponentElement({
-      crdt,
-      environment: this.environment,
-      initialized: true,
-    }) as this;
+    this.state.set("componentUrl", url);
   }
 }

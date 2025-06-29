@@ -1,111 +1,48 @@
-import { ensureField, getOrCreateYArray } from "@elllphnt/crdt";
 import { ElementaFrameData, ElementaStageData } from "@elllphnt/elementa-base";
 import {
-  ElementaEnvironment,
-  ElementaFrame,
-  ElementaStage,
-  genId,
-} from "@elllphnt/elementa-core";
-import {
-  AggregatedCrdtModelList,
-  CrdtModel,
-  CrdtRecordState,
-  keyManager,
+  AggregatedModelList,
+  Model,
+  RecordState,
 } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import * as y from "yjs";
-import { CrdtElementaFrame } from "./frame.js";
+import { ElementaEnvironment } from "./environment.js";
 
-export class CrdtElementaStage
-  extends CrdtModel<y.Map<any>>
-  implements ElementaStage
-{
+export class ElementaStage extends Model<RecordState<ElementaStageData>> {
   readonly environment: ElementaEnvironment;
 
-  private _state: CrdtRecordState<Omit<ElementaStageData, "frames">>;
-  private _frames: AggregatedCrdtModelList<CrdtElementaFrame>;
+  private _frames: AggregatedModelList<any, any>; // TODO: Fix typing
 
-  get frames(): CrdtElementaFrame[] {
+  get frames(): any[] {
+    // TODO: Fix typing
     return this._frames.models;
   }
 
-  get frames$(): Observable<CrdtElementaFrame[]> {
+  get frames$(): Observable<any[]> {
+    // TODO: Fix typing
     return this._frames.models$;
   }
 
   constructor({
-    crdt,
+    state,
     environment,
-    initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<ElementaStageData>;
     environment: ElementaEnvironment;
-    initialized?: boolean;
   }) {
-    super({ key: keyManager.next("elementa-stage"), crdt });
+    super({ state });
 
     this.environment = environment;
 
-    if (!initialized) {
-      ensureField(crdt, "frames", () => new y.Array());
-    }
-
-    this._state = new CrdtRecordState(crdt);
-
-    this._frames = new AggregatedCrdtModelList({
-      crdt: getOrCreateYArray<y.Map<any>>(crdt, "frames"),
-      create: (crdt, init) =>
-        new CrdtElementaFrame({
-          crdt,
-          stage: this,
-          initialized: init && initialized,
-        }),
-    });
-
-    this.addDisposer(() => {
-      this._state.dispose();
-      this._frames.dispose();
-    });
+    // TODO: Implement proper aggregated model list for frames
+    this._frames = {} as any;
   }
 
-  addFrame(data: ElementaFrameData): void {
-    const map = new y.Map();
-    map.set("id", data.id || genId());
-    if (data.name !== undefined) map.set("name", data.name);
-    if (data.x !== undefined) map.set("x", data.x);
-    if (data.y !== undefined) map.set("y", data.y);
-    if (data.height !== undefined) map.set("height", data.height);
-    if (data.width !== undefined) map.set("width", data.width);
-    if (data.corners !== undefined) map.set("corners", data.corners);
-    if (data.context !== undefined) {
-      const contextMap = new y.Map();
-      // Set context data
-      map.set("context", contextMap);
-    }
-    if (data.content !== undefined) {
-      const contentMap = new y.Map();
-      contentMap.set("type", data.content.type);
-      // Set content data based on type
-      map.set("content", contentMap);
-    }
-
-    const frame = new CrdtElementaFrame({
-      crdt: map,
-      stage: this,
-      initialized: true,
-    });
-    this._frames.add([frame]);
+  // TODO: Implement frame management methods
+  createFrame(data: Partial<ElementaFrameData>): any {
+    return null;
   }
 
-  removeFrame(frame: ElementaFrame): void {
-    this._frames.remove([frame as CrdtElementaFrame]);
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtElementaStage({
-      crdt,
-      environment: this.environment,
-      initialized: true,
-    }) as this;
+  removeFrame(id: string): void {
+    // TODO: Implement
   }
 }

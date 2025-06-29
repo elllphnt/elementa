@@ -28,7 +28,7 @@ export abstract class RecordState<
   ): RecordState<NonNullable<T[K]>>;
   abstract getListState<K extends ArrayKeyOf<Required<T>>>(
     key: K
-  ): ListState<NonNullable<T[K]>>;
+  ): ListState<NonNullable<T[K]>[number]>;
 
   abstract getAggregatedStateRecord<K extends ObjectKeyOf<Required<T>>>(
     key: K

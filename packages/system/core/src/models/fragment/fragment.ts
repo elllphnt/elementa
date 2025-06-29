@@ -1,69 +1,65 @@
-import { ensureField, getOrCreateYArray } from "@elllphnt/crdt";
 import {
-  CssStyleSheet,
-  Element,
-  ElementEnvironment,
-  Fragment,
-} from "@elllphnt/elementa-core";
+  DataInputData,
+  ElementData,
+  FragmentData,
+} from "@elllphnt/elementa-base";
 import {
-  AggregatedCrdtModelList,
+  AggregatedModelList,
   combineLatestArrays,
   combineLatestOrEmpty,
-  CrdtRecordState,
-  keyManager,
+  RecordState,
 } from "@elllphnt/elementa-utils";
 import { map, Observable, switchMap } from "rxjs";
-import * as y from "yjs";
-import { CrdtDataInput } from "../_shared/data_input.js";
-import { CrdtIdentifiable } from "../_shared/identifiable.js";
-import { CrdtcreateElement, CrdtElement } from "../elements/_element.js";
+import { DataInput } from "../_shared/_.js";
+import { Identifiable } from "../_shared/identifiable.js";
+import { createElement, Element } from "../elements/_.js";
+import { ElementEnvironment } from "../elements/_environment.js";
 
-export class CrdtFragment extends CrdtIdentifiable implements Fragment {
+export class Fragment extends Identifiable<FragmentData> {
   environment: ElementEnvironment;
 
-  private _state: CrdtRecordState<Omit<Fragment, "id" | "content" | "params">>;
-  private _content: AggregatedCrdtModelList<CrdtElement>;
-  private _params: AggregatedCrdtModelList<CrdtDataInput>;
+  private _content: AggregatedModelList<RecordState<ElementData>, Element>;
+  private _params: AggregatedModelList<RecordState<DataInputData>, DataInput>;
 
   // properties
 
   get name(): string | undefined {
-    return this._state.entry("name");
+    return this.state.entry("name");
   }
   get name$(): Observable<string | undefined> {
-    return this._state.entry$("name");
+    return this.state.entry$("name");
   }
 
   get varName(): string | undefined {
-    return this._state.entry("varName");
+    return this.state.entry("varName");
   }
   get varName$(): Observable<string | undefined> {
-    return this._state.entry$("varName");
+    return this.state.entry$("varName");
   }
 
-  get content(): Element[] {
+  get content() {
     return this._content.models;
   }
-  get content$(): Observable<Element[]> {
+  get content$() {
     return this._content.models$;
   }
 
-  get params(): CrdtDataInput[] {
+  get params() {
     return this._params.models;
   }
-  get params$(): Observable<CrdtDataInput[]> {
+  get params$() {
     return this._params.models$;
   }
 
-  get allCssStylesheets(): CssStyleSheet[] {
-    return [...this.content.flatMap((c) => c.allCssStylesheets)];
+  get allCssStylesheets() {
+    return [...this.content.flatMap((c: any) => c.allCssStylesheets || [])];
   }
 
-  get allCssStylesheets$(): Observable<CssStyleSheet[]> {
+  get allCssStylesheets$() {
     return combineLatestArrays([
       this.content$.pipe(
         switchMap((c) =>
-          combineLatestOrEmpty(c.map((c) => c.allCssStylesheets$))
+          combineLatestOrEmpty(c.map((c: any) => c.allCssStylesheets$ || []))
         ),
         map((c) => c.flat())
       ),
@@ -71,64 +67,41 @@ export class CrdtFragment extends CrdtIdentifiable implements Fragment {
   }
 
   get slotIds(): string[] {
-    return this.content.flatMap((c) => c.slotIds);
+    return this.content.flatMap((c: any) => c.slotIds || []);
   }
 
   get slotIds$(): Observable<string[]> {
     return this.content$.pipe(
-      switchMap((c) => combineLatestOrEmpty(c.map((c) => c.slotIds$))),
+      switchMap((c) => combineLatestOrEmpty(c.map((c) => c.slotIds$ || []))),
       map((slotIdsArrays) => slotIdsArrays.flat())
     );
   }
 
   constructor({
-    crdt,
+    state,
     environment,
-    initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<FragmentData>;
     environment: ElementEnvironment;
-    initialized?: boolean;
   }) {
-    super({ crdt, key: keyManager.next("fragment"), initialized });
+    super({ state });
 
     this.environment = environment;
 
-    if (!initialized) {
-      ensureField(crdt, "content", () => new y.Array());
-      ensureField(crdt, "params", () => new y.Array());
-    }
-
-    this._state = new CrdtRecordState<
-      Omit<Fragment, "id" | "content" | "params">
-    >(crdt);
-    this._content = new AggregatedCrdtModelList({
-      crdt: getOrCreateYArray<y.Map<any>>(crdt, "content"),
-      create: (crdt, init) =>
-        CrdtcreateElement({
-          crdt,
-          environment: this.environment,
-          initialized: init && initialized,
-        }),
+    this._content = new AggregatedModelList<RecordState<ElementData>, Element>({
+      state: state.getAggregatedStateList("content"),
+      create: (state) => {
+        return createElement({ state, environment });
+      },
     });
-
-    this._params = new AggregatedCrdtModelList({
-      crdt: getOrCreateYArray<y.Map<any>>(crdt, "params"),
-      create: (crdt, init) =>
-        new CrdtDataInput({ crdt, initialized: init && initialized }),
+    this._params = new AggregatedModelList<
+      RecordState<DataInputData>,
+      DataInput
+    >({
+      state: state.getAggregatedStateList("params"),
+      create: (state) => {
+        return new DataInput({ state });
+      },
     });
-
-    this.addDisposer(() => {
-      this._content.dispose();
-      this._params.dispose();
-    });
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtFragment({
-      crdt,
-      environment: this.environment,
-      initialized: true,
-    }) as this;
   }
 }

@@ -1,34 +1,24 @@
-import {
-  BaseRenderableContent,
-  ElementaEnvironment,
-} from "@elllphnt/elementa-core";
-import { CrdtModel, keyManager } from "@elllphnt/elementa-utils";
-import * as y from "yjs";
+import { BaseRenderableContentData } from "@elllphnt/elementa-base";
+import { Model, RecordState } from "@elllphnt/elementa-utils";
+import { ElementaEnvironment } from "../environment.js";
 
-export abstract class CrdtBaseRenderableContent<T extends string>
-  extends CrdtModel<y.Map<any>>
-  implements BaseRenderableContent<T>
-{
-  type: T;
+export abstract class BaseRenderableContent<
+  T extends BaseRenderableContentData<string>
+> extends Model<RecordState<T>> {
+  type: T["type"];
   environment: ElementaEnvironment;
 
   constructor({
-    crdt,
+    state,
     type,
     environment,
-    initialized,
   }: {
-    crdt: y.Map<any>;
-    type: T;
+    state: RecordState<T>;
+    type: T["type"];
     environment: ElementaEnvironment;
-    initialized?: boolean;
   }) {
-    super({ key: keyManager.next("renderable-content"), crdt });
+    super({ state });
     this.environment = environment;
     this.type = type;
-
-    if (!initialized) {
-      crdt.set("type", type);
-    }
   }
 }
