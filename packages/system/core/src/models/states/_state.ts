@@ -1,5 +1,29 @@
-import { HookState } from "./hook.js";
-import { InlineState } from "./inline.js";
-import { ValueState } from "./value.js";
+import { Component } from "@elllphnt/elementa-core";
+import * as y from "yjs";
+import { CrdtHookState } from "./hook.js";
+import { CrdtInlineState } from "./inline.js";
+import { CrdtValueState } from "./value.js";
 
-export type State = HookState | ValueState | InlineState;
+export type CrdtState = CrdtValueState | CrdtHookState | CrdtInlineState;
+
+export function CrdtcreateState({
+  crdt,
+  component,
+  initialized,
+}: {
+  crdt: y.Map<any>;
+  component: Component;
+  initialized?: boolean;
+}): CrdtState {
+  const type = crdt.get("type");
+  switch (type) {
+    case "value":
+      return new CrdtValueState({ crdt, component, initialized });
+    case "hook":
+      return new CrdtHookState({ crdt, component, initialized });
+    case "inline":
+      return new CrdtInlineState({ crdt, component, initialized });
+    default:
+      throw new Error(`Unknown state type: ${type}`);
+  }
+}

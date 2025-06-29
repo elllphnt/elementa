@@ -4,7 +4,7 @@ import {
   StyleModifierType,
   ViewportDefinitionData,
 } from "@elllphnt/elementa-base";
-import { Disposable } from "@elllphnt/elementa-utils";
+import { Lifecycle } from "@elllphnt/elementa-utils";
 import {
   BehaviorSubject,
   combineLatest,
@@ -47,7 +47,7 @@ export function viewportFromBreakpoint({
   };
 }
 
-export class ViewportManager extends Disposable {
+export class ViewportManager extends Lifecycle {
   project: Project;
 
   private _breakpointBasedDefinitions$ = new BehaviorSubject<
@@ -195,7 +195,7 @@ export class ViewportManager extends Disposable {
     });
   }
 
-  init() {
+  async initialize(): Promise<void> {
     const breakpointSubscription = this.styleSystem$
       .pipe(
         switchMap(
@@ -218,5 +218,7 @@ export class ViewportManager extends Disposable {
     this.addDisposer(() => {
       breakpointSubscription.unsubscribe();
     });
+
+    this.setInitialized();
   }
 }

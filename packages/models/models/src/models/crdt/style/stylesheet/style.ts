@@ -1,4 +1,3 @@
-import { ensureField } from "@elllphnt/crdt";
 import {
   baseSelector,
   isVarRef,
@@ -8,17 +7,13 @@ import {
   UnsettableStyleData,
   VariableStyleData,
 } from "@elllphnt/elementa-base";
-import { Project, Style, StyleFragmentRegistry } from "@elllphnt/elementa-core";
+import { Project, StyleFragmentRegistry } from "@elllphnt/elementa-core";
 import {
   CssStyleData,
   styleToCss,
   StyleToCssContext,
 } from "@elllphnt/elementa-css";
-import {
-  CrdtModel,
-  CrdtRecordState,
-  keyManager,
-} from "@elllphnt/elementa-utils";
+import { CrdtRecordState, Model, RecordState } from "@elllphnt/elementa-utils";
 import {
   BehaviorSubject,
   combineLatest,
@@ -27,9 +22,8 @@ import {
   of,
   switchMap,
 } from "rxjs";
-import * as y from "yjs";
 
-export class CrdtStyle extends CrdtModel<y.Map<any>> implements Style {
+export class Style extends Model<RecordState<StyleData>> {
   readonly selector: string;
   readonly project: Project;
   readonly fragmentRegistry: StyleFragmentRegistry;
@@ -44,29 +38,21 @@ export class CrdtStyle extends CrdtModel<y.Map<any>> implements Style {
   }
 
   constructor({
-    crdt,
+    state,
     project,
     selector,
     fragmentRegistry,
-    initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<StyleData>;
     project: Project;
     selector?: string;
     fragmentRegistry: StyleFragmentRegistry;
-    initialized?: boolean;
   }) {
-    super({ key: keyManager.next("style"), crdt });
+    super({ state });
 
     this.selector = selector || baseSelector;
     this.project = project;
     this.fragmentRegistry = fragmentRegistry;
-
-    if (!initialized) {
-      ensureField(crdt, "__raw", () => ({}));
-    }
-
-    this._state = new CrdtRecordState(crdt);
 
     // Subscribe to changes and compute CSS
     const cssSubscription = combineLatest([
@@ -93,7 +79,6 @@ export class CrdtStyle extends CrdtModel<y.Map<any>> implements Style {
   ): UnsettableStyleData[N] {
     return this._state.entry(property);
   }
-
   propertyValue$<N extends StylePropertyName>(
     property: N
   ): Observable<UnsettableStyleData[N]> {
@@ -106,7 +91,6 @@ export class CrdtStyle extends CrdtModel<y.Map<any>> implements Style {
     const value = this.propertyValue(property);
     return (value === "unset" ? undefined : value) as VariableStyleData[N];
   }
-
   propertyValueOrUndefined$<N extends StylePropertyName>(
     property: N
   ): Observable<VariableStyleData[N]> {
@@ -131,7 +115,6 @@ export class CrdtStyle extends CrdtModel<y.Map<any>> implements Style {
       return value as unknown as RawStyleData[N];
     }
   }
-
   resolvedPropertyValue$<N extends StylePropertyName>(
     property: N
   ): Observable<RawStyleData[N]> {
@@ -152,7 +135,6 @@ export class CrdtStyle extends CrdtModel<y.Map<any>> implements Style {
   hasProperty(property: StylePropertyName): boolean {
     return this.propertyValue(property) !== undefined;
   }
-
   hasProperty$(property: StylePropertyName): Observable<boolean> {
     return this.propertyValue$(property).pipe(
       map((value) => value !== undefined)
@@ -162,7 +144,6 @@ export class CrdtStyle extends CrdtModel<y.Map<any>> implements Style {
   get raw(): Record<string, string> {
     return { ...(this._state.entry("__raw") || {}) };
   }
-
   get raw$(): Observable<Record<string, string>> {
     return this._state.entry$("__raw").pipe(map((raw) => raw || {}));
   }
@@ -181,18 +162,7 @@ export class CrdtStyle extends CrdtModel<y.Map<any>> implements Style {
   get css(): CssStyleData {
     return this._css$.value;
   }
-
   get css$(): Observable<CssStyleData> {
     return this._css$.asObservable();
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtStyle({
-      crdt,
-      project: this.project,
-      selector: this.selector,
-      fragmentRegistry: this.fragmentRegistry,
-      initialized: true,
-    }) as this;
   }
 }

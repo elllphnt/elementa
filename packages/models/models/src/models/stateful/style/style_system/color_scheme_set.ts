@@ -18,7 +18,7 @@ export class StatefulColorSchemeSet
   private _state: RecordState<Omit<ColorSchemeSetData, "definitions">>;
   private _definitions: ListState<ColorSchemeDefinitionData>;
 
-  get source(): "system" | "definitions" {
+  get state(): "system" | "definitions" {
     return this._state.entry("source") || "system";
   }
   get source$(): Observable<"system" | "definitions"> {

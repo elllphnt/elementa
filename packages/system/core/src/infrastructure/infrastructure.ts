@@ -1,8 +1,9 @@
 import { StaticReference } from "@elllphnt/elementa-base";
+import { Lifecycle } from "@elllphnt/elementa-utils";
 import { parseAbsoluteFileUrl } from "~/_lib/_.js";
 import { Project } from "../project/project.js";
 
-export abstract class Infrastructure {
+export abstract class Infrastructure extends Lifecycle {
   abstract project(id: string): Project;
 
   file(url: string) {

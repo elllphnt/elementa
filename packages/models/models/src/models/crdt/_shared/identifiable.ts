@@ -1,29 +1,25 @@
-import { ensureField } from "@elllphnt/crdt";
-import { genId, Identifiable } from "@elllphnt/elementa-core";
-import { CrdtModel } from "@elllphnt/elementa-utils";
-import * as y from "yjs";
+import { IdentifiableData } from "@elllphnt/elementa-base";
+import { genId } from "@elllphnt/elementa-core";
+import { Model, RecordState } from "@elllphnt/elementa-utils";
 
-export abstract class CrdtIdentifiable
-  extends CrdtModel<y.Map<any>>
-  implements Identifiable
-{
+export abstract class Identifiable<D extends IdentifiableData> extends Model<
+  RecordState<D>
+> {
   get id() {
-    return this.crdt.get("id") as string;
+    return this.state.entry("id");
   }
 
   constructor({
-    crdt,
-    key,
+    state,
     initialized,
   }: {
-    crdt: y.Map<any>;
-    key?: string;
+    state: RecordState<D>;
     initialized?: boolean;
   }) {
-    super({ key, crdt });
+    super({ state });
 
     if (!initialized) {
-      ensureField(crdt, "id", () => genId());
+      this.state.set("id", genId());
     }
   }
 }

@@ -1,9 +1,9 @@
 import { PackageData } from "@elllphnt/elementa-base";
-import { Disposable } from "@elllphnt/elementa-utils";
+import { Lifecycle } from "@elllphnt/elementa-utils";
 import { firstValueFrom, of, switchMap, timeout } from "rxjs";
 import { Project } from "../project.js";
 
-export class PackageManager extends Disposable {
+export class PackageManager extends Lifecycle {
   project: Project;
 
   get packageSheet() {
@@ -27,6 +27,10 @@ export class PackageManager extends Disposable {
   constructor({ project }: { project: Project }) {
     super();
     this.project = project;
+  }
+
+  async initialize(): Promise<void> {
+    this.setInitialized();
   }
 
   getPackages(timeoutTime: number = 60_000) {

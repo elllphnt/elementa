@@ -1,4 +1,4 @@
-import { Disposable } from "@elllphnt/elementa-utils";
+import { Lifecycle } from "@elllphnt/elementa-utils";
 
 /**
  * Represents a single CSS stylesheet.
@@ -12,9 +12,8 @@ import { Disposable } from "@elllphnt/elementa-utils";
  * implementations of how the styles are created and managed.
  *
  * @abstract
- * @extends {Disposable}
  */
-export abstract class CssStyleSheet extends Disposable {
+export abstract class CssStyleSheet extends Lifecycle {
   readonly type: string;
 
   abstract get target(): string;

@@ -1,5 +1,5 @@
 import { map, Observable, of, switchMap } from "rxjs";
-import { ModelAdaptor } from "~/models/_.js";
+import { ModelAdaptor } from "~/_models/_.js";
 import { File, FileReference } from "./file.js";
 import { FileModelInterface, FileModelType } from "./file_types.js";
 
@@ -63,5 +63,9 @@ export class FileReferenceModelAdaptor<
     super();
     this.fileReference = fileReference;
     this.modelType = modelType;
+  }
+
+  async initialize(): Promise<void> {
+    this.setInitialized();
   }
 }

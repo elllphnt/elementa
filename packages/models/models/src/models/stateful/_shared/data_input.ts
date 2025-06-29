@@ -1,81 +1,45 @@
 import { DataInputData } from "@elllphnt/elementa-base";
-import { DataInput } from "@elllphnt/elementa-core";
-import { RecordState } from "@elllphnt/elementa-utils";
+import { Model, RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import { StatefulModel } from "../_base.js";
 
-export class StatefulDataInput
-  extends StatefulModel<DataInputData>
-  implements DataInput
-{
-  private _state: RecordState<DataInputData>;
-
-  constructor({ init }: { init: DataInputData }) {
-    super();
-
-    this._state = new RecordState({
-      init,
-    });
-
-    this.addDisposer(() => {
-      this._state.dispose();
-    });
-  }
-
-  // data getters
-  get data(): DataInputData {
-    return {
-      ...this._state.record,
-    };
-  }
-
-  get data$(): Observable<DataInputData> {
-    return this._state.record$;
+export class DataInput extends Model<RecordState<DataInputData>> {
+  constructor({ state }: { state: RecordState<DataInputData> }) {
+    super({ state });
   }
 
   // properties
   get name(): string {
-    return this._state.entry("name") || "";
+    return this.state.entry("name") || "";
   }
-
   get name$(): Observable<string> {
-    return this._state.entry$("name");
+    return this.state.entry$("name");
   }
 
   get varName(): string | undefined {
-    return this._state.entry("varName");
+    return this.state.entry("varName");
   }
-
   get varName$(): Observable<string | undefined> {
-    return this._state.entry$("varName");
+    return this.state.entry$("varName");
   }
 
   get tsType(): string | undefined {
-    return this._state.entry("tsType");
+    return this.state.entry("tsType");
   }
-
   get tsType$(): Observable<string | undefined> {
-    return this._state.entry$("tsType");
+    return this.state.entry$("tsType");
   }
 
   get required(): boolean | undefined {
-    return this._state.entry("required");
+    return this.state.entry("required");
   }
-
   get required$(): Observable<boolean | undefined> {
-    return this._state.entry$("required");
+    return this.state.entry$("required");
   }
 
   get defaultValue(): any {
-    return this._state.entry("defaultValue");
+    return this.state.entry("defaultValue");
   }
-
   get defaultValue$(): Observable<any> {
-    return this._state.entry$("defaultValue");
-  }
-
-  // restore method
-  restore(data: DataInputData): void {
-    this._state.setRecord(data);
+    return this.state.entry$("defaultValue");
   }
 }

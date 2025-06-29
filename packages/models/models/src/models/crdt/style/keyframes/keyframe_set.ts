@@ -3,29 +3,27 @@ import {
   getOrCreateYArray,
   getOrCreateYMap,
 } from "@elllphnt/crdt";
-import { KeyframeSetData } from "@elllphnt/elementa-base";
-import { Keyframe, KeyframeSet, Project, Style } from "@elllphnt/elementa-core";
+import { KeyFrameData, KeyframeSetData } from "@elllphnt/elementa-base";
 import {
-  AggregatedCrdtModelList,
-  CrdtModel,
+  AggregatedModelList,
   CrdtRecordState,
   keyManager,
+  Model,
+  RecordState,
 } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import * as y from "yjs";
-import { CrdtStyleFragmentRegistry } from "../stylesheet/style_fragment_registry.js";
-import { CrdtKeyframe } from "./keyframe.js";
+import { StyleFragmentRegistry } from "../stylesheet/_.js";
+import { Keyframe } from "./keyframe.js";
+import { Project } from "@elllphnt/elementa-core";
 
-export class CrdtKeyframeSet
-  extends CrdtModel<y.Map<any>>
-  implements KeyframeSet
-{
-  readonly fragmentRegistry: CrdtStyleFragmentRegistry;
+export class KeyframeSet extends Model<RecordState<KeyframeSetData>> {
+  readonly fragmentRegistry: StyleFragmentRegistry;
 
   private _state: CrdtRecordState<
     Omit<KeyframeSetData, "fragmentRegistry" | "keyframes" | "styleFragments">
   >;
-  private _keyframes: AggregatedCrdtModelList<CrdtKeyframe>;
+  private _keyframes: AggregatedModelList<RecordState<KeyFrameData>, Keyframe>;
 
   get id(): string {
     return this._state.entry("id") || "";

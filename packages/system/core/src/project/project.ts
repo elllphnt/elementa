@@ -1,4 +1,5 @@
 import { elementaStandardPaths, PackageData } from "@elllphnt/elementa-base";
+import { Lifecycle } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 import { toAbsoluteFileUrl, toRelativeFileUrl } from "~/_lib/_.js";
 import { Infrastructure } from "../infrastructure/_.js";
@@ -14,7 +15,7 @@ import {
 import { PackageManager } from "./package_manager/_.js";
 import { StyleManager } from "./style_manager/_.js";
 
-export abstract class Project<F extends File = File> {
+export abstract class Project<F extends File = File> extends Lifecycle {
   id: string;
   readonly infrastructure: Infrastructure;
   readonly styleManager: StyleManager;
@@ -104,14 +105,26 @@ export abstract class Project<F extends File = File> {
     id: string;
     infrastructure: Infrastructure;
   }) {
+    super();
     this.id = id;
     this.infrastructure = infrastructure;
     this.styleManager = new StyleManager({ project: this });
     this.packageManager = new PackageManager({ project: this });
   }
 
-  init() {
-    this.styleManager.init();
+  async initialize() {
+    await this.app.initialize();
+    await this.styleSystem.initialize();
+    await this.modifierSheet.initialize();
+    await this.typefaceSheet.initialize();
+    await this.variableSheet.initialize();
+    await this.keyframeSheet.initialize();
+    await this.packageSheet.initialize();
+
+    await this.styleManager.initialize();
+    await this.packageManager.initialize();
+
+    this.setInitialized();
   }
 
   absoluteFileUrl(url: string): string {

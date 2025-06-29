@@ -1,48 +1,43 @@
-import { ensureField, getOrCreateYMap } from "@elllphnt/crdt";
-import { baseSelector, StyleSheetData } from "@elllphnt/elementa-base";
-import { File, Project, Style, Stylesheet } from "@elllphnt/elementa-core";
 import {
-  AggregatedCrdtModelRecord,
-  CrdtModel,
-  CrdtRecordState,
-  keyManager,
+  baseSelector,
+  StyleData,
+  StyleSheetData,
+} from "@elllphnt/elementa-base";
+import { File, Project } from "@elllphnt/elementa-core";
+import {
+  AggregatedModelRecord,
+  Model,
+  RecordState,
 } from "@elllphnt/elementa-utils";
 import { filter, map, Observable, tap } from "rxjs";
-import * as y from "yjs";
-import { CrdtStyle } from "./style.js";
-import { CrdtStyleFragmentRegistry } from "./style_fragment_registry.js";
+import { Style } from "./style.js";
+import { StyleFragmentRegistry } from "./style_fragment_registry.js";
 
-export class CrdtStylesheet
-  extends CrdtModel<y.Map<any>>
-  implements Stylesheet
-{
+export class Stylesheet extends Model<RecordState<StyleSheetData>> {
   readonly project: Project;
   readonly file: File | undefined;
-  readonly fragmentRegistry: CrdtStyleFragmentRegistry;
+  readonly fragmentRegistry: StyleFragmentRegistry;
 
-  private _state: CrdtRecordState<Omit<StyleSheetData, "styles" | "fragments">>;
-  private _styles: AggregatedCrdtModelRecord<CrdtStyle>;
+  private _styles: AggregatedModelRecord<RecordState<StyleData>, Style>;
 
   get className(): string {
     return this.key;
   }
 
   constructor({
-    crdt,
-    initialized,
+    state,
     ...args
   }:
     | {
-        crdt: y.Map<any>;
+        state: RecordState<StyleSheetData>;
         file: File;
-        initialized?: boolean;
       }
     | {
-        crdt: y.Map<any>;
+        state: RecordState<StyleSheetData>;
         project: Project;
         initialized?: boolean;
       }) {
-    super({ key: keyManager.next("stylesheet"), crdt });
+    super({ state });
 
     if ("file" in args) {
       this.file = args.file;
@@ -51,44 +46,32 @@ export class CrdtStylesheet
       this.project = args.project;
     }
 
-    if (!initialized) {
-      ensureField(crdt, "fragments", () => new y.Map());
-      ensureField(crdt, "styles", () => new y.Map());
-      ensureField(crdt, "conditions", () => ({}));
-    }
-
-    const fragmentsMap = getOrCreateYMap(crdt, "fragments");
-    this.fragmentRegistry = new CrdtStyleFragmentRegistry({
-      crdt: fragmentsMap,
-      initialized,
+    this.fragmentRegistry = new StyleFragmentRegistry({
+      state,
     });
 
-    this._state = new CrdtRecordState(crdt);
-
-    this._styles = new AggregatedCrdtModelRecord({
-      crdt: getOrCreateYMap(crdt, "styles"),
-      create: (crdt, key, init) =>
-        new CrdtStyle({
-          crdt,
+    this._styles = new AggregatedModelRecord({
+      state: state.getAggregatedStateRecord("styles"),
+      create: (state, key) =>
+        new Style({
+          state,
           project: this.project,
           selector: key,
           fragmentRegistry: this.fragmentRegistry,
-          initialized: init && initialized,
         }),
     });
 
     this.addDisposer(() => {
-      this._state.dispose();
       this._styles.dispose();
       this.fragmentRegistry.dispose();
     });
   }
 
-  get styles(): Record<string, Style> {
+  get styles(): Record<string, Style | undefined> {
     return this._styles.models;
   }
 
-  get styles$(): Observable<Record<string, Style>> {
+  get styles$(): Observable<Record<string, Style | undefined>> {
     return this._styles.models$;
   }
 
@@ -98,13 +81,12 @@ export class CrdtStylesheet
     let style = this._styles.models[selector];
 
     if (!style && create) {
-      const map = new y.Map();
-      style = new CrdtStyle({
-        crdt: map,
+      const state = this._styles.state.entry(selector, true);
+      style = new Style({
+        state,
         project: this.project,
         selector,
         fragmentRegistry: this.fragmentRegistry,
-        initialized: true,
       });
 
       this._styles.set(selector, style);
@@ -120,13 +102,11 @@ export class CrdtStylesheet
       map((record) => record[selector]),
       tap((style) => {
         if (!style && create) {
-          const map = new y.Map();
-          const newStyle = new CrdtStyle({
-            crdt: map,
+          const newStyle = new Style({
+            state: this._styles.state.entry(selector, true),
             project: this.project,
             selector,
             fragmentRegistry: this.fragmentRegistry,
-            initialized: true,
           });
 
           this._styles.set(selector, newStyle);
@@ -137,11 +117,11 @@ export class CrdtStylesheet
   }
 
   get conditions(): Record<string, string> | undefined {
-    return this._state.entry("conditions") || {};
+    return this.state.entry("conditions") || {};
   }
 
   get conditions$(): Observable<Record<string, string> | undefined> {
-    return this._state.entry$("conditions");
+    return this.state.entry$("conditions");
   }
 
   condition(id: string): string | undefined {
@@ -174,13 +154,11 @@ export class CrdtStylesheet
 
   addStyle(selector: string): void {
     if (!this._styles.models[selector]) {
-      const map = new y.Map();
-      const style = new CrdtStyle({
-        crdt: map,
+      const style = new Style({
+        state: this._styles.state.entry(selector, true),
         project: this.project,
         selector,
         fragmentRegistry: this.fragmentRegistry,
-        initialized: true,
       });
 
       this._styles.set(selector, style);
@@ -194,21 +172,12 @@ export class CrdtStylesheet
   setCondition(id: string, expression: string): void {
     const conditions = { ...this.conditions };
     conditions[id] = expression;
-    this._state.set("conditions", conditions);
+    this.state.set("conditions", conditions);
   }
 
   removeCondition(id: string): void {
     const conditions = { ...this.conditions };
     delete conditions[id];
-    this._state.set("conditions", conditions);
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtStylesheet({
-      crdt,
-      project: this.project,
-      file: this.file,
-      initialized: true,
-    }) as this;
+    this.state.set("conditions", conditions);
   }
 }

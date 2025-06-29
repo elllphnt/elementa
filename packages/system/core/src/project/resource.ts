@@ -1,4 +1,4 @@
-import { Disposable } from "@elllphnt/elementa-utils";
+import { Lifecycle } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, filter, firstValueFrom, map, timeout } from "rxjs";
 
 /**
@@ -21,7 +21,7 @@ export enum AsyncResourceStatus {
  * Interface representing an asynchronous resource with observable status properties.
  * Provides reactive properties to monitor the resource's state throughout its lifecycle.
  */
-export class AsyncResource extends Disposable {
+export abstract class AsyncResource extends Lifecycle {
   static timeoutDuration = 5000;
 
   private _status$ = new BehaviorSubject<{

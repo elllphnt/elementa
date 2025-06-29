@@ -1,14 +1,54 @@
 import { MediaData, MediaElementData } from "@elllphnt/elementa-base";
+import { ElementEnvironment, MediaElement } from "@elllphnt/elementa-core";
 import { Observable } from "rxjs";
-import { BaseElement } from "./_base.js";
+import * as y from "yjs";
+import { CrdtBaseElement } from "./_base.js";
 
-export interface MediaElement extends BaseElement<"media"> {
-  media: MediaData | undefined;
-  media$: Observable<MediaData | undefined>;
+export class CrdtMediaElement
+  extends CrdtBaseElement<MediaElementData>
+  implements MediaElement
+{
+  get media(): MediaData | undefined {
+    return this._state.entry("media");
+  }
 
-  fit: MediaElementData["fit"] | undefined;
-  fit$: Observable<MediaElementData["fit"] | undefined>;
+  get media$(): Observable<MediaData | undefined> {
+    return this._state.entry$("media");
+  }
 
-  position: MediaElementData["position"] | undefined;
-  position$: Observable<MediaElementData["position"] | undefined>;
+  get fit(): MediaElementData["fit"] | undefined {
+    return this._state.entry("fit");
+  }
+
+  get fit$(): Observable<MediaElementData["fit"] | undefined> {
+    return this._state.entry$("fit");
+  }
+
+  get position(): MediaElementData["position"] | undefined {
+    return this._state.entry("position");
+  }
+
+  get position$(): Observable<MediaElementData["position"] | undefined> {
+    return this._state.entry$("position");
+  }
+
+  constructor({
+    crdt,
+    environment,
+    initialized,
+  }: {
+    crdt: y.Map<any>;
+    environment: ElementEnvironment;
+    initialized?: boolean;
+  }) {
+    super({ crdt, type: "media", environment, initialized });
+  }
+
+  protected factory(crdt: y.Map<any>): this {
+    return new CrdtMediaElement({
+      crdt,
+      environment: this.environment,
+      initialized: true,
+    }) as this;
+  }
 }

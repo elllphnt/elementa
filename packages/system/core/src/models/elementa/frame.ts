@@ -1,42 +1,164 @@
-import { CornerData } from "@elllphnt/elementa-base";
+import { ensureField, getOrCreateYMap } from "@elllphnt/crdt";
+import { CornerData, ElementaFrameData } from "@elllphnt/elementa-base";
+import { ElementaFrame, ElementaStage } from "@elllphnt/elementa-core";
+import {
+  CrdtRecordState,
+  OptionalCrdtModel,
+  keyManager,
+} from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import { Identifiable } from "../_shared/_.js";
-import { RenderableContent } from "./renderable_content/_.js";
-import { RenderingContext } from "./rendering_context.js";
-import { ElementaStage } from "./stage.js";
+import * as y from "yjs";
+import { CrdtIdentifiable } from "../_shared/identifiable.js";
+import {
+  CrdtRenderableContent,
+  CrdtcreateRenderableContent,
+} from "./renderable_content/_content.js";
+import { CrdtRenderingContext } from "./rendering_context.js";
 
-export interface ElementaFrame extends Identifiable {
-  stage: ElementaStage;
+export class CrdtElementaFrame
+  extends CrdtIdentifiable
+  implements ElementaFrame
+{
+  readonly stage: ElementaStage;
+  readonly context: CrdtRenderingContext;
 
-  context: RenderingContext;
+  private _state: CrdtRecordState<
+    Omit<ElementaFrameData, "id" | "context" | "content">
+  >;
+  private _content: OptionalCrdtModel<CrdtRenderableContent>;
 
-  content: RenderableContent | undefined;
-  content$: Observable<RenderableContent | undefined>;
+  get content(): CrdtRenderableContent | undefined {
+    return this._content.model;
+  }
 
-  name: string | undefined;
-  name$: Observable<string | undefined>;
+  get content$(): Observable<CrdtRenderableContent | undefined> {
+    return this._content.model$;
+  }
 
-  x: number | undefined;
-  x$: Observable<number | undefined>;
+  get name(): string | undefined {
+    return this._state.entry("name");
+  }
 
-  y: number | undefined;
-  y$: Observable<number | undefined>;
+  get name$(): Observable<string | undefined> {
+    return this._state.entry$("name");
+  }
 
-  height: number | undefined;
-  height$: Observable<number | undefined>;
+  get x(): number | undefined {
+    return this._state.entry("x");
+  }
 
-  width: number | undefined;
-  width$: Observable<number | undefined>;
+  get x$(): Observable<number | undefined> {
+    return this._state.entry$("x");
+  }
 
-  corners: CornerData<number> | undefined;
-  corners$: Observable<CornerData<number> | undefined>;
+  get y(): number | undefined {
+    return this._state.entry("y");
+  }
 
-  setName(name: string | undefined): void;
-  setX(x: number | undefined): void;
-  setY(y: number | undefined): void;
-  setHeight(height: number | undefined): void;
-  setWidth(width: number | undefined): void;
-  setCorners(corners: CornerData<number> | undefined): void;
+  get y$(): Observable<number | undefined> {
+    return this._state.entry$("y");
+  }
 
-  remove(): void;
+  get height(): number | undefined {
+    return this._state.entry("height");
+  }
+
+  get height$(): Observable<number | undefined> {
+    return this._state.entry$("height");
+  }
+
+  get width(): number | undefined {
+    return this._state.entry("width");
+  }
+
+  get width$(): Observable<number | undefined> {
+    return this._state.entry$("width");
+  }
+
+  get corners(): CornerData<number> | undefined {
+    return this._state.entry("corners");
+  }
+
+  get corners$(): Observable<CornerData<number> | undefined> {
+    return this._state.entry$("corners");
+  }
+
+  constructor({
+    crdt,
+    stage,
+    initialized,
+  }: {
+    crdt: y.Map<any>;
+    stage: ElementaStage;
+    initialized?: boolean;
+  }) {
+    super({ crdt, key: keyManager.next("elementa-frame"), initialized });
+
+    this.stage = stage;
+
+    if (!initialized) {
+      ensureField(crdt, "context", () => new y.Map());
+      ensureField(crdt, "__crdtAtomic", () => ["styleModifiers[*]"]);
+    }
+
+    const contextMap = getOrCreateYMap(crdt, "context");
+    this.context = new CrdtRenderingContext({
+      crdt: contextMap,
+      initialized,
+    });
+
+    this._content = new OptionalCrdtModel<CrdtRenderableContent>({
+      crdt,
+      create: (crdt, init) =>
+        CrdtcreateRenderableContent({
+          crdt,
+          environment: this.stage.environment,
+          initialized: init && initialized,
+        }),
+    });
+
+    this._state = new CrdtRecordState(crdt);
+
+    this.addDisposer(() => {
+      this._state.dispose();
+      this._content.dispose();
+      this.context.dispose();
+    });
+  }
+
+  setName(name: string | undefined): void {
+    this._state.set("name", name);
+  }
+
+  setX(x: number | undefined): void {
+    this._state.set("x", x);
+  }
+
+  setY(y: number | undefined): void {
+    this._state.set("y", y);
+  }
+
+  setHeight(height: number | undefined): void {
+    this._state.set("height", height);
+  }
+
+  setWidth(width: number | undefined): void {
+    this._state.set("width", width);
+  }
+
+  setCorners(corners: CornerData<number> | undefined): void {
+    this._state.set("corners", corners);
+  }
+
+  remove(): void {
+    this.stage.removeFrame(this);
+  }
+
+  protected factory(crdt: y.Map<any>): this {
+    return new CrdtElementaFrame({
+      crdt,
+      stage: this.stage,
+      initialized: true,
+    }) as this;
+  }
 }

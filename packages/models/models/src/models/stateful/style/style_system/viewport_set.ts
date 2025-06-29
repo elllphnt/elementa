@@ -19,7 +19,7 @@ export class StatefulViewportSet
   private _state: RecordState<Omit<ViewportSetData, "definitions">>;
   private _definitions: ListState<ViewportDefinitionData>;
 
-  get source(): "breakpoints" | "definitions" {
+  get state(): "breakpoints" | "definitions" {
     return this._state.entry("source") || "breakpoints";
   }
 

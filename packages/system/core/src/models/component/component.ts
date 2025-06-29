@@ -1,100 +1,238 @@
-import { BehaviorSubject, Observable } from "rxjs";
-import { ElementEnvironment } from "~/models/elements/_environment.js";
-import { File } from "~/project/_.js";
-import { DataInput } from "../_shared/data_input.js";
 import {
-  ElementaEnvironment,
-  ElementaPreview,
-  ElementaStage,
-} from "../elementa/_.js";
-import { ExpressionElement, FragmentElement } from "../elements/_.js";
-import { Fragment } from "../fragment/fragment.js";
-import { State } from "../states/_.js";
+  ensureField,
+  getOrCreateYArray,
+  getOrCreateYMap,
+} from "@elllphnt/crdt";
+import { ComponentData } from "@elllphnt/elementa-base";
+import {
+  Component,
+  ComponentElementEnvironment,
+  ComponentElementaEnvironment,
+  File,
+} from "@elllphnt/elementa-core";
+import {
+  AggregatedCrdtModelList,
+  CrdtModel,
+  CrdtRecordState,
+  OptionalCrdtModel,
+  keyManager,
+} from "@elllphnt/elementa-utils";
+import { BehaviorSubject, Observable, map } from "rxjs";
+import * as y from "yjs";
+import { CrdtDataInput } from "../_shared/data_input.js";
+import { CrdtElementaPreview } from "../elementa/preview.js";
+import { CrdtElementaStage } from "../elementa/stage.js";
+import { CrdtExpressionElement } from "../elements/expression.js";
+import { CrdtFragmentElement } from "../elements/fragment.js";
+import { CrdtFragment } from "../fragment/fragment.js";
+import { CrdtState, CrdtcreateState } from "../states/_.js";
 
-export class ComponentElementEnvironment implements ElementEnvironment {
-  component: Component;
-  get project() {
-    return this.component.file.project;
+export class CrdtComponent extends CrdtModel<y.Map<any>> implements Component {
+  readonly file: File;
+  readonly elementEnvironment: ComponentElementEnvironment;
+  readonly elementaEnvironment: ComponentElementaEnvironment;
+  readonly stage: CrdtElementaStage;
+  readonly preview: CrdtElementaPreview;
+
+  private _state: CrdtRecordState<
+    Omit<
+      ComponentData,
+      "template" | "props" | "fragments" | "states" | "stage" | "preview"
+    >
+  >;
+  readonly _template: OptionalCrdtModel<
+    CrdtFragmentElement | CrdtExpressionElement
+  >;
+  private _props: AggregatedCrdtModelList<CrdtDataInput>;
+  private _states: AggregatedCrdtModelList<CrdtState>;
+  private _fragments: AggregatedCrdtModelList<CrdtFragment>;
+  private _fragmentById$ = new BehaviorSubject<
+    Record<string, CrdtFragment | undefined>
+  >({});
+
+  get template(): CrdtFragmentElement | CrdtExpressionElement | undefined {
+    return this._template.model;
+  }
+  get template$(): Observable<
+    CrdtFragmentElement | CrdtExpressionElement | undefined
+  > {
+    return this._template.model$;
   }
 
-  private _slotIds$ = new BehaviorSubject<string[]>([]);
+  constructor({
+    crdt,
+    file,
+    initialized,
+  }: {
+    crdt: y.Map<any>;
+    file: File;
+    initialized?: boolean;
+  }) {
+    super({ key: keyManager.next("component"), crdt });
 
-  get slotIds$(): Observable<string[]> {
-    return this._slotIds$.asObservable();
+    this.file = file;
+    this.elementEnvironment = new ComponentElementEnvironment({
+      component: this,
+    });
+    this.elementaEnvironment = new ComponentElementaEnvironment({
+      component: this,
+    });
+
+    if (!initialized) {
+      ensureField(crdt, "editors", () => new y.Map());
+      ensureField(crdt, "props", () => new y.Array());
+      ensureField(crdt, "fragments", () => new y.Array());
+      ensureField(crdt, "states", () => new y.Array());
+    }
+
+    // Create stage and preview
+    const editorsMap = getOrCreateYMap(crdt, "editors");
+    const stageMap = getOrCreateYMap(editorsMap, "stage");
+    const previewMap = getOrCreateYMap(editorsMap, "preview");
+
+    this.stage = new CrdtElementaStage({
+      crdt: stageMap,
+      environment: this.elementaEnvironment,
+      initialized,
+    });
+    this.preview = new CrdtElementaPreview({
+      crdt: previewMap,
+      environment: this.elementaEnvironment,
+      initialized,
+    });
+
+    this._state = new CrdtRecordState(crdt);
+
+    // Create template
+    this._template = new OptionalCrdtModel<
+      CrdtFragmentElement | CrdtExpressionElement
+    >({
+      crdt,
+      create: (crdt, init) => {
+        const type = crdt.get("type");
+        switch (type) {
+          case "fragment":
+            return new CrdtFragmentElement({
+              crdt,
+              environment: this.elementEnvironment,
+              initialized: init && initialized,
+            });
+          case "expression":
+            return new CrdtExpressionElement({
+              crdt,
+              environment: this.elementEnvironment,
+              initialized: init && initialized,
+            });
+          default:
+            throw new Error(`Unknown template type: ${type}`);
+        }
+      },
+    });
+
+    this._props = new AggregatedCrdtModelList({
+      crdt: getOrCreateYArray<y.Map<any>>(crdt, "props"),
+      create: (crdt, init) =>
+        new CrdtDataInput({ crdt, initialized: init && initialized }),
+    });
+
+    this._fragments = new AggregatedCrdtModelList({
+      crdt: getOrCreateYArray<y.Map<any>>(crdt, "fragments"),
+      create: (crdt, init) =>
+        new CrdtFragment({
+          crdt,
+          environment: this.elementEnvironment,
+          initialized: init && initialized,
+        }),
+    });
+
+    this._states = new AggregatedCrdtModelList({
+      crdt: getOrCreateYArray<y.Map<any>>(crdt, "states"),
+      create: (crdt, init) =>
+        CrdtcreateState({
+          crdt,
+          component: this,
+          initialized: init && initialized,
+        }),
+    });
+
+    // reactive index for fragments
+    const sub = this._fragments.models$.subscribe((fragments) => {
+      const byId: Record<string, CrdtFragment | undefined> = {};
+      for (const fragment of fragments) {
+        byId[fragment.id] = fragment;
+      }
+      this._fragmentById$.next(byId);
+    });
+
+    this.addDisposer(() => {
+      this.stage.dispose();
+      this.preview.dispose();
+      this._template.dispose();
+      this._state.dispose();
+      this._props.dispose();
+      this._fragments.dispose();
+      this._states.dispose();
+      this._fragmentById$.complete();
+      sub.unsubscribe();
+    });
   }
-  get slotIds(): string[] {
-    return this._slotIds$.value;
+
+  get slotIds() {
+    return this.elementEnvironment.slotIds;
+  }
+  get slotIds$() {
+    return this.elementEnvironment.slotIds$;
   }
 
-  fragment(id: string): Fragment | undefined {
-    return this.component.fragment(id);
+  get props(): CrdtDataInput[] {
+    return this._props.models;
   }
-  fragment$(id: string): Observable<Fragment | undefined> {
-    return this.component.fragment$(id);
-  }
-
-  constructor({ component }: { component: Component }) {
-    this.component = component;
+  get props$(): Observable<CrdtDataInput[]> {
+    return this._props.models$;
   }
 
-  registerSlotId(id: string): void {
-    const current = new Set(this._slotIds$.value);
-    current.add(id);
-    this._slotIds$.next(Array.from(current));
+  get fragmentsById$(): Observable<Record<string, CrdtFragment | undefined>> {
+    return this._fragmentById$.asObservable();
   }
-  unregisterSlotId(id: string): void {
-    this._slotIds$.next(this._slotIds$.value.filter((slotId) => slotId !== id));
-  }
-}
-export class ComponentElementaEnvironment implements ElementaEnvironment {
-  component: Component;
-  get project() {
-    return this.component.file.project;
+  get fragmentsById(): Record<string, CrdtFragment | undefined> {
+    return this._fragmentById$.getValue();
   }
 
-  get hostUrl(): string | undefined {
-    return this.component.file.url;
+  get fragments(): CrdtFragment[] {
+    return this._fragments.models;
+  }
+  get fragments$(): Observable<CrdtFragment[]> {
+    return this._fragments.models$;
   }
 
-  fragment(id: string): Fragment | undefined {
-    return this.component.fragment(id);
+  fragment(id: string) {
+    return this.fragmentsById[id];
   }
-  fragment$(id: string): Observable<Fragment | undefined> {
-    return this.component.fragment$(id);
+  fragment$(id: string): Observable<CrdtFragment | undefined> {
+    return this.fragmentsById$.pipe(map((fragments) => fragments[id]));
   }
 
-  constructor({ component }: { component: Component }) {
-    this.component = component;
+  get states(): CrdtState[] {
+    return this._states.models;
   }
-  get defaultRouterUrl(): string | undefined {
-    throw new Error("Method not implemented.");
+
+  get states$(): Observable<CrdtState[]> {
+    return this._states.models$;
   }
-}
 
-export interface Component {
-  file: File;
+  get name(): string | undefined {
+    return this._state.entry("name");
+  }
 
-  stage: ElementaStage;
-  preview: ElementaPreview;
+  get name$(): Observable<string | undefined> {
+    return this._state.entry$("name");
+  }
 
-  props$: Observable<DataInput[]>;
-  props: DataInput[];
-
-  slotIds$: Observable<string[]>;
-  slotIds: string[];
-
-  fragments$: Observable<Fragment[]>;
-  fragments: Fragment[];
-
-  states$: Observable<State[]>;
-  states: State[];
-
-  template: FragmentElement | ExpressionElement | undefined;
-  template$: Observable<FragmentElement | ExpressionElement | undefined>;
-
-  name: string | undefined;
-  name$: Observable<string | undefined>;
-
-  fragment(id: string): Fragment | undefined;
-  fragment$(id: string): Observable<Fragment | undefined>;
+  protected factory(crdt: y.Map<any>): this {
+    return new CrdtComponent({
+      crdt,
+      file: this.file,
+      initialized: true,
+    }) as this;
+  }
 }

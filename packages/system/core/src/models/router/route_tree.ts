@@ -1,62 +1,209 @@
-import { Observable } from "rxjs";
-import { FileModelAdaptor } from "~/project/_.js";
-import { Identifiable } from "../_shared/identifiable.js";
-import { Router } from "./router.js";
+import { getOrCreateYArray } from "@elllphnt/crdt";
+import { RouteTreeData } from "@elllphnt/elementa-base";
+import { Router, RouteTree } from "@elllphnt/elementa-core";
+import {
+  AggregatedCrdtModelList,
+  CrdtRecordState,
+} from "@elllphnt/elementa-utils";
+import { map, Observable } from "rxjs";
+import * as y from "yjs";
+import { CrdtIdentifiable } from "../_shared/identifiable.js";
 
-export interface RouteTree<R extends RouteTree = RouteTree<any>>
-  extends Identifiable {
-  app: Router;
+export class CrdtRouteTree
+  extends CrdtIdentifiable
+  implements RouteTree<CrdtRouteTree>
+{
+  readonly app: Router;
 
-  children: R[];
-  children$: Observable<R[]>;
+  private _state: CrdtRecordState<Omit<RouteTreeData, "children" | "id">>;
+  private _children: AggregatedCrdtModelList<CrdtRouteTree>;
 
-  path: string | undefined;
-  path$: Observable<string | undefined>;
+  constructor(
+    crdt: y.Map<any>,
+    { app, initialized }: { app: Router; initialized?: boolean }
+  ) {
+    super({ crdt, initialized });
+    this.app = app;
 
-  mainViewUrl: string | undefined;
-  mainViewUrl$: Observable<string | undefined>;
+    this._state = new CrdtRecordState<Omit<RouteTreeData, "children" | "id">>(
+      crdt
+    );
 
-  errorViewUrl: string | undefined;
-  errorViewUrl$: Observable<string | undefined>;
+    this._children = new AggregatedCrdtModelList<CrdtRouteTree>({
+      crdt: getOrCreateYArray<y.Map<any>>(crdt, "children"),
+      create: (crdt, init) =>
+        new CrdtRouteTree(crdt, { app, initialized: init && initialized }),
+    });
 
-  pendingViewUrl: string | undefined;
-  pendingViewUrl$: Observable<string | undefined>;
+    this.addDisposer(() => {
+      this._state.dispose();
+      this._children.dispose();
+    });
+  }
 
-  notFoundViewUrl: string | undefined;
-  notFoundViewUrl$: Observable<string | undefined>;
+  get children(): CrdtRouteTree[] {
+    return this._children.models;
+  }
 
-  loaderUrl: string | undefined;
-  loaderUrl$: Observable<string | undefined>;
+  get children$(): Observable<CrdtRouteTree[]> {
+    return this._children.models$;
+  }
 
-  handlerUrl: string | undefined;
-  handlerUrl$: Observable<string | undefined>;
+  get path() {
+    return this._state.entry("path");
+  }
+  get path$() {
+    return this._state.entry$("path");
+  }
 
-  mainViewComponent: FileModelAdaptor<"component"> | undefined;
-  mainViewComponent$: Observable<FileModelAdaptor<"component"> | undefined>;
+  get mainViewUrl() {
+    return this._state.entry("mainViewUrl");
+  }
+  get mainViewUrl$() {
+    return this._state.entry$("mainViewUrl");
+  }
 
-  errorViewComponent: FileModelAdaptor<"component"> | undefined;
-  errorViewComponent$: Observable<FileModelAdaptor<"component"> | undefined>;
+  get errorViewUrl() {
+    return this._state.entry("errorViewUrl");
+  }
+  get errorViewUrl$() {
+    return this._state.entry$("errorViewUrl");
+  }
 
-  pendingViewComponent: FileModelAdaptor<"component"> | undefined;
-  pendingViewComponent$: Observable<FileModelAdaptor<"component"> | undefined>;
+  get pendingViewUrl() {
+    return this._state.entry("pendingViewUrl");
+  }
+  get pendingViewUrl$() {
+    return this._state.entry$("pendingViewUrl");
+  }
 
-  notFoundViewComponent: FileModelAdaptor<"component"> | undefined;
-  notFoundViewComponent$: Observable<FileModelAdaptor<"component"> | undefined>;
+  get notFoundViewUrl() {
+    return this._state.entry("notFoundViewUrl");
+  }
+  get notFoundViewUrl$() {
+    return this._state.entry$("notFoundViewUrl");
+  }
 
-  // setters
+  get loaderUrl() {
+    return this._state.entry("loaderUrl");
+  }
+  get loaderUrl$() {
+    return this._state.entry$("loaderUrl");
+  }
 
-  setPath(path: string | undefined): void;
-  setMainViewUrl(url: string | undefined): void;
-  setErrorViewUrl(url: string | undefined): void;
-  setPendingViewUrl(url: string | undefined): void;
-  setNotFoundViewUrl(url: string | undefined): void;
-  setLoaderUrl(url: string | undefined): void;
-  setHandlerUrl(url: string | undefined): void;
-  setParentId(id: string | undefined): void;
+  get handlerUrl() {
+    return this._state.entry("handlerUrl");
+  }
+  get handlerUrl$() {
+    return this._state.entry$("handlerUrl");
+  }
 
-  addRoutes(routes: R[]): void;
-  insertRoutes(index: number, routes: R[]): void;
-  removeRoutes(routes: R[]): void;
+  get mainViewComponent() {
+    const url = this.mainViewUrl;
+    return url
+      ? this.app.file.project.infrastructure.component(url)
+      : undefined;
+  }
 
-  clone(): RouteTree<R>;
+  get mainViewComponent$() {
+    return this.mainViewUrl$.pipe(
+      map((url) =>
+        url ? this.app.file.project.infrastructure.component(url) : undefined
+      )
+    );
+  }
+
+  get errorViewComponent() {
+    const url = this.errorViewUrl;
+    return url
+      ? this.app.file.project.infrastructure.component(url)
+      : undefined;
+  }
+
+  get errorViewComponent$() {
+    return this.errorViewUrl$.pipe(
+      map((url) =>
+        url ? this.app.file.project.infrastructure.component(url) : undefined
+      )
+    );
+  }
+
+  get pendingViewComponent() {
+    const url = this.pendingViewUrl;
+    return url
+      ? this.app.file.project.infrastructure.component(url)
+      : undefined;
+  }
+
+  get pendingViewComponent$() {
+    return this.pendingViewUrl$.pipe(
+      map((url) =>
+        url ? this.app.file.project.infrastructure.component(url) : undefined
+      )
+    );
+  }
+
+  get notFoundViewComponent() {
+    const url = this.notFoundViewUrl;
+    return url
+      ? this.app.file.project.infrastructure.component(url)
+      : undefined;
+  }
+
+  get notFoundViewComponent$() {
+    return this.notFoundViewUrl$.pipe(
+      map((url) =>
+        url ? this.app.file.project.infrastructure.component(url) : undefined
+      )
+    );
+  }
+
+  setPath(value: string | undefined): void {
+    this._state.set("path", value);
+  }
+
+  setMainViewUrl(url: string | undefined): void {
+    this._state.set("mainViewUrl", url);
+  }
+
+  setErrorViewUrl(url: string | undefined): void {
+    this._state.set("errorViewUrl", url);
+  }
+
+  setPendingViewUrl(url: string | undefined): void {
+    this._state.set("pendingViewUrl", url);
+  }
+
+  setNotFoundViewUrl(url: string | undefined): void {
+    this._state.set("notFoundViewUrl", url);
+  }
+
+  setLoaderUrl(url: string | undefined): void {
+    this._state.set("loaderUrl", url);
+  }
+
+  setHandlerUrl(url: string | undefined): void {
+    this._state.set("handlerUrl", url);
+  }
+
+  setParentId(id: string | undefined): void {
+    this._state.set("parentId", id);
+  }
+
+  addRoutes(routes: CrdtRouteTree[]): void {
+    this._children.add(routes);
+  }
+  insertRoutes(index: number, routes: CrdtRouteTree[]): void {
+    this._children.insert(index, routes);
+  }
+  removeRoutes(routes: CrdtRouteTree[]): void {
+    this._children.remove(routes);
+  }
+
+  protected factory(crdt: y.Map<any>): this {
+    return new CrdtRouteTree(crdt, {
+      app: this.app,
+      initialized: true,
+    }) as this;
+  }
 }

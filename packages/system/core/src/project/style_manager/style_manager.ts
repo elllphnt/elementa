@@ -12,16 +12,16 @@ import { elllSelectorToCssSelector } from "@elllphnt/elementa-css";
 import {
   combineLatestArrays,
   combineLatestOrEmpty,
-  Disposable,
+  Lifecycle,
   reconcileList,
 } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
 import { StylesheetCssStyleSheet } from "~/css/_.js";
-import { Stylesheet } from "../../models/_.js";
+import { Stylesheet } from "../../_models/_.js";
 import { Project } from "../project.js";
+import { generateClassName } from "./_utils.js";
 import { ColorSchemeManager } from "./color_scheme.js";
 import { ViewportManager } from "./viewport.js";
-import { generateClassName } from "./_utils.js";
 
 export function modifierToClassName({
   modifier,
@@ -74,7 +74,7 @@ export function elllSelectorFromString({
   }
 }
 
-export class StyleManager extends Disposable {
+export class StyleManager extends Lifecycle {
   readonly project: Project;
   readonly colorSchemeManager: ColorSchemeManager;
   readonly viewportManager: ViewportManager;
@@ -223,9 +223,9 @@ export class StyleManager extends Disposable {
     });
   }
 
-  init() {
-    this.colorSchemeManager.init();
-    this.viewportManager.init();
+  async initialize() {
+    await this.colorSchemeManager.initialize();
+    await this.viewportManager.initialize();
 
     const modifiersByNameSubscription = this.modifiers$.subscribe(
       (modifiers) => {

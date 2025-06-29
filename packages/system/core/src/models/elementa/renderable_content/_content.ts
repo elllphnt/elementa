@@ -1,8 +1,44 @@
-import { ComponentRenderableContent } from "./component.js";
-import { FragmentRenderableContent } from "./fragment.js";
-import { RouterRenderableContent } from "./router.js";
+import { ElementaEnvironment } from "@elllphnt/elementa-core";
+import * as y from "yjs";
+import { CrdtComponentRenderableContent } from "./component.js";
+import { CrdtFragmentRenderableContent } from "./fragment.js";
+import { CrdtRouterRenderableContent } from "./router.js";
 
-export type RenderableContent =
-  | RouterRenderableContent
-  | ComponentRenderableContent
-  | FragmentRenderableContent;
+export type CrdtRenderableContent =
+  | CrdtRouterRenderableContent
+  | CrdtComponentRenderableContent
+  | CrdtFragmentRenderableContent;
+
+export function CrdtcreateRenderableContent({
+  crdt,
+  environment,
+  initialized,
+}: {
+  crdt: y.Map<any>;
+  environment: ElementaEnvironment;
+  initialized?: boolean;
+}): CrdtRenderableContent {
+  const type = crdt.get("type");
+  switch (type) {
+    case "router":
+      return new CrdtRouterRenderableContent({
+        crdt,
+        environment,
+        initialized,
+      });
+    case "component":
+      return new CrdtComponentRenderableContent({
+        crdt,
+        environment,
+        initialized,
+      });
+    case "fragment":
+      return new CrdtFragmentRenderableContent({
+        crdt,
+        environment,
+        initialized,
+      });
+    default:
+      throw new Error(`Unknown renderable content type: ${type}`);
+  }
+}

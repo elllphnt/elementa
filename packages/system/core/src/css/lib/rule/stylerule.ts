@@ -1,6 +1,6 @@
 import { CssSelector } from "@elllphnt/elementa-base";
 import { CssStyleData } from "@elllphnt/elementa-css";
-import { Disposable } from "@elllphnt/elementa-utils";
+import { Lifecycle } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
 
 /**
@@ -8,7 +8,7 @@ import { Observable } from "rxjs";
  * This class does not implement any logic, but defines the
  * interface for consuming CSS style rules in a reactive manner.
  */
-export abstract class CssStyleRule extends Disposable {
+export abstract class CssStyleRule extends Lifecycle {
   abstract get selectors(): CssSelector[];
   abstract get selectors$(): Observable<CssSelector[]> | undefined;
 

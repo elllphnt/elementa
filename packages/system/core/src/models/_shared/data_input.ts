@@ -1,19 +1,45 @@
+import { DataInputData } from "@elllphnt/elementa-base";
+import { Model, RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import { Model } from "../model.js";
 
-export interface DataInput extends Model {
-  name: string;
-  name$: Observable<string>;
+export class DataInput extends Model<RecordState<DataInputData>> {
+  constructor({ state }: { state: RecordState<DataInputData> }) {
+    super({ state });
+  }
 
-  varName: string | undefined;
-  varName$: Observable<string | undefined>;
+  // properties
+  get name(): string {
+    return this.state.entry("name") || "";
+  }
+  get name$(): Observable<string> {
+    return this.state.entry$("name");
+  }
 
-  tsType: string | undefined;
-  tsType$: Observable<string | undefined>;
+  get varName(): string | undefined {
+    return this.state.entry("varName");
+  }
+  get varName$(): Observable<string | undefined> {
+    return this.state.entry$("varName");
+  }
 
-  required: boolean | undefined;
-  required$: Observable<boolean | undefined>;
+  get tsType(): string | undefined {
+    return this.state.entry("tsType");
+  }
+  get tsType$(): Observable<string | undefined> {
+    return this.state.entry$("tsType");
+  }
 
-  defaultValue: any;
-  defaultValue$: Observable<any>;
+  get required(): boolean | undefined {
+    return this.state.entry("required");
+  }
+  get required$(): Observable<boolean | undefined> {
+    return this.state.entry$("required");
+  }
+
+  get defaultValue(): any {
+    return this.state.entry("defaultValue");
+  }
+  get defaultValue$(): Observable<any> {
+    return this.state.entry$("defaultValue");
+  }
 }

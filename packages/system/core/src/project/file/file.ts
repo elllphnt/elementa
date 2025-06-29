@@ -68,4 +68,8 @@ export class FileReference<F extends File> extends AsyncResource {
     this.path = path;
     this.project = project;
   }
+
+  async initialize(): Promise<void> {
+    this.setInitialized();
+  }
 }

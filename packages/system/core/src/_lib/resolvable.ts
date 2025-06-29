@@ -1,5 +1,5 @@
 import { isStaticReference, Resolvable } from "@elllphnt/elementa-base";
-import { Disposable } from "@elllphnt/elementa-utils";
+import { Lifecycle } from "@elllphnt/elementa-utils";
 import {
   BehaviorSubject,
   combineLatest,
@@ -24,7 +24,7 @@ export interface ResolvableValueState<T> {
   isResolved: boolean;
 }
 
-export class ResolvableValue<T> extends Disposable {
+export class ResolvableValue<T> extends Lifecycle {
   private _input$ = new BehaviorSubject<Resolvable<T | undefined>>(
     undefined as T | undefined
   );
@@ -41,6 +41,13 @@ export class ResolvableValue<T> extends Disposable {
     super();
     this._input$.next(init);
 
+    this.addDisposer(() => {
+      this._input$.complete();
+      this._state$.complete();
+    });
+  }
+
+  async initialize(): Promise<void> {
     const subscription = this._input$
       .pipe(
         distinctUntilChanged(),
@@ -85,9 +92,8 @@ export class ResolvableValue<T> extends Disposable {
 
     this.addDisposer(() => {
       subscription.unsubscribe();
-      this._input$.complete();
-      this._state$.complete();
     });
+    this.setInitialized();
   }
 
   setValue(resolvable: Resolvable<T>): void {
@@ -121,7 +127,7 @@ export interface ResolvableRecordState<V> {
   isResolved: boolean;
 }
 
-export class ResolvableRecord<V> extends Disposable {
+export class ResolvableRecord<V> extends Lifecycle {
   private _input$ = new BehaviorSubject<Record<string, Resolvable<V>>>({});
   private _state$ = new BehaviorSubject<ResolvableRecordState<V>>({
     value: {},
@@ -140,6 +146,13 @@ export class ResolvableRecord<V> extends Disposable {
     super();
     this._input$.next(initRecord);
 
+    this.addDisposer(() => {
+      this._input$.complete();
+      this._state$.complete();
+    });
+  }
+
+  async initialize(): Promise<void> {
     this._subscription = this._input$
       .pipe(
         distinctUntilChanged((a, b) => shallowEqual(a, b)),
@@ -193,9 +206,8 @@ export class ResolvableRecord<V> extends Disposable {
 
     this.addDisposer(() => {
       this._subscription?.unsubscribe();
-      this._input$.complete();
-      this._state$.complete();
     });
+    this.setInitialized();
   }
 
   setRecord(record: Record<string, Resolvable<V>>): void {
@@ -232,7 +244,7 @@ export interface ResolvableListState<V> {
   isResolved: boolean;
 }
 
-export class ResolvableList<V> extends Disposable {
+export class ResolvableList<V> extends Lifecycle {
   private _input$ = new BehaviorSubject<Array<Resolvable<V>>>([]);
   private _state$ = new BehaviorSubject<ResolvableListState<V>>({
     value: [],
@@ -248,6 +260,13 @@ export class ResolvableList<V> extends Disposable {
     super();
     this._input$.next(initList);
 
+    this.addDisposer(() => {
+      this._input$.complete();
+      this._state$.complete();
+    });
+  }
+
+  async initialize(): Promise<void> {
     this._subscription = this._input$
       .pipe(
         distinctUntilChanged((a, b) => shallowArrayEqual(a, b)),
@@ -294,9 +313,8 @@ export class ResolvableList<V> extends Disposable {
 
     this.addDisposer(() => {
       this._subscription?.unsubscribe();
-      this._input$.complete();
-      this._state$.complete();
     });
+    this.setInitialized();
   }
 
   setList(list: Array<Resolvable<V>>): void {

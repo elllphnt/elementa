@@ -4,7 +4,7 @@ import {
   StyleModifierDefinitionData,
   StyleModifierType,
 } from "@elllphnt/elementa-base";
-import { Disposable } from "@elllphnt/elementa-utils";
+import { Lifecycle } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, combineLatest, Observable, of } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
 import { genId } from "~/_lib/id.js";
@@ -51,7 +51,7 @@ export function colorSchemeSystemModifiers(): StyleModifierDefinitionData[] {
   ];
 }
 
-export class ColorSchemeManager extends Disposable {
+export class ColorSchemeManager extends Lifecycle {
   project: Project;
 
   systemDefinitions = colorSchemeSystemDefinitions();
@@ -147,7 +147,7 @@ export class ColorSchemeManager extends Disposable {
     this.project = project;
   }
 
-  init() {
+  async initialize() {
     const nameSubscription = this.colorSchemes$.subscribe((schemes) => {
       this._colorSchemeByName$.next(
         Object.fromEntries(schemes.map((scheme) => [scheme.name, scheme]))

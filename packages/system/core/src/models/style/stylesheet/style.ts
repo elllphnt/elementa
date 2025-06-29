@@ -1,67 +1,169 @@
 import {
+  baseSelector,
+  isVarRef,
   RawStyleData,
   StyleData,
   StylePropertyName,
   UnsettableStyleData,
   VariableStyleData,
 } from "@elllphnt/elementa-base";
-import { CssStyleData } from "@elllphnt/elementa-css";
-import { Observable } from "rxjs";
-import { StyleFragmentRegistry } from "./style_fragment_registry.js";
+import {
+  CssStyleData,
+  styleToCss,
+  StyleToCssContext,
+} from "@elllphnt/elementa-css";
+import { CrdtRecordState, Model, RecordState } from "@elllphnt/elementa-utils";
+import {
+  BehaviorSubject,
+  combineLatest,
+  map,
+  Observable,
+  of,
+  switchMap,
+} from "rxjs";
 import { Project } from "~/project/_.js";
+import { StyleFragmentRegistry } from "./style_fragment_registry.js";
 
-export interface Style {
-  project: Project;
-  fragmentRegistry: StyleFragmentRegistry;
-  className: string;
+export class Style extends Model<RecordState<StyleData>> {
+  readonly selector: string;
+  readonly project: Project;
+  readonly fragmentRegistry: StyleFragmentRegistry;
 
-  // --- Property accessors ---
+  private _state: CrdtRecordState<
+    UnsettableStyleData & { __raw?: Record<string, string> }
+  >;
+  private _css$ = new BehaviorSubject<CssStyleData>({});
 
-  /** Returns the raw value of a property (may be "unset" or varRef) */
+  get className(): string {
+    return this.key;
+  }
+
+  constructor({
+    state,
+    project,
+    selector,
+    fragmentRegistry,
+  }: {
+    state: RecordState<StyleData>;
+    project: Project;
+    selector?: string;
+    fragmentRegistry: StyleFragmentRegistry;
+  }) {
+    super({ state });
+
+    this.selector = selector || baseSelector;
+    this.project = project;
+    this.fragmentRegistry = fragmentRegistry;
+
+    // Subscribe to changes and compute CSS
+    const cssSubscription = combineLatest([
+      this._state.record$,
+      this.fragmentRegistry.allFragments$,
+    ]).subscribe(([properties, fragments]) => {
+      const context: StyleToCssContext = {
+        getFragment: (type, id) =>
+          fragments.find((f) => f.type === type && f.id === id) as any,
+      };
+      const [css] = styleToCss(properties as StyleData, context);
+      this._css$.next(css);
+    });
+
+    this.addDisposer(() => {
+      this._state.dispose();
+      this._css$.complete();
+      cssSubscription.unsubscribe();
+    });
+  }
+
   propertyValue<N extends StylePropertyName>(
     property: N
-  ): UnsettableStyleData[N];
-
+  ): UnsettableStyleData[N] {
+    return this._state.entry(property);
+  }
   propertyValue$<N extends StylePropertyName>(
     property: N
-  ): Observable<UnsettableStyleData[N]>;
+  ): Observable<UnsettableStyleData[N]> {
+    return this._state.entry$(property);
+  }
 
-  /** Returns the value or undefined if it was "unset" (still may be a varRef) */
   propertyValueOrUndefined<N extends StylePropertyName>(
     property: N
-  ): VariableStyleData[N];
-
+  ): VariableStyleData[N] {
+    const value = this.propertyValue(property);
+    return (value === "unset" ? undefined : value) as VariableStyleData[N];
+  }
   propertyValueOrUndefined$<N extends StylePropertyName>(
     property: N
-  ): Observable<VariableStyleData[N]>;
+  ): Observable<VariableStyleData[N]> {
+    return this.propertyValue$(property).pipe(
+      map(
+        (value) =>
+          (value === "unset" ? undefined : value) as VariableStyleData[N]
+      )
+    );
+  }
 
-  /** Returns the final runtime-resolved value (unset -> undefined, varRef resolved) */
   resolvedPropertyValue<N extends StylePropertyName>(
     property: N
-  ): RawStyleData[N];
-
+  ): RawStyleData[N] {
+    const value = this.propertyValueOrUndefined(property);
+    if (isVarRef(value)) {
+      return this.project.styleManager.varRefValue(
+        this.selector,
+        value
+      ) as RawStyleData[N];
+    } else {
+      return value as unknown as RawStyleData[N];
+    }
+  }
   resolvedPropertyValue$<N extends StylePropertyName>(
     property: N
-  ): Observable<RawStyleData[N]>;
+  ): Observable<RawStyleData[N]> {
+    return this.propertyValueOrUndefined$(property).pipe(
+      switchMap((value: unknown) => {
+        if (isVarRef(value)) {
+          return this.project.styleManager.varRefValue$(
+            this.selector,
+            value
+          ) as Observable<RawStyleData[N]>;
+        } else {
+          return of(value as unknown as RawStyleData[N]);
+        }
+      })
+    );
+  }
 
-  /** True if the property is explicitly defined (not inherited) */
-  hasProperty(property: StylePropertyName): boolean;
-  hasProperty$(property: StylePropertyName): Observable<boolean>;
+  hasProperty(property: StylePropertyName): boolean {
+    return this.propertyValue(property) !== undefined;
+  }
+  hasProperty$(property: StylePropertyName): Observable<boolean> {
+    return this.propertyValue$(property).pipe(
+      map((value) => value !== undefined)
+    );
+  }
 
-  // --- Raw value accessors ---
-  raw: Record<string, string>;
-  raw$: Observable<Record<string, string>>;
+  get raw(): Record<string, string> {
+    return { ...(this._state.entry("__raw") || {}) };
+  }
+  get raw$(): Observable<Record<string, string>> {
+    return this._state.entry$("__raw").pipe(map((raw) => raw || {}));
+  }
 
-  // --- Mutations ---
-  /** Updates the value of a style property */
   setProperty<N extends StylePropertyName>(
     property: N,
     value: StyleData[N]
-  ): void;
+  ): void {
+    this._state.set(property, value);
+  }
 
-  setRaw(raw: Record<string, string>): void;
+  setRaw(raw: Record<string, string>): void {
+    this._state.set("__raw", raw);
+  }
 
-  // --- Compiled CSS output (still may contain varRefs) ---
-  css: CssStyleData;
-  css$: Observable<CssStyleData>;
+  get css(): CssStyleData {
+    return this._css$.value;
+  }
+  get css$(): Observable<CssStyleData> {
+    return this._css$.asObservable();
+  }
 }

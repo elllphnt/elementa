@@ -9,7 +9,7 @@ import {
   StyleSystem,
   StyleVariableSheet,
   TypefaceSheet,
-} from "~/models/_.js";
+} from "~/_models/_.js";
 
 export const fileModelTypes = {
   component: "component",

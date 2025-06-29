@@ -1,74 +1,42 @@
-import { ensureField, getOrCreateYMap } from "@elllphnt/crdt";
 import { KeyFrameData } from "@elllphnt/elementa-base";
-import {
-  Keyframe,
-  Project,
-  StyleFragmentRegistry,
-} from "@elllphnt/elementa-core";
-import {
-  CrdtModel,
-  CrdtRecordState,
-  keyManager,
-} from "@elllphnt/elementa-utils";
+import { Project, StyleFragmentRegistry } from "@elllphnt/elementa-core";
+import { Model, RecordState } from "@elllphnt/elementa-utils";
 import { Observable } from "rxjs";
-import * as y from "yjs";
-import { CrdtStyle } from "../stylesheet/style.js";
+import { Style } from "../stylesheet/style.js";
 
-export class CrdtKeyframe extends CrdtModel<y.Map<any>> implements Keyframe {
-  readonly style: CrdtStyle;
-
-  private _state: CrdtRecordState<Omit<KeyFrameData, "style">>;
+export class Keyframe extends Model<RecordState<KeyFrameData>> {
+  readonly style: Style;
 
   get offset(): number | undefined {
-    return this._state.entry("offset");
+    return this.state.entry("offset");
   }
-
   get offset$(): Observable<number | undefined> {
-    return this._state.entry$("offset");
+    return this.state.entry$("offset");
   }
 
   constructor({
-    crdt,
+    state,
     project,
     fragmentRegistry,
-    initialized,
   }: {
-    crdt: y.Map<any>;
+    state: RecordState<KeyFrameData>;
     project: Project;
     fragmentRegistry: StyleFragmentRegistry;
-    initialized?: boolean;
   }) {
-    super({ key: keyManager.next("keyframe"), crdt });
+    super({ state });
 
-    if (!initialized) {
-      ensureField(crdt, "style", () => new y.Map());
-    }
-
-    this._state = new CrdtRecordState(crdt);
-
-    this.style = new CrdtStyle({
-      crdt: getOrCreateYMap(crdt, "style"),
+    this.style = new Style({
+      state: state.getRecordState("style"),
       project,
       fragmentRegistry,
-      initialized,
     });
 
     this.addDisposer(() => {
       this.style.dispose();
-      this._state.dispose();
     });
   }
 
   setOffset(offset: number | undefined): void {
-    this._state.set("offset", offset);
-  }
-
-  protected factory(crdt: y.Map<any>): this {
-    return new CrdtKeyframe({
-      crdt,
-      project: this.style.project,
-      fragmentRegistry: this.style.fragmentRegistry,
-      initialized: true,
-    }) as this;
+    this.state.set("offset", offset);
   }
 }

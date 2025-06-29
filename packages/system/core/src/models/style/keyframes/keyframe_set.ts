@@ -1,0 +1,72 @@
+import { KeyFrameData, KeyframeSetData } from "@elllphnt/elementa-base";
+import { AggregatedModelList, RecordState } from "@elllphnt/elementa-utils";
+import { Observable } from "rxjs";
+import { genId } from "~/_lib/id.js";
+import { Identifiable } from "~/models/_.js";
+import { Project } from "~/project/_.js";
+import { StyleFragmentRegistry } from "../stylesheet/_.js";
+import { Keyframe } from "./keyframe.js";
+
+export class KeyframeSet extends Identifiable<KeyframeSetData> {
+  readonly fragmentRegistry: StyleFragmentRegistry;
+
+  private _keyframes: AggregatedModelList<RecordState<KeyFrameData>, Keyframe>;
+
+  get name(): string | undefined {
+    return this.state.entry("name");
+  }
+  get name$(): Observable<string | undefined> {
+    return this.state.entry$("name");
+  }
+
+  get keyframes(): Keyframe[] {
+    return this._keyframes.models;
+  }
+  get keyframes$(): Observable<Keyframe[]> {
+    return this._keyframes.models$;
+  }
+
+  constructor({
+    state,
+    project,
+    initialized,
+  }: {
+    state: RecordState<KeyframeSetData>;
+    project: Project;
+    initialized?: boolean;
+  }) {
+    super({ state });
+
+    if (!initialized) {
+      state.set("id", genId());
+    }
+
+    this.fragmentRegistry = new StyleFragmentRegistry<"styleFragments">({
+      propertyKey: "styleFragments",
+      state,
+    });
+
+    this._keyframes = new AggregatedModelList({
+      state: state.getAggregatedStateList("keyframes"),
+      create: (state) =>
+        new Keyframe({
+          state,
+          project,
+          fragmentRegistry: this.fragmentRegistry,
+        }),
+    });
+
+    this.addDisposer(() => {
+      this.state.dispose();
+      this._keyframes.dispose();
+      this.fragmentRegistry.dispose();
+    });
+  }
+
+  addKeyframe(keyframe: Keyframe): void {
+    this._keyframes.add(keyframe);
+  }
+  removeKeyframe(index: number): void {
+    this._keyframes.state.removeAt(index);
+  }
+}
