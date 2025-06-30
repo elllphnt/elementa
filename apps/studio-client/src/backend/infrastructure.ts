@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { type PackageData } from "@elllphnt/elementa-base";
-import { JsonRecordState } from "@elllphnt/elementa-json-backend";
+import { JsonBackend } from "@elllphnt/elementa-json-backend";
 import { Lifecycle, type Logger } from "@elllphnt/elementa-kernel";
 import {
   AsyncResourceStatus,
@@ -15,6 +15,8 @@ import {
 import { BehaviorSubject, combineLatest, map, type Observable } from "rxjs";
 import { backend } from "./backend.js";
 import type { FileData } from "./types.js";
+
+const jsonBackend = new JsonBackend();
 
 function createLogger(context: Record<string, any> = {}): Logger {
   return {
@@ -64,7 +66,7 @@ export class ServerFileModelAdaptor<
         }
         try {
           const data = JSON.parse(text);
-          const state = new JsonRecordState(data);
+          const state = jsonBackend.createRecordState(data);
           state.initialize();
           this._state$.next(state);
         } catch (error) {
@@ -230,14 +232,16 @@ export class ServerProject extends Project {
     fileId: string
   ): ServerFileModelAdaptor<T> {
     const key = `${modelType}:${fileId}`;
-    let adaptor = this._fileModelAdaptors.get(key);
+    let adaptor = this._fileModelAdaptors.get(key) as
+      | ServerFileModelAdaptor<T>
+      | undefined;
     if (!adaptor) {
       adaptor = new ServerFileModelAdaptor<T>({
         modelType,
         file: this.file(fileId) as ServerFile,
       });
       adaptor.initialize();
-      this._fileModelAdaptors.set(key, adaptor);
+      this._fileModelAdaptors.set(key, adaptor as any);
     }
     return adaptor as ServerFileModelAdaptor<T>;
   }

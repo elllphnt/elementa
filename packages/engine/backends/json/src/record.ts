@@ -299,10 +299,12 @@ export class JsonRecordState<T extends Record<string, unknown>>
       if (!Array.isArray(subValue)) {
         throw Error(`Value in nested key ${subKey} is not an array.`);
       }
-      recordOfLists[subKey] = new JsonListState({
+      const state = new JsonListState({
         init: subValue,
         backend: this.backend,
       });
+      state.initialize();
+      recordOfLists[subKey] = state as ListState<any>;
     });
 
     nestedState = new JsonRecordState({

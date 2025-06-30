@@ -6,16 +6,20 @@ export class JsonBackend implements Backend {
   createRecordState<T extends Record<string, any>>(
     init?: T
   ): JsonRecordState<T> {
-    return new JsonRecordState({
+    const state = new JsonRecordState({
       init: init || ({} as T),
       backend: this,
     });
+    state.initialize();
+    return state;
   }
   createListState<T>(init?: T[]): JsonListState<T> {
-    return new JsonListState({
+    const state = new JsonListState({
       init: init || ([] as T[]),
       backend: this,
     });
+    state.initialize();
+    return state;
   }
 }
 
