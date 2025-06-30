@@ -1,4 +1,4 @@
-import { Element } from "@elllphnt/elementa-core";
+import { Element } from "@elllphnt/elementa-models";
 
 import { Instance } from "../instance.js";
 import { ElementRuntimeEnvironment } from "./_environment/environment.js";

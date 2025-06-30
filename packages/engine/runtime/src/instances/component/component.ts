@@ -1,5 +1,5 @@
-import { Component, SlotFill } from "@elllphnt/elementa-core";
-import { reconcileList, reconcileMap } from "@elllphnt/elementa-utils";
+import { reconcileList, reconcileMap } from "@elllphnt/elementa-kernel";
+import { Component, SlotFill } from "@elllphnt/elementa-models";
 import {
   BehaviorSubject,
   combineLatest,
@@ -8,17 +8,15 @@ import {
   of,
   switchMap,
 } from "rxjs";
-import {
-  ElementRuntimeEnvironment,
-  ExpressionElementInstance,
-  FragmentElementInstance,
-} from "../elements/_.js";
 import { ChildElementRuntimeEnvironment } from "../elements/_environment/child_environment.js";
-import { FragmentInstance } from "../fragment/_.js";
+import { ElementRuntimeEnvironment } from "../elements/_environment/environment.js";
+import { ExpressionElementInstance } from "../elements/expression.js";
+import { FragmentElementInstance } from "../elements/fragment/fragment.js";
+import { FragmentInstance } from "../fragment/fragment.js";
 import { ElementaInstanceType, Instance } from "../instance.js";
 import { ModelInstance } from "../model.js";
-import { SlotFillInstance } from "../slot/_.js";
-import { createStateInstance, StateInstance } from "../states/_.js";
+import { SlotFillInstance } from "../slot/slot_fill.js";
+import { createStateInstance, StateInstance } from "../states/_state.js";
 import { ComponentInputResolver } from "./input_resolver/input_resolver.js";
 
 export class ComponentInstanceElementRuntimeEnvironment extends ChildElementRuntimeEnvironment {
@@ -26,10 +24,7 @@ export class ComponentInstanceElementRuntimeEnvironment extends ChildElementRunt
   readonly propResolver: ComponentInputResolver;
 
   get componentStack() {
-    return [
-      ...this.parent.componentStack,
-      this.componentInstance.model.file.url,
-    ];
+    return [...this.parent.componentStack, this.componentInstance.model.url];
   }
 
   constructor({

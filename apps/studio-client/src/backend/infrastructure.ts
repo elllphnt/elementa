@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { type PackageData } from "@elllphnt/elementa-base";
+import { JsonRecordState } from "@elllphnt/elementa-json-backend";
+import { Lifecycle, type Logger } from "@elllphnt/elementa-kernel";
 import {
   AsyncResourceStatus,
   Content,
@@ -8,76 +10,76 @@ import {
   Infrastructure,
   Project,
   type FileModelType,
-} from "@elllphnt/elementa-core";
-import { StatefulFileModelAdaptor } from "@elllphnt/elementa-models";
-import {
-  BehaviorSubject,
-  combineLatest,
-  filter,
-  firstValueFrom,
-  map,
-  type Observable,
-} from "rxjs";
+  type FileModelTypeName,
+} from "@elllphnt/elementa-models";
+import { BehaviorSubject, combineLatest, map, type Observable } from "rxjs";
 import { backend } from "./backend.js";
 import type { FileData } from "./types.js";
 
+function createLogger(context: Record<string, any> = {}): Logger {
+  return {
+    debug: (message: string, context: Record<string, any>) => {
+      console.debug(message, context);
+    },
+    info: (message: string, context: Record<string, any>) => {
+      console.info(message, context);
+    },
+    warn: (message: string, context: Record<string, any>) => {
+      console.warn(message, context);
+    },
+    error: (message: string, context: Record<string, any>) => {
+      console.error(message, context);
+    },
+
+    withContext: (newContext: Record<string, any>) => {
+      return createLogger({ ...context, ...newContext });
+    },
+  };
+}
+
+Lifecycle.logger = createLogger({});
+
 export class ServerFileModelAdaptor<
-  T extends FileModelType
-> extends StatefulFileModelAdaptor<T, ServerFile> {
-  private _data$ = new BehaviorSubject<any>(undefined);
-  private fileChangeSubscription: any;
+  T extends FileModelTypeName
+> extends FileModelAdaptor<T, ServerFile> {
+  private _state$ = new BehaviorSubject<FileModelType<T>["state"] | undefined>(
+    undefined
+  );
 
-  get data(): any {
-    return this._data$.getValue();
+  get state() {
+    return this._state$.getValue();
   }
-  get data$(): Observable<any> {
-    return this._data$.asObservable();
+  get state$() {
+    return this._state$.asObservable();
   }
 
-  constructor({ file, modelType }: { file: ServerFile; modelType: T }) {
-    super({ file, modelType });
+  constructor({ modelType, file }: { modelType: T; file: ServerFile }) {
+    super({ modelType, file });
 
-    // Initial load
-    this.loadContent();
-
-    this.addDisposer(() => {
-      this._data$.complete();
-      if (this.fileChangeSubscription) {
-        this.fileChangeSubscription.unsubscribe();
-      }
+    this.addInitializer(() => {
+      const stateSubscription = file.content.text$.subscribe((text) => {
+        if (!text) {
+          this._state$.next(undefined);
+          return;
+        }
+        try {
+          const data = JSON.parse(text);
+          const state = new JsonRecordState(data);
+          state.initialize();
+          this._state$.next(state);
+        } catch (error) {
+          Lifecycle.logger?.error(
+            `Failed to parse file content for model type ${modelType}`,
+            { fileId: file.id, error }
+          );
+          this._state$.next(undefined);
+          return;
+        }
+      });
+      this.addDisposer(() => {
+        stateSubscription.unsubscribe();
+      });
     });
-
-    this.watchData();
-  }
-
-  private loadContent(): void {
-    this.setStatus(AsyncResourceStatus.Pending);
-
-    this.file.content.text$.subscribe((content) => {
-      try {
-        const data = content.trim() ? JSON.parse(content) : {};
-        this._data$.next(data);
-        this.setStatus(AsyncResourceStatus.Resolved);
-      } catch (error) {
-        this._data$.next({});
-        this.setStatus(
-          AsyncResourceStatus.Errored,
-          error instanceof Error ? error : new Error("Invalid JSON format")
-        );
-        console.error(`Error parsing JSON for file ${this.file.id}:`, error);
-      }
-    });
-  }
-
-  getModel() {
-    return firstValueFrom(
-      this.model$.pipe(filter((model) => model !== undefined))
-    );
-  }
-
-  async save(): Promise<void> {
-    // Note: This is read-only for the server viewer
-    throw new Error("Server files are read-only");
   }
 }
 
@@ -184,7 +186,7 @@ export class ServerProject extends Project {
   private _files: Map<string, ServerFile> = new Map();
   private _fileModelAdaptors: Map<
     string,
-    ServerFileModelAdaptor<FileModelType>
+    ServerFileModelAdaptor<FileModelTypeName>
   > = new Map();
   private _contents: Map<string, ServerFileContent> = new Map();
 
@@ -197,13 +199,19 @@ export class ServerProject extends Project {
   }) {
     super({ id, infrastructure });
 
-    backend.projectFiles$(id).subscribe((files) => {
-      const newMap: Record<string, string> = {};
-      files.forEach((file) => {
-        newMap[file.path] = file.id;
-        this.file(file.id); // Ensure file is created
+    this.addInitializer(() => {
+      const filesSubscription = backend.projectFiles$(id).subscribe((files) => {
+        const newMap: Record<string, string> = {};
+        files.forEach((file) => {
+          newMap[file.path] = file.id;
+          this.file(file.id); // Ensure file is created
+        });
+        this._filesMap$.next(newMap);
       });
-      this._filesMap$.next(newMap);
+
+      this.addDisposer(() => {
+        filesSubscription.unsubscribe();
+      });
     });
   }
 
@@ -211,15 +219,16 @@ export class ServerProject extends Project {
     let file = this._files.get(id);
     if (!file) {
       file = new ServerFile({ id, project: this });
+      file.initialize();
       this._files.set(id, file);
     }
     return file;
   }
 
-  fileModelAdaptor<T extends FileModelType>(
+  fileModelAdaptor<T extends FileModelTypeName>(
     modelType: T,
     fileId: string
-  ): FileModelAdaptor<T, File> {
+  ): ServerFileModelAdaptor<T> {
     const key = `${modelType}:${fileId}`;
     let adaptor = this._fileModelAdaptors.get(key);
     if (!adaptor) {
@@ -227,9 +236,10 @@ export class ServerProject extends Project {
         modelType,
         file: this.file(fileId) as ServerFile,
       });
+      adaptor.initialize();
       this._fileModelAdaptors.set(key, adaptor);
     }
-    return adaptor as FileModelAdaptor<T, File>;
+    return adaptor as ServerFileModelAdaptor<T>;
   }
 
   fileAtPath(path: string): File | undefined {
@@ -254,6 +264,7 @@ export class ServerProject extends Project {
     let content = this._contents.get(fileId);
     if (!content) {
       content = new ServerFileContent({ file: this.file(fileId) });
+      content.initialize();
       this._contents.set(fileId, content);
     }
     return content;
@@ -272,6 +283,7 @@ export class ElementaServerInfrastructure extends Infrastructure {
     if (!project) {
       try {
         project = new ServerProject({ id, infrastructure: this });
+        project.initialize();
         this._projects.set(id, project);
       } catch (error) {
         console.error(`Error fetching project ${id}:`, error);
@@ -287,3 +299,4 @@ export class ElementaServerInfrastructure extends Infrastructure {
 }
 
 export const infrastructure = new ElementaServerInfrastructure();
+infrastructure.initialize();

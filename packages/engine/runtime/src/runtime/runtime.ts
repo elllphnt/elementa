@@ -1,9 +1,9 @@
-import { Disposable, keyManager } from "@elllphnt/elementa-utils";
-import { ElementRuntimeEnvironment } from "../instances/_.js";
+import { keyManager, Lifecycle } from "@elllphnt/elementa-kernel";
+import { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
 import { DefaultElementRuntimeEnvironment } from "../instances/elements/_environment/default_environment.js";
 import { ModuleManager } from "./module_manager/module_manager.js";
 
-export class Runtime extends Disposable {
+export class Runtime extends Lifecycle {
   key = keyManager.next("runtime");
 
   readonly moduleManager: ModuleManager;

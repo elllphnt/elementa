@@ -1,10 +1,10 @@
-import { Disposable, keyManager } from "@elllphnt/elementa-utils";
+import { Lifecycle, keyManager } from "@elllphnt/elementa-kernel";
 import { BehaviorSubject } from "rxjs";
 import { Renderable } from "../renderable.js";
 
 export abstract class RenderableAdaptor<
   I extends Renderable
-> extends Disposable {
+> extends Lifecycle {
   key = keyManager.next("renderable-adaptor");
   private _renderable$ = new BehaviorSubject<I | undefined>(undefined);
 

@@ -139,7 +139,7 @@ export abstract class BaseElement<
     environment: ElementEnvironment;
     initialized?: boolean;
   }) {
-    super({ state, initialized });
+    super({ state, initialized, project: environment.project });
 
     this.type = type;
     this.environment = environment;

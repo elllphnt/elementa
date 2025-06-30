@@ -1,5 +1,5 @@
 import { HookConfig } from "@elllphnt/elementa-base";
-import { HookState } from "@elllphnt/elementa-core";
+import { HookState } from "@elllphnt/elementa-models";
 import { map, of } from "rxjs";
 import { Runtime } from "../../runtime/runtime.js";
 import { Instance } from "../instance.js";
@@ -9,7 +9,7 @@ export class HookStateInstance extends BaseStateInstance<HookState> {
   get module() {
     return this.model.hookUrl
       ? this.runtime.moduleManager.module(
-          this.model.component.file.project.absoluteFileUrl(this.model.hookUrl)
+          this.model.component.project.absoluteFileUrl(this.model.hookUrl)
         )
       : undefined;
   }

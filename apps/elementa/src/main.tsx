@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { InMemoryInfrastructure } from "@elllphnt/elementa-models";
+import { Infrastructure } from "@elllphnt/elementa-models";
 import {
   InMemoryModuleHost,
   ModuleManager,
@@ -44,7 +44,7 @@ const reactModuleUrl = URL.createObjectURL(
 (window as any).init = ({
   infrastructure,
 }: {
-  infrastructure: InMemoryInfrastructure;
+  infrastructure: Infrastructure;
 }) => {
   const moduleHost = new InMemoryModuleHost();
   const moduleManager = new ModuleManager({

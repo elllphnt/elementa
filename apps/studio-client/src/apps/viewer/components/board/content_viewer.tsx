@@ -1,4 +1,4 @@
-import { makeFileUrl } from "@elllphnt/elementa-core";
+import { makeFileUrl } from "@elllphnt/elementa-base";
 import React from "react";
 import { CodeViewer } from "./code_viewer.js";
 import { ComponentViewer } from "./component_viewer.js";

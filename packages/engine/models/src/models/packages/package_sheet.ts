@@ -1,10 +1,10 @@
 import { PackageData, PackageSheetData } from "@elllphnt/elementa-base";
-import { Model, RecordState } from "@elllphnt/elementa-kernel";
+import { RecordState } from "@elllphnt/elementa-kernel";
 import { Observable } from "rxjs";
+import { Project } from "~/project/project.js";
+import { ProjectModel } from "../project.js";
 
-export class PackageSheet extends Model<RecordState<PackageSheetData>> {
-  readonly file: File;
-
+export class PackageSheet extends ProjectModel<RecordState<PackageSheetData>> {
   get packages(): PackageData[] {
     return this.state.entry("packages") || [];
   }
@@ -15,13 +15,12 @@ export class PackageSheet extends Model<RecordState<PackageSheetData>> {
 
   constructor({
     state,
-    file,
+    project,
   }: {
     state: RecordState<PackageSheetData>;
-    file: File;
+    project: Project;
   }) {
-    super({ state });
-    this.file = file;
+    super({ state, project });
 
     this.addDisposer(() => {
       this.state.dispose();

@@ -5,8 +5,8 @@ import {
 import { PropsWithChildren } from "react";
 import { NamespaceContext } from "../../contexts/namespace.js";
 import { useNamespace } from "../../hooks/namespace.js";
-import { ComponentRenderable } from "../../renderables/_.js";
-import { FragmentComponent } from "../fragment/_.js";
+import { ComponentRenderable } from "../../renderables/component/component.js";
+import { FragmentComponent } from "../fragment/fragment.js";
 
 export function FragmentsNamespaceProvider({
   children,

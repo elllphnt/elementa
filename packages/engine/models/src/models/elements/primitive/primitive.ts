@@ -98,7 +98,7 @@ export class PrimitiveElement extends BaseElement<PrimitiveElementData> {
     super({ state, type: "primitive", environment, initialized });
 
     this._content = new AggregatedModelList({
-      state: state.getAggregatedStateList("content"),
+      state: state.getListOfRecordStates("content"),
       create: (state) =>
         createElement({
           state,
@@ -107,7 +107,7 @@ export class PrimitiveElement extends BaseElement<PrimitiveElementData> {
     });
 
     this._subElements = new AggregatedModelRecord({
-      state: state.getAggregatedStateRecord("elements"),
+      state: state.getRecordOfRecordStates("elements"),
       create: (state, _, init) =>
         new PrimitiveSubElement({
           state,
@@ -153,7 +153,9 @@ export class PrimitiveElement extends BaseElement<PrimitiveElementData> {
 
     if (!element && create) {
       element = new PrimitiveSubElement({
-        state: this._subElements.state.entry(name, true),
+        state: this._subElements.state.entry(name, () =>
+          this.state.backend.createRecordState<PrimitiveElementData>()
+        ),
         environment: this.environment,
         initialized: true,
       });
@@ -175,7 +177,9 @@ export class PrimitiveElement extends BaseElement<PrimitiveElementData> {
       tap((element) => {
         if (!element && create) {
           const newElement = new PrimitiveSubElement({
-            state: this._subElements.state.entry(name, true),
+            state: this._subElements.state.entry(name, () =>
+              this.state.backend.createRecordState<PrimitiveElementData>()
+            ),
             environment: this.environment,
             initialized: true,
           });

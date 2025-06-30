@@ -1,9 +1,9 @@
+import { reconcileList } from "@elllphnt/elementa-kernel";
 import { FragmentInstance } from "@elllphnt/elementa-runtime";
-import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Scene } from "../scene/scene.js";
-import { ElementRenderable } from "./element/_.js";
 import { createElementRenderable } from "./element/_create.js";
+import { ElementRenderable } from "./element/element.js";
 import { InstanceRenderable } from "./instance.js";
 import { SlotRenderable } from "./slot_fill.js";
 

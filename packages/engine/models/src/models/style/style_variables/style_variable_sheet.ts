@@ -2,22 +2,15 @@ import {
   StyleVariableSetData,
   StyleVariableSheetData,
 } from "@elllphnt/elementa-base";
-import {
-  AggregatedModelList,
-  Model,
-  RecordState,
-} from "@elllphnt/elementa-kernel";
+import { AggregatedModelList, RecordState } from "@elllphnt/elementa-kernel";
 import { map, Observable } from "rxjs";
-import { File } from "~/project/file/file.js";
+import { ProjectModel } from "~/models/project.js";
 import { Project } from "~/project/project.js";
 import { StyleVariableSet } from "./style_variable_set.js";
 
-export class StyleVariableSheet extends Model<
+export class StyleVariableSheet extends ProjectModel<
   RecordState<StyleVariableSheetData>
 > {
-  project: Project;
-  file: File;
-
   private _variableSets: AggregatedModelList<
     RecordState<StyleVariableSetData>,
     StyleVariableSet
@@ -33,23 +26,22 @@ export class StyleVariableSheet extends Model<
 
   constructor({
     state,
-    file,
+    project,
     initialized,
   }: {
     state: RecordState<StyleVariableSheetData>;
-    file: File;
+    project: Project;
     initialized?: boolean;
   }) {
-    super({ state });
-    this.file = file;
-    this.project = file.project;
+    super({ state, project });
 
     this._variableSets = new AggregatedModelList({
-      state: state.getAggregatedStateList("variables"),
+      state: state.getListOfRecordStates("variables"),
       create: (state, init) =>
         new StyleVariableSet({
           state,
           initialized: init && initialized,
+          project: this.project,
         }),
     });
 

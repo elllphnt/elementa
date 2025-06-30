@@ -1,4 +1,4 @@
-import { Element } from "@elllphnt/elementa-core";
+import { Element } from "@elllphnt/elementa-models";
 import { combineLatest, map, Observable } from "rxjs";
 import { ElementaInstanceType, Instance } from "../instance.js";
 import { StyleSheetInstance } from "../stylesheet/stylesheet.js";

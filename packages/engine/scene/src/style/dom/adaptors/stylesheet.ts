@@ -1,7 +1,7 @@
-import { Disposable } from "@elllphnt/elementa-utils";
+import { Lifecycle } from "@elllphnt/elementa-kernel";
 import { BehaviorSubject, map } from "rxjs";
 
-export abstract class DomStyleSheetAdaptor extends Disposable {
+export abstract class DomStyleSheetAdaptor extends Lifecycle {
   static key = 0;
   static keySeed = Math.floor(Math.random() * 1000);
   readonly key = `${

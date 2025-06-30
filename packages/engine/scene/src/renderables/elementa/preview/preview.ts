@@ -3,9 +3,9 @@ import { BehaviorSubject } from "rxjs";
 import { Scene } from "../../../scene/scene.js";
 import { Renderable } from "../../renderable.js";
 import {
-  createRenderableContentRenderable,
   RenderableContentRenderable,
-} from "../renderable_content/_.js";
+  createRenderableContentRenderable,
+} from "../renderable_content/_create.js";
 
 export class ElementaPreviewRenderable extends Renderable {
   readonly instance: ElementaPreviewInstance;

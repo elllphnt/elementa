@@ -1,18 +1,13 @@
 import { KeyframeSetData, KeyframeSheetData } from "@elllphnt/elementa-base";
-import {
-  AggregatedModelList,
-  Model,
-  RecordState,
-} from "@elllphnt/elementa-kernel";
+import { AggregatedModelList, RecordState } from "@elllphnt/elementa-kernel";
 import { map, Observable } from "rxjs";
-import { File } from "~/project/file/file.js";
+import { ProjectModel } from "~/models/project.js";
 import { Project } from "~/project/project.js";
 import { KeyframeSet } from "./keyframe_set.js";
 
-export class KeyframeSheet extends Model<RecordState<KeyframeSheetData>> {
-  project: Project;
-  file: File;
-
+export class KeyframeSheet extends ProjectModel<
+  RecordState<KeyframeSheetData>
+> {
   private _keyframes: AggregatedModelList<
     RecordState<KeyframeSetData>,
     KeyframeSet
@@ -27,19 +22,17 @@ export class KeyframeSheet extends Model<RecordState<KeyframeSheetData>> {
 
   constructor({
     state,
-    file,
+    project,
     initialized,
   }: {
     state: RecordState<KeyframeSheetData>;
-    file: File;
+    project: Project;
     initialized?: boolean;
   }) {
-    super({ state });
-    this.file = file;
-    this.project = file.project;
+    super({ state, project });
 
     this._keyframes = new AggregatedModelList({
-      state: state.getAggregatedStateList("keyframes"),
+      state: state.getListOfRecordStates("keyframes"),
       create: (state, init) =>
         new KeyframeSet({
           state,

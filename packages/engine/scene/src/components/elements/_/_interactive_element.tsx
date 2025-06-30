@@ -1,4 +1,4 @@
-import { pairwiseOrEmpty } from "@elllphnt/elementa-utils";
+import { pairwiseOrEmpty } from "@elllphnt/elementa-lang-utils";
 import { ComponentType, useEffect, useRef } from "react";
 import { map } from "rxjs";
 import { useNamespace } from "../../../hooks/namespace.js";

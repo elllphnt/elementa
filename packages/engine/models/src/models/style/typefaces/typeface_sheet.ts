@@ -1,18 +1,13 @@
 import { TypefaceData, TypefaceSheetData } from "@elllphnt/elementa-base";
-import {
-  AggregatedModelList,
-  Model,
-  RecordState,
-} from "@elllphnt/elementa-kernel";
+import { AggregatedModelList, RecordState } from "@elllphnt/elementa-kernel";
 import { map, Observable } from "rxjs";
-import { File } from "~/project/file/file.js";
+import { ProjectModel } from "~/models/project.js";
 import { Project } from "~/project/project.js";
 import { Typeface } from "./typeface.js";
 
-export class TypefaceSheet extends Model<RecordState<TypefaceSheetData>> {
-  project: Project;
-  file: File;
-
+export class TypefaceSheet extends ProjectModel<
+  RecordState<TypefaceSheetData>
+> {
   private _typefaces: AggregatedModelList<RecordState<TypefaceData>, Typeface>;
 
   get typefaces(): Typeface[] {
@@ -25,22 +20,23 @@ export class TypefaceSheet extends Model<RecordState<TypefaceSheetData>> {
 
   constructor({
     state,
-    file,
     initialized,
+    project,
   }: {
     state: RecordState<TypefaceSheetData>;
-    file: File;
     initialized?: boolean;
+    project: Project;
   }) {
-    super({ state });
-
-    this.project = file.project;
-    this.file = file;
+    super({ state, project });
 
     this._typefaces = new AggregatedModelList({
-      state: state.getAggregatedStateList("typefaces"),
+      state: state.getListOfRecordStates("typefaces"),
       create: (state, init) =>
-        new Typeface({ state, initialized: init && initialized }),
+        new Typeface({
+          state,
+          initialized: init && initialized,
+          project: this.project,
+        }),
     });
 
     this.addDisposer(() => {

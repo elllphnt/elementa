@@ -1,4 +1,4 @@
-import { SlotFill } from "@elllphnt/elementa-core";
+import { SlotFill } from "@elllphnt/elementa-models";
 import { Observable } from "rxjs";
 import { ElementRuntimeEnvironment } from "../../elements/_environment/environment.js";
 

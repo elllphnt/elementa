@@ -1,6 +1,6 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { useNamespace } from "../../hooks/namespace.js";
-import { ExpressionElementRenderable } from "../../renderables/_.js";
+import { ExpressionElementRenderable } from "../../renderables/element/expression.js";
 
 export function ExpressionElementComponent({
   element,

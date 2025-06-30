@@ -1,4 +1,4 @@
-import { FragmentRenderableContent } from "@elllphnt/elementa-core";
+import { FragmentRenderableContent } from "@elllphnt/elementa-models";
 import {
   BehaviorSubject,
   combineLatest,
@@ -7,12 +7,10 @@ import {
   of,
   switchMap,
 } from "rxjs";
-import {
-  ElementRuntimeEnvironment,
-  FragmentInputResolver,
-  FragmentInstance,
-} from "../../../fragment/_.js";
-import { ModelInstance } from "../../../model.js";
+import { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
+import { FragmentInstance } from "~/instances/fragment/fragment.js";
+import { FragmentInputResolver } from "~/instances/fragment/input_resolver/input_resolver.js";
+import { ModelInstance } from "~/instances/model.js";
 import { ElementaEditorInstanceType } from "../_types.js";
 
 export class FragmentRenderableContentInputResolver extends FragmentInputResolver {

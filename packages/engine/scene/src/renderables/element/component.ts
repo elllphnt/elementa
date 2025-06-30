@@ -1,5 +1,5 @@
+import { reconcileList } from "@elllphnt/elementa-kernel";
 import { ComponentElementInstance } from "@elllphnt/elementa-runtime";
-import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, map, Observable } from "rxjs";
 import { Scene } from "../../scene/scene.js";
 import { ComponentRenderable } from "../component/component.js";

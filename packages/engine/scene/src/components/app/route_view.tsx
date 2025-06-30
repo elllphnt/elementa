@@ -2,17 +2,15 @@ import {
   AsyncResourceStatus,
   Component,
   FileModelAdaptor,
-} from "@elllphnt/elementa-core";
+} from "@elllphnt/elementa-models";
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import {
   ComponentInstance,
   ModelInstanceAdaptor,
 } from "@elllphnt/elementa-runtime";
-import {
-  ComponentRenderable,
-  InstanceRenderableAdaptor,
-} from "../../renderables/_.js";
-import { ComponentComponent } from "../_.js";
+import { InstanceRenderableAdaptor } from "../../renderables/adaptors/instance.js";
+import { ComponentRenderable } from "../../renderables/component/component.js";
+import ComponentComponent from "../component/component.js";
 
 type RouteViewProps = {
   view: InstanceRenderableAdaptor<
@@ -26,7 +24,6 @@ type RouteViewProps = {
   >;
 };
 
-// 🌀 Pending View
 function PendingView({ view }: RouteViewProps) {
   const fileUrl = view.instanceAdaptor.modelAdaptor.file.url;
 
@@ -39,7 +36,6 @@ function PendingView({ view }: RouteViewProps) {
   );
 }
 
-// ❓ Missing View
 function MissingView({ view }: RouteViewProps) {
   const fileUrl = view.instanceAdaptor.modelAdaptor.file.url;
   return (
@@ -53,7 +49,6 @@ function MissingView({ view }: RouteViewProps) {
   );
 }
 
-// ⚠️ Error View
 function ErrorView({ view }: RouteViewProps) {
   const error =
     view.instanceAdaptor.modelAdaptor.error?.message ?? "Unknown error";
@@ -66,7 +61,6 @@ function ErrorView({ view }: RouteViewProps) {
   );
 }
 
-// ✅ Resolved View
 function ResolvedView({ view }: RouteViewProps) {
   const renderable = useObservable(view.renderable$, view.renderable);
   if (renderable) {
@@ -76,7 +70,6 @@ function ResolvedView({ view }: RouteViewProps) {
   }
 }
 
-// 🧠 Router View Wrapper
 export function RouteViewComponent({ view }: RouteViewProps) {
   const status = useObservable(
     view.instanceAdaptor.modelAdaptor.status$,

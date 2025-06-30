@@ -1,13 +1,13 @@
 import { PackageData } from "@elllphnt/elementa-base";
-import { Infrastructure } from "@elllphnt/elementa-core";
-import { Disposable } from "@elllphnt/elementa-utils";
+import { Lifecycle } from "@elllphnt/elementa-kernel";
+import { Infrastructure } from "@elllphnt/elementa-models";
 import { rewriteImports, transpileTsToJs } from "./_utils.js";
 import { Module } from "./module.js";
 import { ModuleHost } from "./module_host/module_host.js";
 
 const CONTENT_LOAD_TIMEOUT = 60000; // 60 seconds
 
-export class ModuleManager extends Disposable {
+export class ModuleManager extends Lifecycle {
   private infrastructure: Infrastructure;
   private moduleHost: ModuleHost;
   private externals: string[];

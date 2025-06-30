@@ -1,9 +1,11 @@
-import { genId, RouterData, RouteTreeData } from "@elllphnt/elementa-base";
 import {
-  AggregatedModelList,
-  Model,
-  RecordState,
-} from "@elllphnt/elementa-kernel";
+  BlueprintData,
+  ElementaPreviewData,
+  genId,
+  RouterData,
+  RouteTreeData,
+} from "@elllphnt/elementa-base";
+import { AggregatedModelList, RecordState } from "@elllphnt/elementa-kernel";
 import {
   BehaviorSubject,
   distinctUntilChanged,
@@ -11,20 +13,21 @@ import {
   Observable,
   of,
 } from "rxjs";
-import { File } from "~/project/file/file.js";
+import { Project } from "~/project/project.js";
 import { Blueprint } from "../blueprint/blueprint.js";
 import { ElementaEnvironment } from "../elementa/environment.js";
 import { ElementaPreview } from "../elementa/preview.js";
+import { ProjectModel } from "../project.js";
 import { RouteTree } from "./route_tree.js";
 
 export class RouterElementaEnvironment implements ElementaEnvironment {
   router: Router;
   get project() {
-    return this.router.file.project;
+    return this.router.project;
   }
 
   get hostUrl(): string | undefined {
-    return this.router.file.url;
+    return this.router.url;
   }
 
   fragment() {
@@ -42,11 +45,11 @@ export class RouterElementaEnvironment implements ElementaEnvironment {
   }
 }
 
-export class Router extends Model<RecordState<any>> {
-  readonly file: File;
+export class Router extends ProjectModel<RecordState<any>> {
   readonly blueprint: Blueprint;
   readonly elementaEnvironment: ElementaEnvironment;
   readonly preview: ElementaPreview;
+  readonly url?: string;
 
   private readonly _routes: AggregatedModelList<
     RecordState<RouteTreeData>,
@@ -58,30 +61,38 @@ export class Router extends Model<RecordState<any>> {
 
   constructor({
     state,
-    file,
+    project,
     initialized,
+    url,
   }: {
     state: RecordState<RouterData>;
-    file: File;
+    project: Project;
     initialized?: boolean;
+    url?: string;
   }) {
-    super({ state });
-    this.file = file;
+    super({ state, project });
 
-    const editorsState = state.getAggregatedStateRecord("editors");
+    this.url = url;
+    const editorsState = state.getRecordOfRecordStates("editors");
+
     this.blueprint = new Blueprint({
-      state: editorsState.entry("bleuprint", true),
+      state: editorsState.entry("bleuprint", () =>
+        this.state.backend.createRecordState<BlueprintData>()
+      ),
+      project,
     });
     this.elementaEnvironment = new RouterElementaEnvironment({
       router: this,
     });
     this.preview = new ElementaPreview({
-      state: editorsState.entry("preview", true),
+      state: editorsState.entry("preview", () =>
+        this.state.backend.createRecordState<ElementaPreviewData>()
+      ),
       environment: this.elementaEnvironment,
     });
 
     this._routes = new AggregatedModelList({
-      state: state.getAggregatedStateList("routes"),
+      state: state.getListOfRecordStates("routes"),
       create: (state, init) =>
         new RouteTree({
           state,

@@ -1,14 +1,17 @@
-import { Fragment } from "@elllphnt/elementa-core";
-import { combineLatestOrEmpty, reconcileList } from "@elllphnt/elementa-utils";
+import { reconcileList } from "@elllphnt/elementa-kernel";
+import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
+import { Fragment } from "@elllphnt/elementa-models";
 import {
   BehaviorSubject,
-  Observable,
   combineLatest,
   map,
+  Observable,
   switchMap,
 } from "rxjs";
-import { ElementInstance } from "../elements/_.js";
-import { createElementInstance } from "../elements/_element.js";
+import {
+  createElementInstance,
+  ElementInstance,
+} from "../elements/_element.js";
 import { ChildElementRuntimeEnvironment } from "../elements/_environment/child_environment.js";
 import { ElementRuntimeEnvironment } from "../elements/_environment/environment.js";
 import { ElementaInstanceType, Instance } from "../instance.js";

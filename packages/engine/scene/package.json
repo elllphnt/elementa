@@ -1,7 +1,7 @@
 {
     "name": "@elllphnt/elementa-scene",
     "type": "module",
-    "version": "0.1.7",
+    "version": "0.1.9",
     "main": "build/index.js",
     "types": "build/index.d.ts",
     "scripts": {
@@ -16,34 +16,30 @@
         "test": "vitest"
     },
     "devDependencies": {
-        "@babel/core": "^7.12.0",
-        "@babel/plugin-transform-react-jsx": "^7.23.4",
-        "@babel/plugin-transform-typescript": "^7.23.6",
         "@testing-library/jest-dom": "^6.6.3",
         "@testing-library/react": "^16.3.0",
-        "@testing-library/user-event": "^14.6.1",
         "@types/react": "^19.1.2",
         "@types/react-dom": "^19.1.2",
         "@vitejs/plugin-react": "^4.4.1",
         "@vitest/ui": "3.1.2",
-        "babel-cli": "^6.26.0",
-        "babel-plugin-module-resolver": "^5.0.0",
         "jsdom": "^26.1.0",
         "react": "^19.0.0",
-        "tsc-watch": "^6.2.1",
-        "tscpaths": "^0.0.9",
         "vitest": "^3.2.2"
     },
     "dependencies": {
-        "rxjs": "^7.8.1",
-        "yjs": "^13.6.26",
         "@elllphnt/elementa-base": "workspace:*",
         "@elllphnt/elementa-css": "workspace:*",
+        "@elllphnt/elementa-kernel": "workspace:*",
+        "@elllphnt/elementa-lang-utils": "workspace:*",
+        "@elllphnt/elementa-math-utils": "workspace:*",
+        "@elllphnt/elementa-models": "workspace:*",
         "@elllphnt/elementa-react-utils": "workspace:*",
         "@elllphnt/elementa-runtime": "workspace:*",
         "@tanstack/react-router": "^1.119.0",
         "@tanstack/react-router-devtools": "^1.119.1",
         "classnames": "^2.5.1",
-        "deep-object-diff": "^1.1.9"
+        "deep-object-diff": "^1.1.9",
+        "rxjs": "^7.8.1",
+        "yjs": "^13.6.26"
     }
 }

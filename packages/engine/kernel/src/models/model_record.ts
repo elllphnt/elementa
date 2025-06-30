@@ -1,31 +1,29 @@
 import { BehaviorSubject, Observable } from "rxjs";
 import { Lifecycle } from "~/lifecycle.js";
 import { reconcileList } from "~/reconciliation.js";
+import { RecordState } from "~/state/record.js";
 import { State } from "../state/state.js";
-import { AggregatedStateRecord } from "../state/state_record.js";
 import { Model } from "./model.js";
 
 export class AggregatedModelRecord<
   S extends State,
   M extends Model<S>
 > extends Lifecycle {
-  readonly state: AggregatedStateRecord<S>;
+  readonly state: RecordState<Record<string, S>>;
   private _models$ = new BehaviorSubject<Record<string, M>>({});
 
   get models() {
-    return this._models$.value as Record<string, M | undefined>;
+    return this._models$.value as Record<string, M>;
   }
   get models$() {
-    return this._models$.asObservable() as Observable<
-      Record<string, M | undefined>
-    >;
+    return this._models$.asObservable() as Observable<Record<string, M>>;
   }
 
   constructor({
     state,
     create,
   }: {
-    state: AggregatedStateRecord<S>;
+    state: RecordState<Record<string, S>>;
     create: (entry: S, key: string, init?: boolean) => M;
   }) {
     super();
@@ -88,7 +86,7 @@ export class AggregatedModelRecord<
     });
   }
 
-  set(key: string, model: M | undefined): void {
+  set(key: string, model: M): void {
     const currentModel = this.models[key];
 
     // Dispose old model if it exists and is different from the new one
@@ -106,7 +104,7 @@ export class AggregatedModelRecord<
     this._models$.next(nextModels);
 
     // then update state
-    this.state.set(key, model?.state);
+    this.state.set(key, model.state);
   }
 
   remove(key: string): void {

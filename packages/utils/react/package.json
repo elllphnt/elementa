@@ -19,10 +19,6 @@
         "deep-object-diff": "^1.1.9",
         "rxjs": "^7.8.2"
     },
-    "exports": {
-        ".": {
-            "import": "./build/index.js",
-            "types": "./build/index.d.ts"
-        }
-    }
+    "main": "build/index.js",
+    "types": "build/index.d.ts"
 }

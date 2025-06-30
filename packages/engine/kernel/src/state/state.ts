@@ -1,3 +1,6 @@
 import { Lifecycle } from "../lifecycle.js";
+import { Backend } from "./backend.js";
 
-export abstract class State extends Lifecycle {}
+export interface State extends Lifecycle {
+  backend: Backend;
+}

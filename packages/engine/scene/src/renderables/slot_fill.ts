@@ -1,5 +1,5 @@
+import { reconcileList } from "@elllphnt/elementa-kernel";
 import { SlotFillInstance } from "@elllphnt/elementa-runtime";
-import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject } from "rxjs";
 import { Scene } from "../scene/scene.js";
 import { createElementRenderable } from "./element/_create.js";

@@ -1,11 +1,12 @@
+import { Backend, ListState } from "@elllphnt/elementa-kernel";
 import { BehaviorSubject, Observable } from "rxjs";
-import { ListState } from "@elllphnt/elementa-kernel";
+import { JsonState } from "./state.js";
 
-export class JsonListState<T> extends ListState<T> {
+export class JsonListState<T> extends JsonState implements ListState<T> {
   private readonly subject$: BehaviorSubject<T[]>;
 
-  constructor(init: T[] = []) {
-    super();
+  constructor({ init, backend }: { init: T[]; backend: Backend }) {
+    super({ backend });
     this.subject$ = new BehaviorSubject<T[]>([...init]);
 
     this.addDisposer(() => {

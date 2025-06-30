@@ -1,7 +1,5 @@
-import {
-  AsyncResourceStatus,
-  parseAbsoluteFileUrl,
-} from "@elllphnt/elementa-core";
+import { parseAbsoluteFileUrl } from "@elllphnt/elementa-base";
+import { AsyncResourceStatus } from "@elllphnt/elementa-models";
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { Editor } from "@monaco-editor/react";
 import React, { useEffect, useState } from "react";

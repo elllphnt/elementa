@@ -1,11 +1,11 @@
+import { Lifecycle } from "@elllphnt/elementa-kernel";
+import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 import {
-  Disposable,
   PointData,
   Rect,
   RectData,
   VectorData,
-  combineLatestOrEmpty,
-} from "@elllphnt/elementa-utils";
+} from "@elllphnt/elementa-math-utils";
 import {
   BehaviorSubject,
   debounceTime,
@@ -23,7 +23,7 @@ export type ViewportData = {
   scale: number;
 };
 
-export class StageViewport extends Disposable {
+export class StageViewport extends Lifecycle {
   readonly scaleMin: number;
   readonly scaleMax: number;
 

@@ -1,16 +1,20 @@
 import { beforeEach, expect, test } from "vitest";
+import { jsonBackend } from "../src/backend.js";
 import { JsonListState } from "../src/list.js";
 
 let listState: JsonListState<string>;
 
 beforeEach(() => {
-  listState = new JsonListState();
+  listState = new JsonListState({ init: [], backend: jsonBackend });
 });
 
 // 🏗️ Initialization
 test("initializes subject with provided initial value", () => {
   const initialData = ["a", "b", "c"];
-  const newListState = new JsonListState(initialData);
+  const newListState = new JsonListState({
+    init: initialData,
+    backend: jsonBackend,
+  });
   expect(newListState.items).toEqual(["a", "b", "c"]);
 });
 

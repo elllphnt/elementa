@@ -75,7 +75,7 @@ export class OptionalModel<
     // update model first manually to ensure the same instance of model get reused during reconciliation.
     this._model$.next(model);
     // then update state
-    this.state.setValue(model?.state);
+    this.state.set(model?.state);
   }
 
   clear(): void {
@@ -84,7 +84,7 @@ export class OptionalModel<
       // update model first manually
       this._model$.next(undefined);
       // then update state
-      this.state.setValue(undefined);
+      this.state.set(undefined);
       // dispose the removed model
       currentModel.dispose();
     }

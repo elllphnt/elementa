@@ -1,5 +1,5 @@
-import { RouteTree } from "@elllphnt/elementa-core";
-import { reconcileList } from "@elllphnt/elementa-utils";
+import { reconcileList } from "@elllphnt/elementa-kernel";
+import { RouteTree } from "@elllphnt/elementa-models";
 import {
   BehaviorSubject,
   combineLatest,
@@ -9,7 +9,7 @@ import {
   of,
   switchMap,
 } from "rxjs";
-import { ElementRuntimeEnvironment } from "../../fragment/_.js";
+import { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
 import { ElementaInstanceType, Instance } from "../../instance.js";
 import { ModelInstance } from "../../model.js";
 import { RouteHandler } from "./content/_content.js";

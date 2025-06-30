@@ -1,15 +1,13 @@
 import { StyleSystemData } from "@elllphnt/elementa-base";
-import { Model, RecordState } from "@elllphnt/elementa-kernel";
+import { RecordState } from "@elllphnt/elementa-kernel";
 import { map, Observable } from "rxjs";
+import { ProjectModel } from "~/models/project.js";
 import { File } from "~/project/file/file.js";
 import { FileModelAdaptor } from "~/project/file/model_adaptor.js";
-import { Project } from "~/project/project.js";
 import { ColorSchemeSet } from "./color_scheme_set.js";
 import { ViewportSet } from "./viewport_set.js";
 
-export class StyleSystem extends Model<RecordState<StyleSystemData>> {
-  project: Project;
-  file: File;
+export class StyleSystem extends ProjectModel<RecordState<StyleSystemData>> {
   colorSchemes: ColorSchemeSet;
   viewports: ViewportSet;
 
@@ -37,15 +35,12 @@ export class StyleSystem extends Model<RecordState<StyleSystemData>> {
 
   constructor({
     state,
-    file,
+    project,
   }: {
     state: RecordState<StyleSystemData>;
-    file: File;
+    project: any;
   }) {
-    super({ state });
-
-    this.project = file.project;
-    this.file = file;
+    super({ state, project });
 
     this.colorSchemes = new ColorSchemeSet({
       state: state.getRecordState("colorSchemes"),

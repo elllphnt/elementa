@@ -1,9 +1,9 @@
-import { CssStyleSheet } from "@elllphnt/elementa-core";
-import { Disposable } from "@elllphnt/elementa-utils";
+import { Lifecycle } from "@elllphnt/elementa-kernel";
 import { createDomStyleSheetAdaptor } from "./_lib.js";
 import { DomStyleSheetAdaptor } from "./adaptors/stylesheet.js";
+import { CssStyleSheet } from "@elllphnt/elementa-models";
 
-export class DomStyleSheetManager extends Disposable {
+export class DomStyleSheetManager extends Lifecycle {
   private _stylesheetAdaptorMap = new WeakMap<
     CssStyleSheet,
     DomStyleSheetAdaptor

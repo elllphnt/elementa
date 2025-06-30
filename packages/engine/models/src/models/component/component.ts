@@ -1,4 +1,10 @@
-import { ComponentData } from "@elllphnt/elementa-base";
+import {
+  ComponentData,
+  DataInputData,
+  ElementData,
+  FragmentData,
+  StateData,
+} from "@elllphnt/elementa-base";
 import {
   AggregatedModelList,
   OptionalModel,
@@ -9,7 +15,7 @@ import { Project } from "~/project/project.js";
 import { ElementaEnvironment } from "../elementa/environment.js";
 import { ElementaPreview } from "../elementa/preview.js";
 import { ElementaStage } from "../elementa/stage.js";
-import { Element } from "../elements/_element.js";
+import { createElement, Element } from "../elements/_element.js";
 import { ElementEnvironment } from "../elements/_environment.js";
 import { Fragment } from "../fragment/fragment.js";
 import { DataInput } from "../primitives/data_input.js";
@@ -81,13 +87,13 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
   readonly elementaEnvironment: ComponentElementaEnvironment;
   readonly stage: ElementaStage;
   readonly preview: ElementaPreview;
-  readonly url?: string;
+  readonly url: string;
 
   // TODO: Update these to use proper AggregatedModelList typing
-  readonly _template: OptionalModel<RecordState<any>, Element>;
-  private _props: AggregatedModelList<RecordState<any>, DataInput>;
-  private _states: AggregatedModelList<RecordState<any>, State>;
-  private _fragments: AggregatedModelList<RecordState<any>, Fragment>;
+  readonly _template: OptionalModel<RecordState<ElementData>, Element>;
+  private _props: AggregatedModelList<RecordState<DataInputData>, DataInput>;
+  private _states: AggregatedModelList<RecordState<StateData>, State>;
+  private _fragments: AggregatedModelList<RecordState<FragmentData>, Fragment>;
   private _fragmentById$ = new BehaviorSubject<
     Record<string, Fragment | undefined>
   >({});
@@ -106,7 +112,7 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
   }: {
     state: RecordState<ComponentData>;
     project: Project;
-    url?: string;
+    url: string;
   }) {
     super({ state, project });
 
@@ -119,9 +125,13 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
     });
 
     // Create stage and preview
-    const editorsState = state.getAggregatedStateRecord("editors");
-    const stageState = editorsState.entry("stage", true);
-    const previewState = editorsState.entry("preview", true);
+    const editorsState = state.getRecordOfRecordStates("editors");
+    const stageState = editorsState.entry("stage", () =>
+      this.state.backend.createRecordState<ElementData>()
+    );
+    const previewState = editorsState.entry("preview", () =>
+      this.state.backend.createRecordState<ElementData>()
+    );
 
     this.stage = new ElementaStage({
       state: stageState,
@@ -132,24 +142,25 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
       environment: this.elementaEnvironment,
     });
 
-    // TODO: Create template
-
+    this._template = new OptionalModel({
+      state: state.getOptionalRecordState("template"),
+      create: (state) =>
+        createElement({ state, environment: this.elementEnvironment }),
+    });
     this._props = new AggregatedModelList({
-      state: state.getAggregatedStateList("props"),
+      state: state.getListOfRecordStates("props"),
       create: (state) => new DataInput({ state }),
     });
-
     this._fragments = new AggregatedModelList({
-      state: state.getAggregatedStateList("fragments"),
+      state: state.getListOfRecordStates("fragments"),
       create: (state) =>
         new Fragment({
           state,
           environment: this.elementEnvironment,
         }),
     });
-
     this._states = new AggregatedModelList({
-      state: state.getAggregatedStateList("states"),
+      state: state.getListOfRecordStates("states"),
       create: (state) =>
         createState({
           state,

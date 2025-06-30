@@ -1,4 +1,4 @@
-import { Component, FileModelAdaptor } from "@elllphnt/elementa-core";
+import { Component, FileModelAdaptor } from "@elllphnt/elementa-models";
 import {
   ComponentInstance,
   ModelInstanceAdaptor,
@@ -6,8 +6,8 @@ import {
 } from "@elllphnt/elementa-runtime";
 import { BehaviorSubject } from "rxjs";
 import { Scene } from "../../scene/scene.js";
-import { InstanceRenderableAdaptor } from "../adaptors/_.js";
-import { ComponentRenderable } from "../component/_.js";
+import { InstanceRenderableAdaptor } from "../adaptors/instance.js";
+import { ComponentRenderable } from "../component/component.js";
 import { InstanceRenderable } from "../instance.js";
 
 export class RouteHandlerRenderable extends InstanceRenderable<PageRouteHandler> {

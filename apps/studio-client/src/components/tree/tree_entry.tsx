@@ -39,7 +39,6 @@ export function TreeEntry({
   className,
   active,
   hover,
-  loading,
   square,
   size = "medium",
   accent,

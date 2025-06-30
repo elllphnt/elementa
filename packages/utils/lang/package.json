@@ -2,6 +2,8 @@
     "name": "@elllphnt/elementa-lang-utils",
     "version": "0.1.0",
     "type": "module",
+    "main": "build/index.js",
+    "types": "build/index.d.ts",
     "scripts": {
         "clean": "rm -rf dist build",
         "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json --verbose",
@@ -12,12 +14,6 @@
         "packup": "tsx scripts/packup.ts",
         "pub": "npm run clean && npm run build:dist && npm run packup && cd dist && npm publish",
         "test": "vitest"
-    },
-    "exports": {
-        ".": {
-            "import": "./build/index.js",
-            "types": "./build/index.d.ts"
-        }
     },
     "dependencies": {
         "rxjs": "^7.8.2"

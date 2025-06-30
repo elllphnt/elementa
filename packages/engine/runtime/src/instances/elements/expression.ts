@@ -1,4 +1,4 @@
-import { ExpressionElement } from "@elllphnt/elementa-core";
+import { ExpressionElement } from "@elllphnt/elementa-models";
 import { Instance } from "../instance.js";
 import { BaseElementInstance } from "./_base.js";
 import { ElementRuntimeEnvironment } from "./_environment/environment.js";

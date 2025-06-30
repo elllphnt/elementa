@@ -1,8 +1,6 @@
 {
     "name": "@elllphnt/elementa-models",
-    "version": "0.2.12",
-    "main": "build/index.js",
-    "types": "build/index.d.ts",
+    "version": "0.3.0",
     "type": "module",
     "scripts": {
         "clean": "rm -rf dist build",
@@ -24,5 +22,7 @@
     },
     "devDependencies": {
         "@elllphnt/elementa-json-backend": "workspace:*"
-    }
+    },
+    "main": "build/index.js",
+    "types": "build/index.d.ts"
 }

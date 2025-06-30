@@ -1,6 +1,6 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { JSX } from "react";
-import { ElementaPreviewRenderable } from "../../renderables/_.js";
+import { ElementaPreviewRenderable } from "../../renderables/elementa/preview/preview.js";
 import { RenderableContentComponent } from "./content/_content.js";
 
 export function ElementaPreviewComponent({

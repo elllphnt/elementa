@@ -13,7 +13,6 @@ import {
   Runtime,
   StaticComponentPropResolver,
 } from "@elllphnt/elementa-runtime";
-import { isFromEnhancer, updateYMap } from "@elllphnt/elementa-utils";
 import { render, screen } from "@testing-library/react";
 import * as y from "yjs";
 import ComponentComponent from "../../src/components/component/component.js";

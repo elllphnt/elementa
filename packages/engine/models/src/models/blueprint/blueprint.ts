@@ -25,7 +25,7 @@ export class Blueprint extends ProjectModel<RecordState<BlueprintData>> {
     super({ state, project });
 
     this._nodes = new AggregatedModelList({
-      state: state.getAggregatedStateList("nodes"),
+      state: state.getListOfRecordStates("nodes"),
       create: (itemState) => new BlueprintNode({ state: itemState, project }),
     });
 

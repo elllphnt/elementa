@@ -1,5 +1,6 @@
+import { reconcileList } from "@elllphnt/elementa-kernel";
+import { debounce } from "@elllphnt/elementa-lang-utils";
 import { RouterInstance } from "@elllphnt/elementa-runtime";
-import { debounce, reconcileList } from "@elllphnt/elementa-utils";
 import {
   createRootRoute,
   RootRoute,

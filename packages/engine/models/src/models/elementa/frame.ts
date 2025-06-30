@@ -1,6 +1,7 @@
 import { CornerData, ElementaFrameData } from "@elllphnt/elementa-base";
 import { OptionalModel, RecordState } from "@elllphnt/elementa-kernel";
 import { Observable } from "rxjs";
+import { Project } from "~/project/project.js";
 import { Identifiable } from "../identifiable.js";
 import {
   RenderableContent,
@@ -76,11 +77,13 @@ export class ElementaFrame extends Identifiable<
   constructor({
     state,
     stage,
+    project,
   }: {
     state: RecordState<Omit<ElementaFrameData, "context" | "content">>;
     stage: ElementaStage;
+    project: Project;
   }) {
-    super({ state });
+    super({ state, project });
 
     this.stage = stage;
 

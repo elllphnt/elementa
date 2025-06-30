@@ -3,7 +3,6 @@ import { beforeEach, expect, test, vi } from "vitest";
 import { Model } from "~/models/model.js";
 import { OptionalModel } from "~/models/optional_model.js";
 import { State } from "~/state/state.js";
-import { ValueState } from "~/state/value.js";
 
 // Mock implementations for testing
 class MockState extends State {

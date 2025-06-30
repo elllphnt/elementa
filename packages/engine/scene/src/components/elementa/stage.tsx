@@ -1,6 +1,6 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { JSX } from "react";
-import { ElementaStageRenderable } from "../../renderables/_.js";
+import { ElementaStageRenderable } from "../../renderables/elementa/stage/stage.js";
 import FrameComponent from "./frame.js";
 import Viewport from "./viewport.js";
 

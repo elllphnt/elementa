@@ -1,4 +1,4 @@
-import { SlotFill } from "@elllphnt/elementa-core";
+import { SlotFill } from "@elllphnt/elementa-models";
 import { Observable } from "rxjs";
 import { ComponentInputResolver } from "../../component/input_resolver/input_resolver.js";
 import { ComponentElementInstance } from "./component.js";

@@ -3,13 +3,11 @@ import { useObservable } from "@elllphnt/elementa-react-utils";
 import { memo } from "react";
 import { NamespaceContext } from "../../contexts/namespace.js";
 import { useNamespace } from "../../hooks/namespace.js";
-import {
-  ExpressionElementRenderable,
-  FragmentElementRenderable,
-} from "../../renderables/_.js";
 import { ComponentElementRenderable } from "../../renderables/element/component.js";
 import { ContainerElementRenderable } from "../../renderables/element/container.js";
 import { ElementRenderable } from "../../renderables/element/element.js";
+import { ExpressionElementRenderable } from "../../renderables/element/expression.js";
+import { FragmentElementRenderable } from "../../renderables/element/fragment.js";
 import { MediaElementRenderable } from "../../renderables/element/media.js";
 import { PrimitiveElementRenderable } from "../../renderables/element/primitive.js";
 import { SlotElementRenderable } from "../../renderables/element/slot.js";

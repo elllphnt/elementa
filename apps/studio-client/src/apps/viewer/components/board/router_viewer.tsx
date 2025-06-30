@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AsyncResourceStatus } from "@elllphnt/elementa-core";
+import { AsyncResourceStatus } from "@elllphnt/elementa-models";
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { ElementaRenderableManager } from "@elllphnt/elementa-scene";
 import React, { useEffect } from "react";

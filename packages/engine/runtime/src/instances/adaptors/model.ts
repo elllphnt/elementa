@@ -1,4 +1,5 @@
-import { ModelAdaptor } from "@elllphnt/elementa-core";
+import { Model } from "@elllphnt/elementa-kernel";
+import { ModelAdaptor } from "@elllphnt/elementa-models";
 import { DiagnosticLevel } from "../../_shared/diagnosticable.js";
 import { Runtime } from "../../runtime/runtime.js";
 import { Instance } from "../instance.js";
@@ -6,7 +7,7 @@ import { ModelInstance } from "../model.js";
 import { InstanceAdaptor } from "./adaptor.js";
 
 export class ModelInstanceAdaptor<
-  M,
+  M extends Model,
   I extends ModelInstance<M>,
   A extends ModelAdaptor<M> = ModelAdaptor<M>
 > extends InstanceAdaptor<I> {

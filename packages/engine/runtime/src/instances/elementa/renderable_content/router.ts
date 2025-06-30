@@ -1,4 +1,4 @@
-import { RouterRenderableContent } from "@elllphnt/elementa-core";
+import { RouterRenderableContent } from "@elllphnt/elementa-models";
 import {
   BehaviorSubject,
   combineLatest,
@@ -7,8 +7,8 @@ import {
   of,
   switchMap,
 } from "rxjs";
-import { ElementRuntimeEnvironment } from "../../../fragment/_.js";
-import { RouterInstance } from "../../../router/_.js";
+import { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
+import { RouterInstance } from "~/instances/router/router.js";
 import { BaseRenderableContentInstance } from "./_base.js";
 
 export class RouterRenderableContentInstance extends BaseRenderableContentInstance<RouterRenderableContent> {

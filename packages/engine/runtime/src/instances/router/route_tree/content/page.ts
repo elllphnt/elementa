@@ -3,7 +3,7 @@ import {
   FileModelAdaptor,
   RouteTree,
   SlotFill,
-} from "@elllphnt/elementa-core";
+} from "@elllphnt/elementa-models";
 import {
   BehaviorSubject,
   combineLatest,
@@ -12,12 +12,10 @@ import {
   of,
   switchMap,
 } from "rxjs";
-import { ModelInstanceAdaptor } from "../../../adaptors/_.js";
-import {
-  ComponentInputResolver,
-  ComponentInstance,
-} from "../../../component/_.js";
-import { ElementRuntimeEnvironment } from "../../../fragment/_.js";
+import { ModelInstanceAdaptor } from "~/instances/adaptors/model.js";
+import { ComponentInstance } from "~/instances/component/component.js";
+import { ComponentInputResolver } from "~/instances/component/input_resolver/input_resolver.js";
+import { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
 import { Instance } from "../../../instance.js";
 import { BaseRouteHandler } from "./_base.js";
 
@@ -155,7 +153,7 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
   get loaderModule() {
     return this.route.loaderUrl
       ? this.runtime.moduleManager.module(
-          this.route.app.file.project.absoluteFileUrl(this.route.loaderUrl)
+          this.route.project.absoluteFileUrl(this.route.loaderUrl)
         )
       : undefined;
   }
@@ -164,7 +162,7 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
       map((url) => {
         return url
           ? this.runtime.moduleManager.module(
-              this.route.app.file.project.absoluteFileUrl(url)
+              this.route.project.absoluteFileUrl(url)
             )
           : undefined;
       })

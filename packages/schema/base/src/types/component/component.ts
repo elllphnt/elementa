@@ -1,9 +1,8 @@
 import { z } from "zod";
 import { DataInputData, dataInputDataSchema } from "../_shared/data_input.js";
 import {
-  ExpressionElementData,
+  ElementData,
   expressionElementDataSchema,
-  FragmentElementData,
   fragmentElementDataSchema,
 } from "./elements/_.js";
 import { FragmentData, fragmentDataSchema } from "./fragment.js";
@@ -14,7 +13,7 @@ export type ComponentData = {
   props?: DataInputData[];
   fragments?: FragmentData[];
   states?: StateData[];
-  template?: FragmentElementData | ExpressionElementData;
+  template?: ElementData;
   editors?: Record<string, Record<string, any>>;
 };
 

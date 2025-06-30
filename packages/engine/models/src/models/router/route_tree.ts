@@ -18,7 +18,7 @@ export class RouteTree extends Identifiable<RouteTreeData> {
     router: Router;
     initialized?: boolean;
   }) {
-    super({ state, initialized });
+    super({ state, initialized, project: router.project });
     this.router = router;
 
     this._children = new AggregatedModelList<
@@ -93,60 +93,52 @@ export class RouteTree extends Identifiable<RouteTreeData> {
 
   get mainViewComponent() {
     const url = this.mainViewUrl;
-    return url
-      ? this.router.file.project.infrastructure.component(url)
-      : undefined;
+    return url ? this.router.project.infrastructure.component(url) : undefined;
   }
 
   get mainViewComponent$() {
     return this.mainViewUrl$.pipe(
       map((url) =>
-        url ? this.router.file.project.infrastructure.component(url) : undefined
+        url ? this.router.project.infrastructure.component(url) : undefined
       )
     );
   }
 
   get errorViewComponent() {
     const url = this.errorViewUrl;
-    return url
-      ? this.router.file.project.infrastructure.component(url)
-      : undefined;
+    return url ? this.router.project.infrastructure.component(url) : undefined;
   }
 
   get errorViewComponent$() {
     return this.errorViewUrl$.pipe(
       map((url) =>
-        url ? this.router.file.project.infrastructure.component(url) : undefined
+        url ? this.router.project.infrastructure.component(url) : undefined
       )
     );
   }
 
   get pendingViewComponent() {
     const url = this.pendingViewUrl;
-    return url
-      ? this.router.file.project.infrastructure.component(url)
-      : undefined;
+    return url ? this.router.project.infrastructure.component(url) : undefined;
   }
 
   get pendingViewComponent$() {
     return this.pendingViewUrl$.pipe(
       map((url) =>
-        url ? this.router.file.project.infrastructure.component(url) : undefined
+        url ? this.router.project.infrastructure.component(url) : undefined
       )
     );
   }
 
   get notFoundViewComponent() {
     const url = this.notFoundViewUrl;
-    return url
-      ? this.router.file.project.infrastructure.component(url)
-      : undefined;
+    return url ? this.router.project.infrastructure.component(url) : undefined;
   }
 
   get notFoundViewComponent$() {
     return this.notFoundViewUrl$.pipe(
       map((url) =>
-        url ? this.router.file.project.infrastructure.component(url) : undefined
+        url ? this.router.project.infrastructure.component(url) : undefined
       )
     );
   }

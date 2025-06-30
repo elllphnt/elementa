@@ -1,10 +1,10 @@
+import { reconcileList } from "@elllphnt/elementa-kernel";
 import { PrimitiveElementInstance } from "@elllphnt/elementa-runtime";
-import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Scene } from "../../scene/scene.js";
 import { Renderable } from "../renderable.js";
-import { ElementRenderable } from "./element.js";
 import { createElementRenderable } from "./_create.js";
+import { ElementRenderable } from "./element.js";
 
 export class PrimitiveElementRenderable extends ElementRenderable<PrimitiveElementInstance> {
   private _children$ = new BehaviorSubject<ElementRenderable[]>([]);

@@ -2,8 +2,9 @@ import {
   PrimitiveConfig,
   primitiveConfigSchema,
 } from "@elllphnt/elementa-base";
-import { PrimitiveElement } from "@elllphnt/elementa-core";
-import { combineLatestOrEmpty, reconcileList } from "@elllphnt/elementa-utils";
+import { reconcileList } from "@elllphnt/elementa-kernel";
+import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
+import { PrimitiveElement } from "@elllphnt/elementa-models";
 import {
   BehaviorSubject,
   combineLatest,
@@ -12,8 +13,8 @@ import {
   of,
   switchMap,
 } from "rxjs";
+import { Module } from "~/runtime/module_manager/module.js";
 import { DiagnosticLevel } from "../../_shared/diagnosticable.js";
-import { Module } from "../../runtime/module_manager/_.js";
 import { Instance } from "../instance.js";
 import { BaseElementInstance } from "./_base.js";
 import { createElementInstance, ElementInstance } from "./_element.js";
@@ -177,12 +178,6 @@ export class PrimitiveElementInstance extends BaseElementInstance<PrimitiveEleme
       }
     } else {
       this._config$.next(undefined);
-    }
-  }
-
-  async initialize() {
-    if (this.config?.init) {
-      this.element.initialize(this.config?.init);
     }
   }
 }

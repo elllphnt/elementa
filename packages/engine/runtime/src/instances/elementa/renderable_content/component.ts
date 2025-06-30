@@ -1,4 +1,7 @@
-import { ComponentRenderableContent, SlotFill } from "@elllphnt/elementa-core";
+import {
+  ComponentRenderableContent,
+  SlotFill,
+} from "@elllphnt/elementa-models";
 import {
   BehaviorSubject,
   combineLatest,
@@ -7,11 +10,9 @@ import {
   of,
   switchMap,
 } from "rxjs";
-import {
-  ComponentInputResolver,
-  ComponentInstance,
-} from "../../../component/_.js";
-import { ElementRuntimeEnvironment } from "../../../fragment/_.js";
+import { ComponentInstance } from "~/instances/component/component.js";
+import { ComponentInputResolver } from "~/instances/component/input_resolver/input_resolver.js";
+import { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
 import { BaseRenderableContentInstance } from "./_base.js";
 
 export class ComponentRenderableContentInputResolver extends ComponentInputResolver {

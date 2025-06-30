@@ -1,6 +1,10 @@
-import { Disposable, keyManager } from "@elllphnt/elementa-utils";
+import { keyManager, Lifecycle } from "@elllphnt/elementa-kernel";
 import { BehaviorSubject, map, Observable, of } from "rxjs";
-import { Diagnostic, Diagnosticable, DiagnosticLevel } from "../_shared/_.js";
+import {
+  Diagnostic,
+  Diagnosticable,
+  DiagnosticLevel,
+} from "~/_shared/diagnosticable.js";
 import { Runtime } from "../runtime/runtime.js";
 
 /**
@@ -25,7 +29,7 @@ export enum ElementaInstanceType {
  * Base runtime class for all reactive, disposable, and traversable instances.
  * Includes a stable key, a parent link, and a type identifier.
  */
-export abstract class Instance extends Disposable implements Diagnosticable {
+export abstract class Instance extends Lifecycle implements Diagnosticable {
   readonly key: string;
   readonly type: string;
   readonly runtime: Runtime;

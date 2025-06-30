@@ -34,7 +34,7 @@ export class KeyframeSet extends Identifiable<KeyframeSetData> {
     project: Project;
     initialized?: boolean;
   }) {
-    super({ state });
+    super({ state, project });
 
     if (!initialized) {
       state.set("id", genId());
@@ -46,7 +46,7 @@ export class KeyframeSet extends Identifiable<KeyframeSetData> {
     });
 
     this._keyframes = new AggregatedModelList({
-      state: state.getAggregatedStateList("keyframes"),
+      state: state.getListOfRecordStates("keyframes"),
       create: (state) =>
         new Keyframe({
           state,

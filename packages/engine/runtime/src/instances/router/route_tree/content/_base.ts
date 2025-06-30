@@ -1,6 +1,6 @@
-import { RouteTree } from "@elllphnt/elementa-core";
-import { ElementRuntimeEnvironment } from "../../../fragment/_.js";
+import { RouteTree } from "@elllphnt/elementa-models";
 import { ElementaInstanceType, Instance } from "../../../instance.js";
+import { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
 
 export abstract class BaseRouteHandler<V extends string> extends Instance {
   readonly route: RouteTree;

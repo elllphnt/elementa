@@ -6,7 +6,7 @@ const require = createRequire(import.meta.url);
 const log = (...args: unknown[]) => console.log("packup:", ...args);
 
 // ✅ Allowed output file extensions
-const ALLOWED_EXTENSIONS = [".js", ".ts"];
+const ALLOWED_EXTENSIONS = [".ts"];
 
 const BUILD_DIR = "./build";
 const DIST_DIR = "./dist";
@@ -37,8 +37,8 @@ log(`copied build → dist (${ALLOWED_EXTENSIONS.join(", ")} only)`);
 const packageJson = JSON.parse(fs.readFileSync("./package.json", "utf8"));
 delete packageJson.scripts;
 delete packageJson.devDependencies;
-packageJson.main = "index.js";
 packageJson.types = "index.d.ts";
+delete packageJson.main;
 
 // --- Freeze wildcard and workspace versions ---
 function freezeVersions(deps?: Record<string, string>) {

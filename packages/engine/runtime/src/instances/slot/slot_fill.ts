@@ -1,5 +1,6 @@
-import { SlotFill } from "@elllphnt/elementa-core";
-import { combineLatestOrEmpty, reconcileList } from "@elllphnt/elementa-utils";
+import { reconcileList } from "@elllphnt/elementa-kernel";
+import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
+import { SlotFill } from "@elllphnt/elementa-models";
 import {
   BehaviorSubject,
   combineLatest,
@@ -7,9 +8,11 @@ import {
   Observable,
   switchMap,
 } from "rxjs";
-import { ElementInstance } from "../elements/_.js";
-import { createElementInstance } from "../elements/_element.js";
-import { ElementRuntimeEnvironment } from "../fragment/_.js";
+import {
+  createElementInstance,
+  ElementInstance,
+} from "../elements/_element.js";
+import { ElementRuntimeEnvironment } from "../elements/_environment/environment.js";
 import { ElementaInstanceType, Instance } from "../instance.js";
 import { ModelInstance } from "../model.js";
 import { StyleSheetInstance } from "../stylesheet/stylesheet.js";

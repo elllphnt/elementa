@@ -3,11 +3,11 @@ import {
   stylePropertyConfigMap,
   StylePropertyName,
 } from "@elllphnt/elementa-base";
-import { Style } from "@elllphnt/elementa-core";
-import { assert } from "@elllphnt/elementa-utils";
+import { Style } from "@elllphnt/elementa-models";
 import { combineLatest, map, Observable, of, switchMap } from "rxjs";
 import { ElementaInstanceType, Instance } from "../instance.js";
 import { StyleSheetInstance } from "./stylesheet.js";
+import { assert } from "@elllphnt/elementa-lang-utils";
 
 /**
  * Represents a runtime live wrapper around a Style.

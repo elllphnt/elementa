@@ -1,4 +1,4 @@
-import { ElementaFrame } from "@elllphnt/elementa-core";
+import { ElementaFrame } from "@elllphnt/elementa-models";
 import {
   BehaviorSubject,
   combineLatest,
@@ -7,18 +7,16 @@ import {
   of,
   switchMap,
 } from "rxjs";
-import { Runtime } from "../../../runtime/runtime.js";
-import {
-  DefaultElementRuntimeEnvironment,
-  ElementRuntimeEnvironment,
-} from "../../fragment/_.js";
-import { Instance } from "../../instance.js";
-import { ModelInstance } from "../../model.js";
+import { Runtime } from "~/runtime/runtime.js";
+import { DefaultElementRuntimeEnvironment } from "../elements/_environment/default_environment.js";
+import { ElementRuntimeEnvironment } from "../elements/_environment/environment.js";
+import { Instance } from "../instance.js";
+import { ModelInstance } from "../model.js";
 import { ElementaEditorInstanceType } from "./_types.js";
 import {
   createRenderableContentInstance,
   RenderableContentInstance,
-} from "./renderable_content/_.js";
+} from "./renderable_content/_content.js";
 
 export class FrameFragmentEnvironment extends DefaultElementRuntimeEnvironment {
   frame: ElementaFrame;

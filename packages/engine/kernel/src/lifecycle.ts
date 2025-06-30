@@ -85,24 +85,10 @@ export abstract class Lifecycle implements Initializeable, Disposable {
     if (this._disposed) return;
     this._disposed = true;
 
-    const errors: any[] = [];
     for (const fn of this._disposers) {
-      try {
-        fn();
-      } catch (err) {
-        errors.push(err);
-      }
+      fn();
     }
     this._disposers.length = 0;
-
-    if (errors.length) {
-      // Throw the first, or wrap them:
-      const err = new Error(
-        `${this.constructor.name} dispose() failed: ${errors.length} errors during cleanup; first: ${errors[0].message}`
-      );
-      (err as any).inner = errors;
-      throw err;
-    }
 
     if (Lifecycle.track) {
       Lifecycle.instances.delete(this);

@@ -1,5 +1,5 @@
-import { ComponentElement } from "@elllphnt/elementa-core";
-import { reconcileList } from "@elllphnt/elementa-utils";
+import { reconcileList } from "@elllphnt/elementa-kernel";
+import { ComponentElement } from "@elllphnt/elementa-models";
 import {
   BehaviorSubject,
   combineLatest,
@@ -8,12 +8,12 @@ import {
   of,
   switchMap,
 } from "rxjs";
-import { ComponentInstance } from "../../component/_.js";
 import { Instance } from "../../instance.js";
 import { BaseElementInstance } from "../_base.js";
 import { createElementInstance, ElementInstance } from "../_element.js";
 import { ElementRuntimeEnvironment } from "../_environment/environment.js";
 import { ComponentElementComponentPropResolver } from "./component_prop_resolver.js";
+import { ComponentInstance } from "~/instances/component/component.js";
 
 export class ComponentElementInstance<
   E extends ComponentElement = ComponentElement

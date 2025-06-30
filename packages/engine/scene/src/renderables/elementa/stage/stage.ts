@@ -1,6 +1,6 @@
-import { TextCssStyleSheet } from "@elllphnt/elementa-core";
+import { reconcileList } from "@elllphnt/elementa-kernel";
+import { TextCssStyleSheet } from "@elllphnt/elementa-models";
 import { ElementaStageInstance } from "@elllphnt/elementa-runtime";
-import { reconcileList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject, combineLatest, map } from "rxjs";
 import { Scene } from "../../../scene/scene.js";
 import { Renderable } from "../../renderable.js";

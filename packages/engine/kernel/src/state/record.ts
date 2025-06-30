@@ -1,41 +1,63 @@
+import { ArrayKeyOf, ObjectKeyOf } from "@elllphnt/elementa-lang-utils";
 import { Observable } from "rxjs";
 import { ListState } from "./list.js";
-import { AggregatedStateList } from "./state_list.js";
-import { AggregatedStateRecord } from "./state_record.js";
+import { State } from "./state.js";
 import { ValueState } from "./value.js";
-import { Lifecycle } from "../lifecycle.js";
-import { ArrayKeyOf, ObjectKeyOf } from "@elllphnt/elementa-lang-utils";
 
-export abstract class RecordState<
-  T extends Record<string, any>
-> extends Lifecycle {
-  abstract get record(): T;
-  abstract get record$(): Observable<T>;
+export interface RecordState<T extends Record<string, any>> extends State {
+  get record(): T;
+  get record$(): Observable<T>;
 
-  abstract entry<K extends keyof T>(key: K): T[K];
-  abstract entry$<K extends keyof T>(key: K): Observable<T[K]>;
+  entry<K extends keyof T>(key: K): T[K];
+  entry<K extends keyof T>(
+    key: K,
+    fallback: () => NonNullable<T[K]>
+  ): NonNullable<T[K]>;
+  entry<K extends keyof T>(key: K, fallback?: () => NonNullable<T[K]>): T[K];
 
-  abstract set<K extends keyof T>(key: K, value: T[K]): void;
-  abstract remove<K extends keyof T>(key: K): T[K] | undefined;
+  entry$<K extends keyof T>(key: K): Observable<T[K]>;
+  entry$<K extends keyof T>(
+    key: K,
+    fallback: () => NonNullable<T[K]>
+  ): Observable<NonNullable<T[K]>>;
+  entry$<K extends keyof T>(
+    key: K,
+    fallback?: () => NonNullable<T[K]>
+  ): Observable<T[K]>;
 
-  abstract setAll(data: Partial<T>): void;
-  abstract removeAll(keys: (keyof T)[]): void;
+  set<K extends keyof T>(key: K, value: T[K]): void;
+  remove<K extends keyof T>(key: K): T[K] | undefined;
 
-  abstract setRecord(data: T): void;
+  setAll(data: Partial<T>): void;
+  removeAll(keys: (keyof T)[]): void;
 
-  abstract getRecordState<K extends ObjectKeyOf<Required<T>>>(
+  setRecord(data: T): void;
+
+  getRecordState<K extends ObjectKeyOf<Required<T>>>(
     key: K
   ): RecordState<NonNullable<T[K]>>;
-  abstract getListState<K extends ArrayKeyOf<Required<T>>>(
+  getListState<K extends ArrayKeyOf<Required<T>>>(
     key: K
   ): ListState<NonNullable<T[K]>[number]>;
 
-  abstract getAggregatedStateRecord<K extends ObjectKeyOf<Required<T>>>(
+  getOptionalRecordState<K extends keyof T>(
     key: K
-  ): AggregatedStateRecord<RecordState<NonNullable<T[K]>[string]>>;
-  abstract getAggregatedStateList<K extends ArrayKeyOf<Required<T>>>(
+  ): ValueState<RecordState<NonNullable<T[K]>>>;
+  getOptionalListState<K extends keyof T>(
     key: K
-  ): AggregatedStateList<RecordState<NonNullable<T[K]>[number]>>;
+  ): ValueState<RecordState<NonNullable<T[K]>>>;
 
-  abstract getValueState<K extends keyof T>(key: K): ValueState<T[K]>;
+  getListOfRecordStates<K extends ArrayKeyOf<Required<T>>>(
+    key: K
+  ): ListState<RecordState<NonNullable<T[K]>[number]>>;
+  getListOfListStates<K extends ArrayKeyOf<Required<T>>>(
+    key: K
+  ): ListState<ListState<NonNullable<T[K]>[number][number]>>;
+
+  getRecordOfRecordStates<K extends ObjectKeyOf<Required<T>>>(
+    key: K
+  ): RecordState<Record<string, RecordState<NonNullable<T[K][string]>>>>;
+  getRecordOfListStates<K extends ObjectKeyOf<Required<T>>>(
+    key: K
+  ): RecordState<Record<string, ListState<NonNullable<T[K]>[string][number]>>>;
 }

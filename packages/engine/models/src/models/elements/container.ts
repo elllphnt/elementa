@@ -62,7 +62,7 @@ export class ContainerElement extends BaseElement<ContainerElementData> {
     super({ state, type: "container", environment, initialized });
 
     this._content = new AggregatedModelList<RecordState<any>, Element>({
-      state: state.getAggregatedStateList("content"),
+      state: state.getListOfRecordStates("content"),
       create: (state) =>
         createElement({
           state,

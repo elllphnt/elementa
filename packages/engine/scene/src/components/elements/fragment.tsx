@@ -1,7 +1,7 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import React from "react";
 import { useNamespace } from "../../hooks/namespace.js";
-import { FragmentElementRenderable } from "../../renderables/_.js";
+import { FragmentElementRenderable } from "../../renderables/element/fragment.js";
 
 export function FragmentElementComponent({
   element,

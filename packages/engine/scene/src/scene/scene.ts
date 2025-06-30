@@ -1,7 +1,8 @@
-import { Fragment, Project } from "@elllphnt/elementa-core";
-import { Disposable, pairwiseOrEmpty } from "@elllphnt/elementa-utils";
+import { Lifecycle } from "@elllphnt/elementa-kernel";
+import { pairwiseOrEmpty } from "@elllphnt/elementa-lang-utils";
+import { Fragment, Project } from "@elllphnt/elementa-models";
 import { Subscription } from "rxjs";
-import { DomStyleSheetManager } from "../style/_.js";
+import { DomStyleSheetManager } from "../style/dom/manager.js";
 import { systemStylesheet } from "./stylesheet/stylesheet.js";
 
 type RefCountedSubscription = {
@@ -14,7 +15,7 @@ type RefCountedSubscription = {
  * It tracks registered fragments and projects, ensuring stylesheets are
  * injected and removed efficiently as fragments are mounted and unmounted.
  */
-export class Scene extends Disposable {
+export class Scene extends Lifecycle {
   readonly stylesheetDomManager: DomStyleSheetManager;
 
   private readonly _projects = new Map<Project, RefCountedSubscription>();
@@ -90,11 +91,6 @@ export class Scene extends Disposable {
     const subscription = fragment.allCssStylesheets$
       .pipe(pairwiseOrEmpty())
       .subscribe(([prev, next]) => {
-        console.log(
-          "2- registerFragment",
-          fragment.id,
-          next.map((s) => s.target)
-        );
         next.forEach((s) =>
           this.stylesheetDomManager.stylesheetAdaptor(s).useRef(document)
         );

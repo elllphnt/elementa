@@ -5,10 +5,8 @@ import {
 } from "@elllphnt/elementa-runtime";
 import { BehaviorSubject, Observable, of } from "rxjs";
 import { Scene } from "../../scene/scene.js";
-import {
-  ExpressionElementRenderable,
-  FragmentElementRenderable,
-} from "../element/_.js";
+import { ExpressionElementRenderable } from "../element/expression.js";
+import { FragmentElementRenderable } from "../element/fragment.js";
 import { FragmentRenderable } from "../fragment.js";
 import { InstanceRenderable } from "../instance.js";
 import { Renderable } from "../renderable.js";

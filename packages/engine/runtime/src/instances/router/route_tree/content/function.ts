@@ -1,6 +1,6 @@
-import { RouteTree } from "@elllphnt/elementa-core";
+import { RouteTree } from "@elllphnt/elementa-models";
 import { combineLatest, map, Observable, of, switchMap } from "rxjs";
-import { ElementRuntimeEnvironment } from "../../../fragment/_.js";
+import { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
 import { Instance } from "../../../instance.js";
 import { BaseRouteHandler } from "./_base.js";
 
@@ -10,7 +10,7 @@ export class FunctionRouteHandler extends BaseRouteHandler<"function"> {
   get handlerModule() {
     return this.route.handlerUrl
       ? this.runtime.moduleManager.module(
-          this.route.app.file.project.absoluteFileUrl(this.route.handlerUrl)
+          this.route.project.absoluteFileUrl(this.route.handlerUrl)
         )
       : undefined;
   }
@@ -19,7 +19,7 @@ export class FunctionRouteHandler extends BaseRouteHandler<"function"> {
       map((url) => {
         return url
           ? this.runtime.moduleManager.module(
-              this.route.app.file.project.absoluteFileUrl(url)
+              this.route.project.absoluteFileUrl(url)
             )
           : undefined;
       })

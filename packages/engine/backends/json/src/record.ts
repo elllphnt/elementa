@@ -1,141 +1,319 @@
 import {
-  AggregatedStateList,
-  AggregatedStateRecord,
+  Backend,
   ListState,
   RecordState,
   ValueState,
 } from "@elllphnt/elementa-kernel";
+import { ArrayKeyOf, ObjectKeyOf } from "@elllphnt/elementa-lang-utils";
 import { BehaviorSubject, Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { ArrayKeyOf, ObjectKeyOf } from "../../../../utils/lang/build/types.js";
+import { distinctUntilChanged, map } from "rxjs/operators";
 import { JsonListState } from "./list.js";
-import { AggregatedJsonStateList } from "./state_list.js";
-import { AggregatedJsonStateRecord } from "./state_record.js";
+import { JsonState } from "./state.js";
 import { JsonValueState } from "./value.js";
 
-export class JsonRecordState<
-  T extends Record<string, unknown>
-> extends RecordState<T> {
-  private readonly subject$: BehaviorSubject<T>;
-  private _subStates: Record<string, any> = {};
+export class JsonRecordState<T extends Record<string, unknown>>
+  extends JsonState
+  implements RecordState<T>
+{
+  private _entries$: BehaviorSubject<any>;
 
-  constructor(init: T) {
-    super();
-    this.subject$ = new BehaviorSubject<T>({ ...init });
+  constructor({ init, backend }: { init: T; backend: Backend }) {
+    super({ backend });
+    this._entries$ = new BehaviorSubject<any>({ ...init });
 
     this.addDisposer(() => {
-      this.subject$.complete();
-      // Dispose nested states
-      Object.values(this._subStates).forEach((state) => state?.dispose?.());
+      this._entries$.complete();
+      Object.values(this._entries$.value).forEach((state) => {
+        if (state instanceof JsonState) {
+          state.dispose();
+        }
+      });
     });
   }
 
   get record(): T {
-    return this.subject$.value;
+    return this._entries$.value;
   }
 
   get record$(): Observable<T> {
-    return this.subject$.asObservable();
+    return this._entries$.asObservable();
   }
 
-  entry<K extends keyof T>(key: K): T[K] {
-    return this.subject$.value[key];
+  entry<K extends keyof T>(key: K): T[K];
+  entry<K extends keyof T>(
+    key: K,
+    fallback: () => NonNullable<T[K]>
+  ): NonNullable<T[K]>;
+  entry<K extends keyof T>(key: K, fallback?: () => NonNullable<T[K]>): T[K] {
+    const value = this._entries$.value[key];
+    if (value == null && fallback) {
+      return fallback();
+    }
+    return value;
   }
 
-  entry$<K extends keyof T>(key: K): Observable<T[K]> {
-    return this.record$.pipe(map((v) => v[key]));
+  entry$<K extends keyof T>(key: K): Observable<T[K]>;
+  entry$<K extends keyof T>(
+    key: K,
+    fallback: () => NonNullable<T[K]>
+  ): Observable<NonNullable<T[K]>>;
+  entry$<K extends keyof T>(
+    key: K,
+    fallback?: () => NonNullable<T[K]>
+  ): Observable<T[K]> {
+    return this.record$.pipe(
+      map((v) => {
+        const value = v[key];
+        if (value == null && fallback) {
+          return fallback();
+        }
+        return value;
+      }),
+      distinctUntilChanged()
+    );
   }
 
   set<K extends keyof T>(key: K, value: T[K]): void {
-    const current = { ...this.subject$.value };
+    const current = { ...this._entries$.value };
     current[key] = value;
-    this.subject$.next(current);
+    this._entries$.next(current);
   }
 
   remove<K extends keyof T>(key: K): T[K] | undefined {
-    const current = { ...this.subject$.value };
+    const current = { ...this._entries$.value };
     const value = current[key];
     delete current[key];
-    this.subject$.next(current);
+    this._entries$.next(current);
     return value;
   }
 
   setAll(data: Partial<T>): void {
-    const current = { ...this.subject$.value };
+    const current = { ...this._entries$.value };
     Object.assign(current, data);
-    this.subject$.next(current);
+    this._entries$.next(current);
   }
 
   removeAll(keys: (keyof T)[]): void {
-    const current = { ...this.subject$.value };
+    const current = { ...this._entries$.value };
     keys.forEach((key) => delete current[key]);
-    this.subject$.next(current);
+    this._entries$.next(current);
   }
 
   setRecord(data: T): void {
-    this.subject$.next({ ...data });
+    this._entries$.next({ ...data });
   }
 
   getRecordState<K extends ObjectKeyOf<Required<T>>>(
     key: K
   ): RecordState<NonNullable<T[K]>> {
-    if (this._subStates[key as string]) {
-      return this._subStates[key as string];
+    let nestedState = this._entries$.value[key];
+    if (nestedState instanceof JsonRecordState) {
+      return nestedState as RecordState<NonNullable<T[K]>>;
     }
 
-    const nestedState = new JsonRecordState({} as NonNullable<T[K]>);
-    this._subStates[key as string] = nestedState;
-    return nestedState;
+    nestedState = new JsonRecordState({
+      init: nestedState || {},
+      backend: this.backend,
+    });
+    nestedState.initialize();
+    this._entries$.next({
+      ...this._entries$.value,
+      [key]: nestedState,
+    });
+    return nestedState as RecordState<NonNullable<T[K]>>;
   }
 
-  getListState<K extends ArrayKeyOf<Required<T>>>(key: K) {
-    if (this._subStates[key as string]) {
-      return this._subStates[key as string];
+  getListState<K extends ArrayKeyOf<Required<T>>>(key: K): ListState<any> {
+    let nestedState = this._entries$.value[key];
+    if (nestedState instanceof JsonListState) {
+      return nestedState as ListState<any>;
     }
 
-    const nestedState = new JsonListState([]) as ListState<any>;
-    this._subStates[key as string] = nestedState;
-    return nestedState;
+    nestedState = new JsonListState({
+      init: nestedState || [],
+      backend: this.backend,
+    });
+    nestedState.initialize();
+    this._entries$.next({
+      ...this._entries$.value,
+      [key]: nestedState,
+    });
+    return nestedState as ListState<any>;
   }
 
-  getAggregatedStateRecord<K extends ObjectKeyOf<Required<T>>>(
+  getOptionalRecordState<K extends keyof T>(
     key: K
-  ): AggregatedStateRecord<RecordState<any>> {
-    if (this._subStates[key as string]) {
-      return this._subStates[key as string];
+  ): ValueState<RecordState<NonNullable<T[K]>>> {
+    let nestedState = this._entries$.value[key];
+    if (nestedState instanceof JsonValueState) {
+      return nestedState as ValueState<RecordState<NonNullable<T[K]>>>;
     }
 
-    const nestedState = new AggregatedJsonStateRecord(
-      {},
-      () => new JsonRecordState({}) as RecordState<any>
-    );
-    this._subStates[key as string] = nestedState;
-    return nestedState;
+    nestedState = new JsonValueState({
+      init: nestedState
+        ? new JsonRecordState({
+            init: nestedState as Record<string, unknown>,
+            backend: this.backend,
+          })
+        : undefined,
+      backend: this.backend,
+    });
+    nestedState.initialize();
+    this._entries$.next({
+      ...this._entries$.value,
+      [key]: nestedState,
+    });
+    return nestedState as ValueState<RecordState<NonNullable<T[K]>>>;
   }
 
-  getAggregatedStateList<K extends ArrayKeyOf<Required<T>>>(
+  getOptionalListState<K extends keyof T>(
     key: K
-  ): AggregatedStateList<RecordState<any>> {
-    if (this._subStates[key as string]) {
-      return this._subStates[key as string];
+  ): ValueState<RecordState<NonNullable<T[K]>>> {
+    let nestedState = this._entries$.value[key];
+    if (nestedState instanceof JsonValueState) {
+      return nestedState as ValueState<RecordState<NonNullable<T[K]>>>;
     }
 
-    const nestedState = new AggregatedJsonStateList(
-      [],
-      () => new JsonRecordState({}) as RecordState<any>
-    );
-    this._subStates[key as string] = nestedState;
-    return nestedState;
+    nestedState = new JsonValueState({
+      init: nestedState
+        ? new JsonRecordState({
+            init: nestedState as Record<string, unknown>,
+            backend: this.backend,
+          })
+        : undefined,
+      backend: this.backend,
+    });
+    nestedState.initialize();
+    this._entries$.next({
+      ...this._entries$.value,
+      [key]: nestedState,
+    });
+    return nestedState as ValueState<RecordState<NonNullable<T[K]>>>;
   }
 
-  getValueState<K extends keyof T>(key: K): ValueState<T[K]> {
-    if (this._subStates[key as string]) {
-      return this._subStates[key as string];
+  getListOfRecordStates<K extends ArrayKeyOf<Required<T>>>(
+    key: K
+  ): ListState<RecordState<any>> {
+    let nestedState = this._entries$.value[key];
+    if (nestedState instanceof JsonListState) {
+      return nestedState as ListState<RecordState<any>>;
     }
 
-    const currentValue = this.subject$.value[key];
-    const nestedState = new JsonValueState<T[K]>(currentValue);
-    this._subStates[key as string] = nestedState;
-    return nestedState;
+    const init = nestedState ?? [];
+    if (!Array.isArray(init)) {
+      throw Error(`Value in key ${key as string} is not an array.`);
+    }
+
+    nestedState = new JsonListState({
+      init: init.map(
+        (i) => new JsonRecordState({ init: i, backend: this.backend })
+      ),
+      backend: this.backend,
+    });
+    nestedState.initialize();
+    this._entries$.next({
+      ...this._entries$.value,
+      [key]: nestedState,
+    });
+    return nestedState as ListState<RecordState<any>>;
+  }
+
+  getListOfListStates<K extends ArrayKeyOf<Required<T>>>(
+    key: K
+  ): ListState<ListState<any[number]>> {
+    let nestedState = this._entries$.value[key];
+    if (nestedState instanceof JsonListState) {
+      return nestedState as ListState<ListState<any[number]>>;
+    }
+
+    const init = nestedState ?? [];
+    if (!Array.isArray(init)) {
+      throw Error(`Value in key ${key as string} is not an array.`);
+    }
+
+    nestedState = new JsonListState({
+      init: init.map((arr) => {
+        if (!Array.isArray(arr)) {
+          throw Error(`Nested value is not an array.`);
+        }
+        return new JsonListState({ init: arr, backend: this.backend });
+      }),
+      backend: this.backend,
+    });
+    nestedState.initialize();
+    this._entries$.next({
+      ...this._entries$.value,
+      [key]: nestedState,
+    });
+    return nestedState as ListState<ListState<any[number]>>;
+  }
+
+  getRecordOfRecordStates<K extends ObjectKeyOf<Required<T>>>(
+    key: K
+  ): RecordState<Record<string, RecordState<any>>> {
+    let nestedState = this._entries$.value[key];
+    if (nestedState instanceof JsonRecordState) {
+      return nestedState as RecordState<Record<string, RecordState<any>>>;
+    }
+
+    const init = nestedState ?? {};
+    if (typeof init !== "object" || Array.isArray(init)) {
+      throw Error(`Value in key ${key as string} is not an object.`);
+    }
+
+    const recordOfRecords: Record<string, RecordState<any>> = {};
+    Object.entries(init).forEach(([subKey, subValue]) => {
+      recordOfRecords[subKey] = new JsonRecordState({
+        init: (subValue || {}) as Record<string, unknown>,
+        backend: this.backend,
+      }) as RecordState<any>;
+    });
+
+    nestedState = new JsonRecordState({
+      init: recordOfRecords,
+      backend: this.backend,
+    });
+    nestedState.initialize();
+    this._entries$.next({
+      ...this._entries$.value,
+      [key]: nestedState,
+    });
+    return nestedState as RecordState<Record<string, RecordState<any>>>;
+  }
+
+  getRecordOfListStates<K extends ObjectKeyOf<Required<T>>>(
+    key: K
+  ): RecordState<Record<string, ListState<any>>> {
+    let nestedState = this._entries$.value[key];
+    if (nestedState instanceof JsonRecordState) {
+      return nestedState as RecordState<Record<string, ListState<any>>>;
+    }
+
+    const init = nestedState ?? {};
+    if (typeof init !== "object" || Array.isArray(init)) {
+      throw Error(`Value in key ${key as string} is not an object.`);
+    }
+
+    const recordOfLists: Record<string, ListState<any>> = {};
+    Object.entries(init).forEach(([subKey, subValue]) => {
+      if (!Array.isArray(subValue)) {
+        throw Error(`Value in nested key ${subKey} is not an array.`);
+      }
+      recordOfLists[subKey] = new JsonListState({
+        init: subValue,
+        backend: this.backend,
+      });
+    });
+
+    nestedState = new JsonRecordState({
+      init: recordOfLists,
+      backend: this.backend,
+    });
+    nestedState.initialize();
+    this._entries$.next({
+      ...this._entries$.value,
+      [key]: nestedState,
+    });
+    return nestedState as RecordState<Record<string, ListState<any>>>;
   }
 }

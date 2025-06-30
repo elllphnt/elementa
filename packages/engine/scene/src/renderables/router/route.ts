@@ -1,5 +1,5 @@
+import { reconcileList } from "@elllphnt/elementa-kernel";
 import { RouteTreeInstance } from "@elllphnt/elementa-runtime";
-import { reconcileList } from "@elllphnt/elementa-utils";
 import { createRoute, RootRoute, Route } from "@tanstack/react-router";
 import React, { createElement } from "react";
 import {

@@ -1,5 +1,5 @@
-import { File } from "@elllphnt/elementa-core";
-import { Disposable } from "@elllphnt/elementa-utils";
+import { Lifecycle } from "@elllphnt/elementa-kernel";
+import { File } from "@elllphnt/elementa-models";
 import { BehaviorSubject, debounceTime, map, Observable } from "rxjs";
 import {
   Diagnostic,
@@ -20,7 +20,7 @@ export const nullModuleState: ModuleState = {
   dependencies: [],
 };
 
-export class Module extends Disposable implements Diagnosticable {
+export class Module extends Lifecycle implements Diagnosticable {
   readonly file: File;
   private readonly _evaluate: (url: string) => Promise<void>;
 

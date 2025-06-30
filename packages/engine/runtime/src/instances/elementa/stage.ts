@@ -1,5 +1,6 @@
-import { ElementaStage } from "@elllphnt/elementa-core";
-import { combineLatestOrEmpty, reconcileList } from "@elllphnt/elementa-utils";
+import { reconcileList } from "@elllphnt/elementa-kernel";
+import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
+import { ElementaStage } from "@elllphnt/elementa-models";
 import {
   BehaviorSubject,
   combineLatest,
@@ -7,9 +8,9 @@ import {
   Observable,
   switchMap,
 } from "rxjs";
-import { Runtime } from "../../../runtime/runtime.js";
-import { Instance } from "../../instance.js";
-import { ModelInstance } from "../../model.js";
+import { Runtime } from "~/runtime/runtime.js";
+import { Instance } from "../instance.js";
+import { ModelInstance } from "../model.js";
 import { ElementaEditorInstanceType } from "./_types.js";
 import { ElementaFrameInstance } from "./frame.js";
 

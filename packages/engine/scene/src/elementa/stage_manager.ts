@@ -1,4 +1,4 @@
-import { ElementaPreview, ElementaStage } from "@elllphnt/elementa-core";
+import { ElementaPreview, ElementaStage } from "@elllphnt/elementa-models";
 import {
   ElementaPreviewInstance,
   ElementaStageInstance,
@@ -6,15 +6,11 @@ import {
 } from "@elllphnt/elementa-runtime";
 import React, { createElement } from "react";
 import { createRoot } from "react-dom/client";
-import {
-  ElementaPreviewComponent,
-  ElementaStageComponent,
-} from "../components/_.js";
-import {
-  ElementaPreviewRenderable,
-  ElementaStageRenderable,
-  Renderable,
-} from "../renderables/_.js";
+import ElementaPreviewComponent from "../components/elementa/preview.js";
+import { ElementaStageComponent } from "../components/elementa/stage.js";
+import { ElementaPreviewRenderable } from "../renderables/elementa/preview/preview.js";
+import { ElementaStageRenderable } from "../renderables/elementa/stage/stage.js";
+import { Renderable } from "../renderables/renderable.js";
 import { Scene } from "../scene/scene.js";
 
 export class ElementaRenderableManager {

@@ -1,13 +1,11 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { JSX, memo, PropsWithChildren } from "react";
 import { ComponentRenderable } from "../../renderables/component/component.js";
-import { ElementComponent } from "../elements/_.js";
-import {
-  PropsNamespaceProvider,
-  StatesNamespaceProvider,
-} from "../namespaces/_.js";
+import ElementComponent from "../elements/element.js";
 import { ChildrenNamespaceProvider } from "../namespaces/children.js";
 import { FragmentsNamespaceProvider } from "../namespaces/fragments.js";
+import { PropsNamespaceProvider } from "../namespaces/props.js";
+import { StatesNamespaceProvider } from "../namespaces/states/states.js";
 
 export const ComponentComponent = memo(function ({
   component,

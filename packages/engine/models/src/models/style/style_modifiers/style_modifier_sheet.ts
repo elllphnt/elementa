@@ -2,17 +2,14 @@ import {
   StyleModifierDefinitionData,
   StyleModifierSheetData,
 } from "@elllphnt/elementa-base";
-import { Model, RecordState } from "@elllphnt/elementa-kernel";
+import { RecordState } from "@elllphnt/elementa-kernel";
 import { map, Observable } from "rxjs";
-import { File } from "~/project/file/file.js";
+import { ProjectModel } from "~/models/project.js";
 import { Project } from "~/project/project.js";
 
-export class StyleModifierSheet extends Model<
+export class StyleModifierSheet extends ProjectModel<
   RecordState<StyleModifierSheetData>
 > {
-  project: Project;
-  file: File;
-
   get modifiers(): StyleModifierDefinitionData[] {
     return this.state.entry("modifiers") || [];
   }
@@ -24,15 +21,12 @@ export class StyleModifierSheet extends Model<
 
   constructor({
     state,
-    file,
+    project,
   }: {
     state: RecordState<StyleModifierSheetData>;
-    file: File;
+    project: Project;
   }) {
-    super({ state });
-
-    this.project = file.project;
-    this.file = file;
+    super({ state, project });
   }
 
   addModifier(definition: StyleModifierDefinitionData): void {

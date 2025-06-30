@@ -51,14 +51,14 @@ export class Fragment extends Identifiable<FragmentData> {
   }
 
   get allCssStylesheets() {
-    return [...this.content.flatMap((c: any) => c.allCssStylesheets || [])];
+    return [...this.content.flatMap((c) => c.allCssStylesheets || [])];
   }
 
   get allCssStylesheets$() {
     return combineLatestArrays([
       this.content$.pipe(
         switchMap((c) =>
-          combineLatestOrEmpty(c.map((c: any) => c.allCssStylesheets$ || []))
+          combineLatestOrEmpty(c.map((c) => c.allCssStylesheets$ || []))
         ),
         map((c) => c.flat())
       ),
@@ -66,7 +66,7 @@ export class Fragment extends Identifiable<FragmentData> {
   }
 
   get slotIds(): string[] {
-    return this.content.flatMap((c: any) => c.slotIds || []);
+    return this.content.flatMap((c) => c.slotIds || []);
   }
 
   get slotIds$(): Observable<string[]> {
@@ -83,12 +83,12 @@ export class Fragment extends Identifiable<FragmentData> {
     state: RecordState<FragmentData>;
     environment: ElementEnvironment;
   }) {
-    super({ state });
+    super({ state, project: environment.project });
 
     this.environment = environment;
 
     this._content = new AggregatedModelList<RecordState<ElementData>, Element>({
-      state: state.getAggregatedStateList("content"),
+      state: state.getListOfRecordStates("content"),
       create: (state) => {
         return createElement({ state, environment });
       },
@@ -97,7 +97,7 @@ export class Fragment extends Identifiable<FragmentData> {
       RecordState<DataInputData>,
       DataInput
     >({
-      state: state.getAggregatedStateList("params"),
+      state: state.getListOfRecordStates("params"),
       create: (state) => {
         return new DataInput({ state });
       },

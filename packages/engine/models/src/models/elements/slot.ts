@@ -36,7 +36,7 @@ export class SlotElement extends BaseElement<SlotElementData> {
     super({ state, type: "slot", environment, initialized });
 
     this._placeholder = new AggregatedModelList({
-      state: state.getAggregatedStateList("placeholder"),
+      state: state.getListOfRecordStates("placeholder"),
       create: (state) =>
         createElement({
           state,

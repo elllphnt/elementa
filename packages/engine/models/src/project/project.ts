@@ -7,9 +7,9 @@ import {
 import { Lifecycle } from "@elllphnt/elementa-kernel";
 import { Observable } from "rxjs";
 import { Infrastructure } from "../infrastructure/infrastructure.js";
+import { FileModelTypeName, fileModelTypes } from "../models/types.js";
 import { Content } from "./file/content.js";
 import { File, FileReference } from "./file/file.js";
-import { FileModelType, fileModelTypes } from "./file/file_types.js";
 import {
   FileModelAdaptor,
   FileReferenceModelAdaptor,
@@ -80,7 +80,7 @@ export abstract class Project<F extends File = File> extends Lifecycle {
   });
 
   abstract file(id: string): F;
-  abstract fileModelAdaptor<T extends FileModelType>(
+  abstract fileModelAdaptor<T extends FileModelTypeName>(
     modelType: T,
     fileId: string
   ): FileModelAdaptor<T, F>;

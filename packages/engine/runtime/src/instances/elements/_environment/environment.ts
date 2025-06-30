@@ -1,10 +1,10 @@
 import { StyleModifierData } from "@elllphnt/elementa-base";
-import { Disposable } from "@elllphnt/elementa-utils";
+import { Lifecycle } from "@elllphnt/elementa-kernel";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Runtime } from "../../../runtime/runtime.js";
 import { Namespace } from "../../namespace/namespace.js";
 
-export abstract class ElementRuntimeEnvironment extends Disposable {
+export abstract class ElementRuntimeEnvironment extends Lifecycle {
   readonly runtime: Runtime;
 
   private _namespace$ = new BehaviorSubject<Namespace>(new Namespace());

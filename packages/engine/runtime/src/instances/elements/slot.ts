@@ -1,5 +1,6 @@
-import { SlotElement } from "@elllphnt/elementa-core";
-import { combineLatestOrEmpty, reconcileList } from "@elllphnt/elementa-utils";
+import { reconcileList } from "@elllphnt/elementa-kernel";
+import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
+import { SlotElement } from "@elllphnt/elementa-models";
 import {
   BehaviorSubject,
   combineLatest,

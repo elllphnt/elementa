@@ -1,16 +1,13 @@
-import { CssStyleRule } from "@elllphnt/elementa-core";
 import { CssStyleData } from "@elllphnt/elementa-css";
-import {
-  DeepPartial,
-  Disposable,
-  pairwiseOrEmpty,
-} from "@elllphnt/elementa-utils";
+import { Lifecycle } from "@elllphnt/elementa-kernel";
+import { DeepPartial, pairwiseOrEmpty } from "@elllphnt/elementa-lang-utils";
+import { CssStyleRule } from "@elllphnt/elementa-models";
 import { diff } from "deep-object-diff";
 import { Subject } from "rxjs";
 import { getCssStyleRuleFromStylesheet } from "./_lib.js";
 import { RuleDomStyleSheetAdaptor } from "./rule.js";
 
-export class StyleRuleDomAdaptor extends Disposable {
+export class StyleRuleDomAdaptor extends Lifecycle {
   readonly styleSheetAdaptor: RuleDomStyleSheetAdaptor;
   readonly styleRule: CssStyleRule;
 
@@ -160,6 +157,7 @@ export class StyleRuleDomAdaptor extends Disposable {
       if (typeof value === "object") {
         this.patchSubCssStyleRule(cssStyleRule, property, value);
       } else if (value === undefined) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         cssStyleRule.style.removeProperty(property) ||
           this.patchSubCssStyleRule(cssStyleRule, property, undefined);
       } else {

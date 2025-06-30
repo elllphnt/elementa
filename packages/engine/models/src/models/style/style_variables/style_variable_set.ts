@@ -8,6 +8,7 @@ import {
 import { AggregatedModelList, RecordState } from "@elllphnt/elementa-kernel";
 import { map, Observable } from "rxjs";
 import { Identifiable } from "~/models/identifiable.js";
+import { Project } from "~/project/project.js";
 import { StyleVariable } from "./style_variable.js";
 
 export class StyleVariableSet extends Identifiable<StyleVariableSetData> {
@@ -55,18 +56,20 @@ export class StyleVariableSet extends Identifiable<StyleVariableSetData> {
   constructor({
     state,
     initialized,
+    project,
   }: {
     state: RecordState<StyleVariableSetData>;
     initialized?: boolean;
+    project: Project;
   }) {
-    super({ state });
+    super({ state, project });
 
     if (!initialized) {
       state.set("id", genId());
     }
 
     this._variables = new AggregatedModelList({
-      state: state.getAggregatedStateList("variables"),
+      state: state.getListOfRecordStates("variables"),
       create: (state) =>
         new StyleVariable({
           state,

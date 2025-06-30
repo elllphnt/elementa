@@ -1,10 +1,8 @@
 import { JSX } from "react";
-import {
-  ComponentRenderableContentRenderable,
-  FragmentRenderableContentRenderable,
-  RenderableContentRenderable,
-  RouterRenderableContentRenderable,
-} from "../../../renderables/_.js";
+import { RenderableContentRenderable } from "../../../renderables/elementa/renderable_content/_create.js";
+import { ComponentRenderableContentRenderable } from "../../../renderables/elementa/renderable_content/component.js";
+import { FragmentRenderableContentRenderable } from "../../../renderables/elementa/renderable_content/fragment.js";
+import { RouterRenderableContentRenderable } from "../../../renderables/elementa/renderable_content/router.js";
 import { ComponentRenderableContentComponent } from "./component.js";
 import { FragmentRenderableContentComponent } from "./fragment.js";
 import { RouterRenderableContentComponent } from "./router.js";

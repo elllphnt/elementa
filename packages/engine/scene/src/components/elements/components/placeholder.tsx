@@ -1,4 +1,4 @@
-import { Component } from "@elllphnt/elementa-core";
+import { Component } from "@elllphnt/elementa-models";
 import { ComponentElementRenderable } from "../../../renderables/element/component.js";
 import { Renderable } from "../../../renderables/renderable.js";
 

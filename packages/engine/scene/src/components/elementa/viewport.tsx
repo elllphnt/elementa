@@ -1,4 +1,5 @@
-import { combineLatestOrEmpty, VectorData } from "@elllphnt/elementa-utils";
+import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
+import { VectorData } from "@elllphnt/elementa-math-utils";
 import {
   JSX,
   memo,
@@ -8,7 +9,7 @@ import {
   useLayoutEffect,
   useRef,
 } from "react";
-import { ElementaStageRenderable } from "../../renderables/_.js";
+import { ElementaStageRenderable } from "../../renderables/elementa/stage/stage.js";
 
 export const Viewport = memo(function Viewport({
   stage,

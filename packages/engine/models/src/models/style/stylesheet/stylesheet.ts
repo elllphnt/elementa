@@ -3,20 +3,14 @@ import {
   StyleData,
   StyleSheetData,
 } from "@elllphnt/elementa-base";
-import {
-  AggregatedModelRecord,
-  Model,
-  RecordState,
-} from "@elllphnt/elementa-kernel";
+import { AggregatedModelRecord, RecordState } from "@elllphnt/elementa-kernel";
 import { filter, map, Observable, tap } from "rxjs";
-import { File } from "~/project/file/file.js";
+import { ProjectModel } from "~/models/project.js";
 import { Project } from "~/project/project.js";
 import { Style } from "./style.js";
 import { StyleFragmentRegistry } from "./style_fragment_registry.js";
 
-export class Stylesheet extends Model<RecordState<StyleSheetData>> {
-  readonly project: Project;
-  readonly file: File | undefined;
+export class Stylesheet extends ProjectModel<RecordState<StyleSheetData>> {
   readonly fragmentRegistry: StyleFragmentRegistry;
 
   private _styles: AggregatedModelRecord<RecordState<StyleData>, Style>;
@@ -27,25 +21,13 @@ export class Stylesheet extends Model<RecordState<StyleSheetData>> {
 
   constructor({
     state,
-    ...args
-  }:
-    | {
-        state: RecordState<StyleSheetData>;
-        file: File;
-      }
-    | {
-        state: RecordState<StyleSheetData>;
-        project: Project;
-        initialized?: boolean;
-      }) {
-    super({ state });
-
-    if ("file" in args) {
-      this.file = args.file;
-      this.project = args.file.project;
-    } else {
-      this.project = args.project;
-    }
+    project,
+  }: {
+    state: RecordState<StyleSheetData>;
+    project: Project;
+    initialized?: boolean;
+  }) {
+    super({ state, project });
 
     this.fragmentRegistry = new StyleFragmentRegistry<"fragments">({
       state,
@@ -53,7 +35,7 @@ export class Stylesheet extends Model<RecordState<StyleSheetData>> {
     });
 
     this._styles = new AggregatedModelRecord({
-      state: state.getAggregatedStateRecord("styles"),
+      state: state.getRecordOfRecordStates("styles"),
       create: (state, key) =>
         new Style({
           state,
@@ -83,7 +65,7 @@ export class Stylesheet extends Model<RecordState<StyleSheetData>> {
     let style = this._styles.models[selector];
 
     if (!style && create) {
-      const state = this._styles.state.entry(selector, true);
+      const state = this.state.backend.createRecordState<StyleData>();
       style = new Style({
         state,
         project: this.project,
@@ -104,8 +86,9 @@ export class Stylesheet extends Model<RecordState<StyleSheetData>> {
       map((record) => record[selector]),
       tap((style) => {
         if (!style && create) {
+          const state = this.state.backend.createRecordState<StyleData>();
           const newStyle = new Style({
-            state: this._styles.state.entry(selector, true),
+            state,
             project: this.project,
             selector,
             fragmentRegistry: this.fragmentRegistry,
@@ -156,8 +139,9 @@ export class Stylesheet extends Model<RecordState<StyleSheetData>> {
 
   addStyle(selector: string): void {
     if (!this._styles.models[selector]) {
+      const state = this.state.backend.createRecordState<StyleData>();
       const style = new Style({
-        state: this._styles.state.entry(selector, true),
+        state,
         project: this.project,
         selector,
         fragmentRegistry: this.fragmentRegistry,

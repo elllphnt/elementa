@@ -1,4 +1,4 @@
-import { TextCssStyleSheet } from "@elllphnt/elementa-core";
+import { TextCssStyleSheet } from "@elllphnt/elementa-models";
 import { of } from "rxjs";
 
 const text = /*css*/ `

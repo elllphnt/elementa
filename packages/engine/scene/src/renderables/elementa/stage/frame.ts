@@ -10,7 +10,7 @@ import { Renderable } from "../../renderable.js";
 import {
   createRenderableContentRenderable,
   RenderableContentRenderable,
-} from "../renderable_content/_.js";
+} from "../renderable_content/_create.js";
 
 export class ElementaFrameRenderable extends Renderable {
   readonly instance: ElementaFrameInstance;

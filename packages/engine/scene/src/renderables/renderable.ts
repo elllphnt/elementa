@@ -1,8 +1,8 @@
-import { Disposable, keyManager } from "@elllphnt/elementa-utils";
+import { Lifecycle, keyManager } from "@elllphnt/elementa-kernel";
 import { BehaviorSubject, combineLatest, map } from "rxjs";
 import { Scene } from "../scene/scene.js";
 
-export abstract class Renderable extends Disposable {
+export abstract class Renderable extends Lifecycle {
   static defaultHtmlElementKey = "__default__";
 
   readonly key = keyManager.next("renderable");

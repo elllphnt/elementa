@@ -6,6 +6,7 @@ import {
 import { RecordState } from "@elllphnt/elementa-kernel";
 import { map, Observable } from "rxjs";
 import { Identifiable } from "~/models/identifiable.js";
+import { Project } from "~/project/project.js";
 
 export class Typeface extends Identifiable<TypefaceData> {
   get name(): string {
@@ -37,11 +38,13 @@ export class Typeface extends Identifiable<TypefaceData> {
   constructor({
     state,
     initialized,
+    project,
   }: {
     state: RecordState<TypefaceData>;
     initialized?: boolean;
+    project: Project;
   }) {
-    super({ state });
+    super({ state, project });
 
     if (!initialized) {
       state.set("id", genId());
