@@ -4,6 +4,7 @@ import { map, Observable } from "rxjs";
 import { ProjectModel } from "~/models/project.js";
 import { File } from "~/project/file/file.js";
 import { FileModelAdaptor } from "~/project/file/model_adaptor.js";
+import { modelsLogger } from "../../../loggers.js";
 import { ColorSchemeSet } from "./color_scheme_set.js";
 import { ViewportSet } from "./viewport_set.js";
 
@@ -44,6 +45,12 @@ export class StyleSystem extends ProjectModel<RecordState<StyleSystemData>> {
   }) {
     super({ state, project });
 
+    modelsLogger.info("Creating style system", {
+      projectId: project.id,
+      initialized: initialized ?? false,
+      stylesheetUrlsCount: this.stylesheetUrls.length,
+    });
+
     this.colorSchemes = new ColorSchemeSet({
       state: state.getRecordState("colorSchemes"),
     });
@@ -53,10 +60,21 @@ export class StyleSystem extends ProjectModel<RecordState<StyleSystemData>> {
     });
 
     this.addInitializer(() => {
+      modelsLogger.debug("Initializing style system models", {
+        projectId: project.id,
+        stylesheetUrlsCount: this.stylesheetUrls.length,
+        hasColorSchemes: !!this.colorSchemes,
+        hasViewports: !!this.viewports,
+      });
+
       this.colorSchemes.initialize();
       this.viewports.initialize();
 
       this.addDisposer(() => {
+        modelsLogger.debug("Disposing style system models", {
+          projectId: project.id,
+          stylesheetUrlsCount: this.stylesheetUrls.length,
+        });
         this.colorSchemes.dispose();
         this.viewports.dispose();
       });
@@ -66,15 +84,40 @@ export class StyleSystem extends ProjectModel<RecordState<StyleSystemData>> {
   addStylesheet(url: string): void {
     const stylesheets = this.stylesheetUrls;
     if (!stylesheets.includes(url)) {
+      modelsLogger.info("Adding stylesheet to style system", {
+        projectId: this.project.id,
+        url,
+        totalStylesheets: stylesheets.length + 1,
+      });
       this.state.set("stylesheetUrls", [...stylesheets, url]);
+    } else {
+      modelsLogger.warn("Attempted to add duplicate stylesheet", {
+        projectId: this.project.id,
+        url,
+        totalStylesheets: stylesheets.length,
+      });
     }
   }
 
   removeStylesheet(url: string): void {
     const stylesheets = this.stylesheetUrls;
-    this.state.set(
-      "stylesheetUrls",
-      stylesheets.filter((s) => s !== url)
-    );
+    const filteredStylesheets = stylesheets.filter((s) => s !== url);
+
+    if (filteredStylesheets.length < stylesheets.length) {
+      modelsLogger.info("Removing stylesheet from style system", {
+        projectId: this.project.id,
+        url,
+        totalStylesheetsBefore: stylesheets.length,
+        totalStylesheetsAfter: filteredStylesheets.length,
+      });
+    } else {
+      modelsLogger.warn("Attempted to remove non-existent stylesheet", {
+        projectId: this.project.id,
+        url,
+        totalStylesheets: stylesheets.length,
+      });
+    }
+
+    this.state.set("stylesheetUrls", filteredStylesheets);
   }
 }

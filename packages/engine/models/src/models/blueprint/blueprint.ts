@@ -2,6 +2,7 @@ import { BlueprintData, genId } from "@elllphnt/elementa-base";
 import { AggregatedModelList, RecordState } from "@elllphnt/elementa-kernel";
 import { Observable, distinctUntilChanged, map } from "rxjs";
 import { Project } from "~/project/project.js";
+import { modelsLogger } from "../../loggers.js";
 import { ProjectModel } from "../project.js";
 import { BlueprintNode } from "./node.js";
 
@@ -26,6 +27,11 @@ export class Blueprint extends ProjectModel<RecordState<BlueprintData>> {
   }) {
     super({ state, project });
 
+    modelsLogger.info("Creating blueprint", {
+      projectId: project.id,
+      initialized: initialized ?? false,
+    });
+
     this._nodes = new AggregatedModelList({
       state: state.getListOfRecordStates("nodes"),
       create: (itemState) =>
@@ -33,9 +39,17 @@ export class Blueprint extends ProjectModel<RecordState<BlueprintData>> {
     });
 
     this.addInitializer(() => {
+      modelsLogger.debug("Initializing blueprint nodes", {
+        projectId: project.id,
+        nodeCount: this._nodes.models.length,
+      });
       this._nodes.initialize();
 
       this.addDisposer(() => {
+        modelsLogger.debug("Disposing blueprint model", {
+          projectId: project.id,
+          nodeCount: this._nodes.models.length,
+        });
         this._nodes.dispose();
       });
     });
@@ -47,6 +61,12 @@ export class Blueprint extends ProjectModel<RecordState<BlueprintData>> {
     const existing = this._nodes.models.find((n) => n.id === id);
     if (existing || !create) return existing;
 
+    modelsLogger.debug("Creating new blueprint node", {
+      nodeId: id,
+      projectId: this.project.id,
+      totalNodes: this._nodes.models.length,
+    });
+
     const nodeData = {
       id: genId(),
       position: { x: 0, y: 0 },
@@ -56,6 +76,13 @@ export class Blueprint extends ProjectModel<RecordState<BlueprintData>> {
       project: this.project,
     });
     this._nodes.add(node);
+
+    modelsLogger.debug("Blueprint node created and added", {
+      nodeId: id,
+      projectId: this.project.id,
+      totalNodes: this._nodes.models.length,
+    });
+
     return node;
   }
 
@@ -75,7 +102,24 @@ export class Blueprint extends ProjectModel<RecordState<BlueprintData>> {
   removeNode(id: string): void {
     const index = this._nodes.models.findIndex((n) => n.id === id);
     if (index >= 0) {
+      modelsLogger.debug("Removing blueprint node", {
+        nodeId: id,
+        nodeIndex: index,
+        projectId: this.project.id,
+        totalNodesBefore: this._nodes.models.length,
+      });
       this._nodes.removeAt(index, 1);
+      modelsLogger.debug("Blueprint node removed", {
+        nodeId: id,
+        projectId: this.project.id,
+        totalNodesAfter: this._nodes.models.length,
+      });
+    } else {
+      modelsLogger.warn("Attempted to remove non-existent blueprint node", {
+        nodeId: id,
+        projectId: this.project.id,
+        totalNodes: this._nodes.models.length,
+      });
     }
   }
 }

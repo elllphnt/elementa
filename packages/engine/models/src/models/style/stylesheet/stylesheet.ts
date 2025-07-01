@@ -7,6 +7,7 @@ import { AggregatedModelRecord, RecordState } from "@elllphnt/elementa-kernel";
 import { filter, map, Observable, tap } from "rxjs";
 import { ProjectModel } from "~/models/project.js";
 import { Project } from "~/project/project.js";
+import { modelsLogger } from "../../../loggers.js";
 import { Style } from "./style.js";
 import { StyleFragmentRegistry } from "./style_fragment_registry.js";
 
@@ -29,6 +30,13 @@ export class Stylesheet extends ProjectModel<RecordState<StyleSheetData>> {
   }) {
     super({ state, project });
 
+    modelsLogger.info("Creating stylesheet", {
+      state,
+      className: this.className,
+      projectId: project.id,
+      key: this.key,
+    });
+
     this.fragmentRegistry = new StyleFragmentRegistry<"fragments">({
       state,
       propertyKey: "fragments",
@@ -46,10 +54,20 @@ export class Stylesheet extends ProjectModel<RecordState<StyleSheetData>> {
     });
 
     this.addInitializer(() => {
+      modelsLogger.debug("Initializing stylesheet models", {
+        className: this.className,
+        projectId: project.id,
+        stylesCount: Object.keys(this._styles.models).length,
+      });
       this.fragmentRegistry.initialize();
       this._styles.initialize();
 
       this.addDisposer(() => {
+        modelsLogger.debug("Disposing stylesheet models", {
+          className: this.className,
+          projectId: project.id,
+          stylesCount: Object.keys(this._styles.models).length,
+        });
         this._styles.dispose();
         this.fragmentRegistry.dispose();
       });
@@ -70,6 +88,13 @@ export class Stylesheet extends ProjectModel<RecordState<StyleSheetData>> {
     let style = this._styles.models[selector];
 
     if (!style && create) {
+      modelsLogger.debug("Creating new style for selector", {
+        selector,
+        className: this.className,
+        projectId: this.project.id,
+        totalStyles: Object.keys(this._styles.models).length,
+      });
+
       const state = this.state.backend.createRecordState<StyleData>();
       style = new Style({
         state,
@@ -79,6 +104,13 @@ export class Stylesheet extends ProjectModel<RecordState<StyleSheetData>> {
       });
 
       this._styles.set(selector, style);
+
+      modelsLogger.debug("Style created and added", {
+        selector,
+        className: this.className,
+        projectId: this.project.id,
+        totalStyles: Object.keys(this._styles.models).length,
+      });
     }
 
     return style;

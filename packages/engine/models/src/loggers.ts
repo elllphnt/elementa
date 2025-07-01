@@ -7,5 +7,5 @@ export const modelsLogger = logger.child((log) => ({
 
 export const projectLogger = logger.child((log) => ({
   ...log,
-  message: `[models] ${log.message}`,
+  message: `[project] ${log.message}`,
 }));

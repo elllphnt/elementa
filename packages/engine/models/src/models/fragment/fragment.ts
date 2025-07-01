@@ -9,6 +9,7 @@ import {
   combineLatestOrEmpty,
 } from "@elllphnt/elementa-lang-utils";
 import { map, Observable, switchMap } from "rxjs";
+import { modelsLogger } from "../../loggers.js";
 import { createElement, Element } from "../elements/_element.js";
 import { ElementEnvironment } from "../elements/_environment.js";
 import { Identifiable } from "../identifiable.js";
@@ -87,6 +88,14 @@ export class Fragment extends Identifiable<FragmentData> {
   }) {
     super({ state, project: environment.project, initialized });
 
+    modelsLogger.info("Creating fragment", {
+      fragmentId: this.id,
+      projectId: environment.project.id,
+      initialized: initialized ?? false,
+      hasName: !!this.name,
+      varName: this.varName,
+    });
+
     this.environment = environment;
 
     this._content = new AggregatedModelList<RecordState<ElementData>, Element>({
@@ -106,10 +115,24 @@ export class Fragment extends Identifiable<FragmentData> {
     });
 
     this.addInitializer(() => {
+      modelsLogger.debug("Initializing fragment models", {
+        fragmentId: this.id,
+        fragmentName: this.name,
+        contentCount: this._content.models.length,
+        paramsCount: this._params.models.length,
+        slotIdsCount: this.slotIds.length,
+      });
+
       this._content.initialize();
       this._params.initialize();
 
       this.addDisposer(() => {
+        modelsLogger.debug("Disposing fragment models", {
+          fragmentId: this.id,
+          fragmentName: this.name,
+          contentCount: this._content.models.length,
+          paramsCount: this._params.models.length,
+        });
         this._content.dispose();
         this._params.dispose();
       });

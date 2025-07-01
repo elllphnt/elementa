@@ -5,6 +5,7 @@ import {
 } from "@elllphnt/elementa-base";
 import { Model, OptionalModel, RecordState } from "@elllphnt/elementa-kernel";
 import { Observable, map } from "rxjs";
+import { modelsLogger } from "../../loggers.js";
 import { ElementaEnvironment } from "./environment.js";
 import {
   RenderableContent,
@@ -79,6 +80,12 @@ export class ElementaPreview extends Model<
   }) {
     super({ state });
 
+    modelsLogger.info("Creating elementa preview", {
+      projectId: environment.project.id,
+      hostUrl: environment.hostUrl,
+      hasCorners: !!this.corners,
+    });
+
     this.environment = environment;
 
     // TODO: Initialize context with backend-agnostic state
@@ -97,10 +104,21 @@ export class ElementaPreview extends Model<
     });
 
     this.addInitializer(() => {
+      modelsLogger.debug("Initializing elementa preview models", {
+        projectId: environment.project.id,
+        hasContent: !!this._content.model,
+        hasContext: !!this.context,
+        corners: this.corners,
+      });
+
       this.context.initialize();
       this._content.initialize();
 
       this.addDisposer(() => {
+        modelsLogger.debug("Disposing elementa preview models", {
+          projectId: environment.project.id,
+          hasContent: !!this._content.model,
+        });
         this._content.dispose();
         this.context.dispose();
       });

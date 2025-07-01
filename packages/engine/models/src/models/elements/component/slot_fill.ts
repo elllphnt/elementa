@@ -12,6 +12,7 @@ import { map, Observable, of, switchMap } from "rxjs";
 import { CssStyleSheet } from "~/css/lib/stylesheet.js";
 import { StylesheetCssStyleSheet } from "~/css/stylesheets/stylesheet/stylesheet.js";
 import { Project } from "~/project/project.js";
+import { modelsLogger } from "../../../loggers.js";
 import { Stylesheet } from "../../style/stylesheet/stylesheet.js";
 import { createElement, Element } from "../_element.js";
 import { ElementEnvironment } from "../_environment.js";
@@ -73,6 +74,13 @@ export class SlotFill extends Model<RecordState<SlotFillData>> {
   }) {
     super({ state });
 
+    modelsLogger.info("Creating slot fill", {
+      slotFillKey: this.key,
+      projectId: environment.project.id,
+      cssStyleSheetTarget: cssStyleSheetTarget || this.key,
+      hasInteractions: !!this.interactions,
+    });
+
     this.environment = environment;
 
     this._stylesheet = new Stylesheet({
@@ -96,10 +104,22 @@ export class SlotFill extends Model<RecordState<SlotFillData>> {
     });
 
     this.addInitializer(() => {
+      modelsLogger.debug("Initializing slot fill models", {
+        slotFillKey: this.key,
+        projectId: environment.project.id,
+        contentCount: this._content.models.length,
+        interactionsCount: Object.keys(this.interactions || {}).length,
+      });
+
       this._stylesheet.initialize();
       this._content.initialize();
 
       this.addDisposer(() => {
+        modelsLogger.debug("Disposing slot fill models", {
+          slotFillKey: this.key,
+          projectId: environment.project.id,
+          contentCount: this._content.models.length,
+        });
         this._stylesheet.dispose();
         this.cssStyleSheet.dispose();
         this._content.dispose();

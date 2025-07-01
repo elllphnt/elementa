@@ -5,6 +5,7 @@ import {
   RecordState,
 } from "@elllphnt/elementa-kernel";
 import { Observable } from "rxjs";
+import { modelsLogger } from "../../loggers.js";
 import { ElementaEnvironment } from "./environment.js";
 
 export class ElementaStage extends Model<RecordState<ElementaStageData>> {
@@ -31,6 +32,11 @@ export class ElementaStage extends Model<RecordState<ElementaStageData>> {
   }) {
     super({ state });
 
+    modelsLogger.info("Creating elementa stage", {
+      projectId: environment.project.id,
+      hostUrl: environment.hostUrl,
+    });
+
     this.environment = environment;
 
     // TODO: Implement proper aggregated model list for frames
@@ -43,9 +49,18 @@ export class ElementaStage extends Model<RecordState<ElementaStageData>> {
     });
 
     this.addInitializer(() => {
+      modelsLogger.debug("Initializing elementa stage frames", {
+        projectId: environment.project.id,
+        framesCount: this._frames.models.length,
+      });
+
       this._frames.initialize();
 
       this.addDisposer(() => {
+        modelsLogger.debug("Disposing elementa stage frames", {
+          projectId: environment.project.id,
+          framesCount: this._frames.models.length,
+        });
         this._frames.dispose();
       });
     });

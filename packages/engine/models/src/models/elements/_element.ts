@@ -31,26 +31,40 @@ export function createElement({
   initialized?: boolean;
 }): Element {
   const type = state.entry("type");
+  let element: Element;
+
   switch (type) {
     case "container":
-      return new ContainerElement({ state, environment, initialized });
+      element = new ContainerElement({ state, environment, initialized });
+      break;
     case "text":
-      return new TextElement({ state, environment, initialized });
+      element = new TextElement({ state, environment, initialized });
+      break;
     case "vector":
-      return new VectorElement({ state, environment, initialized });
+      element = new VectorElement({ state, environment, initialized });
+      break;
     case "slot":
-      return new SlotElement({ state, environment, initialized });
+      element = new SlotElement({ state, environment, initialized });
+      break;
     case "media":
-      return new MediaElement({ state, environment, initialized });
+      element = new MediaElement({ state, environment, initialized });
+      break;
     case "component":
-      return new ComponentElement({ state, environment, initialized });
+      element = new ComponentElement({ state, environment, initialized });
+      break;
     case "primitive":
-      return new PrimitiveElement({ state, environment, initialized });
+      element = new PrimitiveElement({ state, environment, initialized });
+      break;
     case "fragment":
-      return new FragmentElement({ state, environment, initialized });
+      element = new FragmentElement({ state, environment, initialized });
+      break;
     case "expression":
-      return new ExpressionElement({ state, environment, initialized });
+      element = new ExpressionElement({ state, environment, initialized });
+      break;
     default:
       throw new Error(`Unknown element type: ${type}`);
   }
+
+  element.initialize();
+  return element;
 }

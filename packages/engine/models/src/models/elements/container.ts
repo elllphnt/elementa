@@ -6,6 +6,7 @@ import {
 } from "@elllphnt/elementa-lang-utils";
 import { map, Observable, of, switchMap } from "rxjs";
 import { CssStyleSheet } from "~/css/lib/stylesheet.js";
+import { modelsLogger } from "../../loggers.js";
 import { BaseElement } from "./_base.js";
 import { createElement, Element } from "./_element.js";
 import { ElementEnvironment } from "./_environment.js";
@@ -61,6 +62,13 @@ export class ContainerElement extends BaseElement<ContainerElementData> {
   }) {
     super({ state, type: "container", environment, initialized });
 
+    modelsLogger.info("Creating container element", {
+      elementId: this.id,
+      elementType: this.type,
+      projectId: environment.project.id,
+      initialized: initialized ?? false,
+    });
+
     this._content = new AggregatedModelList<RecordState<any>, Element>({
       state: state.getListOfRecordStates("content"),
       create: (state) =>
@@ -72,9 +80,19 @@ export class ContainerElement extends BaseElement<ContainerElementData> {
     });
 
     this.addInitializer(() => {
+      modelsLogger.debug("Initializing container element content", {
+        elementId: this.id,
+        contentCount: this._content.models.length,
+        slotIdsCount: this.slotIds.length,
+        stylesheetsCount: this.allCssStylesheets.length,
+      });
       this._content.initialize();
 
       this.addDisposer(() => {
+        modelsLogger.debug("Disposing container element content", {
+          elementId: this.id,
+          contentCount: this._content.models.length,
+        });
         this._content.dispose();
       });
     });

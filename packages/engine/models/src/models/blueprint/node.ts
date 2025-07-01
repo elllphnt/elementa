@@ -3,6 +3,7 @@ import { RecordState } from "@elllphnt/elementa-kernel";
 import { Observable } from "rxjs";
 import { Identifiable } from "~/models/identifiable.js";
 import { Project } from "~/project/project.js";
+import { modelsLogger } from "../../loggers.js";
 
 export class BlueprintNode extends Identifiable<BlueprintNodeData> {
   constructor({
@@ -16,9 +17,24 @@ export class BlueprintNode extends Identifiable<BlueprintNodeData> {
   }) {
     super({ state, project });
 
+    modelsLogger.info("Creating blueprint node", {
+      nodeId: this.id,
+      projectId: project.id,
+      initialized: initialized ?? false,
+      position: this.position,
+    });
+
     if (!initialized) {
-      state.set("id", genId());
-      state.set("position", { x: 0, y: 0 });
+      const newId = genId();
+      const newPosition = { x: 0, y: 0 };
+      state.set("id", newId);
+      state.set("position", newPosition);
+
+      modelsLogger.debug("Initializing new blueprint node", {
+        nodeId: newId,
+        projectId: project.id,
+        position: newPosition,
+      });
     }
   }
 
@@ -31,6 +47,21 @@ export class BlueprintNode extends Identifiable<BlueprintNodeData> {
   }
 
   setPosition(pos: { x: number; y: number }) {
+    const oldPosition = this.position;
+    modelsLogger.debug("Setting blueprint node position", {
+      nodeId: this.id,
+      projectId: this.project.id,
+      oldPosition,
+      newPosition: pos,
+      positionChanged: oldPosition.x !== pos.x || oldPosition.y !== pos.y,
+    });
+
     this.state.set("position", pos);
+
+    modelsLogger.info("Blueprint node position updated", {
+      nodeId: this.id,
+      projectId: this.project.id,
+      position: pos,
+    });
   }
 }

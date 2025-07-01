@@ -148,10 +148,8 @@ export abstract class BaseElement<
       this.state.set("type" as keyof T, type as T[keyof T]);
     }
 
-    // TODO: Initialize stylesheet with backend-agnostic state
-    // For now, create a basic stylesheet - this needs proper initialization
     this._stylesheet = new Stylesheet({
-      state: state as any, // TODO: Fix proper stylesheet state initialization
+      state: state.getRecordState("stylesheet" as any),
       project: environment.project,
     });
 
