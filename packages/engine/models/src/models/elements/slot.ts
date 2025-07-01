@@ -41,11 +41,16 @@ export class SlotElement extends BaseElement<SlotElementData> {
         createElement({
           state,
           environment: this.environment,
+          initialized: true,
         }),
     });
 
-    this.addDisposer(() => {
-      this._placeholder.dispose();
+    this.addInitializer(() => {
+      this._placeholder.initialize();
+
+      this.addDisposer(() => {
+        this._placeholder.dispose();
+      });
     });
   }
 }

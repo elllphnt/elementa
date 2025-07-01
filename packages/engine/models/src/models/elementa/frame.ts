@@ -78,12 +78,14 @@ export class ElementaFrame extends Identifiable<
     state,
     stage,
     project,
+    initialized,
   }: {
     state: RecordState<Omit<ElementaFrameData, "context" | "content">>;
     stage: ElementaStage;
     project: Project;
+    initialized?: boolean;
   }) {
-    super({ state, project });
+    super({ state, project, initialized });
 
     this.stage = stage;
 

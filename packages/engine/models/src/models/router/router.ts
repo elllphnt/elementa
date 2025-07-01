@@ -101,23 +101,35 @@ export class Router extends ProjectModel<RecordState<any>> {
         }),
     });
 
-    // reactive index
-    const sub = this._routes.models$.subscribe((routes) => {
-      const byId: Record<string, RouteTree> = {};
-      const recurse = (list: RouteTree[]) => {
-        for (const route of list) {
-          byId[route.id] = route;
-          recurse(route.children);
-        }
-      };
-      recurse(routes);
-      this._routesById$.next(byId);
+    this.addInitializer(() => {
+      this.blueprint.initialize();
+      this.preview.initialize();
+      this._routes.initialize();
+
+      // reactive index
+      const sub = this._routes.models$.subscribe((routes) => {
+        const byId: Record<string, RouteTree> = {};
+        const recurse = (list: RouteTree[]) => {
+          for (const route of list) {
+            byId[route.id] = route;
+            recurse(route.children);
+          }
+        };
+        recurse(routes);
+        this._routesById$.next(byId);
+      });
+
+      this.addDisposer(() => {
+        this.blueprint.dispose();
+        this.preview.dispose();
+        this._routes.dispose();
+        this._routesById$.complete();
+        sub.unsubscribe();
+      });
     });
 
     this.addDisposer(() => {
-      this._routes.dispose();
       this._routesById$.complete();
-      sub.unsubscribe();
     });
   }
 

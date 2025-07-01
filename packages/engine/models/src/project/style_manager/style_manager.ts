@@ -254,6 +254,7 @@ export class StyleManager extends Lifecycle {
     this.addDisposer(() => {
       this._variableValues$.complete();
       this._modifiersByName$.complete();
+      this._systemCssStylesheets.complete();
       this.colorSchemeManager.dispose();
       this.viewportManager.dispose();
     });

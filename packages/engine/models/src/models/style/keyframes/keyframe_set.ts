@@ -55,10 +55,14 @@ export class KeyframeSet extends Identifiable<KeyframeSetData> {
         }),
     });
 
-    this.addDisposer(() => {
-      this.state.dispose();
-      this._keyframes.dispose();
-      this.fragmentRegistry.dispose();
+    this.addInitializer(() => {
+      this.fragmentRegistry.initialize();
+      this._keyframes.initialize();
+
+      this.addDisposer(() => {
+        this._keyframes.dispose();
+        this.fragmentRegistry.dispose();
+      });
     });
   }
 

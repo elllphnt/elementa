@@ -32,11 +32,13 @@ export class MediaElement extends BaseElement<MediaElementData> {
   constructor({
     state,
     environment,
+    initialized,
   }: {
     state: RecordState<MediaElementData>;
     environment: ElementEnvironment;
+    initialized?: boolean;
   }) {
-    super({ state, type: "media", environment });
+    super({ state, type: "media", environment, initialized });
   }
 
   setMedia(media: MediaData | undefined): void {

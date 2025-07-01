@@ -29,10 +29,6 @@ export class Viewport extends Model<RecordState<ViewportData>> {
 
   constructor({ state }: { state: RecordState<ViewportData> }) {
     super({ state });
-
-    this.addDisposer(() => {
-      this.state.dispose();
-    });
   }
 
   setHeight(height: number | undefined): void {

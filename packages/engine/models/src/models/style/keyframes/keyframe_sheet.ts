@@ -41,8 +41,12 @@ export class KeyframeSheet extends ProjectModel<
         }),
     });
 
-    this.addDisposer(() => {
-      this._keyframes.dispose();
+    this.addInitializer(() => {
+      this._keyframes.initialize();
+
+      this.addDisposer(() => {
+        this._keyframes.dispose();
+      });
     });
   }
 

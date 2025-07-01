@@ -34,7 +34,21 @@ export class ElementaStage extends Model<RecordState<ElementaStageData>> {
     this.environment = environment;
 
     // TODO: Implement proper aggregated model list for frames
-    this._frames = {} as any;
+    this._frames = new AggregatedModelList({
+      state: state.getListOfRecordStates("frames"),
+      create: (state) => {
+        // TODO: Implement proper frame creation
+        return {} as any;
+      },
+    });
+
+    this.addInitializer(() => {
+      this._frames.initialize();
+
+      this.addDisposer(() => {
+        this._frames.dispose();
+      });
+    });
   }
 
   // TODO: Implement frame management methods

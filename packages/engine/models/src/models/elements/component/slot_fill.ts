@@ -13,7 +13,7 @@ import { CssStyleSheet } from "~/css/lib/stylesheet.js";
 import { StylesheetCssStyleSheet } from "~/css/stylesheets/stylesheet/stylesheet.js";
 import { Project } from "~/project/project.js";
 import { Stylesheet } from "../../style/stylesheet/stylesheet.js";
-import { Element } from "../_element.js";
+import { createElement, Element } from "../_element.js";
 import { ElementEnvironment } from "../_environment.js";
 
 export class SlotFill extends Model<RecordState<SlotFillData>> {
@@ -74,14 +74,36 @@ export class SlotFill extends Model<RecordState<SlotFillData>> {
     super({ state });
 
     this.environment = environment;
+
+    this._stylesheet = new Stylesheet({
+      state: state.getRecordState("stylesheet"),
+      project: environment.project,
+    });
+
     this.cssStyleSheet = new StylesheetCssStyleSheet({
       target: cssStyleSheetTarget || this.key,
       stylesheet: this._stylesheet,
     });
 
-    this._stylesheet = new Stylesheet({
-      state: state.getRecordState("stylesheet"),
-      project: environment.project,
+    this._content = new AggregatedModelList<RecordState<ElementData>, Element>({
+      state: state.getListOfRecordStates("content"),
+      create: (state) =>
+        createElement({
+          state,
+          environment: this.environment,
+          initialized: true,
+        }),
+    });
+
+    this.addInitializer(() => {
+      this._stylesheet.initialize();
+      this._content.initialize();
+
+      this.addDisposer(() => {
+        this._stylesheet.dispose();
+        this.cssStyleSheet.dispose();
+        this._content.dispose();
+      });
     });
   }
 

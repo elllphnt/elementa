@@ -47,8 +47,14 @@ export class PrimitiveSubElement extends Model<
       stylesheet: this._stylesheet,
     });
 
-    this.addDisposer(() => {
-      this._stylesheet.dispose();
+    this.addInitializer(() => {
+      this._stylesheet.initialize();
+      this.cssStyleSheet.initialize();
+
+      this.addDisposer(() => {
+        this._stylesheet.dispose();
+        this.cssStyleSheet.dispose();
+      });
     });
   }
 

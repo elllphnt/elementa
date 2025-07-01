@@ -1,3 +1,4 @@
+import { logger } from "@elllphnt/elementa-kernel";
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { JSX, memo, PropsWithChildren } from "react";
 import { ComponentRenderable } from "../../renderables/component/component.js";
@@ -15,7 +16,13 @@ export const ComponentComponent = memo(function ({
   component: ComponentRenderable;
   onRef?: (element: HTMLElement | null, key?: string) => void;
 }>): JSX.Element {
+  logger.debug("Rendering ComponentComponent", {
+    component,
+    onRef,
+    children,
+  });
   const template = useObservable(component.template$, component.template);
+
   if (template) {
     return (
       <PropsNamespaceProvider component={component.instance}>
@@ -29,6 +36,10 @@ export const ComponentComponent = memo(function ({
       </PropsNamespaceProvider>
     );
   } else {
+    logger.warn(
+      "Component template is not available, rendering empty component.",
+      component
+    );
     return <></>;
   }
 });

@@ -1,6 +1,6 @@
 import {
-  StyleModifierDefinitionData,
-  StyleModifierSheetData,
+    StyleModifierDefinitionData,
+    StyleModifierSheetData,
 } from "@elllphnt/elementa-base";
 import { RecordState } from "@elllphnt/elementa-kernel";
 import { map, Observable } from "rxjs";
@@ -22,9 +22,11 @@ export class StyleModifierSheet extends ProjectModel<
   constructor({
     state,
     project,
+    initialized,
   }: {
     state: RecordState<StyleModifierSheetData>;
     project: Project;
+    initialized?: boolean;
   }) {
     super({ state, project });
   }

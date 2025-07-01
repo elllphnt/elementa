@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { type PackageData } from "@elllphnt/elementa-base";
 import { JsonBackend } from "@elllphnt/elementa-json-backend";
-import { Lifecycle, type Logger } from "@elllphnt/elementa-kernel";
+import { logger } from "@elllphnt/elementa-kernel";
 import {
   AsyncResourceStatus,
   Content,
@@ -17,29 +17,6 @@ import { backend } from "./backend.js";
 import type { FileData } from "./types.js";
 
 const jsonBackend = new JsonBackend();
-
-function createLogger(context: Record<string, any> = {}): Logger {
-  return {
-    debug: (message: string, context: Record<string, any>) => {
-      console.debug(message, context);
-    },
-    info: (message: string, context: Record<string, any>) => {
-      console.info(message, context);
-    },
-    warn: (message: string, context: Record<string, any>) => {
-      console.warn(message, context);
-    },
-    error: (message: string, context: Record<string, any>) => {
-      console.error(message, context);
-    },
-
-    withContext: (newContext: Record<string, any>) => {
-      return createLogger({ ...context, ...newContext });
-    },
-  };
-}
-
-Lifecycle.logger = createLogger({});
 
 export class ServerFileModelAdaptor<
   T extends FileModelTypeName
@@ -67,10 +44,9 @@ export class ServerFileModelAdaptor<
         try {
           const data = JSON.parse(text);
           const state = jsonBackend.createRecordState(data);
-          state.initialize();
           this._state$.next(state);
         } catch (error) {
-          Lifecycle.logger?.error(
+          logger.error(
             `Failed to parse file content for model type ${modelType}`,
             { fileId: file.id, error }
           );
@@ -122,7 +98,9 @@ export class ServerFileContent extends Content<ServerFile> {
       }
     });
 
-    this.fetch();
+    this.addInitializer(() => {
+      this.fetch();
+    });
 
     this.addDisposer(() => {
       statusSubscription.unsubscribe();
@@ -199,6 +177,7 @@ export class ServerProject extends Project {
     id: string;
     infrastructure: ElementaServerInfrastructure;
   }) {
+    console.debug(`Creating ServerProject with id: ${id}`);
     super({ id, infrastructure });
 
     this.addInitializer(() => {
@@ -219,7 +198,11 @@ export class ServerProject extends Project {
 
   file(id: string): ServerFile {
     let file = this._files.get(id);
+    if ((file as any) === -1) {
+      throw new Error(`Circular reference detected for file with id: ${id}`);
+    }
     if (!file) {
+      this._files.set(id, -1 as any); // Temporary placeholder to avoid recursion
       file = new ServerFile({ id, project: this });
       file.initialize();
       this._files.set(id, file);
@@ -235,7 +218,13 @@ export class ServerProject extends Project {
     let adaptor = this._fileModelAdaptors.get(key) as
       | ServerFileModelAdaptor<T>
       | undefined;
+    if ((adaptor as any) === -1) {
+      throw new Error(
+        `Circular reference detected for fileModelAdaptor with key: ${key}`
+      );
+    }
     if (!adaptor) {
+      this._fileModelAdaptors.set(key, -1 as any); // Temporary placeholder to avoid recursion
       adaptor = new ServerFileModelAdaptor<T>({
         modelType,
         file: this.file(fileId) as ServerFile,
@@ -266,7 +255,13 @@ export class ServerProject extends Project {
 
   content(fileId: string): Content<File> {
     let content = this._contents.get(fileId);
+    if ((content as any) === -1) {
+      throw new Error(
+        `Circular reference detected for content with fileId: ${fileId}`
+      );
+    }
     if (!content) {
+      this._contents.set(fileId, -1 as any); // Temporary placeholder to avoid recursion
       content = new ServerFileContent({ file: this.file(fileId) });
       content.initialize();
       this._contents.set(fileId, content);
@@ -284,7 +279,11 @@ export class ElementaServerInfrastructure extends Infrastructure {
 
   project(id: string): ServerProject {
     let project = this._projects.get(id);
+    if ((project as any) === -1) {
+      throw new Error(`Circular reference detected for project with id: ${id}`);
+    }
     if (!project) {
+      this._projects.set(id, -1 as any); // Temporary placeholder to avoid recursion
       try {
         project = new ServerProject({ id, infrastructure: this });
         project.initialize();

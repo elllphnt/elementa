@@ -74,7 +74,7 @@ export class ElementaPreview extends Model<
     state,
     environment,
   }: {
-    state: RecordState<Omit<ElementaPreviewData, "context" | "content">>;
+    state: RecordState<ElementaPreviewData>;
     environment: ElementaEnvironment;
   }) {
     super({ state });
@@ -84,11 +84,11 @@ export class ElementaPreview extends Model<
     // TODO: Initialize context with backend-agnostic state
     // For now, create a context with empty state - this needs proper initialization
     this.context = new RenderingContext({
-      state: state as any, // TODO: Fix proper context state initialization
+      state: state.getRecordState("context"),
     });
 
     this._content = new OptionalModel<RecordState<any>, RenderableContent>({
-      state: state as any, // TODO: Fix proper state typing for optional content
+      state: state.getOptionalRecordState("content"),
       create: (state) =>
         createRenderableContent({
           state,
@@ -96,9 +96,14 @@ export class ElementaPreview extends Model<
         }),
     });
 
-    this.addDisposer(() => {
-      this._content.dispose();
-      this.context.dispose();
+    this.addInitializer(() => {
+      this.context.initialize();
+      this._content.initialize();
+
+      this.addDisposer(() => {
+        this._content.dispose();
+        this.context.dispose();
+      });
     });
   }
 }

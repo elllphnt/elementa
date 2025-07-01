@@ -20,6 +20,7 @@ beforeEach(() => {
     },
     backend: jsonBackend,
   });
+  recordState.initialize();
 });
 
 // 🏗️ Initialization
@@ -33,6 +34,7 @@ test("initializes subject with provided initial value", () => {
     init: initialData,
     backend: jsonBackend,
   });
+  newRecordState.initialize();
   expect(newRecordState.record).toEqual(initialData);
 });
 
@@ -41,6 +43,7 @@ test("initializes subject with empty record if minimal data provided", () => {
     init: { name: "", age: 0 },
     backend: jsonBackend,
   });
+  minimalState.initialize();
   expect(minimalState.record).toEqual({ name: "", age: 0 });
 });
 

@@ -160,9 +160,18 @@ export abstract class BaseElement<
       stylesheet: this._stylesheet,
     });
 
+    this.addInitializer(() => {
+      this._stylesheet.initialize();
+
+      this.addDisposer(() => {
+        this._stylesheet.dispose();
+        this.cssStyleSheet.dispose();
+        this._updated$.complete();
+      });
+    });
+
     this.addDisposer(() => {
-      this._stylesheet.dispose();
-      this.cssStyleSheet.dispose();
+      this._updated$.complete();
     });
   }
 }

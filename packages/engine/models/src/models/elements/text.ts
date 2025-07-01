@@ -19,11 +19,13 @@ export class TextElement extends BaseElement<TextElementData> {
   constructor({
     state,
     environment,
+    initialized,
   }: {
     state: RecordState<TextElementData>;
     environment: ElementEnvironment;
+    initialized?: boolean;
   }) {
-    super({ state, type: "text", environment });
+    super({ state, type: "text", environment, initialized });
   }
 
   setText(text: ResolvableOrEvaluable<string> | undefined): void {

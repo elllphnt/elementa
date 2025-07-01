@@ -8,9 +8,11 @@ export class App extends ProjectModel<RecordState<AppData>> {
   constructor({
     state,
     project,
+    initialized,
   }: {
     state: RecordState<AppData>;
     project: Project;
+    initialized?: boolean;
   }) {
     super({ state, project });
   }

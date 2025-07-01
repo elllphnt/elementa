@@ -1,3 +1,4 @@
+import { logger } from "@elllphnt/elementa-kernel";
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { ValueStateInstance } from "@elllphnt/elementa-runtime";
 import { PropsWithChildren, useState } from "react";
@@ -10,20 +11,40 @@ export function ValueStateNamespaceProvider({
 }: PropsWithChildren<{
   state: ValueStateInstance;
 }>) {
+  logger.debug("Rendering ValueStateNamespaceProvider", { state });
+
   const namespace = useNamespace({ clone: true });
   const initialValue = useObservable(state.model.init$, state.model.init);
   const varName = useObservable(state.model.varName$, state.model.varName);
   const resolvedInitialValue = namespace.resolveValue(initialValue);
+
+  logger.debug("ValueStateNamespaceProvider: Values resolved", {
+    initialValue,
+    varName,
+    resolvedInitialValue,
+    namespaceKey: state.namespaceKey,
+  });
+
   const [value, setValue] = useState(resolvedInitialValue);
 
   const namespaceValue = {
     value,
     setValue,
   };
+
   namespace.set(state.namespaceKey, namespaceValue);
   if (varName) {
     namespace.set([varName], namespaceValue);
+    logger.debug("ValueStateNamespaceProvider: Set state with varName", {
+      varName,
+      namespaceValue,
+    });
   }
+
+  logger.debug("ValueStateNamespaceProvider: State set in namespace", {
+    namespaceKey: state.namespaceKey,
+    namespaceValue,
+  });
 
   return (
     <NamespaceContext.Provider value={namespace}>

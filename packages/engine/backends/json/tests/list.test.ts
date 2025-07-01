@@ -6,6 +6,7 @@ let listState: JsonListState<string>;
 
 beforeEach(() => {
   listState = new JsonListState({ init: [], backend: jsonBackend });
+  listState.initialize();
 });
 
 // 🏗️ Initialization
@@ -15,6 +16,7 @@ test("initializes subject with provided initial value", () => {
     init: initialData,
     backend: jsonBackend,
   });
+  newListState.initialize();
   expect(newListState.items).toEqual(["a", "b", "c"]);
 });
 

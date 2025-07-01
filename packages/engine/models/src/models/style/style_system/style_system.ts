@@ -36,9 +36,11 @@ export class StyleSystem extends ProjectModel<RecordState<StyleSystemData>> {
   constructor({
     state,
     project,
+    initialized,
   }: {
     state: RecordState<StyleSystemData>;
     project: any;
+    initialized?: boolean;
   }) {
     super({ state, project });
 
@@ -50,10 +52,14 @@ export class StyleSystem extends ProjectModel<RecordState<StyleSystemData>> {
       state: state.getRecordState("viewports"),
     });
 
-    this.addDisposer(() => {
-      this.state.dispose();
-      this.colorSchemes.dispose();
-      this.viewports.dispose();
+    this.addInitializer(() => {
+      this.colorSchemes.initialize();
+      this.viewports.initialize();
+
+      this.addDisposer(() => {
+        this.colorSchemes.dispose();
+        this.viewports.dispose();
+      });
     });
   }
 

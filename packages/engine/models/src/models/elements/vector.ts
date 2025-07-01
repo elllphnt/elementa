@@ -16,11 +16,13 @@ export class VectorElement extends BaseElement<VectorElementData> {
   constructor({
     state,
     environment,
+    initialized,
   }: {
     state: RecordState<VectorElementData>;
     environment: ElementEnvironment;
+    initialized?: boolean;
   }) {
-    super({ state, environment, type: "vector" });
+    super({ state, environment, type: "vector", initialized });
   }
 
   setContent(content: VectorNodeData[] | undefined): void {

@@ -45,9 +45,14 @@ export class Stylesheet extends ProjectModel<RecordState<StyleSheetData>> {
         }),
     });
 
-    this.addDisposer(() => {
-      this._styles.dispose();
-      this.fragmentRegistry.dispose();
+    this.addInitializer(() => {
+      this.fragmentRegistry.initialize();
+      this._styles.initialize();
+
+      this.addDisposer(() => {
+        this._styles.dispose();
+        this.fragmentRegistry.dispose();
+      });
     });
   }
 

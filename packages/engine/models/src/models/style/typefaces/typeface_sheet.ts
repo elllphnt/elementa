@@ -39,8 +39,12 @@ export class TypefaceSheet extends ProjectModel<
         }),
     });
 
-    this.addDisposer(() => {
-      this._typefaces.dispose();
+    this.addInitializer(() => {
+      this._typefaces.initialize();
+
+      this.addDisposer(() => {
+        this._typefaces.dispose();
+      });
     });
   }
 

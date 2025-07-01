@@ -1,3 +1,4 @@
+import { logger } from "@elllphnt/elementa-kernel";
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { ElementRenderable } from "../../renderables/element/element.js";
 import { SlotElementRenderable } from "../../renderables/element/slot.js";
@@ -13,6 +14,8 @@ export function SlotElementComponent({
   partKey?: string;
   onRef?: (element: HTMLElement | null) => void;
 }) {
+  logger.debug("Rendering SlotElementComponent", { element, partKey });
+
   // const namespace = useNamespace();
   // const slot = useSlot(element.instance.element.id);
   // const slotFill = useObservable(slot?.instance.fill$, slot?.instance.fill);
@@ -68,9 +71,21 @@ export function SlotElementContent({
   content: ElementRenderable[];
   onRef?: (element: HTMLElement | null) => void;
 }) {
+  logger.debug("Rendering SlotElementContent", {
+    element,
+    content,
+    contentCount: content.length,
+  });
+
   const placeholder = useObservable(element.placeholder$, element.placeholder);
 
+  logger.debug("SlotElementContent: Placeholder resolved", {
+    placeholder,
+    placeholderCount: placeholder.length,
+  });
+
   if (content.length) {
+    logger.debug("SlotElementContent: Rendering content elements");
     return (
       <>
         {content.map((child) => (
@@ -79,6 +94,9 @@ export function SlotElementContent({
       </>
     );
   } else {
+    logger.debug(
+      "SlotElementContent: No content, rendering placeholder elements"
+    );
     return (
       <>
         {placeholder.map((child) => (

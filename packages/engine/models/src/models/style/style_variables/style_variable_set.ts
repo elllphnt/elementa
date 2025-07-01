@@ -76,9 +76,16 @@ export class StyleVariableSet extends Identifiable<StyleVariableSetData> {
         }),
     });
 
+    this.addInitializer(() => {
+      this._variables.initialize();
+
+      this.addDisposer(() => {
+        this._variables.dispose();
+      });
+    });
+
     this.addDisposer(() => {
       this.state.dispose();
-      this._variables.dispose();
     });
   }
 

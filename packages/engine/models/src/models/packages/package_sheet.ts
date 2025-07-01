@@ -16,9 +16,11 @@ export class PackageSheet extends ProjectModel<RecordState<PackageSheetData>> {
   constructor({
     state,
     project,
+    initialized,
   }: {
     state: RecordState<PackageSheetData>;
     project: Project;
+    initialized?: boolean;
   }) {
     super({ state, project });
 

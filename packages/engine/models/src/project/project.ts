@@ -112,6 +112,16 @@ export abstract class Project<F extends File = File> extends Lifecycle {
     this.infrastructure = infrastructure;
     this.styleManager = new StyleManager({ project: this });
     this.packageManager = new PackageManager({ project: this });
+
+    this.addInitializer(() => {
+      this.styleManager.initialize();
+      this.packageManager.initialize();
+
+      this.addDisposer(() => {
+        this.styleManager.dispose();
+        this.packageManager.dispose();
+      });
+    });
   }
 
   absoluteFileUrl(url: string): string {

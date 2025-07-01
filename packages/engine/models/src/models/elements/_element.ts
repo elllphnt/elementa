@@ -24,30 +24,32 @@ export type Element =
 export function createElement({
   state,
   environment,
+  initialized,
 }: {
   state: RecordState<any>;
   environment: ElementEnvironment;
+  initialized?: boolean;
 }): Element {
   const type = state.entry("type");
   switch (type) {
     case "container":
-      return new ContainerElement({ state, environment });
+      return new ContainerElement({ state, environment, initialized });
     case "text":
-      return new TextElement({ state, environment });
+      return new TextElement({ state, environment, initialized });
     case "vector":
-      return new VectorElement({ state, environment });
+      return new VectorElement({ state, environment, initialized });
     case "slot":
-      return new SlotElement({ state, environment });
+      return new SlotElement({ state, environment, initialized });
     case "media":
-      return new MediaElement({ state, environment });
+      return new MediaElement({ state, environment, initialized });
     case "component":
-      return new ComponentElement({ state, environment });
+      return new ComponentElement({ state, environment, initialized });
     case "primitive":
-      return new PrimitiveElement({ state, environment });
+      return new PrimitiveElement({ state, environment, initialized });
     case "fragment":
-      return new FragmentElement({ state, environment });
+      return new FragmentElement({ state, environment, initialized });
     case "expression":
-      return new ExpressionElement({ state, environment });
+      return new ExpressionElement({ state, environment, initialized });
     default:
       throw new Error(`Unknown element type: ${type}`);
   }

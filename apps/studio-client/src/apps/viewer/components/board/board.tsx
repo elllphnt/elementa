@@ -58,7 +58,7 @@ export function Board() {
         </div>
       </div>
       {/* File Content Area */}
-      <div className="flex-grow">
+      <div className="flex-grow overflow-hidden">
         <ContentViewer
           projectId={projectId}
           fileId={fileId}

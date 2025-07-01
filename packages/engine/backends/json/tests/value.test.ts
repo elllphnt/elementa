@@ -6,6 +6,7 @@ let valueState: JsonValueState<string>;
 
 beforeEach(() => {
   valueState = new JsonValueState({ init: "initial", backend: jsonBackend });
+  valueState.initialize();
 });
 
 // 🏗️ Initialization
@@ -14,23 +15,27 @@ test("initializes subject with provided initial value", () => {
     init: "testValue",
     backend: jsonBackend,
   });
+  newValueState.initialize();
   expect(newValueState.value).toBe("testValue");
 });
 
 test("initializes subject with different types", () => {
   const numberState = new JsonValueState({ init: 42, backend: jsonBackend });
+  numberState.initialize();
   expect(numberState.value).toBe(42);
 
   const objectState = new JsonValueState({
     init: { key: "value" },
     backend: jsonBackend,
   });
+  objectState.initialize();
   expect(objectState.value).toEqual({ key: "value" });
 
   const arrayState = new JsonValueState({
     init: [1, 2, 3],
     backend: jsonBackend,
   });
+  arrayState.initialize();
   expect(arrayState.value).toEqual([1, 2, 3]);
 });
 
@@ -84,6 +89,7 @@ test("setValue() triggers subject emission", () => {
 
 test("setValue() works with different types", () => {
   const numberState = new JsonValueState({ init: 0, backend: jsonBackend });
+  numberState.initialize();
   numberState.setValue(100);
   expect(numberState.value).toBe(100);
 
@@ -91,6 +97,7 @@ test("setValue() works with different types", () => {
     init: { initial: true },
     backend: jsonBackend,
   });
+  objectState.initialize();
   objectState.setValue({ initial: false });
   expect(objectState.value).toEqual({ initial: false });
 });

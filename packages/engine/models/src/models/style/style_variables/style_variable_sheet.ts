@@ -45,8 +45,12 @@ export class StyleVariableSheet extends ProjectModel<
         }),
     });
 
-    this.addDisposer(() => {
-      this._variableSets.dispose();
+    this.addInitializer(() => {
+      this._variableSets.initialize();
+
+      this.addDisposer(() => {
+        this._variableSets.dispose();
+      });
     });
   }
 

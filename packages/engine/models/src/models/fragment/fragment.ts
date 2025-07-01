@@ -79,18 +79,20 @@ export class Fragment extends Identifiable<FragmentData> {
   constructor({
     state,
     environment,
+    initialized,
   }: {
     state: RecordState<FragmentData>;
     environment: ElementEnvironment;
+    initialized?: boolean;
   }) {
-    super({ state, project: environment.project });
+    super({ state, project: environment.project, initialized });
 
     this.environment = environment;
 
     this._content = new AggregatedModelList<RecordState<ElementData>, Element>({
       state: state.getListOfRecordStates("content"),
       create: (state) => {
-        return createElement({ state, environment });
+        return createElement({ state, environment, initialized: true });
       },
     });
     this._params = new AggregatedModelList<
@@ -101,6 +103,16 @@ export class Fragment extends Identifiable<FragmentData> {
       create: (state) => {
         return new DataInput({ state });
       },
+    });
+
+    this.addInitializer(() => {
+      this._content.initialize();
+      this._params.initialize();
+
+      this.addDisposer(() => {
+        this._content.dispose();
+        this._params.dispose();
+      });
     });
   }
 }

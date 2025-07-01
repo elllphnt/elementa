@@ -1,3 +1,4 @@
+import { logger } from "@elllphnt/elementa-kernel";
 import {
   AsyncResourceStatus,
   Component,
@@ -26,6 +27,7 @@ type RouteViewProps = {
 
 function PendingView({ view }: RouteViewProps) {
   const fileUrl = view.instanceAdaptor.modelAdaptor.file.url;
+  logger.debug("RouteView: Rendering PendingView", { fileUrl, view });
 
   return (
     <div className="system route-view pending">
@@ -38,6 +40,8 @@ function PendingView({ view }: RouteViewProps) {
 
 function MissingView({ view }: RouteViewProps) {
   const fileUrl = view.instanceAdaptor.modelAdaptor.file.url;
+  logger.warn("RouteView: Rendering MissingView", { fileUrl, view });
+
   return (
     <div className="system route-view missing">
       <h2>Missing View File</h2>
@@ -52,6 +56,8 @@ function MissingView({ view }: RouteViewProps) {
 function ErrorView({ view }: RouteViewProps) {
   const error =
     view.instanceAdaptor.modelAdaptor.error?.message ?? "Unknown error";
+  logger.error("RouteView: Rendering ErrorView", { error, view });
+
   return (
     <div className="system route-view error">
       <h2>Component Load Failed</h2>
@@ -63,9 +69,12 @@ function ErrorView({ view }: RouteViewProps) {
 
 function ResolvedView({ view }: RouteViewProps) {
   const renderable = useObservable(view.renderable$, view.renderable);
+  logger.debug("RouteView: Rendering ResolvedView", { renderable, view });
+
   if (renderable) {
     return <ComponentComponent component={renderable} />;
   } else {
+    logger.error("RouteView: Fatal error - no renderable available", { view });
     return <>Fatal!</>;
   }
 }
@@ -75,6 +84,8 @@ export function RouteViewComponent({ view }: RouteViewProps) {
     view.instanceAdaptor.modelAdaptor.status$,
     view.instanceAdaptor.modelAdaptor.status
   );
+
+  logger.debug("RouteView: Rendering with status", { status, view });
 
   switch (status) {
     case AsyncResourceStatus.Pending:

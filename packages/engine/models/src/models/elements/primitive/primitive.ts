@@ -103,6 +103,7 @@ export class PrimitiveElement extends BaseElement<PrimitiveElementData> {
         createElement({
           state,
           environment: this.environment,
+          initialized: true,
         }),
     });
 
@@ -116,9 +117,14 @@ export class PrimitiveElement extends BaseElement<PrimitiveElementData> {
         }),
     });
 
-    this.addDisposer(() => {
-      this._content.dispose();
-      this._subElements.dispose();
+    this.addInitializer(() => {
+      this._content.initialize();
+      this._subElements.initialize();
+
+      this.addDisposer(() => {
+        this._content.dispose();
+        this._subElements.dispose();
+      });
     });
   }
 

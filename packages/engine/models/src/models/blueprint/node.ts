@@ -20,8 +20,6 @@ export class BlueprintNode extends Identifiable<BlueprintNodeData> {
       state.set("id", genId());
       state.set("position", { x: 0, y: 0 });
     }
-
-    this.addDisposer(() => this.state.dispose());
   }
 
   get position(): { x: number; y: number } {

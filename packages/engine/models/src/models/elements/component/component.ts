@@ -118,11 +118,18 @@ export class ComponentElement extends BaseElement<ComponentElementData> {
         createElement({
           state: childState,
           environment,
+          initialized: true,
         }),
     });
 
-    this.addDisposer(() => {
-      this._fills.dispose();
+    this.addInitializer(() => {
+      this._fills.initialize();
+      this._content.initialize();
+
+      this.addDisposer(() => {
+        this._fills.dispose();
+        this._content.dispose();
+      });
     });
   }
 

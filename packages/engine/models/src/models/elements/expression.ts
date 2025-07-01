@@ -16,11 +16,13 @@ export class ExpressionElement extends BaseElement<ExpressionElementData> {
   constructor({
     state,
     environment,
+    initialized,
   }: {
     state: RecordState<ExpressionElementData>;
     environment: ElementEnvironment;
+    initialized?: boolean;
   }) {
-    super({ state, type: "expression", environment });
+    super({ state, type: "expression", environment, initialized });
   }
 
   setExpression(expression: string | undefined): void {

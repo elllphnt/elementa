@@ -1,12 +1,18 @@
+import { logger } from "@elllphnt/elementa-kernel";
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { forwardRef } from "react";
-import { useNamespace } from "../../hooks/namespace.js";
 import { PrimitiveElementRenderable } from "../../renderables/element/primitive.js";
 import { BaseElementComponent } from "./_/_base_element.js";
 import ElementComponent from "./element.js";
 
 function useContent({ element }: { element: PrimitiveElementRenderable }) {
   const children = useObservable(element.children$, element.children);
+
+  logger.debug("PrimitiveElement: useContent", {
+    element,
+    children,
+    childrenCount: children.length,
+  });
 
   return children.map((child) => (
     <ElementComponent key={child.key} element={child} />
@@ -17,13 +23,20 @@ function usePrimitiveElementsProps({
 }: {
   primitive: PrimitiveElementRenderable;
 }) {
-  const namespace = useNamespace();
+  // const namespace = useNamespace();
   const elements = useObservable(
     primitive.instance.element.subElements$,
     primitive.instance.element.subElements
   );
   const elementEntries = Object.entries(elements);
-  const key = elementEntries.map((e) => `${e[0]}:${e[1]}`).join(".");
+  // const key = elementEntries.map((e) => `${e[0]}:${e[1]}`).join(".");
+
+  logger.debug("PrimitiveElement: usePrimitiveElementsProps", {
+    primitive,
+    elements,
+    elementEntries,
+  });
+
   // const allDynamicStyles = useManyObservables(
   //   elementEntries.map((e) => e[1].stylesheet.dynamicStyles$),
   //   elementEntries.map((e) => e[1].stylesheet.dynamicStyles),
@@ -38,10 +51,9 @@ function usePrimitiveElementsProps({
   const elementProps: Record<string, any> = {};
 
   for (let i = 0; i < elementEntries.length; ++i) {
-    const [name, element] = elementEntries[i];
+    // const [name, element] = elementEntries[i];
     // const dynamicStyles = allDynamicStyles[i];
     // const styleExpressions = allStyleExpressions[i];
-
     // const dynamicClasses = Object.fromEntries(
     //   Object.entries(dynamicStyles).map(([key, style]) => [
     //     style.className,
@@ -50,7 +62,6 @@ function usePrimitiveElementsProps({
     //     ),
     //   ])
     // );
-
     // elementProps[name] = {
     //   className: cx(element.stylesheet.className, dynamicClasses),
     // };
@@ -61,13 +72,13 @@ function usePrimitiveElementsProps({
 
 export function PrimitiveElementComponent({
   element,
-  data,
   onRef,
 }: {
   element: PrimitiveElementRenderable;
-  data?: any;
   onRef?: (element: HTMLElement | null, key?: string) => void;
 }) {
+  logger.debug("Rendering PrimitiveElementComponent", { element });
+
   return (
     <BaseElementComponent
       element={element}
@@ -85,7 +96,12 @@ export const PrimitiveElementComponentContent = forwardRef(
     }: { __element: PrimitiveElementRenderable },
     ref
   ) => {
-    const namespace = useNamespace();
+    logger.debug("Rendering PrimitiveElementComponentContent", {
+      element,
+      forwardedProps,
+    });
+
+    // const namespace = useNamespace();
     const Component = useObservable(
       element.instance.localComponent$,
       element.instance.localComponent
@@ -97,7 +113,17 @@ export const PrimitiveElementComponentContent = forwardRef(
     const content = useContent({ element });
     const __elements = usePrimitiveElementsProps({ primitive: element });
 
+    logger.debug("PrimitiveElementComponentContent: Values resolved", {
+      Component,
+      hasComponent: !!Component,
+      content,
+      __elements,
+    });
+
     if (!Component) {
+      logger.debug(
+        "PrimitiveElementComponentContent: No component, rendering empty"
+      );
       return <></>;
     }
 
@@ -107,6 +133,12 @@ export const PrimitiveElementComponentContent = forwardRef(
     //     namespace.resolveValue(value),
     //   ])
     // );
+
+    logger.debug("PrimitiveElementComponentContent: Rendering component", {
+      Component,
+      forwardedProps,
+      __elements,
+    });
 
     return (
       <Component

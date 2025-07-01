@@ -149,13 +149,17 @@ export class JsonRecordState<T extends Record<string, unknown>>
       return nestedState as ValueState<RecordState<NonNullable<T[K]>>>;
     }
 
+    let recordState: JsonRecordState<any> | undefined;
+    if (nestedState) {
+      recordState = new JsonRecordState({
+        init: nestedState as Record<string, unknown>,
+        backend: this.backend,
+      });
+      recordState.initialize();
+    }
+
     nestedState = new JsonValueState({
-      init: nestedState
-        ? new JsonRecordState({
-            init: nestedState as Record<string, unknown>,
-            backend: this.backend,
-          })
-        : undefined,
+      init: recordState,
       backend: this.backend,
     });
     nestedState.initialize();
@@ -174,13 +178,17 @@ export class JsonRecordState<T extends Record<string, unknown>>
       return nestedState as ValueState<RecordState<NonNullable<T[K]>>>;
     }
 
+    let recordState: JsonRecordState<any> | undefined;
+    if (nestedState) {
+      recordState = new JsonRecordState({
+        init: nestedState as Record<string, unknown>,
+        backend: this.backend,
+      });
+      recordState.initialize();
+    }
+
     nestedState = new JsonValueState({
-      init: nestedState
-        ? new JsonRecordState({
-            init: nestedState as Record<string, unknown>,
-            backend: this.backend,
-          })
-        : undefined,
+      init: recordState,
       backend: this.backend,
     });
     nestedState.initialize();
@@ -205,9 +213,14 @@ export class JsonRecordState<T extends Record<string, unknown>>
     }
 
     nestedState = new JsonListState({
-      init: init.map(
-        (i) => new JsonRecordState({ init: i, backend: this.backend })
-      ),
+      init: init.map((i) => {
+        const recordState = new JsonRecordState({
+          init: i,
+          backend: this.backend,
+        });
+        recordState.initialize();
+        return recordState;
+      }),
       backend: this.backend,
     });
     nestedState.initialize();
@@ -236,7 +249,12 @@ export class JsonRecordState<T extends Record<string, unknown>>
         if (!Array.isArray(arr)) {
           throw Error(`Nested value is not an array.`);
         }
-        return new JsonListState({ init: arr, backend: this.backend });
+        const listState = new JsonListState({
+          init: arr,
+          backend: this.backend,
+        });
+        listState.initialize();
+        return listState;
       }),
       backend: this.backend,
     });
@@ -263,10 +281,12 @@ export class JsonRecordState<T extends Record<string, unknown>>
 
     const recordOfRecords: Record<string, RecordState<any>> = {};
     Object.entries(init).forEach(([subKey, subValue]) => {
-      recordOfRecords[subKey] = new JsonRecordState({
+      const recordState = new JsonRecordState({
         init: (subValue || {}) as Record<string, unknown>,
         backend: this.backend,
       }) as RecordState<any>;
+      recordState.initialize();
+      recordOfRecords[subKey] = recordState;
     });
 
     nestedState = new JsonRecordState({

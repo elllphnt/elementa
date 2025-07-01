@@ -4,6 +4,7 @@ import { DeepPartial, pairwiseOrEmpty } from "@elllphnt/elementa-lang-utils";
 import { CssStyleRule } from "@elllphnt/elementa-models";
 import { diff } from "deep-object-diff";
 import { Subject } from "rxjs";
+import { styleLogger } from "../../../../loggers.js";
 import { getCssStyleRuleFromStylesheet } from "./_lib.js";
 import { RuleDomStyleSheetAdaptor } from "./rule.js";
 
@@ -29,11 +30,26 @@ export class StyleRuleDomAdaptor extends Lifecycle {
     this.styleSheetAdaptor = styleSheetAdaptor;
     this.styleRule = styleRule;
 
+    styleLogger.info("StyleRuleDomAdaptor created", {
+      target: styleSheetAdaptor.target,
+      selectors: styleRule.selectors,
+      initialStylePropertiesCount: Object.keys(styleRule.styleData).length,
+    });
+
     // sync style sheets
     const styleSheetSubscription =
       this.styleSheetAdaptor.cssStyleSheets$.subscribe((styleSheets) => {
+        styleLogger.debug("CSS stylesheets updated for StyleRuleDomAdaptor", {
+          target: this.styleSheetAdaptor.target,
+          styleSheetsCount: styleSheets.length,
+        });
+
         for (const styleSheet of styleSheets) {
           if (!this._cssStyleRule.has(styleSheet)) {
+            styleLogger.debug("Patching new CSS stylesheet", {
+              target: this.styleSheetAdaptor.target,
+              selectors: this.styleRule.selectors,
+            });
             this.patchCssStylesheet(styleSheet, this.styleRule.styleData);
           }
         }
@@ -44,18 +60,37 @@ export class StyleRuleDomAdaptor extends Lifecycle {
       .pipe(pairwiseOrEmpty())
       .subscribe(([prevStyle, nextStyle]) => {
         const _diff = diff(prevStyle ?? {}, nextStyle);
+        const changedProperties = Object.keys(_diff);
+
+        styleLogger.debug("Style data updated", {
+          target: this.styleSheetAdaptor.target,
+          selectors: this.styleRule.selectors,
+          changedProperties,
+          diffSize: changedProperties.length,
+        });
+
         this.patchAllStyleSheets(_diff);
-        this._updated$.next(Object.keys(_diff));
+        this._updated$.next(changedProperties);
       });
 
     // update style rules on selector update
     const selectorSubscription = this.styleRule.selectors$?.subscribe(() => {
+      styleLogger.debug("Selectors updated", {
+        target: this.styleSheetAdaptor.target,
+        newSelectors: this.styleRule.selectors,
+      });
+
       for (const styleSheet of this.styleSheetAdaptor.cssStyleSheets) {
         this.updateCssStyleRules(styleSheet);
       }
     });
 
     this.addDisposer(() => {
+      styleLogger.info("StyleRuleDomAdaptor disposing", {
+        target: this.styleSheetAdaptor.target,
+        selectors: this.styleRule.selectors,
+      });
+
       styleSheetSubscription.unsubscribe();
       styleSubscription.unsubscribe();
       selectorSubscription?.unsubscribe();
@@ -67,6 +102,12 @@ export class StyleRuleDomAdaptor extends Lifecycle {
   }: {
     styleSheet: CSSStyleSheet;
   }): CSSStyleRule[] {
+    styleLogger.debug("Getting CSS style rules from stylesheet", {
+      target: this.styleSheetAdaptor.target,
+      selectors: this.styleRule.selectors,
+      stylesheetRulesCount: styleSheet.cssRules.length,
+    });
+
     const cssStyleRules = this.styleRule.selectors.map((selector) => {
       const cssStyleRule = getCssStyleRuleFromStylesheet({
         styleSheet,
@@ -74,13 +115,26 @@ export class StyleRuleDomAdaptor extends Lifecycle {
         create: true,
       });
 
-      console.log(selector, cssStyleRule);
+      styleLogger.debug("Retrieved/created CSS style rule", {
+        target: this.styleSheetAdaptor.target,
+        selector,
+        ruleCreated: !!cssStyleRule,
+      });
 
       if (!cssStyleRule) {
+        styleLogger.error("Failed to create CSSStyleRule", {
+          target: this.styleSheetAdaptor.target,
+          selector,
+        });
         throw new Error("Failed to create CSSStyleRule");
       }
 
       return cssStyleRule;
+    });
+
+    styleLogger.debug("Created CSS style rules", {
+      target: this.styleSheetAdaptor.target,
+      rulesCreated: cssStyleRules.length,
     });
 
     return cssStyleRules;
@@ -152,15 +206,39 @@ export class StyleRuleDomAdaptor extends Lifecycle {
     cssStyleRule: CSSStyleRule,
     diff: DeepPartial<CssStyleData>
   ) {
+    const propertiesToUpdate = Object.keys(diff);
+    styleLogger.debug("Patching CSS style rule", {
+      target: this.styleSheetAdaptor.target,
+      selector: cssStyleRule.selectorText,
+      propertiesToUpdate,
+      propertiesCount: propertiesToUpdate.length,
+    });
+
     for (const property in diff) {
       const value = diff[property];
       if (typeof value === "object") {
+        styleLogger.debug("Patching sub-rule", {
+          target: this.styleSheetAdaptor.target,
+          parentSelector: cssStyleRule.selectorText,
+          subSelector: property,
+        });
         this.patchSubCssStyleRule(cssStyleRule, property, value);
       } else if (value === undefined) {
+        styleLogger.debug("Removing property", {
+          target: this.styleSheetAdaptor.target,
+          selector: cssStyleRule.selectorText,
+          property,
+        });
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         cssStyleRule.style.removeProperty(property) ||
           this.patchSubCssStyleRule(cssStyleRule, property, undefined);
       } else {
+        styleLogger.debug("Setting property", {
+          target: this.styleSheetAdaptor.target,
+          selector: cssStyleRule.selectorText,
+          property,
+          value,
+        });
         cssStyleRule.style.setProperty(property, value);
       }
     }
@@ -170,12 +248,25 @@ export class StyleRuleDomAdaptor extends Lifecycle {
     cssStyleSheet: CSSStyleSheet,
     diff: DeepPartial<CssStyleData>
   ) {
+    styleLogger.debug("Patching CSS stylesheet", {
+      target: this.styleSheetAdaptor.target,
+      stylesheetRulesCount: cssStyleSheet.cssRules.length,
+      diffProperties: Object.keys(diff),
+    });
+
     const cssRules = this.getCssStyleRules(cssStyleSheet);
     for (const cssRule of cssRules) {
       this.patchCssStyleRule(cssRule, diff);
     }
   }
+
   patchAllStyleSheets(diff: Partial<CssStyleData>) {
+    styleLogger.debug("Patching all stylesheets", {
+      target: this.styleSheetAdaptor.target,
+      styleSheetsCount: this.styleSheetAdaptor.cssStyleSheets.length,
+      diffProperties: Object.keys(diff),
+    });
+
     for (const cssStyleSheet of this.styleSheetAdaptor.cssStyleSheets) {
       if (!cssStyleSheet) continue;
       this.patchCssStylesheet(cssStyleSheet, diff);

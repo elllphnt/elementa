@@ -7,6 +7,9 @@ export type ViewerStateData = {
     tab: string;
     folders: any;
   };
+  inspector: {
+    tab: string;
+  };
   board: {
     projectId: string;
     fileId: string;
@@ -16,6 +19,7 @@ export type ViewerStateData = {
 interface ViewerState extends ViewerStateData {
   setExplorerTab: (tab: string) => void;
   setExplorerFolderState: (key: string, state: any) => void;
+  setInspectorTab: (tab: string) => void;
   setBoardData: (projectId: string, fileId: string) => void;
   resetState: () => void;
 }
@@ -24,6 +28,9 @@ const initialState: ViewerStateData = {
   explorer: {
     tab: "infrastructure",
     folders: {},
+  },
+  inspector: {
+    tab: "style",
   },
   board: {
     projectId: "",
@@ -49,6 +56,10 @@ export const useViewerState = create<ViewerState>()(
             },
           },
         })),
+      setInspectorTab: (tab) =>
+        set((state) => ({
+          inspector: { ...state.inspector, tab },
+        })),
       setBoardData: (projectId, fileId) =>
         set((state) => ({
           board: { ...state.board, projectId, fileId },
@@ -59,6 +70,7 @@ export const useViewerState = create<ViewerState>()(
       name: "viewer-state-storage",
       partialize: (state) => ({
         explorer: state.explorer,
+        inspector: state.inspector,
         board: state.board,
       }),
     }

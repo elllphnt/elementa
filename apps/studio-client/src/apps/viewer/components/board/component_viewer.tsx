@@ -2,6 +2,7 @@
 import { ElementaRenderableManager } from "@elllphnt/elementa-scene";
 import React, { useCallback, useEffect } from "react";
 import { infrastructure } from "../../../../backend/infrastructure.js";
+import { Inspector } from "../inspector/inspector";
 
 interface ComponentViewerProps {
   url: string;
@@ -54,5 +55,14 @@ export const ComponentViewer: React.FC<ComponentViewerProps> = ({ url }) => {
     }
   }, [manager, componentAdaptor]);
 
-  return <ComponentIframe url={url} onManagerReady={setManager} />;
+  return (
+    <div className="flex h-full w-full">
+      <div className="flex-1">
+        <ComponentIframe url={url} onManagerReady={setManager} />
+      </div>
+      <div className="w-80 border-l border-fg-200 bg-white">
+        <Inspector manager={manager} />
+      </div>
+    </div>
+  );
 };

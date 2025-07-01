@@ -109,10 +109,12 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
     url,
     state,
     project,
+    initialized,
   }: {
     state: RecordState<ComponentData>;
     project: Project;
     url: string;
+    initialized?: boolean;
   }) {
     super({ state, project });
 
@@ -145,7 +147,11 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
     this._template = new OptionalModel({
       state: state.getOptionalRecordState("template"),
       create: (state) =>
-        createElement({ state, environment: this.elementEnvironment }),
+        createElement({
+          state,
+          environment: this.elementEnvironment,
+          initialized,
+        }),
     });
     this._props = new AggregatedModelList({
       state: state.getListOfRecordStates("props"),
@@ -157,6 +163,7 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
         new Fragment({
           state,
           environment: this.elementEnvironment,
+          initialized: true,
         }),
     });
     this._states = new AggregatedModelList({
@@ -168,23 +175,33 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
         }),
     });
 
-    // reactive index for fragments
-    const sub = this._fragments.models$.subscribe((fragments) => {
-      const byId: Record<string, Fragment | undefined> = {};
-      for (const fragment of fragments) {
-        byId[fragment.id] = fragment;
-      }
-      this._fragmentById$.next(byId);
+    this.addInitializer(() => {
+      this.stage.initialize();
+      this.preview.initialize();
+      this._template.initialize();
+      this._props.initialize();
+      this._fragments.initialize();
+
+      const sub = this._fragments.models$.subscribe((fragments) => {
+        const byId: Record<string, Fragment | undefined> = {};
+        for (const fragment of fragments) {
+          byId[fragment.id] = fragment;
+        }
+        this._fragmentById$.next(byId);
+      });
+
+      this.addDisposer(() => {
+        this.stage.dispose();
+        this.preview.dispose();
+        this._template.dispose();
+        this._props.dispose();
+        this._fragments.dispose();
+        sub.unsubscribe();
+      });
     });
 
     this.addDisposer(() => {
-      this.stage.dispose();
-      this.preview.dispose();
-      this._template.dispose();
-      this._props.dispose();
-      this._fragments.dispose();
       this._fragmentById$.complete();
-      sub.unsubscribe();
     });
   }
 

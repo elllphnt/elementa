@@ -1,3 +1,4 @@
+import { logger } from "@elllphnt/elementa-kernel";
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { NamespaceContext } from "../../contexts/namespace.js";
 import { useNamespace } from "../../hooks/namespace.js";
@@ -9,6 +10,12 @@ function RecursionAlert({ fragment }: { fragment: FragmentRenderable }) {
     fragment.instance.model.name$,
     fragment.instance.model.name
   );
+
+  logger.warn("Fragment: Recursive fragment detected", {
+    name,
+    id: fragment.instance.model.id,
+    fragment,
+  });
 
   return (
     <div
@@ -46,16 +53,26 @@ export function FragmentComponent({
   fragment: FragmentRenderable;
   params: Record<string, any>;
 }) {
+  logger.debug("Rendering FragmentComponent", { fragment, params });
+
   const namespace = useNamespace({ clone: true });
   const content = useObservable(fragment.content$, fragment.content);
+
+  logger.debug("FragmentComponent: Content resolved", { content, fragment });
 
   if (fragment.instance.recursive) {
     return <RecursionAlert fragment={fragment} />;
   }
 
+  logger.debug("FragmentComponent: Setting namespace parameters", { params });
   for (const [key, value] of Object.entries(params)) {
     namespace.set(key, value);
   }
+
+  logger.debug("FragmentComponent: Rendering content elements", {
+    elementCount: content.length,
+    content,
+  });
 
   return (
     <NamespaceContext.Provider value={namespace}>

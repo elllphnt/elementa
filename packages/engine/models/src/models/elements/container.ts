@@ -67,11 +67,16 @@ export class ContainerElement extends BaseElement<ContainerElementData> {
         createElement({
           state,
           environment: this.environment,
+          initialized: true,
         }),
     });
 
-    this.addDisposer(() => {
-      this._content.dispose();
+    this.addInitializer(() => {
+      this._content.initialize();
+
+      this.addDisposer(() => {
+        this._content.dispose();
+      });
     });
   }
 }

@@ -1,5 +1,5 @@
 import { keyManager } from "./key.js";
-import { Logger } from "./log.js";
+import { logger } from "./log.js";
 
 export type Initializer = () => void;
 export type Disposer = () => void;
@@ -13,7 +13,6 @@ export interface Disposable {
 
 export abstract class Lifecycle implements Initializeable, Disposable {
   static track = false;
-  static logger: Logger | undefined;
   static instances = new Set<Lifecycle>();
 
   readonly key: string;
@@ -63,7 +62,7 @@ export abstract class Lifecycle implements Initializeable, Disposable {
     if (Lifecycle.track) {
       Lifecycle.instances.add(this);
     }
-    Lifecycle.logger?.debug(`${this.constructor.name} initialized`, {
+    logger.debug(`${this.constructor.name} initialized`, {
       class: this.constructor.name,
       instance: this,
     });
@@ -93,7 +92,7 @@ export abstract class Lifecycle implements Initializeable, Disposable {
     if (Lifecycle.track) {
       Lifecycle.instances.delete(this);
     }
-    Lifecycle.logger?.debug(`${this.constructor.name} disposed`, {
+    logger.debug(`${this.constructor.name} disposed`, {
       class: this.constructor.name,
       instance: this,
     });

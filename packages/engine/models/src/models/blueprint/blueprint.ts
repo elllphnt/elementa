@@ -18,18 +18,27 @@ export class Blueprint extends ProjectModel<RecordState<BlueprintData>> {
   constructor({
     state,
     project,
+    initialized,
   }: {
     state: RecordState<BlueprintData>;
     project: Project;
+    initialized?: boolean;
   }) {
     super({ state, project });
 
     this._nodes = new AggregatedModelList({
       state: state.getListOfRecordStates("nodes"),
-      create: (itemState) => new BlueprintNode({ state: itemState, project }),
+      create: (itemState) =>
+        new BlueprintNode({ state: itemState, project, initialized: true }),
     });
 
-    this.addDisposer(() => this._nodes.dispose());
+    this.addInitializer(() => {
+      this._nodes.initialize();
+
+      this.addDisposer(() => {
+        this._nodes.dispose();
+      });
+    });
   }
 
   node(id: string): BlueprintNode | undefined;

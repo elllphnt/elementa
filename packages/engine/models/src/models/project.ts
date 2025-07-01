@@ -4,7 +4,15 @@ import { Project } from "~/project/project.js";
 export class ProjectModel<S extends State> extends Model<S> {
   readonly project: Project;
 
-  constructor({ state, project }: { state: S; project: Project }) {
+  constructor({
+    state,
+    project,
+    initialized,
+  }: {
+    state: S;
+    project: Project;
+    initialized?: boolean;
+  }) {
     super({ state });
     this.project = project;
   }

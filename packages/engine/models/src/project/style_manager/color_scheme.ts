@@ -145,16 +145,21 @@ export class ColorSchemeManager extends Lifecycle {
   constructor({ project }: { project: Project }) {
     super();
     this.project = project;
-  }
 
-  async initialize() {
-    const nameSubscription = this.colorSchemes$.subscribe((schemes) => {
-      this._colorSchemeByName$.next(
-        Object.fromEntries(schemes.map((scheme) => [scheme.name, scheme]))
-      );
+    this.addInitializer(() => {
+      const nameSubscription = this.colorSchemes$.subscribe((schemes) => {
+        this._colorSchemeByName$.next(
+          Object.fromEntries(schemes.map((scheme) => [scheme.name, scheme]))
+        );
+      });
+
+      this.addDisposer(() => {
+        nameSubscription.unsubscribe();
+      });
     });
+
     this.addDisposer(() => {
-      nameSubscription.unsubscribe();
+      this._colorSchemeByName$.complete();
     });
   }
 }

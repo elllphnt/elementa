@@ -45,13 +45,14 @@ export abstract class FileModelAdaptor<
 
     this.addInitializer(() => {
       const stateSubscription = this.state$.subscribe((state) => {
+        const previousModel = this.model;
         if (!state) {
           this._model$.next(undefined);
-          return;
+        } else {
+          const nextModel = this.createModel(state);
+          nextModel.initialize();
+          this._model$.next(nextModel);
         }
-
-        const previousModel = this.model;
-        this._model$.next(this.createModel(state));
         previousModel?.dispose();
       });
 
@@ -71,6 +72,7 @@ export abstract class FileModelAdaptor<
         return new App({
           state: state as FileModelType<"app">["state"],
           project: this.file.project,
+          initialized: true,
         }) as FileModelType<N>;
       }
       case fileModelTypes.component: {
@@ -78,6 +80,7 @@ export abstract class FileModelAdaptor<
           state: state as FileModelType<"component">["state"],
           project: this.file.project,
           url: this.file.url,
+          initialized: true,
         }) as FileModelType<N>;
       }
       case fileModelTypes.router: {
@@ -85,48 +88,56 @@ export abstract class FileModelAdaptor<
           state: state as FileModelType<"router">["state"],
           project: this.file.project,
           url: this.file.url,
+          initialized: true,
         }) as FileModelType<N>;
       }
       case fileModelTypes.packageSheet: {
         return new PackageSheet({
           state: state as FileModelType<"package-sheet">["state"],
           project: this.file.project,
+          initialized: true,
         }) as FileModelType<N>;
       }
       case fileModelTypes.stylesheet: {
         return new Stylesheet({
           state: state as FileModelType<"stylesheet">["state"],
           project: this.file.project,
+          initialized: true,
         }) as FileModelType<N>;
       }
       case fileModelTypes.styleSystem: {
         return new StyleSystem({
           state: state as FileModelType<"style-system">["state"],
           project: this.file.project,
+          initialized: true,
         }) as FileModelType<N>;
       }
       case fileModelTypes.styleVariableSheet: {
         return new StyleVariableSheet({
           state: state as FileModelType<"variable-sheet">["state"],
           project: this.file.project,
+          initialized: true,
         }) as FileModelType<N>;
       }
       case fileModelTypes.styleModifierSheet: {
         return new StyleModifierSheet({
           state: state as FileModelType<"style-modifier-sheet">["state"],
           project: this.file.project,
+          initialized: true,
         }) as FileModelType<N>;
       }
       case fileModelTypes.keyframeSheet: {
         return new KeyframeSheet({
           state: state as FileModelType<"keyframe-sheet">["state"],
           project: this.file.project,
+          initialized: true,
         }) as FileModelType<N>;
       }
       case fileModelTypes.typefaceSheet: {
         return new TypefaceSheet({
           state: state as FileModelType<"typeface-sheet">["state"],
           project: this.file.project,
+          initialized: true,
         }) as FileModelType<N>;
       }
       default: {
