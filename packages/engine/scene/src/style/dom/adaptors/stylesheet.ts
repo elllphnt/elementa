@@ -47,22 +47,8 @@ export abstract class DomStyleSheetAdaptor extends Lifecycle {
   constructor() {
     super();
 
-    styleLogger.debug("DomStyleSheetAdaptor created", {
-      key: this.key,
-    });
-
     this.addDisposer(() => {
-      styleLogger.info("DomStyleSheetAdaptor disposing", {
-        key: this.key,
-        target: this.target,
-        styleElementsToRemove: this.htmlStyleElements.length,
-      });
-
       this.htmlStyleElements.forEach((styleElement) => {
-        styleLogger.debug("Removing style element", {
-          target: this.target,
-          document: styleElement.ownerDocument?.title || "unknown",
-        });
         styleElement.remove();
       });
       this._htmlStyleElements$.next(new Map());
@@ -103,11 +89,6 @@ export abstract class DomStyleSheetAdaptor extends Lifecycle {
   useRef(document: Document) {
     let styleElement = this._htmlStyleElements$.value.get(document);
     if (!styleElement) {
-      styleLogger.info("Creating new style element", {
-        target: this.target,
-        document: document.title || "unknown",
-      });
-
       styleElement = document.createElement("style");
       styleElement.dataset["target"] = this.target;
       document.head.appendChild(styleElement);
@@ -115,7 +96,7 @@ export abstract class DomStyleSheetAdaptor extends Lifecycle {
       newMap.set(document, styleElement);
       this._htmlStyleElements$.next(newMap);
 
-      styleLogger.debug("Style element created and added to document head", {
+      styleLogger.debug(`Created new style element for ${this.key}`, {
         target: this.target,
         document: document.title || "unknown",
       });

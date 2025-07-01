@@ -1,66 +1,30 @@
 {
   "files": {
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/router.json": {
-      "sourceModified": 1750681557165.3196,
-      "outputModified": 1750693678964.8613
-    },
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/.elll/app": {
-      "sourceModified": 1750680101745.301,
-      "outputModified": 1750693678964.8613
-    },
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/.elll/packages": {
-      "sourceModified": 1750687260277.581,
-      "outputModified": 1750693678964.8613
-    },
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/hooks/useContactForm.hook.ts": {
-      "sourceModified": 1750680101745.301,
-      "outputModified": 1750693678964.8613
-    },
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/hooks/useHomeData.hook.ts": {
-      "sourceModified": 1750680101745.301,
-      "outputModified": 1750693678964.8613
-    },
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/hooks/usePortfolio.hook.ts": {
-      "sourceModified": 1750680101745.301,
-      "outputModified": 1750693678964.8613
-    },
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/hooks/useServices.hook.ts": {
-      "sourceModified": 1750680101745.301,
-      "outputModified": 1750693678964.8613
-    },
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/types/index.ts": {
-      "sourceModified": 1750680101745.301,
-      "outputModified": 1750693678964.8613
-    },
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/views/contact/contact.handler.ts": {
-      "sourceModified": 1750680109205.2998,
-      "outputModified": 1750693681151.6047
-    },
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/views/home/home.loader.ts": {
-      "sourceModified": 1750680109205.2998,
-      "outputModified": 1750693681337.9192
-    },
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/views/portfolio/portfolio.loader.ts": {
-      "sourceModified": 1750680109205.2998,
-      "outputModified": 1750693681494.8157
-    },
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/views/services/services.loader.ts": {
-      "sourceModified": 1750680109205.2998,
-      "outputModified": 1750693681651.7122
-    },
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/views/contact/contact.component.tsx": 1750613442147.5547,
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/views/home/home.component.tsx": 1750613442147.5547,
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/views/about/about.component.tsx": 1750613442138.5078,
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/views/portfolio/portfolio.component.tsx": 1750613442147.5547,
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/views/services/services.component.tsx": 1750681242325.3503,
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/components/call-to-action/call-to-action.component.tsx": 1750613442120.414,
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/components/contact-form/contact-form.component.tsx": 1750613442129.461,
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/components/footer/footer.component.tsx": 1750613442129.461,
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/components/header/header.component.tsx": 1750613442129.461,
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/components/hero/hero.component.tsx": 1750613442129.461,
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/components/layout/layout.component.tsx": 1750613442129.461,
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/components/navigation/navigation.component.tsx": 1750613442129.461,
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/components/portfolio-preview/portfolio-preview.component.tsx": 1750613442129.461,
-    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/components/service-preview/service-preview.component.tsx": 1750613442138.5078
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/router.json": 1751398658673.0159,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/.elll/app": 1751398658662.6082,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/.elll/packages": 1751398658662.6082,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/hooks/useContactForm.hook.ts": 1751398658662.6082,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/hooks/useHomeData.hook.ts": 1751398658673.0159,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/hooks/usePortfolio.hook.ts": 1751398658673.0159,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/hooks/useServices.hook.ts": 1751398658673.0159,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/types/index.ts": 1751398658673.0159,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/components/contact-form/contact-form.component.tsx": 1751398658662.6082,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/components/call-to-action/call-to-action.component.tsx": 1751398658662.6082,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/components/footer/footer.component.tsx": 1751398658662.6082,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/components/header/header.component.tsx": 1751398658662.6082,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/components/hero/hero.component.tsx": 1751398658662.6082,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/components/layout/layout.component.tsx": 1751398658662.6082,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/components/navigation/navigation.component.tsx": 1751398658662.6082,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/components/portfolio-preview/portfolio-preview.component.tsx": 1751398658662.6082,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/components/service-preview/service-preview.component.tsx": 1751398658662.6082,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/views/about/about.component.tsx": 1751398658673.0159,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/views/contact/contact.component.tsx": 1751398658673.0159,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/views/contact/contact.handler.ts": 1751398658673.0159,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/views/home/home.component.tsx": 1751398658673.0159,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/views/home/home.loader.ts": 1751398658673.0159,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/views/portfolio/portfolio.component.tsx": 1751398658673.0159,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/views/portfolio/portfolio.loader.ts": 1751398658673.0159,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/views/services/services.component.tsx": 1751398658673.0159,
+    "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects/design-agency/views/services/services.loader.ts": 1751398658673.0159
   }
 }

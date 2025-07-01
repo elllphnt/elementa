@@ -6,6 +6,7 @@ import {
   Diagnosticable,
   DiagnosticLevel,
 } from "../../_shared/diagnosticable.js";
+import { moduleLogger } from "../../loggers.js";
 
 export type ModuleState = {
   value: any;
@@ -126,15 +127,15 @@ export class Module extends Lifecycle implements Diagnosticable {
       });
     }
     this._diagnostics$.next(diagnostics);
-  }
 
-  async getValue() {
-    if (this._state$.value.evaluationNumber < 0) {
-      await this._evaluate(this.file.url);
-    }
-    if (this._state$.value.error) {
-      throw this._state$.value.error;
-    }
-    return this._state$.value.value;
+    moduleLogger.debug(`Update module state ${this.url}`, {
+      url: this.url,
+      evaluationNumber: state.evaluationNumber,
+      hasValue: !!state.value,
+      dependencyCount: state.dependencies.length,
+      dependencies: state.dependencies,
+      hasError: !!state.error,
+      error: state.error?.message,
+    });
   }
 }

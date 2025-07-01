@@ -10,23 +10,21 @@ export class DomStyleSheetManager extends Lifecycle {
   stylesheetAdaptor(stylesheet: CssStyleSheet) {
     let adaptor = this.stylesheetAdaptors[stylesheet.key];
     if (!adaptor) {
-      styleLogger.info("Creating new stylesheet adaptor", {
-        key: stylesheet.key,
-        type: stylesheet.type,
-        target: stylesheet.target,
-      });
-
       adaptor = createDomStyleSheetAdaptor({ stylesheet });
       this.stylesheetAdaptors[stylesheet.key] = adaptor;
 
       stylesheet.addDisposer(() => {
-        styleLogger.info("Stylesheet disposed, cleaning up adaptor", {
-          key: stylesheet.key,
-          target: stylesheet.target,
-        });
         adaptor?.dispose();
         delete this.stylesheetAdaptors[stylesheet.key];
       });
+
+      styleLogger.debug(
+        `Created dom stylesheet adapter for ${stylesheet.target}`,
+        {
+          key: stylesheet.key,
+          target: stylesheet.target,
+        }
+      );
     } else {
       styleLogger.debug("Reusing existing stylesheet adaptor", {
         key: stylesheet.key,

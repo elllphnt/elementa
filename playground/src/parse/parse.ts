@@ -90,6 +90,9 @@ export async function parseFile({
   filePath: string;
   cache?: IncrementalCache;
 }): Promise<boolean> {
+  console.log(`🔍 Parsing file: ${filePath}`);
+  console.log(`📂 Source directory: ${srcDir}`);
+  console.log(`📁 Output directory: ${outDir}`);
   const relativePath = path.relative(srcDir, filePath);
 
   // Find matching handler
@@ -113,7 +116,7 @@ export async function parseFile({
     outRoot: outDir,
   });
 
-  writeFile(out.path, out.content);
+  writeFile(path.join(outDir, out.path), out.content);
 
   // Update cache after successful build
   if (cache) {

@@ -10,11 +10,15 @@ import {
 } from "@elllphnt/elementa-base";
 import { elllSelectorToCssSelector } from "@elllphnt/elementa-css";
 import { Lifecycle, reconcileList } from "@elllphnt/elementa-kernel";
+import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 import {
-  combineLatestArrays,
-  combineLatestOrEmpty,
-} from "@elllphnt/elementa-lang-utils";
-import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
+  BehaviorSubject,
+  combineLatest,
+  map,
+  Observable,
+  of,
+  switchMap,
+} from "rxjs";
 import { StylesheetCssStyleSheet } from "~/css/stylesheets/stylesheet/stylesheet.js";
 import { Stylesheet } from "~/models/style/stylesheet/stylesheet.js";
 import { Project } from "../project.js";
@@ -161,7 +165,9 @@ export class StyleManager extends Lifecycle {
     return [...this.modifierSheetModifiers];
   }
   get modifiers$() {
-    return combineLatestArrays([this.modifierSheetModifiers$]);
+    return combineLatest([this.modifierSheetModifiers$]).pipe(
+      map(([modifiers]) => [...modifiers])
+    );
   }
 
   get modifiersByName() {

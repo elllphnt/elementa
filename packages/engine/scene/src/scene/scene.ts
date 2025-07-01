@@ -2,6 +2,7 @@ import { Lifecycle } from "@elllphnt/elementa-kernel";
 import { pairwiseOrEmpty } from "@elllphnt/elementa-lang-utils";
 import { Fragment, Project } from "@elllphnt/elementa-models";
 import { Subscription } from "rxjs";
+import { styleLogger } from "../loggers.js";
 import { DomStyleSheetManager } from "../style/dom/manager.js";
 import { systemStylesheet } from "./stylesheet/stylesheet.js";
 
@@ -83,11 +84,6 @@ export class Scene extends Lifecycle {
       return;
     }
 
-    console.log(
-      "1- registerFragment",
-      fragment.id,
-      fragment.allCssStylesheets.map((s) => s.target)
-    );
     const subscription = fragment.allCssStylesheets$
       .pipe(pairwiseOrEmpty())
       .subscribe(([prev, next]) => {
@@ -97,10 +93,20 @@ export class Scene extends Lifecycle {
         prev?.forEach((s) =>
           this.stylesheetDomManager.stylesheetAdaptor(s).clearRef(document)
         );
+        styleLogger.debug(
+          `Fragment ${fragment.id} stylesheet adaptors updated`,
+          {
+            fragment,
+          }
+        );
       });
 
     this._fragments.set(fragment, { refCount: 1, subscription });
     this._registerProject(fragment.environment.project);
+
+    styleLogger.debug(`RegisterFragment ${fragment.id}`, {
+      fragment,
+    });
   }
   unregisterFragment(fragment: Fragment): void {
     const tracked = this._fragments.get(fragment);

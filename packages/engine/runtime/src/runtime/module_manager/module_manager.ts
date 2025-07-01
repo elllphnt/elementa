@@ -1,6 +1,7 @@
 import { PackageData } from "@elllphnt/elementa-base";
 import { Lifecycle } from "@elllphnt/elementa-kernel";
 import { Infrastructure } from "@elllphnt/elementa-models";
+import { moduleLogger } from "../../loggers.js";
 import { rewriteImports, transpileTsToJs } from "./_utils.js";
 import { Module } from "./module.js";
 import { ModuleHost } from "./module_host/module_host.js";
@@ -41,6 +42,10 @@ export class ModuleManager extends Lifecycle {
     });
     this._modules.set(url, module);
     module.init();
+    moduleLogger.info(`addModule ${url}`, {
+      url,
+      moduleCount: this._modules.size,
+    });
     return module;
   }
   module(url: string) {
@@ -48,6 +53,11 @@ export class ModuleManager extends Lifecycle {
     if (!module) {
       module = this.addModule(url);
     }
+    moduleLogger.debug(`module ${url}`, {
+      url,
+      isNew: !this._modules.has(url),
+      moduleCount: this._modules.size,
+    });
     return module;
   }
 
@@ -113,8 +123,18 @@ export class ModuleManager extends Lifecycle {
       }
 
       // 6) Return array of dependencies
-      return Array.from(dependencies);
+      const result = Array.from(dependencies);
+      moduleLogger.info(`loadModuleToHost ${url}`, {
+        url,
+        packageCount: packages.length,
+        dependencyCount: result.length,
+        dependencies: result,
+        missingPackages:
+          missingPackages.length > 0 ? missingPackages : undefined,
+      });
+      return result;
     } catch (e) {
+      moduleLogger.error(`loadModuleToHost ${url}`, { url, error: e });
       console.error("Failed to load file to host", url, e);
       throw e;
     }
@@ -127,6 +147,10 @@ export class ModuleManager extends Lifecycle {
     const module = this.module(url);
     if (module.evaluationNumber === evaluationNumber) {
       // Already evaluated in this evaluation cycle
+      moduleLogger.debug(`evaluateModule ${url} - already evaluated`, {
+        url,
+        evaluationNumber,
+      });
       return;
     }
 
@@ -135,9 +159,22 @@ export class ModuleManager extends Lifecycle {
       const packages = await project.packageManager.getPackages();
 
       // 1) Load module to host (including dependencies)
+      moduleLogger.info(`evaluateModule load ${url}`, {
+        url,
+        evaluationNumber,
+        packages,
+        project,
+      });
       const dependencies = await this.loadModuleToHost(url, packages);
 
       // 2) Evaluate the module
+      moduleLogger.info(`evaluateModule import ${url}`, {
+        url,
+        evaluationNumber,
+        dependencies,
+        packages,
+        project,
+      });
       const value = await import(
         /* @vite-ignore */ this.moduleHost.resolveImportUrl(url)
       );
@@ -150,17 +187,32 @@ export class ModuleManager extends Lifecycle {
       });
 
       // 4) Re‐evaluate any modules depending on this one
+      const dependentModules: string[] = [];
       for (const mod of this._modules.values()) {
         if (mod.dependencies.includes(url)) {
+          dependentModules.push(mod.url);
           await this.evaluateModule(mod.url);
         }
       }
+
+      moduleLogger.info(`evaluateModule ${url}`, {
+        url,
+        evaluationNumber,
+        dependencyCount: dependencies.length,
+        dependencies,
+        reevaluatedDependents: dependentModules,
+      });
     } catch (error) {
       module.setState({
         value: undefined,
         evaluationNumber,
         dependencies: [],
         error: error as Error,
+      });
+      moduleLogger.error(`evaluateModule ${url}`, {
+        url,
+        evaluationNumber,
+        error,
       });
     }
   }

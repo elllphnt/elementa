@@ -2,10 +2,10 @@
   "props": [],
   "fragments": [
     {
-      "id": "emou6fr0",
+      "id": "zi9n7lol",
       "content": [
         {
-          "id": "o58fqwvd",
+          "id": "or0h8hb9",
           "type": "container",
           "tag": "section",
           "name": "root",
@@ -23,7 +23,7 @@
           },
           "content": [
             {
-              "id": "sv2jb5is",
+              "id": "b1a1myqi",
               "type": "container",
               "tag": "div",
               "name": "container",
@@ -42,7 +42,7 @@
               },
               "content": [
                 {
-                  "id": "ntzefmih",
+                  "id": "x7ehcedf",
                   "type": "container",
                   "tag": "div",
                   "name": "content",
@@ -52,7 +52,7 @@
                   },
                   "content": [
                     {
-                      "id": "r03dphoh",
+                      "id": "fz40oykh",
                       "type": "text",
                       "tag": "h2",
                       "name": "title",
@@ -81,7 +81,7 @@
                       "marks": []
                     },
                     {
-                      "id": "hxx3mgzo",
+                      "id": "yijub1hd",
                       "type": "text",
                       "tag": "p",
                       "name": "description",
@@ -107,7 +107,7 @@
                       "marks": []
                     },
                     {
-                      "id": "a4dybd8t",
+                      "id": "yaw3paeo",
                       "type": "container",
                       "tag": "div",
                       "name": "buttons",
@@ -132,7 +132,7 @@
                       },
                       "content": [
                         {
-                          "id": "skivr0qj",
+                          "id": "ua1sdio5",
                           "type": "text",
                           "text": "Get Started",
                           "link": {
@@ -141,7 +141,7 @@
                           }
                         },
                         {
-                          "id": "wsftjo24",
+                          "id": "c76rf0yr",
                           "type": "text",
                           "text": "View Our Work",
                           "link": {
@@ -163,9 +163,9 @@
     }
   ],
   "template": {
-    "id": "srq8iv8o",
+    "id": "q78ts9fo",
     "type": "fragment",
-    "fragmentId": "emou6fr0",
+    "fragmentId": "zi9n7lol",
     "params": {}
   },
   "editors": {

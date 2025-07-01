@@ -7,9 +7,10 @@ import {
   ScriptTarget,
   transpileModule,
 } from "typescript";
+import { moduleLogger } from "../../loggers.js";
 
 export function transpileTsToJs(content: string): string {
-  return transpileModule(content, {
+  const result = transpileModule(content, {
     compilerOptions: {
       target: ScriptTarget.ESNext, // Modern output
       module: ModuleKind.ESNext, // For dynamic import()
@@ -22,6 +23,13 @@ export function transpileTsToJs(content: string): string {
       noEmitHelpers: true, // Keep it lean
     },
   }).outputText;
+
+  moduleLogger.debug(`transpileTsToJs`, {
+    contentLength: content.length,
+    resultLength: result.length,
+  });
+
+  return result;
 }
 
 function isLocalImport(source: string): boolean {
@@ -113,5 +121,19 @@ export function rewriteImports({
 
   if (!result.code) throw new Error("Failed to rewrite imports");
 
-  return [result.code, Array.from(missingPackages)];
+  const finalResult: [string, string[]] = [
+    result.code,
+    Array.from(missingPackages),
+  ];
+  moduleLogger.debug(`rewriteImports`, {
+    packageCount: packages.length,
+    externalCount: externals.length,
+    importMapSize: Object.keys(importMap).length,
+    contentLength: content.length,
+    resultLength: result.code.length,
+    missingPackageCount: missingPackages.size,
+    missingPackages: Array.from(missingPackages),
+  });
+
+  return finalResult;
 }

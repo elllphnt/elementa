@@ -7,11 +7,16 @@ import {
   AggregatedModelRecord,
   RecordState,
 } from "@elllphnt/elementa-kernel";
+import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 import {
-  combineLatestArrays,
-  combineLatestOrEmpty,
-} from "@elllphnt/elementa-lang-utils";
-import { filter, map, Observable, of, switchMap, tap } from "rxjs";
+  combineLatest,
+  filter,
+  map,
+  Observable,
+  of,
+  switchMap,
+  tap,
+} from "rxjs";
 import { CssStyleSheet } from "~/css/lib/stylesheet.js";
 import { modelsLogger } from "../../../loggers.js";
 import { BaseElement } from "../_base.js";
@@ -51,13 +56,19 @@ export class PrimitiveElement extends BaseElement<PrimitiveElementData> {
   }
 
   get allCssStylesheets$(): Observable<CssStyleSheet[]> {
-    return combineLatestArrays([
+    return combineLatest([
       of([this.cssStyleSheet]),
       this.content$.pipe(map((s) => s.map((s) => s.cssStyleSheet))),
       this.subElements$.pipe(
         map((s) => Object.values(s).map((s) => s.cssStyleSheet))
       ),
-    ]);
+    ]).pipe(
+      map(([main, content, subElements]) => [
+        ...main,
+        ...content,
+        ...subElements,
+      ])
+    );
   }
 
   get primitiveUrl(): string | undefined {

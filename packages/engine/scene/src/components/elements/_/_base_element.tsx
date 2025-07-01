@@ -3,9 +3,9 @@ import cx from "classnames";
 import { JSX, PropsWithChildren, useEffect, useRef } from "react";
 import { useNamespace } from "../../../hooks/namespace.js";
 import { ElementRenderable } from "../../../renderables/element/element.js";
-import { HideableElementComponent } from "./_hideable_element.js";
+import { ElementConditionProvider } from "../providers/condition.js";
+import { LinkProvider } from "../providers/link.js";
 import { InteractiveElementComponent } from "./_interactive_element.js";
-import { LinkableElementComponent } from "./_linkable_element.js";
 
 function RawBaseElementComponent({
   element,
@@ -82,5 +82,5 @@ function RawBaseElementComponent({
 }
 
 export const BaseElementComponent = InteractiveElementComponent(
-  LinkableElementComponent(HideableElementComponent(RawBaseElementComponent))
+  LinkProvider(ElementConditionProvider(RawBaseElementComponent))
 );

@@ -2,10 +2,10 @@
   "props": [],
   "fragments": [
     {
-      "id": "qj54qyko",
+      "id": "s75hhen6",
       "content": [
         {
-          "id": "u6cc9o5w",
+          "id": "f9yzfjar",
           "type": "container",
           "tag": "div",
           "name": "root",
@@ -26,13 +26,13 @@
           },
           "content": [
             {
-              "id": "t84oj4wm",
+              "id": "kwc9db5b",
               "type": "component",
               "componentUrl": "<<REF:../header/header.component.js>>",
               "content": []
             },
             {
-              "id": "lcnm01vp",
+              "id": "fo6rvm5q",
               "type": "container",
               "tag": "main",
               "name": "main",
@@ -48,14 +48,14 @@
               },
               "content": [
                 {
-                  "id": "vmp0pasg",
+                  "id": "k6l3bnbt",
                   "type": "expression",
                   "expression": "props.children"
                 }
               ]
             },
             {
-              "id": "s1zoyf9k",
+              "id": "otf6xyh6",
               "type": "component",
               "componentUrl": "<<REF:../footer/footer.component.js>>",
               "content": []
@@ -68,9 +68,9 @@
     }
   ],
   "template": {
-    "id": "s550ikeb",
+    "id": "a9fsaxtx",
     "type": "fragment",
-    "fragmentId": "qj54qyko",
+    "fragmentId": "s75hhen6",
     "params": {}
   },
   "editors": {

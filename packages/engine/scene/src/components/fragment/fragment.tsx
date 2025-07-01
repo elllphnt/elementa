@@ -53,25 +53,22 @@ export function FragmentComponent({
   fragment: FragmentRenderable;
   params: Record<string, any>;
 }) {
-  logger.debug("Rendering FragmentComponent", { fragment, params });
-
   const namespace = useNamespace({ clone: true });
   const content = useObservable(fragment.content$, fragment.content);
-
-  logger.debug("FragmentComponent: Content resolved", { content, fragment });
 
   if (fragment.instance.recursive) {
     return <RecursionAlert fragment={fragment} />;
   }
 
-  logger.debug("FragmentComponent: Setting namespace parameters", { params });
   for (const [key, value] of Object.entries(params)) {
     namespace.set(key, value);
   }
 
-  logger.debug("FragmentComponent: Rendering content elements", {
-    elementCount: content.length,
+  logger.debug("FragmentComponent", {
     content,
+    params,
+    fragment,
+    namespace,
   });
 
   return (

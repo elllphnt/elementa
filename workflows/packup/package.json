@@ -1,5 +1,6 @@
 {
   "name": "@repo/packup",
+  "private": true,
   "version": "1.0.0",
   "keywords": [],
   "author": "",

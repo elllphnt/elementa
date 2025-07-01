@@ -4,11 +4,8 @@ import {
   FragmentData,
 } from "@elllphnt/elementa-base";
 import { AggregatedModelList, RecordState } from "@elllphnt/elementa-kernel";
-import {
-  combineLatestArrays,
-  combineLatestOrEmpty,
-} from "@elllphnt/elementa-lang-utils";
-import { map, Observable, switchMap } from "rxjs";
+import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
+import { combineLatest, map, Observable, switchMap, tap } from "rxjs";
 import { modelsLogger } from "../../loggers.js";
 import { createElement, Element } from "../elements/_element.js";
 import { ElementEnvironment } from "../elements/_environment.js";
@@ -56,14 +53,27 @@ export class Fragment extends Identifiable<FragmentData> {
   }
 
   get allCssStylesheets$() {
-    return combineLatestArrays([
+    return combineLatest([
       this.content$.pipe(
         switchMap((c) =>
-          combineLatestOrEmpty(c.map((c) => c.allCssStylesheets$ || []))
+          combineLatestOrEmpty(
+            c.map(
+              (c) =>
+                c.allCssStylesheets$.pipe(
+                  tap((styleshets) => {
+                    modelsLogger.debug("Fragment allCssStylesheets$", {
+                      fragmentId: this.id,
+                      stylesheetsCount: styleshets.length,
+                      elementId: c.id,
+                    });
+                  })
+                ) || []
+            )
+          )
         ),
         map((c) => c.flat())
       ),
-    ]);
+    ]).pipe(map(([contentStyles]) => [...contentStyles]));
   }
 
   get slotIds(): string[] {

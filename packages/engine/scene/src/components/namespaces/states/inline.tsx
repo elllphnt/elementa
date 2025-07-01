@@ -4,6 +4,7 @@ import { InlineStateInstance } from "@elllphnt/elementa-runtime";
 import { PropsWithChildren } from "react";
 import { NamespaceContext } from "../../../contexts/namespace.js";
 import { useNamespace } from "../../../hooks/namespace.js";
+import { renderingLogger } from "../../../loggers.js";
 
 function InnerInlineStateNamespaceProvider({
   state,
@@ -15,34 +16,15 @@ function InnerInlineStateNamespaceProvider({
   script: string;
   varName?: string;
 }>) {
-  logger.debug("Rendering InnerInlineStateNamespaceProvider", {
-    state,
-    script,
-    varName,
-  });
-
   const namespace = useNamespace({ clone: true });
   let value: unknown;
 
   try {
     const expression = `(()=>{${script}})()`;
-    logger.debug("InnerInlineStateNamespaceProvider: Executing inline script", {
-      script,
-      expression,
-    });
 
     value = namespace.resolveExpression({
       __expression: expression,
     });
-
-    logger.debug(
-      "InnerInlineStateNamespaceProvider: Script executed successfully",
-      {
-        expression,
-        value,
-        varName,
-      }
-    );
   } catch (error) {
     logger.error(
       "InnerInlineStateNamespaceProvider: Error executing inline script",
@@ -56,20 +38,16 @@ function InnerInlineStateNamespaceProvider({
   namespace.set(state.namespaceKey, value);
   if (varName) {
     namespace.set([varName], value);
-    logger.debug(
-      "InnerInlineStateNamespaceProvider: Set inline state with varName",
-      {
-        varName,
-        value,
-      }
-    );
   }
 
-  logger.debug(
-    "InnerInlineStateNamespaceProvider: Inline state set in namespace",
+  renderingLogger.debug(
+    `InnerInlineStateNamespaceProvider ${varName} (${state.model.id})`,
     {
-      namespaceKey: state.namespaceKey,
       value,
+      namespace,
+      script,
+      varName,
+      state,
     }
   );
 
@@ -86,21 +64,19 @@ export function InlineStateNamespaceProvider({
 }: PropsWithChildren<{
   state: InlineStateInstance;
 }>) {
-  logger.debug("Rendering InlineStateNamespaceProvider", { state });
-
   const script = useObservable(state.model.script$, state.model.script);
   const varName = useObservable(state.model.varName$, state.model.varName);
 
-  logger.debug("InlineStateNamespaceProvider: Values resolved", {
-    script,
-    varName,
-    hasScript: !!script,
-  });
+  renderingLogger.debug(
+    `InlineStateNamespaceProvider ${varName} (${state.model.id})`,
+    {
+      state,
+      script,
+      varName,
+    }
+  );
 
   if (!script) {
-    logger.debug(
-      "InlineStateNamespaceProvider: No script, rendering children directly"
-    );
     return <>{children}</>;
   } else {
     return (

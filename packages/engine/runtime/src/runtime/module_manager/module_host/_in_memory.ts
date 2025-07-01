@@ -1,3 +1,4 @@
+import { moduleLogger } from "../../../loggers.js";
 import { ModuleHost } from "./module_host.js";
 
 export class InMemoryModuleHost implements ModuleHost {
@@ -15,13 +16,26 @@ export class InMemoryModuleHost implements ModuleHost {
     const blob = new Blob([code], { type: "application/javascript" });
     const blobUrl = URL.createObjectURL(blob);
     this.blobUrls.set(url, blobUrl);
+
+    moduleLogger.debug(`loadScript ${url}`, {
+      url,
+      codeLength: code.length,
+      blobUrl,
+      hadOldBlob: !!oldBlobUrl,
+      totalModules: this.modules.size,
+    });
   }
 
   resolveImportUrl(url: string): string {
     const blobUrl = this.blobUrls.get(url);
     if (!blobUrl) {
+      moduleLogger.error(`resolveImportUrl ${url} - not found`, {
+        url,
+        availableUrls: Array.from(this.blobUrls.keys()),
+      });
       throw new Error(`No compiled module found for ${url}`);
     }
+    moduleLogger.debug(`resolveImportUrl ${url}`, { url, blobUrl });
     return blobUrl;
   }
 }

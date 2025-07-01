@@ -1,6 +1,6 @@
 import { PackageData, PackageSheetData } from "@elllphnt/elementa-base";
 import { RecordState } from "@elllphnt/elementa-kernel";
-import { Observable } from "rxjs";
+import { map, Observable } from "rxjs";
 import { Project } from "~/project/project.js";
 import { ProjectModel } from "../project.js";
 
@@ -10,7 +10,9 @@ export class PackageSheet extends ProjectModel<RecordState<PackageSheetData>> {
   }
 
   get packages$(): Observable<PackageData[]> {
-    return this.state.entry$("packages");
+    return this.state
+      .entry$("packages")
+      .pipe(map((packages) => packages || []));
   }
 
   constructor({

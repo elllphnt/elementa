@@ -2,10 +2,10 @@
   "props": [],
   "fragments": [
     {
-      "id": "q67ojyyo",
+      "id": "d9klmxcb",
       "content": [
         {
-          "id": "pm9g8ufw",
+          "id": "gsf3jnwa",
           "type": "container",
           "tag": "footer",
           "name": "root",
@@ -24,7 +24,7 @@
           },
           "content": [
             {
-              "id": "ygddju4w",
+              "id": "j2pub6x3",
               "type": "container",
               "tag": "div",
               "name": "container",
@@ -42,7 +42,7 @@
               },
               "content": [
                 {
-                  "id": "d79r4sh1",
+                  "id": "lntecsj8",
                   "type": "container",
                   "tag": "div",
                   "name": "footer-content",
@@ -67,7 +67,7 @@
                   },
                   "content": [
                     {
-                      "id": "clga3ilf",
+                      "id": "uam4oocr",
                       "type": "container",
                       "tag": "div",
                       "name": "company-info",
@@ -77,7 +77,7 @@
                       },
                       "content": [
                         {
-                          "id": "jg33rjtf",
+                          "id": "wev1bo24",
                           "type": "text",
                           "tag": "h3",
                           "name": "company-name",
@@ -98,7 +98,7 @@
                           "marks": []
                         },
                         {
-                          "id": "uz94xmt3",
+                          "id": "m6gghnn8",
                           "type": "text",
                           "tag": "p",
                           "name": "company-description",
@@ -118,7 +118,7 @@
                       ]
                     },
                     {
-                      "id": "yv5p5cu7",
+                      "id": "mactv9np",
                       "type": "container",
                       "tag": "div",
                       "name": "contact-info",
@@ -128,7 +128,7 @@
                       },
                       "content": [
                         {
-                          "id": "sh4gduzt",
+                          "id": "ui6o3ts6",
                           "type": "text",
                           "tag": "h4",
                           "name": "contact-title",
@@ -148,7 +148,7 @@
                           "marks": []
                         },
                         {
-                          "id": "evlmppr4",
+                          "id": "m8aycfw0",
                           "type": "text",
                           "tag": "p",
                           "name": "contact-email",
@@ -167,7 +167,7 @@
                           "marks": []
                         },
                         {
-                          "id": "a6es6736",
+                          "id": "ysbjps4m",
                           "type": "text",
                           "tag": "p",
                           "name": "contact-phone",
@@ -188,7 +188,7 @@
                       ]
                     },
                     {
-                      "id": "y18ahl9c",
+                      "id": "v6a1gj3z",
                       "type": "container",
                       "tag": "div",
                       "name": "social-links",
@@ -198,7 +198,7 @@
                       },
                       "content": [
                         {
-                          "id": "kpl3a5ey",
+                          "id": "z5tj5bkm",
                           "type": "text",
                           "tag": "h4",
                           "name": "social-title",
@@ -218,7 +218,7 @@
                           "marks": []
                         },
                         {
-                          "id": "se4yynvh",
+                          "id": "ujzzf7oc",
                           "type": "container",
                           "tag": "div",
                           "name": "social-icons",
@@ -240,7 +240,7 @@
                           },
                           "content": [
                             {
-                              "id": "oa0fr71l",
+                              "id": "q3va4dmq",
                               "type": "text",
                               "text": "Twitter",
                               "link": {
@@ -249,7 +249,7 @@
                               }
                             },
                             {
-                              "id": "oa3qqonc",
+                              "id": "w6ct714b",
                               "type": "text",
                               "text": "Instagram",
                               "link": {
@@ -258,7 +258,7 @@
                               }
                             },
                             {
-                              "id": "uqdxmoie",
+                              "id": "qz6is7o7",
                               "type": "text",
                               "text": "LinkedIn",
                               "link": {
@@ -273,7 +273,7 @@
                   ]
                 },
                 {
-                  "id": "kopm1fcf",
+                  "id": "cojx7hp1",
                   "type": "container",
                   "tag": "div",
                   "name": "copyright",
@@ -291,7 +291,7 @@
                   },
                   "content": [
                     {
-                      "id": "fpq61i4s",
+                      "id": "z552zdqp",
                       "type": "text",
                       "tag": "p",
                       "name": "copyright-text",
@@ -321,9 +321,9 @@
     }
   ],
   "template": {
-    "id": "dx0ws65m",
+    "id": "n3e7yjwo",
     "type": "fragment",
-    "fragmentId": "q67ojyyo",
+    "fragmentId": "d9klmxcb",
     "params": {}
   },
   "editors": {

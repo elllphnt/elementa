@@ -1,10 +1,7 @@
 import { ContainerElementData } from "@elllphnt/elementa-base";
 import { AggregatedModelList, RecordState } from "@elllphnt/elementa-kernel";
-import {
-  combineLatestArrays,
-  combineLatestOrEmpty,
-} from "@elllphnt/elementa-lang-utils";
-import { map, Observable, of, switchMap } from "rxjs";
+import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
+import { combineLatest, map, Observable, of, switchMap, tap } from "rxjs";
 import { CssStyleSheet } from "~/css/lib/stylesheet.js";
 import { modelsLogger } from "../../loggers.js";
 import { BaseElement } from "./_base.js";
@@ -29,15 +26,48 @@ export class ContainerElement extends BaseElement<ContainerElementData> {
   }
 
   get allCssStylesheets$(): Observable<CssStyleSheet[]> {
-    return combineLatestArrays([
+    return combineLatest([
       of([this.cssStyleSheet]),
       this.content$.pipe(
         switchMap((c) =>
-          combineLatestOrEmpty(c.map((c) => c.allCssStylesheets$))
+          combineLatestOrEmpty(
+            c.map((c) =>
+              c.allCssStylesheets$.pipe(
+                tap((styleshets) => {
+                  modelsLogger.debug(
+                    `ContainerElement content allCssStylesheets$ - ${this.id}`,
+                    {
+                      element: this,
+                      content: c,
+                      styleshets,
+                    }
+                  );
+                })
+              )
+            )
+          ).pipe(
+            tap((styleshets) => {
+              modelsLogger.debug(
+                `ContainerElement all allCssStylesheets$ - ${this.id}`,
+                {
+                  element: this,
+                  styleshets,
+                }
+              );
+            })
+          )
         ),
         map((c) => c.flat())
       ),
-    ]);
+    ]).pipe(
+      tap((styleshets) => {
+        modelsLogger.debug(`ContainerElement allCssStylesheets$ - ${this.id}`, {
+          element: this,
+          styleshets,
+        });
+      }),
+      map(([main, content]) => [...main, ...content])
+    );
   }
 
   get slotIds(): string[] {

@@ -4,14 +4,23 @@
     "scripts": {
         "clean": "find . -type d \\( -name node_modules -o -name .turbo -o -name dist -o -name build \\) -prune -exec rm -rf '{}' +",
         "build": "turbo run build --filter=@elllphnt/elementa",
-        "studio": "turbo run dev --filter=@elllphnt/elementa-studio-server --filter=@elllphnt/elementa-studio-client --filter=@elllphnt/elementa"
+        "studio": "turbo run dev --filter=@elllphnt/elementa-studio-server --filter=@elllphnt/elementa-studio-client --filter=@elllphnt/elementa",
+        "pub": "tsx scripts/publish.ts"
     },
     "workspaces": [
-        "packages/*",
-        "libraries/*"
+        "apps/*",
+        "packages/engine/*",
+        "packages/engine/backends/*",
+        "packages/schema/*",
+        "packages/tools/*",
+        "packages/utils/*",
+        "workflows/*",
+        "playground"
     ],
     "devDependencies": {
+        "@changesets/cli": "^2.29.5",
         "@eslint/js": "^9.26.0",
+        "@manypkg/get-packages": "^3.0.0",
         "@testing-library/react": "^16.3.0",
         "@types/node": "^22.15.30",
         "@types/react": "^19.1.2",

@@ -1,7 +1,8 @@
 {
     "name": "@elllphnt/elementa-scene",
+    "private": true,
     "type": "module",
-    "version": "0.1.9",
+    "version": "0.1.10",
     "main": "build/index.js",
     "types": "build/index.d.ts",
     "scripts": {

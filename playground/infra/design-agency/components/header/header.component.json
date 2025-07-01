@@ -2,10 +2,10 @@
   "props": [],
   "fragments": [
     {
-      "id": "ej92fe5t",
+      "id": "uxqna7i3",
       "content": [
         {
-          "id": "jkjtmpul",
+          "id": "nfzddn98",
           "type": "container",
           "tag": "header",
           "name": "root",
@@ -26,7 +26,7 @@
           },
           "content": [
             {
-              "id": "cxc2lmay",
+              "id": "pfgrx8ly",
               "type": "container",
               "tag": "div",
               "name": "container",
@@ -53,7 +53,7 @@
               },
               "content": [
                 {
-                  "id": "w10xaqxh",
+                  "id": "zui668gr",
                   "type": "container",
                   "tag": "div",
                   "name": "logo",
@@ -63,7 +63,7 @@
                   },
                   "content": [
                     {
-                      "id": "ot6xh0m4",
+                      "id": "uxz3m9ti",
                       "type": "text",
                       "tag": "h1",
                       "name": "logo-text",
@@ -91,7 +91,7 @@
                   ]
                 },
                 {
-                  "id": "afhhznfn",
+                  "id": "a3e3aecn",
                   "type": "component",
                   "componentUrl": "<<REF:~/components/navigation/navigation.component.js>>",
                   "content": []
@@ -106,9 +106,9 @@
     }
   ],
   "template": {
-    "id": "rp8ym7xv",
+    "id": "r4yb5mrn",
     "type": "fragment",
-    "fragmentId": "ej92fe5t",
+    "fragmentId": "uxqna7i3",
     "params": {}
   },
   "editors": {

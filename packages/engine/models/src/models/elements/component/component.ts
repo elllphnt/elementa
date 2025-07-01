@@ -7,8 +7,8 @@ import {
   AggregatedModelRecord,
   RecordState,
 } from "@elllphnt/elementa-kernel";
-import { combineLatestArrays } from "@elllphnt/elementa-lang-utils";
-import { map, Observable, of, switchMap } from "rxjs";
+import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
+import { combineLatest, map, Observable, of, switchMap } from "rxjs";
 import { CssStyleSheet } from "~/css/lib/stylesheet.js";
 import { FileModelAdaptor } from "~/project/file/model_adaptor.js";
 import { modelsLogger } from "../../../loggers.js";
@@ -69,20 +69,29 @@ export class ComponentElement extends BaseElement<ComponentElementData> {
     ];
   }
   get allCssStylesheets$(): Observable<CssStyleSheet[]> {
-    return combineLatestArrays([
+    return combineLatest([
       of([this.cssStyleSheet]),
       this.content$.pipe(
-        switchMap((c) =>
-          combineLatestArrays(c.map((c) => c.allCssStylesheets$))
-        ),
+        switchMap((c) => {
+          return combineLatestOrEmpty(c.map((c) => c.allCssStylesheets$));
+        }),
         map((c) => c.flat())
       ),
       this.fills$.pipe(
         switchMap((r) =>
-          combineLatestArrays(Object.values(r).map((f) => f.allCssStylesheets$))
-        )
+          combineLatestOrEmpty(
+            Object.values(r).map((f) => f.allCssStylesheets$)
+          )
+        ),
+        map((arrays) => arrays.flat())
       ),
-    ]);
+    ]).pipe(
+      map(([styleSheet, contents, fills]) => [
+        ...styleSheet,
+        ...contents,
+        ...fills,
+      ])
+    );
   }
   get props(): Record<string, any> | undefined {
     return this.state.entry("props") || {};
@@ -102,17 +111,9 @@ export class ComponentElement extends BaseElement<ComponentElementData> {
   }) {
     super({ state, type: "component", environment, initialized });
 
-    modelsLogger.info("Creating component element", {
-      elementId: this.id,
-      elementType: this.type,
-      componentUrl: this.componentUrl,
-      projectId: environment.project.id,
-      initialized: initialized ?? false,
-    });
-
     // TODO: Update to proper state-based initialization
     this._fills = new AggregatedModelRecord({
-      state: state as any, // TODO: Fix proper child state typing
+      state: state.getRecordOfRecordStates("fills"),
       create: (childState) =>
         new SlotFill({
           state: childState,
@@ -122,7 +123,7 @@ export class ComponentElement extends BaseElement<ComponentElementData> {
     });
 
     this._content = new AggregatedModelList({
-      state: state as any, // TODO: Fix proper child state typing
+      state: state.getListOfRecordStates("content"),
       create: (childState) =>
         createElement({
           state: childState,
