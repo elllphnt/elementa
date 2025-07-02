@@ -80,7 +80,7 @@ export class ElementaFrame extends Identifiable<
     project,
     initialized,
   }: {
-    state: RecordState<Omit<ElementaFrameData, "context" | "content">>;
+    state: RecordState<ElementaFrameData>;
     stage: ElementaStage;
     project: Project;
     initialized?: boolean;
@@ -89,14 +89,12 @@ export class ElementaFrame extends Identifiable<
 
     this.stage = stage;
 
-    // TODO: Initialize context with backend-agnostic state
-    // For now, create a context with empty state - this needs proper initialization
     this.context = new RenderingContext({
-      state: state as any, // TODO: Fix proper context state initialization
+      state: state.getRecordState("context"),
     });
 
     this._content = new OptionalModel<RecordState<any>, RenderableContent>({
-      state: state as any, // TODO: Fix proper state typing for optional content
+      state: state.getOptionalRecordState("content"),
       create: (state) =>
         createRenderableContent({
           state,

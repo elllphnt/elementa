@@ -18,7 +18,6 @@ class TestLifecycle extends Lifecycle {
 beforeEach(() => {
   // Reset static state before each test
   Lifecycle.track = false;
-  Lifecycle.logger = undefined;
   Lifecycle.instances.clear();
 });
 
@@ -189,46 +188,6 @@ test("removes instance from Lifecycle.instances when disposed and tracking is en
 
   lifecycle.dispose();
   expect(Lifecycle.instances.has(lifecycle)).toBe(false);
-});
-
-test("logs initialization when logger is provided", () => {
-  const mockLogger = {
-    debug: vi.fn(),
-    info: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-    withContext: vi.fn(),
-  };
-
-  Lifecycle.logger = mockLogger;
-  const lifecycle = new TestLifecycle();
-
-  lifecycle.initialize();
-
-  expect(mockLogger.debug).toHaveBeenCalledWith("TestLifecycle initialized", {
-    class: "TestLifecycle",
-    instance: lifecycle,
-  });
-});
-
-test("logs disposal when logger is provided", () => {
-  const mockLogger = {
-    debug: vi.fn(),
-    info: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-    withContext: vi.fn(),
-  };
-
-  Lifecycle.logger = mockLogger;
-  const lifecycle = new TestLifecycle();
-
-  lifecycle.dispose();
-
-  expect(mockLogger.debug).toHaveBeenCalledWith("TestLifecycle disposed", {
-    class: "TestLifecycle",
-    instance: lifecycle,
-  });
 });
 
 test("toString reflects initialized and disposed state", () => {

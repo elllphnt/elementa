@@ -2,10 +2,10 @@
   "props": [],
   "fragments": [
     {
-      "id": "uxqna7i3",
+      "id": "mt0b1nzi",
       "content": [
         {
-          "id": "nfzddn98",
+          "id": "qprl58ep",
           "type": "container",
           "tag": "header",
           "name": "root",
@@ -26,7 +26,7 @@
           },
           "content": [
             {
-              "id": "pfgrx8ly",
+              "id": "f3j52oq2",
               "type": "container",
               "tag": "div",
               "name": "container",
@@ -53,7 +53,7 @@
               },
               "content": [
                 {
-                  "id": "zui668gr",
+                  "id": "nme0lfbl",
                   "type": "container",
                   "tag": "div",
                   "name": "logo",
@@ -63,7 +63,7 @@
                   },
                   "content": [
                     {
-                      "id": "uxz3m9ti",
+                      "id": "al9ox35i",
                       "type": "text",
                       "tag": "h1",
                       "name": "logo-text",
@@ -91,7 +91,7 @@
                   ]
                 },
                 {
-                  "id": "a3e3aecn",
+                  "id": "qyk091q2",
                   "type": "component",
                   "componentUrl": "<<REF:~/components/navigation/navigation.component.js>>",
                   "content": []
@@ -106,9 +106,9 @@
     }
   ],
   "template": {
-    "id": "r4yb5mrn",
+    "id": "cgax9oz2",
     "type": "fragment",
-    "fragmentId": "uxqna7i3",
+    "fragmentId": "mt0b1nzi",
     "params": {}
   },
   "editors": {
@@ -117,6 +117,17 @@
         "type": "component",
         "componentUrl": "host"
       }
+    },
+    "stage": {
+      "frames": [
+        {
+          "id": "sxfq0n9v6v",
+          "content": {
+            "type": "component",
+            "componentUrl": "host"
+          }
+        }
+      ]
     }
   }
 }

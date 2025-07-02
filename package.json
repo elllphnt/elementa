@@ -5,7 +5,7 @@
         "clean": "find . -type d \\( -name node_modules -o -name .turbo -o -name dist -o -name build \\) -prune -exec rm -rf '{}' +",
         "build": "turbo run build --filter=@elllphnt/elementa",
         "studio": "turbo run dev --filter=@elllphnt/elementa-studio-server --filter=@elllphnt/elementa-studio-client --filter=@elllphnt/elementa",
-        "pub": "tsx scripts/publish.ts"
+        "publish-all": "tsx scripts/publish.ts"
     },
     "workspaces": [
         "apps/*",

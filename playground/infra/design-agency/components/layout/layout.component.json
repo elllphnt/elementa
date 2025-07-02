@@ -2,10 +2,10 @@
   "props": [],
   "fragments": [
     {
-      "id": "s75hhen6",
+      "id": "k6pcoxoz",
       "content": [
         {
-          "id": "f9yzfjar",
+          "id": "h5ma9ld6",
           "type": "container",
           "tag": "div",
           "name": "root",
@@ -26,13 +26,13 @@
           },
           "content": [
             {
-              "id": "kwc9db5b",
+              "id": "o60lyi6c",
               "type": "component",
               "componentUrl": "<<REF:../header/header.component.js>>",
               "content": []
             },
             {
-              "id": "fo6rvm5q",
+              "id": "t009tajx",
               "type": "container",
               "tag": "main",
               "name": "main",
@@ -48,14 +48,14 @@
               },
               "content": [
                 {
-                  "id": "k6l3bnbt",
+                  "id": "hq720tas",
                   "type": "expression",
                   "expression": "props.children"
                 }
               ]
             },
             {
-              "id": "otf6xyh6",
+              "id": "t4jhxng9",
               "type": "component",
               "componentUrl": "<<REF:../footer/footer.component.js>>",
               "content": []
@@ -68,9 +68,9 @@
     }
   ],
   "template": {
-    "id": "a9fsaxtx",
+    "id": "cessqfo8",
     "type": "fragment",
-    "fragmentId": "s75hhen6",
+    "fragmentId": "k6pcoxoz",
     "params": {}
   },
   "editors": {
@@ -79,6 +79,17 @@
         "type": "component",
         "componentUrl": "host"
       }
+    },
+    "stage": {
+      "frames": [
+        {
+          "id": "viia9o4j2p",
+          "content": {
+            "type": "component",
+            "componentUrl": "host"
+          }
+        }
+      ]
     }
   }
 }

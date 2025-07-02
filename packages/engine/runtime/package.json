@@ -1,6 +1,6 @@
 {
     "name": "@elllphnt/elementa-runtime",
-    "version": "0.1.4",
+    "version": "0.1.7",
     "type": "module",
     "main": "build/index.js",
     "types": "build/index.d.ts",

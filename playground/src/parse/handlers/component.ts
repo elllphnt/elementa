@@ -1,4 +1,8 @@
-import { ElementaPreviewData } from "@elllphnt/elementa-base";
+import {
+  ElementaPreviewData,
+  ElementaStageData,
+  genId,
+} from "@elllphnt/elementa-base";
 import { compileComponentToElll } from "@elllphnt/elementa-react-parser";
 import nodepath from "path";
 import { Handler } from "../_types.js";
@@ -21,7 +25,18 @@ export const transpileComponent: Handler = async (path, content, context) => {
       componentUrl: "host",
     },
   };
-  componentData.editors = { preview };
+  const stage: ElementaStageData = {
+    frames: [
+      {
+        id: genId(),
+        content: {
+          type: "component",
+          componentUrl: "host",
+        },
+      },
+    ],
+  };
+  componentData.editors = { preview, stage };
 
   return {
     path: outPath,

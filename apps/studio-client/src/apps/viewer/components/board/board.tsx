@@ -7,7 +7,7 @@ import { ContentViewer } from "./content_viewer.js";
 
 export function Board() {
   const { projectId, fileId } = useViewerState((state) => state.board);
-  const [codeOnlyMode, setCodeOnlyMode] = useState(false);
+  const [mode, setMode] = useState("preview");
 
   const file = useObservable(
     backend.file$(projectId, fileId),
@@ -46,13 +46,14 @@ export function Board() {
           </div>
           <div className="flex items-center gap-2">
             <label className="flex items-center gap-2 text-sm text-fg-400">
-              <input
-                type="checkbox"
-                checked={codeOnlyMode}
-                onChange={(e) => setCodeOnlyMode(e.target.checked)}
+              <select
+                onChange={(e) => setMode(e.target.value)}
                 className="rounded"
-              />
-              Code only
+              >
+                <option value="code">Code</option>
+                <option value="preview">Preview</option>
+                <option value="stage">Stage</option>
+              </select>
             </label>
           </div>
         </div>
@@ -64,7 +65,7 @@ export function Board() {
           fileId={fileId}
           type={file.type}
           path={file.path}
-          codeOnlyMode={codeOnlyMode}
+          mode={mode}
         />
       </div>
     </div>

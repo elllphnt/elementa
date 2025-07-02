@@ -2,10 +2,10 @@
   "props": [],
   "fragments": [
     {
-      "id": "d9klmxcb",
+      "id": "qzqiu3b2",
       "content": [
         {
-          "id": "gsf3jnwa",
+          "id": "hakz7tmt",
           "type": "container",
           "tag": "footer",
           "name": "root",
@@ -24,7 +24,7 @@
           },
           "content": [
             {
-              "id": "j2pub6x3",
+              "id": "d3gs6thi",
               "type": "container",
               "tag": "div",
               "name": "container",
@@ -42,7 +42,7 @@
               },
               "content": [
                 {
-                  "id": "lntecsj8",
+                  "id": "gibfaz0x",
                   "type": "container",
                   "tag": "div",
                   "name": "footer-content",
@@ -67,7 +67,7 @@
                   },
                   "content": [
                     {
-                      "id": "uam4oocr",
+                      "id": "g8hfezti",
                       "type": "container",
                       "tag": "div",
                       "name": "company-info",
@@ -77,7 +77,7 @@
                       },
                       "content": [
                         {
-                          "id": "wev1bo24",
+                          "id": "qne5p1dl",
                           "type": "text",
                           "tag": "h3",
                           "name": "company-name",
@@ -98,7 +98,7 @@
                           "marks": []
                         },
                         {
-                          "id": "m6gghnn8",
+                          "id": "xhmwvqhe",
                           "type": "text",
                           "tag": "p",
                           "name": "company-description",
@@ -118,7 +118,7 @@
                       ]
                     },
                     {
-                      "id": "mactv9np",
+                      "id": "mrmywi76",
                       "type": "container",
                       "tag": "div",
                       "name": "contact-info",
@@ -128,7 +128,7 @@
                       },
                       "content": [
                         {
-                          "id": "ui6o3ts6",
+                          "id": "uutnwbi5",
                           "type": "text",
                           "tag": "h4",
                           "name": "contact-title",
@@ -148,7 +148,7 @@
                           "marks": []
                         },
                         {
-                          "id": "m8aycfw0",
+                          "id": "u6pkysep",
                           "type": "text",
                           "tag": "p",
                           "name": "contact-email",
@@ -167,7 +167,7 @@
                           "marks": []
                         },
                         {
-                          "id": "ysbjps4m",
+                          "id": "f74dtd5k",
                           "type": "text",
                           "tag": "p",
                           "name": "contact-phone",
@@ -188,7 +188,7 @@
                       ]
                     },
                     {
-                      "id": "v6a1gj3z",
+                      "id": "x5qeopcb",
                       "type": "container",
                       "tag": "div",
                       "name": "social-links",
@@ -198,7 +198,7 @@
                       },
                       "content": [
                         {
-                          "id": "z5tj5bkm",
+                          "id": "vq0um46n",
                           "type": "text",
                           "tag": "h4",
                           "name": "social-title",
@@ -218,7 +218,7 @@
                           "marks": []
                         },
                         {
-                          "id": "ujzzf7oc",
+                          "id": "g1mw5473",
                           "type": "container",
                           "tag": "div",
                           "name": "social-icons",
@@ -240,7 +240,7 @@
                           },
                           "content": [
                             {
-                              "id": "q3va4dmq",
+                              "id": "ixllx1pz",
                               "type": "text",
                               "text": "Twitter",
                               "link": {
@@ -249,7 +249,7 @@
                               }
                             },
                             {
-                              "id": "w6ct714b",
+                              "id": "e62b7sl7",
                               "type": "text",
                               "text": "Instagram",
                               "link": {
@@ -258,7 +258,7 @@
                               }
                             },
                             {
-                              "id": "qz6is7o7",
+                              "id": "ippayw62",
                               "type": "text",
                               "text": "LinkedIn",
                               "link": {
@@ -273,7 +273,7 @@
                   ]
                 },
                 {
-                  "id": "cojx7hp1",
+                  "id": "nrxofemm",
                   "type": "container",
                   "tag": "div",
                   "name": "copyright",
@@ -291,7 +291,7 @@
                   },
                   "content": [
                     {
-                      "id": "z552zdqp",
+                      "id": "gyauxhkg",
                       "type": "text",
                       "tag": "p",
                       "name": "copyright-text",
@@ -321,9 +321,9 @@
     }
   ],
   "template": {
-    "id": "n3e7yjwo",
+    "id": "f1e1u5ko",
     "type": "fragment",
-    "fragmentId": "d9klmxcb",
+    "fragmentId": "qzqiu3b2",
     "params": {}
   },
   "editors": {
@@ -332,6 +332,17 @@
         "type": "component",
         "componentUrl": "host"
       }
+    },
+    "stage": {
+      "frames": [
+        {
+          "id": "qnqmozlyah",
+          "content": {
+            "type": "component",
+            "componentUrl": "host"
+          }
+        }
+      ]
     }
   }
 }

@@ -4,74 +4,54 @@ import {
   Model,
   RecordState,
 } from "@elllphnt/elementa-kernel";
-import { Observable } from "rxjs";
-import { modelsLogger } from "../../loggers.js";
 import { ElementaEnvironment } from "./environment.js";
+import { ElementaFrame } from "./frame.js";
 
 export class ElementaStage extends Model<RecordState<ElementaStageData>> {
   readonly environment: ElementaEnvironment;
 
-  private _frames: AggregatedModelList<any, any>; // TODO: Fix typing
+  private _frames: AggregatedModelList<
+    RecordState<ElementaFrameData>,
+    ElementaFrame
+  >;
 
-  get frames(): any[] {
-    // TODO: Fix typing
+  get frames() {
     return this._frames.models;
   }
 
-  get frames$(): Observable<any[]> {
-    // TODO: Fix typing
+  get frames$() {
     return this._frames.models$;
   }
 
   constructor({
     state,
     environment,
+    initialized,
   }: {
     state: RecordState<ElementaStageData>;
     environment: ElementaEnvironment;
+    initialized?: boolean;
   }) {
     super({ state });
-
-    modelsLogger.info("Creating elementa stage", {
-      projectId: environment.project.id,
-      hostUrl: environment.hostUrl,
-    });
-
     this.environment = environment;
 
-    // TODO: Implement proper aggregated model list for frames
     this._frames = new AggregatedModelList({
       state: state.getListOfRecordStates("frames"),
-      create: (state) => {
-        // TODO: Implement proper frame creation
-        return {} as any;
+      create: (state, init) => {
+        return new ElementaFrame({
+          state,
+          stage: this,
+          project: environment.project,
+          initialized: init && initialized,
+        });
       },
     });
 
     this.addInitializer(() => {
-      modelsLogger.debug("Initializing elementa stage frames", {
-        projectId: environment.project.id,
-        framesCount: this._frames.models.length,
-      });
-
       this._frames.initialize();
-
       this.addDisposer(() => {
-        modelsLogger.debug("Disposing elementa stage frames", {
-          projectId: environment.project.id,
-          framesCount: this._frames.models.length,
-        });
         this._frames.dispose();
       });
     });
-  }
-
-  // TODO: Implement frame management methods
-  createFrame(data: Partial<ElementaFrameData>): any {
-    return null;
-  }
-
-  removeFrame(id: string): void {
-    // TODO: Implement
   }
 }

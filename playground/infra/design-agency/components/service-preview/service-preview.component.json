@@ -2,10 +2,10 @@
   "props": [],
   "fragments": [
     {
-      "id": "ulviggbv",
+      "id": "sb19dr8q",
       "content": [
         {
-          "id": "ddwhp2cp",
+          "id": "ylxruock",
           "type": "container",
           "tag": "section",
           "name": "root",
@@ -22,7 +22,7 @@
           },
           "content": [
             {
-              "id": "jcyorlby",
+              "id": "z1591x4u",
               "type": "container",
               "tag": "div",
               "name": "container",
@@ -40,7 +40,7 @@
               },
               "content": [
                 {
-                  "id": "a7jbnout",
+                  "id": "tbvj00eq",
                   "type": "container",
                   "tag": "div",
                   "name": "header",
@@ -57,7 +57,7 @@
                   },
                   "content": [
                     {
-                      "id": "i8nnarnq",
+                      "id": "n1dayh3p",
                       "type": "text",
                       "tag": "h2",
                       "name": "section-title",
@@ -83,7 +83,7 @@
                       "marks": []
                     },
                     {
-                      "id": "jeravoah",
+                      "id": "fy32ys3g",
                       "type": "text",
                       "tag": "p",
                       "name": "section-subtitle",
@@ -107,7 +107,7 @@
                   ]
                 },
                 {
-                  "id": "usyig1oe",
+                  "id": "ecz9zop5",
                   "type": "container",
                   "tag": "div",
                   "name": "services-grid",
@@ -130,7 +130,7 @@
                   },
                   "content": [
                     {
-                      "id": "bui0ub05",
+                      "id": "es1d97n7",
                       "type": "expression",
                       "expression": "props.services.map(service => fragments.fragment_1({\n  service\n}))"
                     }
@@ -145,7 +145,7 @@
       "varName": "fragment_2"
     },
     {
-      "id": "zpaov1zg",
+      "id": "mljz3veo",
       "params": [
         {
           "name": "service",
@@ -155,7 +155,7 @@
       ],
       "content": [
         {
-          "id": "giru8tgd",
+          "id": "h6z5tswe",
           "type": "container",
           "tag": "div",
           "name": "service-card",
@@ -182,7 +182,7 @@
           },
           "content": [
             {
-              "id": "jnqi172v",
+              "id": "pa3ngj0t",
               "type": "container",
               "tag": "div",
               "name": "service-icon",
@@ -207,14 +207,14 @@
               },
               "content": [
                 {
-                  "id": "x5e6oo0e",
+                  "id": "wrnuv4kw",
                   "type": "expression",
                   "expression": "service.icon"
                 }
               ]
             },
             {
-              "id": "btu0phew",
+              "id": "zsdcpjnv",
               "type": "text",
               "tag": "h3",
               "name": "service-title",
@@ -235,7 +235,7 @@
               "marks": []
             },
             {
-              "id": "w8ypsctd",
+              "id": "b1g48q1x",
               "type": "text",
               "tag": "p",
               "name": "service-description",
@@ -261,9 +261,9 @@
     }
   ],
   "template": {
-    "id": "mvuoshwo",
+    "id": "di0enl0t",
     "type": "fragment",
-    "fragmentId": "ulviggbv",
+    "fragmentId": "sb19dr8q",
     "params": {}
   },
   "editors": {
@@ -272,6 +272,17 @@
         "type": "component",
         "componentUrl": "host"
       }
+    },
+    "stage": {
+      "frames": [
+        {
+          "id": "y42b2z67ca",
+          "content": {
+            "type": "component",
+            "componentUrl": "host"
+          }
+        }
+      ]
     }
   }
 }

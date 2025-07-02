@@ -2,7 +2,7 @@
   "props": [],
   "fragments": [
     {
-      "id": "t99nibcm",
+      "id": "iwupza2h",
       "params": [
         {
           "name": "hero",
@@ -22,12 +22,12 @@
       ],
       "content": [
         {
-          "id": "xhwrioou",
+          "id": "cm427hwm",
           "type": "component",
           "componentUrl": "<<REF:../../components/layout/layout.component.js>>",
           "content": [
             {
-              "id": "ouykkupz",
+              "id": "znpulopb",
               "type": "container",
               "tag": "div",
               "name": "root",
@@ -43,25 +43,25 @@
               },
               "content": [
                 {
-                  "id": "b7wi4fnx",
+                  "id": "zdmh92ju",
                   "type": "component",
                   "componentUrl": "<<REF:../../components/hero/hero.component.js>>",
                   "content": []
                 },
                 {
-                  "id": "z699h26h",
+                  "id": "v55pxzk3",
                   "type": "component",
                   "componentUrl": "<<REF:../../components/service-preview/service-preview.component.js>>",
                   "content": []
                 },
                 {
-                  "id": "qvpeb9od",
+                  "id": "xxv7ku15",
                   "type": "component",
                   "componentUrl": "<<REF:../../components/portfolio-preview/portfolio-preview.component.js>>",
                   "content": []
                 },
                 {
-                  "id": "fs0hmmug",
+                  "id": "e2hplj7s",
                   "type": "component",
                   "componentUrl": "<<REF:../../components/call-to-action/call-to-action.component.js>>",
                   "content": []
@@ -75,15 +75,15 @@
       "varName": "fragment_2"
     },
     {
-      "id": "ffwkefxu",
+      "id": "kwmscc02",
       "content": [
         {
-          "id": "ee4vq8yt",
+          "id": "d4o4ll9a",
           "type": "component",
           "componentUrl": "<<REF:../../components/layout/layout.component.js>>",
           "content": [
             {
-              "id": "dudp6cmm",
+              "id": "tsrmrumy",
               "type": "container",
               "tag": "div",
               "name": "loading",
@@ -102,7 +102,7 @@
               },
               "content": [
                 {
-                  "id": "zwerbvxc",
+                  "id": "ja32eqpr",
                   "type": "container",
                   "tag": "div",
                   "name": "spinner",
@@ -134,7 +134,7 @@
   ],
   "states": [
     {
-      "id": "bqj5d7kk",
+      "id": "hdf7w5km",
       "name": "state_1",
       "varName": "state_1",
       "type": "hook",
@@ -143,7 +143,7 @@
       "hookUrl": "<<REF:../../hooks/useHomeData.hook.js>>"
     },
     {
-      "id": "px1l9omy",
+      "id": "m3c0xgi7",
       "name": "state_2",
       "varName": "state_2",
       "type": "inline",
@@ -151,7 +151,7 @@
     }
   ],
   "template": {
-    "id": "xuuf02j8",
+    "id": "rt2zvoyb",
     "type": "expression",
     "expression": "state_2"
   },
@@ -161,6 +161,17 @@
         "type": "component",
         "componentUrl": "host"
       }
+    },
+    "stage": {
+      "frames": [
+        {
+          "id": "a5pg5u43kb",
+          "content": {
+            "type": "component",
+            "componentUrl": "host"
+          }
+        }
+      ]
     }
   }
 }

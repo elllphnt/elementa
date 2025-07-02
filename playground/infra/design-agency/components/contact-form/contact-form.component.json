@@ -2,7 +2,7 @@
   "props": [],
   "fragments": [
     {
-      "id": "hdvhjih9",
+      "id": "r4xn43jh",
       "params": [
         {
           "name": "handleSubmit",
@@ -32,7 +32,7 @@
       ],
       "content": [
         {
-          "id": "rmnmmnwf",
+          "id": "ee6nanmc",
           "type": "container",
           "tag": "div",
           "name": "root",
@@ -53,7 +53,7 @@
           },
           "content": [
             {
-              "id": "nwr7cbjq",
+              "id": "csj0rfhb",
               "type": "container",
               "tag": "form",
               "interactions": {
@@ -74,7 +74,7 @@
               },
               "content": [
                 {
-                  "id": "fxnnc6br",
+                  "id": "cb6s3y05",
                   "type": "text",
                   "tag": "h2",
                   "name": "form-title",
@@ -101,12 +101,12 @@
                   "marks": []
                 },
                 {
-                  "id": "lnirmvm9",
+                  "id": "tu7a30wq",
                   "type": "expression",
                   "expression": "error && fragments.fragment_2({\n  error\n})"
                 },
                 {
-                  "id": "wcb6xpcd",
+                  "id": "mkbf72tb",
                   "type": "container",
                   "tag": "div",
                   "name": "form-row",
@@ -131,7 +131,7 @@
                   },
                   "content": [
                     {
-                      "id": "de2idrrd",
+                      "id": "e56eyqf1",
                       "type": "container",
                       "tag": "div",
                       "name": "form-group",
@@ -147,7 +147,7 @@
                       },
                       "content": [
                         {
-                          "id": "k2cy8a1p",
+                          "id": "ytkw30xi",
                           "type": "text",
                           "tag": "label",
                           "name": "form-label",
@@ -169,7 +169,7 @@
                           "marks": []
                         },
                         {
-                          "id": "sz5quue6",
+                          "id": "iehr9fto",
                           "type": "container",
                           "tag": "input",
                           "interactions": {
@@ -199,7 +199,7 @@
                       ]
                     },
                     {
-                      "id": "e5jgirql",
+                      "id": "i2ydy6jv",
                       "type": "container",
                       "tag": "div",
                       "name": "form-group",
@@ -215,7 +215,7 @@
                       },
                       "content": [
                         {
-                          "id": "bsi8q68e",
+                          "id": "ndasnrdq",
                           "type": "text",
                           "tag": "label",
                           "name": "form-label",
@@ -237,7 +237,7 @@
                           "marks": []
                         },
                         {
-                          "id": "elf7ukoy",
+                          "id": "czb6tak9",
                           "type": "container",
                           "tag": "input",
                           "interactions": {
@@ -269,7 +269,7 @@
                   ]
                 },
                 {
-                  "id": "dyc2znzy",
+                  "id": "w2rh5qml",
                   "type": "container",
                   "tag": "div",
                   "name": "form-group",
@@ -285,7 +285,7 @@
                   },
                   "content": [
                     {
-                      "id": "k49tvyjp",
+                      "id": "iikoctic",
                       "type": "text",
                       "tag": "label",
                       "name": "form-label",
@@ -307,7 +307,7 @@
                       "marks": []
                     },
                     {
-                      "id": "ix5imsyv",
+                      "id": "qd8drop3",
                       "type": "container",
                       "tag": "input",
                       "interactions": {
@@ -337,7 +337,7 @@
                   ]
                 },
                 {
-                  "id": "vib1qdq8",
+                  "id": "y0m7avz9",
                   "type": "container",
                   "tag": "div",
                   "name": "form-group",
@@ -353,7 +353,7 @@
                   },
                   "content": [
                     {
-                      "id": "lpseoaie",
+                      "id": "fz6410hm",
                       "type": "text",
                       "tag": "label",
                       "name": "form-label",
@@ -375,7 +375,7 @@
                       "marks": []
                     },
                     {
-                      "id": "gw4lx8hd",
+                      "id": "eljvtkxu",
                       "type": "container",
                       "tag": "select",
                       "interactions": {
@@ -402,72 +402,72 @@
                       },
                       "content": [
                         {
-                          "id": "wg64zsi4",
+                          "id": "jheemdd6",
                           "type": "container",
                           "tag": "option",
                           "content": [
                             {
-                              "id": "dkwqluvx",
+                              "id": "v6jybx9t",
                               "type": "text",
                               "text": "Select a service"
                             }
                           ]
                         },
                         {
-                          "id": "pgjxnooa",
+                          "id": "ji3c8r9a",
                           "type": "container",
                           "tag": "option",
                           "content": [
                             {
-                              "id": "q4o77z3j",
+                              "id": "vm7hunon",
                               "type": "text",
                               "text": "Brand Identity Design"
                             }
                           ]
                         },
                         {
-                          "id": "ygsvjm5z",
+                          "id": "n2b76z5d",
                           "type": "container",
                           "tag": "option",
                           "content": [
                             {
-                              "id": "o7xwzjvv",
+                              "id": "jpuxw95x",
                               "type": "text",
                               "text": "Web Design & Development"
                             }
                           ]
                         },
                         {
-                          "id": "vb376lr3",
+                          "id": "lupq41h2",
                           "type": "container",
                           "tag": "option",
                           "content": [
                             {
-                              "id": "sieg1tt7",
+                              "id": "k90i8wcp",
                               "type": "text",
                               "text": "Digital Strategy"
                             }
                           ]
                         },
                         {
-                          "id": "otswewpr",
+                          "id": "j4r8kl5m",
                           "type": "container",
                           "tag": "option",
                           "content": [
                             {
-                              "id": "wetny9h5",
+                              "id": "dwnzhr66",
                               "type": "text",
                               "text": "E-commerce Solutions"
                             }
                           ]
                         },
                         {
-                          "id": "bwfz9scg",
+                          "id": "ew3k6liv",
                           "type": "container",
                           "tag": "option",
                           "content": [
                             {
-                              "id": "ymqwjq05",
+                              "id": "c1um7wef",
                               "type": "text",
                               "text": "Other"
                             }
@@ -478,7 +478,7 @@
                   ]
                 },
                 {
-                  "id": "k6gmibwx",
+                  "id": "i0vm9862",
                   "type": "container",
                   "tag": "div",
                   "name": "form-group",
@@ -494,7 +494,7 @@
                   },
                   "content": [
                     {
-                      "id": "lddvycwg",
+                      "id": "hm9vbb8q",
                       "type": "text",
                       "tag": "label",
                       "name": "form-label",
@@ -516,7 +516,7 @@
                       "marks": []
                     },
                     {
-                      "id": "g84okegq",
+                      "id": "w0s69hoa",
                       "type": "container",
                       "tag": "select",
                       "interactions": {
@@ -543,72 +543,72 @@
                       },
                       "content": [
                         {
-                          "id": "ga2aumtw",
+                          "id": "sy311l61",
                           "type": "container",
                           "tag": "option",
                           "content": [
                             {
-                              "id": "a0qm9w50",
+                              "id": "h7a204bq",
                               "type": "text",
                               "text": "Select budget range"
                             }
                           ]
                         },
                         {
-                          "id": "hyb2oe2a",
+                          "id": "uby80udo",
                           "type": "container",
                           "tag": "option",
                           "content": [
                             {
-                              "id": "vc8vaoxi",
+                              "id": "r0axm8w4",
                               "type": "text",
                               "text": "Under $5,000"
                             }
                           ]
                         },
                         {
-                          "id": "gtl0z6i5",
+                          "id": "yvwxq75j",
                           "type": "container",
                           "tag": "option",
                           "content": [
                             {
-                              "id": "uqi1xbrd",
+                              "id": "sf9za4zz",
                               "type": "text",
                               "text": "$5,000 - $10,000"
                             }
                           ]
                         },
                         {
-                          "id": "vppmgl3r",
+                          "id": "e26gbj4h",
                           "type": "container",
                           "tag": "option",
                           "content": [
                             {
-                              "id": "zrix1jcv",
+                              "id": "cwnhk6q2",
                               "type": "text",
                               "text": "$10,000 - $25,000"
                             }
                           ]
                         },
                         {
-                          "id": "pud6g5gl",
+                          "id": "c8lck2ez",
                           "type": "container",
                           "tag": "option",
                           "content": [
                             {
-                              "id": "dk660pa7",
+                              "id": "j6clzxla",
                               "type": "text",
                               "text": "$25,000 - $50,000"
                             }
                           ]
                         },
                         {
-                          "id": "ib8h5nq0",
+                          "id": "sz3tnrh9",
                           "type": "container",
                           "tag": "option",
                           "content": [
                             {
-                              "id": "lztvx6nv",
+                              "id": "efftbv1r",
                               "type": "text",
                               "text": "Over $50,000"
                             }
@@ -619,7 +619,7 @@
                   ]
                 },
                 {
-                  "id": "d0wti4yf",
+                  "id": "oi7ommws",
                   "type": "container",
                   "tag": "div",
                   "name": "form-group",
@@ -635,7 +635,7 @@
                   },
                   "content": [
                     {
-                      "id": "ao75kvat",
+                      "id": "r5vm16lt",
                       "type": "text",
                       "tag": "label",
                       "name": "form-label",
@@ -657,7 +657,7 @@
                       "marks": []
                     },
                     {
-                      "id": "jq6gxg9i",
+                      "id": "bj76sx1h",
                       "type": "container",
                       "tag": "textarea",
                       "interactions": {
@@ -682,7 +682,7 @@
                   ]
                 },
                 {
-                  "id": "dthyc31t",
+                  "id": "k5zzq2jd",
                   "type": "container",
                   "tag": "button",
                   "name": "submit-button",
@@ -708,7 +708,7 @@
                   },
                   "content": [
                     {
-                      "id": "ghfttixu",
+                      "id": "w1sy7emy",
                       "type": "expression",
                       "expression": "isSubmitting ? \"Sending...\" : \"Send Message\""
                     }
@@ -723,7 +723,7 @@
       "varName": "fragment_3"
     },
     {
-      "id": "fmu2s2sp",
+      "id": "z7xnhcwz",
       "params": [
         {
           "name": "error",
@@ -733,7 +733,7 @@
       ],
       "content": [
         {
-          "id": "pwktwjrj",
+          "id": "vc2op0ev",
           "type": "container",
           "tag": "div",
           "name": "error-message",
@@ -755,7 +755,7 @@
           },
           "content": [
             {
-              "id": "ccwp541x",
+              "id": "r8avdyr6",
               "type": "expression",
               "expression": "error"
             }
@@ -766,10 +766,10 @@
       "varName": "fragment_2"
     },
     {
-      "id": "mexy2vcy",
+      "id": "vxofwjnz",
       "content": [
         {
-          "id": "pz87ueg2",
+          "id": "otj6wggi",
           "type": "container",
           "tag": "div",
           "name": "root",
@@ -790,7 +790,7 @@
           },
           "content": [
             {
-              "id": "cj3ldfl2",
+              "id": "abbozi6s",
               "type": "container",
               "tag": "div",
               "name": "success-message",
@@ -807,7 +807,7 @@
               },
               "content": [
                 {
-                  "id": "fcx5b92z",
+                  "id": "og9vwpls",
                   "type": "container",
                   "tag": "div",
                   "name": "success-icon",
@@ -833,14 +833,14 @@
                   },
                   "content": [
                     {
-                      "id": "zxz6kx1n",
+                      "id": "g0eem11w",
                       "type": "text",
                       "text": "✓"
                     }
                   ]
                 },
                 {
-                  "id": "qvwuyl2g",
+                  "id": "qi8db87v",
                   "type": "text",
                   "tag": "h3",
                   "name": "success-title",
@@ -861,7 +861,7 @@
                   "marks": []
                 },
                 {
-                  "id": "k31u7n6s",
+                  "id": "g8xtg41q",
                   "type": "text",
                   "tag": "p",
                   "name": "success-text",
@@ -890,7 +890,7 @@
   ],
   "states": [
     {
-      "id": "dosjxyzl",
+      "id": "w3r6rv8r",
       "name": "state_1",
       "varName": "state_1",
       "type": "hook",
@@ -899,7 +899,7 @@
       "hookUrl": "<<REF:~/hooks/useContactForm.hook.js>>"
     },
     {
-      "id": "gmrljiff",
+      "id": "du5yk51u",
       "name": "state_2",
       "varName": "state_2",
       "type": "inline",
@@ -907,7 +907,7 @@
     }
   ],
   "template": {
-    "id": "rcxvjels",
+    "id": "z2pj4ysq",
     "type": "expression",
     "expression": "state_2"
   },
@@ -917,6 +917,17 @@
         "type": "component",
         "componentUrl": "host"
       }
+    },
+    "stage": {
+      "frames": [
+        {
+          "id": "m151bk4w58",
+          "content": {
+            "type": "component",
+            "componentUrl": "host"
+          }
+        }
+      ]
     }
   }
 }
