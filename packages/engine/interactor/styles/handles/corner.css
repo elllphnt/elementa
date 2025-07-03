@@ -1,0 +1,51 @@
+.elementa-corner-handle {
+  position: absolute;
+  pointer-events: auto;
+  width: 0;
+  height: 0;
+  z-index: 1;
+  overflow: visible;
+}
+
+.elementa-corner-handle:hover,
+.elementa-corner-handle.active {
+  transform: scale(1.2);
+}
+
+.elementa-corner-handle::before {
+  content: "";
+  pointer-events: auto;
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #fff;
+  outline: 1px solid #08f;
+  transform: translate(-50%, -50%);
+}
+
+.elementa-corner-handle-top-left {
+  top: 10px;
+  left: 10px;
+}
+
+.elementa-corner-handle-top-right {
+  top: 10px;
+  right: 10px;
+}
+
+.elementa-corner-handle-bottom-left {
+  bottom: 10px;
+  left: 10px;
+}
+
+.elementa-corner-handle-bottom-right {
+  bottom: 10px;
+  right: 10px;
+}
+
+@container (max-width: 50px) or (max-height: 50px) {
+  .elementa-corner-handle {
+    display: none;
+  }
+}

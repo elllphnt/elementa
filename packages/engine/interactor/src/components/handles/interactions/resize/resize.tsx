@@ -1,0 +1,94 @@
+import { Rect } from "@elllphnt/elementa-math-utils";
+import { useCallback, useRef } from "react";
+import type { BoxResizeHandleType } from "~/_libs/interaction.js";
+import { useElementaInteractor } from "~/components/hooks/elementa_interactor.js";
+import type { ResizableHandle } from "~/handles/_types/resizable.js";
+import type { Handle } from "~/handles/handle.js";
+import type { OnResizeEnd, OnResizeStart, OnResizeUpdate } from "./raw.js";
+import {
+  RawResizeHandle,
+  resolveResizeOrigin,
+  resolveResizeScaleFactor,
+} from "./raw.js";
+
+export function ResizeHandle({ handles }: { handles: ResizableHandle[] }) {
+  const elementa = useElementaInteractor();
+  const handlesStartRectRef = useRef(Rect.nullRect());
+  const handlesStartContentRectRef = useRef<Map<Handle, Rect>>(new Map());
+  const handleRef = useRef<BoxResizeHandleType | undefined>(undefined);
+
+  const handleResizeStart: OnResizeStart = useCallback(
+    (handle: BoxResizeHandleType) => {
+      const interfaceRects: Rect[] = [];
+
+      for (const handle of handles) {
+        const contentRect = handle.contentRect;
+        const interfaceRect = handle.interfaceRect;
+        if (!contentRect || !interfaceRect) continue;
+
+        handlesStartContentRectRef.current.set(handle, contentRect);
+        interfaceRects.push(interfaceRect);
+      }
+
+      handlesStartRectRef.current = Rect.union(interfaceRects);
+      handleRef.current = handle;
+      elementa.setFlag("resizing", true);
+    },
+    [handles]
+  );
+  const handleResizeUpdate: OnResizeUpdate = useCallback(
+    ({ axis, delta, proportional, symetrical }) => {
+      const startRect = handlesStartRectRef.current;
+      const handle = handleRef.current;
+      const resizeOrigin = resolveResizeOrigin({
+        startRect,
+        symetrical,
+        handle,
+      });
+      const resizeScaleFactor = resolveResizeScaleFactor({
+        axis,
+        delta,
+        proportional,
+        symetrical,
+        handle,
+        startRect,
+      });
+
+      const contentOrigin = elementa.stage.viewport.windowToContent(
+        elementa.interface.interactorToStager(
+          elementa.interface.interfaceToWindow(resizeOrigin)
+        )
+      );
+
+      handles.forEach((handle) => {
+        const startContentRect = handlesStartContentRectRef.current.get(handle);
+        if (!startContentRect) return;
+
+        const newRect = startContentRect.scale(
+          resizeScaleFactor,
+          contentOrigin
+        );
+
+        handle.resize(newRect, {
+          x: axis.x,
+          y: axis.y,
+        });
+      });
+    },
+    [handles]
+  );
+  const handleResizeEnd: OnResizeEnd = useCallback(() => {
+    handleRef.current = undefined;
+    setTimeout(() => {
+      elementa.setFlag("resizing", false);
+    });
+  }, []);
+
+  return (
+    <RawResizeHandle
+      onResizeStart={handleResizeStart}
+      onResizeUpdate={handleResizeUpdate}
+      onResizeEnd={handleResizeEnd}
+    />
+  );
+}

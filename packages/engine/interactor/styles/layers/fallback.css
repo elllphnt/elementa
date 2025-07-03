@@ -1,0 +1,10 @@
+.elementa-fallback {
+  position: absolute;
+  inset: 0;
+  pointer-events: all;
+}
+
+.elementa-fallback.drop-target,
+.elementa-fallback.host-drop-target {
+  background-color: var(--theme-light-selection-alpha);
+}

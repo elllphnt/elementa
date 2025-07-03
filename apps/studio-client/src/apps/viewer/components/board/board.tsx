@@ -7,7 +7,7 @@ import { ContentViewer } from "./content_viewer.js";
 
 export function Board() {
   const { projectId, fileId } = useViewerState((state) => state.board);
-  const [mode, setMode] = useState("preview");
+  const [mode, setMode] = useState<"code" | "preview" | "stage">("preview");
 
   const file = useObservable(
     backend.file$(projectId, fileId),
@@ -32,7 +32,7 @@ export function Board() {
   return (
     <div className="flex-1 flex flex-col bg-white h-full">
       {/* File Header */}
-      <div className="border-b border-fg-100 p-4">
+      <div className="border-b border-fg-100 p-4 bg-bg">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="space-y-1">
@@ -47,7 +47,9 @@ export function Board() {
           <div className="flex items-center gap-2">
             <label className="flex items-center gap-2 text-sm text-fg-400">
               <select
-                onChange={(e) => setMode(e.target.value)}
+                onChange={(e) =>
+                  setMode(e.target.value as "code" | "preview" | "stage")
+                }
                 className="rounded"
               >
                 <option value="code">Code</option>

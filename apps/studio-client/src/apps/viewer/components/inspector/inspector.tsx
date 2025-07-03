@@ -1,13 +1,9 @@
-import { ElementaRenderableManager } from "@elllphnt/elementa-scene";
+import { useObservable } from "@elllphnt/elementa-react-utils";
 import { AlertTriangle, Palette } from "lucide-react";
 import { IconButton } from "../../../../components/icon_button";
-import { useViewerState } from "../../state";
+import { sceneManager, useViewerState } from "../../state";
 import { Problems } from "./problems/problems";
 import { Style } from "./style/style";
-
-interface InspectorProps {
-  manager: ElementaRenderableManager | null;
-}
 
 const tabs = [
   {
@@ -36,7 +32,11 @@ function NoActiveTab() {
   );
 }
 
-export function Inspector({ manager }: InspectorProps) {
+export function Inspector() {
+  const manager = useObservable(
+    sceneManager.asObservable(),
+    sceneManager.getValue()
+  );
   const { inspector, setInspectorTab } = useViewerState();
   const activeTabIndex = tabs.findIndex((tab) => tab.id === inspector.tab);
   const ActiveView = tabs[activeTabIndex]?.View || NoActiveTab;
@@ -59,7 +59,7 @@ export function Inspector({ manager }: InspectorProps) {
         ))}
       </div>
       <div className="flex-1 overflow-y-auto">
-        <ActiveView manager={manager} />
+        {manager ? <ActiveView manager={manager} /> : <></>}
       </div>
     </div>
   );

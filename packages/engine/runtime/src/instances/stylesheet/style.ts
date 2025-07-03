@@ -1,13 +1,11 @@
-import {
-  RawStyleData,
-  stylePropertyConfigMap,
-  StylePropertyName,
-} from "@elllphnt/elementa-base";
-import { Style } from "@elllphnt/elementa-models";
-import { combineLatest, map, Observable, of, switchMap } from "rxjs";
-import { ElementaInstanceType, Instance } from "../instance.js";
-import { StyleSheetInstance } from "./stylesheet.js";
+import type { RawStyleData, StylePropertyName } from "@elllphnt/elementa-base";
+import { stylePropertyConfigMap } from "@elllphnt/elementa-base";
 import { assert } from "@elllphnt/elementa-lang-utils";
+import type { Style } from "@elllphnt/elementa-models";
+import type { Observable } from "rxjs";
+import { combineLatest, map, of, switchMap } from "rxjs";
+import { ElementaInstanceType, Instance } from "../instance.js";
+import type { StyleSheetInstance } from "./stylesheet.js";
 
 /**
  * Represents a runtime live wrapper around a Style.

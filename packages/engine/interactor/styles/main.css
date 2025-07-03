@@ -1,0 +1,38 @@
+@import url("./base.css");
+@import url("./layers/selection.css");
+@import url("./layers/node.css");
+@import url("./layers/handle.css");
+@import url("./layers/grid.css");
+@import url("./layers/fallback.css");
+@import url("./handles/resize.css");
+@import url("./handles/corner.css");
+@import url("./handles/padding.css");
+@import url("./handles/gap.css");
+@import url("./handles/size.css");
+@import url("./handles/connection.css");
+@import url("./tools.css");
+@import url("./interactions.css");
+@import url("./dark.css");
+
+:root {
+  --theme-light-background: #ffffff;
+  --theme-light-text: #000000;
+  --theme-light-selection: #0088ff;
+  --theme-light-selection-alpha: rgba(0, 136, 255, 0.2);
+  --theme-light-grid: #dddddd;
+
+  --theme-dark-background: #121212;
+  --theme-dark-text: #ffffff;
+  --theme-dark-selection: #0088ff;
+  --theme-dark-selection-alpha: rgba(0, 136, 255, 0.2);
+  --theme-dark-grid: #333333;
+}
+
+@layer content, component, editor;
+
+.elementa-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}

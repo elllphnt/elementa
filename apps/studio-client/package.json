@@ -27,6 +27,7 @@
     "@elllphnt/elementa-json-backend": "workspace:*",
     "@elllphnt/elementa-runtime": "workspace:*",
     "@elllphnt/elementa-scene": "workspace:*",
+    "@elllphnt/elementa-interactor": "workspace:*",
     "@eslint/js": "^9.25.0",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",

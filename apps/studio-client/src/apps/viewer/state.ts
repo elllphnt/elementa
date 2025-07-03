@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { ElementaRenderableManager } from "@elllphnt/elementa-scene";
+import { BehaviorSubject } from "rxjs";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -76,3 +78,16 @@ export const useViewerState = create<ViewerState>()(
     }
   )
 );
+
+export const sceneManager = new BehaviorSubject<
+  ElementaRenderableManager | undefined
+>(undefined);
+export const sceneIframe = new BehaviorSubject<HTMLIFrameElement | undefined>(
+  undefined
+);
+export function setSceneManager(manager: ElementaRenderableManager) {
+  sceneManager.next(manager);
+}
+export function setSceneIframe(iframe: HTMLIFrameElement | undefined | null) {
+  sceneIframe.next(iframe || undefined);
+}
