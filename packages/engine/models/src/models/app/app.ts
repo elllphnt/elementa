@@ -1,27 +1,19 @@
-import { AppData } from "@elllphnt/elementa-base";
-import { RecordState } from "@elllphnt/elementa-kernel";
-import { Observable } from "rxjs";
-import { Project } from "~/project/project.js";
-import { modelsLogger } from "../../loggers.js";
+import type { AppData } from "@elllphnt/elementa-base";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import { map, type Observable } from "rxjs";
+import type { Project } from "~/project/project.js";
 import { ProjectModel } from "../project.js";
 
 export class App extends ProjectModel<RecordState<AppData>> {
   constructor({
     state,
     project,
-    initialized,
   }: {
     state: RecordState<AppData>;
     project: Project;
     initialized?: boolean;
   }) {
     super({ state, project });
-    modelsLogger.info("Creating app", {
-      projectId: project.id,
-      initialized: initialized ?? false,
-      hasRouterUrl: !!this.routerUrl,
-      routerUrl: this.routerUrl,
-    });
   }
 
   get routerUrl(): string | undefined {
@@ -32,25 +24,25 @@ export class App extends ProjectModel<RecordState<AppData>> {
   }
 
   get router() {
-    return undefined;
+    return this.routerUrl
+      ? this.project.infrastructure.router(
+          this.project.absoluteFileUrl(this.routerUrl)
+        )
+      : undefined;
   }
   get router$() {
-    return this.state.entry$("routerUrl");
+    return this.routerUrl$.pipe(
+      map((url) =>
+        url
+          ? this.project.infrastructure.router(
+              this.project.absoluteFileUrl(url)
+            )
+          : undefined
+      )
+    );
   }
 
   setRouterUrl(url: string | undefined): void {
-    const previousUrl = this.routerUrl;
-    modelsLogger.debug("Setting router URL", {
-      projectId: this.project.id,
-      previousUrl,
-      newUrl: url,
-      urlChanged: previousUrl !== url,
-    });
     this.state.set("routerUrl", url);
-    modelsLogger.info("Router URL updated", {
-      projectId: this.project.id,
-      url,
-      previousUrl,
-    });
   }
 }

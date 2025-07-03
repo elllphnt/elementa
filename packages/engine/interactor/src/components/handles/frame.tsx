@@ -12,6 +12,7 @@ import type { FrameHandle } from "~/handles/renderables/frame.js";
 import { AutoSizeInput } from "../autosize_input.js";
 import { useElementaInteractor } from "../hooks/elementa_interactor.js";
 import { useHandleDom } from "./_hooks/interaction_target.js";
+import { RenderableContentHandleComponent } from "./content.js";
 
 const frameIcon = (
   <svg
@@ -277,6 +278,7 @@ export function FrameHandleComponent({ frame }: { frame: FrameHandle }) {
         <ViewportIndicator frame={frame} isHeight={true} />
         <ViewportIndicator frame={frame} isHeight={false} />
       </div>
+      {content ? <RenderableContentHandleComponent content={content} /> : <></>}
     </>
   );
 }

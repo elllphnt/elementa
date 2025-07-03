@@ -177,7 +177,6 @@ export class ServerProject extends Project {
     id: string;
     infrastructure: ElementaServerInfrastructure;
   }) {
-    console.debug(`Creating ServerProject with id: ${id}`);
     super({ id, infrastructure });
 
     this.addInitializer(() => {

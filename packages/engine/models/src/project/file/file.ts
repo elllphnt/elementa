@@ -1,7 +1,8 @@
 import { makeFileUrl } from "@elllphnt/elementa-base";
-import { map, Observable } from "rxjs";
-import { Project } from "../project.js";
-import { AsyncResource } from "../resource.js";
+import type { Observable } from "rxjs";
+import { map, of, switchMap } from "rxjs";
+import type { Project } from "../project.js";
+import { AsyncResource, AsyncResourceStatus } from "../resource.js";
 
 export function extractNameFromPath(path: string) {
   const parts = path.split("/");
@@ -67,5 +68,20 @@ export class FileReference<F extends File> extends AsyncResource {
 
     this.path = path;
     this.project = project;
+
+    this.addInitializer(() => {
+      const statusSubscription = this.file$
+        .pipe(
+          switchMap((file) => {
+            if (file) return file.status$;
+            else return of(AsyncResourceStatus.Pending);
+          })
+        )
+        .subscribe((status) => this.setStatus(status));
+
+      this.addDisposer(() => {
+        statusSubscription.unsubscribe();
+      });
+    });
   }
 }

@@ -2,10 +2,10 @@
   "props": [],
   "fragments": [
     {
-      "id": "mt0b1nzi",
+      "id": "j5zkrod3",
       "content": [
         {
-          "id": "qprl58ep",
+          "id": "rca9y2g0",
           "type": "container",
           "tag": "header",
           "name": "root",
@@ -26,7 +26,7 @@
           },
           "content": [
             {
-              "id": "f3j52oq2",
+              "id": "tfe8tsck",
               "type": "container",
               "tag": "div",
               "name": "container",
@@ -53,7 +53,7 @@
               },
               "content": [
                 {
-                  "id": "nme0lfbl",
+                  "id": "a0mxs18k",
                   "type": "container",
                   "tag": "div",
                   "name": "logo",
@@ -63,7 +63,7 @@
                   },
                   "content": [
                     {
-                      "id": "al9ox35i",
+                      "id": "qalfttmj",
                       "type": "text",
                       "tag": "h1",
                       "name": "logo-text",
@@ -91,7 +91,7 @@
                   ]
                 },
                 {
-                  "id": "qyk091q2",
+                  "id": "atxjq2qt",
                   "type": "component",
                   "componentUrl": "<<REF:~/components/navigation/navigation.component.js>>",
                   "content": []
@@ -106,9 +106,9 @@
     }
   ],
   "template": {
-    "id": "cgax9oz2",
+    "id": "j26zwsew",
     "type": "fragment",
-    "fragmentId": "mt0b1nzi",
+    "fragmentId": "j5zkrod3",
     "params": {}
   },
   "editors": {
@@ -121,11 +121,22 @@
     "stage": {
       "frames": [
         {
-          "id": "sxfq0n9v6v",
+          "id": "fgjh3szxel",
           "content": {
             "type": "component",
             "componentUrl": "host"
-          }
+          },
+          "x": 0,
+          "y": 0
+        },
+        {
+          "id": "wzfob68gwn",
+          "content": {
+            "type": "fragment",
+            "fragmentId": "j5zkrod3"
+          },
+          "x": 1000,
+          "y": 0
         }
       ]
     }

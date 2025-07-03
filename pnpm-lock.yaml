@@ -490,6 +490,30 @@ importers:
         specifier: ^3.2.2
         version: 3.2.4(@types/node@22.15.32)(@vitest/ui@3.1.2)(jiti@2.4.2)(jsdom@26.1.0)(lightningcss@1.30.1)(tsx@4.20.3)
 
+  packages/engine/tests:
+    dependencies:
+      '@elllphnt/elementa-base':
+        specifier: workspace:*
+        version: link:../../schema/base
+      '@elllphnt/elementa-css':
+        specifier: workspace:*
+        version: link:../../schema/css
+      '@elllphnt/elementa-json-backend':
+        specifier: workspace:*
+        version: link:../backends/json
+      '@elllphnt/elementa-kernel':
+        specifier: workspace:*
+        version: link:../kernel
+      '@elllphnt/elementa-lang-utils':
+        specifier: workspace:*
+        version: link:../../utils/lang
+      '@elllphnt/elementa-models':
+        specifier: workspace:*
+        version: link:../models
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
+
   packages/schema/base:
     dependencies:
       '@paralleldrive/cuid2':

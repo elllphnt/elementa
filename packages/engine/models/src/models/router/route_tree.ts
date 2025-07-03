@@ -1,8 +1,10 @@
-import { RouteTreeData } from "@elllphnt/elementa-base";
-import { AggregatedModelList, RecordState } from "@elllphnt/elementa-kernel";
-import { map, Observable } from "rxjs";
+import type { RouteTreeData } from "@elllphnt/elementa-base";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import { AggregatedModelList } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
+import { map } from "rxjs";
 import { Identifiable } from "../identifiable.js";
-import { Router } from "./router.js";
+import type { Router } from "./router.js";
 
 export class RouteTree extends Identifiable<RouteTreeData> {
   readonly router: Router;
@@ -25,7 +27,7 @@ export class RouteTree extends Identifiable<RouteTreeData> {
       RecordState<RouteTreeData>,
       RouteTree
     >({
-      state: state as any, // TODO: Fix proper child state typing
+      state: state.getListOfRecordStates("children"),
       create: (state) => new RouteTree({ state, router, initialized: true }),
     });
 
@@ -93,52 +95,84 @@ export class RouteTree extends Identifiable<RouteTreeData> {
 
   get mainViewComponent() {
     const url = this.mainViewUrl;
-    return url ? this.router.project.infrastructure.component(url) : undefined;
+    return url
+      ? this.router.project.infrastructure.component(
+          this.router.project.absoluteFileUrl(url)
+        )
+      : undefined;
   }
 
   get mainViewComponent$() {
     return this.mainViewUrl$.pipe(
       map((url) =>
-        url ? this.router.project.infrastructure.component(url) : undefined
+        url
+          ? this.router.project.infrastructure.component(
+              this.router.project.absoluteFileUrl(url)
+            )
+          : undefined
       )
     );
   }
 
   get errorViewComponent() {
     const url = this.errorViewUrl;
-    return url ? this.router.project.infrastructure.component(url) : undefined;
+    return url
+      ? this.router.project.infrastructure.component(
+          this.router.project.absoluteFileUrl(url)
+        )
+      : undefined;
   }
 
   get errorViewComponent$() {
     return this.errorViewUrl$.pipe(
       map((url) =>
-        url ? this.router.project.infrastructure.component(url) : undefined
+        url
+          ? this.router.project.infrastructure.component(
+              this.router.project.absoluteFileUrl(url)
+            )
+          : undefined
       )
     );
   }
 
   get pendingViewComponent() {
     const url = this.pendingViewUrl;
-    return url ? this.router.project.infrastructure.component(url) : undefined;
+    return url
+      ? this.router.project.infrastructure.component(
+          this.router.project.absoluteFileUrl(url)
+        )
+      : undefined;
   }
 
   get pendingViewComponent$() {
     return this.pendingViewUrl$.pipe(
       map((url) =>
-        url ? this.router.project.infrastructure.component(url) : undefined
+        url
+          ? this.router.project.infrastructure.component(
+              this.router.project.absoluteFileUrl(url)
+            )
+          : undefined
       )
     );
   }
 
   get notFoundViewComponent() {
     const url = this.notFoundViewUrl;
-    return url ? this.router.project.infrastructure.component(url) : undefined;
+    return url
+      ? this.router.project.infrastructure.component(
+          this.router.project.absoluteFileUrl(url)
+        )
+      : undefined;
   }
 
   get notFoundViewComponent$() {
     return this.notFoundViewUrl$.pipe(
       map((url) =>
-        url ? this.router.project.infrastructure.component(url) : undefined
+        url
+          ? this.router.project.infrastructure.component(
+              this.router.project.absoluteFileUrl(url)
+            )
+          : undefined
       )
     );
   }

@@ -1,7 +1,10 @@
-import { BlueprintData, genId } from "@elllphnt/elementa-base";
-import { AggregatedModelList, RecordState } from "@elllphnt/elementa-kernel";
-import { Observable, distinctUntilChanged, map } from "rxjs";
-import { Project } from "~/project/project.js";
+import type { BlueprintData } from "@elllphnt/elementa-base";
+import { genId } from "@elllphnt/elementa-base";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import { AggregatedModelList } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
+import { distinctUntilChanged, map } from "rxjs";
+import type { Project } from "~/project/project.js";
 import { modelsLogger } from "../../loggers.js";
 import { ProjectModel } from "../project.js";
 import { BlueprintNode } from "./node.js";
@@ -19,18 +22,12 @@ export class Blueprint extends ProjectModel<RecordState<BlueprintData>> {
   constructor({
     state,
     project,
-    initialized,
   }: {
     state: RecordState<BlueprintData>;
     project: Project;
     initialized?: boolean;
   }) {
     super({ state, project });
-
-    modelsLogger.info("Creating blueprint", {
-      projectId: project.id,
-      initialized: initialized ?? false,
-    });
 
     this._nodes = new AggregatedModelList({
       state: state.getListOfRecordStates("nodes"),
@@ -39,17 +36,9 @@ export class Blueprint extends ProjectModel<RecordState<BlueprintData>> {
     });
 
     this.addInitializer(() => {
-      modelsLogger.debug("Initializing blueprint nodes", {
-        projectId: project.id,
-        nodeCount: this._nodes.models.length,
-      });
       this._nodes.initialize();
 
       this.addDisposer(() => {
-        modelsLogger.debug("Disposing blueprint model", {
-          projectId: project.id,
-          nodeCount: this._nodes.models.length,
-        });
         this._nodes.dispose();
       });
     });
@@ -61,12 +50,6 @@ export class Blueprint extends ProjectModel<RecordState<BlueprintData>> {
     const existing = this._nodes.models.find((n) => n.id === id);
     if (existing || !create) return existing;
 
-    modelsLogger.debug("Creating new blueprint node", {
-      nodeId: id,
-      projectId: this.project.id,
-      totalNodes: this._nodes.models.length,
-    });
-
     const nodeData = {
       id: genId(),
       position: { x: 0, y: 0 },
@@ -76,12 +59,6 @@ export class Blueprint extends ProjectModel<RecordState<BlueprintData>> {
       project: this.project,
     });
     this._nodes.add(node);
-
-    modelsLogger.debug("Blueprint node created and added", {
-      nodeId: id,
-      projectId: this.project.id,
-      totalNodes: this._nodes.models.length,
-    });
 
     return node;
   }

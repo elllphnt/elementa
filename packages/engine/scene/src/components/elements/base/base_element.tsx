@@ -30,6 +30,9 @@ export function BaseElementComponent() {
   return (
     <Component
       {...props}
+      ref={(ref: any) => {
+        element.setHtmlElement(ref);
+      }}
       data-elll-id={element.instance.element.id}
       data-elll-name={element.instance.element.name}
     />

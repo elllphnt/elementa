@@ -1,4 +1,4 @@
-import {
+import type {
   ComponentElementInstance,
   ContainerElementInstance,
   ElementInstance,
@@ -11,7 +11,7 @@ import {
   VectorElementInstance,
 } from "@elllphnt/elementa-runtime";
 import element from "../../components/elements/element.js";
-import { Scene } from "../../scene/scene.js";
+import type { Scene } from "../../scene/scene.js";
 import { ComponentElementRenderable } from "./component.js";
 import { ContainerElementRenderable } from "./container.js";
 import { ExpressionElementRenderable } from "./expression.js";

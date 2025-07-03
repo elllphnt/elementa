@@ -1,4 +1,10 @@
-export type LogLevel = "debug" | "info" | "warn" | "error";
+export const logLevels = {
+  debug: -1,
+  info: 0,
+  warn: 1,
+  error: 2,
+} as const;
+export type LogLevel = keyof typeof logLevels;
 export type LogObject = {
   level: LogLevel;
   message: string;
@@ -16,12 +22,15 @@ export class Logger {
   static setHandler(handler: LogHandler) {
     Logger.handler = handler;
   }
+  static level = logLevels.info;
 
   constructor({ middlewars }: { middlewars?: LoggerMiddleware[] } = {}) {
     this.middlewares = middlewars || [];
   }
 
   private log(level: LogLevel, message: string, data?: Record<string, any>) {
+    if (logLevels[level] < Logger.level) return;
+
     let logObject: LogObject = {
       level,
       message,

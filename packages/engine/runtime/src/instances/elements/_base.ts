@@ -1,13 +1,16 @@
-import { Element } from "@elllphnt/elementa-models";
-import { combineLatest, map, Observable } from "rxjs";
-import { ElementaInstanceType, Instance } from "../instance.js";
+import type { Element } from "@elllphnt/elementa-models";
+import type { Observable } from "rxjs";
+import { combineLatest, map } from "rxjs";
+import type { Instance } from "../instance.js";
+import { ElementaInstanceType } from "../instance.js";
+import { ModelInstance } from "../model.js";
 import { StyleSheetInstance } from "../stylesheet/stylesheet.js";
-import { ElementInstance } from "./_element.js";
-import { ElementRuntimeEnvironment } from "./_environment/environment.js";
+import type { ElementInstance } from "./_element.js";
+import type { ElementRuntimeEnvironment } from "./_environment/environment.js";
 
 export abstract class BaseElementInstance<
   E extends Element = Element
-> extends Instance {
+> extends ModelInstance<E> {
   readonly environment: ElementRuntimeEnvironment;
   readonly element: E;
   readonly stylesheet: StyleSheetInstance;
@@ -42,6 +45,7 @@ export abstract class BaseElementInstance<
       type: ElementaInstanceType.Element,
       runtime: environment.runtime,
       parent,
+      model: element,
     });
 
     this.environment = environment;

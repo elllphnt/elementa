@@ -33,7 +33,7 @@ export class ContainerElementHandle extends BaseElementHandle<ContainerElementRe
       parent,
     });
 
-    const childrenSubscription = this.renderable.children$.subscribe(
+    const contentSubscription = this.renderable.children$.subscribe(
       (children) => {
         const [nextContent, removed] = reconcileList({
           sources: children,
@@ -57,7 +57,7 @@ export class ContainerElementHandle extends BaseElementHandle<ContainerElementRe
 
     this.addDisposer(() => {
       this._content$.complete();
-      childrenSubscription.unsubscribe();
+      contentSubscription.unsubscribe();
       this.content.forEach((child) => child.dispose());
     });
   }

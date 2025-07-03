@@ -1,12 +1,11 @@
-import {
-  baseSelector,
-  StyleData,
-  StyleSheetData,
-} from "@elllphnt/elementa-base";
-import { AggregatedModelRecord, RecordState } from "@elllphnt/elementa-kernel";
-import { filter, map, Observable, tap } from "rxjs";
+import type { StyleData, StyleSheetData } from "@elllphnt/elementa-base";
+import { baseSelector } from "@elllphnt/elementa-base";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import { AggregatedModelRecord } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
+import { filter, map, tap } from "rxjs";
 import { ProjectModel } from "~/models/project.js";
-import { Project } from "~/project/project.js";
+import type { Project } from "~/project/project.js";
 import { modelsLogger } from "../../../loggers.js";
 import { Style } from "./style.js";
 import { StyleFragmentRegistry } from "./style_fragment_registry.js";
@@ -29,13 +28,6 @@ export class Stylesheet extends ProjectModel<RecordState<StyleSheetData>> {
     initialized?: boolean;
   }) {
     super({ state, project });
-
-    modelsLogger.info("Creating stylesheet", {
-      state,
-      className: this.className,
-      projectId: project.id,
-      key: this.key,
-    });
 
     this.fragmentRegistry = new StyleFragmentRegistry<"fragments">({
       state,

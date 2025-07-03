@@ -2,15 +2,15 @@
   "props": [],
   "fragments": [
     {
-      "id": "anojzqlt",
+      "id": "q8tpzgff",
       "content": [
         {
-          "id": "wzqtnh4z",
+          "id": "zlp8mehd",
           "type": "component",
           "componentUrl": "<<REF:../../components/layout/layout.component.js>>",
           "content": [
             {
-              "id": "x51tl4nj",
+              "id": "ad265675",
               "type": "container",
               "tag": "div",
               "name": "root",
@@ -26,7 +26,7 @@
               },
               "content": [
                 {
-                  "id": "z1wc0pxe",
+                  "id": "fbj8oynl",
                   "type": "container",
                   "tag": "section",
                   "name": "hero",
@@ -45,7 +45,7 @@
                   },
                   "content": [
                     {
-                      "id": "zp1e6qdl",
+                      "id": "mt4rhwm7",
                       "type": "container",
                       "tag": "div",
                       "name": "hero-container",
@@ -63,7 +63,7 @@
                       },
                       "content": [
                         {
-                          "id": "zp76k04b",
+                          "id": "n51s4fni",
                           "type": "text",
                           "tag": "h1",
                           "name": "hero-title",
@@ -88,7 +88,7 @@
                           "marks": []
                         },
                         {
-                          "id": "la8zivdi",
+                          "id": "arquwkm3",
                           "type": "text",
                           "tag": "p",
                           "name": "hero-subtitle",
@@ -112,7 +112,7 @@
                   ]
                 },
                 {
-                  "id": "a5w22hqr",
+                  "id": "wyj4ihpq",
                   "type": "container",
                   "tag": "section",
                   "name": "contact-section",
@@ -129,7 +129,7 @@
                   },
                   "content": [
                     {
-                      "id": "t94d1540",
+                      "id": "l4x067iu",
                       "type": "container",
                       "tag": "div",
                       "name": "contact-container",
@@ -157,7 +157,7 @@
                       },
                       "content": [
                         {
-                          "id": "ovhtzbuu",
+                          "id": "nn9n8byt",
                           "type": "container",
                           "tag": "div",
                           "name": "contact-info",
@@ -181,7 +181,7 @@
                           },
                           "content": [
                             {
-                              "id": "nxs592k7",
+                              "id": "i13zz4fc",
                               "type": "text",
                               "tag": "h2",
                               "name": "contact-info-title",
@@ -207,7 +207,7 @@
                               "marks": []
                             },
                             {
-                              "id": "ql7wyqcb",
+                              "id": "soaqowrh",
                               "type": "text",
                               "tag": "p",
                               "name": "contact-info-description",
@@ -227,7 +227,7 @@
                               "marks": []
                             },
                             {
-                              "id": "o67e211j",
+                              "id": "akxk8jce",
                               "type": "container",
                               "tag": "div",
                               "name": "contact-methods",
@@ -243,7 +243,7 @@
                               },
                               "content": [
                                 {
-                                  "id": "lz55pj18",
+                                  "id": "l54qo9bq",
                                   "type": "container",
                                   "tag": "div",
                                   "name": "contact-method",
@@ -262,7 +262,7 @@
                                   },
                                   "content": [
                                     {
-                                      "id": "kyych8gp",
+                                      "id": "tf3iq58c",
                                       "type": "container",
                                       "tag": "div",
                                       "name": "contact-icon",
@@ -286,14 +286,14 @@
                                       },
                                       "content": [
                                         {
-                                          "id": "gnooq2hz",
+                                          "id": "ph12r7ir",
                                           "type": "text",
                                           "text": "📧"
                                         }
                                       ]
                                     },
                                     {
-                                      "id": "y4gv3126",
+                                      "id": "rjwnxhkm",
                                       "type": "container",
                                       "tag": "div",
                                       "name": "contact-details",
@@ -303,7 +303,7 @@
                                       },
                                       "content": [
                                         {
-                                          "id": "gjr52lvq",
+                                          "id": "s1c8ru4x",
                                           "type": "text",
                                           "tag": "h3",
                                           "name": "contact-method-title",
@@ -324,7 +324,7 @@
                                           "marks": []
                                         },
                                         {
-                                          "id": "enuyqbib",
+                                          "id": "udbo45g8",
                                           "type": "text",
                                           "tag": "p",
                                           "name": "contact-method-value",
@@ -347,7 +347,7 @@
                                   ]
                                 },
                                 {
-                                  "id": "k14f5zvw",
+                                  "id": "lt1srnb4",
                                   "type": "container",
                                   "tag": "div",
                                   "name": "contact-method",
@@ -366,7 +366,7 @@
                                   },
                                   "content": [
                                     {
-                                      "id": "nalb9vfp",
+                                      "id": "zj9ieaaz",
                                       "type": "container",
                                       "tag": "div",
                                       "name": "contact-icon",
@@ -390,14 +390,14 @@
                                       },
                                       "content": [
                                         {
-                                          "id": "qcf0bpq1",
+                                          "id": "f5avext4",
                                           "type": "text",
                                           "text": "📞"
                                         }
                                       ]
                                     },
                                     {
-                                      "id": "fnrffh7u",
+                                      "id": "kyyk3khc",
                                       "type": "container",
                                       "tag": "div",
                                       "name": "contact-details",
@@ -407,7 +407,7 @@
                                       },
                                       "content": [
                                         {
-                                          "id": "a47d7s72",
+                                          "id": "ohoz3o2o",
                                           "type": "text",
                                           "tag": "h3",
                                           "name": "contact-method-title",
@@ -428,7 +428,7 @@
                                           "marks": []
                                         },
                                         {
-                                          "id": "wfrc73sh",
+                                          "id": "v9ul67jr",
                                           "type": "text",
                                           "tag": "p",
                                           "name": "contact-method-value",
@@ -451,7 +451,7 @@
                                   ]
                                 },
                                 {
-                                  "id": "gj1qht1a",
+                                  "id": "k71bslvs",
                                   "type": "container",
                                   "tag": "div",
                                   "name": "contact-method",
@@ -470,7 +470,7 @@
                                   },
                                   "content": [
                                     {
-                                      "id": "l0bzw03e",
+                                      "id": "sak816u0",
                                       "type": "container",
                                       "tag": "div",
                                       "name": "contact-icon",
@@ -494,14 +494,14 @@
                                       },
                                       "content": [
                                         {
-                                          "id": "pgqc0err",
+                                          "id": "gg329bu7",
                                           "type": "text",
                                           "text": "📍"
                                         }
                                       ]
                                     },
                                     {
-                                      "id": "poqctdzj",
+                                      "id": "ptusnco6",
                                       "type": "container",
                                       "tag": "div",
                                       "name": "contact-details",
@@ -511,7 +511,7 @@
                                       },
                                       "content": [
                                         {
-                                          "id": "bnei0dbk",
+                                          "id": "s9npx2le",
                                           "type": "text",
                                           "tag": "h3",
                                           "name": "contact-method-title",
@@ -532,7 +532,7 @@
                                           "marks": []
                                         },
                                         {
-                                          "id": "i5eyghl5",
+                                          "id": "nqwedypl",
                                           "type": "text",
                                           "tag": "p",
                                           "name": "contact-method-value",
@@ -557,7 +557,7 @@
                               ]
                             },
                             {
-                              "id": "xioqz2zo",
+                              "id": "cv3t1zje",
                               "type": "container",
                               "tag": "div",
                               "name": "social-section",
@@ -574,7 +574,7 @@
                               },
                               "content": [
                                 {
-                                  "id": "gevpufz3",
+                                  "id": "lw2cvic7",
                                   "type": "text",
                                   "tag": "h3",
                                   "name": "social-title",
@@ -595,7 +595,7 @@
                                   "marks": []
                                 },
                                 {
-                                  "id": "uqau28zn",
+                                  "id": "goob28xq",
                                   "type": "container",
                                   "tag": "div",
                                   "name": "social-links",
@@ -613,7 +613,7 @@
                                   },
                                   "content": [
                                     {
-                                      "id": "extc6kbp",
+                                      "id": "g3nxalt9",
                                       "type": "text",
                                       "text": "Twitter",
                                       "link": {
@@ -622,7 +622,7 @@
                                       }
                                     },
                                     {
-                                      "id": "j5a3d5cc",
+                                      "id": "nfm2q154",
                                       "type": "text",
                                       "text": "Instagram",
                                       "link": {
@@ -631,7 +631,7 @@
                                       }
                                     },
                                     {
-                                      "id": "xmiezhhw",
+                                      "id": "uy6alw5w",
                                       "type": "text",
                                       "text": "LinkedIn",
                                       "link": {
@@ -640,7 +640,7 @@
                                       }
                                     },
                                     {
-                                      "id": "vosbhmcx",
+                                      "id": "dtlzzkib",
                                       "type": "text",
                                       "text": "Dribbble",
                                       "link": {
@@ -655,7 +655,7 @@
                           ]
                         },
                         {
-                          "id": "y1ad3jqf",
+                          "id": "e4cjp0h5",
                           "type": "container",
                           "tag": "div",
                           "name": "form-section",
@@ -678,7 +678,7 @@
                           },
                           "content": [
                             {
-                              "id": "xvwoz7nh",
+                              "id": "osy1mx9g",
                               "type": "component",
                               "componentUrl": "<<REF:../../components/contact-form/contact-form.component.js>>",
                               "content": []
@@ -699,9 +699,9 @@
     }
   ],
   "template": {
-    "id": "ro1pr2nu",
+    "id": "i41w3mbh",
     "type": "fragment",
-    "fragmentId": "anojzqlt",
+    "fragmentId": "q8tpzgff",
     "params": {}
   },
   "editors": {
@@ -714,11 +714,22 @@
     "stage": {
       "frames": [
         {
-          "id": "y1zdpke3i6",
+          "id": "qw2pab2gvt",
           "content": {
             "type": "component",
             "componentUrl": "host"
-          }
+          },
+          "x": 0,
+          "y": 0
+        },
+        {
+          "id": "jq2262lhax",
+          "content": {
+            "type": "fragment",
+            "fragmentId": "q8tpzgff"
+          },
+          "x": 1000,
+          "y": 0
         }
       ]
     }

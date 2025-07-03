@@ -2,10 +2,10 @@
   "props": [],
   "fragments": [
     {
-      "id": "sb19dr8q",
+      "id": "w6cq18ej",
       "content": [
         {
-          "id": "ylxruock",
+          "id": "p8bgmd2x",
           "type": "container",
           "tag": "section",
           "name": "root",
@@ -22,7 +22,7 @@
           },
           "content": [
             {
-              "id": "z1591x4u",
+              "id": "gcwv43jc",
               "type": "container",
               "tag": "div",
               "name": "container",
@@ -40,7 +40,7 @@
               },
               "content": [
                 {
-                  "id": "tbvj00eq",
+                  "id": "ivojrjy4",
                   "type": "container",
                   "tag": "div",
                   "name": "header",
@@ -57,7 +57,7 @@
                   },
                   "content": [
                     {
-                      "id": "n1dayh3p",
+                      "id": "c438b0zu",
                       "type": "text",
                       "tag": "h2",
                       "name": "section-title",
@@ -83,7 +83,7 @@
                       "marks": []
                     },
                     {
-                      "id": "fy32ys3g",
+                      "id": "tod5aqho",
                       "type": "text",
                       "tag": "p",
                       "name": "section-subtitle",
@@ -107,7 +107,7 @@
                   ]
                 },
                 {
-                  "id": "ecz9zop5",
+                  "id": "rntc9fhy",
                   "type": "container",
                   "tag": "div",
                   "name": "services-grid",
@@ -130,7 +130,7 @@
                   },
                   "content": [
                     {
-                      "id": "es1d97n7",
+                      "id": "otlkjan6",
                       "type": "expression",
                       "expression": "props.services.map(service => fragments.fragment_1({\n  service\n}))"
                     }
@@ -145,7 +145,7 @@
       "varName": "fragment_2"
     },
     {
-      "id": "mljz3veo",
+      "id": "nsmeg558",
       "params": [
         {
           "name": "service",
@@ -155,7 +155,7 @@
       ],
       "content": [
         {
-          "id": "h6z5tswe",
+          "id": "kej9xmbh",
           "type": "container",
           "tag": "div",
           "name": "service-card",
@@ -182,7 +182,7 @@
           },
           "content": [
             {
-              "id": "pa3ngj0t",
+              "id": "d5iltnh1",
               "type": "container",
               "tag": "div",
               "name": "service-icon",
@@ -207,14 +207,14 @@
               },
               "content": [
                 {
-                  "id": "wrnuv4kw",
+                  "id": "zqbclvwz",
                   "type": "expression",
                   "expression": "service.icon"
                 }
               ]
             },
             {
-              "id": "zsdcpjnv",
+              "id": "iikgvprh",
               "type": "text",
               "tag": "h3",
               "name": "service-title",
@@ -235,7 +235,7 @@
               "marks": []
             },
             {
-              "id": "b1g48q1x",
+              "id": "zqwcqf3u",
               "type": "text",
               "tag": "p",
               "name": "service-description",
@@ -261,9 +261,9 @@
     }
   ],
   "template": {
-    "id": "di0enl0t",
+    "id": "wkcwxysw",
     "type": "fragment",
-    "fragmentId": "sb19dr8q",
+    "fragmentId": "w6cq18ej",
     "params": {}
   },
   "editors": {
@@ -276,11 +276,31 @@
     "stage": {
       "frames": [
         {
-          "id": "y42b2z67ca",
+          "id": "zgfply7grv",
           "content": {
             "type": "component",
             "componentUrl": "host"
-          }
+          },
+          "x": 0,
+          "y": 0
+        },
+        {
+          "id": "kavph7tpfa",
+          "content": {
+            "type": "fragment",
+            "fragmentId": "w6cq18ej"
+          },
+          "x": 1000,
+          "y": 0
+        },
+        {
+          "id": "pr51f340p5",
+          "content": {
+            "type": "fragment",
+            "fragmentId": "nsmeg558"
+          },
+          "x": 2000,
+          "y": 0
         }
       ]
     }

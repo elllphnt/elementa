@@ -1,7 +1,7 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
 import { renderingLogger } from "../../../loggers.js";
-import { ContainerElementRenderable } from "../../../renderables/element/container.js";
+import type { ContainerElementRenderable } from "../../../renderables/element/container.js";
 import {
   BaseElementPropsContext,
   useBaseElementProps,

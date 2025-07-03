@@ -2,10 +2,10 @@
   "props": [],
   "fragments": [
     {
-      "id": "rzvpih5u",
+      "id": "paa3qepu",
       "content": [
         {
-          "id": "uhy3ym0h",
+          "id": "wfbd2j4s",
           "type": "container",
           "tag": "section",
           "name": "root",
@@ -26,7 +26,7 @@
           },
           "content": [
             {
-              "id": "k4gb5gl8",
+              "id": "v5dt5mbq",
               "type": "container",
               "tag": "div",
               "name": "container",
@@ -55,7 +55,7 @@
               },
               "content": [
                 {
-                  "id": "tpc6ordx",
+                  "id": "yu393tzd",
                   "type": "container",
                   "tag": "div",
                   "name": "content",
@@ -71,7 +71,7 @@
                   },
                   "content": [
                     {
-                      "id": "s6tn8feu",
+                      "id": "x4vq435r",
                       "type": "text",
                       "tag": "h1",
                       "name": "title",
@@ -101,7 +101,7 @@
                       "marks": []
                     },
                     {
-                      "id": "zfhrwj41",
+                      "id": "tad8eq3y",
                       "type": "text",
                       "tag": "p",
                       "name": "subtitle",
@@ -127,7 +127,7 @@
                       "marks": []
                     },
                     {
-                      "id": "eq2tr7u5",
+                      "id": "tgnlrnqu",
                       "type": "expression",
                       "expression": "props.data.buttonText",
                       "link": {
@@ -140,7 +140,7 @@
                   ]
                 },
                 {
-                  "id": "b4el878p",
+                  "id": "cah9aco3",
                   "type": "container",
                   "tag": "div",
                   "name": "visual",
@@ -158,7 +158,7 @@
                   },
                   "content": [
                     {
-                      "id": "ls5rcd2z",
+                      "id": "w7px90j6",
                       "type": "container",
                       "tag": "div",
                       "name": "hero-graphic",
@@ -197,10 +197,10 @@
       "varName": "fragment_2"
     },
     {
-      "id": "tpvpcw45",
+      "id": "nj9cops6",
       "content": [
         {
-          "id": "s5yh65k4",
+          "id": "pfxrm4ck",
           "type": "container",
           "tag": "div",
           "name": "root",
@@ -228,7 +228,7 @@
   ],
   "states": [
     {
-      "id": "j1eqbwq3",
+      "id": "jilooo6w",
       "name": "state_1",
       "varName": "state_1",
       "type": "inline",
@@ -236,7 +236,7 @@
     }
   ],
   "template": {
-    "id": "tmj88cqy",
+    "id": "wvxin65q",
     "type": "expression",
     "expression": "state_1"
   },
@@ -250,11 +250,31 @@
     "stage": {
       "frames": [
         {
-          "id": "rna30lsah2",
+          "id": "hb306ivmyh",
           "content": {
             "type": "component",
             "componentUrl": "host"
-          }
+          },
+          "x": 0,
+          "y": 0
+        },
+        {
+          "id": "hiq2srr9rw",
+          "content": {
+            "type": "fragment",
+            "fragmentId": "paa3qepu"
+          },
+          "x": 1000,
+          "y": 0
+        },
+        {
+          "id": "kuj2dqw326",
+          "content": {
+            "type": "fragment",
+            "fragmentId": "nj9cops6"
+          },
+          "x": 2000,
+          "y": 0
         }
       ]
     }

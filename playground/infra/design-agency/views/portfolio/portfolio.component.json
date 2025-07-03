@@ -2,7 +2,7 @@
   "props": [],
   "fragments": [
     {
-      "id": "rqhfcxhf",
+      "id": "wpwpcjc3",
       "params": [
         {
           "name": "categories",
@@ -27,12 +27,12 @@
       ],
       "content": [
         {
-          "id": "rmb01wno",
+          "id": "a1z8r8ca",
           "type": "component",
           "componentUrl": "<<REF:../../components/layout/layout.component.js>>",
           "content": [
             {
-              "id": "ml6po6cf",
+              "id": "tfpowyqx",
               "type": "container",
               "tag": "div",
               "name": "root",
@@ -48,7 +48,7 @@
               },
               "content": [
                 {
-                  "id": "npv1hiuy",
+                  "id": "nvgs8jko",
                   "type": "container",
                   "tag": "section",
                   "name": "hero",
@@ -67,7 +67,7 @@
                   },
                   "content": [
                     {
-                      "id": "pefhomu2",
+                      "id": "tuvpr73z",
                       "type": "container",
                       "tag": "div",
                       "name": "hero-container",
@@ -85,7 +85,7 @@
                       },
                       "content": [
                         {
-                          "id": "aebc5eer",
+                          "id": "zohu5lva",
                           "type": "text",
                           "tag": "h1",
                           "name": "hero-title",
@@ -110,7 +110,7 @@
                           "marks": []
                         },
                         {
-                          "id": "x63evyux",
+                          "id": "q3jy2pr9",
                           "type": "text",
                           "tag": "p",
                           "name": "hero-subtitle",
@@ -134,7 +134,7 @@
                   ]
                 },
                 {
-                  "id": "xqogy3hf",
+                  "id": "k64dydl3",
                   "type": "container",
                   "tag": "section",
                   "name": "portfolio-section",
@@ -151,7 +151,7 @@
                   },
                   "content": [
                     {
-                      "id": "b9gybojc",
+                      "id": "b52eo9cx",
                       "type": "container",
                       "tag": "div",
                       "name": "portfolio-container",
@@ -169,7 +169,7 @@
                       },
                       "content": [
                         {
-                          "id": "zy650kxt",
+                          "id": "es2jo3cf",
                           "type": "container",
                           "tag": "div",
                           "name": "filter-tabs",
@@ -194,14 +194,14 @@
                           },
                           "content": [
                             {
-                              "id": "jcpv89ih",
+                              "id": "p9lywcgk",
                               "type": "expression",
                               "expression": "categories.map(category => fragments.fragment_2({\n  category,\n  selectedCategory,\n  setSelectedCategory\n}))"
                             }
                           ]
                         },
                         {
-                          "id": "b738myma",
+                          "id": "m6qurg37",
                           "type": "container",
                           "tag": "div",
                           "name": "portfolio-grid",
@@ -224,7 +224,7 @@
                           },
                           "content": [
                             {
-                              "id": "sry9d7rg",
+                              "id": "o6mnyagu",
                               "type": "expression",
                               "expression": "portfolio.map(item => fragments.fragment_4({\n  item\n}))"
                             }
@@ -243,7 +243,7 @@
       "varName": "fragment_5"
     },
     {
-      "id": "ub71jfpr",
+      "id": "t412iswq",
       "params": [
         {
           "name": "item",
@@ -253,7 +253,7 @@
       ],
       "content": [
         {
-          "id": "v1swrvwh",
+          "id": "c1eoixhq",
           "type": "container",
           "tag": "div",
           "name": "portfolio-item",
@@ -273,7 +273,7 @@
           },
           "content": [
             {
-              "id": "jwc9iiq0",
+              "id": "koz4gl0z",
               "type": "container",
               "tag": "div",
               "name": "portfolio-image",
@@ -292,7 +292,7 @@
               },
               "content": [
                 {
-                  "id": "me8cceyq",
+                  "id": "rumpq0wr",
                   "type": "container",
                   "tag": "div",
                   "name": "image-placeholder",
@@ -317,14 +317,14 @@
                   },
                   "content": [
                     {
-                      "id": "e3qpnnm7",
+                      "id": "o5svywno",
                       "type": "expression",
                       "expression": "item.category"
                     }
                   ]
                 },
                 {
-                  "id": "agunwty1",
+                  "id": "cgkhc0kf",
                   "type": "container",
                   "tag": "div",
                   "name": "portfolio-overlay",
@@ -354,7 +354,7 @@
                   },
                   "content": [
                     {
-                      "id": "haixth1u",
+                      "id": "s9thmpai",
                       "type": "text",
                       "tag": "h3",
                       "name": "portfolio-item-title",
@@ -374,7 +374,7 @@
                       "marks": []
                     },
                     {
-                      "id": "r6mfbaqk",
+                      "id": "aac1k16l",
                       "type": "text",
                       "tag": "p",
                       "name": "portfolio-item-category",
@@ -396,7 +396,7 @@
                       "marks": []
                     },
                     {
-                      "id": "aiwye7vk",
+                      "id": "o06hfs8a",
                       "type": "container",
                       "tag": "button",
                       "name": "view-project",
@@ -419,7 +419,7 @@
                       },
                       "content": [
                         {
-                          "id": "zr11xy68",
+                          "id": "nmvlijwz",
                           "type": "text",
                           "text": "View Project"
                         }
@@ -430,7 +430,7 @@
               ]
             },
             {
-              "id": "zy4lo1s3",
+              "id": "h21awh9b",
               "type": "container",
               "tag": "div",
               "name": "portfolio-info",
@@ -446,7 +446,7 @@
               },
               "content": [
                 {
-                  "id": "s9wt3u5x",
+                  "id": "lo5vgoli",
                   "type": "text",
                   "tag": "h3",
                   "name": "portfolio-title",
@@ -467,7 +467,7 @@
                   "marks": []
                 },
                 {
-                  "id": "oupyzjsw",
+                  "id": "ohyigpoq",
                   "type": "text",
                   "tag": "p",
                   "name": "portfolio-description",
@@ -488,7 +488,7 @@
                   "marks": []
                 },
                 {
-                  "id": "o1kdwjxy",
+                  "id": "icnou3i7",
                   "type": "container",
                   "tag": "div",
                   "name": "portfolio-tags",
@@ -506,7 +506,7 @@
                   },
                   "content": [
                     {
-                      "id": "gliqluzb",
+                      "id": "ojdgne77",
                       "type": "expression",
                       "expression": "item.tags.map(tag => fragments.fragment_3({\n  tag\n}))"
                     }
@@ -521,7 +521,7 @@
       "varName": "fragment_4"
     },
     {
-      "id": "m5le6ev5",
+      "id": "qonayaxz",
       "params": [
         {
           "name": "tag",
@@ -531,7 +531,7 @@
       ],
       "content": [
         {
-          "id": "jthe4a2d",
+          "id": "n3xu9urk",
           "type": "text",
           "tag": "span",
           "name": "portfolio-tag",
@@ -560,7 +560,7 @@
       "varName": "fragment_3"
     },
     {
-      "id": "ooj1n8gn",
+      "id": "iyly9az2",
       "params": [
         {
           "name": "category",
@@ -580,7 +580,7 @@
       ],
       "content": [
         {
-          "id": "i51qs2na",
+          "id": "i1c3cvoe",
           "type": "container",
           "tag": "button",
           "interactions": {
@@ -590,7 +590,7 @@
           },
           "content": [
             {
-              "id": "lw13x5sz",
+              "id": "rp5hpqf8",
               "type": "expression",
               "expression": "category"
             }
@@ -601,15 +601,15 @@
       "varName": "fragment_2"
     },
     {
-      "id": "j1ziyeuk",
+      "id": "cul08hwd",
       "content": [
         {
-          "id": "xikajl0j",
+          "id": "p4zeeg80",
           "type": "component",
           "componentUrl": "<<REF:../../components/layout/layout.component.js>>",
           "content": [
             {
-              "id": "cd7qtz01",
+              "id": "rchukoh0",
               "type": "container",
               "tag": "div",
               "name": "loading",
@@ -628,7 +628,7 @@
               },
               "content": [
                 {
-                  "id": "gnyjtq71",
+                  "id": "v89dwod5",
                   "type": "container",
                   "tag": "div",
                   "name": "spinner",
@@ -660,7 +660,7 @@
   ],
   "states": [
     {
-      "id": "qp95gr33",
+      "id": "ixies8lq",
       "name": "state_1",
       "varName": "state_1",
       "type": "hook",
@@ -669,7 +669,7 @@
       "hookUrl": "<<REF:../../hooks/usePortfolio.hook.js>>"
     },
     {
-      "id": "skv1e2k6",
+      "id": "k8xfxmaz",
       "name": "state_2",
       "varName": "state_2",
       "type": "inline",
@@ -677,7 +677,7 @@
     }
   ],
   "template": {
-    "id": "lxjpz7on",
+    "id": "so5qwtgw",
     "type": "expression",
     "expression": "state_2"
   },
@@ -691,11 +691,58 @@
     "stage": {
       "frames": [
         {
-          "id": "csc9qdlrso",
+          "id": "xzwhqv9ugd",
           "content": {
             "type": "component",
             "componentUrl": "host"
-          }
+          },
+          "x": 0,
+          "y": 0
+        },
+        {
+          "id": "pc92kkzair",
+          "content": {
+            "type": "fragment",
+            "fragmentId": "wpwpcjc3"
+          },
+          "x": 1000,
+          "y": 0
+        },
+        {
+          "id": "zgnpxfpes5",
+          "content": {
+            "type": "fragment",
+            "fragmentId": "t412iswq"
+          },
+          "x": 2000,
+          "y": 0
+        },
+        {
+          "id": "hey9du0lvz",
+          "content": {
+            "type": "fragment",
+            "fragmentId": "qonayaxz"
+          },
+          "x": 3000,
+          "y": 0
+        },
+        {
+          "id": "b7qzovl255",
+          "content": {
+            "type": "fragment",
+            "fragmentId": "iyly9az2"
+          },
+          "x": 4000,
+          "y": 0
+        },
+        {
+          "id": "nxvfdp3bgt",
+          "content": {
+            "type": "fragment",
+            "fragmentId": "cul08hwd"
+          },
+          "x": 5000,
+          "y": 0
         }
       ]
     }

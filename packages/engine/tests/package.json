@@ -1,0 +1,20 @@
+{
+    "name": "@elllphnt/elementa-test",
+    "private": true,
+    "version": "0.1.0",
+    "type": "module",
+    "scripts": {
+        "test": "vitest"
+    },
+    "dependencies": {
+        "@elllphnt/elementa-base": "workspace:*",
+        "@elllphnt/elementa-css": "workspace:*",
+        "@elllphnt/elementa-kernel": "workspace:*",
+        "@elllphnt/elementa-lang-utils": "workspace:*",
+        "@elllphnt/elementa-json-backend": "workspace:*",
+        "@elllphnt/elementa-models": "workspace:*",
+        "rxjs": "^7.8.2"
+    },
+    "main": "build/index.js",
+    "types": "build/index.d.ts"
+}

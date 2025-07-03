@@ -1,5 +1,5 @@
-import { ListState } from "./list.js";
-import { RecordState } from "./record.js";
+import type { ListState } from "./list.js";
+import type { RecordState } from "./record.js";
 
 export interface Backend {
   createRecordState<T extends Record<string, any>>(): RecordState<T>;

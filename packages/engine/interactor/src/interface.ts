@@ -26,15 +26,6 @@ export class Interface extends Lifecycle {
     height: 0,
   });
 
-  // New private properties for smooth zooming
-  private zoomAnimationFrameId: number | null = null;
-  private targetScale: number | null = null;
-  private zoomOrigin: { x: number; y: number } | null = null;
-
-  // New private properties for smooth panning
-  private panAnimationFrameId: number | null = null;
-  private remainingPanDelta: { x: number; y: number } = { x: 0, y: 0 };
-
   // New properties for mouse wheel event detection
   private lastDeltaY: number = 0;
 
@@ -399,47 +390,6 @@ export class Interface extends Lifecycle {
     this._stagerWindowRect$.next(stagerRect);
   }
 
-  // New method: smoothZoomAnimation using linear interpolation (lerp)
-  private smoothZoomAnimation() {
-    const zoomDampingFactor = 0.3; // smoothing constant
-    const threshold = 0.001;
-    const viewport = this.interactor.stage.viewport;
-    const currentScale = viewport.scale;
-    if (this.targetScale === null || this.zoomOrigin === null) return;
-    const scaleDelta = (this.targetScale - currentScale) * zoomDampingFactor;
-    // If change is minimal, finish the animation.
-    if (Math.abs(scaleDelta) < threshold) {
-      viewport.scaleBy(this.targetScale - currentScale, this.zoomOrigin);
-      this.zoomAnimationFrameId = null;
-      return;
-    }
-    viewport.scaleBy(scaleDelta, this.zoomOrigin);
-    this.zoomAnimationFrameId = requestAnimationFrame(() =>
-      this.smoothZoomAnimation()
-    );
-  }
-
-  // New method: smoothPanAnimation using lerp
-  private smoothPanAnimation() {
-    const panDampingFactor = 0.2;
-    const threshold = 0.1;
-    const viewport = this.interactor.stage.viewport;
-    const deltaX = this.remainingPanDelta.x * panDampingFactor;
-    const deltaY = this.remainingPanDelta.y * panDampingFactor;
-    if (Math.abs(deltaX) < threshold && Math.abs(deltaY) < threshold) {
-      viewport.panBy(this.remainingPanDelta.x, this.remainingPanDelta.y);
-      this.remainingPanDelta = { x: 0, y: 0 };
-      this.panAnimationFrameId = null;
-      return;
-    }
-    viewport.panBy(deltaX, deltaY);
-    this.remainingPanDelta.x -= deltaX;
-    this.remainingPanDelta.y -= deltaY;
-    this.panAnimationFrameId = requestAnimationFrame(() =>
-      this.smoothPanAnimation()
-    );
-  }
-
   // event
   handleWheel(e: WheelEvent) {
     let deltaX = e.deltaX;
@@ -459,23 +409,9 @@ export class Interface extends Lifecycle {
       const originInStager = this.interactorToStager(originInInteractor);
       const originInViewport =
         this.interactor.stage.viewport.windowToViewport(originInStager);
-      // Update target scale instead of applying immediately
-      this.targetScale = currentScale + scaleFactor;
-      this.zoomOrigin = originInViewport;
-      if (this.zoomAnimationFrameId === null) {
-        this.zoomAnimationFrameId = requestAnimationFrame(() =>
-          this.smoothZoomAnimation()
-        );
-      }
+      viewport.scaleBy(scaleFactor, originInViewport);
     } else {
-      // Apply smooth panning
-      this.remainingPanDelta.x += -deltaX;
-      this.remainingPanDelta.y += -deltaY;
-      if (this.panAnimationFrameId === null) {
-        this.panAnimationFrameId = requestAnimationFrame(() =>
-          this.smoothPanAnimation()
-        );
-      }
+      viewport.panBy(-deltaX, -deltaY);
     }
   }
 }

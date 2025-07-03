@@ -1,11 +1,12 @@
-import {
+import type {
+  ElementaFrameData,
   ElementaPreviewData,
   ElementaStageData,
-  genId,
 } from "@elllphnt/elementa-base";
+import { genId } from "@elllphnt/elementa-base";
 import { compileComponentToElll } from "@elllphnt/elementa-react-parser";
 import nodepath from "path";
-import { Handler } from "../_types.js";
+import type { Handler } from "../_types.js";
 import { readFile } from "../_utils.js";
 
 export const transpileComponent: Handler = async (path, content, context) => {
@@ -33,7 +34,21 @@ export const transpileComponent: Handler = async (path, content, context) => {
           type: "component",
           componentUrl: "host",
         },
+        x: 0,
+        y: 0,
       },
+      ...(componentData.fragments ?? []).map((fragment, index) => {
+        const frame: ElementaFrameData = {
+          id: genId(),
+          content: {
+            type: "fragment",
+            fragmentId: fragment.id,
+          },
+          x: 1000 * (index + 1),
+          y: 0,
+        };
+        return frame;
+      }),
     ],
   };
   componentData.editors = { preview, stage };

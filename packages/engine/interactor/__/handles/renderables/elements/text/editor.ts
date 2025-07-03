@@ -1,4 +1,4 @@
-import {
+import type {
   ITextElementEditor,
   TextElementRenderable,
 } from "@elllphnt/elementa-scene";
@@ -39,7 +39,7 @@ export class ProseMirrorTextElementEditor implements ITextElementEditor {
   }
 
   mount(root: HTMLElement): void {
-    let doc = schema.node("doc", null, [schema.node("paragraph", null, [])]);
+    const doc = schema.node("doc", null, [schema.node("paragraph", null, [])]);
 
     const state = EditorState.create({
       schema,

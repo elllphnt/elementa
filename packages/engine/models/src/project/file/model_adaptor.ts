@@ -1,4 +1,5 @@
-import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
+import type { Observable } from "rxjs";
+import { BehaviorSubject, map, of, switchMap } from "rxjs";
 import { ModelAdaptor } from "~/models/adaptor.js";
 import { App } from "~/models/app/app.js";
 import { Component } from "~/models/component/component.js";
@@ -10,12 +11,10 @@ import { StyleSystem } from "~/models/style/style_system/style_system.js";
 import { StyleVariableSheet } from "~/models/style/style_variables/style_variable_sheet.js";
 import { Stylesheet } from "~/models/style/stylesheet/stylesheet.js";
 import { TypefaceSheet } from "~/models/style/typefaces/typeface_sheet.js";
-import {
-  FileModelType,
-  FileModelTypeName,
-  fileModelTypes,
-} from "../../models/types.js";
-import { File, FileReference } from "./file.js";
+import type { FileModelType, FileModelTypeName } from "../../models/types.js";
+import { fileModelTypes } from "../../models/types.js";
+import { AsyncResourceStatus } from "../resource.js";
+import type { File, FileReference } from "./file.js";
 
 export abstract class FileModelAdaptor<
   N extends FileModelTypeName,
@@ -193,5 +192,20 @@ export class FileReferenceModelAdaptor<
     super();
     this.fileReference = fileReference;
     this.modelType = modelType;
+
+    this.addInitializer(() => {
+      const statusSubscription = this.fileModelAdaptor$
+        .pipe(
+          switchMap((file) => {
+            if (file) return file.status$;
+            else return of(AsyncResourceStatus.Pending);
+          })
+        )
+        .subscribe((status) => this.setStatus(status));
+
+      this.addDisposer(() => {
+        statusSubscription.unsubscribe();
+      });
+    });
   }
 }

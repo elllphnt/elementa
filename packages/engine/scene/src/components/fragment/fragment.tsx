@@ -2,7 +2,7 @@ import { logger } from "@elllphnt/elementa-kernel";
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { NamespaceContext } from "../../contexts/namespace.js";
 import { useNamespace } from "../../hooks/namespace.js";
-import { FragmentRenderable } from "../../renderables/fragment.js";
+import type { FragmentRenderable } from "../../renderables/fragment.js";
 import ElementComponent from "../elements/element.js";
 
 function RecursionAlert({ fragment }: { fragment: FragmentRenderable }) {

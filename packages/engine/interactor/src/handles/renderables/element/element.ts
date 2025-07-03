@@ -2,6 +2,8 @@ import type {
   ComponentElementRenderable,
   ContainerElementRenderable,
   ElementRenderable,
+  ExpressionElementRenderable,
+  FragmentElementRenderable,
   MediaElementRenderable,
   PrimitiveElementRenderable,
   SlotElementRenderable,
@@ -12,6 +14,8 @@ import type { Handle } from "~/handles/handle.js";
 import type { ElementaInteractor } from "~/interactor.js";
 import { ComponentElementHandle } from "./component.js";
 import { ContainerElementHandle } from "./container.js";
+import { ExpressionElementHandle } from "./expression.js";
+import { FragmentElementHandle } from "./fragment.js";
 import { MediaElementHandle } from "./media.js";
 import { PrimitiveElementHandle } from "./primitive.js";
 import { SlotElementHandle } from "./slot.js";
@@ -21,6 +25,8 @@ import { VectorElementHandle } from "./vector.js";
 export type ElementHandle =
   | ComponentElementHandle
   | ContainerElementHandle
+  | ExpressionElementHandle
+  | FragmentElementHandle
   | MediaElementHandle
   | PrimitiveElementHandle
   | SlotElementHandle
@@ -77,6 +83,18 @@ export function createElementHandle({
       return new TextElementHandle({
         interactor,
         renderable: renderable as TextElementRenderable,
+        parent,
+      });
+    case "fragment":
+      return new FragmentElementHandle({
+        interactor,
+        renderable: renderable as FragmentElementRenderable,
+        parent,
+      });
+    case "expression":
+      return new ExpressionElementHandle({
+        interactor,
+        renderable: renderable as ExpressionElementRenderable,
         parent,
       });
     default:

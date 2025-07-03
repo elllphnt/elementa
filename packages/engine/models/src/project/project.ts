@@ -1,19 +1,19 @@
+import type { PackageData } from "@elllphnt/elementa-base";
 import {
   elementaStandardPaths,
-  PackageData,
   toAbsoluteFileUrl,
   toRelativeFileUrl,
 } from "@elllphnt/elementa-base";
 import { Lifecycle } from "@elllphnt/elementa-kernel";
-import { Observable } from "rxjs";
-import { Infrastructure } from "../infrastructure/infrastructure.js";
-import { FileModelTypeName, fileModelTypes } from "../models/types.js";
-import { Content } from "./file/content.js";
-import { File, FileReference } from "./file/file.js";
-import {
-  FileModelAdaptor,
-  FileReferenceModelAdaptor,
-} from "./file/model_adaptor.js";
+import type { Observable } from "rxjs";
+import type { Infrastructure } from "../infrastructure/infrastructure.js";
+import type { FileModelTypeName } from "../models/types.js";
+import { fileModelTypes } from "../models/types.js";
+import type { Content } from "./file/content.js";
+import type { File } from "./file/file.js";
+import { FileReference } from "./file/file.js";
+import type { FileModelAdaptor } from "./file/model_adaptor.js";
+import { FileReferenceModelAdaptor } from "./file/model_adaptor.js";
 import { PackageManager } from "./package_manager/package_manager.js";
 import { StyleManager } from "./style_manager/style_manager.js";
 
@@ -116,6 +116,22 @@ export abstract class Project<F extends File = File> extends Lifecycle {
     this.addInitializer(() => {
       this.styleManager.initialize();
       this.packageManager.initialize();
+
+      this.app.fileReference.initialize();
+      this.styleSystem.fileReference.initialize();
+      this.modifierSheet.fileReference.initialize();
+      this.typefaceSheet.fileReference.initialize();
+      this.variableSheet.fileReference.initialize();
+      this.keyframeSheet.fileReference.initialize();
+      this.packageSheet.fileReference.initialize();
+
+      this.app.initialize();
+      this.styleSystem.initialize();
+      this.modifierSheet.initialize();
+      this.typefaceSheet.initialize();
+      this.variableSheet.initialize();
+      this.keyframeSheet.initialize();
+      this.packageSheet.initialize();
 
       this.addDisposer(() => {
         this.styleManager.dispose();

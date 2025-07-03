@@ -1,27 +1,27 @@
-import {
+import type {
   ComponentData,
   DataInputData,
   ElementData,
   FragmentData,
   StateData,
 } from "@elllphnt/elementa-base";
-import {
-  AggregatedModelList,
-  OptionalModel,
-  RecordState,
-} from "@elllphnt/elementa-kernel";
-import { BehaviorSubject, map, Observable } from "rxjs";
-import { Project } from "~/project/project.js";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import { AggregatedModelList, OptionalModel } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
+import { BehaviorSubject, map } from "rxjs";
+import type { Project } from "~/project/project.js";
 import { modelsLogger } from "../../loggers.js";
-import { ElementaEnvironment } from "../elementa/environment.js";
+import type { ElementaEnvironment } from "../elementa/environment.js";
 import { ElementaPreview } from "../elementa/preview.js";
 import { ElementaStage } from "../elementa/stage.js";
-import { createElement, Element } from "../elements/_element.js";
-import { ElementEnvironment } from "../elements/_environment.js";
+import type { Element } from "../elements/_element.js";
+import { createElement } from "../elements/_element.js";
+import type { ElementEnvironment } from "../elements/_environment.js";
 import { Fragment } from "../fragment/fragment.js";
 import { DataInput } from "../primitives/data_input.js";
 import { ProjectModel } from "../project.js";
-import { createState, State } from "../states/_state.js";
+import type { State } from "../states/_state.js";
+import { createState } from "../states/_state.js";
 
 export class ComponentElementEnvironment implements ElementEnvironment {
   component: Component;
@@ -127,13 +127,6 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
     initialized?: boolean;
   }) {
     super({ state, project });
-
-    modelsLogger.info("Creating component", {
-      url,
-      projectId: project.id,
-      initialized: initialized ?? false,
-    });
-
     this.url = url;
     this.elementEnvironment = new ComponentElementEnvironment({
       component: this,

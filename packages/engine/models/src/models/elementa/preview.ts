@@ -1,16 +1,15 @@
-import {
+import type {
   CornerData,
   CornerName,
   ElementaPreviewData,
 } from "@elllphnt/elementa-base";
-import { Model, OptionalModel, RecordState } from "@elllphnt/elementa-kernel";
-import { Observable, map } from "rxjs";
-import { modelsLogger } from "../../loggers.js";
-import { ElementaEnvironment } from "./environment.js";
-import {
-  RenderableContent,
-  createRenderableContent,
-} from "./renderable_content/_content.js";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import { Model, OptionalModel } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
+import { map } from "rxjs";
+import type { ElementaEnvironment } from "./environment.js";
+import type { RenderableContent } from "./renderable_content/_content.js";
+import { createRenderableContent } from "./renderable_content/_content.js";
 import { RenderingContext } from "./rendering_context.js";
 
 export class ElementaPreview extends Model<
@@ -80,12 +79,6 @@ export class ElementaPreview extends Model<
   }) {
     super({ state });
 
-    modelsLogger.info("Creating elementa preview", {
-      projectId: environment.project.id,
-      hostUrl: environment.hostUrl,
-      hasCorners: !!this.corners,
-    });
-
     this.environment = environment;
 
     // TODO: Initialize context with backend-agnostic state
@@ -104,21 +97,10 @@ export class ElementaPreview extends Model<
     });
 
     this.addInitializer(() => {
-      modelsLogger.debug("Initializing elementa preview models", {
-        projectId: environment.project.id,
-        hasContent: !!this._content.model,
-        hasContext: !!this.context,
-        corners: this.corners,
-      });
-
       this.context.initialize();
       this._content.initialize();
 
       this.addDisposer(() => {
-        modelsLogger.debug("Disposing elementa preview models", {
-          projectId: environment.project.id,
-          hasContent: !!this._content.model,
-        });
         this._content.dispose();
         this.context.dispose();
       });

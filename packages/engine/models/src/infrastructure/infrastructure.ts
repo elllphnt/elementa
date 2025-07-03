@@ -1,6 +1,6 @@
-import { parseAbsoluteFileUrl, StaticReference } from "@elllphnt/elementa-base";
+import { parseAbsoluteFileUrl } from "@elllphnt/elementa-base";
 import { Lifecycle } from "@elllphnt/elementa-kernel";
-import { Project } from "../project/project.js";
+import type { Project } from "../project/project.js";
 
 export abstract class Infrastructure extends Lifecycle {
   abstract project(id: string): Project;
@@ -10,22 +10,22 @@ export abstract class Infrastructure extends Lifecycle {
     const project = this.project(projectId);
     return project.file(fileId);
   }
-  component(url: string) {
-    const { projectId, fileId } = parseAbsoluteFileUrl(url);
-    const project = this.project(projectId);
-    return project.component(fileId);
-  }
+
+  // models
+
   router(url: string) {
     const { projectId, fileId } = parseAbsoluteFileUrl(url);
     const project = this.project(projectId);
     return project.router(fileId);
+  }
+  component(url: string) {
+    const { projectId, fileId } = parseAbsoluteFileUrl(url);
+    const project = this.project(projectId);
+    return project.component(fileId);
   }
   stylesheet(url: string) {
     const { projectId, fileId } = parseAbsoluteFileUrl(url);
     const project = this.project(projectId);
     return project.stylesheet(fileId);
   }
-
-  // References
-  abstract resolveStaticReference<T>(ref: StaticReference): Promise<T>;
 }

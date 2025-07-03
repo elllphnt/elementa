@@ -1,18 +1,15 @@
 import { reconcileList } from "@elllphnt/elementa-kernel";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import { Router } from "@elllphnt/elementa-models";
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  Observable,
-  switchMap,
-} from "rxjs";
-import { ElementRuntimeEnvironment } from "../elements/_environment/environment.js";
-import { ElementaInstanceType, Instance } from "../instance.js";
+import type { Router } from "@elllphnt/elementa-models";
+import type { Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, map, switchMap } from "rxjs";
+import type { ElementRuntimeEnvironment } from "../elements/_environment/environment.js";
+import type { Instance } from "../instance.js";
+import { ElementaInstanceType } from "../instance.js";
+import { ModelInstance } from "../model.js";
 import { RouteTreeInstance } from "./route_tree/route_tree.js";
 
-export class RouterInstance extends Instance {
+export class RouterInstance extends ModelInstance<Router> {
   readonly router: Router;
 
   private _routes$ = new BehaviorSubject<RouteTreeInstance[]>([]);
@@ -54,6 +51,7 @@ export class RouterInstance extends Instance {
       type: ElementaInstanceType.App,
       runtime: environment.runtime,
       parent,
+      model,
     });
     this.router = model;
 
