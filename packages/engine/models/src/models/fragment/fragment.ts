@@ -1,14 +1,16 @@
-import {
+import type {
   DataInputData,
   ElementData,
   FragmentData,
 } from "@elllphnt/elementa-base";
-import { AggregatedModelList, RecordState } from "@elllphnt/elementa-kernel";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import { AggregatedModelList } from "@elllphnt/elementa-kernel";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import { combineLatest, map, Observable, switchMap, tap } from "rxjs";
-import { modelsLogger } from "../../loggers.js";
-import { createElement, Element } from "../elements/_element.js";
-import { ElementEnvironment } from "../elements/_environment.js";
+import type { Observable } from "rxjs";
+import { combineLatest, map, switchMap } from "rxjs";
+import type { Element } from "../elements/_element.js";
+import { createElement } from "../elements/_element.js";
+import type { ElementEnvironment } from "../elements/_environment.js";
 import { Identifiable } from "../identifiable.js";
 import { DataInput } from "../primitives/data_input.js";
 
@@ -56,20 +58,7 @@ export class Fragment extends Identifiable<FragmentData> {
     return combineLatest([
       this.content$.pipe(
         switchMap((c) =>
-          combineLatestOrEmpty(
-            c.map(
-              (c) =>
-                c.allCssStylesheets$.pipe(
-                  tap((styleshets) => {
-                    modelsLogger.debug("Fragment allCssStylesheets$", {
-                      fragmentId: this.id,
-                      stylesheetsCount: styleshets.length,
-                      elementId: c.id,
-                    });
-                  })
-                ) || []
-            )
-          )
+          combineLatestOrEmpty(c.map((c) => c.allCssStylesheets$ || []))
         ),
         map((c) => c.flat())
       ),
@@ -98,14 +87,6 @@ export class Fragment extends Identifiable<FragmentData> {
   }) {
     super({ state, project: environment.project, initialized });
 
-    modelsLogger.info("Creating fragment", {
-      fragmentId: this.id,
-      projectId: environment.project.id,
-      initialized: initialized ?? false,
-      hasName: !!this.name,
-      varName: this.varName,
-    });
-
     this.environment = environment;
 
     this._content = new AggregatedModelList<RecordState<ElementData>, Element>({
@@ -125,24 +106,10 @@ export class Fragment extends Identifiable<FragmentData> {
     });
 
     this.addInitializer(() => {
-      modelsLogger.debug("Initializing fragment models", {
-        fragmentId: this.id,
-        fragmentName: this.name,
-        contentCount: this._content.models.length,
-        paramsCount: this._params.models.length,
-        slotIdsCount: this.slotIds.length,
-      });
-
       this._content.initialize();
       this._params.initialize();
 
       this.addDisposer(() => {
-        modelsLogger.debug("Disposing fragment models", {
-          fragmentId: this.id,
-          fragmentName: this.name,
-          contentCount: this._content.models.length,
-          paramsCount: this._params.models.length,
-        });
         this._content.dispose();
         this._params.dispose();
       });

@@ -10,7 +10,6 @@ import { AggregatedModelList, OptionalModel } from "@elllphnt/elementa-kernel";
 import type { Observable } from "rxjs";
 import { BehaviorSubject, map } from "rxjs";
 import type { Project } from "~/project/project.js";
-import { modelsLogger } from "../../loggers.js";
 import type { ElementaEnvironment } from "../elementa/environment.js";
 import { ElementaPreview } from "../elementa/preview.js";
 import { ElementaStage } from "../elementa/stage.js";
@@ -51,17 +50,8 @@ export class ComponentElementEnvironment implements ElementEnvironment {
 
   registerSlotId(id: string): void {
     const current = new Set(this._slotIds$.value);
-    const wasNew = !current.has(id);
     current.add(id);
     this._slotIds$.next(Array.from(current));
-
-    if (wasNew) {
-      modelsLogger.debug("Slot ID registered", {
-        componentUrl: this.component.url,
-        slotId: id,
-        totalSlots: current.size,
-      });
-    }
   }
   unregisterSlotId(id: string): void {
     this._slotIds$.next(this._slotIds$.value.filter((slotId) => slotId !== id));
@@ -144,11 +134,6 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
       this.state.backend.createRecordState<ElementData>()
     );
 
-    modelsLogger.debug("Initializing stage and preview for component", {
-      url,
-      hasStageState: !!stageState,
-      hasPreviewState: !!previewState,
-    });
     this.stage = new ElementaStage({
       state: stageState,
       environment: this.elementaEnvironment,
@@ -190,13 +175,6 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
     });
 
     this.addInitializer(() => {
-      modelsLogger.debug("Initializing component model components", {
-        url: this.url,
-        hasTemplate: !!this._template,
-        propsCount: this._props.models.length,
-        fragmentsCount: this._fragments.models.length,
-        statesCount: this._states.models.length,
-      });
       this.stage.initialize();
       this.preview.initialize();
       this._template.initialize();
@@ -204,11 +182,6 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
       this._fragments.initialize();
 
       const sub = this._fragments.models$.subscribe((fragments) => {
-        modelsLogger.debug("Component fragments updated", {
-          url: this.url,
-          fragmentCount: fragments.length,
-          fragmentIds: fragments.map((f) => f.id),
-        });
         const byId: Record<string, Fragment | undefined> = {};
         for (const fragment of fragments) {
           byId[fragment.id] = fragment;
@@ -217,12 +190,6 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
       });
 
       this.addDisposer(() => {
-        modelsLogger.debug("Disposing component model", {
-          url: this.url,
-          hadTemplate: !!this._template.model,
-          propsCount: this._props.models.length,
-          fragmentsCount: this._fragments.models.length,
-        });
         this.stage.dispose();
         this.preview.dispose();
         this._template.dispose();

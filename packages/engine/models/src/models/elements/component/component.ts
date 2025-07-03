@@ -1,20 +1,21 @@
-import {
+import type {
   ComponentElementData,
   ResolvableOrEvaluable,
 } from "@elllphnt/elementa-base";
+import type { RecordState } from "@elllphnt/elementa-kernel";
 import {
   AggregatedModelList,
   AggregatedModelRecord,
-  RecordState,
 } from "@elllphnt/elementa-kernel";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import { combineLatest, map, Observable, of, switchMap } from "rxjs";
-import { CssStyleSheet } from "~/css/lib/stylesheet.js";
-import { FileModelAdaptor } from "~/project/file/model_adaptor.js";
-import { modelsLogger } from "../../../loggers.js";
+import type { Observable } from "rxjs";
+import { combineLatest, map, of, switchMap } from "rxjs";
+import type { CssStyleSheet } from "~/css/lib/stylesheet.js";
+import type { FileModelAdaptor } from "~/project/file/model_adaptor.js";
 import { BaseElement } from "../_base.js";
-import { createElement, Element } from "../_element.js";
-import { ElementEnvironment } from "../_environment.js";
+import type { Element } from "../_element.js";
+import { createElement } from "../_element.js";
+import type { ElementEnvironment } from "../_environment.js";
 import { SlotFill } from "./slot_fill.js";
 
 export class ComponentElement extends BaseElement<ComponentElementData> {
@@ -133,24 +134,10 @@ export class ComponentElement extends BaseElement<ComponentElementData> {
     });
 
     this.addInitializer(() => {
-      modelsLogger.debug("Initializing component element models", {
-        elementId: this.id,
-        componentUrl: this.componentUrl,
-        fillsCount: Object.keys(this._fills.models).length,
-        contentCount: this._content.models.length,
-        propsCount: Object.keys(this.props || {}).length,
-      });
-
       this._fills.initialize();
       this._content.initialize();
 
       this.addDisposer(() => {
-        modelsLogger.debug("Disposing component element models", {
-          elementId: this.id,
-          componentUrl: this.componentUrl,
-          fillsCount: Object.keys(this._fills.models).length,
-          contentCount: this._content.models.length,
-        });
         this._fills.dispose();
         this._content.dispose();
       });

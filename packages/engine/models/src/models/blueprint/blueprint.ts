@@ -5,7 +5,6 @@ import { AggregatedModelList } from "@elllphnt/elementa-kernel";
 import type { Observable } from "rxjs";
 import { distinctUntilChanged, map } from "rxjs";
 import type { Project } from "~/project/project.js";
-import { modelsLogger } from "../../loggers.js";
 import { ProjectModel } from "../project.js";
 import { BlueprintNode } from "./node.js";
 
@@ -79,24 +78,7 @@ export class Blueprint extends ProjectModel<RecordState<BlueprintData>> {
   removeNode(id: string): void {
     const index = this._nodes.models.findIndex((n) => n.id === id);
     if (index >= 0) {
-      modelsLogger.debug("Removing blueprint node", {
-        nodeId: id,
-        nodeIndex: index,
-        projectId: this.project.id,
-        totalNodesBefore: this._nodes.models.length,
-      });
       this._nodes.removeAt(index, 1);
-      modelsLogger.debug("Blueprint node removed", {
-        nodeId: id,
-        projectId: this.project.id,
-        totalNodesAfter: this._nodes.models.length,
-      });
-    } else {
-      modelsLogger.warn("Attempted to remove non-existent blueprint node", {
-        nodeId: id,
-        projectId: this.project.id,
-        totalNodes: this._nodes.models.length,
-      });
     }
   }
 }

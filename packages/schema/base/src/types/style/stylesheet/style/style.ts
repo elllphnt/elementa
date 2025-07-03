@@ -1,5 +1,5 @@
-import { MapWithVarRefs } from "../../../_primitives/style/variable.js";
-import { RawStyleData, UnsettableMap } from "./raw.js";
+import type { MapWithVarRefs } from "../../../_primitives/style/variable.js";
+import type { RawStyleData, UnsettableMap } from "./raw.js";
 
 export type VariableStyleData = MapWithVarRefs<RawStyleData>;
 

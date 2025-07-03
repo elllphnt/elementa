@@ -1,10 +1,10 @@
 import type { TextElement } from "@elllphnt/elementa-models";
 import { assert, test } from "vitest";
-import { TestInfrastructure } from "./infrastructure.js";
-import { simpleInfrastructureData } from "./infrastructures/simple/instrastructure.js";
-import { appData } from "./infrastructures/simple/simple/files/app.js";
-import { routerData } from "./infrastructures/simple/simple/files/router.js";
-import { simpleProjectData } from "./infrastructures/simple/simple/project.js";
+import { TestInfrastructure } from "../infrastructure.js";
+import { simpleInfrastructureData } from "../infrastructures/simple/instrastructure.js";
+import { appData } from "../infrastructures/simple/simple/files/app.js";
+import { routerData } from "../infrastructures/simple/simple/files/router.js";
+import { simpleProjectData } from "../infrastructures/simple/simple/project.js";
 
 test("Simple Test", async () => {
   const infrastructure = new TestInfrastructure({

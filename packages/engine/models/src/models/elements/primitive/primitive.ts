@@ -1,27 +1,20 @@
-import {
+import type {
   PrimitiveElementData,
   ResolvableOrEvaluable,
 } from "@elllphnt/elementa-base";
+import type { RecordState } from "@elllphnt/elementa-kernel";
 import {
   AggregatedModelList,
   AggregatedModelRecord,
-  RecordState,
 } from "@elllphnt/elementa-kernel";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import {
-  combineLatest,
-  filter,
-  map,
-  Observable,
-  of,
-  switchMap,
-  tap,
-} from "rxjs";
-import { CssStyleSheet } from "~/css/lib/stylesheet.js";
-import { modelsLogger } from "../../../loggers.js";
+import type { Observable } from "rxjs";
+import { combineLatest, filter, map, of, switchMap, tap } from "rxjs";
+import type { CssStyleSheet } from "~/css/lib/stylesheet.js";
 import { BaseElement } from "../_base.js";
-import { createElement, Element } from "../_element.js";
-import { ElementEnvironment } from "../_environment.js";
+import type { Element } from "../_element.js";
+import { createElement } from "../_element.js";
+import type { ElementEnvironment } from "../_environment.js";
 import { PrimitiveSubElement } from "./sub_element.js";
 
 export class PrimitiveElement extends BaseElement<PrimitiveElementData> {
@@ -109,14 +102,6 @@ export class PrimitiveElement extends BaseElement<PrimitiveElementData> {
   }) {
     super({ state, type: "primitive", environment, initialized });
 
-    modelsLogger.info("Creating primitive element", {
-      elementId: this.id,
-      elementType: this.type,
-      primitiveUrl: this.primitiveUrl,
-      projectId: environment.project.id,
-      initialized: initialized ?? false,
-    });
-
     this._content = new AggregatedModelList({
       state: state.getListOfRecordStates("content"),
       create: (state) =>
@@ -138,25 +123,10 @@ export class PrimitiveElement extends BaseElement<PrimitiveElementData> {
     });
 
     this.addInitializer(() => {
-      modelsLogger.debug("Initializing primitive element models", {
-        elementId: this.id,
-        primitiveUrl: this.primitiveUrl,
-        contentCount: this._content.models.length,
-        subElementsCount: Object.keys(this._subElements.models).length,
-        propsCount: Object.keys(this.props || {}).length,
-        slotIdsCount: this.slotIds.length,
-      });
-
       this._content.initialize();
       this._subElements.initialize();
 
       this.addDisposer(() => {
-        modelsLogger.debug("Disposing primitive element models", {
-          elementId: this.id,
-          primitiveUrl: this.primitiveUrl,
-          contentCount: this._content.models.length,
-          subElementsCount: Object.keys(this._subElements.models).length,
-        });
         this._content.dispose();
         this._subElements.dispose();
       });
@@ -193,12 +163,6 @@ export class PrimitiveElement extends BaseElement<PrimitiveElementData> {
     let element = this._subElements.models[name];
 
     if (!element && create) {
-      modelsLogger.debug("Creating new primitive sub-element", {
-        elementId: this.id,
-        subElementName: name,
-        totalSubElements: Object.keys(this._subElements.models).length,
-      });
-
       element = new PrimitiveSubElement({
         state: this._subElements.state.entry(name, () =>
           this.state.backend.createRecordState<PrimitiveElementData>()
@@ -208,12 +172,6 @@ export class PrimitiveElement extends BaseElement<PrimitiveElementData> {
       });
 
       this._subElements.set(name, element);
-
-      modelsLogger.debug("Primitive sub-element created and added", {
-        elementId: this.id,
-        subElementName: name,
-        totalSubElements: Object.keys(this._subElements.models).length,
-      });
     }
 
     return element;
