@@ -1,10 +1,10 @@
 {
-    "name": "@elllphnt/elementa-test",
+    "name": "@elllphnt/elementa-tests",
     "private": true,
     "version": "0.1.0",
     "type": "module",
     "scripts": {
-        "test": "vitest"
+        "test": "vitest --run"
     },
     "dependencies": {
         "@elllphnt/elementa-base": "workspace:*",
@@ -13,6 +13,7 @@
         "@elllphnt/elementa-lang-utils": "workspace:*",
         "@elllphnt/elementa-json-backend": "workspace:*",
         "@elllphnt/elementa-models": "workspace:*",
+        "@elllphnt/elementa-runtime": "workspace:*",
         "rxjs": "^7.8.2"
     },
     "main": "build/index.js",

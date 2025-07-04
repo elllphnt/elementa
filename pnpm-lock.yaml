@@ -510,6 +510,9 @@ importers:
       '@elllphnt/elementa-models':
         specifier: workspace:*
         version: link:../models
+      '@elllphnt/elementa-runtime':
+        specifier: workspace:*
+        version: link:../runtime
       rxjs:
         specifier: ^7.8.2
         version: 7.8.2
