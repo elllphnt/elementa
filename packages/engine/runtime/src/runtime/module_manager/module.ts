@@ -1,7 +1,14 @@
 import { Lifecycle } from "@elllphnt/elementa-kernel";
 import type { File } from "@elllphnt/elementa-models";
 import type { Observable } from "rxjs";
-import { BehaviorSubject, debounceTime, map } from "rxjs";
+import {
+  BehaviorSubject,
+  debounceTime,
+  filter,
+  firstValueFrom,
+  map,
+  timeout,
+} from "rxjs";
 import type {
   Diagnostic,
   Diagnosticable,
@@ -63,12 +70,9 @@ export class Module extends Lifecycle implements Diagnosticable {
 
   resolved$ = this._state$
     .asObservable()
-    .pipe(map((d) => d.evaluationNumber >= 0 && d.error === undefined));
+    .pipe(map((d) => d.evaluationNumber >= 0));
   get resolved() {
-    return (
-      this._state$.value.evaluationNumber >= 0 &&
-      this._state$.value.error === undefined
-    );
+    return this._state$.value.evaluationNumber >= 0;
   }
 
   error$ = this._state$.asObservable().pipe(map((d) => d.error));
@@ -138,5 +142,11 @@ export class Module extends Lifecycle implements Diagnosticable {
       hasError: !!state.error,
       error: state.error?.message,
     });
+  }
+
+  async untilResolved(timeoutTime: number = 5000): Promise<void> {
+    await firstValueFrom(
+      this.resolved$.pipe(filter(Boolean), timeout(timeoutTime))
+    );
   }
 }

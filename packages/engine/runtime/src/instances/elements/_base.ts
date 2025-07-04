@@ -57,8 +57,10 @@ export abstract class BaseElementInstance<
         getParentStylesheetInstance: () => this.parentElement?.stylesheet,
       },
     });
+    this.addLifecycle(this.stylesheet);
 
     this.addDisposer(() => {
+      this.removeLifecycle(this.stylesheet);
       this.stylesheet.dispose();
     });
   }

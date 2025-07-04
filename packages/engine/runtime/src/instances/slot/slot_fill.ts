@@ -1,19 +1,10 @@
 import { reconcileList } from "@elllphnt/elementa-kernel";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 import type { SlotFill } from "@elllphnt/elementa-models";
-import type {
-  Observable} from "rxjs";
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  switchMap,
-} from "rxjs";
-import type {
-  ElementInstance} from "../elements/_element.js";
-import {
-  createElementInstance
-} from "../elements/_element.js";
+import type { Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, map, switchMap } from "rxjs";
+import type { ElementInstance } from "../elements/_element.js";
+import { createElementInstance } from "../elements/_element.js";
 import type { ElementRuntimeEnvironment } from "../elements/_environment/environment.js";
 import type { Instance } from "../instance.js";
 import { ElementaInstanceType } from "../instance.js";
@@ -91,6 +82,7 @@ export class SlotFillInstance extends ModelInstance<SlotFill> {
         getParentStylesheetInstance: () => undefined,
       },
     });
+    this.addLifecycle(this.stylesheet);
 
     const contentSubscription = this.model.content$.subscribe((content) => {
       const [newContent, removed] = reconcileList({
@@ -98,15 +90,19 @@ export class SlotFillInstance extends ModelInstance<SlotFill> {
         targets: this.content,
         sourceRef: (e) => e,
         targetRef: (i) => i.element,
-        create: (element) =>
-          createElementInstance({
+        create: (element) => {
+          const instance = createElementInstance({
             element,
             environment: this.environment,
             parent: this,
-          }),
+          });
+          this.addLifecycle(instance);
+          return instance;
+        },
       });
       this._content$.next(newContent);
       removed.forEach((instance) => {
+        this.removeLifecycle(instance);
         instance.dispose();
       });
     });
@@ -114,11 +110,17 @@ export class SlotFillInstance extends ModelInstance<SlotFill> {
     this.addDisposer(() => {
       contentSubscription.unsubscribe();
 
-      this.content.forEach((instance) => instance.dispose());
+      this.content.forEach((instance) => {
+        this.removeLifecycle(instance);
+        instance.dispose();
+      });
       this._content$.next([]);
       this._content$.complete();
 
-      this.stylesheet?.dispose();
+      if (this.stylesheet) {
+        this.removeLifecycle(this.stylesheet);
+        this.stylesheet.dispose();
+      }
     });
   }
 }

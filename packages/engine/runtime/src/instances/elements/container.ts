@@ -1,19 +1,13 @@
 import { reconcileList } from "@elllphnt/elementa-kernel";
+import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 import type { ContainerElement } from "@elllphnt/elementa-models";
-import type {
-  Observable} from "rxjs";
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  switchMap,
-} from "rxjs";
+import type { Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, map, switchMap } from "rxjs";
 import type { Instance } from "../instance.js";
 import { BaseElementInstance } from "./_base.js";
 import type { ElementInstance } from "./_element.js";
 import { createElementInstance } from "./_element.js";
 import type { ElementRuntimeEnvironment } from "./_environment/environment.js";
-import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 
 export class ContainerElementInstance extends BaseElementInstance<ContainerElement> {
   private _content$ = new BehaviorSubject<ElementInstance[]>([]);
@@ -70,18 +64,23 @@ export class ContainerElementInstance extends BaseElementInstance<ContainerEleme
             environment: this.environment,
             parent: this,
           });
+          this.addLifecycle(instance);
           return instance;
         },
       });
       this._content$.next(newContent);
       removed.forEach((instance) => {
+        this.removeLifecycle(instance);
         instance.dispose();
       });
     });
 
     this.addDisposer(() => {
       contentSubscription.unsubscribe();
-      this.content.forEach((instance) => instance.dispose());
+      this.content.forEach((instance) => {
+        this.removeLifecycle(instance);
+        instance.dispose();
+      });
       this._content$.next([]);
       this._content$.complete();
     });

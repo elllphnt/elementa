@@ -1,24 +1,14 @@
 import type { ElementaFrame } from "@elllphnt/elementa-models";
-import type {
-  Observable} from "rxjs";
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  of,
-  switchMap,
-} from "rxjs";
+import type { Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, map, of, switchMap } from "rxjs";
 import type { Runtime } from "~/runtime/runtime.js";
 import { DefaultElementRuntimeEnvironment } from "../elements/_environment/default_environment.js";
 import type { ElementRuntimeEnvironment } from "../elements/_environment/environment.js";
 import type { Instance } from "../instance.js";
 import { ModelInstance } from "../model.js";
 import { ElementaEditorInstanceType } from "./_types.js";
-import type {
-  RenderableContentInstance} from "./renderable_content/_content.js";
-import {
-  createRenderableContentInstance
-} from "./renderable_content/_content.js";
+import type { RenderableContentInstance } from "./renderable_content/_content.js";
+import { createRenderableContentInstance } from "./renderable_content/_content.js";
 
 export class FrameFragmentEnvironment extends DefaultElementRuntimeEnvironment {
   frame: ElementaFrame;
@@ -85,6 +75,7 @@ export class ElementaFrameInstance extends ModelInstance<ElementaFrame> {
       runtime,
       frame: model,
     });
+    this.addLifecycle(this.environment);
 
     const contentSubscription = this.model.content$.subscribe((content) => {
       const current = this.content;
@@ -93,11 +84,13 @@ export class ElementaFrameInstance extends ModelInstance<ElementaFrame> {
           model: content,
           environment: this.environment,
         }) as RenderableContentInstance;
+        this.addLifecycle(next);
         this._content$.next(next);
       } else {
         this._content$.next(undefined);
       }
       if (current) {
+        this.removeLifecycle(current);
         current.dispose();
       }
     });

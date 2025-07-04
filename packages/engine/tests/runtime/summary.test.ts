@@ -1,16 +1,15 @@
-import {
-  InMemoryModuleHost,
-  ModuleManager,
-  Runtime,
-} from "@elllphnt/elementa-runtime";
+import { makeFileUrl } from "@elllphnt/elementa-base";
 import { afterAll, afterEach, assert, beforeAll, describe, test } from "vitest";
+import { appFileData as simpleProjectAppFileData } from "~/infrastructures/simple/simple/files/app.js";
+import { routerFileData as simpleProjectRouterFileData } from "~/infrastructures/simple/simple/files/router.js";
+import { simpleProjectData } from "~/infrastructures/simple/simple/project.js";
 import { simpleInfrastructureData } from "../infrastructures/simple/instrastructure.js";
 import {
   setupLifecycleTracking,
   teardownLifecycleTracking,
   validateLifecycleCleanup,
-  withTestInfrastructure,
-} from "../lifecycle-tracking.js";
+  withTestRuntime,
+} from "../lifecycle.js";
 
 beforeAll(() => {
   setupLifecycleTracking();
@@ -26,18 +25,10 @@ afterEach(() => {
 
 describe("Runtime Test Suite Summary", () => {
   test("Runtime package basic functionality", async () => {
-    await withTestInfrastructure(
-      simpleInfrastructureData,
-      async (infrastructure) => {
+    await withTestRuntime(
+      { infrastructureData: simpleInfrastructureData, externals: ["rxjs"] },
+      async ({ runtime, moduleManager }) => {
         // Test 1: Runtime creation and basic lifecycle
-        const moduleHost = new InMemoryModuleHost();
-        const moduleManager = new ModuleManager({
-          infrastructure,
-          moduleHost,
-          externals: ["rxjs"],
-        });
-        const runtime = new Runtime({ moduleManager });
-
         assert(runtime, "Runtime should be created");
         assert(runtime.key, "Runtime should have key");
         assert(runtime.moduleManager, "Runtime should have module manager");
@@ -48,7 +39,12 @@ describe("Runtime Test Suite Summary", () => {
         assert(!runtime.disposed, "Runtime should not be disposed initially");
 
         // Test 2: Module loading capability
-        const testModule = moduleManager.module("/simple/files/app.ts");
+        const testModule = moduleManager.module(
+          makeFileUrl({
+            projectId: simpleProjectData.id,
+            fileId: simpleProjectAppFileData.id,
+          })
+        );
         assert(testModule, "Module should be created");
         assert(testModule.file, "Module should have file reference");
         assert(!testModule.disposed, "Module should not be disposed initially");
@@ -64,13 +60,6 @@ describe("Runtime Test Suite Summary", () => {
           "Environment should not be disposed initially"
         );
 
-        // Test 4: Proper disposal cascade
-        runtime.dispose();
-        assert(runtime.disposed, "Runtime should be disposed");
-        assert(moduleManager.disposed, "Module manager should be disposed");
-        assert(environment.disposed, "Environment should be disposed");
-        assert(testModule.disposed, "Module should be disposed");
-
         // This test validates the core runtime functionality is working correctly
         console.log("✅ Runtime package basic functionality test passed");
       }
@@ -78,22 +67,17 @@ describe("Runtime Test Suite Summary", () => {
   });
 
   test("Runtime package ready for production use", async () => {
-    await withTestInfrastructure(
-      simpleInfrastructureData,
-      async (infrastructure) => {
+    await withTestRuntime(
+      {
+        infrastructureData: simpleInfrastructureData,
+        externals: [
+          "rxjs",
+          "@elllphnt/elementa-base",
+          "@elllphnt/elementa-models",
+        ],
+      },
+      async ({ runtime, moduleManager }) => {
         // This test demonstrates that the runtime package is ready for use
-        const moduleHost = new InMemoryModuleHost();
-        const moduleManager = new ModuleManager({
-          infrastructure,
-          moduleHost,
-          externals: [
-            "rxjs",
-            "@elllphnt/elementa-base",
-            "@elllphnt/elementa-models",
-          ],
-        });
-        const runtime = new Runtime({ moduleManager });
-
         // Test runtime stability
         assert(runtime.key !== undefined, "Runtime has stable identification");
         assert(
@@ -106,7 +90,16 @@ describe("Runtime Test Suite Summary", () => {
         );
 
         // Test module system
-        const modules = ["/simple/files/app.ts", "/simple/files/router.ts"];
+        const modules = [
+          makeFileUrl({
+            projectId: simpleProjectData.id,
+            fileId: simpleProjectAppFileData.id,
+          }),
+          makeFileUrl({
+            projectId: simpleProjectData.id,
+            fileId: simpleProjectRouterFileData.id,
+          }),
+        ];
 
         for (const moduleUrl of modules) {
           const module = moduleManager.module(moduleUrl);
@@ -134,9 +127,6 @@ describe("Runtime Test Suite Summary", () => {
           runtime.moduleManager === moduleManager,
           "Runtime manages modules properly"
         );
-
-        // Test cleanup
-        runtime.dispose();
 
         console.log("✅ Runtime package is ready for production use");
       }

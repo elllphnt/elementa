@@ -73,15 +73,19 @@ export class RouteTreeInstance extends ModelInstance<RouteTree> {
         sources: children,
         sourceRef: (r) => r,
         targetRef: (r) => r.model,
-        create: (route) =>
-          new RouteTreeInstance({
+        create: (route) => {
+          const instance = new RouteTreeInstance({
             environment,
             model: route,
             parent: this,
-          }),
+          });
+          this.addLifecycle(instance);
+          return instance;
+        },
       });
       this._children$.next(nextChildren);
       removed.forEach((route) => {
+        this.removeLifecycle(route);
         route.dispose();
       });
     });
@@ -94,28 +98,42 @@ export class RouteTreeInstance extends ModelInstance<RouteTree> {
       .subscribe((isFunction) => {
         const current = this.handler;
         if (isFunction) {
-          this._handler$.next(
-            new FunctionRouteHandler({
-              environment,
-              routeTree: this.model,
-              parent: this,
-            })
-          );
+          const handler = new FunctionRouteHandler({
+            environment,
+            routeTree: this.model,
+            parent: this,
+          });
+          this.addLifecycle(handler);
+          this._handler$.next(handler);
         } else {
-          this._handler$.next(
-            new PageRouteHandler({
-              environment,
-              routeTree: this.model,
-              parent: this,
-            })
-          );
+          const handler = new PageRouteHandler({
+            environment,
+            routeTree: this.model,
+            parent: this,
+          });
+          this.addLifecycle(handler);
+          this._handler$.next(handler);
         }
-        current?.dispose();
+        if (current) {
+          this.removeLifecycle(current);
+          current.dispose();
+        }
       });
 
     this.addDisposer(() => {
       childrenSubscription.unsubscribe();
       handlerSubscription.unsubscribe();
+
+      this.children.forEach((child) => {
+        this.removeLifecycle(child);
+        child.dispose();
+      });
+
+      if (this.handler) {
+        this.removeLifecycle(this.handler);
+        this.handler.dispose();
+      }
+
       this._children$.complete();
       this._handler$.complete();
     });

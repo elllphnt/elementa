@@ -33,11 +33,16 @@ export class ModelInstanceAdaptor<
     const modelSubscription = this.modelAdaptor.model$.subscribe((model) => {
       const current = this.instance;
       if (model) {
-        this.setInstance(create(model));
+        const instance = create(model);
+        this.addLifecycle(instance);
+        this.setInstance(instance);
       } else {
         this.setInstance(undefined);
       }
-      current?.dispose();
+      if (current) {
+        current.dispose();
+        this.removeLifecycle(current);
+      }
     });
 
     this.modelAdaptor.error$.subscribe((error) => {

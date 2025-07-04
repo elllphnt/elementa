@@ -1,24 +1,14 @@
 import type { ElementaPreview } from "@elllphnt/elementa-models";
-import type {
-  Observable} from "rxjs";
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  of,
-  switchMap,
-} from "rxjs";
+import type { Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, map, of, switchMap } from "rxjs";
 import type { Runtime } from "~/runtime/runtime.js";
 import { DefaultElementRuntimeEnvironment } from "../elements/_environment/default_environment.js";
 import type { ElementRuntimeEnvironment } from "../elements/_environment/environment.js";
 import type { Instance } from "../instance.js";
 import { ModelInstance } from "../model.js";
 import { ElementaEditorInstanceType } from "./_types.js";
-import type {
-  RenderableContentInstance} from "./renderable_content/_content.js";
-import {
-  createRenderableContentInstance
-} from "./renderable_content/_content.js";
+import type { RenderableContentInstance } from "./renderable_content/_content.js";
+import { createRenderableContentInstance } from "./renderable_content/_content.js";
 
 export class ElementaPreviewFragmentEnvironment extends DefaultElementRuntimeEnvironment {
   preview: ElementaPreview;
@@ -99,12 +89,14 @@ export class ElementaPreviewInstance extends ModelInstance<ElementaPreview> {
           model: content,
           environment: this.environment,
         }) as RenderableContentInstance;
+        this.addLifecycle(next);
         this._content$.next(next);
       } else {
         this._content$.next(undefined);
       }
       if (current) {
         current.dispose();
+        this.removeLifecycle(current);
       }
     });
     this.addDisposer(() => {

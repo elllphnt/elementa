@@ -1,13 +1,6 @@
 import type { FragmentRenderableContent } from "@elllphnt/elementa-models";
-import type {
-  Observable} from "rxjs";
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  of,
-  switchMap,
-} from "rxjs";
+import type { Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, map, of, switchMap } from "rxjs";
 import type { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
 import { FragmentInstance } from "~/instances/fragment/fragment.js";
 import { FragmentInputResolver } from "~/instances/fragment/input_resolver/input_resolver.js";
@@ -85,23 +78,28 @@ export class FragmentRenderableContentInstance extends ModelInstance<FragmentRen
     const fragmentSubscription = this.model.fragment$.subscribe((fragment) => {
       const current = this.fragment;
       if (fragment) {
-        this._fragment$.next(
-          new FragmentInstance({
-            model: fragment,
-            environment: this.inputResolver.environment,
-            parent: this,
-          })
-        );
+        const instance = new FragmentInstance({
+          model: fragment,
+          environment: this.inputResolver.environment,
+          parent: this,
+        });
+        this.addLifecycle(instance);
+        this._fragment$.next(instance);
       } else {
         this._fragment$.next(undefined);
       }
 
       if (current) {
+        this.removeLifecycle(current);
         current.dispose();
       }
     });
 
     this.addDisposer(() => {
+      if (this.fragment) {
+        this.removeLifecycle(this.fragment);
+        this.fragment.dispose();
+      }
       this._fragment$.complete();
       fragmentSubscription.unsubscribe();
     });

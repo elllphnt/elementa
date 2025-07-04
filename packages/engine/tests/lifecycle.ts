@@ -1,10 +1,17 @@
 import { Lifecycle } from "@elllphnt/elementa-kernel";
+import type { ModuleHost } from "@elllphnt/elementa-runtime";
+import {
+  LocalFsModuleHost,
+  ModuleManager,
+  Runtime,
+} from "@elllphnt/elementa-runtime";
 import { assert } from "vitest";
 import {
   TestInfrastructure,
   type TestInfrastructureData,
 } from "./infrastructure.js";
 
+const moduleHost = new LocalFsModuleHost(`./modules`);
 /**
  * Helper function to format lifecycle instance info with stack trace
  */
@@ -183,4 +190,46 @@ export async function withTestInfrastructure<T>(
   } finally {
     infrastructure.dispose();
   }
+}
+
+export async function withTestRuntime<T>(
+  {
+    infrastructureData,
+    externals = [],
+  }: { infrastructureData: TestInfrastructureData; externals?: string[] },
+  testFn: ({
+    runtime,
+    infrastructure,
+    moduleManager,
+    moduleHost,
+  }: {
+    runtime: Runtime;
+    infrastructure: TestInfrastructure;
+    moduleManager: ModuleManager;
+    moduleHost: ModuleHost;
+  }) => Promise<T>
+): Promise<T> {
+  return withTestInfrastructure(infrastructureData, async (infrastructure) => {
+    const moduleManager = new ModuleManager({
+      infrastructure,
+      moduleHost,
+      externals,
+    });
+    const runtime = new Runtime({ moduleManager });
+
+    moduleManager.initialize();
+    runtime.initialize();
+
+    try {
+      return await testFn({
+        runtime,
+        infrastructure,
+        moduleManager,
+        moduleHost,
+      });
+    } finally {
+      runtime.dispose();
+      moduleManager.dispose();
+    }
+  });
 }

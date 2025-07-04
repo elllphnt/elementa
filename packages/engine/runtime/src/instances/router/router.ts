@@ -61,20 +61,28 @@ export class RouterInstance extends ModelInstance<Router> {
         sources: routes,
         sourceRef: (r) => r,
         targetRef: (r) => r.model,
-        create: (route) =>
-          new RouteTreeInstance({
+        create: (route) => {
+          const instance = new RouteTreeInstance({
             environment,
             model: route,
             parent: this,
-          }),
+          });
+          this.addLifecycle(instance);
+          return instance;
+        },
       });
       this._routes$.next(nextRoutes);
       removed.forEach((route) => {
+        this.removeLifecycle(route);
         route.dispose();
       });
     });
 
     this.addDisposer(() => {
+      this.routes.forEach((route) => {
+        this.removeLifecycle(route);
+        route.dispose();
+      });
       this._routes$.complete();
       routeSubscription.unsubscribe();
     });

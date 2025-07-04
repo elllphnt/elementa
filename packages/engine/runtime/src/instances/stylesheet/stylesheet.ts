@@ -1,14 +1,7 @@
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 import type { Stylesheet } from "@elllphnt/elementa-models";
-import type {
-  Observable} from "rxjs";
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  of,
-  switchMap,
-} from "rxjs";
+import type { Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, map, of, switchMap } from "rxjs";
 import type { Runtime } from "../../runtime/runtime.js";
 import { ElementaInstanceType, Instance } from "../instance.js";
 import type { StyleCascadeResolver } from "./cascade.js";
@@ -63,6 +56,7 @@ export class StyleSheetInstance extends Instance {
         selector,
         stylesheet: this,
       });
+      this.addLifecycle(style);
       this._styles$.next({ ...this.styles, [selector]: style });
     }
     return style;
@@ -89,7 +83,10 @@ export class StyleSheetInstance extends Instance {
 
     this.addDisposer(() => {
       this._styles$.complete();
-      Object.values(this._styles$.value).forEach((style) => style.dispose());
+      Object.values(this._styles$.value).forEach((style) => {
+        this.removeLifecycle(style);
+        style.dispose();
+      });
     });
   }
 }

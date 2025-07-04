@@ -16,6 +16,8 @@ export class Runtime extends Lifecycle {
       runtime: this,
     });
 
+    this.addLifecycle(this.fragmentEnvironment);
+
     this.addDisposer(() => {
       this.fragmentEnvironment.dispose();
       this.moduleManager.dispose();

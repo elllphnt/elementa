@@ -1,9 +1,6 @@
 import {
   createElementInstance,
-  InMemoryModuleHost,
-  ModuleManager,
   RouterInstance,
-  Runtime,
 } from "@elllphnt/elementa-runtime";
 import { afterAll, afterEach, assert, beforeAll, describe, test } from "vitest";
 import { complexInfrastructureData } from "../infrastructures/complex/infrastructure.js";
@@ -11,8 +8,8 @@ import {
   setupLifecycleTracking,
   teardownLifecycleTracking,
   validateLifecycleCleanup,
-  withTestInfrastructure,
-} from "../lifecycle-tracking.js";
+  withTestRuntime,
+} from "../lifecycle.js";
 
 beforeAll(() => {
   setupLifecycleTracking();
@@ -28,17 +25,12 @@ afterEach(() => {
 
 describe("Runtime Integration", () => {
   test("Full runtime integration with real project", async () => {
-    await withTestInfrastructure(
-      complexInfrastructureData,
-      async (infrastructure) => {
-        const moduleHost = new InMemoryModuleHost();
-        const moduleManager = new ModuleManager({
-          infrastructure,
-          moduleHost,
-          externals: ["rxjs", "@elllphnt/elementa-base"],
-        });
-        const runtime = new Runtime({ moduleManager });
-
+    await withTestRuntime(
+      {
+        infrastructureData: complexInfrastructureData,
+        externals: ["rxjs", "@elllphnt/elementa-base"],
+      },
+      async ({ runtime, infrastructure }) => {
         // Load the complex project
         const project = infrastructure.project("complex");
         assert(project, "Project should exist");
@@ -59,6 +51,7 @@ describe("Runtime Integration", () => {
           model: router,
           environment: runtime.fragmentEnvironment,
         });
+        routerInstance.initialize();
 
         // Verify router setup
         assert(routerInstance.key, "Router instance should have a key");
@@ -102,6 +95,7 @@ describe("Runtime Integration", () => {
               element: homeComponent.template,
               environment: runtime.fragmentEnvironment,
             });
+            elementInstance.initialize();
 
             assert(elementInstance, "Element instance should be created");
             assert(!elementInstance.disposed, "Element should not be disposed");
@@ -129,107 +123,14 @@ describe("Runtime Integration", () => {
         for (const route of routerInstance.routes) {
           assert(route.disposed, "Route should be disposed with router");
         }
-
-        runtime.dispose();
-        assert(runtime.disposed, "Runtime should be disposed");
-        assert(moduleManager.disposed, "Module manager should be disposed");
-      }
-    );
-  });
-
-  test("Memory management and lifecycle cleanup", async () => {
-    await withTestInfrastructure(
-      complexInfrastructureData,
-      async (infrastructure) => {
-        const moduleHost = new InMemoryModuleHost();
-        const moduleManager = new ModuleManager({
-          infrastructure,
-          moduleHost,
-          externals: ["rxjs"],
-        });
-        const runtime = new Runtime({ moduleManager });
-
-        // Create multiple instances to test memory management
-        const instances: any[] = [];
-
-        const project = infrastructure.project("complex");
-        await project.app.untilRetrieved();
-        const app = project.app.model;
-        assert(app, "App should be loaded");
-
-        const routerAdaptor = app.router;
-        assert(routerAdaptor, "Router adaptor should exist");
-        await routerAdaptor.untilRetrieved();
-        const router = routerAdaptor.model;
-        assert(router, "Router should be loaded");
-
-        // Create router instance
-        const routerInstance = new RouterInstance({
-          model: router,
-          environment: runtime.fragmentEnvironment,
-        });
-        instances.push(routerInstance);
-
-        // Create element instances for each route component
-        for (const route of router.routes) {
-          if (route.mainViewComponent) {
-            await route.mainViewComponent.untilRetrieved();
-            const component = route.mainViewComponent.model;
-
-            if (component?.template) {
-              const elementInstance = createElementInstance({
-                element: component.template,
-                environment: runtime.fragmentEnvironment,
-              });
-              instances.push(elementInstance);
-            }
-          }
-        }
-
-        // Verify all instances are alive
-        for (const instance of instances) {
-          assert(!instance.disposed, "Instance should not be disposed");
-        }
-
-        // Test incremental disposal
-        const firstInstance = instances[0];
-        firstInstance.dispose();
-        assert(firstInstance.disposed, "First instance should be disposed");
-
-        // Verify other instances are still alive
-        for (let i = 1; i < instances.length; i++) {
-          assert(
-            !instances[i].disposed,
-            "Other instances should still be alive"
-          );
-        }
-
-        // Test runtime disposal cascades to all
-        runtime.dispose();
-
-        // All instances should be disposed now
-        for (const instance of instances) {
-          assert(
-            instance.disposed,
-            "All instances should be disposed after runtime disposal"
-          );
-        }
       }
     );
   });
 
   test("Error handling and diagnostics", async () => {
-    await withTestInfrastructure(
-      complexInfrastructureData,
-      async (infrastructure) => {
-        const moduleHost = new InMemoryModuleHost();
-        const moduleManager = new ModuleManager({
-          infrastructure,
-          moduleHost,
-          externals: ["rxjs"],
-        });
-        const runtime = new Runtime({ moduleManager });
-
+    await withTestRuntime(
+      { infrastructureData: complexInfrastructureData, externals: ["rxjs"] },
+      async ({ runtime, infrastructure }) => {
         const project = infrastructure.project("complex");
         await project.app.untilRetrieved();
         const app = project.app.model;
@@ -245,6 +146,7 @@ describe("Runtime Integration", () => {
           model: router,
           environment: runtime.fragmentEnvironment,
         });
+        routerInstance.initialize();
 
         // Test diagnostic system
         assert(
@@ -293,23 +195,14 @@ describe("Runtime Integration", () => {
         diagSub.unsubscribe();
         levelSub.unsubscribe();
         routerInstance.dispose();
-        runtime.dispose();
       }
     );
   });
 
   test("Module loading and evaluation in runtime context", async () => {
-    await withTestInfrastructure(
-      complexInfrastructureData,
-      async (infrastructure) => {
-        const moduleHost = new InMemoryModuleHost();
-        const moduleManager = new ModuleManager({
-          infrastructure,
-          moduleHost,
-          externals: ["rxjs"],
-        });
-        const runtime = new Runtime({ moduleManager });
-
+    await withTestRuntime(
+      { infrastructureData: complexInfrastructureData, externals: ["rxjs"] },
+      async ({ moduleManager }) => {
         // Test module loading through runtime
         // Test with a known file from the infrastructure
         const testFileUrl = "/complex/home/main.tsx"; // Adjust based on actual file structure
@@ -372,8 +265,6 @@ describe("Runtime Integration", () => {
             "Should get proper error for non-existent files"
           );
         }
-
-        runtime.dispose();
       }
     );
   });

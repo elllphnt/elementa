@@ -14,7 +14,7 @@ import {
   teardownLifecycleTracking,
   validateLifecycleCleanup,
   withTestInfrastructure,
-} from "../lifecycle-tracking.js";
+} from "../lifecycle.js";
 
 beforeAll(() => {
   setupLifecycleTracking();

@@ -1,8 +1,5 @@
 import {
   ComponentInstance,
-  InMemoryModuleHost,
-  ModuleManager,
-  Runtime,
   StaticComponentInputResolver,
 } from "@elllphnt/elementa-runtime";
 import { afterAll, afterEach, assert, beforeAll, describe, test } from "vitest";
@@ -11,8 +8,8 @@ import {
   setupLifecycleTracking,
   teardownLifecycleTracking,
   validateLifecycleCleanup,
-  withTestInfrastructure,
-} from "../lifecycle-tracking.js";
+  withTestRuntime,
+} from "../lifecycle.js";
 
 beforeAll(() => {
   setupLifecycleTracking();
@@ -28,17 +25,9 @@ afterEach(() => {
 
 describe("Component and State Management", () => {
   test("ComponentInstance creation and lifecycle", async () => {
-    await withTestInfrastructure(
-      complexInfrastructureData,
-      async (infrastructure) => {
-        const moduleHost = new InMemoryModuleHost();
-        const moduleManager = new ModuleManager({
-          infrastructure,
-          moduleHost,
-          externals: ["rxjs"],
-        });
-        const runtime = new Runtime({ moduleManager });
-
+    await withTestRuntime(
+      { infrastructureData: complexInfrastructureData, externals: ["rxjs"] },
+      async ({ runtime, infrastructure }) => {
         // Get a real component from the infrastructure
         const project = infrastructure.project("complex");
         assert(project, "Project should exist");
@@ -71,6 +60,7 @@ describe("Component and State Management", () => {
           model: homeComponent,
           inputResolver,
         });
+        componentInstance.initialize();
 
         // Verify instance properties
         assert(componentInstance.key, "Component instance should have a key");
@@ -103,24 +93,14 @@ describe("Component and State Management", () => {
           componentInstance.disposed,
           "Instance should be disposed after dispose()"
         );
-
-        runtime.dispose();
       }
     );
   });
 
   test("Component template and state management", async () => {
-    await withTestInfrastructure(
-      complexInfrastructureData,
-      async (infrastructure) => {
-        const moduleHost = new InMemoryModuleHost();
-        const moduleManager = new ModuleManager({
-          infrastructure,
-          moduleHost,
-          externals: ["rxjs"],
-        });
-        const runtime = new Runtime({ moduleManager });
-
+    await withTestRuntime(
+      { infrastructureData: complexInfrastructureData, externals: ["rxjs"] },
+      async ({ runtime, infrastructure }) => {
         const project = infrastructure.project("complex");
         await project.app.untilRetrieved();
         const app = project.app.model;
@@ -148,6 +128,7 @@ describe("Component and State Management", () => {
           model: homeComponent,
           inputResolver,
         });
+        componentInstance.initialize();
 
         // Verify template and state observables
         assert(
@@ -186,23 +167,14 @@ describe("Component and State Management", () => {
         templateSub.unsubscribe();
         statesSub.unsubscribe();
         componentInstance.dispose();
-        runtime.dispose();
       }
     );
   });
 
   test("Component prop resolution", async () => {
-    await withTestInfrastructure(
-      complexInfrastructureData,
-      async (infrastructure) => {
-        const moduleHost = new InMemoryModuleHost();
-        const moduleManager = new ModuleManager({
-          infrastructure,
-          moduleHost,
-          externals: ["rxjs"],
-        });
-        const runtime = new Runtime({ moduleManager });
-
+    await withTestRuntime(
+      { infrastructureData: complexInfrastructureData, externals: ["rxjs"] },
+      async ({ runtime, infrastructure }) => {
         const project = infrastructure.project("complex");
         await project.app.untilRetrieved();
         const app = project.app.model;
@@ -232,6 +204,7 @@ describe("Component and State Management", () => {
           model: homeComponent,
           inputResolver,
         });
+        componentInstance.initialize();
 
         // Test props resolution through input resolver
         if (homeComponent.props && homeComponent.props.length > 0) {
@@ -254,7 +227,6 @@ describe("Component and State Management", () => {
         }
 
         componentInstance.dispose();
-        runtime.dispose();
       }
     );
   });

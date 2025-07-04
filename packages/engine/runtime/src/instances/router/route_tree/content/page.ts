@@ -4,15 +4,8 @@ import type {
   RouteTree,
   SlotFill,
 } from "@elllphnt/elementa-models";
-import type {
-  Observable} from "rxjs";
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  of,
-  switchMap,
-} from "rxjs";
+import type { Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, map, of, switchMap } from "rxjs";
 import { ModelInstanceAdaptor } from "~/instances/adaptors/model.js";
 import { ComponentInstance } from "~/instances/component/component.js";
 import { ComponentInputResolver } from "~/instances/component/input_resolver/input_resolver.js";
@@ -240,11 +233,15 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
               });
             },
           });
+          this.addLifecycle(adaptor);
           this._mainView$.next(adaptor);
         } else {
           this._mainView$.next(undefined);
         }
-        current?.dispose();
+        if (current) {
+          this.removeLifecycle(current);
+          current.dispose();
+        }
       }
     );
 
@@ -266,11 +263,15 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
               });
             },
           });
+          this.addLifecycle(adaptor);
           this._errorView$.next(adaptor);
         } else {
           this._errorView$.next(undefined);
         }
-        current?.dispose();
+        if (current) {
+          this.removeLifecycle(current);
+          current.dispose();
+        }
       }
     );
 
@@ -292,11 +293,15 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
               });
             },
           });
+          this.addLifecycle(adaptor);
           this._pendingView$.next(adaptor);
         } else {
           this._pendingView$.next(undefined);
         }
-        current?.dispose();
+        if (current) {
+          this.removeLifecycle(current);
+          current.dispose();
+        }
       }
     );
 
@@ -318,11 +323,15 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
               });
             },
           });
+          this.addLifecycle(adaptor);
           this._notFoundView$.next(adaptor);
         } else {
           this._notFoundView$.next(undefined);
         }
-        current?.dispose();
+        if (current) {
+          this.removeLifecycle(current);
+          current.dispose();
+        }
       });
 
     this.addDisposer(() => {

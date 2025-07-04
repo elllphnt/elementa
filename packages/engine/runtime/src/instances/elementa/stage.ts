@@ -1,14 +1,8 @@
 import { reconcileList } from "@elllphnt/elementa-kernel";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 import type { ElementaStage } from "@elllphnt/elementa-models";
-import type {
-  Observable} from "rxjs";
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  switchMap,
-} from "rxjs";
+import type { Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, map, switchMap } from "rxjs";
 import type { Runtime } from "~/runtime/runtime.js";
 import type { Instance } from "../instance.js";
 import { ModelInstance } from "../model.js";
@@ -65,12 +59,18 @@ export class ElementaStageInstance extends ModelInstance<ElementaStage> {
         targets: this.frames,
         sourceRef: (s) => s,
         targetRef: (t) => t.model,
-        create: (model) =>
-          new ElementaFrameInstance({ model, runtime, parent }),
+        create: (model) => {
+          const frame = new ElementaFrameInstance({ model, runtime, parent });
+          this.addLifecycle(frame);
+          return frame;
+        },
       });
 
       this._frames$.next(nextFrames);
-      removed.forEach((r) => r.dispose());
+      removed.forEach((r) => {
+        r.dispose();
+        this.removeLifecycle(r);
+      });
     });
 
     this.addDisposer(() => {

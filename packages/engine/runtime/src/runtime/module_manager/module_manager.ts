@@ -40,9 +40,10 @@ export class ModuleManager extends Lifecycle {
       file: this.infrastructure.file(url),
       evaluate: (url) => this.evaluateModule(url),
     });
+    this.addLifecycle(module);
     this._modules.set(url, module);
     module.init();
-    moduleLogger.info(`addModule ${url}`, {
+    moduleLogger.debug(`addModule ${url}`, {
       url,
       moduleCount: this._modules.size,
     });
@@ -124,7 +125,7 @@ export class ModuleManager extends Lifecycle {
 
       // 6) Return array of dependencies
       const result = Array.from(dependencies);
-      moduleLogger.info(`loadModuleToHost ${url}`, {
+      moduleLogger.debug(`loadModuleToHost ${url}`, {
         url,
         packageCount: packages.length,
         dependencyCount: result.length,
@@ -159,7 +160,7 @@ export class ModuleManager extends Lifecycle {
       const packages = await project.packageManager.getPackages();
 
       // 1) Load module to host (including dependencies)
-      moduleLogger.info(`evaluateModule load ${url}`, {
+      moduleLogger.debug(`evaluateModule load ${url}`, {
         url,
         evaluationNumber,
         packages,
@@ -168,7 +169,7 @@ export class ModuleManager extends Lifecycle {
       const dependencies = await this.loadModuleToHost(url, packages);
 
       // 2) Evaluate the module
-      moduleLogger.info(`evaluateModule import ${url}`, {
+      moduleLogger.debug(`evaluateModule import ${url}`, {
         url,
         evaluationNumber,
         dependencies,
@@ -195,7 +196,7 @@ export class ModuleManager extends Lifecycle {
         }
       }
 
-      moduleLogger.info(`evaluateModule ${url}`, {
+      moduleLogger.debug(`evaluateModule ${url}`, {
         url,
         evaluationNumber,
         dependencyCount: dependencies.length,

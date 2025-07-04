@@ -2,10 +2,10 @@ import { reconcileList, reconcileMap } from "@elllphnt/elementa-kernel";
 import type { Component, SlotFill } from "@elllphnt/elementa-models";
 import type { Observable } from "rxjs";
 import { BehaviorSubject, combineLatest, map, of, switchMap } from "rxjs";
+import type { ElementInstance } from "../elements/_element.js";
+import { createElementInstance } from "../elements/_element.js";
 import { ChildElementRuntimeEnvironment } from "../elements/_environment/child_environment.js";
 import type { ElementRuntimeEnvironment } from "../elements/_environment/environment.js";
-import { ExpressionElementInstance } from "../elements/expression.js";
-import { FragmentElementInstance } from "../elements/fragment/fragment.js";
 import { FragmentInstance } from "../fragment/fragment.js";
 import type { Instance } from "../instance.js";
 import { ElementaInstanceType } from "../instance.js";
@@ -45,9 +45,9 @@ export class ComponentInstance extends ModelInstance<Component> {
   );
   private _states$ = new BehaviorSubject<StateInstance[]>([]);
   private _fragments$ = new BehaviorSubject<FragmentInstance[]>([]);
-  private _template$ = new BehaviorSubject<
-    FragmentElementInstance | ExpressionElementInstance | undefined
-  >(undefined);
+  private _template$ = new BehaviorSubject<ElementInstance | undefined>(
+    undefined
+  );
 
   slotFill(id: string): SlotFillInstance | undefined {
     return this._slotFills$.value[id];
@@ -99,45 +99,34 @@ export class ComponentInstance extends ModelInstance<Component> {
       runtime: inputResolver.environment.runtime,
       parent,
     });
+    this.inputResolver = inputResolver;
 
     this.elementEnvironment = new ComponentInstanceElementRuntimeEnvironment({
       componentInstance: this,
       parent: inputResolver.environment,
     });
 
+    this.addLifecycle(this.elementEnvironment);
+
     if (!this.elementEnvironment.isComponentRecursive()) {
       const templateSubscription = this.model.template$.subscribe(
         (template) => {
           const prev = this._template$.value;
           if (template) {
-            switch (template.type) {
-              case "fragment":
-                this._template$.next(
-                  new FragmentElementInstance({
-                    element: template,
-                    environment: this.elementEnvironment,
-                    parent: this,
-                  })
-                );
-                break;
-              case "expression":
-                this._template$.next(
-                  new ExpressionElementInstance({
-                    element: template,
-                    environment: this.elementEnvironment,
-                    parent: this,
-                  })
-                );
-                break;
-              default:
-                throw new Error(
-                  `Unknown template type ${(template as any).type}`
-                );
-            }
+            const newTemplate = createElementInstance({
+              element: template,
+              environment: this.elementEnvironment,
+              parent: this,
+            });
+            this.addLifecycle(newTemplate);
+            this._template$.next(newTemplate);
           } else {
             this._template$.next(undefined);
           }
-          prev?.dispose();
+          if (prev) {
+            this.removeLifecycle(prev);
+            prev.dispose();
+          }
         }
       );
 
@@ -147,16 +136,22 @@ export class ComponentInstance extends ModelInstance<Component> {
           sources: states,
           sourceRef: (s) => s,
           targetRef: (i) => i.model,
-          create: (state) =>
-            createStateInstance({
+          create: (state) => {
+            const stateInstance = createStateInstance({
               state,
               parent: this,
               runtime: this.runtime,
-            }),
+            });
+            this.addLifecycle(stateInstance);
+            return stateInstance;
+          },
         });
 
         this._states$.next(newStates);
-        removed.forEach((s) => s.dispose());
+        removed.forEach((s) => {
+          this.removeLifecycle(s);
+          s.dispose();
+        });
       });
 
       const slotFillsSubscription = this.model.slotIds$
@@ -179,15 +174,19 @@ export class ComponentInstance extends ModelInstance<Component> {
           const [newSlots, removed] = reconcileMap({
             sources: definedSlotFills,
             targets: this._slotFills$.value,
-            create: (slot) =>
-              new SlotFillInstance({
+            create: (slot) => {
+              const slotFillInstance = new SlotFillInstance({
                 model: slot,
                 environment: this.elementEnvironment,
                 parent: this,
-              }),
+              });
+              this.addLifecycle(slotFillInstance);
+              return slotFillInstance;
+            },
           });
           this._slotFills$.next(newSlots);
           Object.values(removed).forEach((instance) => {
+            this.removeLifecycle(instance);
             instance.dispose();
           });
         });
@@ -199,15 +198,21 @@ export class ComponentInstance extends ModelInstance<Component> {
             targets: this.fragments,
             sourceRef: (s) => s,
             targetRef: (t) => t.model,
-            create: (fragment) =>
-              new FragmentInstance({
+            create: (fragment) => {
+              const fragmentInstance = new FragmentInstance({
                 model: fragment,
                 environment: this.elementEnvironment,
                 parent: this,
-              }),
+              });
+              this.addLifecycle(fragmentInstance);
+              return fragmentInstance;
+            },
           });
           this._fragments$.next(newList);
-          removed.forEach((s) => s.dispose());
+          removed.forEach((s) => {
+            this.removeLifecycle(s);
+            s.dispose();
+          });
         }
       );
 
@@ -220,10 +225,6 @@ export class ComponentInstance extends ModelInstance<Component> {
         this._template$.complete();
         this._slotFills$.complete();
         this._fragments$.complete();
-        this._template$.value?.dispose();
-        this._states$.value.forEach((s) => s.dispose());
-        this._fragments$.value.forEach((f) => f.dispose());
-        Object.values(this._slotFills$.value).forEach((s) => s.dispose());
       });
     } else {
       this.recursive = true;

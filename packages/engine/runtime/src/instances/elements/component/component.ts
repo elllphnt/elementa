@@ -1,21 +1,14 @@
 import { reconcileList } from "@elllphnt/elementa-kernel";
 import type { ComponentElement } from "@elllphnt/elementa-models";
-import type {
-  Observable} from "rxjs";
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  of,
-  switchMap,
-} from "rxjs";
+import type { Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, map, of, switchMap } from "rxjs";
+import { ComponentInstance } from "~/instances/component/component.js";
 import type { Instance } from "../../instance.js";
 import { BaseElementInstance } from "../_base.js";
 import type { ElementInstance } from "../_element.js";
 import { createElementInstance } from "../_element.js";
 import type { ElementRuntimeEnvironment } from "../_environment/environment.js";
 import { ComponentElementComponentPropResolver } from "./component_prop_resolver.js";
-import { ComponentInstance } from "~/instances/component/component.js";
 
 export class ComponentElementInstance<
   E extends ComponentElement = ComponentElement
@@ -78,18 +71,21 @@ export class ComponentElementInstance<
     const componentSubscription = this.element.component$
       .pipe(switchMap((c) => c?.model$ ?? of(undefined)))
       .subscribe((component) => {
+        const currentComponent = this.component;
         if (component) {
-          const currentComponent = this.component;
           const componentInstance = new ComponentInstance({
             model: component,
             inputResolver: this.componentPropsResolver,
+            parent: this,
           });
+          this.addLifecycle(componentInstance);
           this._component$.next(componentInstance);
-          if (currentComponent) {
-            currentComponent.dispose();
-          }
         } else {
           this._component$.next(undefined);
+        }
+        if (currentComponent) {
+          this.removeLifecycle(currentComponent);
+          currentComponent.dispose();
         }
       });
 
@@ -105,11 +101,13 @@ export class ComponentElementInstance<
             environment: this.environment,
             parent: this,
           });
+          this.addLifecycle(instance);
           return instance;
         },
       });
       this._content$.next(newContent);
       removed.forEach((instance) => {
+        this.removeLifecycle(instance);
         instance.dispose();
       });
     });
@@ -117,9 +115,19 @@ export class ComponentElementInstance<
     this.addDisposer(() => {
       componentSubscription.unsubscribe();
       contentSubscription.unsubscribe();
-      this.content.forEach((instance) => instance.dispose());
+
+      if (this.component) {
+        this.removeLifecycle(this.component);
+        this.component.dispose();
+      }
+
+      this.content.forEach((instance) => {
+        this.removeLifecycle(instance);
+        instance.dispose();
+      });
       this._content$.next([]);
       this._content$.complete();
+      this._component$.complete();
     });
   }
 }

@@ -1,20 +1,10 @@
-import type {
-  PrimitiveConfig} from "@elllphnt/elementa-base";
-import {
-  primitiveConfigSchema,
-} from "@elllphnt/elementa-base";
+import type { PrimitiveConfig } from "@elllphnt/elementa-base";
+import { primitiveConfigSchema } from "@elllphnt/elementa-base";
 import { reconcileList } from "@elllphnt/elementa-kernel";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 import type { PrimitiveElement } from "@elllphnt/elementa-models";
-import type {
-  Observable} from "rxjs";
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  of,
-  switchMap,
-} from "rxjs";
+import type { Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, map, of, switchMap } from "rxjs";
 import type { Module } from "~/runtime/module_manager/module.js";
 import { DiagnosticLevel } from "../../_shared/diagnosticable.js";
 import type { Instance } from "../instance.js";
@@ -126,15 +116,19 @@ export class PrimitiveElementInstance extends BaseElementInstance<PrimitiveEleme
         targets: this.content,
         sourceRef: (e) => e,
         targetRef: (i) => i.element,
-        create: (element) =>
-          createElementInstance({
+        create: (element) => {
+          const instance = createElementInstance({
             element,
             environment: this.environment,
             parent: this,
-          }),
+          });
+          this.addLifecycle(instance);
+          return instance;
+        },
       });
       this._content$.next(newContent);
       removed.forEach((instance) => {
+        this.removeLifecycle(instance);
         instance.dispose();
       });
     });
@@ -149,7 +143,10 @@ export class PrimitiveElementInstance extends BaseElementInstance<PrimitiveEleme
       contentSubscription.unsubscribe();
       configSubscription.unsubscribe();
 
-      this.content.forEach((instance) => instance.dispose());
+      this.content.forEach((instance) => {
+        this.removeLifecycle(instance);
+        instance.dispose();
+      });
       this._content$.complete();
       this._content$.next([]);
     });

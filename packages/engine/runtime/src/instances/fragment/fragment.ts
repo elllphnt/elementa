@@ -1,19 +1,10 @@
 import { reconcileList } from "@elllphnt/elementa-kernel";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 import type { Fragment } from "@elllphnt/elementa-models";
-import type {
-  Observable} from "rxjs";
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  switchMap,
-} from "rxjs";
-import type {
-  ElementInstance} from "../elements/_element.js";
-import {
-  createElementInstance
-} from "../elements/_element.js";
+import type { Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, map, switchMap } from "rxjs";
+import type { ElementInstance } from "../elements/_element.js";
+import { createElementInstance } from "../elements/_element.js";
 import { ChildElementRuntimeEnvironment } from "../elements/_environment/child_environment.js";
 import type { ElementRuntimeEnvironment } from "../elements/_environment/environment.js";
 import type { Instance } from "../instance.js";
@@ -87,6 +78,7 @@ export class FragmentInstance extends ModelInstance<Fragment> {
       parent: environment,
       fragment: model,
     });
+    this.addLifecycle(this.environment);
 
     if (!this.environment.isFragmentRecursive()) {
       const contentSubscription = combineLatest([
@@ -97,16 +89,20 @@ export class FragmentInstance extends ModelInstance<Fragment> {
           targets: this.content,
           sourceRef: (e) => e,
           targetRef: (i) => i.element,
-          create: (element) =>
-            createElementInstance({
+          create: (element) => {
+            const instance = createElementInstance({
               element,
               environment: this.environment,
               parent: this,
-            }),
+            });
+            this.addLifecycle(instance);
+            return instance;
+          },
         });
 
         this._content$.next(newContent);
         removed.forEach((instance) => {
+          this.removeLifecycle(instance);
           instance.dispose();
         });
       });
@@ -119,7 +115,10 @@ export class FragmentInstance extends ModelInstance<Fragment> {
     }
 
     this.addDisposer(() => {
-      this.content.forEach((instance) => instance.dispose());
+      this.content.forEach((instance) => {
+        this.removeLifecycle(instance);
+        instance.dispose();
+      });
       this._content$.next([]);
       this._content$.complete();
     });

@@ -85,26 +85,31 @@ export class ComponentRenderableContentInstance extends BaseRenderableContentIns
       .subscribe((component) => {
         const current = this.component;
         if (component) {
-          this._component$.next(
-            new ComponentInstance({
-              model: component,
-              inputResolver: new ComponentRenderableContentInputResolver({
-                environment,
-                renderableContent: this.model,
-              }),
-              parent: this,
-            })
-          );
+          const instance = new ComponentInstance({
+            model: component,
+            inputResolver: new ComponentRenderableContentInputResolver({
+              environment,
+              renderableContent: this.model,
+            }),
+            parent: this,
+          });
+          this.addLifecycle(instance);
+          this._component$.next(instance);
         } else {
           this._component$.next(undefined);
         }
 
         if (current) {
+          this.removeLifecycle(current);
           current.dispose();
         }
       });
 
     this.addDisposer(() => {
+      if (this.component) {
+        this.removeLifecycle(this.component);
+        this.component.dispose();
+      }
       this._component$.complete();
       componentSubscription.unsubscribe();
     });

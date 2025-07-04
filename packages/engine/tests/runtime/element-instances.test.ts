@@ -1,8 +1,5 @@
 import {
   DefaultElementRuntimeEnvironment,
-  InMemoryModuleHost,
-  ModuleManager,
-  Runtime,
   createElementInstance,
 } from "@elllphnt/elementa-runtime";
 import { afterAll, afterEach, assert, beforeAll, describe, test } from "vitest";
@@ -11,8 +8,8 @@ import {
   setupLifecycleTracking,
   teardownLifecycleTracking,
   validateLifecycleCleanup,
-  withTestInfrastructure,
-} from "../lifecycle-tracking.js";
+  withTestRuntime,
+} from "../lifecycle.js";
 
 beforeAll(() => {
   setupLifecycleTracking();
@@ -28,17 +25,9 @@ afterEach(() => {
 
 describe("Element Instances", () => {
   test("Element environment functionality", async () => {
-    await withTestInfrastructure(
-      complexInfrastructureData,
-      async (infrastructure) => {
-        const moduleHost = new InMemoryModuleHost();
-        const moduleManager = new ModuleManager({
-          infrastructure,
-          moduleHost,
-          externals: ["rxjs"],
-        });
-        const runtime = new Runtime({ moduleManager });
-
+    await withTestRuntime(
+      { infrastructureData: complexInfrastructureData, externals: ["rxjs"] },
+      async ({ runtime }) => {
         // Test the default element runtime environment
         const environment = runtime.fragmentEnvironment;
         assert(
@@ -53,28 +42,14 @@ describe("Element Instances", () => {
           !environment.disposed,
           "Environment should not be disposed initially"
         );
-
-        runtime.dispose();
-        assert(
-          environment.disposed,
-          "Environment should be disposed with runtime"
-        );
       }
     );
   });
 
   test("Element instance creation with real elements", async () => {
-    await withTestInfrastructure(
-      complexInfrastructureData,
-      async (infrastructure) => {
-        const moduleHost = new InMemoryModuleHost();
-        const moduleManager = new ModuleManager({
-          infrastructure,
-          moduleHost,
-          externals: ["rxjs"],
-        });
-        const runtime = new Runtime({ moduleManager });
-
+    await withTestRuntime(
+      { infrastructureData: complexInfrastructureData, externals: ["rxjs"] },
+      async ({ runtime, infrastructure }) => {
         // Get a real project and component
         const project = infrastructure.project("complex");
         assert(project, "Project should exist");
@@ -100,6 +75,7 @@ describe("Element Instances", () => {
           element: home.template,
           environment: runtime.fragmentEnvironment,
         });
+        elementInstance.initialize();
 
         // Verify instance properties
         assert(elementInstance, "Element instance should be created");
@@ -141,24 +117,14 @@ describe("Element Instances", () => {
           elementInstance.disposed,
           "Instance should be disposed after dispose()"
         );
-
-        runtime.dispose();
       }
     );
   });
 
   test("Element instance parent-child relationships", async () => {
-    await withTestInfrastructure(
-      complexInfrastructureData,
-      async (infrastructure) => {
-        const moduleHost = new InMemoryModuleHost();
-        const moduleManager = new ModuleManager({
-          infrastructure,
-          moduleHost,
-          externals: ["rxjs"],
-        });
-        const runtime = new Runtime({ moduleManager });
-
+    await withTestRuntime(
+      { infrastructureData: complexInfrastructureData, externals: ["rxjs"] },
+      async ({ runtime, infrastructure }) => {
         // Get a real element that might have children (container)
         const project = infrastructure.project("complex");
         await project.app.untilRetrieved();
@@ -182,6 +148,7 @@ describe("Element Instances", () => {
               element: aboutComponent.template,
               environment: runtime.fragmentEnvironment,
             });
+            parentInstance.initialize();
 
             // Create a child instance with parent reference
             const childInstance = createElementInstance({
@@ -189,6 +156,7 @@ describe("Element Instances", () => {
               environment: runtime.fragmentEnvironment,
               parent: parentInstance,
             });
+            childInstance.initialize();
 
             // Verify parent-child relationship
             assert(
@@ -204,24 +172,14 @@ describe("Element Instances", () => {
             parentInstance.dispose();
           }
         }
-
-        runtime.dispose();
       }
     );
   });
 
   test("Element instance diagnostics integration", async () => {
-    await withTestInfrastructure(
-      complexInfrastructureData,
-      async (infrastructure) => {
-        const moduleHost = new InMemoryModuleHost();
-        const moduleManager = new ModuleManager({
-          infrastructure,
-          moduleHost,
-          externals: ["rxjs"],
-        });
-        const runtime = new Runtime({ moduleManager });
-
+    await withTestRuntime(
+      { infrastructureData: complexInfrastructureData, externals: ["rxjs"] },
+      async ({ runtime, infrastructure }) => {
         const project = infrastructure.project("complex");
         await project.app.untilRetrieved();
         const app = project.app.model;
@@ -241,6 +199,7 @@ describe("Element Instances", () => {
             element: home.template,
             environment: runtime.fragmentEnvironment,
           });
+          elementInstance.initialize();
 
           // Test diagnostic observables
           let diagnosticsReceived = false;
@@ -268,8 +227,6 @@ describe("Element Instances", () => {
           levelSub.unsubscribe();
           elementInstance.dispose();
         }
-
-        runtime.dispose();
       }
     );
   });

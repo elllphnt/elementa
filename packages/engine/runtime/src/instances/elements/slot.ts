@@ -1,14 +1,8 @@
 import { reconcileList } from "@elllphnt/elementa-kernel";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 import type { SlotElement } from "@elllphnt/elementa-models";
-import type {
-  Observable} from "rxjs";
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  switchMap,
-} from "rxjs";
+import type { Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, map, switchMap } from "rxjs";
 import type { Instance } from "../instance.js";
 import { BaseElementInstance } from "./_base.js";
 import type { ElementInstance } from "./_element.js";
@@ -68,22 +62,29 @@ export class SlotElementInstance extends BaseElementInstance<SlotElement> {
         sources: placeholder,
         sourceRef: (e) => e,
         targetRef: (e) => e.element,
-        create: (element) =>
-          createElementInstance({
+        create: (element) => {
+          const instance = createElementInstance({
             element,
             environment: this.environment,
             parent: this,
-          }),
+          });
+          this.addLifecycle(instance);
+          return instance;
+        },
       });
       this._placeholder$.next(newContent);
       removed.forEach((instance) => {
+        this.removeLifecycle(instance);
         instance.dispose();
       });
     });
 
     this.addDisposer(() => {
       contentSubscription.unsubscribe();
-      this.placeholder.forEach((instance) => instance.dispose());
+      this.placeholder.forEach((instance) => {
+        this.removeLifecycle(instance);
+        instance.dispose();
+      });
       this._placeholder$.next([]);
       this._placeholder$.complete();
     });
