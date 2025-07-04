@@ -1,18 +1,12 @@
-import {
+import type {
   ComponentRenderableContent,
   SlotFill,
 } from "@elllphnt/elementa-models";
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  Observable,
-  of,
-  switchMap,
-} from "rxjs";
+import type { Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, map, of, switchMap } from "rxjs";
 import { ComponentInstance } from "~/instances/component/component.js";
 import { ComponentInputResolver } from "~/instances/component/input_resolver/input_resolver.js";
-import { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
+import type { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
 import { BaseRenderableContentInstance } from "./_base.js";
 
 export class ComponentRenderableContentInputResolver extends ComponentInputResolver {

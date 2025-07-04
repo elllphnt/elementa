@@ -1,8 +1,9 @@
-import { BehaviorSubject, Observable } from "rxjs";
+import type { Observable } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { Lifecycle } from "~/lifecycle.js";
-import { State } from "../state/state.js";
-import { ValueState } from "../state/value.js";
-import { Model } from "./model.js";
+import type { State } from "../state/state.js";
+import type { ValueState } from "../state/value.js";
+import type { Model } from "./model.js";
 
 export class OptionalModel<
   S extends State,
@@ -28,9 +29,11 @@ export class OptionalModel<
     super();
 
     this.state = state;
-    this._model$ = new BehaviorSubject<M | undefined>(
-      this.state.value ? create(this.state.value, true) : undefined
-    );
+    const initialModel = state.value ? create(state.value, true) : undefined;
+    if (initialModel) {
+      this.addLifecycle(initialModel);
+    }
+    this._model$ = new BehaviorSubject<M | undefined>(initialModel);
 
     this.addInitializer(() => {
       const sub = this.state.value$.subscribe((value) => {
@@ -44,17 +47,20 @@ export class OptionalModel<
         // Dispose old model
         if (currentModel) {
           currentModel.dispose();
+          this.removeLifecycle(currentModel);
         }
 
         // Create new model if value exists
         const newModel = value ? create(value) : undefined;
+        if (newModel) {
+          this.addLifecycle(newModel);
+        }
         this._model$.next(newModel);
       });
 
       this.addDisposer(() => {
         sub.unsubscribe();
         this._model$.complete();
-        this._model$.value?.dispose();
       });
     });
 

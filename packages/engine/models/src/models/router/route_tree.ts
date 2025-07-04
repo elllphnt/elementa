@@ -31,8 +31,12 @@ export class RouteTree extends Identifiable<RouteTreeData> {
       create: (state) => new RouteTree({ state, router, initialized: true }),
     });
 
-    this.addDisposer(() => {
-      this._children.dispose();
+    this.addInitializer(() => {
+      this._children.initialize();
+
+      this.addDisposer(() => {
+        this._children.dispose();
+      });
     });
   }
 

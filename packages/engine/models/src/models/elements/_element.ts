@@ -1,5 +1,5 @@
-import { RecordState } from "@elllphnt/elementa-kernel";
-import { ElementEnvironment } from "./_environment.js";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import type { ElementEnvironment } from "./_environment.js";
 import { ComponentElement } from "./component/component.js";
 import { ContainerElement } from "./container.js";
 import { ExpressionElement } from "./expression.js";
@@ -64,7 +64,5 @@ export function createElement({
     default:
       throw new Error(`Unknown element type: ${type}`);
   }
-
-  element.initialize();
   return element;
 }

@@ -1,11 +1,12 @@
-import {
+import type {
   Backend,
   ListState,
   RecordState,
   ValueState,
 } from "@elllphnt/elementa-kernel";
-import { ArrayKeyOf, ObjectKeyOf } from "@elllphnt/elementa-lang-utils";
-import { BehaviorSubject, Observable } from "rxjs";
+import type { ArrayKeyOf, ObjectKeyOf } from "@elllphnt/elementa-lang-utils";
+import type { Observable } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { distinctUntilChanged, map } from "rxjs/operators";
 import { JsonListState } from "./list.js";
 import { JsonState } from "./state.js";
@@ -45,9 +46,10 @@ export class JsonRecordState<T extends Record<string, unknown>>
     fallback: () => NonNullable<T[K]>
   ): NonNullable<T[K]>;
   entry<K extends keyof T>(key: K, fallback?: () => NonNullable<T[K]>): T[K] {
-    const value = this._entries$.value[key];
+    let value = this._entries$.value[key];
     if (value == null && fallback) {
-      return fallback();
+      value = fallback();
+      this.set(key, value);
     }
     return value;
   }
@@ -63,9 +65,10 @@ export class JsonRecordState<T extends Record<string, unknown>>
   ): Observable<T[K]> {
     return this.record$.pipe(
       map((v) => {
-        const value = v[key];
+        let value = v[key];
         if (value == null && fallback) {
-          return fallback();
+          value = fallback();
+          this.set(key, value);
         }
         return value;
       }),
@@ -115,7 +118,7 @@ export class JsonRecordState<T extends Record<string, unknown>>
       init: nestedState || {},
       backend: this.backend,
     });
-    nestedState.initialize();
+    this.addLifecycle(nestedState);
     this._entries$.next({
       ...this._entries$.value,
       [key]: nestedState,
@@ -155,7 +158,7 @@ export class JsonRecordState<T extends Record<string, unknown>>
         init: nestedState as Record<string, unknown>,
         backend: this.backend,
       });
-      recordState.initialize();
+      this.addLifecycle(recordState);
     }
 
     nestedState = new JsonValueState({
@@ -218,7 +221,7 @@ export class JsonRecordState<T extends Record<string, unknown>>
           init: i,
           backend: this.backend,
         });
-        recordState.initialize();
+        this.addLifecycle(recordState);
         return recordState;
       }),
       backend: this.backend,

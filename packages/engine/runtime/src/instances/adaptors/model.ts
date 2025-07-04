@@ -1,9 +1,9 @@
-import { Model } from "@elllphnt/elementa-kernel";
-import { ModelAdaptor } from "@elllphnt/elementa-models";
+import type { Model } from "@elllphnt/elementa-kernel";
+import type { ModelAdaptor } from "@elllphnt/elementa-models";
 import { DiagnosticLevel } from "../../_shared/diagnosticable.js";
-import { Runtime } from "../../runtime/runtime.js";
-import { Instance } from "../instance.js";
-import { ModelInstance } from "../model.js";
+import type { Runtime } from "../../runtime/runtime.js";
+import type { Instance } from "../instance.js";
+import type { ModelInstance } from "../model.js";
 import { InstanceAdaptor } from "./adaptor.js";
 
 export class ModelInstanceAdaptor<

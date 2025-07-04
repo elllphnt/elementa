@@ -1,9 +1,10 @@
-import {
+import type {
   RenderingContextData,
   StyleModifierData,
 } from "@elllphnt/elementa-base";
-import { ListState, Model, RecordState } from "@elllphnt/elementa-kernel";
-import { Observable } from "rxjs";
+import type { ListState, RecordState } from "@elllphnt/elementa-kernel";
+import { Model } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
 import { ColorTheme } from "./color_theme.js";
 import { Viewport } from "./viewport.js";
 
@@ -54,9 +55,14 @@ export class RenderingContext extends Model<RecordState<RenderingContextData>> {
 
     this._styleModifiers = state.getListState("styleModifiers");
 
-    this.addDisposer(() => {
-      this.theme.dispose();
-      this.viewport.dispose();
+    this.addInitializer(() => {
+      this.theme.initialize();
+      this.viewport.initialize();
+
+      this.addDisposer(() => {
+        this.theme.dispose();
+        this.viewport.dispose();
+      });
     });
   }
 }

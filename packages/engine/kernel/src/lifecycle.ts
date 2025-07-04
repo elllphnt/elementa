@@ -1,3 +1,4 @@
+import { getStackTrace, type StackTrace } from "@elllphnt/elementa-lang-utils";
 import { keyManager } from "./key.js";
 import { logger } from "./log.js";
 
@@ -16,12 +17,14 @@ export abstract class Lifecycle implements Initializeable, Disposable {
   static instances = new Set<Lifecycle>();
 
   readonly key: string;
+  readonly stack: StackTrace | undefined;
 
   private _initialized = false;
   private _disposed = false;
 
   private _disposers: Disposer[] = [];
   private _initializers: Initializer[] = [];
+  private _lifecycles: Set<Lifecycle> = new Set();
 
   get initialized(): boolean {
     return this._initialized;
@@ -29,9 +32,17 @@ export abstract class Lifecycle implements Initializeable, Disposable {
   get disposed(): boolean {
     return this._disposed;
   }
+  get children() {
+    return Array.from(this._lifecycles);
+  }
 
   constructor() {
     this.key = keyManager.next(this.constructor.name);
+
+    if (Lifecycle.track) {
+      this.stack = getStackTrace();
+      Lifecycle.instances.add(this);
+    }
   }
 
   protected onInitialized() {}
@@ -49,26 +60,6 @@ export abstract class Lifecycle implements Initializeable, Disposable {
   removeInitializer(initializer: Initializer) {
     this._initializers = this._initializers.filter((i) => i !== initializer);
   }
-  initialize() {
-    if (this._initialized) {
-      throw new Error("Lifecycle instance is already initialized.");
-    }
-    this._initialized = true;
-
-    for (let i = this._initializers.length - 1; i >= 0; i--) {
-      this._initializers[i]();
-    }
-    this._initializers.length = 0;
-    if (Lifecycle.track) {
-      Lifecycle.instances.add(this);
-    }
-    logger.debug(`${this.constructor.name} initialized`, {
-      class: this.constructor.name,
-      instance: this,
-    });
-
-    this.onInitialized();
-  }
 
   addDisposer(disposer: Disposer) {
     if (this._disposed) {
@@ -80,18 +71,61 @@ export abstract class Lifecycle implements Initializeable, Disposable {
   removeDisposer(disposer: Disposer) {
     this._disposers = this._disposers.filter((d) => d !== disposer);
   }
+
+  addLifecycle(child: Lifecycle) {
+    if (this._disposed) {
+      throw new Error("Cannot add lifecycle to a disposed instance.");
+    }
+
+    if (this._initialized) {
+      child.initialize(); // immediate if already live
+    }
+
+    this._lifecycles.add(child);
+
+    return () => {
+      this.removeLifecycle(child);
+    };
+  }
+  removeLifecycle(child: Lifecycle) {
+    this._lifecycles.delete(child);
+  }
+
+  initialize() {
+    if (this._initialized) {
+      throw new Error("Lifecycle instance is already initialized.");
+    }
+    this._initialized = true;
+
+    const children = Array.from(this._lifecycles);
+    for (let i = 0; i < children.length; ++i) {
+      children[i].initialize();
+    }
+    for (let i = this._initializers.length - 1; i >= 0; i--) {
+      this._initializers[i]();
+    }
+    this._initializers.length = 0;
+
+    logger.debug(`${this.constructor.name} initialized`, {
+      class: this.constructor.name,
+      instance: this,
+    });
+
+    this.onInitialized();
+  }
   dispose() {
     if (this._disposed) return;
     this._disposed = true;
 
+    const children = Array.from(this._lifecycles);
+    for (let i = children.length - 1; i >= 0; i--) {
+      children[i].dispose();
+    }
     for (const fn of this._disposers) {
       fn();
     }
     this._disposers.length = 0;
 
-    if (Lifecycle.track) {
-      Lifecycle.instances.delete(this);
-    }
     logger.debug(`${this.constructor.name} disposed`, {
       class: this.constructor.name,
       instance: this,

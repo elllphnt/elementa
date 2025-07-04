@@ -136,6 +136,22 @@ export abstract class Project<F extends File = File> extends Lifecycle {
       this.addDisposer(() => {
         this.styleManager.dispose();
         this.packageManager.dispose();
+
+        this.app.fileReference.dispose();
+        this.styleSystem.fileReference.dispose();
+        this.modifierSheet.fileReference.dispose();
+        this.typefaceSheet.fileReference.dispose();
+        this.variableSheet.fileReference.dispose();
+        this.keyframeSheet.fileReference.dispose();
+        this.packageSheet.fileReference.dispose();
+
+        this.app.dispose();
+        this.styleSystem.dispose();
+        this.modifierSheet.dispose();
+        this.typefaceSheet.dispose();
+        this.variableSheet.dispose();
+        this.keyframeSheet.dispose();
+        this.packageSheet.dispose();
       });
     });
   }

@@ -1,7 +1,8 @@
-import { StyleModifierData } from "@elllphnt/elementa-base";
+import type { StyleModifierData } from "@elllphnt/elementa-base";
 import { Lifecycle } from "@elllphnt/elementa-kernel";
-import { BehaviorSubject, Observable } from "rxjs";
-import { Runtime } from "../../../runtime/runtime.js";
+import type { Observable } from "rxjs";
+import { BehaviorSubject } from "rxjs";
+import type { Runtime } from "../../../runtime/runtime.js";
 import { Namespace } from "../../namespace/namespace.js";
 
 export abstract class ElementRuntimeEnvironment extends Lifecycle {

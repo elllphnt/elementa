@@ -1,27 +1,23 @@
-import {
+import type {
   CssSelector,
   ElllSelectorData,
-  parseElllSelector,
-  stringifyStyleModifier,
   StyleDataData,
   StyleModifierData,
   StyleModifierDefinitionData,
   VarRef,
 } from "@elllphnt/elementa-base";
+import {
+  parseElllSelector,
+  stringifyStyleModifier,
+} from "@elllphnt/elementa-base";
 import { elllSelectorToCssSelector } from "@elllphnt/elementa-css";
 import { Lifecycle, reconcileList } from "@elllphnt/elementa-kernel";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  Observable,
-  of,
-  switchMap,
-} from "rxjs";
+import type { Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, map, of, switchMap } from "rxjs";
 import { StylesheetCssStyleSheet } from "~/css/stylesheets/stylesheet/stylesheet.js";
-import { Stylesheet } from "~/models/style/stylesheet/stylesheet.js";
-import { Project } from "../project.js";
+import type { Stylesheet } from "~/models/style/stylesheet/stylesheet.js";
+import type { Project } from "../project.js";
 import { generateClassName } from "./_utils.js";
 import { ColorSchemeManager } from "./color_scheme.js";
 import { ViewportManager } from "./viewport.js";
@@ -221,6 +217,9 @@ export class StyleManager extends Lifecycle {
     this.viewportManager = new ViewportManager({ project });
 
     this.addInitializer(() => {
+      this.colorSchemeManager.initialize();
+      this.viewportManager.initialize();
+
       const modifiersByNameSubscription = this.modifiers$.subscribe(
         (modifiers) => {
           const newModifiersByName: Record<
@@ -254,6 +253,9 @@ export class StyleManager extends Lifecycle {
       this.addDisposer(() => {
         modifiersByNameSubscription.unsubscribe();
         systemCssStylesheetsSubscription.unsubscribe();
+
+        this.colorSchemeManager.dispose();
+        this.viewportManager.dispose();
       });
     });
 

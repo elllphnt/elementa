@@ -1,21 +1,17 @@
-import {
+import type {
   BlueprintData,
   ElementaPreviewData,
-  genId,
   RouterData,
   RouteTreeData,
 } from "@elllphnt/elementa-base";
-import { AggregatedModelList, RecordState } from "@elllphnt/elementa-kernel";
-import {
-  BehaviorSubject,
-  distinctUntilChanged,
-  map,
-  Observable,
-  of,
-} from "rxjs";
-import { Project } from "~/project/project.js";
+import { genId } from "@elllphnt/elementa-base";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import { AggregatedModelList } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
+import { BehaviorSubject, distinctUntilChanged, map, of } from "rxjs";
+import type { Project } from "~/project/project.js";
 import { Blueprint } from "../blueprint/blueprint.js";
-import { ElementaEnvironment } from "../elementa/environment.js";
+import type { ElementaEnvironment } from "../elementa/environment.js";
 import { ElementaPreview } from "../elementa/preview.js";
 import { ProjectModel } from "../project.js";
 import { RouteTree } from "./route_tree.js";
@@ -76,29 +72,37 @@ export class Router extends ProjectModel<RecordState<any>> {
     const editorsState = state.getRecordOfRecordStates("editors");
 
     this.blueprint = new Blueprint({
-      state: editorsState.entry("bleuprint", () =>
-        this.state.backend.createRecordState<BlueprintData>()
-      ),
+      state: editorsState.entry("bleuprint", () => {
+        const state = this.state.backend.createRecordState<BlueprintData>();
+        this.addLifecycle(state);
+        return state;
+      }),
       project,
     });
     this.elementaEnvironment = new RouterElementaEnvironment({
       router: this,
     });
     this.preview = new ElementaPreview({
-      state: editorsState.entry("preview", () =>
-        this.state.backend.createRecordState<ElementaPreviewData>()
-      ),
+      state: editorsState.entry("preview", () => {
+        const state =
+          this.state.backend.createRecordState<ElementaPreviewData>();
+        this.addLifecycle(state);
+        return state;
+      }),
       environment: this.elementaEnvironment,
     });
 
     this._routes = new AggregatedModelList({
       state: state.getListOfRecordStates("routes"),
-      create: (state, init) =>
-        new RouteTree({
+      create: (state, init) => {
+        const route = new RouteTree({
           state,
           router: this,
           initialized: init || initialized,
-        }),
+        });
+        route.initialize();
+        return route;
+      },
     });
 
     this.addInitializer(() => {

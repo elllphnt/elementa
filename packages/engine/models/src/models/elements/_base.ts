@@ -1,4 +1,4 @@
-import {
+import type {
   BaseElementData,
   ElementRepeatData,
   Evaluable,
@@ -6,13 +6,14 @@ import {
   LinkData,
   ResolvableOrEvaluable,
 } from "@elllphnt/elementa-base";
-import { RecordState } from "@elllphnt/elementa-kernel";
-import { Observable, of, Subject } from "rxjs";
-import { CssStyleSheet } from "~/css/lib/stylesheet.js";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
+import { of, Subject } from "rxjs";
+import type { CssStyleSheet } from "~/css/lib/stylesheet.js";
 import { StylesheetCssStyleSheet } from "~/css/stylesheets/stylesheet/stylesheet.js";
 import { Identifiable } from "../identifiable.js";
 import { Stylesheet } from "../style/stylesheet/stylesheet.js";
-import { ElementEnvironment } from "./_environment.js";
+import type { ElementEnvironment } from "./_environment.js";
 
 export abstract class BaseElement<
   T extends BaseElementData<string>
@@ -158,12 +159,11 @@ export abstract class BaseElement<
       stylesheet: this._stylesheet,
     });
 
-    this.addInitializer(() => {
-      this._stylesheet.initialize();
+    this.addLifecycle(this._stylesheet);
+    this.addLifecycle(this.cssStyleSheet);
 
+    this.addInitializer(() => {
       this.addDisposer(() => {
-        this._stylesheet.dispose();
-        this.cssStyleSheet.dispose();
         this._updated$.complete();
       });
     });

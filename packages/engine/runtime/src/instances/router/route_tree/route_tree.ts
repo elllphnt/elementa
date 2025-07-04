@@ -1,18 +1,19 @@
 import { reconcileList } from "@elllphnt/elementa-kernel";
-import { RouteTree } from "@elllphnt/elementa-models";
+import type { RouteTree } from "@elllphnt/elementa-models";
+import type { Observable } from "rxjs";
 import {
   BehaviorSubject,
   combineLatest,
   distinctUntilChanged,
   map,
-  Observable,
   of,
   switchMap,
 } from "rxjs";
-import { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
-import { ElementaInstanceType, Instance } from "../../instance.js";
+import type { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
+import type { Instance } from "../../instance.js";
+import { ElementaInstanceType } from "../../instance.js";
 import { ModelInstance } from "../../model.js";
-import { RouteHandler } from "./content/_content.js";
+import type { RouteHandler } from "./content/_content.js";
 import { FunctionRouteHandler } from "./content/function.js";
 import { PageRouteHandler } from "./content/page.js";
 

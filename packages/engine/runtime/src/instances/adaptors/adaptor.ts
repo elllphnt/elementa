@@ -1,5 +1,5 @@
 import { BehaviorSubject } from "rxjs";
-import { Runtime } from "../../runtime/runtime.js";
+import type { Runtime } from "../../runtime/runtime.js";
 import { ElementaInstanceType, Instance } from "../instance.js";
 
 export abstract class InstanceAdaptor<I extends Instance> extends Instance {

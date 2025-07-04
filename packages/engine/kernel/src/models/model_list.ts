@@ -1,9 +1,9 @@
 import { BehaviorSubject } from "rxjs";
-import { ListState } from "../state/list.js";
-import { State } from "../state/state.js";
-import { Model } from "./model.js";
 import { Lifecycle } from "../lifecycle.js";
 import { reconcileList } from "../reconciliation.js";
+import type { ListState } from "../state/list.js";
+import type { State } from "../state/state.js";
+import type { Model } from "./model.js";
 
 export class AggregatedModelList<
   S extends State,
@@ -49,13 +49,12 @@ export class AggregatedModelList<
 
       this.addDisposer(() => {
         sub.unsubscribe();
-        this._models$.complete();
-        this._models$.value.forEach((m) => m.dispose());
       });
     });
 
     this.addDisposer(() => {
       this.state.dispose();
+      this._models$.complete();
       this._models$.value.forEach((m) => m.dispose());
     });
   }

@@ -60,8 +60,13 @@ export class TestFileModelAdaptor<
 
     const data = JSON.parse(file.data.content || "{}");
     this._state = jsonBackend.createRecordState(data);
+    this._state.initialize();
     this.addInitializer(() => {
       this.setStatus(AsyncResourceStatus.Resolved);
+    });
+
+    this.addDisposer(() => {
+      this._state.dispose();
     });
   }
 }
@@ -83,7 +88,9 @@ export class TestFile extends File {
 }
 
 export class TestProject extends Project {
-  private readonly files: Record<string, TestFile> = {};
+  private files: Record<string, TestFile> = {};
+  private adaptors: Record<string, FileModelAdaptor<any, TestFile>> = {};
+  private contents: Record<string, TestFileContent> = {};
 
   file(id: string): TestFile {
     const file = this.files[id];
@@ -96,10 +103,14 @@ export class TestProject extends Project {
     modelType: T,
     fileId: string
   ): TestFileModelAdaptor<T> {
-    const file = this.file(fileId);
-    const adaptor = new TestFileModelAdaptor<T>({ file, modelType });
-    adaptor.initialize();
-    return adaptor;
+    const key = `${modelType}:${fileId}`;
+    if (!this.adaptors[key]) {
+      const file = this.file(fileId);
+      const adaptor = new TestFileModelAdaptor({ file, modelType });
+      adaptor.initialize();
+      this.adaptors[key] = adaptor;
+    }
+    return this.adaptors[key] as TestFileModelAdaptor<T>;
   }
   fileAtPath(path: string): TestFile | undefined {
     for (const file of Object.values(this.files)) {
@@ -113,10 +124,13 @@ export class TestProject extends Project {
     return of(this.fileAtPath(path));
   }
   content(fileId: string): TestFileContent {
-    const file = this.file(fileId);
-    const content = new TestFileContent({ file });
-    content.initialize();
-    return content;
+    if (!this.contents[fileId]) {
+      const file = this.file(fileId);
+      const content = new TestFileContent({ file });
+      content.initialize();
+      this.contents[fileId] = content;
+    }
+    return this.contents[fileId];
   }
 
   constructor({
@@ -133,6 +147,21 @@ export class TestProject extends Project {
       file.initialize();
       this.files[file.id] = file;
     }
+
+    this.addDisposer(() => {
+      for (const file of Object.values(this.files)) {
+        file.dispose();
+      }
+      for (const adaptor of Object.values(this.adaptors)) {
+        adaptor.dispose();
+      }
+      for (const content of Object.values(this.contents)) {
+        content.dispose();
+      }
+      this.files = {};
+      this.adaptors = {};
+      this.contents = {};
+    });
   }
 
   async installPackages(
@@ -147,7 +176,7 @@ export class TestProject extends Project {
 }
 
 export class TestInfrastructure extends Infrastructure {
-  private readonly projects: Record<string, TestProject> = {};
+  private projects: Record<string, TestProject> = {};
 
   project(id: string): TestProject {
     const project = this.projects[id];
@@ -168,5 +197,12 @@ export class TestInfrastructure extends Infrastructure {
       project.initialize();
       this.projects[project.id] = project;
     }
+
+    this.addDisposer(() => {
+      for (const project of Object.values(this.projects)) {
+        project.dispose();
+      }
+      this.projects = {};
+    });
   }
 }

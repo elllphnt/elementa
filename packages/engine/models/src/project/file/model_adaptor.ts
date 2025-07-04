@@ -62,6 +62,7 @@ export abstract class FileModelAdaptor<
 
     this.addDisposer(() => {
       this._model$.complete();
+      this.model?.dispose();
     });
   }
 

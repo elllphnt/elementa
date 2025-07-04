@@ -1,8 +1,8 @@
-import { ArrayKeyOf, ObjectKeyOf } from "@elllphnt/elementa-lang-utils";
-import { Observable } from "rxjs";
-import { ListState } from "./list.js";
-import { State } from "./state.js";
-import { ValueState } from "./value.js";
+import type { ArrayKeyOf, ObjectKeyOf } from "@elllphnt/elementa-lang-utils";
+import type { Observable } from "rxjs";
+import type { ListState } from "./list.js";
+import type { State } from "./state.js";
+import type { ValueState } from "./value.js";
 
 export interface RecordState<T extends Record<string, any>> extends State {
   get record(): T;

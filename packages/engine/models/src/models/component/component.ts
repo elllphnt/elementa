@@ -127,12 +127,16 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
 
     // Create stage and preview
     const editorsState = state.getRecordOfRecordStates("editors");
-    const stageState = editorsState.entry("stage", () =>
-      this.state.backend.createRecordState<ElementData>()
-    );
-    const previewState = editorsState.entry("preview", () =>
-      this.state.backend.createRecordState<ElementData>()
-    );
+    const stageState = editorsState.entry("stage", () => {
+      const state = this.state.backend.createRecordState<ElementData>();
+      state.initialize();
+      return state;
+    });
+    const previewState = editorsState.entry("preview", () => {
+      const state = this.state.backend.createRecordState<ElementData>();
+      state.initialize();
+      return state;
+    });
 
     this.stage = new ElementaStage({
       state: stageState,
@@ -180,6 +184,7 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
       this._template.initialize();
       this._props.initialize();
       this._fragments.initialize();
+      this._states.initialize();
 
       const sub = this._fragments.models$.subscribe((fragments) => {
         const byId: Record<string, Fragment | undefined> = {};
@@ -195,6 +200,7 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
         this._template.dispose();
         this._props.dispose();
         this._fragments.dispose();
+        this._states.dispose();
         sub.unsubscribe();
       });
     });

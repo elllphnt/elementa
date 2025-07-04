@@ -1,6 +1,7 @@
-import { SlotFill } from "@elllphnt/elementa-models";
-import { Observable, of } from "rxjs";
-import { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
+import type { SlotFill } from "@elllphnt/elementa-models";
+import type { Observable } from "rxjs";
+import { of } from "rxjs";
+import type { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
 import { ComponentInputResolver } from "./input_resolver.js";
 
 export class StaticComponentInputResolver extends ComponentInputResolver {
