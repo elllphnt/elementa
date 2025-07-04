@@ -49,10 +49,13 @@ export abstract class FileModelAdaptor<
           this._model$.next(undefined);
         } else {
           const nextModel = this.createModel(state);
-          nextModel.initialize();
           this._model$.next(nextModel);
+          this.addLifecycle(nextModel);
         }
-        previousModel?.dispose();
+        if (previousModel) {
+          previousModel.dispose();
+          this.removeLifecycle(previousModel);
+        }
       });
 
       this.addDisposer(() => {
@@ -62,7 +65,6 @@ export abstract class FileModelAdaptor<
 
     this.addDisposer(() => {
       this._model$.complete();
-      this.model?.dispose();
     });
   }
 

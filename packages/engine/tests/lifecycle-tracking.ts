@@ -19,10 +19,16 @@ function formatLifecycleInfo(
   }
 
   if (includeFullStack) {
-    return `${basicInfo}\n    Created at:\n${instance.stack.sanitized
+    const stackLines = instance.stack.sanitized
       .split("\n")
       .map((line) => `      ${line}`)
-      .join("\n")}`;
+      .join("\n");
+    // eslint-disable-next-line no-constant-condition
+    if (0) {
+      return `${basicInfo}`;
+    } else {
+      return `${basicInfo}\n    Created at:\n${stackLines}`;
+    }
   } else {
     // Just show the first meaningful line
     const firstLine = instance.stack.sanitized.split("\n")[0]?.trim();

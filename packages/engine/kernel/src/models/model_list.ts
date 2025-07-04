@@ -30,7 +30,11 @@ export class AggregatedModelList<
 
     this.state = state;
     this._models$ = new BehaviorSubject<M[]>(
-      this.state.items.map((entry) => create(entry, true))
+      this.state.items.map((entry) => {
+        const model = create(entry, true);
+        this.addLifecycle(model);
+        return model;
+      })
     );
 
     this.addInitializer(() => {
@@ -40,11 +44,18 @@ export class AggregatedModelList<
           targets: this.models,
           sourceRef: (source) => source, // Use the source object itself as ref
           targetRef: (target) => target.state, // Use the model's source as ref
-          create: (source) => create(source),
+          create: (source) => {
+            const model = create(source);
+            this.addLifecycle(model);
+            return model;
+          },
         });
 
         this._models$.next(next);
-        removed.forEach((m) => m.dispose());
+        removed.forEach((m) => {
+          m.dispose();
+          this.removeLifecycle(m);
+        });
       });
 
       this.addDisposer(() => {
@@ -55,7 +66,6 @@ export class AggregatedModelList<
     this.addDisposer(() => {
       this.state.dispose();
       this._models$.complete();
-      this._models$.value.forEach((m) => m.dispose());
     });
   }
 

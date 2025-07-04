@@ -1,9 +1,10 @@
-import { BehaviorSubject, Observable } from "rxjs";
+import type { Observable } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { Lifecycle } from "~/lifecycle.js";
 import { reconcileList } from "~/reconciliation.js";
-import { RecordState } from "~/state/record.js";
-import { State } from "../state/state.js";
-import { Model } from "./model.js";
+import type { RecordState } from "~/state/record.js";
+import type { State } from "../state/state.js";
+import type { Model } from "./model.js";
 
 export class AggregatedModelRecord<
   S extends State,
@@ -34,7 +35,9 @@ export class AggregatedModelRecord<
     const initialModels: Record<string, M> = {};
     for (const [key, entry] of Object.entries(this.state.record)) {
       if (entry) {
-        initialModels[key] = create(entry, key, true);
+        const model = create(entry, key, true);
+        initialModels[key] = model;
+        this.addLifecycle(model);
       }
     }
     this._models$ = new BehaviorSubject<Record<string, M>>(initialModels);
@@ -55,10 +58,14 @@ export class AggregatedModelRecord<
           targets: targetEntries,
           sourceRef: (source) => source.state.key, // Use state.key for uniqueness
           targetRef: (target) => target.model.state.key, // Use state.key for uniqueness
-          create: (source) => ({
-            key: source.key,
-            model: create(source.state, source.key),
-          }),
+          create: (source) => {
+            const model = create(source.state, source.key);
+            this.addLifecycle(model);
+            return {
+              key: source.key,
+              model,
+            };
+          },
         });
 
         // Transform back to record
@@ -70,19 +77,20 @@ export class AggregatedModelRecord<
         this._models$.next(nextModels);
 
         // Dispose removed models
-        removedEntries.forEach((entry) => entry.model.dispose());
+        removedEntries.forEach((entry) => {
+          entry.model.dispose();
+          this.removeLifecycle(entry.model);
+        });
       });
 
       this.addDisposer(() => {
         sub.unsubscribe();
-        this._models$.complete();
-        Object.values(this._models$.value).forEach((m) => m?.dispose());
       });
     });
 
     this.addDisposer(() => {
       this.state.dispose();
-      Object.values(this._models$.value).forEach((m) => m?.dispose());
+      this._models$.complete();
     });
   }
 

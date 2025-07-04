@@ -178,14 +178,14 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
         }),
     });
 
-    this.addInitializer(() => {
-      this.stage.initialize();
-      this.preview.initialize();
-      this._template.initialize();
-      this._props.initialize();
-      this._fragments.initialize();
-      this._states.initialize();
+    this.addLifecycle(this.stage);
+    this.addLifecycle(this.preview);
+    this.addLifecycle(this._template);
+    this.addLifecycle(this._props);
+    this.addLifecycle(this._fragments);
+    this.addLifecycle(this._states);
 
+    this.addInitializer(() => {
       const sub = this._fragments.models$.subscribe((fragments) => {
         const byId: Record<string, Fragment | undefined> = {};
         for (const fragment of fragments) {
@@ -195,12 +195,6 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
       });
 
       this.addDisposer(() => {
-        this.stage.dispose();
-        this.preview.dispose();
-        this._template.dispose();
-        this._props.dispose();
-        this._fragments.dispose();
-        this._states.dispose();
         sub.unsubscribe();
       });
     });

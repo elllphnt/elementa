@@ -96,14 +96,7 @@ export class ElementaPreview extends Model<
         }),
     });
 
-    this.addInitializer(() => {
-      this.context.initialize();
-      this._content.initialize();
-
-      this.addDisposer(() => {
-        this._content.dispose();
-        this.context.dispose();
-      });
-    });
+    this.addLifecycle(this._content);
+    this.addLifecycle(this.context);
   }
 }

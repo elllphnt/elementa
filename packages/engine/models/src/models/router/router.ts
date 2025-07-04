@@ -94,15 +94,12 @@ export class Router extends ProjectModel<RecordState<any>> {
 
     this._routes = new AggregatedModelList({
       state: state.getListOfRecordStates("routes"),
-      create: (state, init) => {
-        const route = new RouteTree({
+      create: (state, init) =>
+        new RouteTree({
           state,
           router: this,
           initialized: init || initialized,
-        });
-        route.initialize();
-        return route;
-      },
+        }),
     });
 
     this.addInitializer(() => {
