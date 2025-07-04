@@ -1,5 +1,5 @@
 import { BehaviorSubject, map } from "rxjs";
-import { Stylesheet } from "~/models/style/stylesheet/stylesheet.js";
+import type { Stylesheet } from "~/models/style/stylesheet/stylesheet.js";
 import { RuleCssStyleSheet } from "../../lib/rule/rule.js";
 import { StylesheetCssStyleRule } from "./rule.js";
 
@@ -67,16 +67,19 @@ export class StylesheetCssStyleSheet extends RuleCssStyleSheet {
           newRules[selector] = toRemove[selector];
           delete toRemove[selector];
         } else {
-          newRules[selector] = new StylesheetCssStyleRule({
+          const rule = new StylesheetCssStyleRule({
             layer: this.layer,
             stylesheet: this.stylesheet,
             selector,
           });
+          newRules[selector] = rule;
+          this.addLifecycle(rule);
         }
       }
 
       for (const selector in toRemove) {
         toRemove[selector].dispose();
+        this.removeLifecycle(toRemove[selector]);
       }
 
       this._rules$.next(newRules);
