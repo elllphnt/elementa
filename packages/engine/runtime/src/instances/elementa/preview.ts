@@ -1,21 +1,23 @@
-import { ElementaPreview } from "@elllphnt/elementa-models";
+import type { ElementaPreview } from "@elllphnt/elementa-models";
+import type {
+  Observable} from "rxjs";
 import {
   BehaviorSubject,
   combineLatest,
   map,
-  Observable,
   of,
   switchMap,
 } from "rxjs";
-import { Runtime } from "~/runtime/runtime.js";
+import type { Runtime } from "~/runtime/runtime.js";
 import { DefaultElementRuntimeEnvironment } from "../elements/_environment/default_environment.js";
-import { ElementRuntimeEnvironment } from "../elements/_environment/environment.js";
-import { Instance } from "../instance.js";
+import type { ElementRuntimeEnvironment } from "../elements/_environment/environment.js";
+import type { Instance } from "../instance.js";
 import { ModelInstance } from "../model.js";
 import { ElementaEditorInstanceType } from "./_types.js";
+import type {
+  RenderableContentInstance} from "./renderable_content/_content.js";
 import {
-  createRenderableContentInstance,
-  RenderableContentInstance,
+  createRenderableContentInstance
 } from "./renderable_content/_content.js";
 
 export class ElementaPreviewFragmentEnvironment extends DefaultElementRuntimeEnvironment {

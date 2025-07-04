@@ -1,9 +1,11 @@
-import { Component, Element } from "@elllphnt/elementa-models";
-import { PointData, Rect, RectData } from "@elllphnt/elementa-utils";
-import { Handle } from "../_types/_.js";
+import type { Component, Element } from "@elllphnt/elementa-models";
+import type { PointData, RectData } from "@elllphnt/elementa-utils";
+import { Rect } from "@elllphnt/elementa-utils";
+import type { Handle } from "../_types/_.js";
 import { ElementHandle } from "../handles/_.js";
-import { ElementaInteractor, tools } from "../index.js";
-import { PointerEvent } from "../primitives/tool.js";
+import type { ElementaInteractor} from "../index.js";
+import { tools } from "../index.js";
+import type { PointerEvent } from "../primitives/tool.js";
 import { EntityTool } from "./entity.js";
 import { createRectDrawInteraction } from "./interactions/rect_draw.js";
 

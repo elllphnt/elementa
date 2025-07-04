@@ -1,6 +1,7 @@
 import { entityTypes } from "@elllphnt/elementa-base";
-import { Component, Element, TextElement } from "@elllphnt/elementa-models";
-import { ElementHandle, TextElementHandle } from "../handles/_.js";
+import type { Component, Element} from "@elllphnt/elementa-models";
+import { TextElement } from "@elllphnt/elementa-models";
+import type { ElementHandle, TextElementHandle } from "../handles/_.js";
 import { ElementTool } from "./element.js";
 
 export class TextTool extends ElementTool {

@@ -1,8 +1,8 @@
-import { MediaData, MediaElementData } from "@elllphnt/elementa-base";
-import { RecordState } from "@elllphnt/elementa-kernel";
-import { Observable } from "rxjs";
+import type { MediaData, MediaElementData } from "@elllphnt/elementa-base";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
 import { BaseElement } from "./_base.js";
-import { ElementEnvironment } from "./_environment.js";
+import type { ElementEnvironment } from "./_environment.js";
 
 export class MediaElement extends BaseElement<MediaElementData> {
   get media(): MediaData | undefined {

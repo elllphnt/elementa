@@ -1,5 +1,5 @@
-import { Instance, InstanceAdaptor } from "@elllphnt/elementa-runtime";
-import { InstanceRenderable } from "../instance.js";
+import type { Instance, InstanceAdaptor } from "@elllphnt/elementa-runtime";
+import type { InstanceRenderable } from "../instance.js";
 import { RenderableAdaptor } from "./adaptor.js";
 
 export class InstanceRenderableAdaptor<

@@ -1,9 +1,9 @@
-import { ElementaStageRenderable } from "@elllphnt/elementa-scene";
-import { Lifecycle } from "@elllphnt/elementa-utils";
-import { Observable } from "rxjs";
-import { FrameHandle } from "../handles/_.js";
-import { Handle } from "./handles/_.js";
-import {
+import type { ElementaStageRenderable } from "@elllphnt/elementa-scene";
+import type { Lifecycle } from "@elllphnt/elementa-utils";
+import type { Observable } from "rxjs";
+import type { FrameHandle } from "../handles/_.js";
+import type { Handle } from "./handles/_.js";
+import type {
   IInteractionManager,
   IInterface,
   IMarkerManager,

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { Diagnosticable } from "../../src/_shared/diagnosticable.js";
+import type { Diagnosticable } from "../../src/_shared/diagnosticable.js";
 
 describe("Diagnosticable", () => {
   let diagnosticable: Diagnosticable;

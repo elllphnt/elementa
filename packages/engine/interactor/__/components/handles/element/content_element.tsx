@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { MediaElementHandle } from "~/handles/_";
+import type { MediaElementHandle } from "~/handles/_";
 import { useHandleDom } from "../_hooks/interaction_target.js";
 
 export function MediaElementHandleComponent({

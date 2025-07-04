@@ -1,15 +1,16 @@
-import { EntityData } from "@elllphnt/elementa-base";
-import { Element } from "@elllphnt/elementa-models";
-import { VectorData } from "@elllphnt/elementa-utils";
+import type { EntityData } from "@elllphnt/elementa-base";
+import type { Element } from "@elllphnt/elementa-models";
+import type { VectorData } from "@elllphnt/elementa-utils";
 import _ from "lodash";
 import { duplicateEntityHandles, unwrapElements, wrapElements } from "~/_lib/_";
-import { ElementaInteractor, IMovableHandle } from "~/_types/_";
-import { CommandHandler } from "~/_types/managers/command";
+import type { ElementaInteractor, IMovableHandle } from "~/_types/_";
+import type { CommandHandler } from "~/_types/managers/command";
+import type {
+  Handle} from "~/src";
 import {
   ContainerElementHandle,
   ElementHandle,
-  EntityHandle,
-  Handle,
+  EntityHandle
 } from "~/src";
 import { handleProperties } from "../../handles/_libs/properties.js";
 

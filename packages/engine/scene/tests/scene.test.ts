@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { Scene } from "../src/scene/scene.js";
-import { DomStyleSheetManager } from "../src/style/_.js";
+import type { Scene } from "../src/scene/scene.js";
+import type { DomStyleSheetManager } from "../src/style/_.js";
 
 describe("Scene", () => {
   let scene: Scene;

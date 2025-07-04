@@ -1,4 +1,4 @@
-import { CommandHandler } from "~/_types/managers/command";
+import type { CommandHandler } from "~/_types/managers/command";
 
 export const createComponent: CommandHandler = async (interactor) => {
   // const component = interactor.stager.component;

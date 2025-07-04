@@ -1,10 +1,11 @@
 import { Lifecycle } from "@elllphnt/elementa-kernel";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import {
+import type {
   PointData,
-  Rect,
   RectData,
-  VectorData,
+  VectorData} from "@elllphnt/elementa-math-utils";
+import {
+  Rect
 } from "@elllphnt/elementa-math-utils";
 import {
   BehaviorSubject,

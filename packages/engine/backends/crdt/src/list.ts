@@ -1,5 +1,6 @@
-import { BehaviorSubject, Observable } from "rxjs";
-import * as y from "yjs";
+import type { Observable } from "rxjs";
+import { BehaviorSubject } from "rxjs";
+import type * as y from "yjs";
 import { ListState } from "@elllphnt/elementa-kernel";
 
 export class CrdtListState<T> extends ListState<T> {

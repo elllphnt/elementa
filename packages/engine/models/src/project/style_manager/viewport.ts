@@ -1,19 +1,21 @@
-import {
+import type {
   StyleModifierData,
   StyleModifierDefinitionData,
-  StyleModifierType,
-  ViewportDefinitionData,
+  ViewportDefinitionData} from "@elllphnt/elementa-base";
+import {
+  StyleModifierType
 } from "@elllphnt/elementa-base";
 import { Lifecycle } from "@elllphnt/elementa-kernel";
+import type {
+  Observable} from "rxjs";
 import {
   BehaviorSubject,
   combineLatest,
   map,
-  Observable,
   of,
   switchMap,
 } from "rxjs";
-import { Project } from "../project.js";
+import type { Project } from "../project.js";
 
 export function modifierFromBreakpoint({
   id,

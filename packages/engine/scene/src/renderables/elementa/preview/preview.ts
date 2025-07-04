@@ -1,9 +1,10 @@
-import { ElementaPreviewInstance } from "@elllphnt/elementa-runtime";
+import type { ElementaPreviewInstance } from "@elllphnt/elementa-runtime";
 import { BehaviorSubject } from "rxjs";
-import { Scene } from "../../../scene/scene.js";
+import type { Scene } from "../../../scene/scene.js";
 import { Renderable } from "../../renderable.js";
+import type {
+  RenderableContentRenderable} from "../renderable_content/_create.js";
 import {
-  RenderableContentRenderable,
   createRenderableContentRenderable,
 } from "../renderable_content/_create.js";
 

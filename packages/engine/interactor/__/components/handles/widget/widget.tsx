@@ -1,5 +1,5 @@
 import { entityTypes, switchEntityType } from "@elllphnt/elementa-base";
-import { FrameWidgetHandle, WidgetHandle } from "~/handles/_";
+import type { FrameWidgetHandle, WidgetHandle } from "~/handles/_";
 import { FrameHandleComponent } from "../frame.js";
 
 export function WidgetHandleComponent({ widget }: { widget: WidgetHandle }) {

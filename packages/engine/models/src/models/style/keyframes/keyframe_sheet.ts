@@ -1,8 +1,10 @@
-import { KeyframeSetData, KeyframeSheetData } from "@elllphnt/elementa-base";
-import { AggregatedModelList, RecordState } from "@elllphnt/elementa-kernel";
-import { map, Observable } from "rxjs";
+import type { KeyframeSetData, KeyframeSheetData } from "@elllphnt/elementa-base";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import { AggregatedModelList } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
+import { map } from "rxjs";
 import { ProjectModel } from "~/models/project.js";
-import { Project } from "~/project/project.js";
+import type { Project } from "~/project/project.js";
 import { KeyframeSet } from "./keyframe_set.js";
 
 export class KeyframeSheet extends ProjectModel<

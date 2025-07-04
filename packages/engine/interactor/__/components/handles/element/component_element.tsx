@@ -1,6 +1,6 @@
 import { useObservable } from "@elllphnt/elementa-utils";
 import cx from "classnames";
-import { ComponentElementHandle } from "~/handles/_";
+import type { ComponentElementHandle } from "~/handles/_";
 import { FragmentHandleComponent } from "../fragment.js";
 import { BaseElementHandleComponent } from "./_base.js";
 

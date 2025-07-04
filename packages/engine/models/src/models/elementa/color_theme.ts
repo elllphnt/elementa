@@ -1,6 +1,7 @@
-import { ColorData, ColorThemeData } from "@elllphnt/elementa-base";
-import { Model, RecordState } from "@elllphnt/elementa-kernel";
-import { Observable } from "rxjs";
+import type { ColorData, ColorThemeData } from "@elllphnt/elementa-base";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import { Model } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
 
 export class ColorTheme extends Model<RecordState<ColorThemeData>> {
   get scheme(): string | undefined {

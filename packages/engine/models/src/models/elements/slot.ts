@@ -1,9 +1,12 @@
-import { SlotElementData } from "@elllphnt/elementa-base";
-import { AggregatedModelList, RecordState } from "@elllphnt/elementa-kernel";
-import { Observable, of } from "rxjs";
+import type { SlotElementData } from "@elllphnt/elementa-base";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import { AggregatedModelList } from "@elllphnt/elementa-kernel";
+import type { Observable} from "rxjs";
+import { of } from "rxjs";
 import { BaseElement } from "./_base.js";
-import { createElement, Element } from "./_element.js";
-import { ElementEnvironment } from "./_environment.js";
+import type { Element } from "./_element.js";
+import { createElement } from "./_element.js";
+import type { ElementEnvironment } from "./_environment.js";
 
 export class SlotElement extends BaseElement<SlotElementData> {
   private _placeholder: AggregatedModelList<RecordState<any>, Element>;

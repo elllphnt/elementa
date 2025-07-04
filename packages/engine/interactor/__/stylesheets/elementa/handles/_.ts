@@ -1,4 +1,4 @@
-import { Theme } from "~/theme/theme";
+import type { Theme } from "~/theme/theme";
 import { connectionHandleStyleSheet } from "./connection.js";
 import { cornerHandleStyleSheet } from "./corner.js";
 import { gapHandleStyleSheet } from "./gap.js";

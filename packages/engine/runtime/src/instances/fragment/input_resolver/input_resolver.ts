@@ -1,5 +1,5 @@
-import { Observable } from "rxjs";
-import { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
+import type { Observable } from "rxjs";
+import type { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
 
 /**
  * A binding layer for resolving params during fragment rendering.

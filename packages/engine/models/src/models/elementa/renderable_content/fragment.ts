@@ -1,8 +1,9 @@
-import { FragmentRenderableContentData } from "@elllphnt/elementa-base";
-import { RecordState } from "@elllphnt/elementa-kernel";
-import { map, Observable, of, switchMap } from "rxjs";
-import { Fragment } from "~/models/fragment/fragment.js";
-import { ElementaEnvironment } from "../environment.js";
+import type { FragmentRenderableContentData } from "@elllphnt/elementa-base";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import type { Observable} from "rxjs";
+import { map, of, switchMap } from "rxjs";
+import type { Fragment } from "~/models/fragment/fragment.js";
+import type { ElementaEnvironment } from "../environment.js";
 import { BaseRenderableContent } from "./_base.js";
 
 export class FragmentRenderableContent extends BaseRenderableContent<FragmentRenderableContentData> {

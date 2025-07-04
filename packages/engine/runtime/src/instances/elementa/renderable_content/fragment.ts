@@ -1,13 +1,14 @@
-import { FragmentRenderableContent } from "@elllphnt/elementa-models";
+import type { FragmentRenderableContent } from "@elllphnt/elementa-models";
+import type {
+  Observable} from "rxjs";
 import {
   BehaviorSubject,
   combineLatest,
   map,
-  Observable,
   of,
   switchMap,
 } from "rxjs";
-import { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
+import type { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
 import { FragmentInstance } from "~/instances/fragment/fragment.js";
 import { FragmentInputResolver } from "~/instances/fragment/input_resolver/input_resolver.js";
 import { ModelInstance } from "~/instances/model.js";

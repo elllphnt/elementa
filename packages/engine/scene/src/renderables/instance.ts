@@ -1,5 +1,5 @@
-import { Instance } from "@elllphnt/elementa-runtime";
-import { Scene } from "../scene/scene.js";
+import type { Instance } from "@elllphnt/elementa-runtime";
+import type { Scene } from "../scene/scene.js";
 import { Renderable } from "./renderable.js";
 
 export abstract class InstanceRenderable<

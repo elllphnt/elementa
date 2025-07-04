@@ -1,7 +1,7 @@
-import { ExpressionElement } from "@elllphnt/elementa-models";
-import { Instance } from "../instance.js";
+import type { ExpressionElement } from "@elllphnt/elementa-models";
+import type { Instance } from "../instance.js";
 import { BaseElementInstance } from "./_base.js";
-import { ElementRuntimeEnvironment } from "./_environment/environment.js";
+import type { ElementRuntimeEnvironment } from "./_environment/environment.js";
 
 export class ExpressionElementInstance extends BaseElementInstance<ExpressionElement> {
   constructor({

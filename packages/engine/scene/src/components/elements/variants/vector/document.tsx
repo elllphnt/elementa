@@ -1,9 +1,10 @@
-import {
+import type {
   VectorElementNodeData,
   VectorNodeData,
   VectorTextNodeData,
 } from "@elllphnt/elementa-base";
-import { createElement, JSX } from "react";
+import type { JSX } from "react";
+import { createElement } from "react";
 
 function VectorNode({ data }: { data: VectorNodeData }) {
   switch (data.type) {

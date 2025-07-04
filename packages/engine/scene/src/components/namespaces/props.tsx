@@ -3,8 +3,9 @@ import {
   useManyObservables,
   useObservable,
 } from "@elllphnt/elementa-react-utils";
-import { ComponentInstance, Namespace } from "@elllphnt/elementa-runtime";
-import { PropsWithChildren } from "react";
+import type { ComponentInstance} from "@elllphnt/elementa-runtime";
+import { Namespace } from "@elllphnt/elementa-runtime";
+import type { PropsWithChildren } from "react";
 import { NamespaceContext } from "../../contexts/namespace.js";
 import { useNamespace } from "../../hooks/namespace.js";
 

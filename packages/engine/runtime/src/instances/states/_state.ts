@@ -1,6 +1,6 @@
-import { HookState, InlineState, State } from "@elllphnt/elementa-models";
-import { Runtime } from "../../runtime/runtime.js";
-import { Instance } from "../instance.js";
+import type { HookState, InlineState, State } from "@elllphnt/elementa-models";
+import type { Runtime } from "../../runtime/runtime.js";
+import type { Instance } from "../instance.js";
 import { HookStateInstance } from "./hook.js";
 import { InlineStateInstance } from "./inline.js";
 import { ValueStateInstance } from "./value.js";

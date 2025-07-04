@@ -1,5 +1,5 @@
 import { resolveContainingElement } from "~/_lib/css.js";
-import { RenderableHandle } from "~/_types/handles/renderable/renderable.js";
+import type { RenderableHandle } from "~/_types/handles/renderable/renderable.js";
 
 export function createDragImages(handle: RenderableHandle) {
   const images: HTMLElement[] = [];

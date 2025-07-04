@@ -1,8 +1,9 @@
 import { pairwiseOrEmpty } from "@elllphnt/elementa-lang-utils";
-import { ComponentType, useEffect, useRef } from "react";
+import type { ComponentType} from "react";
+import { useEffect, useRef } from "react";
 import { map } from "rxjs";
 import { useNamespace } from "../../../hooks/namespace.js";
-import { ElementRenderable } from "../../../renderables/element/element.js";
+import type { ElementRenderable } from "../../../renderables/element/element.js";
 
 export function InteractiveElementComponent<
   P extends {

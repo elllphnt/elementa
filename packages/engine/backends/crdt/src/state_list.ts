@@ -1,6 +1,8 @@
-import { AggregatedStateList, State } from "@elllphnt/elementa-kernel";
-import { BehaviorSubject, Observable } from "rxjs";
-import * as y from "yjs";
+import type { State } from "@elllphnt/elementa-kernel";
+import { AggregatedStateList } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
+import { BehaviorSubject } from "rxjs";
+import type * as y from "yjs";
 
 export class AggregatedCrdtStateList<
   S extends State

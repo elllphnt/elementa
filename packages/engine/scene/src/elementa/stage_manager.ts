@@ -1,17 +1,19 @@
-import { ElementaPreview, ElementaStage } from "@elllphnt/elementa-models";
+import type { ElementaPreview, ElementaStage } from "@elllphnt/elementa-models";
+import type {
+  Runtime} from "@elllphnt/elementa-runtime";
 import {
   ElementaPreviewInstance,
-  ElementaStageInstance,
-  Runtime,
+  ElementaStageInstance
 } from "@elllphnt/elementa-runtime";
-import React, { createElement } from "react";
+import type React from "react";
+import { createElement } from "react";
 import { createRoot } from "react-dom/client";
 import ElementaPreviewComponent from "../components/elementa/preview.js";
 import { ElementaStageComponent } from "../components/elementa/stage.js";
 import { ElementaPreviewRenderable } from "../renderables/elementa/preview/preview.js";
 import { ElementaStageRenderable } from "../renderables/elementa/stage/stage.js";
-import { Renderable } from "../renderables/renderable.js";
-import { Scene } from "../scene/scene.js";
+import type { Renderable } from "../renderables/renderable.js";
+import type { Scene } from "../scene/scene.js";
 
 export class ElementaRenderableManager {
   readonly root: HTMLElement;

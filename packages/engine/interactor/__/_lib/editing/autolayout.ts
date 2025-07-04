@@ -1,7 +1,7 @@
-import { StyleData } from "@elllphnt/elementa-base";
+import type { StyleData } from "@elllphnt/elementa-base";
 import { Rect } from "@elllphnt/elementa-math-utils";
 import _ from "lodash";
-import { Handle } from "~/handles/handle";
+import type { Handle } from "~/handles/handle";
 
 export function generateFlexAutoLayout<I extends Handle>(
   renderables: I[],

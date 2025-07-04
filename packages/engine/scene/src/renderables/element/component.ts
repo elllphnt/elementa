@@ -1,9 +1,10 @@
 import { reconcileList } from "@elllphnt/elementa-kernel";
-import { ComponentElementInstance } from "@elllphnt/elementa-runtime";
-import { BehaviorSubject, map, Observable } from "rxjs";
-import { Scene } from "../../scene/scene.js";
+import type { ComponentElementInstance } from "@elllphnt/elementa-runtime";
+import type { Observable } from "rxjs";
+import { BehaviorSubject, map } from "rxjs";
+import type { Scene } from "../../scene/scene.js";
 import { ComponentRenderable } from "../component/component.js";
-import { Renderable } from "../renderable.js";
+import type { Renderable } from "../renderable.js";
 import { createElementRenderable } from "./_create.js";
 import { ElementRenderable } from "./element.js";
 

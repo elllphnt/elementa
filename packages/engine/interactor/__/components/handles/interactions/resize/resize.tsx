@@ -1,13 +1,14 @@
 import { Rect } from "@elllphnt/elementa-math-utils";
 import { useCallback, useRef } from "react";
-import { BoxResizeHandleType } from "~/_lib/interaction";
-import { Handle } from "~/_types/_";
-import { IResizableHandle } from "~/_types/handles/properties/resizable";
+import type { BoxResizeHandleType } from "~/_lib/interaction";
+import type { Handle } from "~/_types/_";
+import type { IResizableHandle } from "~/_types/handles/properties/resizable";
 import { useElementaInteractor } from "~/hooks/elementa_interactor";
-import {
+import type {
   OnResizeEnd,
   OnResizeStart,
-  OnResizeUpdate,
+  OnResizeUpdate} from "./raw.js";
+import {
   RawResizeHandle,
   resolveResizeOrigin,
   resolveResizeScaleFactor,
@@ -42,12 +43,12 @@ export function ResizeHandle({ handles }: { handles: IResizableHandle[] }) {
     ({ axis, delta, proportional, symetrical }) => {
       const startRect = handlesStartRectRef.current;
       const handle = handleRef.current;
-      let resizeOrigin = resolveResizeOrigin({
+      const resizeOrigin = resolveResizeOrigin({
         startRect,
         symetrical,
         handle,
       });
-      let resizeScaleFactor = resolveResizeScaleFactor({
+      const resizeScaleFactor = resolveResizeScaleFactor({
         axis,
         delta,
         proportional,

@@ -1,6 +1,7 @@
-import { Observable, of } from "rxjs";
+import type { Observable} from "rxjs";
+import { of } from "rxjs";
 import { Handle } from "../_types/_.js";
-import { ElementaInteractor } from "../_types/interactor.js";
+import type { ElementaInteractor } from "../_types/interactor.js";
 import { handleTypes } from "./_libs/types.js";
 
 export class FallbackHandle extends Handle {

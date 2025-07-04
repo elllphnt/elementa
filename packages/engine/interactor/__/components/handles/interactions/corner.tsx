@@ -1,9 +1,9 @@
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import { VectorData } from "@elllphnt/elementa-math-utils";
+import type { VectorData } from "@elllphnt/elementa-math-utils";
 import _ from "lodash";
 import { useCallback, useEffect, useRef } from "react";
 import { map } from "rxjs";
-import { CornerHandleType } from "~/_lib/interaction.js";
+import type { CornerHandleType } from "~/_lib/interaction.js";
 import { useElementaInteractor } from "~/hooks/elementa_interactor.js";
 import { MouseInteraction } from "~/tools/interactions/mouse.js";
 

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { ModuleHost } from "../../src/runtime/module_manager/module_host/module_host.js";
+import type { ModuleHost } from "../../src/runtime/module_manager/module_host/module_host.js";
 
 describe("ModuleHost", () => {
   let moduleHost: ModuleHost;

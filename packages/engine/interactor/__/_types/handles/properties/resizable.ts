@@ -1,7 +1,7 @@
-import { DimensionData } from "@elllphnt/elementa-base";
-import { Rect } from "@elllphnt/elementa-math-utils";
-import { Observable } from "rxjs";
-import { Handle } from "../handle.js";
+import type { DimensionData } from "@elllphnt/elementa-base";
+import type { Rect } from "@elllphnt/elementa-math-utils";
+import type { Observable } from "rxjs";
+import type { Handle } from "../handle.js";
 
 export interface IResizableHandle extends Handle {
   get height(): number | DimensionData<string> | string | undefined;

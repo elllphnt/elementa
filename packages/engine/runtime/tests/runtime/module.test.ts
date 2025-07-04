@@ -1,6 +1,6 @@
-import { File } from "@elllphnt/elementa-core";
+import type { File } from "@elllphnt/elementa-core";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { Module } from "../../src/runtime/module_manager/module.js";
+import type { Module } from "../../src/runtime/module_manager/module.js";
 
 describe("Module", () => {
   let module: Module;

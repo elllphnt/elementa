@@ -1,6 +1,6 @@
 import { useObservable } from "@elllphnt/elementa-utils";
 import cx from "classnames";
-import { ElementHandle, PrimitiveElementHandle } from "~/handles/_";
+import type { ElementHandle, PrimitiveElementHandle } from "~/handles/_";
 import { useHandleDom } from "../_hooks/interaction_target.js";
 import { ElementHandleComponent } from "./element.js";
 

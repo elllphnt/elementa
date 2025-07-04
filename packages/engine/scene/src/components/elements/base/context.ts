@@ -1,5 +1,5 @@
 import React, { createContext } from "react";
-import { ElementRenderable } from "../../../renderables/element/element.js";
+import type { ElementRenderable } from "../../../renderables/element/element.js";
 
 export type BaseElementProps<E extends ElementRenderable = ElementRenderable> =
   {

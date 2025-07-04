@@ -1,8 +1,9 @@
 import { entityTypes } from "@elllphnt/elementa-base";
-import {
+import type {
   Component,
-  ContainerElement,
-  Element,
+  Element} from "@elllphnt/elementa-models";
+import {
+  ContainerElement
 } from "@elllphnt/elementa-models";
 import { ElementTool } from "./element.js";
 

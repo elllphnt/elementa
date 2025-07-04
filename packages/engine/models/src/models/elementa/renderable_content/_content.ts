@@ -1,5 +1,5 @@
-import { RecordState } from "@elllphnt/elementa-kernel";
-import { ElementaEnvironment } from "../environment.js";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import type { ElementaEnvironment } from "../environment.js";
 import { ComponentRenderableContent } from "./component.js";
 import { FragmentRenderableContent } from "./fragment.js";
 import { RouterRenderableContent } from "./router.js";

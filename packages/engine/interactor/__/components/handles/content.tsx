@@ -1,4 +1,4 @@
-import { RenderableContentHandle } from "~/handles/renderables/content";
+import type { RenderableContentHandle } from "~/handles/renderables/content";
 
 export function RenderableContentHandleComponent({
   content,

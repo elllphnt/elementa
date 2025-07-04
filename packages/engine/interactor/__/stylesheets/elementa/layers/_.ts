@@ -1,4 +1,4 @@
-import { Theme } from "~/theme/theme";
+import type { Theme } from "~/theme/theme";
 import { fallbackLayerStyleSheet } from "./fallback.js";
 import { gridLayerStyleSheet } from "./grid.js";
 import { handleLayerStyleSheet } from "./handle.js";

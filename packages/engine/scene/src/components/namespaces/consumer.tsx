@@ -1,5 +1,5 @@
 import { logger } from "@elllphnt/elementa-kernel";
-import { ElementRuntimeEnvironment } from "@elllphnt/elementa-runtime";
+import type { ElementRuntimeEnvironment } from "@elllphnt/elementa-runtime";
 import { useEffect } from "react";
 import { useNamespace } from "../../hooks/namespace.js";
 

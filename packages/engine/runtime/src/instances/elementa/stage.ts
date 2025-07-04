@@ -1,15 +1,16 @@
 import { reconcileList } from "@elllphnt/elementa-kernel";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import { ElementaStage } from "@elllphnt/elementa-models";
+import type { ElementaStage } from "@elllphnt/elementa-models";
+import type {
+  Observable} from "rxjs";
 import {
   BehaviorSubject,
   combineLatest,
   map,
-  Observable,
   switchMap,
 } from "rxjs";
-import { Runtime } from "~/runtime/runtime.js";
-import { Instance } from "../instance.js";
+import type { Runtime } from "~/runtime/runtime.js";
+import type { Instance } from "../instance.js";
 import { ModelInstance } from "../model.js";
 import { ElementaEditorInstanceType } from "./_types.js";
 import { ElementaFrameInstance } from "./frame.js";

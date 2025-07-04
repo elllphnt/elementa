@@ -1,9 +1,11 @@
-import { Expression, PrimitiveSubElementData } from "@elllphnt/elementa-base";
-import { Model, RecordState } from "@elllphnt/elementa-kernel";
-import { map, Observable } from "rxjs";
+import type { Expression, PrimitiveSubElementData } from "@elllphnt/elementa-base";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import { Model } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
+import { map } from "rxjs";
 import { StylesheetCssStyleSheet } from "~/css/stylesheets/stylesheet/stylesheet.js";
 import { Stylesheet } from "../../style/stylesheet/stylesheet.js";
-import { ElementEnvironment } from "../_environment.js";
+import type { ElementEnvironment } from "../_environment.js";
 
 export class PrimitiveSubElement extends Model<
   RecordState<PrimitiveSubElementData>

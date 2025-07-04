@@ -3,12 +3,12 @@ import {
   combineLatestOrEmpty,
   pairwiseOrEmpty,
 } from "@elllphnt/elementa-lang-utils";
-import { Rect } from "@elllphnt/elementa-math-utils";
-import { StageViewport } from "@elllphnt/elementa-scene";
+import type { Rect } from "@elllphnt/elementa-math-utils";
+import type { StageViewport } from "@elllphnt/elementa-scene";
 import { BehaviorSubject, of, switchMap } from "rxjs";
-import { IInterface } from "../_types/_.js";
-import { Handle } from "../_types/handles/handle.js";
-import {
+import type { IInterface } from "../_types/_.js";
+import type { Handle } from "../_types/handles/handle.js";
+import type {
   IHandleRect,
   ILayoutUpdatePropagation,
 } from "../_types/handles/handle_rect.js";

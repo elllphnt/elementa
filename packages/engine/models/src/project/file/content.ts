@@ -1,6 +1,6 @@
-import { Observable } from "rxjs";
+import type { Observable } from "rxjs";
 import { AsyncResource } from "../resource.js";
-import { File } from "./file.js";
+import type { File } from "./file.js";
 
 export abstract class Content<F extends File> extends AsyncResource {
   readonly file: F;

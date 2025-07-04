@@ -1,27 +1,29 @@
-import { EdgeName } from "@elllphnt/elementa-base";
+import type { EdgeName } from "@elllphnt/elementa-base";
 import { Lifecycle } from "@elllphnt/elementa-kernel";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 import { Rect } from "@elllphnt/elementa-math-utils";
 import type { Renderable } from "@elllphnt/elementa-scene";
+import type {
+  Observable} from "rxjs";
 import {
   BehaviorSubject,
-  Observable,
   distinctUntilChanged,
   map,
   of,
   switchMap,
 } from "rxjs";
 import { Handle } from "../_types/handles/handle.js";
-import { ILayoutUpdatePropagation } from "../_types/handles/handle_rect.js";
-import { ElementaInteractor } from "../_types/interactor.js";
+import type { ILayoutUpdatePropagation } from "../_types/handles/handle_rect.js";
+import type { ElementaInteractor } from "../_types/interactor.js";
+import type {
+  HandleRect} from "./_handle_rect.js";
 import {
-  HandleRect,
   interfaceRectOf,
   interfaceRectOf$,
   viewportRectOf,
   viewportRectOf$,
 } from "./_handle_rect.js";
-import { ConnectionHandle } from "./connection.js";
+import type { ConnectionHandle } from "./connection.js";
 import { HandleInteractionTarget } from "./target.js";
 
 export type EventListenerData = {

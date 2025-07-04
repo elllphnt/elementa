@@ -2,7 +2,7 @@ import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 import _ from "lodash";
 import { forwardRef, useCallback } from "react";
 import { lengthToPixels } from "~/_lib/utils";
-import { ElementHandle } from "~/handles/_";
+import type { ElementHandle } from "~/handles/_";
 import { useElementaInteractor } from "~/hooks/elementa_interactor";
 import { MouseInteraction } from "~/tools/interactions/mouse";
 

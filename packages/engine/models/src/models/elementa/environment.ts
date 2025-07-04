@@ -1,6 +1,6 @@
-import { Observable } from "rxjs";
-import { Project } from "~/project/project.js";
-import { Fragment } from "../fragment/fragment.js";
+import type { Observable } from "rxjs";
+import type { Project } from "~/project/project.js";
+import type { Fragment } from "../fragment/fragment.js";
 
 export interface ElementaEnvironment {
   project: Project;

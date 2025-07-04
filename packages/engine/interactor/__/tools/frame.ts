@@ -1,7 +1,7 @@
-import { RectData } from "@elllphnt/elementa-math-utils";
+import type { RectData } from "@elllphnt/elementa-math-utils";
 import { FallbackHandle } from "~/handles/fallback.js";
-import { ElementaInteractor } from "~/interactor.js";
-import { PointerEvent } from "~/primitives/tool.js";
+import type { ElementaInteractor } from "~/interactor.js";
+import type { PointerEvent } from "~/primitives/tool.js";
 import { EntityTool } from "./entity.js";
 import { createRectDrawInteraction } from "./interactions/rect_draw.js";
 import { tools } from "./tools.js";

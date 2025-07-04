@@ -1,6 +1,6 @@
 import { useObservable } from "@elllphnt/elementa-utils";
 import { useCallback } from "react";
-import { ElementaEditorMode } from "~/_lib/mode";
+import type { ElementaEditorMode } from "~/_lib/mode";
 import { useElementaInteractor } from "~/hooks/elementa_interactor";
 
 export function useEditorMode() {

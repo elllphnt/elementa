@@ -1,4 +1,4 @@
-import { Entity } from "@elllphnt/elementa-models";
+import type { Entity } from "@elllphnt/elementa-models";
 
 export function makeEntityDropType(entityType: string) {
   return `entity/${entityType}`;

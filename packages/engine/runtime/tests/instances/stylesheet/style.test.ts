@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { StyleInstance } from "../../../src/instances/stylesheet/style.js";
-import { StyleSheetInstance } from "../../../src/instances/stylesheet/stylesheet.js";
+import type { StyleInstance } from "../../../src/instances/stylesheet/style.js";
+import type { StyleSheetInstance } from "../../../src/instances/stylesheet/stylesheet.js";
 
 describe("StyleInstance", () => {
   let styleInstance: StyleInstance;

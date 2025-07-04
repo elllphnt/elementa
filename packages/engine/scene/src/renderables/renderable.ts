@@ -1,6 +1,6 @@
 import { Lifecycle, keyManager } from "@elllphnt/elementa-kernel";
 import { BehaviorSubject, combineLatest, map } from "rxjs";
-import { Scene } from "../scene/scene.js";
+import type { Scene } from "../scene/scene.js";
 
 export abstract class Renderable extends Lifecycle {
   static defaultHtmlElementKey = "__default__";

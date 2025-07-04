@@ -1,7 +1,7 @@
-import { RouterRenderableContentInstance } from "@elllphnt/elementa-runtime";
+import type { RouterRenderableContentInstance } from "@elllphnt/elementa-runtime";
 import { createMemoryHistory } from "@tanstack/react-router";
 import { BehaviorSubject } from "rxjs";
-import { Scene } from "../../../scene/scene.js";
+import type { Scene } from "../../../scene/scene.js";
 import { Renderable } from "../../renderable.js";
 import { RouterRenderable } from "../../router/router.js";
 

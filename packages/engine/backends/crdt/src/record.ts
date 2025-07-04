@@ -1,16 +1,18 @@
 import { getOrCreateYArray, getOrCreateYMap } from "@elllphnt/crdt";
-import {
+import type {
   AggregatedStateList,
   AggregatedStateRecord,
   ListState,
-  RecordState,
   State,
-  ValueState,
+  ValueState} from "@elllphnt/elementa-kernel";
+import {
+  RecordState
 } from "@elllphnt/elementa-kernel";
-import { BehaviorSubject, Observable } from "rxjs";
+import type { Observable } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { map } from "rxjs/operators";
 import * as y from "yjs";
-import { ArrayKeyOf, ObjectKeyOf } from "../../../../utils/lang/build/types.js";
+import type { ArrayKeyOf, ObjectKeyOf } from "../../../../utils/lang/build/types.js";
 import { CrdtListState } from "./list.js";
 import { AggregatedCrdtStateList } from "./state_list.js";
 import { AggregatedCrdtStateRecord } from "./state_record.js";

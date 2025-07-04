@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { RenderedStyle } from "../../src/style/style.js";
+import type { RenderedStyle } from "../../src/style/style.js";
 
 describe("RenderedStyle", () => {
   let renderedStyle: RenderedStyle;

@@ -1,4 +1,4 @@
-import { Theme } from "../../theme/theme.js";
+import type { Theme } from "../../theme/theme.js";
 
 export const darkModeStyleSheet = (theme: Theme) => /* css */ `
     @media (prefers-color-scheme: dark) {

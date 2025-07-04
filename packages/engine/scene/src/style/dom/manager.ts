@@ -1,8 +1,8 @@
 import { Lifecycle } from "@elllphnt/elementa-kernel";
-import { CssStyleSheet } from "@elllphnt/elementa-models";
+import type { CssStyleSheet } from "@elllphnt/elementa-models";
 import { styleLogger } from "../../loggers.js";
 import { createDomStyleSheetAdaptor } from "./_lib.js";
-import { DomStyleSheetAdaptor } from "./adaptors/stylesheet.js";
+import type { DomStyleSheetAdaptor } from "./adaptors/stylesheet.js";
 
 export class DomStyleSheetManager extends Lifecycle {
   stylesheetAdaptors: Record<string, DomStyleSheetAdaptor> = {};

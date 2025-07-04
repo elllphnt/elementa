@@ -1,10 +1,11 @@
-import { FragmentElementData } from "@elllphnt/elementa-base";
-import { RecordState } from "@elllphnt/elementa-kernel";
-import { map, Observable, of, switchMap } from "rxjs";
-import { CssStyleSheet } from "~/css/lib/stylesheet.js";
-import { Fragment } from "../fragment/fragment.js";
+import type { FragmentElementData } from "@elllphnt/elementa-base";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import type { Observable} from "rxjs";
+import { map, of, switchMap } from "rxjs";
+import type { CssStyleSheet } from "~/css/lib/stylesheet.js";
+import type { Fragment } from "../fragment/fragment.js";
 import { BaseElement } from "./_base.js";
-import { ElementEnvironment } from "./_environment.js";
+import type { ElementEnvironment } from "./_environment.js";
 
 export class FragmentElement extends BaseElement<FragmentElementData> {
   get fragmentId(): string | undefined {

@@ -1,6 +1,6 @@
-import { BaseRenderableContentData } from "@elllphnt/elementa-base";
-import { BaseRenderableContent } from "@elllphnt/elementa-models";
-import { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
+import type { BaseRenderableContentData } from "@elllphnt/elementa-base";
+import type { BaseRenderableContent } from "@elllphnt/elementa-models";
+import type { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
 import { ModelInstance } from "~/instances/model.js";
 import { ElementaEditorInstanceType } from "../_types.js";
 

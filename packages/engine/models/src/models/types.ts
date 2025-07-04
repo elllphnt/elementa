@@ -1,13 +1,13 @@
-import { App } from "./app/app.js";
-import { Component } from "./component/component.js";
-import { PackageSheet } from "./packages/package_sheet.js";
-import { Router } from "./router/router.js";
-import { KeyframeSheet } from "./style/keyframes/keyframe_sheet.js";
-import { StyleModifierSheet } from "./style/style_modifiers/style_modifier_sheet.js";
-import { StyleSystem } from "./style/style_system/style_system.js";
-import { StyleVariableSheet } from "./style/style_variables/style_variable_sheet.js";
-import { Stylesheet } from "./style/stylesheet/stylesheet.js";
-import { TypefaceSheet } from "./style/typefaces/typeface_sheet.js";
+import type { App } from "./app/app.js";
+import type { Component } from "./component/component.js";
+import type { PackageSheet } from "./packages/package_sheet.js";
+import type { Router } from "./router/router.js";
+import type { KeyframeSheet } from "./style/keyframes/keyframe_sheet.js";
+import type { StyleModifierSheet } from "./style/style_modifiers/style_modifier_sheet.js";
+import type { StyleSystem } from "./style/style_system/style_system.js";
+import type { StyleVariableSheet } from "./style/style_variables/style_variable_sheet.js";
+import type { Stylesheet } from "./style/stylesheet/stylesheet.js";
+import type { TypefaceSheet } from "./style/typefaces/typeface_sheet.js";
 
 export const fileModelTypes = {
   app: "app",

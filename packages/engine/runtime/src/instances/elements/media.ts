@@ -1,7 +1,7 @@
-import { MediaElement } from "@elllphnt/elementa-models";
-import { Instance } from "../instance.js";
+import type { MediaElement } from "@elllphnt/elementa-models";
+import type { Instance } from "../instance.js";
 import { BaseElementInstance } from "./_base.js";
-import { ElementRuntimeEnvironment } from "./_environment/environment.js";
+import type { ElementRuntimeEnvironment } from "./_environment/environment.js";
 
 export class MediaElementInstance<
   E extends MediaElement = MediaElement

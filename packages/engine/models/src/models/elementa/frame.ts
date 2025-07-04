@@ -1,14 +1,16 @@
-import { CornerData, ElementaFrameData } from "@elllphnt/elementa-base";
-import { OptionalModel, RecordState } from "@elllphnt/elementa-kernel";
-import { Observable } from "rxjs";
-import { Project } from "~/project/project.js";
+import type { CornerData, ElementaFrameData } from "@elllphnt/elementa-base";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import { OptionalModel } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
+import type { Project } from "~/project/project.js";
 import { Identifiable } from "../identifiable.js";
+import type {
+  RenderableContent} from "./renderable_content/_content.js";
 import {
-  RenderableContent,
   createRenderableContent,
 } from "./renderable_content/_content.js";
 import { RenderingContext } from "./rendering_context.js";
-import { ElementaStage } from "./stage.js";
+import type { ElementaStage } from "./stage.js";
 
 export class ElementaFrame extends Identifiable<
   Omit<ElementaFrameData, "context" | "content">

@@ -1,7 +1,7 @@
 import { Lifecycle } from "@elllphnt/elementa-kernel";
 import { BehaviorSubject } from "rxjs";
-import { IToolManager } from "~/_types/managers/tool_manager.js";
-import { Tool } from "~/primitives/tool.js";
+import type { IToolManager } from "~/_types/managers/tool_manager.js";
+import type { Tool } from "~/primitives/tool.js";
 import { tools } from "~/tools/tools.js";
 
 const toolMap = {

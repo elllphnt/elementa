@@ -1,16 +1,17 @@
 import { logger } from "@elllphnt/elementa-kernel";
-import {
-  AsyncResourceStatus,
+import type {
   Component,
-  FileModelAdaptor,
+  FileModelAdaptor} from "@elllphnt/elementa-models";
+import {
+  AsyncResourceStatus
 } from "@elllphnt/elementa-models";
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import {
+import type {
   ComponentInstance,
   ModelInstanceAdaptor,
 } from "@elllphnt/elementa-runtime";
-import { InstanceRenderableAdaptor } from "../../renderables/adaptors/instance.js";
-import { ComponentRenderable } from "../../renderables/component/component.js";
+import type { InstanceRenderableAdaptor } from "../../renderables/adaptors/instance.js";
+import type { ComponentRenderable } from "../../renderables/component/component.js";
 import ComponentComponent from "../component/component.js";
 
 type RouteViewProps = {

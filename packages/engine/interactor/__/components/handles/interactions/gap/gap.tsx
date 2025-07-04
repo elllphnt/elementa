@@ -1,5 +1,5 @@
 import { useObservable } from "@elllphnt/elementa-utils";
-import { ContainerElementHandle, ElementHandle } from "~/handles/_";
+import type { ContainerElementHandle, ElementHandle } from "~/handles/_";
 import { FlexGapHandle } from "./flex.js";
 
 export function GapHandle({ handle }: { handle: ContainerElementHandle }) {

@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { VectorElementHandle } from "~/handles/_";
+import type { VectorElementHandle } from "~/handles/_";
 import { useHandleDom } from "../_hooks/interaction_target.js";
 import { PaddingMarker } from "../_markers/padding_marker.js";
 

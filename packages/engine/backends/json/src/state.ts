@@ -1,4 +1,5 @@
-import { Backend, Lifecycle, State } from "@elllphnt/elementa-kernel";
+import type { Backend, State } from "@elllphnt/elementa-kernel";
+import { Lifecycle } from "@elllphnt/elementa-kernel";
 
 export class JsonState extends Lifecycle implements State {
   public readonly backend: Backend;

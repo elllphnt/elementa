@@ -1,4 +1,4 @@
-import { CssStyleRule, RuleCssStyleSheet } from "@elllphnt/elementa-models";
+import type { CssStyleRule, RuleCssStyleSheet } from "@elllphnt/elementa-models";
 import { BehaviorSubject, map } from "rxjs";
 import { styleLogger } from "../../../../loggers.js";
 import { DomStyleSheetAdaptor } from "../stylesheet.js";

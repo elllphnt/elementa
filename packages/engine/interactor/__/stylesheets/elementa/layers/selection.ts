@@ -1,4 +1,4 @@
-import { Theme } from "~/theme/theme";
+import type { Theme } from "~/theme/theme";
 
 export const selectionLayerStyleSheet = (theme: Theme) => /* css */ `
     .elementa-selection {

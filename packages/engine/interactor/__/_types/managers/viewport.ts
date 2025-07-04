@@ -1,4 +1,4 @@
-import {
+import type {
   DeepPartial,
   Lifecycle,
   PointData,
@@ -6,7 +6,7 @@ import {
   RectData,
   VectorData,
 } from "@elllphnt/elementa-utils";
-import { Observable } from "rxjs";
+import type { Observable } from "rxjs";
 
 export type ViewportData = {
   pan: VectorData;

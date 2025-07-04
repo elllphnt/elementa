@@ -1,4 +1,4 @@
-import { DropOptions, Handle } from "./_.js";
+import type { DropOptions, Handle } from "./_.js";
 
 export interface IHost {
   acceptDrop(

@@ -1,10 +1,11 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { PropsWithChildren, ReactNode } from "react";
+import type { PropsWithChildren, ReactNode } from "react";
 import { useNamespace } from "../../../hooks/namespace.js";
 import { renderingLogger } from "../../../loggers.js";
-import { ExpressionElementRenderable } from "../../../renderables/element/expression.js";
+import type { ExpressionElementRenderable } from "../../../renderables/element/expression.js";
+import type {
+  BaseElementProps} from "../base/context.js";
 import {
-  BaseElementProps,
   BaseElementPropsContext,
   useBaseElementProps,
 } from "../base/context.js";

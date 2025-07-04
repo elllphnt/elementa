@@ -1,22 +1,23 @@
-import {
+import type {
   Component,
   FileModelAdaptor,
   RouteTree,
   SlotFill,
 } from "@elllphnt/elementa-models";
+import type {
+  Observable} from "rxjs";
 import {
   BehaviorSubject,
   combineLatest,
   map,
-  Observable,
   of,
   switchMap,
 } from "rxjs";
 import { ModelInstanceAdaptor } from "~/instances/adaptors/model.js";
 import { ComponentInstance } from "~/instances/component/component.js";
 import { ComponentInputResolver } from "~/instances/component/input_resolver/input_resolver.js";
-import { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
-import { Instance } from "../../../instance.js";
+import type { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
+import type { Instance } from "../../../instance.js";
 import { BaseRouteHandler } from "./_base.js";
 
 export class RouteComponentPropResolver extends ComponentInputResolver {

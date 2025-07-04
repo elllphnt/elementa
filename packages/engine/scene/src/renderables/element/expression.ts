@@ -1,5 +1,5 @@
-import { ExpressionElementInstance } from "@elllphnt/elementa-runtime";
-import { Scene } from "../../scene/scene.js";
+import type { ExpressionElementInstance } from "@elllphnt/elementa-runtime";
+import type { Scene } from "../../scene/scene.js";
 import { ElementRenderable } from "./element.js";
 
 export class ExpressionElementRenderable extends ElementRenderable<ExpressionElementInstance> {

@@ -1,8 +1,9 @@
-import { ComponentRenderableContentData } from "@elllphnt/elementa-base";
-import { RecordState } from "@elllphnt/elementa-kernel";
-import { map, Observable } from "rxjs";
-import { FileModelAdaptor } from "~/project/file/model_adaptor.js";
-import { ElementaEnvironment } from "../environment.js";
+import type { ComponentRenderableContentData } from "@elllphnt/elementa-base";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
+import { map } from "rxjs";
+import type { FileModelAdaptor } from "~/project/file/model_adaptor.js";
+import type { ElementaEnvironment } from "../environment.js";
 import { BaseRenderableContent } from "./_base.js";
 
 export class ComponentRenderableContent extends BaseRenderableContent<ComponentRenderableContentData> {

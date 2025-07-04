@@ -1,6 +1,6 @@
-import { RenderableContentRenderable } from "@elllphnt/elementa-scene";
-import { Handle } from "~/_types/_";
-import { ElementaInteractor } from "~/_types/interactor";
+import type { RenderableContentRenderable } from "@elllphnt/elementa-scene";
+import type { Handle } from "~/_types/_";
+import type { ElementaInteractor } from "~/_types/interactor";
 import { RenderableHandle } from "./renderable.js";
 
 export class RenderableContentHandle extends RenderableHandle<RenderableContentRenderable> {

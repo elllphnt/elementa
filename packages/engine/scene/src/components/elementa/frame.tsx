@@ -1,6 +1,6 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { JSX } from "react";
-import { ElementaFrameRenderable } from "../../renderables/elementa/stage/frame.js";
+import type { JSX } from "react";
+import type { ElementaFrameRenderable } from "../../renderables/elementa/stage/frame.js";
 import { RenderableContentComponent } from "./content/_content.js";
 
 export function FrameComponent({

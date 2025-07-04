@@ -1,6 +1,6 @@
-import { CornerName } from "@elllphnt/elementa-base";
-import { Observable } from "rxjs";
-import { Handle } from "../handle.js";
+import type { CornerName } from "@elllphnt/elementa-base";
+import type { Observable } from "rxjs";
+import type { Handle } from "../handle.js";
 
 export interface ICornerHandle extends Handle {
   corner<C extends CornerName>(name: C): number | undefined;

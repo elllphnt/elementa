@@ -1,5 +1,5 @@
-import { PropsWithChildren } from "react";
-import { PrimitiveElementRenderable } from "../../../renderables/element/primitive.js";
+import type { PropsWithChildren } from "react";
+import type { PrimitiveElementRenderable } from "../../../renderables/element/primitive.js";
 import {
   BaseElementPropsContext,
   useBaseElementProps,

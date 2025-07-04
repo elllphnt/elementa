@@ -1,5 +1,5 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
 import { useBaseElementProps } from "../base/context.js";
 
 export function LinkProvider({ children }: PropsWithChildren) {

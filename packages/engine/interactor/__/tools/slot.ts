@@ -1,5 +1,7 @@
-import { ElementData, entityTypes } from "@elllphnt/elementa-base";
-import { Component, Element, SlotElement } from "@elllphnt/elementa-models";
+import type { ElementData} from "@elllphnt/elementa-base";
+import { entityTypes } from "@elllphnt/elementa-base";
+import type { Component, Element} from "@elllphnt/elementa-models";
+import { SlotElement } from "@elllphnt/elementa-models";
 import { ElementTool } from "./element.js";
 
 export class SlotTool extends ElementTool {

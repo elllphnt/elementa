@@ -1,5 +1,5 @@
-import { StyleData, StylePropertyName } from "@elllphnt/elementa-base";
-import { Observable } from "rxjs";
+import type { StyleData, StylePropertyName } from "@elllphnt/elementa-base";
+import type { Observable } from "rxjs";
 
 export abstract class RenderedStyle {
   abstract resolvedCascadePropertyValues<N extends StylePropertyName>(

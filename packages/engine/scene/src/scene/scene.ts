@@ -1,9 +1,9 @@
 import { Lifecycle } from "@elllphnt/elementa-kernel";
 import { pairwiseOrEmpty } from "@elllphnt/elementa-lang-utils";
-import { Fragment, Project } from "@elllphnt/elementa-models";
-import { Subscription } from "rxjs";
+import type { Fragment, Project } from "@elllphnt/elementa-models";
+import type { Subscription } from "rxjs";
 import { styleLogger } from "../loggers.js";
-import { DomStyleSheetManager } from "../style/dom/manager.js";
+import type { DomStyleSheetManager } from "../style/dom/manager.js";
 import { systemStylesheet } from "./stylesheet/stylesheet.js";
 
 type RefCountedSubscription = {

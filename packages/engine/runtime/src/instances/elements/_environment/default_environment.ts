@@ -1,4 +1,4 @@
-import { StyleModifierData } from "@elllphnt/elementa-base";
+import type { StyleModifierData } from "@elllphnt/elementa-base";
 import { of } from "rxjs";
 import { ElementRuntimeEnvironment } from "./environment.js";
 

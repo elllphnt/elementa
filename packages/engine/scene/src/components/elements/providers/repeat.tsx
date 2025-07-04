@@ -1,9 +1,9 @@
-import { Evaluable } from "@elllphnt/elementa-base";
+import type { Evaluable } from "@elllphnt/elementa-base";
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { ComponentType } from "react";
+import type { ComponentType } from "react";
 import { NamespaceContext } from "../../../contexts/namespace.js";
 import { useNamespace } from "../../../hooks/namespace.js";
-import { ElementRenderable } from "../../../renderables/element/element.js";
+import type { ElementRenderable } from "../../../renderables/element/element.js";
 
 function RepeatedComponentItem({
   data,

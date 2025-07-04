@@ -1,4 +1,4 @@
-import { FunctionRouteHandler } from "./function.js";
-import { PageRouteHandler } from "./page.js";
+import type { FunctionRouteHandler } from "./function.js";
+import type { PageRouteHandler } from "./page.js";
 
 export type RouteHandler = PageRouteHandler | FunctionRouteHandler;

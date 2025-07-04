@@ -1,12 +1,12 @@
-import {
+import type {
   Lifecycle,
   PointData,
   Rect,
   RectData,
   VectorData,
 } from "@elllphnt/elementa-utils";
-import { Observable } from "rxjs";
-import { ElementaInteractor } from "../interactor.js";
+import type { Observable } from "rxjs";
+import type { ElementaInteractor } from "../interactor.js";
 
 export interface IInterface extends Lifecycle {
   readonly interactor: ElementaInteractor;

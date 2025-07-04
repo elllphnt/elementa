@@ -1,7 +1,7 @@
-import { FragmentInstance } from "@elllphnt/elementa-runtime";
+import type { FragmentInstance } from "@elllphnt/elementa-runtime";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { FragmentRenderable } from "../../src/renderables/fragment.js";
-import { Scene } from "../../src/scene/scene.js";
+import type { FragmentRenderable } from "../../src/renderables/fragment.js";
+import type { Scene } from "../../src/scene/scene.js";
 
 describe("FragmentRenderable", () => {
   let fragmentRenderable: FragmentRenderable;

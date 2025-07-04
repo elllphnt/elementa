@@ -1,7 +1,9 @@
 import { reconcileList } from "@elllphnt/elementa-kernel";
-import { RouteTreeInstance } from "@elllphnt/elementa-runtime";
-import { createRoute, RootRoute, Route } from "@tanstack/react-router";
-import React, { createElement } from "react";
+import type { RouteTreeInstance } from "@elllphnt/elementa-runtime";
+import type { RootRoute, Route } from "@tanstack/react-router";
+import { createRoute } from "@tanstack/react-router";
+import type React from "react";
+import { createElement } from "react";
 import {
   BehaviorSubject,
   combineLatest,
@@ -11,7 +13,7 @@ import {
   switchMap,
 } from "rxjs";
 import { RouteViewComponent } from "../../components/app/route_view.js";
-import { Scene } from "../../scene/scene.js";
+import type { Scene } from "../../scene/scene.js";
 import { Renderable } from "../renderable.js";
 import { RouteHandlerRenderable } from "./route_handler.js";
 

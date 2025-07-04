@@ -1,6 +1,7 @@
-import { Observable, of } from "rxjs";
+import type { Observable} from "rxjs";
+import { of } from "rxjs";
 import { FragmentInputResolver } from "./input_resolver.js";
-import { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
+import type { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
 
 export class StaticFragmentInputResolver extends FragmentInputResolver {
   private _params: { [key: string]: unknown };

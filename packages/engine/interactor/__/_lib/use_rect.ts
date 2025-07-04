@@ -1,4 +1,5 @@
-import { RefObject, useEffect, useState } from "react";
+import type { RefObject} from "react";
+import { useEffect, useState } from "react";
 
 export function useRect(ref: RefObject<HTMLElement | undefined | null>) {
   const [rect, setRect] = useState<DOMRect | undefined>(undefined);

@@ -1,17 +1,19 @@
 import { reconcileList } from "@elllphnt/elementa-kernel";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import { SlotElement } from "@elllphnt/elementa-models";
+import type { SlotElement } from "@elllphnt/elementa-models";
+import type {
+  Observable} from "rxjs";
 import {
   BehaviorSubject,
   combineLatest,
   map,
-  Observable,
   switchMap,
 } from "rxjs";
-import { Instance } from "../instance.js";
+import type { Instance } from "../instance.js";
 import { BaseElementInstance } from "./_base.js";
-import { createElementInstance, ElementInstance } from "./_element.js";
-import { ElementRuntimeEnvironment } from "./_environment/environment.js";
+import type { ElementInstance } from "./_element.js";
+import { createElementInstance } from "./_element.js";
+import type { ElementRuntimeEnvironment } from "./_environment/environment.js";
 
 export class SlotElementInstance extends BaseElementInstance<SlotElement> {
   private _placeholder$ = new BehaviorSubject<ElementInstance[]>([]);

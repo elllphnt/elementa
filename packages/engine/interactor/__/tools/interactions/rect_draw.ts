@@ -1,6 +1,6 @@
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import { PointData, RectData } from "@elllphnt/elementa-math-utils";
-import { ElementaInteractor } from "~/interactor.js";
+import type { PointData, RectData } from "@elllphnt/elementa-math-utils";
+import type { ElementaInteractor } from "~/interactor.js";
 import { MouseInteraction } from "./mouse.js";
 
 export type RectDrawInteraction = {

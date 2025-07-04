@@ -1,7 +1,7 @@
-import { Element } from "@elllphnt/elementa-models";
+import type { Element } from "@elllphnt/elementa-models";
 
-import { Instance } from "../instance.js";
-import { ElementRuntimeEnvironment } from "./_environment/environment.js";
+import type { Instance } from "../instance.js";
+import type { ElementRuntimeEnvironment } from "./_environment/environment.js";
 import { ComponentElementInstance } from "./component/component.js";
 import { ContainerElementInstance } from "./container.js";
 import { ExpressionElementInstance } from "./expression.js";

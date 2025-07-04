@@ -1,28 +1,32 @@
-import {
-  baseSelector,
-  isVarRef,
+import type {
   RawStyleData,
   StyleData,
   StylePropertyName,
   UnsettableStyleData,
-  VariableStyleData,
-} from "@elllphnt/elementa-base";
+  VariableStyleData} from "@elllphnt/elementa-base";
 import {
+  baseSelector,
+  isVarRef
+} from "@elllphnt/elementa-base";
+import type {
   CssStyleData,
-  styleToCss,
-  StyleToCssContext,
+  StyleToCssContext} from "@elllphnt/elementa-css";
+import {
+  styleToCss
 } from "@elllphnt/elementa-css";
-import { Model, RecordState } from "@elllphnt/elementa-kernel";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import { Model } from "@elllphnt/elementa-kernel";
+import type {
+  Observable} from "rxjs";
 import {
   BehaviorSubject,
   combineLatest,
   map,
-  Observable,
   of,
   switchMap,
 } from "rxjs";
-import { Project } from "~/project/project.js";
-import { StyleFragmentRegistry } from "./style_fragment_registry.js";
+import type { Project } from "~/project/project.js";
+import type { StyleFragmentRegistry } from "./style_fragment_registry.js";
 
 export class Style extends Model<RecordState<StyleData>> {
   readonly selector: string;

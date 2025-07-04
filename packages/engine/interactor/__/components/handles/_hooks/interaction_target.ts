@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Handle } from "~/handles/handle";
+import type { Handle } from "~/handles/handle";
 
 export function useHandleDom(handle: Handle) {
   const rectsRef = useRef<(string | null)[]>([]);

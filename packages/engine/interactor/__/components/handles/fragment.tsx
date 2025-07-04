@@ -1,6 +1,6 @@
 import { useObservable } from "@elllphnt/elementa-utils";
-import { ElementHandle } from "~/handles/_";
-import { FragmentHandle } from "~/handles/fragment";
+import type { ElementHandle } from "~/handles/_";
+import type { FragmentHandle } from "~/handles/fragment";
 import { ElementHandleComponent } from "./element/element.js";
 import { SlotHandleComponent } from "./slot.js";
 

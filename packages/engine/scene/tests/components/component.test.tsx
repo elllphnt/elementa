@@ -1,4 +1,4 @@
-import { ComponentData } from "@elllphnt/elementa-base";
+import type { ComponentData } from "@elllphnt/elementa-base";
 import {
   attachComponent,
   attachValueState,

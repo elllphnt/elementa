@@ -1,8 +1,9 @@
 import { logger } from "@elllphnt/elementa-kernel";
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { JSX, memo, PropsWithChildren } from "react";
+import type { JSX, PropsWithChildren } from "react";
+import { memo } from "react";
 import { renderingLogger } from "../../loggers.js";
-import { ComponentRenderable } from "../../renderables/component/component.js";
+import type { ComponentRenderable } from "../../renderables/component/component.js";
 import ElementComponent from "../elements/element.js";
 import { ChildrenNamespaceProvider } from "../namespaces/children.js";
 import { FragmentsNamespaceProvider } from "../namespaces/fragments.js";

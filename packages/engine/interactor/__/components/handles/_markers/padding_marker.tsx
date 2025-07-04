@@ -1,13 +1,14 @@
+import type {
+  LengthData} from "@elllphnt/elementa-base";
 import {
   extractEvaluable,
-  LengthData,
   stringifyLength,
 } from "@elllphnt/elementa-base";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 import { useEffect, useRef } from "react";
 import { map, switchMap } from "rxjs";
 import { ElementaEditorMode } from "~/_lib/mode";
-import { ElementHandle } from "~/handles/_";
+import type { ElementHandle } from "~/handles/_";
 import { useElementaInteractor } from "~/hooks/elementa_interactor";
 import { useEditorMode } from "../_hooks/mode.js";
 

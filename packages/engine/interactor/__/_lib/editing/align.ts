@@ -1,5 +1,5 @@
 import { Rect } from "@elllphnt/elementa-math-utils";
-import { Handle } from "~/handles/handle";
+import type { Handle } from "~/handles/handle";
 
 export function alignHandles(
   handles: Handle[],

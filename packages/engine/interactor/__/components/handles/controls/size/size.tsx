@@ -1,4 +1,4 @@
-import { IResizableHandle } from "~/_types/handles/properties/resizable";
+import type { IResizableHandle } from "~/_types/handles/properties/resizable";
 import { SizeInput } from "./input.js";
 
 export function SizeControl({ handles }: { handles: IResizableHandle[] }) {

@@ -1,6 +1,6 @@
-import { FragmentRenderableContentInstance } from "@elllphnt/elementa-runtime";
+import type { FragmentRenderableContentInstance } from "@elllphnt/elementa-runtime";
 import { BehaviorSubject } from "rxjs";
-import { Scene } from "../../../scene/scene.js";
+import type { Scene } from "../../../scene/scene.js";
 import { FragmentRenderable } from "../../fragment.js";
 import { Renderable } from "../../renderable.js";
 

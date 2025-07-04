@@ -1,5 +1,6 @@
-import { Model, State } from "@elllphnt/elementa-kernel";
-import { Project } from "~/project/project.js";
+import type { State } from "@elllphnt/elementa-kernel";
+import { Model } from "@elllphnt/elementa-kernel";
+import type { Project } from "~/project/project.js";
 
 export class ProjectModel<S extends State> extends Model<S> {
   readonly project: Project;

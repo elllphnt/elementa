@@ -1,6 +1,7 @@
 import { Rect } from "@elllphnt/elementa-math-utils";
-import { IMovableHandle } from "~/_types/handles/properties/movable";
-import { Handle, handleProperties } from "~/handles/_";
+import type { IMovableHandle } from "~/_types/handles/properties/movable";
+import type { Handle} from "~/handles/_";
+import { handleProperties } from "~/handles/_";
 
 export function distributeHandles(renderables: Handle[], axis: "x" | "y") {
   if (renderables.length <= 2) return;

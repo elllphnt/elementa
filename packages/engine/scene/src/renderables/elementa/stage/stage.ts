@@ -1,11 +1,12 @@
 import { reconcileList } from "@elllphnt/elementa-kernel";
 import { TextCssStyleSheet } from "@elllphnt/elementa-models";
-import { ElementaStageInstance } from "@elllphnt/elementa-runtime";
+import type { ElementaStageInstance } from "@elllphnt/elementa-runtime";
 import { BehaviorSubject, combineLatest, map } from "rxjs";
-import { Scene } from "../../../scene/scene.js";
+import type { Scene } from "../../../scene/scene.js";
 import { Renderable } from "../../renderable.js";
 import { ElementaFrameRenderable } from "./frame.js";
-import { css, Theme } from "./stylesheet.js";
+import type { Theme } from "./stylesheet.js";
+import { css } from "./stylesheet.js";
 import { StageViewport } from "./viewport.js";
 
 export class ElementaStageRenderable extends Renderable {

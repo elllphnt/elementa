@@ -1,5 +1,5 @@
 import { commands } from "../commands/commands.js";
-import { KeyMapping } from "./keymapper.js";
+import type { KeyMapping } from "./keymapper.js";
 
 export const defaultKeymap: KeyMapping[] = [
   // component

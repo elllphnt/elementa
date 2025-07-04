@@ -1,17 +1,20 @@
-import { ElementData, Expression, SlotFillData } from "@elllphnt/elementa-base";
+import type { ElementData, Expression, SlotFillData } from "@elllphnt/elementa-base";
+import type {
+  RecordState} from "@elllphnt/elementa-kernel";
 import {
   AggregatedModelList,
-  Model,
-  RecordState,
+  Model
 } from "@elllphnt/elementa-kernel";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import { combineLatest, map, Observable, of, switchMap } from "rxjs";
-import { CssStyleSheet } from "~/css/lib/stylesheet.js";
+import type { Observable} from "rxjs";
+import { combineLatest, map, of, switchMap } from "rxjs";
+import type { CssStyleSheet } from "~/css/lib/stylesheet.js";
 import { StylesheetCssStyleSheet } from "~/css/stylesheets/stylesheet/stylesheet.js";
-import { Project } from "~/project/project.js";
+import type { Project } from "~/project/project.js";
 import { Stylesheet } from "../../style/stylesheet/stylesheet.js";
-import { createElement, Element } from "../_element.js";
-import { ElementEnvironment } from "../_environment.js";
+import type { Element } from "../_element.js";
+import { createElement } from "../_element.js";
+import type { ElementEnvironment } from "../_environment.js";
 
 export class SlotFill extends Model<RecordState<SlotFillData>> {
   readonly environment: ElementEnvironment;

@@ -1,8 +1,8 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { PropsWithChildren, ReactNode } from "react";
+import type { PropsWithChildren, ReactNode } from "react";
 import { useNamespace } from "../../../hooks/namespace.js";
 import { renderingLogger } from "../../../loggers.js";
-import { FragmentElementRenderable } from "../../../renderables/element/fragment.js";
+import type { FragmentElementRenderable } from "../../../renderables/element/fragment.js";
 import {
   BaseElementPropsContext,
   useBaseElementProps,

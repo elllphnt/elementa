@@ -1,6 +1,6 @@
 import { Lifecycle } from "@elllphnt/elementa-kernel";
-import { ElementaInteractor } from "~/_types/interactor.js";
-import { CommandHandler, ICommandManager } from "~/_types/managers/command.js";
+import type { ElementaInteractor } from "~/_types/interactor.js";
+import type { CommandHandler, ICommandManager } from "~/_types/managers/command.js";
 
 export class CommandManager extends Lifecycle implements ICommandManager {
   private _commands: Map<string, CommandHandler> = new Map();

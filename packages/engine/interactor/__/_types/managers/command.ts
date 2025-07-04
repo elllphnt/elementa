@@ -1,5 +1,5 @@
-import { Lifecycle } from "@elllphnt/elementa-utils";
-import { ElementaInteractor } from "../interactor.js";
+import type { Lifecycle } from "@elllphnt/elementa-utils";
+import type { ElementaInteractor } from "../interactor.js";
 
 export type CommandHandler<A extends any[] = unknown[]> = (
   interactor: ElementaInteractor,

@@ -1,6 +1,7 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { useElementaInteractor } from "~/hooks/elementa_interactor";
-import { LineMarker, Marker, RectMarker } from "~/primitives/markers";
+import type { Marker} from "~/primitives/markers";
+import { LineMarker, RectMarker } from "~/primitives/markers";
 
 export function RectMarkerView({ marker }: { marker: RectMarker }) {
   const x = useObservable(marker.x$, marker.x);

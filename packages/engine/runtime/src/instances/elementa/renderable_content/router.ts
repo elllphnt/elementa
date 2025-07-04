@@ -1,13 +1,14 @@
-import { RouterRenderableContent } from "@elllphnt/elementa-models";
+import type { RouterRenderableContent } from "@elllphnt/elementa-models";
+import type {
+  Observable} from "rxjs";
 import {
   BehaviorSubject,
   combineLatest,
   map,
-  Observable,
   of,
   switchMap,
 } from "rxjs";
-import { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
+import type { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
 import { RouterInstance } from "~/instances/router/router.js";
 import { BaseRenderableContentInstance } from "./_base.js";
 

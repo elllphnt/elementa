@@ -1,7 +1,7 @@
-import { PackageData } from "@elllphnt/elementa-base";
+import type { PackageData } from "@elllphnt/elementa-base";
 import { Lifecycle } from "@elllphnt/elementa-kernel";
 import { firstValueFrom, of, switchMap, timeout } from "rxjs";
-import { Project } from "../project.js";
+import type { Project } from "../project.js";
 
 export class PackageManager extends Lifecycle {
   project: Project;

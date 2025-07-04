@@ -1,8 +1,8 @@
 import { Lifecycle } from "@elllphnt/elementa-kernel";
 import { pairwiseOrEmpty } from "@elllphnt/elementa-lang-utils";
 import { BehaviorSubject } from "rxjs";
-import { ElementaInteractor, Handle } from "../_types/_.js";
-import { EventListenerData } from "./handle.js";
+import type { ElementaInteractor, Handle } from "../_types/_.js";
+import type { EventListenerData } from "./handle.js";
 
 export class HandleInteractionTarget extends Lifecycle {
   static key = 0;

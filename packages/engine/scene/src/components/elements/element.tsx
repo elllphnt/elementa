@@ -1,6 +1,6 @@
 import { memo, useMemo } from "react";
 import { renderingLogger } from "../../loggers.js";
-import { ElementRenderable } from "../../renderables/element/element.js";
+import type { ElementRenderable } from "../../renderables/element/element.js";
 import { ElementErrorBoundary } from "./_/_error_boundary.js";
 import { BaseElementComponent } from "./base/base_element.js";
 import { BaseElementPropsContext } from "./base/context.js";

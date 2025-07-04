@@ -1,7 +1,7 @@
-import { SlotFillInstance } from "@elllphnt/elementa-runtime";
+import type { SlotFillInstance } from "@elllphnt/elementa-runtime";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { SlotRenderable } from "../../src/renderables/slot_fill.js";
-import { Scene } from "../../src/scene/scene.js";
+import type { SlotRenderable } from "../../src/renderables/slot_fill.js";
+import type { Scene } from "../../src/scene/scene.js";
 
 describe("SlotRenderable", () => {
   let slotRenderable: SlotRenderable;

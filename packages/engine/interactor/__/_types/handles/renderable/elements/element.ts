@@ -1,13 +1,13 @@
-import { CornerName, EdgeName, PositionValue } from "@elllphnt/elementa-base";
+import type { CornerName, EdgeName, PositionValue } from "@elllphnt/elementa-base";
 import type { ElementRenderable } from "@elllphnt/elementa-scene";
-import { PointData, RectData } from "@elllphnt/elementa-utils";
-import { Observable } from "rxjs";
-import { Handle } from "../../handle.js";
-import { ICornerHandle } from "../../properties/corner.js";
-import { IMovableHandle } from "../../properties/movable.js";
-import { IResizableHandle } from "../../properties/resizable.js";
-import { IFragmentHandle } from "../fragment.js";
-import { RenderableHandle } from "../renderable.js";
+import type { PointData, RectData } from "@elllphnt/elementa-utils";
+import type { Observable } from "rxjs";
+import type { Handle } from "../../handle.js";
+import type { ICornerHandle } from "../../properties/corner.js";
+import type { IMovableHandle } from "../../properties/movable.js";
+import type { IResizableHandle } from "../../properties/resizable.js";
+import type { IFragmentHandle } from "../fragment.js";
+import type { RenderableHandle } from "../renderable.js";
 
 export interface IElementHandle<R extends ElementRenderable = ElementRenderable>
   extends RenderableHandle<R>,

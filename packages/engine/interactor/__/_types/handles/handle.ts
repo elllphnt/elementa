@@ -1,9 +1,9 @@
-import { EdgeName } from "@elllphnt/elementa-base";
-import { Lifecycle, Rect } from "@elllphnt/elementa-utils";
-import { Observable } from "rxjs";
-import { EventListenerData } from "~/handles/_";
-import { ElementaInteractor } from "../interactor.js";
-import { IHandleRect, ILayoutUpdatePropagation } from "./handle_rect.js";
+import type { EdgeName } from "@elllphnt/elementa-base";
+import type { Lifecycle, Rect } from "@elllphnt/elementa-utils";
+import type { Observable } from "rxjs";
+import type { EventListenerData } from "~/handles/_";
+import type { ElementaInteractor } from "../interactor.js";
+import type { IHandleRect, ILayoutUpdatePropagation } from "./handle_rect.js";
 
 export type DropOptions = {
   position?: { x: number; y: number };

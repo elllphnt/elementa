@@ -1,11 +1,11 @@
-import {
+import type {
   DimensionData,
   FlexData,
   LengthData,
   PercentData,
 } from "@elllphnt/elementa-base";
-import { Observable } from "rxjs";
-import { IResizableHandle } from "~/_types/handles/properties/resizable";
+import type { Observable } from "rxjs";
+import type { IResizableHandle } from "~/_types/handles/properties/resizable";
 import { StylePropertySizeInput } from "./style_property.js";
 
 export function SizeInput({

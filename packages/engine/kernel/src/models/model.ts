@@ -1,4 +1,4 @@
-import { State } from "~/state/state.js";
+import type { State } from "~/state/state.js";
 import { Lifecycle } from "../lifecycle.js";
 
 export abstract class Model<S extends State = State> extends Lifecycle {

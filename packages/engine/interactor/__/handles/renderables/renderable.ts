@@ -2,12 +2,12 @@ import {
   combineLatestOrEmpty,
   pairwiseOrEmpty,
 } from "@elllphnt/elementa-lang-utils";
-import { Renderable } from "@elllphnt/elementa-scene";
+import type { Renderable } from "@elllphnt/elementa-scene";
 import _ from "lodash";
-import { Observable } from "rxjs";
+import type { Observable } from "rxjs";
 import { Handle } from "~/_types/handles/handle.js";
 import { RenderableHandle } from "~/_types/handles/renderable/renderable.js";
-import { ElementaInteractor } from "~/_types/interactor.js";
+import type { ElementaInteractor } from "~/_types/interactor.js";
 import { HandleRect, LayoutUpdatePropagation } from "../_handle_rect.js";
 import { handleProperties } from "../_libs/properties.js";
 

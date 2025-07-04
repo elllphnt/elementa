@@ -1,14 +1,16 @@
 import { reconcileList } from "@elllphnt/elementa-kernel";
 import { debounce } from "@elllphnt/elementa-lang-utils";
-import { RouterInstance } from "@elllphnt/elementa-runtime";
-import {
-  createRootRoute,
+import type { RouterInstance } from "@elllphnt/elementa-runtime";
+import type {
   RootRoute,
   Route,
-  RouterHistory,
+  RouterHistory} from "@tanstack/react-router";
+import {
+  createRootRoute
 } from "@tanstack/react-router";
-import { BehaviorSubject, Observable } from "rxjs";
-import { Scene } from "../../scene/scene.js";
+import type { Observable } from "rxjs";
+import { BehaviorSubject } from "rxjs";
+import type { Scene } from "../../scene/scene.js";
 import { Renderable } from "../renderable.js";
 import { RouteTreeRenderable } from "./route.js";
 

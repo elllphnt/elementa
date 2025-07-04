@@ -1,13 +1,14 @@
 import { Lifecycle } from "@elllphnt/elementa-kernel";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import {
+import type {
   PointData,
-  Rect,
   RectData,
-  VectorData,
+  VectorData} from "@elllphnt/elementa-math-utils";
+import {
+  Rect
 } from "@elllphnt/elementa-math-utils";
 import { BehaviorSubject, distinctUntilChanged, map, of } from "rxjs";
-import { ElementaInteractor, IInterface } from "./_types/_.js";
+import type { ElementaInteractor, IInterface } from "./_types/_.js";
 
 const MAX_WHEEL_DELTA = 20;
 

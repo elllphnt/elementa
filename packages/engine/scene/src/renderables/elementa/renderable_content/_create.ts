@@ -1,10 +1,11 @@
+import type {
+  RenderableContentInstance} from "@elllphnt/elementa-runtime";
 import {
   ComponentRenderableContentInstance,
   FragmentRenderableContentInstance,
-  RenderableContentInstance,
   RouterRenderableContentInstance,
 } from "@elllphnt/elementa-runtime";
-import { Scene } from "../../../scene/scene.js";
+import type { Scene } from "../../../scene/scene.js";
 import { ComponentRenderableContentRenderable } from "./component.js";
 import { FragmentRenderableContentRenderable } from "./fragment.js";
 import { RouterRenderableContentRenderable } from "./router.js";

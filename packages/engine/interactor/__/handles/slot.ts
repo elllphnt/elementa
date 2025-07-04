@@ -1,9 +1,10 @@
-import { BehaviorSubject, map, Observable, of } from "rxjs";
+import type { Observable} from "rxjs";
+import { BehaviorSubject, map, of } from "rxjs";
 import { makeEntityDropType } from "~/_lib/droptypes";
 import { makeElementHandle, updateEntityHandleList } from "~/_lib/handles";
-import { IElementHandle, ILayoutUpdatePropagation } from "~/_types/_";
-import { DropOptions, Handle } from "~/_types/handles/handle";
-import { IFragmentHandle } from "~/_types/handles/renderable/fragment";
+import type { IElementHandle, ILayoutUpdatePropagation } from "~/_types/_";
+import type { DropOptions, Handle } from "~/_types/handles/handle";
+import type { IFragmentHandle } from "~/_types/handles/renderable/fragment";
 import { handleProperties, handleTypes } from "~/handles/_";
 import { StylableHandle } from "./_stylable.js";
 
@@ -107,7 +108,7 @@ export class SlotHandle extends StylableHandle<SlotRenderable> {
   }
 
   handleEntityDrop(entities: Entity[], options?: DropOptions): Handle[] {
-    let elements: Element[] = [];
+    const elements: Element[] = [];
     entities.forEach((entity) => {
       if (entity === this.entity) {
         return;

@@ -1,5 +1,5 @@
-import { JSX } from "react";
-import { ElementaInteractor } from "~/interactor";
+import type { JSX } from "react";
+import type { ElementaInteractor } from "~/interactor";
 import { ElementaInteractorContext } from "../contexts/elementa_interactor.js";
 import Interface from "./interface.js";
 import { ContentHandleLayer } from "./layers/content/handle.js";

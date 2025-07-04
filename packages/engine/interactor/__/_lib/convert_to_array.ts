@@ -1,4 +1,4 @@
-import { ElementHandle } from "../handles/elements/element.js";
+import type { ElementHandle } from "../handles/elements/element.js";
 
 export function convertElementsToArray(element: ElementHandle) {
   // // get container

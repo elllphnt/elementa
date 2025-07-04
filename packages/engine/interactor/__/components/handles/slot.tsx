@@ -1,7 +1,7 @@
 import { useObservable } from "@elllphnt/elementa-utils";
 import cx from "classnames";
 import { memo } from "react";
-import { SlotHandle } from "~/handles/slot";
+import type { SlotHandle } from "~/handles/slot";
 import { useHandleDom } from "./_hooks/interaction_target.js";
 import { ElementHandleComponent } from "./element/element.js";
 

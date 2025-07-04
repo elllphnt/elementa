@@ -1,19 +1,22 @@
 import { reconcileList } from "@elllphnt/elementa-kernel";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import { SlotFill } from "@elllphnt/elementa-models";
+import type { SlotFill } from "@elllphnt/elementa-models";
+import type {
+  Observable} from "rxjs";
 import {
   BehaviorSubject,
   combineLatest,
   map,
-  Observable,
   switchMap,
 } from "rxjs";
+import type {
+  ElementInstance} from "../elements/_element.js";
 import {
-  createElementInstance,
-  ElementInstance,
+  createElementInstance
 } from "../elements/_element.js";
-import { ElementRuntimeEnvironment } from "../elements/_environment/environment.js";
-import { ElementaInstanceType, Instance } from "../instance.js";
+import type { ElementRuntimeEnvironment } from "../elements/_environment/environment.js";
+import type { Instance } from "../instance.js";
+import { ElementaInstanceType } from "../instance.js";
 import { ModelInstance } from "../model.js";
 import { StyleSheetInstance } from "../stylesheet/stylesheet.js";
 

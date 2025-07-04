@@ -1,6 +1,6 @@
 import { useObservable } from "@elllphnt/elementa-utils";
-import { PropsWithChildren, ReactNode } from "react";
-import { ElementHandle } from "~/handles/_";
+import type { PropsWithChildren, ReactNode } from "react";
+import type { ElementHandle } from "~/handles/_";
 import { useHandleDom } from "../_hooks/interaction_target.js";
 
 export function BaseElementHandleComponent({

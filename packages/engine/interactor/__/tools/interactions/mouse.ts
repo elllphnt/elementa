@@ -2,7 +2,7 @@ import {
   combineLatestOrEmpty,
   pairwiseOrEmpty,
 } from "@elllphnt/elementa-lang-utils";
-import { VectorData } from "@elllphnt/elementa-math-utils";
+import type { VectorData } from "@elllphnt/elementa-math-utils";
 import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
 import { Interaction } from "./interaction.js";
 

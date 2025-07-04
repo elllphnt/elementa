@@ -1,11 +1,13 @@
 import { keyManager, Lifecycle } from "@elllphnt/elementa-kernel";
-import { BehaviorSubject, map, Observable, of } from "rxjs";
-import {
+import type { Observable} from "rxjs";
+import { BehaviorSubject, map, of } from "rxjs";
+import type {
   Diagnostic,
-  Diagnosticable,
+  Diagnosticable} from "~/_shared/diagnosticable.js";
+import {
   DiagnosticLevel,
 } from "~/_shared/diagnosticable.js";
-import { Runtime } from "../runtime/runtime.js";
+import type { Runtime } from "../runtime/runtime.js";
 
 /**
  * Enumerates all runtime instance types in the Elll execution model.

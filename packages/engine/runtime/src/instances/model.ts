@@ -1,4 +1,4 @@
-import { Runtime } from "../runtime/runtime.js";
+import type { Runtime } from "../runtime/runtime.js";
 import { Instance } from "./instance.js";
 
 export abstract class ModelInstance<M> extends Instance {

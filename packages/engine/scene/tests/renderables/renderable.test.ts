@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { Renderable } from "../../src/renderables/renderable.js";
-import { Scene } from "../../src/scene/scene.js";
+import type { Renderable } from "../../src/renderables/renderable.js";
+import type { Scene } from "../../src/scene/scene.js";
 
 describe("Renderable", () => {
   let renderable: Renderable;

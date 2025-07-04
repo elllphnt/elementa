@@ -1,11 +1,11 @@
-import { Component, FileModelAdaptor } from "@elllphnt/elementa-models";
-import {
+import type { Component, FileModelAdaptor } from "@elllphnt/elementa-models";
+import type {
   ComponentInstance,
   ModelInstanceAdaptor,
   PageRouteHandler,
 } from "@elllphnt/elementa-runtime";
 import { BehaviorSubject } from "rxjs";
-import { Scene } from "../../scene/scene.js";
+import type { Scene } from "../../scene/scene.js";
 import { InstanceRenderableAdaptor } from "../adaptors/instance.js";
 import { ComponentRenderable } from "../component/component.js";
 import { InstanceRenderable } from "../instance.js";

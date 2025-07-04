@@ -1,12 +1,13 @@
-import { CssStyleData } from "@elllphnt/elementa-css";
+import type { CssStyleData } from "@elllphnt/elementa-css";
 import { Lifecycle } from "@elllphnt/elementa-kernel";
-import { DeepPartial, pairwiseOrEmpty } from "@elllphnt/elementa-lang-utils";
-import { CssStyleRule } from "@elllphnt/elementa-models";
+import type { DeepPartial} from "@elllphnt/elementa-lang-utils";
+import { pairwiseOrEmpty } from "@elllphnt/elementa-lang-utils";
+import type { CssStyleRule } from "@elllphnt/elementa-models";
 import { diff } from "deep-object-diff";
 import { Subject } from "rxjs";
 import { styleLogger } from "../../../../loggers.js";
 import { getCssStyleRuleFromStylesheet } from "./_lib.js";
-import { RuleDomStyleSheetAdaptor } from "./rule.js";
+import type { RuleDomStyleSheetAdaptor } from "./rule.js";
 
 export class StyleRuleDomAdaptor extends Lifecycle {
   readonly styleSheetAdaptor: RuleDomStyleSheetAdaptor;

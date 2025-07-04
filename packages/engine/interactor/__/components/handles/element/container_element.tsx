@@ -1,6 +1,6 @@
 import { useObservable } from "@elllphnt/elementa-utils";
 import cx from "classnames";
-import { ContainerElementHandle, ElementHandle } from "~/handles/_";
+import type { ContainerElementHandle, ElementHandle } from "~/handles/_";
 import { PaddingMarker } from "../_markers/padding_marker.js";
 import { BaseElementHandleComponent } from "./_base.js";
 import { ElementHandleComponent } from "./element.js";

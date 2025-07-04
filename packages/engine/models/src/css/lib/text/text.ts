@@ -1,4 +1,4 @@
-import { Observable } from "rxjs";
+import type { Observable } from "rxjs";
 import { CssStyleSheet } from "../stylesheet.js";
 import { cssStyleSheetTypes } from "../types.js";
 

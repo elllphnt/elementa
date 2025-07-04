@@ -1,5 +1,5 @@
-import { StyleModifierData } from "@elllphnt/elementa-base";
-import { Observable } from "rxjs";
+import type { StyleModifierData } from "@elllphnt/elementa-base";
+import type { Observable } from "rxjs";
 import { ElementRuntimeEnvironment } from "./environment.js";
 
 /**

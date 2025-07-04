@@ -1,15 +1,16 @@
-import { ElementaFrameInstance } from "@elllphnt/elementa-runtime";
+import type { ElementaFrameInstance } from "@elllphnt/elementa-runtime";
 import {
   animationFrameScheduler,
   BehaviorSubject,
   combineLatest,
   debounceTime,
 } from "rxjs";
-import { Scene } from "../../../scene/scene.js";
+import type { Scene } from "../../../scene/scene.js";
 import { Renderable } from "../../renderable.js";
+import type {
+  RenderableContentRenderable} from "../renderable_content/_create.js";
 import {
-  createRenderableContentRenderable,
-  RenderableContentRenderable,
+  createRenderableContentRenderable
 } from "../renderable_content/_create.js";
 
 export class ElementaFrameRenderable extends Renderable {

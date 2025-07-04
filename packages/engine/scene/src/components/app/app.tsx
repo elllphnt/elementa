@@ -2,8 +2,9 @@ import { logger } from "@elllphnt/elementa-kernel";
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import { createRouter, Outlet, RouterProvider } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { JSX, memo, useMemo } from "react";
-import { RouterRenderable } from "../../renderables/router/router.js";
+import type { JSX} from "react";
+import { memo, useMemo } from "react";
+import type { RouterRenderable } from "../../renderables/router/router.js";
 
 export const RouterComponent = memo(function ({
   router,

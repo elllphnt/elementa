@@ -1,10 +1,11 @@
-import { extractEvaluable, LengthData } from "@elllphnt/elementa-base";
+import type { LengthData } from "@elllphnt/elementa-base";
+import { extractEvaluable } from "@elllphnt/elementa-base";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 import _ from "lodash";
 import { useCallback, useEffect, useRef } from "react";
 import { map, switchMap } from "rxjs";
 import { lengthToPixels } from "~/_lib/utils";
-import { ElementHandle, FrameWidgetHandle } from "~/handles/_";
+import type { ElementHandle, FrameWidgetHandle } from "~/handles/_";
 import { useElementaInteractor } from "../../../hooks/elementa_interactor.js";
 import { MouseInteraction } from "../../../tools/interactions/mouse.js";
 

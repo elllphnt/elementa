@@ -1,9 +1,9 @@
 import { reconcileList } from "@elllphnt/elementa-kernel";
-import { SlotFillInstance } from "@elllphnt/elementa-runtime";
+import type { SlotFillInstance } from "@elllphnt/elementa-runtime";
 import { BehaviorSubject } from "rxjs";
-import { Scene } from "../scene/scene.js";
+import type { Scene } from "../scene/scene.js";
 import { createElementRenderable } from "./element/_create.js";
-import { ElementRenderable } from "./element/element.js";
+import type { ElementRenderable } from "./element/element.js";
 import { InstanceRenderable } from "./instance.js";
 
 export class SlotRenderable extends InstanceRenderable<SlotFillInstance> {

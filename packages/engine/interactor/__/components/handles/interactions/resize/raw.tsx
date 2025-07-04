@@ -1,9 +1,9 @@
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import { Rect, VectorData } from "@elllphnt/elementa-math-utils";
+import type { Rect, VectorData } from "@elllphnt/elementa-math-utils";
 import cx from "classnames";
 import { useCallback, useState } from "react";
-import { Subscription } from "rxjs";
-import { BoxResizeHandleType } from "~/_lib/interaction.js";
+import type { Subscription } from "rxjs";
+import type { BoxResizeHandleType } from "~/_lib/interaction.js";
 import { useElementaInteractor } from "~/hooks/elementa_interactor.js";
 import { MouseInteraction } from "~/tools/interactions/mouse.js";
 

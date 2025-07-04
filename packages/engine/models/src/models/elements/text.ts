@@ -1,11 +1,11 @@
-import {
+import type {
   ResolvableOrEvaluable,
   TextElementData,
 } from "@elllphnt/elementa-base";
-import { RecordState } from "@elllphnt/elementa-kernel";
-import { Observable } from "rxjs";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
 import { BaseElement } from "./_base.js";
-import { ElementEnvironment } from "./_environment.js";
+import type { ElementEnvironment } from "./_environment.js";
 
 export class TextElement extends BaseElement<TextElementData> {
   get text(): ResolvableOrEvaluable<string> | undefined {

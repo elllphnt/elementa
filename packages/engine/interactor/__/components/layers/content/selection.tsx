@@ -1,10 +1,11 @@
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 import { Rect } from "@elllphnt/elementa-math-utils";
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { JSX, useEffect, useMemo, useRef } from "react";
+import type { JSX} from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { BehaviorSubject, map, switchMap } from "rxjs";
-import { CornerHandleType } from "~/_lib/interaction.js";
-import { IResizableHandle } from "~/_types/handles/properties/resizable.js";
+import type { CornerHandleType } from "~/_lib/interaction.js";
+import type { IResizableHandle } from "~/_types/handles/properties/resizable.js";
 import { SizeControl } from "~/components/handles/controls/size/size.js";
 import { CornerHandle } from "~/components/handles/interactions/corner.js";
 import { ResizeHandle } from "~/components/handles/interactions/resize/resize.js";

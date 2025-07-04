@@ -1,6 +1,6 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { HookStateInstance } from "@elllphnt/elementa-runtime";
-import { PropsWithChildren } from "react";
+import type { HookStateInstance } from "@elllphnt/elementa-runtime";
+import type { PropsWithChildren } from "react";
 import { NamespaceContext } from "../../../contexts/namespace.js";
 import { useNamespace } from "../../../hooks/namespace.js";
 import { renderingLogger } from "../../../loggers.js";

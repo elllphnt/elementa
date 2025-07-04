@@ -1,5 +1,5 @@
 import tinycolor from "tinycolor2";
-import { Theme } from "../../theme/theme.js";
+import type { Theme } from "../../theme/theme.js";
 
 export const baseStyleSheet = (theme: Theme) => /* css */ `
     @layer content, component, editor;

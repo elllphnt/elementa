@@ -1,10 +1,11 @@
-import { ElementaFrameData, ElementaStageData } from "@elllphnt/elementa-base";
+import type { ElementaFrameData, ElementaStageData } from "@elllphnt/elementa-base";
+import type {
+  RecordState} from "@elllphnt/elementa-kernel";
 import {
   AggregatedModelList,
-  Model,
-  RecordState,
+  Model
 } from "@elllphnt/elementa-kernel";
-import { ElementaEnvironment } from "./environment.js";
+import type { ElementaEnvironment } from "./environment.js";
 import { ElementaFrame } from "./frame.js";
 
 export class ElementaStage extends Model<RecordState<ElementaStageData>> {

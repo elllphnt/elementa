@@ -1,4 +1,4 @@
-import { CssSelector } from "@elllphnt/elementa-base";
+import type { CssSelector } from "@elllphnt/elementa-base";
 import { normalizeSelector } from "@elllphnt/elementa-css";
 import { styleLogger } from "../../../../loggers.js";
 

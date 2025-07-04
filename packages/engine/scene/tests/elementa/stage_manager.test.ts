@@ -1,7 +1,7 @@
-import { Runtime } from "@elllphnt/elementa-runtime";
+import type { Runtime } from "@elllphnt/elementa-runtime";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { ElementaRenderableManager } from "../../src/elementa/stage_manager.js";
-import { Scene } from "../../src/scene/scene.js";
+import type { ElementaRenderableManager } from "../../src/elementa/stage_manager.js";
+import type { Scene } from "../../src/scene/scene.js";
 
 describe("ElementaRenderableManager", () => {
   let renderableManager: ElementaRenderableManager;

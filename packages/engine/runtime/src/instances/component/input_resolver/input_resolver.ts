@@ -1,6 +1,6 @@
-import { SlotFill } from "@elllphnt/elementa-models";
-import { Observable } from "rxjs";
-import { ElementRuntimeEnvironment } from "../../elements/_environment/environment.js";
+import type { SlotFill } from "@elllphnt/elementa-models";
+import type { Observable } from "rxjs";
+import type { ElementRuntimeEnvironment } from "../../elements/_environment/environment.js";
 
 /**
  * A binding layer for resolving props and slots during component rendering.

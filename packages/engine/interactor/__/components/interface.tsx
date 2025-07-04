@@ -1,6 +1,7 @@
 import cx from "classnames";
-import { JSX, useEffect, useRef, useState } from "react";
-import { ElementaInteractor } from "~/elementa_interactor";
+import type { JSX} from "react";
+import { useEffect, useRef, useState } from "react";
+import type { ElementaInteractor } from "~/elementa_interactor";
 
 export type LayerData = {
   name: string;

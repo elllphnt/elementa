@@ -1,7 +1,9 @@
-import { combineLatestOrEmpty, RectData } from "@elllphnt/elementa-utils";
-import { ReactNode, useEffect, useRef } from "react";
+import type { RectData } from "@elllphnt/elementa-utils";
+import { combineLatestOrEmpty } from "@elllphnt/elementa-utils";
+import type { ReactNode} from "react";
+import { useEffect, useRef } from "react";
 import { combineLatest, map, switchMap } from "rxjs";
-import { ElementHandle } from "~/handles/_";
+import type { ElementHandle } from "~/handles/_";
 import { GapHandleHandle } from "./handle.js";
 
 type Direction = "row" | "column";

@@ -1,7 +1,7 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
 import { useNamespace } from "../../../../hooks/namespace.js";
-import { TextElementRenderable } from "../../../../renderables/element/text.js";
+import type { TextElementRenderable } from "../../../../renderables/element/text.js";
 import {
   BaseElementPropsContext,
   useBaseElementProps,

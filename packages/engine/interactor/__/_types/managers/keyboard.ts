@@ -1,4 +1,4 @@
-import { Lifecycle } from "@elllphnt/elementa-utils";
+import type { Lifecycle } from "@elllphnt/elementa-utils";
 
 export interface IKeyboardManager extends Lifecycle {
   handleKeyDown(e: KeyboardEvent): void;

@@ -1,16 +1,17 @@
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import { Stylesheet } from "@elllphnt/elementa-models";
+import type { Stylesheet } from "@elllphnt/elementa-models";
+import type {
+  Observable} from "rxjs";
 import {
   BehaviorSubject,
   combineLatest,
   map,
-  Observable,
   of,
   switchMap,
 } from "rxjs";
-import { Runtime } from "../../runtime/runtime.js";
+import type { Runtime } from "../../runtime/runtime.js";
 import { ElementaInstanceType, Instance } from "../instance.js";
-import { StyleCascadeResolver } from "./cascade.js";
+import type { StyleCascadeResolver } from "./cascade.js";
 import { StyleInstance } from "./style.js";
 
 export class StyleSheetInstance extends Instance {

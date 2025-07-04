@@ -1,5 +1,6 @@
-import { Backend, ListState } from "@elllphnt/elementa-kernel";
-import { BehaviorSubject, Observable } from "rxjs";
+import type { Backend, ListState } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { JsonState } from "./state.js";
 
 export class JsonListState<T> extends JsonState implements ListState<T> {

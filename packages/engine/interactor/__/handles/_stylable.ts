@@ -1,40 +1,43 @@
-import {
-  baseSelector,
+import type {
   CornerName,
   DimensionData,
   EdgeName,
   LengthOrFlexOrPercentData,
-  parseDimension,
   PositionValue,
   StyleData,
-  StylePropertyName,
-} from "@elllphnt/elementa-base";
-import { Stylesheet, StylesheetCssStyleSheet } from "@elllphnt/elementa-models";
+  StylePropertyName} from "@elllphnt/elementa-base";
 import {
+  baseSelector,
+  parseDimension
+} from "@elllphnt/elementa-base";
+import type { Stylesheet, StylesheetCssStyleSheet } from "@elllphnt/elementa-models";
+import type {
   InstanceRenderable,
   RuleDomStyleSheetAdaptor,
   StyleRuleDomAdaptor,
 } from "@elllphnt/elementa-scene";
+import type {
+  PointData,
+  RectData} from "@elllphnt/elementa-utils";
 import {
   combineLatestOrEmpty,
-  pairwiseOrEmpty,
-  PointData,
-  RectData,
+  pairwiseOrEmpty
 } from "@elllphnt/elementa-utils";
+import type {
+  Observable} from "rxjs";
 import {
   animationFrameScheduler,
   BehaviorSubject,
   combineLatest,
   debounceTime,
   map,
-  Observable,
   of,
   switchMap,
 } from "rxjs";
 import { layoutProperties } from "~/_lib/css";
 import { lengthToPixels } from "~/_lib/utils";
-import { Handle } from "~/_types/handles/handle";
-import { ElementaInteractor } from "~/_types/interactor";
+import type { Handle } from "~/_types/handles/handle";
+import type { ElementaInteractor } from "~/_types/interactor";
 import { LayoutUpdatePropagation } from "./_handle_rect.js";
 import { EntityHandle } from "./renderables/renderable.js";
 

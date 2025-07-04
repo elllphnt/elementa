@@ -1,7 +1,7 @@
-import { InlineStateData } from "@elllphnt/elementa-base";
-import { RecordState } from "@elllphnt/elementa-kernel";
-import { Observable } from "rxjs";
-import { Component } from "../component/component.js";
+import type { InlineStateData } from "@elllphnt/elementa-base";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
+import type { Component } from "../component/component.js";
 import { BaseState } from "./_base.js";
 
 export class InlineState extends BaseState<InlineStateData> {

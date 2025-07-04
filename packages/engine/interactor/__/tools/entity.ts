@@ -1,6 +1,6 @@
-import { PointData } from "@elllphnt/elementa-utils";
-import { Handle } from "../handles/handle.js";
-import { ElementaInteractor } from "../interactor.js";
+import type { PointData } from "@elllphnt/elementa-utils";
+import type { Handle } from "../handles/handle.js";
+import type { ElementaInteractor } from "../interactor.js";
 import { Tool } from "../primitives/tool.js";
 
 export type PointerEvent = {

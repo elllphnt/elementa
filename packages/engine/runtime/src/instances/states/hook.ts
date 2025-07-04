@@ -1,8 +1,8 @@
-import { HookConfig } from "@elllphnt/elementa-base";
-import { HookState } from "@elllphnt/elementa-models";
+import type { HookConfig } from "@elllphnt/elementa-base";
+import type { HookState } from "@elllphnt/elementa-models";
 import { map, of } from "rxjs";
-import { Runtime } from "../../runtime/runtime.js";
-import { Instance } from "../instance.js";
+import type { Runtime } from "../../runtime/runtime.js";
+import type { Instance } from "../instance.js";
 import { BaseStateInstance } from "./_base.js";
 
 export class HookStateInstance extends BaseStateInstance<HookState> {

@@ -1,24 +1,27 @@
+import type {
+  PrimitiveConfig} from "@elllphnt/elementa-base";
 import {
-  PrimitiveConfig,
   primitiveConfigSchema,
 } from "@elllphnt/elementa-base";
 import { reconcileList } from "@elllphnt/elementa-kernel";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import { PrimitiveElement } from "@elllphnt/elementa-models";
+import type { PrimitiveElement } from "@elllphnt/elementa-models";
+import type {
+  Observable} from "rxjs";
 import {
   BehaviorSubject,
   combineLatest,
   map,
-  Observable,
   of,
   switchMap,
 } from "rxjs";
-import { Module } from "~/runtime/module_manager/module.js";
+import type { Module } from "~/runtime/module_manager/module.js";
 import { DiagnosticLevel } from "../../_shared/diagnosticable.js";
-import { Instance } from "../instance.js";
+import type { Instance } from "../instance.js";
 import { BaseElementInstance } from "./_base.js";
-import { createElementInstance, ElementInstance } from "./_element.js";
-import { ElementRuntimeEnvironment } from "./_environment/environment.js";
+import type { ElementInstance } from "./_element.js";
+import { createElementInstance } from "./_element.js";
+import type { ElementRuntimeEnvironment } from "./_environment/environment.js";
 
 export class PrimitiveElementInstance extends BaseElementInstance<PrimitiveElement> {
   private _content$ = new BehaviorSubject<ElementInstance[]>([]);

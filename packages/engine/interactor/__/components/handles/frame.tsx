@@ -1,6 +1,6 @@
-import { StyleModifierData } from "@elllphnt/elementa-base";
+import type { StyleModifierData } from "@elllphnt/elementa-base";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import { StyleManager } from "@elllphnt/elementa-models";
+import type { StyleManager } from "@elllphnt/elementa-models";
 import {
   useManyObservables,
   useObservable,
@@ -8,7 +8,7 @@ import {
 import { Renderable } from "@elllphnt/elementa-scene";
 import cx from "classnames";
 import { useEffect, useRef, useState } from "react";
-import { FrameHandle } from "~/handles/_";
+import type { FrameHandle } from "~/handles/_";
 import { useElementaInteractor } from "../../hooks/elementa_interactor.js";
 import { AutoSizeInput } from "../autosize_input.js";
 import { useHandleDom } from "./_hooks/interaction_target.js";

@@ -1,7 +1,8 @@
-import { RouteTree } from "@elllphnt/elementa-models";
-import { combineLatest, map, Observable, of, switchMap } from "rxjs";
-import { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
-import { Instance } from "../../../instance.js";
+import type { RouteTree } from "@elllphnt/elementa-models";
+import type { Observable} from "rxjs";
+import { combineLatest, map, of, switchMap } from "rxjs";
+import type { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
+import type { Instance } from "../../../instance.js";
 import { BaseRouteHandler } from "./_base.js";
 
 export class FunctionRouteHandler extends BaseRouteHandler<"function"> {

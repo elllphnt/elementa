@@ -1,4 +1,4 @@
-import { Backend, ValueState } from "@elllphnt/elementa-kernel";
+import type { Backend, ValueState } from "@elllphnt/elementa-kernel";
 import { BehaviorSubject } from "rxjs";
 import { JsonState } from "./state.js";
 

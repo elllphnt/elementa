@@ -48,7 +48,7 @@ let optionalModel: OptionalModel<MockState, MockModel>;
 
 beforeEach(() => {
   createModelSpy = vi.fn((state: MockState, init?: boolean) => {
-    // eslint-disable-line @typescript-eslint/no-unused-vars
+     
     return new MockModel({ state });
   });
 });

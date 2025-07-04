@@ -1,8 +1,9 @@
-import {
+import type {
   DimensionData,
   FlexData,
   LengthData,
-  PercentData,
+  PercentData} from "@elllphnt/elementa-base";
+import {
   isExpression,
   isVarRef,
   parseDimension,
@@ -11,7 +12,7 @@ import {
 } from "@elllphnt/elementa-base";
 import { useManyObservables } from "@elllphnt/elementa-react-utils";
 import { useMemo } from "react";
-import { Observable } from "rxjs";
+import type { Observable } from "rxjs";
 import { mixed, resolveCommonValue } from "~/_lib/utils";
 import { RawSizeInput } from "./raw_input.js";
 

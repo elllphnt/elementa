@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { Instance } from "../../src/instances/instance.js";
-import { ModelInstance } from "../../src/instances/model.js";
-import { Runtime } from "../../src/runtime/runtime.js";
+import type { Instance } from "../../src/instances/instance.js";
+import type { ModelInstance } from "../../src/instances/model.js";
+import type { Runtime } from "../../src/runtime/runtime.js";
 
 describe("ModelInstance", () => {
   let modelInstance: ModelInstance<any>;

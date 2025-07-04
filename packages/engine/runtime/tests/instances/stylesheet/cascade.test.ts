@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { StyleCascadeResolver } from "../../../src/instances/stylesheet/cascade.js";
+import type { StyleCascadeResolver } from "../../../src/instances/stylesheet/cascade.js";
 
 describe("StyleCascadeResolver", () => {
   let resolver: StyleCascadeResolver;

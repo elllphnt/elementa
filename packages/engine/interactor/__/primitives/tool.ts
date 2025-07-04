@@ -1,6 +1,6 @@
-import { PointData } from "@elllphnt/elementa-utils";
-import { Handle } from "../_types/handles/handle.js";
-import { ElementaInteractor } from "../_types/interactor.js";
+import type { PointData } from "@elllphnt/elementa-utils";
+import type { Handle } from "../_types/handles/handle.js";
+import type { ElementaInteractor } from "../_types/interactor.js";
 
 export type PointerEvent = {
   interactor: ElementaInteractor;

@@ -1,16 +1,18 @@
 import { reconcileList } from "@elllphnt/elementa-kernel";
-import { ContainerElement } from "@elllphnt/elementa-models";
+import type { ContainerElement } from "@elllphnt/elementa-models";
+import type {
+  Observable} from "rxjs";
 import {
   BehaviorSubject,
   combineLatest,
   map,
-  Observable,
   switchMap,
 } from "rxjs";
-import { Instance } from "../instance.js";
+import type { Instance } from "../instance.js";
 import { BaseElementInstance } from "./_base.js";
-import { createElementInstance, ElementInstance } from "./_element.js";
-import { ElementRuntimeEnvironment } from "./_environment/environment.js";
+import type { ElementInstance } from "./_element.js";
+import { createElementInstance } from "./_element.js";
+import type { ElementRuntimeEnvironment } from "./_environment/environment.js";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 
 export class ContainerElementInstance extends BaseElementInstance<ContainerElement> {

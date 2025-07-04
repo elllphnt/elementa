@@ -1,10 +1,10 @@
-import { PackageData } from "@elllphnt/elementa-base";
+import type { PackageData } from "@elllphnt/elementa-base";
 import { Lifecycle } from "@elllphnt/elementa-kernel";
-import { Infrastructure } from "@elllphnt/elementa-models";
+import type { Infrastructure } from "@elllphnt/elementa-models";
 import { moduleLogger } from "../../loggers.js";
 import { rewriteImports, transpileTsToJs } from "./_utils.js";
 import { Module } from "./module.js";
-import { ModuleHost } from "./module_host/module_host.js";
+import type { ModuleHost } from "./module_host/module_host.js";
 
 const CONTENT_LOAD_TIMEOUT = 60000; // 60 seconds
 

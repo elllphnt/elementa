@@ -1,15 +1,17 @@
 import { constantOf } from "@elllphnt/elementa-base";
+import type {
+  RectData} from "@elllphnt/elementa-utils";
 import {
   combineLatestOrEmpty,
-  RectData,
   useObservable,
 } from "@elllphnt/elementa-utils";
 import _ from "lodash";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
-import { Observable, of, switchMap } from "rxjs";
+import type { Observable} from "rxjs";
+import { of, switchMap } from "rxjs";
 import { map } from "rxjs/operators";
 import { lengthToPixels } from "~/_lib/utils";
-import { ContainerElementHandle, ElementHandle } from "~/handles/_";
+import type { ContainerElementHandle, ElementHandle } from "~/handles/_";
 import { useElementaInteractor } from "../../../hooks/elementa_interactor.js";
 import { MouseInteraction } from "../../../tools/interactions/mouse.js";
 
@@ -222,7 +224,7 @@ function GapHandleHandle({
           deltaGapValue = delta.y / editor.stager.viewport.scale;
         }
 
-        let newGap = {
+        const newGap = {
           x: _.clamp(
             lengthToPixels(initialGap.x, "x") + deltaGapValue,
             0,

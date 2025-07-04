@@ -1,7 +1,7 @@
-import { Instance } from "@elllphnt/elementa-runtime";
+import type { Instance } from "@elllphnt/elementa-runtime";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { InstanceRenderable } from "../../src/renderables/instance.js";
-import { Scene } from "../../src/scene/scene.js";
+import type { InstanceRenderable } from "../../src/renderables/instance.js";
+import type { Scene } from "../../src/scene/scene.js";
 
 describe("InstanceRenderable", () => {
   let instanceRenderable: InstanceRenderable<Instance>;

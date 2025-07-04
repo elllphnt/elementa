@@ -1,7 +1,7 @@
-import { StylePropertyName } from "@elllphnt/elementa-base";
+import type { StylePropertyName } from "@elllphnt/elementa-base";
 import { Rect } from "@elllphnt/elementa-math-utils";
 import { ContainerElement } from "@elllphnt/elementa-models";
-import { ElementHandle } from "~/handles/_";
+import type { ElementHandle } from "~/handles/_";
 import { generateAutolayout } from "./autolayout.js";
 
 function wrapElementsWithStrategy(

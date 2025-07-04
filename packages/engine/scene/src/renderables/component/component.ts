@@ -1,15 +1,16 @@
-import {
+import type {
   ComponentInstance,
   ExpressionElementInstance,
   FragmentElementInstance,
 } from "@elllphnt/elementa-runtime";
-import { BehaviorSubject, Observable, of } from "rxjs";
-import { Scene } from "../../scene/scene.js";
+import type { Observable} from "rxjs";
+import { BehaviorSubject, of } from "rxjs";
+import type { Scene } from "../../scene/scene.js";
 import { ExpressionElementRenderable } from "../element/expression.js";
 import { FragmentElementRenderable } from "../element/fragment.js";
 import { FragmentRenderable } from "../fragment.js";
 import { InstanceRenderable } from "../instance.js";
-import { Renderable } from "../renderable.js";
+import type { Renderable } from "../renderable.js";
 
 export class ComponentRenderable extends InstanceRenderable<ComponentInstance> {
   private _template$ = new BehaviorSubject<

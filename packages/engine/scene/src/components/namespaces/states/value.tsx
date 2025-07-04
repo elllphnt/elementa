@@ -1,7 +1,8 @@
 import { logger } from "@elllphnt/elementa-kernel";
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { ValueStateInstance } from "@elllphnt/elementa-runtime";
-import { PropsWithChildren, useState } from "react";
+import type { ValueStateInstance } from "@elllphnt/elementa-runtime";
+import type { PropsWithChildren} from "react";
+import { useState } from "react";
 import { NamespaceContext } from "../../../contexts/namespace.js";
 import { useNamespace } from "../../../hooks/namespace.js";
 

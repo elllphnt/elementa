@@ -1,17 +1,19 @@
 import { reconcileList } from "@elllphnt/elementa-kernel";
-import { ComponentElement } from "@elllphnt/elementa-models";
+import type { ComponentElement } from "@elllphnt/elementa-models";
+import type {
+  Observable} from "rxjs";
 import {
   BehaviorSubject,
   combineLatest,
   map,
-  Observable,
   of,
   switchMap,
 } from "rxjs";
-import { Instance } from "../../instance.js";
+import type { Instance } from "../../instance.js";
 import { BaseElementInstance } from "../_base.js";
-import { createElementInstance, ElementInstance } from "../_element.js";
-import { ElementRuntimeEnvironment } from "../_environment/environment.js";
+import type { ElementInstance } from "../_element.js";
+import { createElementInstance } from "../_element.js";
+import type { ElementRuntimeEnvironment } from "../_environment/environment.js";
 import { ComponentElementComponentPropResolver } from "./component_prop_resolver.js";
 import { ComponentInstance } from "~/instances/component/component.js";
 

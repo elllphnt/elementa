@@ -1,5 +1,5 @@
 import { moduleLogger } from "../../../loggers.js";
-import { ModuleHost } from "./module_host.js";
+import type { ModuleHost } from "./module_host.js";
 
 export class InMemoryModuleHost implements ModuleHost {
   private modules = new Map<string, string>(); // Map of url → JavaScript code

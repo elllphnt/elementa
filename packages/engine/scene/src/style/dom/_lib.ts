@@ -1,12 +1,13 @@
-import {
+import type {
   CssStyleSheet,
-  cssStyleSheetTypes,
   RuleCssStyleSheet,
-  TextCssStyleSheet,
+  TextCssStyleSheet} from "@elllphnt/elementa-models";
+import {
+  cssStyleSheetTypes
 } from "@elllphnt/elementa-models";
 import { styleLogger } from "../../loggers.js";
 import { RuleDomStyleSheetAdaptor } from "./adaptors/rule/rule.js";
-import { DomStyleSheetAdaptor } from "./adaptors/stylesheet.js";
+import type { DomStyleSheetAdaptor } from "./adaptors/stylesheet.js";
 import { TextDomStyleSheetAdaptor } from "./adaptors/text.js";
 
 export function createDomStyleSheetAdaptor({

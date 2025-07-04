@@ -1,12 +1,14 @@
-import {
-  genId,
+import type {
   TypefaceData,
-  TypefaceDefinition,
+  TypefaceDefinition} from "@elllphnt/elementa-base";
+import {
+  genId
 } from "@elllphnt/elementa-base";
-import { RecordState } from "@elllphnt/elementa-kernel";
-import { map, Observable } from "rxjs";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
+import { map } from "rxjs";
 import { Identifiable } from "~/models/identifiable.js";
-import { Project } from "~/project/project.js";
+import type { Project } from "~/project/project.js";
 
 export class Typeface extends Identifiable<TypefaceData> {
   get name(): string {

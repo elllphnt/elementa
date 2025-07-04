@@ -1,5 +1,6 @@
 import { entityTypes } from "@elllphnt/elementa-base";
-import { Component, VectorElement } from "@elllphnt/elementa-models";
+import type { Component} from "@elllphnt/elementa-models";
+import { VectorElement } from "@elllphnt/elementa-models";
 import { ElementTool } from "./element.js";
 
 export class VectorTool extends ElementTool {

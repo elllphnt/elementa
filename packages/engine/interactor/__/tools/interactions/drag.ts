@@ -1,8 +1,8 @@
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import { PointData } from "@elllphnt/elementa-math-utils";
+import type { PointData } from "@elllphnt/elementa-math-utils";
 import _ from "lodash";
-import { ElementaInteractor } from "~/_types/interactor.js";
-import { ElementHandle } from "~/handles/renderables/elements/element.js";
+import type { ElementaInteractor } from "~/_types/interactor.js";
+import type { ElementHandle } from "~/handles/renderables/elements/element.js";
 import { MouseInteraction } from "./mouse.js";
 import { createDragImages } from "./utils.js";
 

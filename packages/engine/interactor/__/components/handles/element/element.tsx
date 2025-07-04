@@ -1,6 +1,6 @@
 import { entityTypes, switchEntityType } from "@elllphnt/elementa-base";
 import { memo } from "react";
-import {
+import type {
   ComponentElementHandle,
   ContainerElementHandle,
   ElementHandle,

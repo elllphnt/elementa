@@ -1,5 +1,5 @@
 import { Rect } from "@elllphnt/elementa-math-utils";
-import { ContainerElementHandle, ElementHandle } from "~/handles/_";
+import type { ContainerElementHandle, ElementHandle } from "~/handles/_";
 
 function unwrapContainer(containerInstance: ContainerElementHandle) {
   // get grand container

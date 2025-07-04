@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
 import { renderingLogger } from "../../../loggers.js";
 import { useBaseElementProps } from "../base/context.js";
 import { ComponentVariantProvider } from "../variants/component.js";

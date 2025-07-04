@@ -1,11 +1,11 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import {
+import type {
   ComponentInstance,
   HookStateInstance,
   InlineStateInstance,
   ValueStateInstance,
 } from "@elllphnt/elementa-runtime";
-import { PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
 import { renderingLogger } from "../../../loggers.js";
 import { HookStateNamespaceProvider } from "./hook.js";
 import { InlineStateNamespaceProvider } from "./inline.js";

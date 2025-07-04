@@ -1,9 +1,10 @@
-import { KeyFrameData } from "@elllphnt/elementa-base";
-import { Model, RecordState } from "@elllphnt/elementa-kernel";
-import { Observable } from "rxjs";
-import { Project } from "~/project/project.js";
+import type { KeyFrameData } from "@elllphnt/elementa-base";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import { Model } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
+import type { Project } from "~/project/project.js";
 import { Style } from "../stylesheet/style.js";
-import { StyleFragmentRegistry } from "../stylesheet/style_fragment_registry.js";
+import type { StyleFragmentRegistry } from "../stylesheet/style_fragment_registry.js";
 
 export class Keyframe extends Model<RecordState<KeyFrameData>> {
   readonly style: Style;

@@ -1,9 +1,11 @@
-import {
+import type {
   ViewportDefinitionData,
   ViewportSetData,
 } from "@elllphnt/elementa-base";
-import { Model, RecordState } from "@elllphnt/elementa-kernel";
-import { map, Observable } from "rxjs";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import { Model } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
+import { map } from "rxjs";
 
 export class ViewportSet extends Model<RecordState<ViewportSetData>> {
   get source(): "breakpoints" | "definitions" {

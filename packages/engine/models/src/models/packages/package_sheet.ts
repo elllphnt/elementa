@@ -1,7 +1,8 @@
-import { PackageData, PackageSheetData } from "@elllphnt/elementa-base";
-import { RecordState } from "@elllphnt/elementa-kernel";
-import { map, Observable } from "rxjs";
-import { Project } from "~/project/project.js";
+import type { PackageData, PackageSheetData } from "@elllphnt/elementa-base";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
+import { map } from "rxjs";
+import type { Project } from "~/project/project.js";
 import { ProjectModel } from "../project.js";
 
 export class PackageSheet extends ProjectModel<RecordState<PackageSheetData>> {

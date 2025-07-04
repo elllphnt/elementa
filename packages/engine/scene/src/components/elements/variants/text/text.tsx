@@ -1,6 +1,6 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { PropsWithChildren } from "react";
-import { TextElementRenderable } from "../../../../renderables/element/text.js";
+import type { PropsWithChildren } from "react";
+import type { TextElementRenderable } from "../../../../renderables/element/text.js";
 import { useBaseElementProps } from "../../base/context.js";
 import { TextElementEditor } from "./editor.js";
 import { TextElementViewer } from "./viewer.js";

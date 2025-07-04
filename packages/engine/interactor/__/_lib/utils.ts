@@ -1,4 +1,4 @@
-import { FlexData, LengthData, PercentData } from "@elllphnt/elementa-base";
+import type { FlexData, LengthData, PercentData } from "@elllphnt/elementa-base";
 import _ from "lodash";
 
 export function resolveCommonValue<T>(

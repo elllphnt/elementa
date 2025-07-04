@@ -1,20 +1,22 @@
-import { EdgeName } from "@elllphnt/elementa-base";
-import {
-  combineLatestOrEmpty,
+import type { EdgeName } from "@elllphnt/elementa-base";
+import type {
   PointData,
   Rect,
-  RectData,
+  RectData} from "@elllphnt/elementa-utils";
+import {
+  combineLatestOrEmpty
 } from "@elllphnt/elementa-utils";
+import type {
+  Observable} from "rxjs";
 import {
   BehaviorSubject,
   combineLatest,
   map,
-  Observable,
   of,
   switchMap,
 } from "rxjs";
 import { Handle } from "../_types/_.js";
-import { ElementaInteractor } from "../_types/interactor.js";
+import type { ElementaInteractor } from "../_types/interactor.js";
 import { handleProperties } from "./_.js";
 import { handleTypes } from "./_libs/types.js";
 

@@ -1,7 +1,7 @@
 import { keyManager, Lifecycle } from "@elllphnt/elementa-kernel";
-import { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
+import type { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
 import { DefaultElementRuntimeEnvironment } from "../instances/elements/_environment/default_environment.js";
-import { ModuleManager } from "./module_manager/module_manager.js";
+import type { ModuleManager } from "./module_manager/module_manager.js";
 
 export class Runtime extends Lifecycle {
   key = keyManager.next("runtime");

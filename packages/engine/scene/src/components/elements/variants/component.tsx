@@ -1,12 +1,13 @@
-import { Component } from "@elllphnt/elementa-models";
+import type { Component } from "@elllphnt/elementa-models";
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import { PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
 import { renderingLogger } from "../../../loggers.js";
-import { ComponentElementRenderable } from "../../../renderables/element/component.js";
+import type { ComponentElementRenderable } from "../../../renderables/element/component.js";
 import { Renderable } from "../../../renderables/renderable.js";
 import ComponentComponent from "../../component/component.js";
+import type {
+  BaseElementProps} from "../base/context.js";
 import {
-  BaseElementProps,
   BaseElementPropsContext,
   useBaseElementProps,
 } from "../base/context.js";

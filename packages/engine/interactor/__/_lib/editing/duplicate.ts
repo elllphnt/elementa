@@ -1,5 +1,5 @@
-import { Handle, RenderableHandle } from "~/_types/_";
-import { EntityHandle } from "~/handles/_";
+import type { Handle, RenderableHandle } from "~/_types/_";
+import type { EntityHandle } from "~/handles/_";
 
 export function duplicateEntityHandles(handles: RenderableHandle[]) {
   // group the handles by their parent

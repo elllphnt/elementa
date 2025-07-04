@@ -1,4 +1,4 @@
-import { TextCssStyleSheet } from "@elllphnt/elementa-models";
+import type { TextCssStyleSheet } from "@elllphnt/elementa-models";
 import { combineLatest } from "rxjs";
 import { styleLogger } from "../../../loggers.js";
 import { DomStyleSheetAdaptor } from "./stylesheet.js";

@@ -1,6 +1,6 @@
 import { Lifecycle, keyManager } from "@elllphnt/elementa-kernel";
 import { BehaviorSubject } from "rxjs";
-import { Renderable } from "../renderable.js";
+import type { Renderable } from "../renderable.js";
 
 export abstract class RenderableAdaptor<
   I extends Renderable

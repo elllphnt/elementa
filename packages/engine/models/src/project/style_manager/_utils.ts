@@ -1,4 +1,4 @@
-import { ViewportDefinitionData } from "@elllphnt/elementa-base";
+import type { ViewportDefinitionData } from "@elllphnt/elementa-base";
 
 // ----------------- VIEWPORT MATCHING FUNCTION -----------------
 export function matchViewport({

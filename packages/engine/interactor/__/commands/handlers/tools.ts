@@ -1,4 +1,4 @@
-import { CommandHandler } from "~/_types/managers/command";
+import type { CommandHandler } from "~/_types/managers/command";
 import { tools } from "~/tools/_";
 
 export const selectionTool: CommandHandler = (interactor) => {

@@ -1,7 +1,7 @@
-import { Observable } from "rxjs";
+import type { Observable } from "rxjs";
 import { CssStyleSheet } from "../stylesheet.js";
 import { cssStyleSheetTypes } from "../types.js";
-import { CssStyleRule } from "./stylerule.js";
+import type { CssStyleRule } from "./stylerule.js";
 
 /**
  * A RuleCssStyleSheet represents a CSS stylesheet intended to be used

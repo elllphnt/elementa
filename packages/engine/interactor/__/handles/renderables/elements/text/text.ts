@@ -1,7 +1,7 @@
 import { Namespace } from "@elllphnt/elementa-runtime";
-import { TextElementRenderable } from "@elllphnt/elementa-scene";
-import { Handle } from "~/_types/_";
-import { IFragmentHandle } from "~/_types/handles/renderable/fragment";
+import type { TextElementRenderable } from "@elllphnt/elementa-scene";
+import type { Handle } from "~/_types/_";
+import type { IFragmentHandle } from "~/_types/handles/renderable/fragment";
 import { ElementHandle } from "../element.js";
 import { ProseMirrorTextElementEditor } from "./editor.js";
 

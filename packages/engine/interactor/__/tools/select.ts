@@ -1,21 +1,23 @@
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import {
+import type {
   PointData,
+  VectorData} from "@elllphnt/elementa-math-utils";
+import {
   Rect,
-  VectorData,
   nearestPointIndex,
 } from "@elllphnt/elementa-math-utils";
-import { Element } from "@elllphnt/elementa-models";
+import type { Element } from "@elllphnt/elementa-models";
 import { makeEntityDropType } from "~/_lib/droptypes.js";
 import { duplicateEntityHandles } from "~/_lib/editing/duplicate.js";
-import { Handle } from "~/_types/handles/handle.js";
-import { IMovableHandle } from "~/_types/handles/properties/movable.js";
-import { RenderableHandle } from "~/_types/handles/renderable/renderable.js";
+import type { Handle } from "~/_types/handles/handle.js";
+import type { IMovableHandle } from "~/_types/handles/properties/movable.js";
+import type { RenderableHandle } from "~/_types/handles/renderable/renderable.js";
 import { handleProperties } from "~/handles/_libs/properties.js";
 import { FallbackHandle } from "~/handles/fallback.js";
 import { ElementHandle } from "~/handles/renderables/elements/element.js";
-import { ElementaInteractor } from "~/interactor.js";
-import { PointerEvent, Tool } from "~/primitives/tool.js";
+import type { ElementaInteractor } from "~/interactor.js";
+import type { PointerEvent} from "~/primitives/tool.js";
+import { Tool } from "~/primitives/tool.js";
 import { createDragInteraction } from "./interactions/drag.js";
 import { MouseInteraction } from "./interactions/mouse.js";
 import { createRectDrawInteraction } from "./interactions/rect_draw.js";

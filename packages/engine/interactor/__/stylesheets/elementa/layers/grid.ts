@@ -1,4 +1,4 @@
-import { Theme } from "~/theme/theme";
+import type { Theme } from "~/theme/theme";
 
 export const gridLayerStyleSheet = (theme: Theme) => /* css */ `
     .elementa-grid {

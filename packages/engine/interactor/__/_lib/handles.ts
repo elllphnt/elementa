@@ -10,10 +10,11 @@ import type {
   VectorElementRenderable,
 } from "@elllphnt/elementa-scene";
 import { updateMapList } from "@elllphnt/elementa-utils";
-import { ElementaInteractor } from "../_types/_.js";
+import type { ElementaInteractor } from "../_types/_.js";
+import type {
+  ElementHandle} from "../handles/_.js";
 import {
   ComponentElementHandle,
-  ElementHandle,
   FragmentHandle,
   MediaElementHandle,
   PrimitiveElementHandle,
@@ -23,7 +24,7 @@ import { SlotElementHandle } from "../handles/elements/slot.js";
 import { TextElementHandle } from "../handles/elements/text/text.js";
 import { VectorElementHandle } from "../handles/elements/vector.js";
 import { FrameWidgetHandle } from "../handles/entities/widgets/frame.js";
-import { Handle } from "../handles/handle.js";
+import type { Handle } from "../handles/handle.js";
 
 export const makeElementHandle: ElementaInteractor["makeElementHandle"] =
   function ({ renderable, fragment, parent }) {

@@ -1,7 +1,8 @@
 import { Lifecycle } from "@elllphnt/elementa-kernel";
-import { IKeyboardManager } from "~/_types/managers/keyboard.js";
-import { ElementaInteractor } from "~/interactor.js";
-import { KeyMapper, KeyMapping } from "~/keyboard/keymapper.js";
+import type { IKeyboardManager } from "~/_types/managers/keyboard.js";
+import type { ElementaInteractor } from "~/interactor.js";
+import type { KeyMapping } from "~/keyboard/keymapper.js";
+import { KeyMapper } from "~/keyboard/keymapper.js";
 
 export class KeyboardManager extends Lifecycle implements IKeyboardManager {
   readonly interactor: ElementaInteractor;

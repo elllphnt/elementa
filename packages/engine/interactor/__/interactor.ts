@@ -1,12 +1,13 @@
 import { Lifecycle, reconcileList } from "@elllphnt/elementa-kernel";
-import { ElementaStageRenderable } from "@elllphnt/elementa-scene";
+import type { ElementaStageRenderable } from "@elllphnt/elementa-scene";
 import {
   BehaviorSubject,
   combineLatest,
   distinctUntilChanged,
   map,
 } from "rxjs";
-import { ElementaInteractor, Handle } from "./_types/_.js";
+import type { Handle } from "./_types/_.js";
+import { ElementaInteractor } from "./_types/_.js";
 import { FallbackHandle, FrameHandle } from "./handles/_.js";
 import { Interface } from "./interface.js";
 import { InteractionManager } from "./managers/interaction.js";

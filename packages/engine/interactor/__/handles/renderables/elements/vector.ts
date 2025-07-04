@@ -1,6 +1,6 @@
-import { VectorElementRenderable } from "@elllphnt/elementa-scene";
-import { Handle } from "~/_types/_";
-import { IFragmentHandle } from "~/_types/handles/renderable/fragment";
+import type { VectorElementRenderable } from "@elllphnt/elementa-scene";
+import type { Handle } from "~/_types/_";
+import type { IFragmentHandle } from "~/_types/handles/renderable/fragment";
 import { ElementHandle } from "./element.js";
 
 export class VectorElementHandle extends ElementHandle<VectorElementRenderable> {

@@ -1,7 +1,7 @@
 import { Lifecycle } from "@elllphnt/elementa-kernel";
-import { PointData } from "@elllphnt/elementa-math-utils";
+import type { PointData } from "@elllphnt/elementa-math-utils";
 import { BehaviorSubject, distinctUntilChanged } from "rxjs";
-import { Handle } from "~/handles/handle.js";
+import type { Handle } from "~/handles/handle.js";
 
 export type ContextMenuOption = {
   label: string;

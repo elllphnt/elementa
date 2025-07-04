@@ -1,7 +1,7 @@
-import { SlotFill } from "@elllphnt/elementa-models";
-import { Observable } from "rxjs";
+import type { SlotFill } from "@elllphnt/elementa-models";
+import type { Observable } from "rxjs";
 import { ComponentInputResolver } from "../../component/input_resolver/input_resolver.js";
-import { ComponentElementInstance } from "./component.js";
+import type { ComponentElementInstance } from "./component.js";
 
 /**
  * Prop and slot binding resolver for components rendered via <ComponentElement>.

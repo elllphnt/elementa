@@ -1,4 +1,4 @@
-import { Theme } from "../../theme/theme.js";
+import type { Theme } from "../../theme/theme.js";
 import { baseStyleSheet } from "./base.js";
 import { darkModeStyleSheet } from "./dark.js";
 import { handlesStyleSheet } from "./handles/_.js";

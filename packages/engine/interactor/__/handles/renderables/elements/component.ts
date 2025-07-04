@@ -1,8 +1,8 @@
-import { ComponentElementRenderable } from "@elllphnt/elementa-scene";
+import type { ComponentElementRenderable } from "@elllphnt/elementa-scene";
 import { updateMapList } from "@elllphnt/elementa-utils";
 import { BehaviorSubject } from "rxjs";
-import { Handle, ILayoutUpdatePropagation } from "~/_types/_";
-import { IFragmentHandle } from "~/_types/handles/renderable/fragment";
+import type { Handle, ILayoutUpdatePropagation } from "~/_types/_";
+import type { IFragmentHandle } from "~/_types/handles/renderable/fragment";
 import { LayoutUpdatePropagation } from "../_handle_rect.js";
 import { FragmentHandle } from "../fragment.js";
 import { ElementHandle } from "./element.js";

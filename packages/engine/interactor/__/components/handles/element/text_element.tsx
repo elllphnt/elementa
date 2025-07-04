@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { TextElementHandle } from "~/handles/_";
+import type { TextElementHandle } from "~/handles/_";
 import { useHandleDom } from "../_hooks/interaction_target.js";
 import { PaddingMarker } from "../_markers/padding_marker.js";
 

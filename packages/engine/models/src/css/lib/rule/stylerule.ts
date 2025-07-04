@@ -1,7 +1,7 @@
-import { CssSelector } from "@elllphnt/elementa-base";
-import { CssStyleData } from "@elllphnt/elementa-css";
+import type { CssSelector } from "@elllphnt/elementa-base";
+import type { CssStyleData } from "@elllphnt/elementa-css";
 import { Lifecycle } from "@elllphnt/elementa-kernel";
-import { Observable } from "rxjs";
+import type { Observable } from "rxjs";
 
 /**
  * Represents a CSS style rule.

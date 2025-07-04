@@ -1,11 +1,12 @@
 import { Lifecycle } from "@elllphnt/elementa-kernel";
-import { File } from "@elllphnt/elementa-models";
-import { BehaviorSubject, debounceTime, map, Observable } from "rxjs";
-import {
+import type { File } from "@elllphnt/elementa-models";
+import type { Observable } from "rxjs";
+import { BehaviorSubject, debounceTime, map } from "rxjs";
+import type {
   Diagnostic,
   Diagnosticable,
-  DiagnosticLevel,
 } from "../../_shared/diagnosticable.js";
+import { DiagnosticLevel } from "../../_shared/diagnosticable.js";
 import { moduleLogger } from "../../loggers.js";
 
 export type ModuleState = {

@@ -1,6 +1,6 @@
-import { Lifecycle } from "@elllphnt/elementa-utils";
-import { Observable } from "rxjs";
-import { Handle } from "../handles/handle.js";
+import type { Lifecycle } from "@elllphnt/elementa-utils";
+import type { Observable } from "rxjs";
+import type { Handle } from "../handles/handle.js";
 
 export type DropCase = {
   target: Handle;

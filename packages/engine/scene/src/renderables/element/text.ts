@@ -1,6 +1,6 @@
-import { TextElementInstance } from "@elllphnt/elementa-runtime";
+import type { TextElementInstance } from "@elllphnt/elementa-runtime";
 import { BehaviorSubject, of } from "rxjs";
-import { Scene } from "../../scene/scene.js";
+import type { Scene } from "../../scene/scene.js";
 import { ElementRenderable } from "./element.js";
 
 export interface ITextElementEditor {

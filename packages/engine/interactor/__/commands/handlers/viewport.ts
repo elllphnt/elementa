@@ -1,5 +1,5 @@
 import { Rect } from "@elllphnt/elementa-math-utils";
-import { CommandHandler } from "~/_types/managers/command";
+import type { CommandHandler } from "~/_types/managers/command";
 
 export const fitIntoViewport: CommandHandler = (interactor) => {
   const contentRect = Rect.union(

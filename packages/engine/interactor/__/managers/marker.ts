@@ -1,7 +1,8 @@
 import { Lifecycle } from "@elllphnt/elementa-kernel";
 import { BehaviorSubject } from "rxjs";
-import { IMarkerManager } from "~/_types/managers/marker.js";
-import { LineMarker, Marker, RectMarker } from "~/primitives/markers.js";
+import type { IMarkerManager } from "~/_types/managers/marker.js";
+import type { Marker} from "~/primitives/markers.js";
+import { LineMarker, RectMarker } from "~/primitives/markers.js";
 
 export class MarkerManager extends Lifecycle implements IMarkerManager {
   private _markers$: BehaviorSubject<Marker[]>;

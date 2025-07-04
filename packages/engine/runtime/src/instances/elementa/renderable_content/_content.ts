@@ -1,5 +1,5 @@
-import { RenderableContent } from "@elllphnt/elementa-models";
-import { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
+import type { RenderableContent } from "@elllphnt/elementa-models";
+import type { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
 import { ComponentRenderableContentInstance } from "./component.js";
 import { FragmentRenderableContentInstance } from "./fragment.js";
 import { RouterRenderableContentInstance } from "./router.js";

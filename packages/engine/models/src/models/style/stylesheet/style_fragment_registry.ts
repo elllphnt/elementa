@@ -1,10 +1,12 @@
-import {
+import type {
   StyleFragmentData,
   StyleFragmentDataTypeMap,
   StyleFragmentType,
 } from "@elllphnt/elementa-base";
-import { Model, RecordState } from "@elllphnt/elementa-kernel";
-import { map, Observable } from "rxjs";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import { Model } from "@elllphnt/elementa-kernel";
+import type { Observable } from "rxjs";
+import { map } from "rxjs";
 
 export class StyleFragmentRegistry<K extends string = string> extends Model<
   RecordState<{ [k in K]?: StyleFragmentData[] }>

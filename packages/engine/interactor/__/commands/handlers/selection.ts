@@ -1,6 +1,6 @@
 import _ from "lodash";
-import { CommandHandler } from "~/_types/managers/command";
-import { Handle } from "~/handles/handle";
+import type { CommandHandler } from "~/_types/managers/command";
+import type { Handle } from "~/handles/handle";
 
 export const selectAll: CommandHandler = (interactor) => {
   const selection = interactor.interactionManager.selection;

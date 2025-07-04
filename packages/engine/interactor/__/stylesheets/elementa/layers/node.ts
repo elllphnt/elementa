@@ -1,5 +1,5 @@
 import tinycolor from "tinycolor2";
-import { Theme } from "~/theme/theme";
+import type { Theme } from "~/theme/theme";
 
 export const nodeLayerStyleSheet = (theme: Theme) => /* css */ `
     .elementa-layer-node {

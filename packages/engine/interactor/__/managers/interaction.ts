@@ -1,8 +1,8 @@
 import { Lifecycle } from "@elllphnt/elementa-kernel";
 import _ from "lodash";
 import { BehaviorSubject } from "rxjs";
-import { Handle } from "~/_types/handles/handle.js";
-import {
+import type { Handle } from "~/_types/handles/handle.js";
+import type {
   DropCase,
   IInteractionManager,
 } from "~/_types/managers/interaction.js";

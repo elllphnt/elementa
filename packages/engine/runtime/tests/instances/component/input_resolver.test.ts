@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { ComponentInputResolver } from "../../../src/instances/component/input_resolver/input_resolver.js";
-import { ElementRuntimeEnvironment } from "../../../src/instances/elements/_environment/environment.js";
+import type { ComponentInputResolver } from "../../../src/instances/component/input_resolver/input_resolver.js";
+import type { ElementRuntimeEnvironment } from "../../../src/instances/elements/_environment/environment.js";
 
 describe("ComponentInputResolver", () => {
   let resolver: ComponentInputResolver;

@@ -1,7 +1,8 @@
 import { reconcileList } from "@elllphnt/elementa-kernel";
-import { SlotElementInstance } from "@elllphnt/elementa-runtime";
-import { BehaviorSubject, distinctUntilChanged, Observable } from "rxjs";
-import { Scene } from "../../scene/scene.js";
+import type { SlotElementInstance } from "@elllphnt/elementa-runtime";
+import type { Observable } from "rxjs";
+import { BehaviorSubject, distinctUntilChanged } from "rxjs";
+import type { Scene } from "../../scene/scene.js";
 import { createElementRenderable } from "./_create.js";
 import { ElementRenderable } from "./element.js";
 

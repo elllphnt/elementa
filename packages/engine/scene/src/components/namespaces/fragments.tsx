@@ -3,10 +3,10 @@ import {
   useManyObservables,
   useObservable,
 } from "@elllphnt/elementa-react-utils";
-import { PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
 import { NamespaceContext } from "../../contexts/namespace.js";
 import { useNamespace } from "../../hooks/namespace.js";
-import { ComponentRenderable } from "../../renderables/component/component.js";
+import type { ComponentRenderable } from "../../renderables/component/component.js";
 import { FragmentComponent } from "../fragment/fragment.js";
 
 export function FragmentsNamespaceProvider({

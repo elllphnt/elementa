@@ -1,16 +1,18 @@
 import { getOrCreateYArray, getOrCreateYMap } from "@elllphnt/crdt";
-import {
+import type {
   AggregatedStateList,
-  AggregatedStateRecord,
   ListState,
   RecordState,
   State,
-  ValueState,
+  ValueState} from "@elllphnt/elementa-kernel";
+import {
+  AggregatedStateRecord
 } from "@elllphnt/elementa-kernel";
-import { BehaviorSubject, Observable } from "rxjs";
+import type { Observable } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { map } from "rxjs/operators";
 import * as y from "yjs";
-import {
+import type {
   PickArrayKeys,
   PickObjectKeys,
 } from "../../../../utils/lang/build/types.js";

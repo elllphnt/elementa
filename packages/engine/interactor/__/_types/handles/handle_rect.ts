@@ -1,6 +1,6 @@
-import { Lifecycle, Rect } from "@elllphnt/elementa-utils";
-import { Observable } from "rxjs";
-import { Handle } from "./handle.js";
+import type { Lifecycle, Rect } from "@elllphnt/elementa-utils";
+import type { Observable } from "rxjs";
+import type { Handle } from "./handle.js";
 
 export interface ILayoutUpdatePropagation {
   confirm(instance: any): void;
