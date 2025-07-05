@@ -18,6 +18,6 @@
   "dependencies": {
     "@paralleldrive/cuid2": "^2.2.2",
     "yup": "^1.4.0",
-    "zod": "^3.24.4"
+    "zod": "^3.25.67"
   }
 }

@@ -1,16 +1,13 @@
 import { Lifecycle } from "@elllphnt/elementa-kernel";
 import type { ModuleHost } from "@elllphnt/elementa-runtime";
-import {
-  LocalFsModuleHost,
-  ModuleManager,
-  Runtime,
-} from "@elllphnt/elementa-runtime";
+import { ModuleManager, Runtime } from "@elllphnt/elementa-runtime";
 import { DomStyleSheetManager, Scene } from "@elllphnt/elementa-scene";
 import { assert } from "vitest";
 import {
   TestInfrastructure,
   type TestInfrastructureData,
 } from "./infrastructure.js";
+import { LocalFsModuleHost } from "./module_host.js";
 
 const moduleHost = new LocalFsModuleHost(`./modules`);
 /**

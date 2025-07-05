@@ -1,8 +1,7 @@
+import type { ModuleHost } from "@elllphnt/elementa-runtime";
 import { mkdir, rm, writeFile } from "fs/promises";
 import path from "path";
 import { pathToFileURL } from "url";
-import { moduleLogger } from "../../../loggers.js";
-import type { ModuleHost } from "./module_host.js";
 
 function encodeUrlToFilePath(url: string): string {
   return encodeURIComponent(url);
@@ -26,13 +25,6 @@ export class LocalFsModuleHost implements ModuleHost {
 
     await writeFile(fullPath, code, "utf-8");
     this.writtenFiles.set(url, fullPath);
-
-    moduleLogger.debug(`loadScript ${url}`, {
-      fullPath,
-      encodedPath,
-      codeLength: code.length,
-      totalModules: this.writtenFiles.size,
-    });
   }
 
   resolveImportUrl(url: string): string {
@@ -41,19 +33,11 @@ export class LocalFsModuleHost implements ModuleHost {
       this.writtenFiles.get(url) || path.resolve(this.rootDir, encodedPath);
     const fileUrl = pathToFileURL(fullPath).toString();
 
-    moduleLogger.debug(`resolveImportUrl ${url}`, {
-      fullPath,
-      fileUrl,
-    });
-
     return fileUrl;
   }
 
   async clear(): Promise<void> {
     await rm(this.rootDir, { recursive: true, force: true });
     this.writtenFiles.clear();
-    moduleLogger.debug(`LocalFsModuleHost cleared`, {
-      rootDir: this.rootDir,
-    });
   }
 }

@@ -2,6 +2,7 @@ packages:
   - apps/*
   - packages/engine/*
   - packages/engine/backends/*
+  - packages/engine/tests/*
   - packages/schema/*
   - packages/tools/*
   - packages/utils/*

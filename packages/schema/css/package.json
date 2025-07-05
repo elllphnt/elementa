@@ -16,7 +16,7 @@
     "types": "tsc src/index.ts --declaration --emitDeclarationOnly --outFile schema/index.d.ts"
   },
   "dependencies": {
-    "csstype": "^3.1.3",
-    "@elllphnt/elementa-base": "workspace:*"
+    "@elllphnt/elementa-base": "workspace:*",
+    "csstype": "^3.1.3"
   }
 }

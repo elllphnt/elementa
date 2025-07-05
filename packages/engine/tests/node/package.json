@@ -1,5 +1,5 @@
 {
-    "name": "@elllphnt/elementa-tests",
+    "name": "@elllphnt/elementa-tests-node",
     "private": true,
     "version": "0.1.0",
     "type": "module",
@@ -9,9 +9,9 @@
     "dependencies": {
         "@elllphnt/elementa-base": "workspace:*",
         "@elllphnt/elementa-css": "workspace:*",
+        "@elllphnt/elementa-json-backend": "workspace:*",
         "@elllphnt/elementa-kernel": "workspace:*",
         "@elllphnt/elementa-lang-utils": "workspace:*",
-        "@elllphnt/elementa-json-backend": "workspace:*",
         "@elllphnt/elementa-models": "workspace:*",
         "@elllphnt/elementa-runtime": "workspace:*",
         "@elllphnt/elementa-scene": "workspace:*",

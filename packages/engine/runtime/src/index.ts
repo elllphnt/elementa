@@ -111,5 +111,4 @@ export * from "./runtime/module_manager/module_manager.js";
 
 // Module host
 export * from "./runtime/module_manager/module_host/in_memory.js";
-export * from "./runtime/module_manager/module_host/local_fs.js";
 export * from "./runtime/module_manager/module_host/module_host.js";

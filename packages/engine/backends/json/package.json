@@ -14,9 +14,9 @@
         "test": "vitest --run"
     },
     "dependencies": {
-        "rxjs": "^7.8.2",
         "@elllphnt/elementa-kernel": "workspace:*",
-        "@elllphnt/elementa-lang-utils": "workspace:*"
+        "@elllphnt/elementa-lang-utils": "workspace:*",
+        "rxjs": "^7.8.2"
     },
     "main": "build/index.js",
     "types": "build/index.d.ts"

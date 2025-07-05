@@ -11,9 +11,9 @@
     "dev": "tsx ./src/index.ts"
   },
   "dependencies": {
-    "globby": "^14.1.0",
-    "chokidar": "^3.6.0",
+    "@elllphnt/elementa-base": "workspace:*",
     "@elllphnt/elementa-react-parser": "workspace:*",
-    "@elllphnt/elementa-base": "workspace:*"
+    "chokidar": "^3.6.0",
+    "globby": "^14.1.0"
   }
 }

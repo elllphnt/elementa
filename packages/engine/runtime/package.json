@@ -18,15 +18,15 @@
     "devDependencies": {
         "@types/babel__standalone": "^7.1.9",
         "eslint-plugin-import": "^2.29.1",
-        "tsc-watch": "^6.2.1",
+        "tsc-watch": "^6.3.1",
         "typescript": "^5.8.3"
     },
     "dependencies": {
-        "rxjs": "^7.8.1",
         "@babel/standalone": "^7.26.9",
-        "@elllphnt/elementa-lang-utils": "workspace:*",
         "@elllphnt/elementa-base": "workspace:*",
+        "@elllphnt/elementa-kernel": "workspace:*",
+        "@elllphnt/elementa-lang-utils": "workspace:*",
         "@elllphnt/elementa-models": "workspace:*",
-        "@elllphnt/elementa-kernel": "workspace:*"
+        "rxjs": "^7.8.2"
     }
 }
