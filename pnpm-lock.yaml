@@ -531,6 +531,36 @@ importers:
         specifier: ^7.8.2
         version: 7.8.2
 
+  packages/engine/tests/web:
+    dependencies:
+      '@elllphnt/elementa-base':
+        specifier: workspace:*
+        version: link:../../../schema/base
+      '@elllphnt/elementa-css':
+        specifier: workspace:*
+        version: link:../../../schema/css
+      '@elllphnt/elementa-json-backend':
+        specifier: workspace:*
+        version: link:../../backends/json
+      '@elllphnt/elementa-kernel':
+        specifier: workspace:*
+        version: link:../../kernel
+      '@elllphnt/elementa-lang-utils':
+        specifier: workspace:*
+        version: link:../../../utils/lang
+      '@elllphnt/elementa-models':
+        specifier: workspace:*
+        version: link:../../models
+      '@elllphnt/elementa-runtime':
+        specifier: workspace:*
+        version: link:../../runtime
+      '@elllphnt/elementa-scene':
+        specifier: workspace:*
+        version: link:../../scene
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
+
   packages/schema/base:
     dependencies:
       '@paralleldrive/cuid2':

@@ -1,0 +1,14 @@
+{
+  "extends": "../../../../tsconfig.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "build/.tsbuildinfo",
+    "baseUrl": ".",
+    "strict": false,
+    "strictFunctionTypes": false,
+    "paths": {
+      "~/*": ["./*"]
+    }
+  },
+  "exclude": ["build", "node_modules"],
+  "references": []
+}
