@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      jsdom:
+        specifier: ^26.1.0
+        version: 26.1.0
     devDependencies:
       '@changesets/cli':
         specifier: ^2.29.5
@@ -513,6 +517,9 @@ importers:
       '@elllphnt/elementa-runtime':
         specifier: workspace:*
         version: link:../runtime
+      '@elllphnt/elementa-scene':
+        specifier: workspace:*
+        version: link:../scene
       rxjs:
         specifier: ^7.8.2
         version: 7.8.2

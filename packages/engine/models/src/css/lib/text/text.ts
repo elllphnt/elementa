@@ -1,4 +1,4 @@
-import type { Observable } from "rxjs";
+import { of, type Observable } from "rxjs";
 import { CssStyleSheet } from "../stylesheet.js";
 import { cssStyleSheetTypes } from "../types.js";
 
@@ -36,5 +36,15 @@ export class TextCssStyleSheet extends CssStyleSheet {
     this.target = target;
     this._text = text;
     this._text$ = text$;
+  }
+}
+
+export class StaticTextCssStyleSheet extends TextCssStyleSheet {
+  constructor({ target, text }: { target: string; text: string }) {
+    super({
+      target,
+      text: () => text,
+      text$: () => of(text),
+    });
   }
 }

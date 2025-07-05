@@ -11,6 +11,7 @@ export class DomStyleSheetManager extends Lifecycle {
     let adaptor = this.stylesheetAdaptors[stylesheet.key];
     if (!adaptor) {
       adaptor = createDomStyleSheetAdaptor({ stylesheet });
+      this.addLifecycle(adaptor);
       this.stylesheetAdaptors[stylesheet.key] = adaptor;
 
       stylesheet.addDisposer(() => {
@@ -43,10 +44,6 @@ export class DomStyleSheetManager extends Lifecycle {
       const adaptorCount = Object.keys(this.stylesheetAdaptors).length;
       styleLogger.info("DomStyleSheetManager disposing", {
         adaptorCount,
-      });
-
-      Object.values(this.stylesheetAdaptors).forEach((adaptor) => {
-        adaptor.dispose();
       });
       this.stylesheetAdaptors = {};
     });

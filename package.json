@@ -46,5 +46,8 @@
         "vite-tsconfig-paths": "^5.1.4",
         "vitest": "^3.2.2"
     },
-    "packageManager": "pnpm@10.10.0"
+    "packageManager": "pnpm@10.10.0",
+    "dependencies": {
+        "jsdom": "^26.1.0"
+    }
 }

@@ -5,6 +5,7 @@ import {
   ModuleManager,
   Runtime,
 } from "@elllphnt/elementa-runtime";
+import { DomStyleSheetManager, Scene } from "@elllphnt/elementa-scene";
 import { assert } from "vitest";
 import {
   TestInfrastructure,
@@ -232,4 +233,51 @@ export async function withTestRuntime<T>(
       moduleManager.dispose();
     }
   });
+}
+
+export async function withTestScene<T>(
+  {
+    infrastructureData,
+    externals = [],
+  }: { infrastructureData: TestInfrastructureData; externals?: string[] },
+  testFn: ({
+    runtime,
+    infrastructure,
+    moduleManager,
+    moduleHost,
+    scene,
+    stylesheetManager,
+  }: {
+    runtime: Runtime;
+    infrastructure: TestInfrastructure;
+    moduleManager: ModuleManager;
+    moduleHost: ModuleHost;
+    scene: Scene;
+    stylesheetManager: DomStyleSheetManager;
+  }) => Promise<T>
+): Promise<T> {
+  return withTestRuntime(
+    { infrastructureData, externals },
+    async ({ runtime, infrastructure, moduleManager, moduleHost }) => {
+      const stylesheetManager = new DomStyleSheetManager();
+      const scene = new Scene({ stylesheetManager });
+
+      scene.initialize();
+      stylesheetManager.initialize();
+
+      try {
+        return await testFn({
+          runtime,
+          infrastructure,
+          moduleManager,
+          moduleHost,
+          scene,
+          stylesheetManager,
+        });
+      } finally {
+        scene.dispose();
+        stylesheetManager.dispose();
+      }
+    }
+  );
 }
