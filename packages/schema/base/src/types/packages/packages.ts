@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { CrdtAtomic, crdtAtomicSchema } from "../_shared/_.js";
+import type { CrdtAtomic} from "../_shared/_.js";
+import { crdtAtomicSchema } from "../_shared/_.js";
 
 export type PackageData = {
   name: string;

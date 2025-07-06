@@ -1,7 +1,7 @@
-import { HrefLinkData } from "@elllphnt/elementa-base";
+import type { HrefLinkData } from "@elllphnt/elementa-base";
 import { transpileDynamic } from "~/libs/dynamic.js";
-import { TranspilerContext, TranspilerResult } from "~/types/transpiler.js";
-import { TranspileElementOptions } from "../../_base.js";
+import type { TranspilerContext, TranspilerResult } from "~/types/transpiler.js";
+import type { TranspileElementOptions } from "../../_base.js";
 import { applyBaseLinkToTranspiledElement } from "./_base.js";
 
 export function applyHrefLinkToTranspiledElement(

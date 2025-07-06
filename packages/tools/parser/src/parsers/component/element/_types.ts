@@ -1,4 +1,4 @@
-import { ElementData, FragmentData } from "@elllphnt/elementa-base";
+import type { ElementData, FragmentData } from "@elllphnt/elementa-base";
 
 export type CreateFragment = ({
   content,

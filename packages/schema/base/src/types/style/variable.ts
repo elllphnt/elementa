@@ -1,9 +1,10 @@
 import { z } from "zod";
 import { StyleDataType } from "../_primitives/_.js";
-import {
+import type {
   CrdtAtomic,
-  crdtAtomicSchema,
-  IdentifiableData,
+  IdentifiableData} from "../_shared/_.js";
+import {
+  crdtAtomicSchema
 } from "../_shared/_.js";
 import { type ElllSelectorData, elllSelectorDataSchema } from "./modifier.js";
 

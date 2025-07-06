@@ -1,6 +1,7 @@
 import { z } from "zod";
+import type {
+  IdentifiableData} from "../../_shared/identifiable.js";
 import {
-  IdentifiableData,
   identifiableDataSchema,
 } from "../../_shared/identifiable.js";
 

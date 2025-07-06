@@ -1,4 +1,4 @@
-import { RawStyleData, StyleData } from "@elllphnt/elementa-base";
+import type { RawStyleData, StyleData } from "@elllphnt/elementa-base";
 import { assert, test } from "vitest";
 import { styleToCss } from "../src/style/style.js";
 

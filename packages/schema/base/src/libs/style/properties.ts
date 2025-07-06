@@ -1,5 +1,5 @@
 import { StyleDataType } from "../../types/_.js";
-import {
+import type {
   StylePropertyConfig,
   StylePropertyName,
 } from "../../types/style/stylesheet/properties.js";

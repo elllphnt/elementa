@@ -1,4 +1,4 @@
-import {
+import type {
   Evaluable,
   Expression,
 } from "../../types/_primitives/dynamic/evaluable.js";

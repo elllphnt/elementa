@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { Evaluable, evaluableSchema } from "../../../_primitives/_.js";
+import type { Evaluable} from "../../../_primitives/_.js";
+import { evaluableSchema } from "../../../_primitives/_.js";
 
 // Types
 

@@ -1,8 +1,8 @@
-import { ElementRepeatData } from "@elllphnt/elementa-base";
+import type { ElementRepeatData } from "@elllphnt/elementa-base";
 import { TranspilerDiagnosticLevel } from "~/types/diagnostic.js";
-import { TranspilerContext, TranspilerResult } from "~/types/transpiler.js";
+import type { TranspilerContext, TranspilerResult } from "~/types/transpiler.js";
 import { transpileDynamic } from "../../dynamic.js";
-import { TranspileElementOptions } from "../_base.js";
+import type { TranspileElementOptions } from "../_base.js";
 
 export function applyRepeatToTranspiledElement(
   repeat: ElementRepeatData,

@@ -1,8 +1,9 @@
 import { z } from "zod";
-import {
+import type {
   CrdtAtomic,
-  crdtAtomicSchema,
-  IdentifiableData,
+  IdentifiableData} from "../_shared/_.js";
+import {
+  crdtAtomicSchema
 } from "../_shared/_.js";
 
 // Types

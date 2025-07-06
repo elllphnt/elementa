@@ -1,6 +1,7 @@
-import { SlotElementData } from "@elllphnt/elementa-base";
-import { TranspilerContext, TranspilerResult } from "~/types/transpiler.js";
-import { transpileBaseElement, TranspileElementOptions } from "./_base.js";
+import type { SlotElementData } from "@elllphnt/elementa-base";
+import type { TranspilerContext, TranspilerResult } from "~/types/transpiler.js";
+import type { TranspileElementOptions } from "./_base.js";
+import { transpileBaseElement } from "./_base.js";
 
 export function transpileSlotElement(
   data: SlotElementData,

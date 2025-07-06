@@ -5,7 +5,6 @@ import type { JSX } from "react";
 import { useEffect, useMemo, useRef } from "react";
 import { BehaviorSubject, map, switchMap } from "rxjs";
 import { SizeControl } from "~/components/handles/controls/size/size.js";
-import { CornerHandle } from "~/components/handles/interactions/corner.js";
 import { ResizeHandle } from "~/components/handles/interactions/resize/resize.js";
 import { useElementaInteractor } from "~/components/hooks/elementa_interactor.js";
 import { handleProperties } from "~/handles/_libs/properties.js";
@@ -70,20 +69,17 @@ export function SelectionDesignHandle() {
   }
 
   if (selection.length === 1) {
-    const handle = selection[0];
-
-    if (handle.property(handleProperties.hasCorner)) {
-      handles.push(
-        <CornerHandle key={selectionKey + "corner"} handle={handle} />
-      );
-    }
-
+    // const handle = selection[0];
+    // if (handle.property(handleProperties.hasCorner)) {
+    //   handles.push(
+    //     <CornerHandle key={selectionKey + "corner"} handle={handle} />
+    //   );
+    // }
     // if (handle instanceof ElementHandle) {
     //   handles.push(
     //     <PaddingHandle key={selectionKey + "padding"} handle={handle} />
     //   );
     // }
-
     // if (handle instanceof ContainerElementHandle) {
     //   handles.push(<GapHandle key={selectionKey + "gap"} handle={handle} />);
     // }

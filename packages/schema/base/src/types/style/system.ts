@@ -1,6 +1,8 @@
 import { z } from "zod";
-import { CrdtAtomic, crdtAtomicSchema } from "../_shared/_.js";
-import { StyleModifierData, styleModifierDataSchema } from "./modifier.js";
+import type { CrdtAtomic} from "../_shared/_.js";
+import { crdtAtomicSchema } from "../_shared/_.js";
+import type { StyleModifierData} from "./modifier.js";
+import { styleModifierDataSchema } from "./modifier.js";
 
 export type ColorSchemeDefinitionData = CrdtAtomic<["modifiers[*]"]> & {
   name?: string;

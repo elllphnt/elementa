@@ -1,4 +1,5 @@
-import { ContextProviderData, contextProviderDataSchema } from "./context.js";
+import type { ContextProviderData} from "./context.js";
+import { contextProviderDataSchema } from "./context.js";
 
 export type ProviderData = ContextProviderData;
 

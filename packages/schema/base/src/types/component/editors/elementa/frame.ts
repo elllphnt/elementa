@@ -1,15 +1,19 @@
 import { z } from "zod";
-import { CornerData, cornerDataSchema } from "../../../_primitives/_.js";
+import type { CornerData} from "../../../_primitives/_.js";
+import { cornerDataSchema } from "../../../_primitives/_.js";
+import type {
+  IdentifiableData} from "../../../_shared/_.js";
 import {
-  IdentifiableData,
   identifiableDataSchema,
 } from "../../../_shared/_.js";
+import type {
+  RenderableContentData} from "./renderable_content.js";
 import {
-  RenderableContentData,
   renderableContentDataSchema,
 } from "./renderable_content.js";
+import type {
+  RenderingContextData} from "./rendering_context.js";
 import {
-  RenderingContextData,
   renderingContextDataSchema,
 } from "./rendering_context.js";
 

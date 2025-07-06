@@ -1,4 +1,5 @@
-import { Node, SyntaxKind } from "ts-morph";
+import type { Node} from "ts-morph";
+import { SyntaxKind } from "ts-morph";
 import { isInNode } from "./navigation.js";
 
 export function addStatementsBeforeNode(node: Node, ...statements: string[]) {

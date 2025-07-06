@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { IdentifiableData } from "../_shared/_.js";
+import type { IdentifiableData } from "../_shared/_.js";
 
 // Types
 

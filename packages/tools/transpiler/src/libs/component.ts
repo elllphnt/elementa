@@ -1,6 +1,6 @@
-import { ComponentData } from "@elllphnt/elementa-base";
+import type { ComponentData } from "@elllphnt/elementa-base";
 import { join } from "path";
-import { TranspilerContext, TranspilerResult } from "../types/transpiler.js";
+import type { TranspilerContext, TranspilerResult } from "../types/transpiler.js";
 import { transpileElement } from "./elements/element.js";
 import { transpileFragment } from "./fragment.js";
 import { transpileState } from "./states/state.js";

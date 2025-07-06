@@ -1,8 +1,9 @@
-import {
+import type {
   ClassDeclaration,
   EnumDeclaration,
   Expression,
-  FunctionDeclaration,
+  FunctionDeclaration} from "ts-morph";
+import {
   Node,
 } from "ts-morph";
 

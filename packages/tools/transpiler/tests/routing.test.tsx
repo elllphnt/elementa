@@ -1,4 +1,4 @@
-import { ComponentData } from "@elllphnt/elementa-base";
+import type { ComponentData } from "@elllphnt/elementa-base";
 import { test } from "vitest";
 import { transpileComponent } from "../src/index.js";
 import { TestTranspilerContext, writeTestModule } from "./_utils.js";

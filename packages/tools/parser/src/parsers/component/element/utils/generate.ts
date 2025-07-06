@@ -1,5 +1,5 @@
 import * as g from "@babel/generator";
-import * as t from "@babel/types";
+import type * as t from "@babel/types";
 
 export const generate = g.generate;
 

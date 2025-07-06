@@ -1,10 +1,10 @@
-import { StaticReference, StyleSheetData } from "@elllphnt/elementa-base";
-import { TranspilerDiagnostic } from "~/types/diagnostic.js";
-import { TranspilerRoute } from "~/types/route.js";
-import { TranspilerStylesheet } from "~/types/stylesheet.js";
-import { Module } from "../types/module.js";
-import { TranspilerReference } from "../types/reference.js";
-import { TranspilerContext } from "../types/transpiler.js";
+import type { StaticReference, StyleSheetData } from "@elllphnt/elementa-base";
+import type { TranspilerDiagnostic } from "~/types/diagnostic.js";
+import type { TranspilerRoute } from "~/types/route.js";
+import type { TranspilerStylesheet } from "~/types/stylesheet.js";
+import type { Module } from "../types/module.js";
+import type { TranspilerReference } from "../types/reference.js";
+import type { TranspilerContext } from "../types/transpiler.js";
 
 export class TranspilerContextImpl implements TranspilerContext {
   private moduleKey = 0;

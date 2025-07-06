@@ -1,4 +1,4 @@
-import { VarRef } from "../../types/_.js";
+import type { VarRef } from "../../types/_.js";
 
 export function isVarRef(value: any): value is VarRef {
   return (value &&

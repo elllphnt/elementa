@@ -1,5 +1,5 @@
 import { isExpression, isStaticReference } from "@elllphnt/elementa-base";
-import { TranspilerContext, TranspilerResult } from "../types/transpiler.js";
+import type { TranspilerContext, TranspilerResult } from "../types/transpiler.js";
 
 export function transpileDynamic(
   data: any,

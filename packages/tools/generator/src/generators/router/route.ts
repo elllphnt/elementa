@@ -1,7 +1,7 @@
-import { GeneratorContext } from "../../context/context.js";
-import { JsRoute } from "../../js_app/js_app.js";
+import type { GeneratorContext } from "../../context/context.js";
+import type { JsRoute } from "../../js_app/js_app.js";
 import { jsAppPaths } from "../../js_app/paths.js";
-import { AbsolutePageRouteData } from "../_libs/route_tree.js";
+import type { AbsolutePageRouteData } from "../_libs/route_tree.js";
 import { generateComponent } from "../component/component.js";
 import { generateModule } from "../module/module.js";
 import { toRelativeRoute } from "./_utils.js";

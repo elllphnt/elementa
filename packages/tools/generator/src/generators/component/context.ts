@@ -3,11 +3,12 @@ import {
   parseAbsoluteFileUrl,
   toAbsoluteFileUrl,
 } from "@elllphnt/elementa-base";
+import type {
+  EnvironmentData,
+  EnvironmentRoute} from "@elllphnt/elementa-react-transpiler";
 import {
   compileStylesheet,
   Environment,
-  EnvironmentData,
-  EnvironmentRoute,
   ImportMap,
   Namespace,
   TranspilerContextImpl,

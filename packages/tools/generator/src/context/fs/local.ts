@@ -1,6 +1,6 @@
 import * as fs from "fs/promises";
 import * as nodepath from "path";
-import { FileSystem } from "./fs.js";
+import type { FileSystem } from "./fs.js";
 
 export function createLocalFileSystem(root: string): FileSystem {
   return {

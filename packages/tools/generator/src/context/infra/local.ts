@@ -6,7 +6,7 @@ import {
 import fsSync from "fs";
 import fs from "fs/promises";
 import nodepath from "path";
-import { ElementaInfrastructure, ElementaReferencedFileData } from "./infra.js";
+import type { ElementaInfrastructure, ElementaReferencedFileData } from "./infra.js";
 
 export const getFileTypeFromPath = (filePath: string) => {
   const fileName = nodepath.basename(filePath);

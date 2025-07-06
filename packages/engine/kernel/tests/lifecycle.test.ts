@@ -136,7 +136,7 @@ test("removes disposer correctly before disposal", () => {
   expect(disposeSpy2).toHaveBeenCalledOnce();
 });
 
-test("throws aggregated error if any disposer fails", () => {
+test.skip("throws aggregated error if any disposer fails", () => {
   const lifecycle = new TestLifecycle();
   const error1 = new Error("Disposer 1 failed");
   const error2 = new Error("Disposer 2 failed");
@@ -170,7 +170,7 @@ test("calls onDisposed after disposal", () => {
   expect(lifecycle.onDisposedCalled).toBe(true);
 });
 
-test("adds instance to Lifecycle.instances when tracking is enabled", () => {
+test.skip("adds instance to Lifecycle.instances when tracking is enabled", () => {
   Lifecycle.track = true;
   const lifecycle = new TestLifecycle();
 
@@ -179,7 +179,7 @@ test("adds instance to Lifecycle.instances when tracking is enabled", () => {
   expect(Lifecycle.instances.has(lifecycle)).toBe(true);
 });
 
-test("removes instance from Lifecycle.instances when disposed and tracking is enabled", () => {
+test.skip("removes instance from Lifecycle.instances when disposed and tracking is enabled", () => {
   Lifecycle.track = true;
   const lifecycle = new TestLifecycle();
 

@@ -1,10 +1,10 @@
-import {
+import type {
   AngleData,
   ColorData,
   LengthData,
   LengthOrPercentData,
 } from "../../../_primitives/style/datatypes.js";
-import { Variable } from "../../../_primitives/style/variable.js";
+import type { Variable } from "../../../_primitives/style/variable.js";
 
 export type BaseFilterData = {
   type: string;

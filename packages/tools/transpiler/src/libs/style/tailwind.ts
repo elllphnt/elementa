@@ -1,9 +1,10 @@
+import type {
+  StyleData,
+  StylePropertyName} from "@elllphnt/elementa-base";
 import {
   isVarRef,
   stringifyFlexibleStyleData,
-  StyleData,
-  stylePropertyConfigMap,
-  StylePropertyName,
+  stylePropertyConfigMap
 } from "@elllphnt/elementa-base";
 import { stylePropertyToTwConfigMap } from "./properties.js";
 

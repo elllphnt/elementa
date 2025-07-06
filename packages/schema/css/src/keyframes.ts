@@ -1,5 +1,6 @@
-import { KeyframeSetData, StyleFragmentData } from "@elllphnt/elementa-base";
-import { styleToCss, StyleToCssContext } from "./style/style.js";
+import type { KeyframeSetData, StyleFragmentData } from "@elllphnt/elementa-base";
+import type { StyleToCssContext } from "./style/style.js";
+import { styleToCss } from "./style/style.js";
 
 export function keyFrameSetToCss(data: KeyframeSetData): string {
   if (!data.keyframes || !data.name) {

@@ -1,4 +1,4 @@
-import { RouterData, RouteTreeData } from "@elllphnt/elementa-base";
+import type { RouterData, RouteTreeData } from "@elllphnt/elementa-base";
 import { genId } from "./parsers/_.js";
 import { createReferenceString } from "./references.js";
 

@@ -1,5 +1,5 @@
-import { BaseElementData } from "./_base.js";
-import { ElementData } from "./element.js";
+import type { BaseElementData } from "./_base.js";
+import type { ElementData } from "./element.js";
 
 import { z } from "zod";
 import { baseElementDataSchema } from "./_base.js";

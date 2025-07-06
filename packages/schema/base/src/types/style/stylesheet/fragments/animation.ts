@@ -1,5 +1,5 @@
-import { DurationData } from "../../../_primitives/style/datatypes.js";
-import { Variable } from "../../../_primitives/style/variable.js";
+import type { DurationData } from "../../../_primitives/style/datatypes.js";
+import type { Variable } from "../../../_primitives/style/variable.js";
 
 export type AnimationData = {
   keyframe?: Variable<string>;

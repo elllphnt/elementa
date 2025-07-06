@@ -1,12 +1,13 @@
-import {
+import type {
   ArrowFunction,
   CallExpression,
   FunctionDeclaration,
-  FunctionExpression,
+  FunctionExpression} from "ts-morph";
+import {
   Node,
   SyntaxKind,
 } from "ts-morph";
-import { ParsedCodeModule } from "../../../module/code_module.js";
+import type { ParsedCodeModule } from "../../../module/code_module.js";
 import { extractImport } from "../_shared/_.js";
 import {
   findNearestIdentifierDeclaration,

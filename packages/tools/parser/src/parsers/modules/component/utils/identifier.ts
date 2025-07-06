@@ -1,4 +1,5 @@
-import { Block, Identifier, Node, SourceFile, SyntaxKind } from "ts-morph";
+import type { Block, Identifier, SourceFile} from "ts-morph";
+import { Node, SyntaxKind } from "ts-morph";
 import { getEnclosingBlock, isInNode } from "./navigation.js";
 
 export function isIdentifierReference(identifier: Identifier): boolean {

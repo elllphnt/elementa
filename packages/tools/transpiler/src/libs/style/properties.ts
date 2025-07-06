@@ -1,10 +1,11 @@
-import {
+import type {
   RawStyleData,
+  StyleData,
+  StylePropertyName} from "@elllphnt/elementa-base";
+import {
   stringifyDimension,
   stringifyFlexibleStyleData,
-  StyleData,
   StyleDataType,
-  StylePropertyName,
   validateStyleData,
 } from "@elllphnt/elementa-base";
 

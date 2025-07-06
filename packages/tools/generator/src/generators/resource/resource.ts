@@ -1,4 +1,4 @@
-import { GeneratorContext } from "../../context/context.js";
+import type { GeneratorContext } from "../../context/context.js";
 import { generateComponent } from "../component/component.js";
 import { generateModule } from "../module/module.js";
 

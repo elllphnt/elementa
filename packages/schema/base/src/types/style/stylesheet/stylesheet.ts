@@ -1,9 +1,10 @@
 import { z } from "zod";
+import type {
+  StyleFragmentData} from "./fragments/fragment.js";
 import {
-  StyleFragmentData,
   styleFragmentDataSchema,
 } from "./fragments/fragment.js";
-import { StyleData } from "./style/_.js";
+import type { StyleData } from "./style/_.js";
 
 // Types
 

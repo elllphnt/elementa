@@ -1,15 +1,19 @@
 import { z } from "zod";
 import { type ResolvableOrEvaluable } from "../../_primitives/_.js";
-import { BaseElementData, baseElementDataSchema } from "./_base.js";
+import type { BaseElementData} from "./_base.js";
+import { baseElementDataSchema } from "./_base.js";
+import type {
+  ElementContainerData} from "./_common/container.js";
 import {
-  ElementContainerData,
   elementContainerDataSchema,
 } from "./_common/container.js";
+import type {
+  InteractiveData} from "./_common/interactive.js";
 import {
-  InteractiveData,
   interactiveDataSchema,
 } from "./_common/interactive.js";
-import { StylableData, stylableDataSchema } from "./_common/stylable.js";
+import type { StylableData} from "./_common/stylable.js";
+import { stylableDataSchema } from "./_common/stylable.js";
 
 // Types
 

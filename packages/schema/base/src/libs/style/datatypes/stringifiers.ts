@@ -1,5 +1,5 @@
 // Import needed types
-import {
+import type {
   AngleData,
   ColorData,
   DimensionData,
@@ -7,7 +7,8 @@ import {
   FlexData,
   LengthData,
   PercentData,
-  RatioData,
+  RatioData} from "../../../types/_primitives/style/datatypes.js";
+import {
   StyleDataType,
 } from "../../../types/_primitives/style/datatypes.js";
 

@@ -1,19 +1,21 @@
-import {
+import type {
   AnimationData,
   BackgroundLayerData,
   DropShadowFilterData,
   FilterData,
+  StylePropertyName,
+  TextShadowFilterData} from "@elllphnt/elementa-base";
+import {
   stringifyColor,
   stringifyDimension,
   stringifyFlexibleStyleData,
   StyleDataType,
   StyleFragmentType,
   stylePropertyConfigMap,
-  StylePropertyName,
-  TextShadowFilterData,
   validateStyleData,
 } from "@elllphnt/elementa-base";
-import { applySelectedCssStyle, CssStyleData } from "../base/_.js";
+import type { CssStyleData } from "../base/_.js";
+import { applySelectedCssStyle } from "../base/_.js";
 import { animationToCss } from "./fragments/animation.js";
 import { backgroundLayerToCss } from "./fragments/background_layer.js";
 import {

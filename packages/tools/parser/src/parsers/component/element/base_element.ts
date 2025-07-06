@@ -1,5 +1,5 @@
 import * as t from "@babel/types";
-import {
+import type {
   BaseElementData,
   ResolvableOrEvaluable,
   StyleSheetData,

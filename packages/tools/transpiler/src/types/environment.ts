@@ -1,4 +1,4 @@
-import { EnvironmentRoute } from "./route.js";
+import type { EnvironmentRoute } from "./route.js";
 
 export type EnvironmentData = {
   moduleNames: Record<number, string>;

@@ -1,6 +1,6 @@
-import { ElementData } from "@elllphnt/elementa-base";
-import { TranspilerContext, TranspilerResult } from "../../types/transpiler.js";
-import { TranspileElementOptions } from "./_base.js";
+import type { ElementData } from "@elllphnt/elementa-base";
+import type { TranspilerContext, TranspilerResult } from "../../types/transpiler.js";
+import type { TranspileElementOptions } from "./_base.js";
 import { applyConditionToTranspiledElement } from "./_common/condition.js";
 import { applyLinkToTranspiledElement } from "./_common/link/_link.js";
 import { applyRepeatToTranspiledElement } from "./_common/repeat.js";

@@ -1,4 +1,4 @@
-import {
+import type {
   BlurFilterData,
   BoxShadowFilterData,
   BrightnessFilterData,
@@ -11,8 +11,9 @@ import {
   OpacityFilterData,
   SaturateFilterData,
   SepiaFilterData,
-  StyleDataType,
-  TextShadowFilterData,
+  TextShadowFilterData} from "@elllphnt/elementa-base";
+import {
+  StyleDataType
 } from "@elllphnt/elementa-base";
 import {
   variableFlexibleStyleDataToCss,

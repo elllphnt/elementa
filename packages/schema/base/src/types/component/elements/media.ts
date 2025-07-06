@@ -1,15 +1,18 @@
 import { z } from "zod";
-import {
+import type {
   LengthData,
   PercentData,
-  ResolvableOrEvaluable,
+  ResolvableOrEvaluable} from "../../_primitives/_.js";
+import {
   resolvableOrEvaluableSchema,
 } from "../../_primitives/_.js";
+import type {
+  Evaluable} from "../../_primitives/dynamic/evaluable.js";
 import {
-  Evaluable,
   evaluableSchema,
 } from "../../_primitives/dynamic/evaluable.js";
-import { BaseElementData, baseElementDataSchema } from "./_base.js";
+import type { BaseElementData} from "./_base.js";
+import { baseElementDataSchema } from "./_base.js";
 
 // Types
 

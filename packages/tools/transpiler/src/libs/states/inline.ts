@@ -1,6 +1,6 @@
-import { InlineStateData } from "@elllphnt/elementa-base";
+import type { InlineStateData } from "@elllphnt/elementa-base";
 import { TranspilerDiagnosticLevel } from "~/types/diagnostic.js";
-import { TranspilerContext, TranspilerResult } from "../../types/transpiler.js";
+import type { TranspilerContext, TranspilerResult } from "../../types/transpiler.js";
 
 export function transpileInlineState(
   data: InlineStateData,

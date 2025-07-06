@@ -1,5 +1,6 @@
 import { init } from "@paralleldrive/cuid2";
-import { Node, NumericLiteral, StringLiteral, SyntaxKind } from "ts-morph";
+import type { Node, NumericLiteral, StringLiteral} from "ts-morph";
+import { SyntaxKind } from "ts-morph";
 
 export const genId = init({ length: 8 });
 

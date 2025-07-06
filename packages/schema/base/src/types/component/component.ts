@@ -1,12 +1,16 @@
 import { z } from "zod";
-import { DataInputData, dataInputDataSchema } from "../_shared/data_input.js";
+import type { DataInputData} from "../_shared/data_input.js";
+import { dataInputDataSchema } from "../_shared/data_input.js";
+import type {
+  ElementData} from "./elements/_.js";
 import {
-  ElementData,
   expressionElementDataSchema,
   fragmentElementDataSchema,
 } from "./elements/_.js";
-import { FragmentData, fragmentDataSchema } from "./fragment.js";
-import { StateData, stateDataSchema } from "./states/_.js";
+import type { FragmentData} from "./fragment.js";
+import { fragmentDataSchema } from "./fragment.js";
+import type { StateData} from "./states/_.js";
+import { stateDataSchema } from "./states/_.js";
 
 export type ComponentData = {
   name?: string;

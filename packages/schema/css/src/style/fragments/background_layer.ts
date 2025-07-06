@@ -1,4 +1,4 @@
-import {
+import type {
   AngularGradientStopData,
   BackgroundLayerData,
   ConicGradientData,
@@ -6,7 +6,8 @@ import {
   ImageBackgroundLayerData,
   LinearGradientData,
   LinearGradientStopData,
-  RadialGradientData,
+  RadialGradientData} from "@elllphnt/elementa-base";
+import {
   StyleDataType,
 } from "@elllphnt/elementa-base";
 import {

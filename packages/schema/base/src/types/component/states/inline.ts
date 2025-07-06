@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { BaseStateData, baseStateDataSchema } from "./_base.js";
+import type { BaseStateData} from "./_base.js";
+import { baseStateDataSchema } from "./_base.js";
 
 export type InlineStateData = BaseStateData<"inline"> & {
   script?: string;

@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { StyleSheetData, styleSheetDataSchema } from "../../../style/_.js";
+import type { StyleSheetData} from "../../../style/_.js";
+import { styleSheetDataSchema } from "../../../style/_.js";
 
 // Types
 

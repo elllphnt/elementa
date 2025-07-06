@@ -1,9 +1,11 @@
 import { z } from "zod";
-import { ColorData } from "../../../_primitives/_.js";
-import { CrdtAtomic, crdtAtomicSchema } from "../../../_shared/_.js";
-import {
+import type { ColorData } from "../../../_primitives/_.js";
+import type { CrdtAtomic} from "../../../_shared/_.js";
+import { crdtAtomicSchema } from "../../../_shared/_.js";
+import type {
   OverflowValue,
-  StyleModifierData,
+  StyleModifierData} from "../../../style/_.js";
+import {
   styleModifierDataSchema,
 } from "../../../style/_.js";
 

@@ -1,10 +1,11 @@
-import {
+import type {
   CssSelector,
   ElllSelectorData,
   ErrorTupple,
-  stringifyStyleData,
   StyleModifierData,
-  StyleModifierDefinitionData,
+  StyleModifierDefinitionData} from "@elllphnt/elementa-base";
+import {
+  stringifyStyleData,
   systemModifiers,
 } from "@elllphnt/elementa-base";
 import { populateTemplateString } from "./utils/string.js";

@@ -1,10 +1,11 @@
-import {
+import type {
   ArrowFunction,
   Block,
   FunctionDeclaration,
   FunctionExpression,
+  SourceFile} from "ts-morph";
+import {
   Node,
-  SourceFile,
   SyntaxKind,
 } from "ts-morph";
 

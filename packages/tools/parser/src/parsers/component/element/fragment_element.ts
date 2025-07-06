@@ -1,7 +1,7 @@
-import * as t from "@babel/types";
-import { ElementData } from "@elllphnt/elementa-base";
-import { CreateFragment } from "./_types.js";
-import { GetStylesheet } from "./base_element.js";
+import type * as t from "@babel/types";
+import type { ElementData } from "@elllphnt/elementa-base";
+import type { CreateFragment } from "./_types.js";
+import type { GetStylesheet } from "./base_element.js";
 import { extractElementsFromNode } from "./element.js";
 
 export function parseFragmentElementNode({

@@ -1,6 +1,6 @@
 import { moduleRelativePath } from "../../_utils/path.js";
 import { jsAppPaths } from "../../js_app/paths.js";
-import { AbsolutePageRouteData } from "../_libs/route_tree.js";
+import type { AbsolutePageRouteData } from "../_libs/route_tree.js";
 
 export type RelativeRoute = {
   id: string;

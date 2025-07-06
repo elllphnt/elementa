@@ -1,15 +1,18 @@
 import { z } from "zod";
+import type {
+  ResolvableOrEvaluable} from "../../_primitives/_.js";
 import {
-  ResolvableOrEvaluable,
   resolvableOrEvaluableSchema,
 } from "../../_primitives/_.js";
-import { BaseElementData, baseElementDataSchema } from "./_base.js";
-import {
+import type { BaseElementData} from "./_base.js";
+import { baseElementDataSchema } from "./_base.js";
+import type {
   InteractiveData,
-  interactiveDataSchema,
   LinkableData,
+  StylableData} from "./_common/_.js";
+import {
+  interactiveDataSchema,
   linkableDataSchema,
-  StylableData,
   stylableDataSchema,
 } from "./_common/_.js";
 

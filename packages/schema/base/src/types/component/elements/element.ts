@@ -1,25 +1,34 @@
 import { z } from "zod";
+import type {
+  ComponentElementData} from "./component.js";
 import {
-  ComponentElementData,
   componentElementDataSchema,
 } from "./component.js";
+import type {
+  ContainerElementData} from "./container.js";
 import {
-  ContainerElementData,
   containerElementDataSchema,
 } from "./container.js";
+import type {
+  ExpressionElementData} from "./expression.js";
 import {
-  ExpressionElementData,
   expressionElementDataSchema,
 } from "./expression.js";
-import { FragmentElementData, fragmentElementDataSchema } from "./fragment.js";
-import { MediaElementData, mediaElementDataSchema } from "./media.js";
+import type { FragmentElementData} from "./fragment.js";
+import { fragmentElementDataSchema } from "./fragment.js";
+import type { MediaElementData} from "./media.js";
+import { mediaElementDataSchema } from "./media.js";
+import type {
+  PrimitiveElementData} from "./primitive.js";
 import {
-  PrimitiveElementData,
   primitiveElementDataSchema,
 } from "./primitive.js";
-import { SlotElementData, slotElementDataSchema } from "./slot.js";
-import { TextElementData, textElementDataSchema } from "./text.js";
-import { VectorElementData, vectorElementDataSchema } from "./vector.js";
+import type { SlotElementData} from "./slot.js";
+import { slotElementDataSchema } from "./slot.js";
+import type { TextElementData} from "./text.js";
+import { textElementDataSchema } from "./text.js";
+import type { VectorElementData} from "./vector.js";
+import { vectorElementDataSchema } from "./vector.js";
 
 // Types
 

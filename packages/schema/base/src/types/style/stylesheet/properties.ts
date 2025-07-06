@@ -1,5 +1,5 @@
-import { StyleDataType } from "../../_primitives/style/datatypes.js";
-import { RawStyleData, StyleData } from "./style/_.js";
+import type { StyleDataType } from "../../_primitives/style/datatypes.js";
+import type { RawStyleData, StyleData } from "./style/_.js";
 
 export type StylePropertyName = keyof RawStyleData;
 

@@ -1,4 +1,4 @@
-import { InteractionEvent } from "../../types/_.js";
+import type { InteractionEvent } from "../../types/_.js";
 
 export const reactInteractionEventMap: Record<InteractionEvent, string> = {
   // Mouse events

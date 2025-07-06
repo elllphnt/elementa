@@ -1,14 +1,15 @@
-import {
-  baseSelector,
+import type {
   CssSelector,
   ErrorTupple,
-  stringifyElllSelector,
-  stringifyStyleData,
   StyleModifierDefinitionData,
-  StyleVariableSetData,
+  StyleVariableSetData} from "@elllphnt/elementa-base";
+import {
+  baseSelector,
+  stringifyElllSelector,
+  stringifyStyleData
 } from "@elllphnt/elementa-base";
 import { applySelectedCssStyle } from "./base/selector.js";
-import { CssStyleData } from "./base/types.js";
+import type { CssStyleData } from "./base/types.js";
 import { elllSelectorToCssSelector } from "./modifiers.js";
 
 export function variableSetToCss({

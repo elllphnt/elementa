@@ -1,5 +1,5 @@
 import { moduleRelativePath } from "../../_utils/path.js";
-import { GeneratorContext } from "../../context/context.js";
+import type { GeneratorContext } from "../../context/context.js";
 import { jsAppPaths } from "../../js_app/paths.js";
 import { generateClientEntryScript } from "./client_entry_script.js";
 

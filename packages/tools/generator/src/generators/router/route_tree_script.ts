@@ -1,4 +1,4 @@
-import { RelativeRoute } from "./_utils.js";
+import type { RelativeRoute } from "./_utils.js";
 
 export function generateRouteTreeScript({
   routes,

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { SlotFillData } from "../../elements/_.js";
+import type { SlotFillData } from "../../elements/_.js";
 
 export type BaseRenderableContentData<T extends string> = {
   type: T;

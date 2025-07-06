@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { RouteTreeData, routeTreeDataSchema } from "./route.js";
+import type { RouteTreeData} from "./route.js";
+import { routeTreeDataSchema } from "./route.js";
 
 // Types
 

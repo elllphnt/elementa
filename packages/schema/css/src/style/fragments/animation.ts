@@ -1,4 +1,5 @@
-import { AnimationData, StyleDataType } from "@elllphnt/elementa-base";
+import type { AnimationData} from "@elllphnt/elementa-base";
+import { StyleDataType } from "@elllphnt/elementa-base";
 import { variableStyleDataToCss } from "../variable.js";
 
 export function animationToCss(animation: AnimationData): string {

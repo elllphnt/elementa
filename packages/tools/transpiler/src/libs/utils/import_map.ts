@@ -1,4 +1,4 @@
-import { NameOptions, Namespace } from "./namespace.js";
+import type { NameOptions, Namespace } from "./namespace.js";
 
 export class ImportMap {
   readonly namespace: Namespace;

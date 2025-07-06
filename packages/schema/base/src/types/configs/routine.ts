@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { DataInputConfig, dataInputConfigSchema } from "./_shared/_.js";
+import type { DataInputConfig} from "./_shared/_.js";
+import { dataInputConfigSchema } from "./_shared/_.js";
 
 // Types
 

@@ -1,12 +1,13 @@
-import {
+import type {
   ArrayItem,
-  isVarRef,
-  stringifyFlexibleStyleData,
-  stringifyStyleData,
   StyleDataType,
   StyleDataTypeMap,
   Variable,
-  VarRef,
+  VarRef} from "@elllphnt/elementa-base";
+import {
+  isVarRef,
+  stringifyFlexibleStyleData,
+  stringifyStyleData
 } from "@elllphnt/elementa-base";
 
 export function varRefToCss(value: VarRef): string {

@@ -1,6 +1,7 @@
 import { createReferenceString } from "../references.js";
 import { generateImportStatements } from "./_utils/import.js";
-import { compileModule, ParsedModule, ParsedResource } from "./module.js";
+import type { ParsedModule, ParsedResource } from "./module.js";
+import { compileModule } from "./module.js";
 
 export type CodeResourceType = "component" | "hook" | "context" | "module";
 export type ParsedCodeResource<T extends CodeResourceType = CodeResourceType> =

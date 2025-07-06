@@ -1,6 +1,8 @@
 import { z } from "zod";
-import { Evaluable, evaluableSchema } from "../../_primitives/_.js";
-import { BaseElementData, baseElementDataSchema } from "./_base.js";
+import type { Evaluable} from "../../_primitives/_.js";
+import { evaluableSchema } from "../../_primitives/_.js";
+import type { BaseElementData} from "./_base.js";
+import { baseElementDataSchema } from "./_base.js";
 
 export type VectorTextNodeData = {
   type: "text";

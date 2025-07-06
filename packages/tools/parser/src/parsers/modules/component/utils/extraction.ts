@@ -1,9 +1,10 @@
-import {
+import type {
   Block,
   Expression,
   Identifier,
+  SourceFile} from "ts-morph";
+import {
   Node,
-  SourceFile,
   SyntaxKind,
 } from "ts-morph";
 import {

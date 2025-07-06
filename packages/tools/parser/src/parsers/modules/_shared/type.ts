@@ -1,9 +1,9 @@
-import {
+import type {
   EnumDeclaration,
   InterfaceDeclaration,
   TypeAliasDeclaration,
 } from "ts-morph";
-import { ParsedModule } from "../../../module/module.js";
+import type { ParsedModule } from "../../../module/module.js";
 
 export function extractType(
   statement: TypeAliasDeclaration | InterfaceDeclaration | EnumDeclaration,

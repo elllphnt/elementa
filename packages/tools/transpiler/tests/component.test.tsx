@@ -1,4 +1,4 @@
-import { ComponentData } from "@elllphnt/elementa-base";
+import type { ComponentData } from "@elllphnt/elementa-base";
 import { render } from "@testing-library/react";
 import { pathToFileURL } from "url";
 import { expect, test } from "vitest";

@@ -1,10 +1,11 @@
-import {
+import type {
   ArrayBindingPattern,
   Block,
   Identifier,
-  Node,
   ObjectBindingPattern,
-  SourceFile,
+  SourceFile} from "ts-morph";
+import {
+  Node,
   SyntaxKind,
 } from "ts-morph";
 import {

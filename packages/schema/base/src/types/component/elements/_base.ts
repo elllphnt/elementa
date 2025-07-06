@@ -3,18 +3,19 @@ import {
   type IdentifiableData,
   identifiableDataSchema,
 } from "../../_shared/identifiable.js";
-import {
+import type {
   AccessibleData,
-  accessibleDataSchema,
   ConditionalData,
-  conditionalDataSchema,
   InteractiveData,
-  interactiveDataSchema,
   LinkableData,
-  linkableDataSchema,
   RepeatableData,
+  StylableData} from "./_common/_.js";
+import {
+  accessibleDataSchema,
+  conditionalDataSchema,
+  interactiveDataSchema,
+  linkableDataSchema,
   repeatableDataSchema,
-  StylableData,
   stylableDataSchema,
 } from "./_common/_.js";
 

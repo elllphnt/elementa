@@ -1,10 +1,12 @@
-import {
+import type {
   GetModifierDefinition,
-  parseElllSelector,
-  StyleSheetData,
-} from "@elllphnt/elementa-base";
+  StyleSheetData} from "@elllphnt/elementa-base";
 import {
-  CssStyleData,
+  parseElllSelector
+} from "@elllphnt/elementa-base";
+import type {
+  CssStyleData} from "@elllphnt/elementa-css";
+import {
   elllSelectorToCssSelector,
   styleToCss,
 } from "@elllphnt/elementa-css";

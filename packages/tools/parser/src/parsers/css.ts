@@ -1,12 +1,14 @@
+import type {
+  GetModifierDefinition,
+  StyleData,
+  StyleSheetData} from "@elllphnt/elementa-base";
 import {
   baseSelector,
-  GetModifierDefinition,
   stringifyElllSelector,
-  StyleData,
-  StyleSheetData,
   systemModifiers,
 } from "@elllphnt/elementa-base";
-import postcss, { Root } from "postcss";
+import type { Root } from "postcss";
+import postcss from "postcss";
 
 export type ParsedKeyFrameSetData = {
   name: string;

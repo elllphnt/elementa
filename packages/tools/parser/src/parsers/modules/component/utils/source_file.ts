@@ -1,4 +1,5 @@
-import { Project, SourceFile } from "ts-morph";
+import type { SourceFile } from "ts-morph";
+import { Project } from "ts-morph";
 
 export function createSingleFileProject(
   source: string,

@@ -1,16 +1,17 @@
-import {
+import type {
   AppData,
+  PackageSheetData,
+  RouterData} from "@elllphnt/elementa-base";
+import {
   appSchema,
   elementaStandardPaths,
-  PackageSheetData,
   parseFileUrl,
-  RouterData,
   routerSchema,
   toAbsoluteFileUrl,
 } from "@elllphnt/elementa-base";
 import { parseContentWithSchema } from "../_utils/parse.js";
-import { GeneratorContext } from "../context/context.js";
-import { JsAppConfig } from "../js_app/js_app.js";
+import type { GeneratorContext } from "../context/context.js";
+import type { JsAppConfig } from "../js_app/js_app.js";
 import { jsAppPaths } from "../js_app/paths.js";
 import { flattenRouteTrees } from "./_libs/route_tree.js";
 import { generateClientEntry } from "./client/client.js";

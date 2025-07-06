@@ -1,6 +1,8 @@
 import { z } from "zod";
-import { Evaluable, expressionSchema } from "./evaluable.js";
-import { Resolvable, staticReferenceSchema } from "./resolvable.js";
+import type { Evaluable} from "./evaluable.js";
+import { expressionSchema } from "./evaluable.js";
+import type { Resolvable} from "./resolvable.js";
+import { staticReferenceSchema } from "./resolvable.js";
 
 // Types
 

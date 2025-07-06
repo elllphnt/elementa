@@ -1,8 +1,9 @@
 import { z } from "zod";
-import { IdentifiableData } from "../_shared/_.js";
+import type { IdentifiableData } from "../_shared/_.js";
 import type { StyleData } from "./stylesheet/_.js";
+import type {
+  StyleFragmentData} from "./stylesheet/fragments/fragment.js";
 import {
-  StyleFragmentData,
   styleFragmentDataSchema,
 } from "./stylesheet/fragments/fragment.js";
 

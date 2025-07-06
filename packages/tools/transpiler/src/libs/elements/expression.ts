@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ExpressionElementData } from "@elllphnt/elementa-base";
-import { TranspilerContext, TranspilerResult } from "~/types/transpiler.js";
-import { TranspileElementOptions } from "./_base.js";
+import type { ExpressionElementData } from "@elllphnt/elementa-base";
+import type { TranspilerContext, TranspilerResult } from "~/types/transpiler.js";
+import type { TranspileElementOptions } from "./_base.js";
 
 export function transpileExpressionElement(
   data: ExpressionElementData,

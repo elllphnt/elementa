@@ -1,7 +1,8 @@
-import { RouteTreeData, toAbsoluteFileUrl } from "@elllphnt/elementa-base";
+import type { RouteTreeData} from "@elllphnt/elementa-base";
+import { toAbsoluteFileUrl } from "@elllphnt/elementa-base";
 import { joinPaths } from "../../_utils/path.js";
-import { GeneratorContext } from "../../context/context.js";
-import { ElementaReferencedFileData } from "../../context/infra/infra.js";
+import type { GeneratorContext } from "../../context/context.js";
+import type { ElementaReferencedFileData } from "../../context/infra/infra.js";
 
 export type AbsolutePageRouteData = {
   id: string;

@@ -1,7 +1,7 @@
-import { LinkData } from "@elllphnt/elementa-base";
+import type { LinkData } from "@elllphnt/elementa-base";
 import { TranspilerDiagnosticLevel } from "~/types/diagnostic.js";
-import { TranspilerContext, TranspilerResult } from "~/types/transpiler.js";
-import { TranspileElementOptions } from "../../_base.js";
+import type { TranspilerContext, TranspilerResult } from "~/types/transpiler.js";
+import type { TranspileElementOptions } from "../../_base.js";
 import { applyHrefLinkToTranspiledElement } from "./href.js";
 import { applyRouteLinkToTranspiledElement } from "./router.js";
 

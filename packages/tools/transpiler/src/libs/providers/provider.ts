@@ -1,5 +1,5 @@
-import { ProviderData } from "@elllphnt/elementa-base";
-import { TranspilerContext, TranspilerResult } from "../../types/transpiler.js";
+import type { ProviderData } from "@elllphnt/elementa-base";
+import type { TranspilerContext, TranspilerResult } from "../../types/transpiler.js";
 import { transpileContextProvider } from "./context.js";
 
 export function transpileProvider(

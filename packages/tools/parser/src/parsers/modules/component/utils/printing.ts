@@ -1,4 +1,4 @@
-import { Node } from "ts-morph";
+import type { Node } from "ts-morph";
 
 export function getLineText(node: Node): string {
   const sourceFile = node.getSourceFile();

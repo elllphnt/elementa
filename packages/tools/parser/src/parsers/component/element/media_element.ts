@@ -1,11 +1,12 @@
 import * as t from "@babel/types";
-import {
+import type {
   Evaluable,
   ImageMediaData,
   MediaElementData,
   VideoMediaData,
 } from "@elllphnt/elementa-base";
-import { GetStylesheet, parseBaseElementNode } from "./base_element.js";
+import type { GetStylesheet} from "./base_element.js";
+import { parseBaseElementNode } from "./base_element.js";
 import { generateExpressionSource } from "./utils/generate.js";
 
 export function parseMediaElementNode({

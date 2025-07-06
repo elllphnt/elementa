@@ -1,10 +1,10 @@
-import {
+import type {
   StyleData,
   StyleFragmentData,
   StyleFragmentType,
   StylePropertyName,
 } from "@elllphnt/elementa-base";
-import { CssStyleData, HyphenCssStyle } from "../base/types.js";
+import type { CssStyleData, HyphenCssStyle } from "../base/types.js";
 import { stripUndefined } from "../utils/object.js";
 import { applyDefaultCss, styleToCssPropertyConfigMap } from "./properties.js";
 

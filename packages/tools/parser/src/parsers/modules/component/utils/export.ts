@@ -1,5 +1,6 @@
-import { Node, SourceFile } from "ts-morph";
-import { getValueFromNode, ResolvedValueNode } from "./value.js";
+import type { Node, SourceFile } from "ts-morph";
+import type { ResolvedValueNode } from "./value.js";
+import { getValueFromNode } from "./value.js";
 
 export function resolveDefaultExportValueNode(
   sourceFile: SourceFile

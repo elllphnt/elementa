@@ -1,11 +1,11 @@
-import { StaticReference, StyleSheetData } from "@elllphnt/elementa-base";
-import { NameOptions } from "../libs/_.js";
-import { TranspilerDiagnostic } from "./diagnostic.js";
-import { Environment } from "./environment.js";
-import { Module } from "./module.js";
-import { TranspilerReference } from "./reference.js";
-import { TranspilerRoute } from "./route.js";
-import { TranspilerStylesheet } from "./stylesheet.js";
+import type { StaticReference, StyleSheetData } from "@elllphnt/elementa-base";
+import type { NameOptions } from "../libs/_.js";
+import type { TranspilerDiagnostic } from "./diagnostic.js";
+import type { Environment } from "./environment.js";
+import type { Module } from "./module.js";
+import type { TranspilerReference } from "./reference.js";
+import type { TranspilerRoute } from "./route.js";
+import type { TranspilerStylesheet } from "./stylesheet.js";
 
 export type TranspilerContext = {
   useModule(options: {

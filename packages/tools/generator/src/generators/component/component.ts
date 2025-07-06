@@ -1,7 +1,8 @@
-import { ComponentData, componentSchema } from "@elllphnt/elementa-base";
+import type { ComponentData} from "@elllphnt/elementa-base";
+import { componentSchema } from "@elllphnt/elementa-base";
 import { transpileComponent } from "@elllphnt/elementa-react-transpiler";
 import { moduleRelativePath } from "../../_utils/path.js";
-import { GeneratorContext } from "../../context/context.js";
+import type { GeneratorContext } from "../../context/context.js";
 import { generateResource } from "../resource/resource.js";
 import { BuilderComponentTranspilerContext } from "./context.js";
 

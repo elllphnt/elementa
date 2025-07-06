@@ -1,4 +1,4 @@
-import { StaticReference } from "@elllphnt/elementa-base";
+import type { StaticReference } from "@elllphnt/elementa-base";
 
 export type TranspilerReference = {
   key: number;

@@ -1,10 +1,11 @@
-import {
+import type {
   BaseElementData,
-  InteractionEvent,
+  InteractionEvent} from "@elllphnt/elementa-base";
+import {
   reactInteractionEventMap,
 } from "@elllphnt/elementa-base";
 import { TranspilerDiagnosticLevel } from "~/types/diagnostic.js";
-import { TranspilerContext, TranspilerResult } from "../../types/transpiler.js";
+import type { TranspilerContext, TranspilerResult } from "../../types/transpiler.js";
 import { transpileDynamic } from "../dynamic.js";
 import { transpileStyleSheet } from "./_common/stylesheet.js";
 

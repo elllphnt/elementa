@@ -1,8 +1,9 @@
-import { ComponentElementData, SlotFillData } from "@elllphnt/elementa-base";
+import type { ComponentElementData, SlotFillData } from "@elllphnt/elementa-base";
 import { TranspilerDiagnosticLevel } from "~/types/diagnostic.js";
-import { TranspilerContext, TranspilerResult } from "../../types/transpiler.js";
+import type { TranspilerContext, TranspilerResult } from "../../types/transpiler.js";
 import { transpileDynamic } from "../dynamic.js";
-import { transpileBaseElement, TranspileElementOptions } from "./_base.js";
+import type { TranspileElementOptions } from "./_base.js";
+import { transpileBaseElement } from "./_base.js";
 import { transpileStyleSheet } from "./_common/stylesheet.js";
 import { transpileElement } from "./element.js";
 

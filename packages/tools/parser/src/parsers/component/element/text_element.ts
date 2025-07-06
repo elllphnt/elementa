@@ -1,11 +1,12 @@
-import * as t from "@babel/types";
-import {
+import type * as t from "@babel/types";
+import type {
   ResolvableOrEvaluable,
   TextElementData,
   TextMarkData,
 } from "@elllphnt/elementa-base";
 import { genId } from "../utils.js";
-import { GetStylesheet, parseBaseElementNode } from "./base_element.js";
+import type { GetStylesheet} from "./base_element.js";
+import { parseBaseElementNode } from "./base_element.js";
 import { extractInnerTextFromElementNode } from "./utils/extract_text.js";
 
 export function parseTextElementNode({

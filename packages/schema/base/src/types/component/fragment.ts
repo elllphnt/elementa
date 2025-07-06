@@ -1,12 +1,16 @@
 import { z } from "zod";
-import { DataInputData, dataInputDataSchema } from "../_shared/_.js";
+import type { DataInputData} from "../_shared/_.js";
+import { dataInputDataSchema } from "../_shared/_.js";
+import type {
+  IdentifiableData} from "../_shared/identifiable.js";
 import {
-  IdentifiableData,
   identifiableDataSchema,
 } from "../_shared/identifiable.js";
-import { ProviderData, providerDataSchema } from "../provider/_.js";
+import type { ProviderData} from "../provider/_.js";
+import { providerDataSchema } from "../provider/_.js";
+import type {
+  ElementContainerData} from "./elements/_.js";
 import {
-  ElementContainerData,
   elementContainerDataSchema,
 } from "./elements/_.js";
 

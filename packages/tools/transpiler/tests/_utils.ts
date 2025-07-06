@@ -2,8 +2,9 @@ import fs from "fs";
 import path from "path";
 import { ImportMap, Namespace } from "~/index.js";
 import { TranspilerContextImpl } from "~/libs/_context.js";
-import { Environment, EnvironmentData } from "~/types/environment.js";
-import { EnvironmentRoute } from "~/types/route.js";
+import type { EnvironmentData } from "~/types/environment.js";
+import { Environment } from "~/types/environment.js";
+import type { EnvironmentRoute } from "~/types/route.js";
 
 export function writeTestModule({
   componentCode,

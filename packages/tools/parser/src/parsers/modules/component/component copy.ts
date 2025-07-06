@@ -1,5 +1,5 @@
 import { Node } from "ts-morph";
-import { ParsedComponentModule } from "../../../module/component_module.js";
+import type { ParsedComponentModule } from "../../../module/component_module.js";
 import { parseComponent } from "../../component/_.js";
 import { extractImport } from "../_shared/_.js";
 import {

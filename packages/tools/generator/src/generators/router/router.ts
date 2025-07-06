@@ -1,9 +1,10 @@
 import { moduleRelativePath } from "../../_utils/path.js";
-import { GeneratorContext } from "../../context/context.js";
-import { JsRoute } from "../../js_app/js_app.js";
+import type { GeneratorContext } from "../../context/context.js";
+import type { JsRoute } from "../../js_app/js_app.js";
 import { jsAppPaths } from "../../js_app/paths.js";
-import { AbsolutePageRouteData } from "../_libs/route_tree.js";
-import { RelativeRoute, toRelativeRoute } from "./_utils.js";
+import type { AbsolutePageRouteData } from "../_libs/route_tree.js";
+import type { RelativeRoute} from "./_utils.js";
+import { toRelativeRoute } from "./_utils.js";
 import { generateRoute } from "./route.js";
 import { generateRouteTreeScript } from "./route_tree_script.js";
 import { generateRouterScript } from "./router_script.js";

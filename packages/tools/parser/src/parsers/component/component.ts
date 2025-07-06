@@ -1,20 +1,23 @@
-import {
+import type {
   ComponentData,
   DataInputData,
   FragmentData,
   FragmentElementData,
   StateData,
 } from "@elllphnt/elementa-base";
-import {
+import type {
   ArrowFunction,
   CallExpression,
   Expression,
   FunctionDeclaration,
-  FunctionExpression,
+  FunctionExpression} from "ts-morph";
+import {
   Node,
 } from "ts-morph";
-import { ComponentNode, isComponentNode, isHookName } from "../modules/_.js";
-import { GetStylesheet, parseElementsFromJSX } from "./element/_.js";
+import type { ComponentNode} from "../modules/_.js";
+import { isComponentNode, isHookName } from "../modules/_.js";
+import type { GetStylesheet} from "./element/_.js";
+import { parseElementsFromJSX } from "./element/_.js";
 import { genId } from "./utils.js";
 
 export function parseArguments({

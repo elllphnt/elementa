@@ -1,7 +1,9 @@
-import { ComponentData } from "@elllphnt/elementa-base";
+import type { ComponentData } from "@elllphnt/elementa-base";
 import { createReferenceString } from "../references.js";
-import { compileCodeResource, ParsedCodeResource } from "./code_module.js";
-import { compileModule, ParsedModule, ParsedResource } from "./module.js";
+import type { ParsedCodeResource } from "./code_module.js";
+import { compileCodeResource } from "./code_module.js";
+import type { ParsedModule, ParsedResource } from "./module.js";
+import { compileModule } from "./module.js";
 
 export type ParsedComponentResource = ParsedResource<"component"> & {
   data: ComponentData;

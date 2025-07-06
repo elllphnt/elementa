@@ -1,6 +1,6 @@
-import { FileSystem } from "./fs/fs.js";
-import { ElementaInfrastructure } from "./infra/infra.js";
-import { Logger } from "./logger.js";
+import type { FileSystem } from "./fs/fs.js";
+import type { ElementaInfrastructure } from "./infra/infra.js";
+import type { Logger } from "./logger.js";
 
 export type GeneratorContext = {
   infra: ElementaInfrastructure;

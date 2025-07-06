@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { baseElementDataSchema } from "../_base.js";
-import { ElementData } from "../element.js";
+import type { ElementData } from "../element.js";
 
 // Types
 

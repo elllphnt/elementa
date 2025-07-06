@@ -1,7 +1,8 @@
 import { test } from "vitest";
-import {
+import type {
   AppData,
-  ComponentData,
+  ComponentData} from "../src/index.js";
+import {
   componentSchema,
   routerSchema,
 } from "../src/index.js";

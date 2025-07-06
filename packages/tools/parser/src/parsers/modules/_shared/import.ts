@@ -1,4 +1,5 @@
-import { ImportDeclaration, Node } from "ts-morph";
+import type { ImportDeclaration} from "ts-morph";
+import { Node } from "ts-morph";
 
 export function extractImport(
   statement: ImportDeclaration,

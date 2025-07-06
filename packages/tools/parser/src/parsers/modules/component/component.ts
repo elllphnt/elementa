@@ -1,7 +1,8 @@
-import { ComponentData } from "@elllphnt/elementa-base";
+import type { ComponentData } from "@elllphnt/elementa-base";
 import { Node } from "ts-morph";
 import { createReferenceString } from "../../../references.js";
-import { GetStylesheet, parseComponent } from "../../component/_.js";
+import type { GetStylesheet} from "../../component/_.js";
+import { parseComponent } from "../../component/_.js";
 import { extractImportNew } from "../_shared/_.js";
 import { isComponentName, isComponentNode } from "../code/_.js";
 import { standardizeComponent } from "./standardize.js";

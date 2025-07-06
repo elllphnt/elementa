@@ -1,4 +1,5 @@
-import { Identifier, Node } from "ts-morph";
+import type { Identifier} from "ts-morph";
+import { Node } from "ts-morph";
 
 export function isStandaloneIdentifier(identifier: Identifier): boolean {
   const parent = identifier.getParent();

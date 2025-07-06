@@ -1,8 +1,9 @@
+import type {
+  StyleSheetData} from "@elllphnt/elementa-base";
 import {
-  styleConditionToClassName,
-  StyleSheetData,
+  styleConditionToClassName
 } from "@elllphnt/elementa-base";
-import { TranspilerContext, TranspilerResult } from "~/types/transpiler.js";
+import type { TranspilerContext, TranspilerResult } from "~/types/transpiler.js";
 
 export function transpileStyleSheet(
   data: StyleSheetData,

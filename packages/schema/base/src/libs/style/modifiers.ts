@@ -1,11 +1,12 @@
-import {
+import type {
   ElllSelectorData,
-  StyleDataType,
   StyleModifierData,
-  StyleModifierDefinitionData,
+  StyleModifierDefinitionData} from "../../types/_.js";
+import {
+  StyleDataType,
   StyleModifierType,
 } from "../../types/_.js";
-import { ErrorTupple } from "../../types/_primitives/error.js";
+import type { ErrorTupple } from "../../types/_primitives/error.js";
 import { parseStyleData, stringifyStyleData } from "./datatypes/_.js";
 import { baseSelector } from "./selectors.js";
 

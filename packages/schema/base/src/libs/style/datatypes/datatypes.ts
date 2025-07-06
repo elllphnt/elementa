@@ -1,6 +1,6 @@
-import { ErrorTupple } from "../../../types/_.js";
-import { ArrayItem } from "../../../types/_primitives/array.js";
-import {
+import type { ErrorTupple } from "../../../types/_.js";
+import type { ArrayItem } from "../../../types/_primitives/array.js";
+import type {
   StyleDataType,
   StyleDataTypeMap,
 } from "../../../types/_primitives/style/datatypes.js";

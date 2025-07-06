@@ -1,6 +1,7 @@
 import { z } from "zod";
+import type {
+  ResolvableOrEvaluable} from "../../../_primitives/_.js";
 import {
-  ResolvableOrEvaluable,
   resolvableOrEvaluableSchema,
 } from "../../../_primitives/_.js";
 

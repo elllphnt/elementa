@@ -1,4 +1,4 @@
-import { TypefaceData } from "@elllphnt/elementa-base";
+import type { TypefaceData } from "@elllphnt/elementa-base";
 
 export function typefaceToCSS(data: TypefaceData): string {
   if (!data.definition) {

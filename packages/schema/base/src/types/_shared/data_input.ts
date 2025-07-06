@@ -1,6 +1,7 @@
 import { z } from "zod";
+import type {
+  Resolvable} from "../_primitives/dynamic/resolvable.js";
 import {
-  Resolvable,
   resolvableSchema,
 } from "../_primitives/dynamic/resolvable.js";
 

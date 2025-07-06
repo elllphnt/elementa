@@ -1,4 +1,4 @@
-import { DurationData, LengthData, PercentData } from "../../../types/_.js";
+import type { DurationData, LengthData, PercentData } from "../../../types/_.js";
 import { StyleDataType } from "../../../types/_primitives/style/datatypes.js";
 import { roundToDecimals } from "../../utils/number.js";
 

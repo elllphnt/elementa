@@ -5,7 +5,6 @@ import {
   useManyObservables,
   useObservable,
 } from "@elllphnt/elementa-react-utils";
-import { Renderable } from "@elllphnt/elementa-scene";
 import cx from "classnames";
 import { useEffect, useRef, useState } from "react";
 import type { FrameHandle } from "~/handles/renderables/frame.js";
@@ -86,7 +85,9 @@ function Label({ frame }: { frame: FrameHandle }) {
           frame.renderable.instance.model.setName(e.target.value)
         }
         inputProps={{
-          ref: (i) => (inputRef.current = i),
+          ref: (i) => {
+            inputRef.current = i;
+          },
           onBlur: () => setEditable(false),
           onKeyDown: (e) => e.key === "Enter" && e.currentTarget.blur(),
           style: {
@@ -210,7 +211,7 @@ function StyleModifiersIndicator({ frame }: { frame: FrameHandle }) {
     <div className="elementa-style-modifiers-indicator active">
       <SelectorText
         modifiers={modifiers}
-        styleManager={frame.model.stage.project.styleManager}
+        styleManager={frame.model.stage.environment.project.styleManager}
       />
     </div>
   );
@@ -220,10 +221,10 @@ export function FrameHandleComponent({ frame }: { frame: FrameHandle }) {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const { setRectHtmlElement, addInteractionTarget } = useHandleDom(frame);
   const content = useObservable(frame.content$, frame.content);
-  const element = useObservable(
-    frame.renderable.htmlElement$(Renderable.defaultHtmlElementKey),
-    frame.renderable.htmlElement(Renderable.defaultHtmlElementKey)
-  );
+  // const element = useObservable(
+  //   frame.renderable.htmlElement$(Renderable.defaultHtmlElementKey),
+  //   frame.renderable.htmlElement(Renderable.defaultHtmlElementKey)
+  // );
 
   // activate interaction target when dropping or the active tool is of type entity
   // useEffect(() => {

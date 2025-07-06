@@ -1,7 +1,7 @@
-import { GeneratorContext } from "../../context/context.js";
-import { JsRoute } from "../../js_app/js_app.js";
+import type { GeneratorContext } from "../../context/context.js";
+import type { JsRoute } from "../../js_app/js_app.js";
 import { jsAppPaths } from "../../js_app/paths.js";
-import { AbsoluteHandlerRouteData } from "../_libs/route_tree.js";
+import type { AbsoluteHandlerRouteData } from "../_libs/route_tree.js";
 import { generateHandlerScript } from "./handler_script.js";
 
 export async function generateHandler({

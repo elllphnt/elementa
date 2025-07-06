@@ -1,5 +1,5 @@
-import { CssSelector } from "@elllphnt/elementa-base";
-import { CssStyleData } from "./types.js";
+import type { CssSelector } from "@elllphnt/elementa-base";
+import type { CssStyleData } from "./types.js";
 
 export const baseSelector = "__base__";
 

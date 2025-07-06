@@ -1,8 +1,8 @@
 import * as t from "@babel/types";
-import { ElementData, ElementRepeatData } from "@elllphnt/elementa-base";
+import type { ElementData, ElementRepeatData } from "@elllphnt/elementa-base";
 import { genId } from "../utils.js";
-import { CreateFragment } from "./_types.js";
-import { GetStylesheet } from "./base_element.js";
+import type { CreateFragment } from "./_types.js";
+import type { GetStylesheet } from "./base_element.js";
 import { extractElementsFromNode } from "./element.js";
 import { generateExpressionSource } from "./utils/generate.js";
 

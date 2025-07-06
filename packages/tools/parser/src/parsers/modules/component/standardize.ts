@@ -1,4 +1,4 @@
-import {
+import type {
   ArrowFunction,
   Block,
   CallExpression,
@@ -7,10 +7,11 @@ import {
   JsxElement,
   JsxFragment,
   JsxSelfClosingElement,
-  Node,
   ParameterDeclaration,
   ReturnStatement,
-  Statement,
+  Statement} from "ts-morph";
+import {
+  Node
 } from "ts-morph";
 import { resolveDefaultExportValueNode } from "./utils/export.js";
 import {
