@@ -6,7 +6,7 @@ import {
   Runtime,
 } from "@elllphnt/elementa-runtime";
 import { DomStyleSheetManager, Scene } from "@elllphnt/elementa-scene";
-import { assert } from "vitest";
+import { expect } from "@playwright/experimental-ct-react";
 import {
   TestInfrastructure,
   type TestInfrastructureData,
@@ -72,7 +72,8 @@ export function validateLifecycleCleanup() {
     const details = uninitializedInstances.map((i) =>
       formatLifecycleInfo(i, true)
     );
-    assert.fail(
+    expect(
+      false,
       `❌ BUG: Found ${
         uninitializedInstances.length
       } uninitialized lifecycle instances:\n${details.join("\n\n")}`
@@ -87,7 +88,8 @@ export function validateLifecycleCleanup() {
     const details = undisposedInstances.map((i) =>
       formatLifecycleInfo(i, true)
     );
-    assert.fail(
+    expect(
+      false,
       `❌ BUG: Found ${
         undisposedInstances.length
       } undisposed lifecycle instances. Tests must dispose all lifecycle objects they create.\n\nUndisposed instances:\n${details.join(
