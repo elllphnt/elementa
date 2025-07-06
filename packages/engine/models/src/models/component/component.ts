@@ -6,9 +6,10 @@ import type {
   StateData,
 } from "@elllphnt/elementa-base";
 import type { RecordState } from "@elllphnt/elementa-kernel";
-import { AggregatedModelList, OptionalModel } from "@elllphnt/elementa-kernel";
+import { AggregatedModelList } from "@elllphnt/elementa-kernel";
+import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 import type { Observable } from "rxjs";
-import { BehaviorSubject, map } from "rxjs";
+import { BehaviorSubject, combineLatest, map, switchMap } from "rxjs";
 import type { Project } from "~/project/project.js";
 import type { ElementaEnvironment } from "../elementa/environment.js";
 import { ElementaPreview } from "../elementa/preview.js";
@@ -89,8 +90,7 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
   readonly preview: ElementaPreview;
   readonly url: string;
 
-  // TODO: Update these to use proper AggregatedModelList typing
-  readonly _template: OptionalModel<RecordState<ElementData>, Element>;
+  private _content: AggregatedModelList<RecordState<ElementData>, Element>;
   private _props: AggregatedModelList<RecordState<DataInputData>, DataInput>;
   private _states: AggregatedModelList<RecordState<StateData>, State>;
   private _fragments: AggregatedModelList<RecordState<FragmentData>, Fragment>;
@@ -98,11 +98,25 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
     Record<string, Fragment | undefined>
   >({});
 
-  get template(): Element | undefined {
-    return this._template.model;
+  get content() {
+    return this._content.models;
   }
-  get template$(): Observable<Element | undefined> {
-    return this._template.model$;
+  get content$() {
+    return this._content.models$;
+  }
+
+  get allCssStylesheets() {
+    return [...this.content.flatMap((c) => c.allCssStylesheets || [])];
+  }
+  get allCssStylesheets$() {
+    return combineLatest([
+      this.content$.pipe(
+        switchMap((c) =>
+          combineLatestOrEmpty(c.map((c) => c.allCssStylesheets$ || []))
+        ),
+        map((c) => c.flat())
+      ),
+    ]).pipe(map(([contentStyles]) => [...contentStyles]));
   }
 
   constructor({
@@ -125,7 +139,6 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
       component: this,
     });
 
-    // Create stage and preview
     const editorsState = state.getRecordOfRecordStates("editors");
     const stageState = editorsState.entry("stage", () => {
       const state = this.state.backend.createRecordState<ElementData>();
@@ -147,14 +160,15 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
       environment: this.elementaEnvironment,
     });
 
-    this._template = new OptionalModel({
-      state: state.getOptionalRecordState("template"),
-      create: (state) =>
-        createElement({
+    this._content = new AggregatedModelList<RecordState<ElementData>, Element>({
+      state: state.getListOfRecordStates("content"),
+      create: (state) => {
+        return createElement({
           state,
           environment: this.elementEnvironment,
           initialized,
-        }),
+        });
+      },
     });
     this._props = new AggregatedModelList({
       state: state.getListOfRecordStates("props"),
@@ -180,7 +194,7 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
 
     this.addLifecycle(this.stage);
     this.addLifecycle(this.preview);
-    this.addLifecycle(this._template);
+    this.addLifecycle(this._content);
     this.addLifecycle(this._props);
     this.addLifecycle(this._fragments);
     this.addLifecycle(this._states);

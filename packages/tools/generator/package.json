@@ -1,7 +1,8 @@
 {
   "name": "@elllphnt/elementa-generator",
   "type": "module",
-  "version": "0.1.7",
+  "version": "0.1.8",
+  "private": true,
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {

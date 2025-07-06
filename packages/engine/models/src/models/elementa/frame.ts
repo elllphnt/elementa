@@ -4,11 +4,8 @@ import { OptionalModel } from "@elllphnt/elementa-kernel";
 import type { Observable } from "rxjs";
 import type { Project } from "~/project/project.js";
 import { Identifiable } from "../identifiable.js";
-import type {
-  RenderableContent} from "./renderable_content/_content.js";
-import {
-  createRenderableContent,
-} from "./renderable_content/_content.js";
+import type { RenderableContent } from "./renderable_content/_content.js";
+import { createRenderableContent } from "./renderable_content/_content.js";
 import { RenderingContext } from "./rendering_context.js";
 import type { ElementaStage } from "./stage.js";
 
@@ -115,19 +112,35 @@ export class ElementaFrame extends Identifiable<
   }
 
   setX(x: number | undefined): void {
-    this.state.set("x", x);
+    if (typeof x === "number") {
+      this.state.set("x", Math.round(x));
+    } else {
+      this.state.set("x", x);
+    }
   }
 
   setY(y: number | undefined): void {
-    this.state.set("y", y);
+    if (typeof y === "number") {
+      this.state.set("y", Math.round(y));
+    } else {
+      this.state.set("y", y);
+    }
   }
 
   setHeight(height: number | undefined): void {
-    this.state.set("height", height);
+    if (typeof height === "number") {
+      this.state.set("height", Math.max(0, Math.round(height)));
+    } else {
+      this.state.set("height", height);
+    }
   }
 
   setWidth(width: number | undefined): void {
-    this.state.set("width", width);
+    if (typeof width === "number") {
+      this.state.set("width", Math.max(0, Math.round(width)));
+    } else {
+      this.state.set("width", width);
+    }
   }
 
   setCorners(corners: CornerData<number> | undefined): void {

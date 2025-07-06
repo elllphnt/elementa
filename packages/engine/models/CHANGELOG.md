@@ -1,5 +1,21 @@
 # @elllphnt/elementa-models
 
+## 0.3.6
+
+### Patch Changes
+
+- Change component.template to component.content
+- Updated dependencies
+- Updated dependencies
+  - @elllphnt/elementa-base@0.1.19
+  - @elllphnt/elementa-css@0.28.10
+
+## 0.3.5
+
+### Patch Changes
+
+- Add sanitization to frame model
+
 ## 0.3.4
 
 ### Patch Changes

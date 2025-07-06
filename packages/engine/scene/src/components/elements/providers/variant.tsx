@@ -38,7 +38,7 @@ export function ElementVariantProvider({ children }: PropsWithChildren) {
     case "fragment":
       return <FragmentVariantProvider>{children}</FragmentVariantProvider>;
     case "expression":
-      return <ExpressionVariantProvider>{children}</ExpressionVariantProvider>;
+      return <ExpressionVariantProvider />;
     default:
       throw new Error(
         `Unknown element type: ${

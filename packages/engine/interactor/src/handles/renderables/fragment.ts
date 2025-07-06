@@ -4,6 +4,7 @@ import type { Observable } from "rxjs";
 import { BehaviorSubject } from "rxjs";
 import type { ElementaInteractor } from "~/interactor.js";
 import type { Handle } from "../handle.js";
+import type { LayoutUpdatePropagation } from "../handle_rect.js";
 import { createElementHandle, type ElementHandle } from "./element/element.js";
 import { RenderableHandle } from "./renderable.js";
 
@@ -59,6 +60,17 @@ export class FragmentHandle extends RenderableHandle<FragmentRenderable> {
       this._content$.complete();
       contentSubscription.unsubscribe();
       this.content.forEach((child) => child.dispose());
+    });
+  }
+
+  handleLayoutUpdate({
+    propagation,
+  }: {
+    propagation?: LayoutUpdatePropagation;
+  } = {}): void {
+    super.handleLayoutUpdate({ propagation });
+    this.content?.forEach((child) => {
+      child.handleLayoutUpdate({ propagation });
     });
   }
 

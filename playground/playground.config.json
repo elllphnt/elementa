@@ -4,7 +4,7 @@
     "appsDir": "/home/krvnsvlcy/repos/elllphnt/elll-platform/playground/apps",
     "filter": {
         "include": [
-            "design-agency"
+            "init"
         ]
     }
 }

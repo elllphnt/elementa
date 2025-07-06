@@ -1,16 +1,11 @@
 import { useObservable } from "@elllphnt/elementa-react-utils";
-import type { PropsWithChildren, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useNamespace } from "../../../hooks/namespace.js";
 import { renderingLogger } from "../../../loggers.js";
 import type { ExpressionElementRenderable } from "../../../renderables/element/expression.js";
-import type {
-  BaseElementProps} from "../base/context.js";
-import {
-  BaseElementPropsContext,
-  useBaseElementProps,
-} from "../base/context.js";
+import { useBaseElementProps } from "../base/context.js";
 
-export function ExpressionVariantProvider({ children }: PropsWithChildren) {
+export function ExpressionVariantProvider() {
   const props = useBaseElementProps<ExpressionElementRenderable>();
 
   const expression = useObservable(
@@ -26,11 +21,6 @@ export function ExpressionVariantProvider({ children }: PropsWithChildren) {
     <></>
   );
 
-  const updatedProps: BaseElementProps = {
-    ...props,
-    children: value,
-  };
-
   renderingLogger.debug("ExpressionVariantProvider", {
     type: props.element.instance.element.type,
     expression,
@@ -38,9 +28,5 @@ export function ExpressionVariantProvider({ children }: PropsWithChildren) {
     namespace,
   });
 
-  return (
-    <BaseElementPropsContext.Provider value={updatedProps}>
-      {children}
-    </BaseElementPropsContext.Provider>
-  );
+  return value;
 }

@@ -1,4 +1,3 @@
-import { logger } from "@elllphnt/elementa-kernel";
 import { useObservable } from "@elllphnt/elementa-react-utils";
 import type { JSX, PropsWithChildren } from "react";
 import { memo } from "react";
@@ -18,7 +17,7 @@ export const ComponentComponent = memo(function ({
   component: ComponentRenderable;
   onRef?: (element: HTMLElement | null, key?: string) => void;
 }>): JSX.Element {
-  const template = useObservable(component.template$, component.template);
+  const content = useObservable(component.content$, component.content);
 
   renderingLogger.debug(
     `ComponentComponent ${
@@ -28,29 +27,23 @@ export const ComponentComponent = memo(function ({
       component,
       onRef,
       children,
-      template,
+      content,
     }
   );
 
-  if (template) {
-    return (
-      <PropsNamespaceProvider component={component.instance}>
-        <ChildrenNamespaceProvider childrenProps={children}>
-          <FragmentsNamespaceProvider component={component}>
-            <StatesNamespaceProvider component={component.instance}>
-              <ElementComponent element={template} onRef={onRef} />
-            </StatesNamespaceProvider>
-          </FragmentsNamespaceProvider>
-        </ChildrenNamespaceProvider>
-      </PropsNamespaceProvider>
-    );
-  } else {
-    logger.warn(
-      "Component template is not available, rendering empty component.",
-      component
-    );
-    return <></>;
-  }
+  return (
+    <PropsNamespaceProvider component={component.instance}>
+      <ChildrenNamespaceProvider childrenProps={children}>
+        <FragmentsNamespaceProvider component={component}>
+          <StatesNamespaceProvider component={component.instance}>
+            {content.map((element) => (
+              <ElementComponent key={element.key} element={element} />
+            ))}
+          </StatesNamespaceProvider>
+        </FragmentsNamespaceProvider>
+      </ChildrenNamespaceProvider>
+    </PropsNamespaceProvider>
+  );
 });
 
 export default ComponentComponent;

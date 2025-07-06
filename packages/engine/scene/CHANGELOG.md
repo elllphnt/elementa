@@ -1,5 +1,25 @@
 # @elllphnt/elementa-scene
 
+## 0.1.17
+
+### Patch Changes
+
+- Change component.template to component.content
+- Updated dependencies
+- Updated dependencies
+  - @elllphnt/elementa-base@0.1.19
+  - @elllphnt/elementa-runtime@0.1.10
+  - @elllphnt/elementa-models@0.3.6
+  - @elllphnt/elementa-css@0.28.10
+
+## 0.1.16
+
+### Patch Changes
+
+- Updated dependencies
+  - @elllphnt/elementa-models@0.3.5
+  - @elllphnt/elementa-runtime@0.1.9
+
 ## 0.1.15
 
 ### Patch Changes

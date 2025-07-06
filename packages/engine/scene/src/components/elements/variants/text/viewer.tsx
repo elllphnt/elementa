@@ -2,6 +2,7 @@ import { useObservable } from "@elllphnt/elementa-react-utils";
 import type { PropsWithChildren } from "react";
 import { useNamespace } from "../../../../hooks/namespace.js";
 import type { TextElementRenderable } from "../../../../renderables/element/text.js";
+import type { BaseElementProps } from "../../base/context.js";
 import {
   BaseElementPropsContext,
   useBaseElementProps,
@@ -18,8 +19,9 @@ export function TextElementViewer({ children }: PropsWithChildren) {
     <span>&nbsp;</span>
   );
 
-  const updatedProps = {
+  const updatedProps: BaseElementProps<TextElementRenderable> = {
     ...props,
+    component: "span",
     children: propsChildren,
   };
 

@@ -10,6 +10,7 @@ import type {
 import { BehaviorSubject } from "rxjs";
 import type { ElementaInteractor } from "~/interactor.js";
 import type { Handle } from "../handle.js";
+import type { LayoutUpdatePropagation } from "../handle_rect.js";
 import { ComponentHandle } from "./component.js";
 import { FragmentHandle } from "./fragment.js";
 import { RenderableHandle } from "./renderable.js";
@@ -109,6 +110,15 @@ export class RenderableContentHandle extends RenderableHandle<RenderableContentR
           }`
         );
     }
+  }
+
+  handleLayoutUpdate({
+    propagation,
+  }: {
+    propagation?: LayoutUpdatePropagation;
+  } = {}): void {
+    super.handleLayoutUpdate({ propagation });
+    this.content?.handleLayoutUpdate({ propagation });
   }
 
   delete(): void {

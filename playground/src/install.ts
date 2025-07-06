@@ -168,5 +168,5 @@ async function traverseDirectoryDeep(
 installProject({
   projectPath:
     "/home/krvnsvlcy/repos/elllphnt/elementa/playground/infra/design-agency",
-  workspaceId: "wks_twwunmg7w00jysxucpsiads1",
+  workspaceId: "wks_g0wr7xz74kkgdg53i611899v",
 });

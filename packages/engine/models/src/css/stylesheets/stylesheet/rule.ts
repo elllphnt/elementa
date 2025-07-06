@@ -1,6 +1,6 @@
 import type { CssSelector } from "@elllphnt/elementa-base";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import type { Observable} from "rxjs";
+import type { Observable } from "rxjs";
 import { combineLatest, map, switchMap, tap } from "rxjs";
 import type { Style } from "~/models/style/stylesheet/style.js";
 import type { Stylesheet } from "~/models/style/stylesheet/stylesheet.js";
@@ -78,7 +78,7 @@ export class StylesheetCssStyleRule extends CssStyleRule {
       // Applied in preview/production
       [
         "@layer content",
-        ".elementa-preview",
+        ".elementa-root-preview",
         `.${this.stylesheet.className}`,
         ...this.stylesheet.project.styleManager.elllSelectorToCss(
           this.modifiers
@@ -106,6 +106,7 @@ export class StylesheetCssStyleRule extends CssStyleRule {
         map((classNames) =>
           [
             "@layer content",
+            ".elementa-root-stage",
             `.${this.stylesheet.className}`,
             classNames.map((c) => `.${c}$`).join(" "),
           ].filter(Boolean)
@@ -119,7 +120,7 @@ export class StylesheetCssStyleRule extends CssStyleRule {
             .pipe(
               map((selector) => [
                 "@layer content",
-                ".elementa-preview",
+                ".elementa-root-preview",
                 `.${this.stylesheet.className}`,
                 ...selector,
               ])

@@ -1,6 +1,6 @@
 {
     "name": "@elllphnt/elementa-models",
-    "version": "0.3.4",
+    "version": "0.3.6",
     "type": "module",
     "scripts": {
         "clean": "rm -rf dist build",

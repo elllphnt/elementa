@@ -1,7 +1,8 @@
 import { reconcileList, reconcileMap } from "@elllphnt/elementa-kernel";
+import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 import type { Component, SlotFill } from "@elllphnt/elementa-models";
 import type { Observable } from "rxjs";
-import { BehaviorSubject, combineLatest, map, of, switchMap } from "rxjs";
+import { BehaviorSubject, combineLatest, map, switchMap } from "rxjs";
 import type { ElementInstance } from "../elements/_element.js";
 import { createElementInstance } from "../elements/_element.js";
 import { ChildElementRuntimeEnvironment } from "../elements/_environment/child_environment.js";
@@ -45,9 +46,7 @@ export class ComponentInstance extends ModelInstance<Component> {
   );
   private _states$ = new BehaviorSubject<StateInstance[]>([]);
   private _fragments$ = new BehaviorSubject<FragmentInstance[]>([]);
-  private _template$ = new BehaviorSubject<ElementInstance | undefined>(
-    undefined
-  );
+  private _content$ = new BehaviorSubject<ElementInstance[]>([]);
 
   slotFill(id: string): SlotFillInstance | undefined {
     return this._slotFills$.value[id];
@@ -70,11 +69,11 @@ export class ComponentInstance extends ModelInstance<Component> {
     return this._states$.asObservable();
   }
 
-  get template() {
-    return this._template$.value;
+  get content$(): Observable<ElementInstance[]> {
+    return this._content$.asObservable();
   }
-  get template$() {
-    return this._template$.asObservable();
+  get content(): ElementInstance[] {
+    return this._content$.value;
   }
 
   get fragments(): FragmentInstance[] {
@@ -109,26 +108,31 @@ export class ComponentInstance extends ModelInstance<Component> {
     this.addLifecycle(this.elementEnvironment);
 
     if (!this.elementEnvironment.isComponentRecursive()) {
-      const templateSubscription = this.model.template$.subscribe(
-        (template) => {
-          const prev = this._template$.value;
-          if (template) {
-            const newTemplate = createElementInstance({
-              element: template,
-              environment: this.elementEnvironment,
+      const contentSubscription = combineLatest([
+        this.model.content$,
+      ]).subscribe(([content]) => {
+        const [newContent, removed] = reconcileList({
+          sources: content,
+          targets: this.content,
+          sourceRef: (e) => e,
+          targetRef: (i) => i.element,
+          create: (element) => {
+            const instance = createElementInstance({
+              element,
+              environment: this.inputResolver.environment,
               parent: this,
             });
-            this.addLifecycle(newTemplate);
-            this._template$.next(newTemplate);
-          } else {
-            this._template$.next(undefined);
-          }
-          if (prev) {
-            this.removeLifecycle(prev);
-            prev.dispose();
-          }
-        }
-      );
+            this.addLifecycle(instance);
+            return instance;
+          },
+        });
+
+        this._content$.next(newContent);
+        removed.forEach((instance) => {
+          this.removeLifecycle(instance);
+          instance.dispose();
+        });
+      });
 
       const statesSubscription = this.model.states$.subscribe((states) => {
         const [newStates, removed] = reconcileList({
@@ -218,11 +222,11 @@ export class ComponentInstance extends ModelInstance<Component> {
 
       this.addDisposer(() => {
         statesSubscription.unsubscribe();
-        templateSubscription.unsubscribe();
+        contentSubscription.unsubscribe();
         slotFillsSubscription.unsubscribe();
         fragmentsSubscription.unsubscribe();
         this._states$.complete();
-        this._template$.complete();
+        this._content$.complete();
         this._slotFills$.complete();
         this._fragments$.complete();
       });
@@ -234,23 +238,29 @@ export class ComponentInstance extends ModelInstance<Component> {
       this._states$.value.forEach((s) => s.dispose());
       this._states$.next([]);
       this._states$.complete();
-      this._template$.complete();
+      this._content$.complete();
     });
   }
 
   get diagnosticLevel(): number {
     return Math.max(
       this.ownDiagnosticLevel,
-      this.template?.diagnosticLevel ?? 0
+      ...this.content.map((c) => c.diagnosticLevel || 0)
     );
   }
 
   get diagnosticLevel$(): Observable<number> {
     return combineLatest([
       this.ownDiagnosticLevel$,
-      this.template$.pipe(
-        switchMap((template) => template?.diagnosticLevel$ ?? of(0))
+      this.content$.pipe(
+        switchMap((elements) =>
+          combineLatestOrEmpty(
+            elements.map((e) =>
+              e.diagnosticLevel$.pipe(map((level) => level || 0))
+            )
+          )
+        )
       ),
-    ]).pipe(map(([own, template]) => Math.max(own, template)));
+    ]).pipe(map(([own, content]) => Math.max(own, ...content)));
   }
 }

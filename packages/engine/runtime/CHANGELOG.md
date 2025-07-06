@@ -1,5 +1,22 @@
 # @elllphnt/elementa-runtime
 
+## 0.1.10
+
+### Patch Changes
+
+- Change component.template to component.content
+- Updated dependencies
+- Updated dependencies
+  - @elllphnt/elementa-base@0.1.19
+  - @elllphnt/elementa-models@0.3.6
+
+## 0.1.9
+
+### Patch Changes
+
+- Updated dependencies
+  - @elllphnt/elementa-models@0.3.5
+
 ## 0.1.8
 
 ### Patch Changes

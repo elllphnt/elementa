@@ -2,6 +2,7 @@ import type { ComponentRenderable } from "@elllphnt/elementa-scene";
 import { BehaviorSubject } from "rxjs";
 import type { ElementaInteractor } from "~/interactor.js";
 import type { Handle } from "../handle.js";
+import type { LayoutUpdatePropagation } from "../handle_rect.js";
 import { createElementHandle, type ElementHandle } from "./element/element.js";
 import { RenderableHandle } from "./renderable.js";
 
@@ -54,6 +55,15 @@ export class ComponentHandle extends RenderableHandle<ComponentRenderable> {
     this.addDisposer(() => {
       templateSubscription.unsubscribe();
     });
+  }
+
+  handleLayoutUpdate({
+    propagation,
+  }: {
+    propagation?: LayoutUpdatePropagation;
+  } = {}): void {
+    super.handleLayoutUpdate({ propagation });
+    this.template?.handleLayoutUpdate({ propagation });
   }
 
   delete(): void {

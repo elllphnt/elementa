@@ -1,6 +1,6 @@
 import { Lifecycle } from "@elllphnt/elementa-kernel";
 import { pairwiseOrEmpty } from "@elllphnt/elementa-lang-utils";
-import type { Fragment, Project } from "@elllphnt/elementa-models";
+import type { Component, Fragment, Project } from "@elllphnt/elementa-models";
 import type { Subscription } from "rxjs";
 import { styleLogger } from "../loggers.js";
 import type { DomStyleSheetManager } from "../style/dom/manager.js";
@@ -20,6 +20,7 @@ export class Scene extends Lifecycle {
   readonly stylesheetDomManager: DomStyleSheetManager;
 
   private readonly _projects = new Map<Project, RefCountedSubscription>();
+  private readonly _components = new Map<Component, RefCountedSubscription>();
   private readonly _fragments = new Map<Fragment, RefCountedSubscription>();
 
   constructor({
@@ -74,6 +75,48 @@ export class Scene extends Lifecycle {
     if (--tracked.refCount === 0) {
       tracked.subscription.unsubscribe();
       this._projects.delete(project);
+    }
+  }
+
+  registerComponent(component: Component): void {
+    const existing = this._components.get(component);
+    if (existing) {
+      existing.refCount++;
+      return;
+    }
+
+    const subscription = component.allCssStylesheets$
+      .pipe(pairwiseOrEmpty())
+      .subscribe(([prev, next]) => {
+        next.forEach((s) =>
+          this.stylesheetDomManager.stylesheetAdaptor(s).useRef(document)
+        );
+        prev?.forEach((s) =>
+          this.stylesheetDomManager.stylesheetAdaptor(s).clearRef(document)
+        );
+        styleLogger.debug(
+          `Component ${component.url} stylesheet adaptors updated`,
+          {
+            component,
+          }
+        );
+      });
+
+    this._components.set(component, { refCount: 1, subscription });
+    this._registerProject(component.project);
+
+    styleLogger.debug(`RegisterComponent ${component.url}`, {
+      component,
+    });
+  }
+  unregisterComponent(component: Component): void {
+    const tracked = this._components.get(component);
+    if (!tracked) return;
+
+    if (--tracked.refCount === 0) {
+      tracked.subscription.unsubscribe();
+      this._components.delete(component);
+      this._unregisterProject(component.project);
     }
   }
 

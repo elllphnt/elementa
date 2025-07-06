@@ -53,7 +53,6 @@ export class Fragment extends Identifiable<FragmentData> {
   get allCssStylesheets() {
     return [...this.content.flatMap((c) => c.allCssStylesheets || [])];
   }
-
   get allCssStylesheets$() {
     return combineLatest([
       this.content$.pipe(

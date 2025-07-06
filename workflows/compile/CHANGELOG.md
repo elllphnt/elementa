@@ -1,5 +1,14 @@
 # @repo/compile
 
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies
+- Updated dependencies
+  - @elllphnt/elementa-base@0.1.19
+  - @elllphnt/elementa-react-parser@0.1.11
+
 ## 1.0.2
 
 ### Patch Changes

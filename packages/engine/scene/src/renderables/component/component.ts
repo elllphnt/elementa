@@ -1,28 +1,23 @@
-import type {
-  ComponentInstance,
-  ExpressionElementInstance,
-  FragmentElementInstance,
-} from "@elllphnt/elementa-runtime";
-import type { Observable} from "rxjs";
+import { reconcileList } from "@elllphnt/elementa-kernel";
+import type { ComponentInstance } from "@elllphnt/elementa-runtime";
+import type { Observable } from "rxjs";
 import { BehaviorSubject, of } from "rxjs";
 import type { Scene } from "../../scene/scene.js";
-import { ExpressionElementRenderable } from "../element/expression.js";
-import { FragmentElementRenderable } from "../element/fragment.js";
+import { createElementRenderable } from "../element/_create.js";
+import type { ElementRenderable } from "../element/element.js";
 import { FragmentRenderable } from "../fragment.js";
 import { InstanceRenderable } from "../instance.js";
 import type { Renderable } from "../renderable.js";
 
 export class ComponentRenderable extends InstanceRenderable<ComponentInstance> {
-  private _template$ = new BehaviorSubject<
-    ExpressionElementRenderable | FragmentElementRenderable | undefined
-  >(undefined);
+  private _content$ = new BehaviorSubject<ElementRenderable[]>([]);
   private _fragments$ = new BehaviorSubject<FragmentRenderable[]>([]);
 
-  get template() {
-    return this._template$.value;
+  get content$(): Observable<ElementRenderable[]> {
+    return this._content$.asObservable();
   }
-  get template$() {
-    return this._template$.asObservable();
+  get content(): ElementRenderable[] {
+    return this._content$.value;
   }
 
   get fragments(): FragmentRenderable[] {
@@ -48,36 +43,17 @@ export class ComponentRenderable extends InstanceRenderable<ComponentInstance> {
   }) {
     super({ scene, instance });
 
-    const templateSubscription = this.instance.template$.subscribe(
-      (template) => {
-        const prev = this._template$.value;
-        if (template) {
-          switch (template.element.type) {
-            case "fragment": {
-              this._template$.next(
-                new FragmentElementRenderable({
-                  scene: this.scene,
-                  instance: template as FragmentElementInstance,
-                })
-              );
-              break;
-            }
-            case "expression": {
-              this._template$.next(
-                new ExpressionElementRenderable({
-                  scene: this.scene,
-                  instance: template as ExpressionElementInstance,
-                })
-              );
-              break;
-            }
-          }
-        } else {
-          this._template$.next(undefined);
-        }
-        prev?.dispose();
-      }
-    );
+    const contentSubscription = this.instance.content$.subscribe((content) => {
+      const [newContent, removed] = reconcileList({
+        sources: content,
+        targets: this.content,
+        sourceRef: (s) => s,
+        targetRef: (t) => t.instance,
+        create: (instance) => createElementRenderable({ scene, instance }),
+      });
+      this._content$.next(newContent);
+      removed.forEach((s) => s.dispose());
+    });
 
     const fragmentsSubscription = this.instance.fragments$.subscribe(
       (fragments) => {
@@ -92,9 +68,12 @@ export class ComponentRenderable extends InstanceRenderable<ComponentInstance> {
       }
     );
 
+    this.scene.registerComponent(this.instance.model);
+
     this.addDisposer(() => {
-      templateSubscription.unsubscribe();
+      contentSubscription.unsubscribe();
       fragmentsSubscription.unsubscribe();
+      this.scene.unregisterComponent(this.instance.model);
     });
   }
 }

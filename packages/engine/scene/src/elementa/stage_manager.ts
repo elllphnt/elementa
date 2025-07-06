@@ -1,9 +1,9 @@
+import { resetCss } from "@elllphnt/elementa-css";
 import type { ElementaPreview, ElementaStage } from "@elllphnt/elementa-models";
-import type {
-  Runtime} from "@elllphnt/elementa-runtime";
+import type { Runtime } from "@elllphnt/elementa-runtime";
 import {
   ElementaPreviewInstance,
-  ElementaStageInstance
+  ElementaStageInstance,
 } from "@elllphnt/elementa-runtime";
 import type React from "react";
 import { createElement } from "react";
@@ -19,6 +19,8 @@ export class ElementaRenderableManager {
   readonly root: HTMLElement;
   readonly runtime: Runtime;
   readonly scene: Scene;
+
+  private _mounted = false;
 
   counter = 0;
   renderables = new Map<
@@ -44,13 +46,27 @@ export class ElementaRenderableManager {
     this.scene = scene;
   }
 
+  mount() {
+    const head = this.root.ownerDocument.head;
+    const style = document.createElement("style");
+    style.textContent = resetCss();
+    style.id = "elementa-reset-css";
+    head.appendChild(style);
+    this._mounted = true;
+  }
+
   addRenderable<R extends Renderable>({
     renderable,
     render,
+    type,
   }: {
     renderable: R;
     render: (renderable: R) => React.ReactNode;
+    type: string;
   }) {
+    if (!this._mounted) {
+      this.mount();
+    }
     // create root element
     const rootElement = document.createElement("div");
     rootElement.style.display = "none";
@@ -59,6 +75,7 @@ export class ElementaRenderableManager {
     // register root element
     const key = this.counter++;
     rootElement.id = "elementa-stage-" + key;
+    rootElement.classList.add(`elementa-root-${type}`);
     this.renderables.set(key, { renderable, root: rootElement });
 
     // mount
@@ -79,6 +96,7 @@ export class ElementaRenderableManager {
     });
 
     return this.addRenderable({
+      type: "stage",
       renderable,
       render: (renderable) =>
         createElement(ElementaStageComponent, { stage: renderable }),
@@ -95,6 +113,7 @@ export class ElementaRenderableManager {
     });
 
     return this.addRenderable({
+      type: "preview",
       renderable,
       render: (renderable) =>
         createElement(ElementaPreviewComponent, { preview: renderable }),

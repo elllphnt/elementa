@@ -2,6 +2,8 @@ import { TextCssStyleSheet } from "@elllphnt/elementa-models";
 import { of } from "rxjs";
 
 const text = /*css*/ `
+  @layer base, content, editor;
+
   .system {
     font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 

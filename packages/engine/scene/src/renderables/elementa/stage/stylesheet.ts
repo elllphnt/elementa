@@ -1,5 +1,3 @@
-import { resetCss } from "@elllphnt/elementa-css";
-
 export type ColorPalette = {
   backgroundColor: string;
 };
@@ -8,69 +6,57 @@ export type Theme = {
   dark: ColorPalette;
 };
 
-export const css = (theme: Theme) =>
-  resetCss() +
-  /* css */ `
-    @layer base, content, editor;
-    
-    html, body {
-        height: 100vh;
-        width: 100vw;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        user-select: none;
-        font-family: Arial, sans-serif;
-        background-color: ${theme.light.backgroundColor};
-    }
+export const css = (theme: Theme) => `
+.elementa-root-stage {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  user-select: none;
+  font-family: Arial, sans-serif;
+  background-color: ${theme.light.backgroundColor};
 
-    *::-webkit-scrollbar {
-        display: none;
-    }   
-        
-    .elementa-stage {
-        height: 100%;
-        width: 100%;
-    }
+  *::-webkit-scrollbar {
+    display: none;
+  }
 
-    .elementa {
-        height: 100%;
-        width: 100%;
-        --vh-unit: 1vh;
-        --vw-unit: 1vw;
-    }
+  .elementa-stage {
+    height: 100%;
+    width: 100%;
+  }
 
-    .elementa-viewport {
-        position: fixed;
-        inset: 0;
-        overflow: hidden;
-    }
+  .elementa {
+    height: 100%;
+    width: 100%;
+    --vh-unit: 1vh;
+    --vw-unit: 1vw;
+  }
 
-    .elementa-content {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        height:0;
-        width: 0;
-        overflow: visible;
-    }
-        
-    .elementa-content * {
-        pointer-events: none;
-        transition: none !important;
-    }
+  .elementa-viewport {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+  }
 
-    .elementa-element-slot-empty > * {
-        opacity: 0.3 !important;
-    }
+  .elementa-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 0;
+    width: 0;
+    overflow: visible;
+  }
 
-    @media(prefers-color-scheme: dark) {
-        html, body {
-            background-color: ${theme.dark.backgroundColor};
-        }
-    }
+  .elementa-content * {
+    pointer-events: none;
+    transition: none !important;
+  }
 
-    img {
-        display: block;
-    }
+  .elementa-element-slot-empty > * {
+    opacity: 0.3 !important;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: ${theme.dark.backgroundColor};
+  }
+}
 `;
