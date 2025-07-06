@@ -1,5 +1,16 @@
 # @elllphnt/elementa-models
 
+## 0.3.4
+
+### Patch Changes
+
+- Test In progress
+- Updated dependencies
+  - @elllphnt/elementa-kernel@0.1.2
+  - @elllphnt/elementa-base@0.1.18
+  - @elllphnt/elementa-css@0.28.9
+  - @elllphnt/elementa-lang-utils@0.1.1
+
 ## 0.3.3
 
 ### Patch Changes
