@@ -2,10 +2,10 @@
   "props": [],
   "fragments": [
     {
-      "id": "wwfab9x9",
+      "id": "o7p7mnfv",
       "content": [
         {
-          "id": "le675vo2",
+          "id": "yb5cspiq",
           "type": "container",
           "tag": "div",
           "name": "root",
@@ -26,13 +26,13 @@
           },
           "content": [
             {
-              "id": "ly1ra9q4",
+              "id": "wi04nxwt",
               "type": "component",
               "componentUrl": "<<REF:../header/header.component.js>>",
               "content": []
             },
             {
-              "id": "ppn6kqu0",
+              "id": "anbc59x3",
               "type": "container",
               "tag": "main",
               "name": "main",
@@ -48,14 +48,14 @@
               },
               "content": [
                 {
-                  "id": "n3iajyx8",
+                  "id": "nff3y8wh",
                   "type": "expression",
                   "expression": "props.children"
                 }
               ]
             },
             {
-              "id": "itoz9hs6",
+              "id": "xsyiyktr",
               "type": "component",
               "componentUrl": "<<REF:../footer/footer.component.js>>",
               "content": []
@@ -67,12 +67,14 @@
       "varName": "fragment_1"
     }
   ],
-  "template": {
-    "id": "b09bgmxr",
-    "type": "fragment",
-    "fragmentId": "wwfab9x9",
-    "params": {}
-  },
+  "content": [
+    {
+      "id": "du51n2k7",
+      "type": "fragment",
+      "fragmentId": "o7p7mnfv",
+      "params": {}
+    }
+  ],
   "editors": {
     "preview": {
       "content": {
@@ -83,7 +85,7 @@
     "stage": {
       "frames": [
         {
-          "id": "xa0wueqd5h",
+          "id": "fhy9upmfru",
           "content": {
             "type": "component",
             "componentUrl": "host"
@@ -92,10 +94,10 @@
           "y": 0
         },
         {
-          "id": "sr7219lkna",
+          "id": "azkkwp92u8",
           "content": {
             "type": "fragment",
-            "fragmentId": "wwfab9x9"
+            "fragmentId": "o7p7mnfv"
           },
           "x": 1000,
           "y": 0

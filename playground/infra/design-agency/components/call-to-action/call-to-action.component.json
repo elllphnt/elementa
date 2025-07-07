@@ -2,10 +2,10 @@
   "props": [],
   "fragments": [
     {
-      "id": "j61u7dzm",
+      "id": "rz9g2xue",
       "content": [
         {
-          "id": "midgth8b",
+          "id": "eoe7svih",
           "type": "container",
           "tag": "section",
           "name": "root",
@@ -23,7 +23,7 @@
           },
           "content": [
             {
-              "id": "afrpxnrq",
+              "id": "f18wzcwf",
               "type": "container",
               "tag": "div",
               "name": "container",
@@ -42,7 +42,7 @@
               },
               "content": [
                 {
-                  "id": "k75bo8a3",
+                  "id": "pfckps7s",
                   "type": "container",
                   "tag": "div",
                   "name": "content",
@@ -52,7 +52,7 @@
                   },
                   "content": [
                     {
-                      "id": "i3p1t7lg",
+                      "id": "s05qoqio",
                       "type": "text",
                       "tag": "h2",
                       "name": "title",
@@ -81,7 +81,7 @@
                       "marks": []
                     },
                     {
-                      "id": "aido5hqx",
+                      "id": "xzgbhxvb",
                       "type": "text",
                       "tag": "p",
                       "name": "description",
@@ -107,7 +107,7 @@
                       "marks": []
                     },
                     {
-                      "id": "fvumi63j",
+                      "id": "h84294jh",
                       "type": "container",
                       "tag": "div",
                       "name": "buttons",
@@ -132,7 +132,7 @@
                       },
                       "content": [
                         {
-                          "id": "w0r34izc",
+                          "id": "iaxc1ijh",
                           "type": "text",
                           "text": "Get Started",
                           "link": {
@@ -141,7 +141,7 @@
                           }
                         },
                         {
-                          "id": "prpkxbht",
+                          "id": "a2omt43q",
                           "type": "text",
                           "text": "View Our Work",
                           "link": {
@@ -162,12 +162,14 @@
       "varName": "fragment_1"
     }
   ],
-  "template": {
-    "id": "sja6w1fg",
-    "type": "fragment",
-    "fragmentId": "j61u7dzm",
-    "params": {}
-  },
+  "content": [
+    {
+      "id": "lczvkmsz",
+      "type": "fragment",
+      "fragmentId": "rz9g2xue",
+      "params": {}
+    }
+  ],
   "editors": {
     "preview": {
       "content": {
@@ -178,7 +180,7 @@
     "stage": {
       "frames": [
         {
-          "id": "w1kmqhf8mp",
+          "id": "qj4qybqnbd",
           "content": {
             "type": "component",
             "componentUrl": "host"
@@ -187,10 +189,10 @@
           "y": 0
         },
         {
-          "id": "tx57f11fu6",
+          "id": "wnfs6bq43e",
           "content": {
             "type": "fragment",
-            "fragmentId": "j61u7dzm"
+            "fragmentId": "rz9g2xue"
           },
           "x": 1000,
           "y": 0

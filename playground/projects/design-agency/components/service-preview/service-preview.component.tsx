@@ -23,7 +23,8 @@ const ServicePreview: React.FC<ServicePreviewProps> = ({ services }) => {
           </p>
         </div>
         <div id="services-grid">
-          {services.map((service) => (
+          {services.length}
+          {services?.map((service) => (
             <div key={service.id} id="service-card">
               <div id="service-icon">{service.icon}</div>
               <h3 id="service-title">{service.title}</h3>

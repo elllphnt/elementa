@@ -1,6 +1,6 @@
-import { ElementaPreviewData } from "@elllphnt/elementa-base";
-import { transformRouter } from "@elllphnt/elementa-react-parser";
-import { Handler } from "../_types.js";
+import type { ElementaPreviewData } from "@elllphnt/elementa-base";
+import { transformRouter } from "@elllphnt/elementa-parser";
+import type { Handler } from "../_types.js";
 
 export const transpileRouter: Handler = async (path, content) => {
   const routerData = transformRouter(content ? JSON.parse(content) : {});

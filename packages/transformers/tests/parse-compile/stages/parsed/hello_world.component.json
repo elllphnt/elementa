@@ -1,0 +1,9 @@
+{
+  "content": [
+    {
+      "id": "optg26ag5g",
+      "text": "function HelloWorld() {\n  return <div>Hello World!</div>;\n}\n\nexport default HelloWorld;",
+      "type": "text"
+    }
+  ]
+}

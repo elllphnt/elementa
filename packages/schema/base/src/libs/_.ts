@@ -1,5 +1,5 @@
 export * from "./dynamic/_.js";
-export * from "./file/_.js";
+export * from "./file/type.js";
 export * from "./file/url.js";
 export * from "./id.js";
 export * from "./interactions/_.js";

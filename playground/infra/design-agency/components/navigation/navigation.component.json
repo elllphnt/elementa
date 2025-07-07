@@ -2,10 +2,10 @@
   "props": [],
   "fragments": [
     {
-      "id": "nn3y4qnz",
+      "id": "ebi7wvuc",
       "content": [
         {
-          "id": "bxb0quh5",
+          "id": "ggiwyh49",
           "type": "container",
           "tag": "nav",
           "name": "root",
@@ -22,7 +22,7 @@
           },
           "content": [
             {
-              "id": "n0l5qti1",
+              "id": "tylxhptg",
               "type": "container",
               "tag": "ul",
               "name": "nav-list",
@@ -49,7 +49,7 @@
               },
               "content": [
                 {
-                  "id": "y6xb7frz",
+                  "id": "sflx24ao",
                   "type": "container",
                   "tag": "li",
                   "name": "nav-item-home",
@@ -59,7 +59,7 @@
                   },
                   "content": [
                     {
-                      "id": "ajkdqjip",
+                      "id": "torzf7uv",
                       "type": "text",
                       "text": "Home",
                       "link": {
@@ -70,7 +70,7 @@
                   ]
                 },
                 {
-                  "id": "ikqcdv4v",
+                  "id": "zugql353",
                   "type": "container",
                   "tag": "li",
                   "name": "nav-item-about",
@@ -80,7 +80,7 @@
                   },
                   "content": [
                     {
-                      "id": "yfafoxgi",
+                      "id": "w435naj0",
                       "type": "text",
                       "text": "About",
                       "link": {
@@ -91,7 +91,7 @@
                   ]
                 },
                 {
-                  "id": "ad8kqd3h",
+                  "id": "v5lgniqc",
                   "type": "container",
                   "tag": "li",
                   "name": "nav-item-services",
@@ -101,7 +101,7 @@
                   },
                   "content": [
                     {
-                      "id": "xzdrtv9l",
+                      "id": "lfl55h2i",
                       "type": "text",
                       "text": "Services",
                       "link": {
@@ -112,7 +112,7 @@
                   ]
                 },
                 {
-                  "id": "trqxyiu3",
+                  "id": "lksk8nek",
                   "type": "container",
                   "tag": "li",
                   "name": "nav-item-portfolio",
@@ -122,7 +122,7 @@
                   },
                   "content": [
                     {
-                      "id": "gwlvwned",
+                      "id": "bpvovus7",
                       "type": "text",
                       "text": "Portfolio",
                       "link": {
@@ -133,7 +133,7 @@
                   ]
                 },
                 {
-                  "id": "pmw36g5n",
+                  "id": "r9cfcpnk",
                   "type": "container",
                   "tag": "li",
                   "name": "nav-item-contact",
@@ -143,7 +143,7 @@
                   },
                   "content": [
                     {
-                      "id": "yquk103o",
+                      "id": "g77k0i7f",
                       "type": "text",
                       "text": "Contact",
                       "link": {
@@ -162,12 +162,14 @@
       "varName": "fragment_1"
     }
   ],
-  "template": {
-    "id": "e87s7386",
-    "type": "fragment",
-    "fragmentId": "nn3y4qnz",
-    "params": {}
-  },
+  "content": [
+    {
+      "id": "ycsb6q4r",
+      "type": "fragment",
+      "fragmentId": "ebi7wvuc",
+      "params": {}
+    }
+  ],
   "editors": {
     "preview": {
       "content": {
@@ -178,7 +180,7 @@
     "stage": {
       "frames": [
         {
-          "id": "g9j732lbcj",
+          "id": "y4s9swk4lb",
           "content": {
             "type": "component",
             "componentUrl": "host"
@@ -187,10 +189,10 @@
           "y": 0
         },
         {
-          "id": "h0uu1uture",
+          "id": "ktjm5i797v",
           "content": {
             "type": "fragment",
-            "fragmentId": "nn3y4qnz"
+            "fragmentId": "ebi7wvuc"
           },
           "x": 1000,
           "y": 0

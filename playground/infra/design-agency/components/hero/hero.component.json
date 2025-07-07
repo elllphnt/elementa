@@ -2,10 +2,10 @@
   "props": [],
   "fragments": [
     {
-      "id": "paa3qepu",
+      "id": "xg0wkwqx",
       "content": [
         {
-          "id": "wfbd2j4s",
+          "id": "oparb0lu",
           "type": "container",
           "tag": "section",
           "name": "root",
@@ -26,7 +26,7 @@
           },
           "content": [
             {
-              "id": "v5dt5mbq",
+              "id": "i1wx53w5",
               "type": "container",
               "tag": "div",
               "name": "container",
@@ -55,7 +55,7 @@
               },
               "content": [
                 {
-                  "id": "yu393tzd",
+                  "id": "acg5pwyk",
                   "type": "container",
                   "tag": "div",
                   "name": "content",
@@ -71,7 +71,7 @@
                   },
                   "content": [
                     {
-                      "id": "x4vq435r",
+                      "id": "ob9xhvrs",
                       "type": "text",
                       "tag": "h1",
                       "name": "title",
@@ -101,7 +101,7 @@
                       "marks": []
                     },
                     {
-                      "id": "tad8eq3y",
+                      "id": "bb5o9lea",
                       "type": "text",
                       "tag": "p",
                       "name": "subtitle",
@@ -127,7 +127,7 @@
                       "marks": []
                     },
                     {
-                      "id": "tgnlrnqu",
+                      "id": "jheysk37",
                       "type": "expression",
                       "expression": "props.data.buttonText",
                       "link": {
@@ -140,7 +140,7 @@
                   ]
                 },
                 {
-                  "id": "cah9aco3",
+                  "id": "zi8265d1",
                   "type": "container",
                   "tag": "div",
                   "name": "visual",
@@ -158,7 +158,7 @@
                   },
                   "content": [
                     {
-                      "id": "w7px90j6",
+                      "id": "yzorc8ea",
                       "type": "container",
                       "tag": "div",
                       "name": "hero-graphic",
@@ -197,10 +197,10 @@
       "varName": "fragment_2"
     },
     {
-      "id": "nj9cops6",
+      "id": "ja1emzek",
       "content": [
         {
-          "id": "pfxrm4ck",
+          "id": "dq885byc",
           "type": "container",
           "tag": "div",
           "name": "root",
@@ -228,18 +228,20 @@
   ],
   "states": [
     {
-      "id": "jilooo6w",
+      "id": "uaojiz9a",
       "name": "state_1",
       "varName": "state_1",
       "type": "inline",
       "script": "if (!props.data) {\n  return fragments.fragment_1();\n}\nreturn (\n  fragments.fragment_2()\n);"
     }
   ],
-  "template": {
-    "id": "wvxin65q",
-    "type": "expression",
-    "expression": "state_1"
-  },
+  "content": [
+    {
+      "id": "mtweti8p",
+      "type": "expression",
+      "expression": "state_1"
+    }
+  ],
   "editors": {
     "preview": {
       "content": {
@@ -250,7 +252,7 @@
     "stage": {
       "frames": [
         {
-          "id": "hb306ivmyh",
+          "id": "fdbdnlhuu4",
           "content": {
             "type": "component",
             "componentUrl": "host"
@@ -259,19 +261,19 @@
           "y": 0
         },
         {
-          "id": "hiq2srr9rw",
+          "id": "ljcau58mx1",
           "content": {
             "type": "fragment",
-            "fragmentId": "paa3qepu"
+            "fragmentId": "xg0wkwqx"
           },
           "x": 1000,
           "y": 0
         },
         {
-          "id": "kuj2dqw326",
+          "id": "w5uet2oz7z",
           "content": {
             "type": "fragment",
-            "fragmentId": "nj9cops6"
+            "fragmentId": "ja1emzek"
           },
           "x": 2000,
           "y": 0

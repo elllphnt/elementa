@@ -1,10 +1,9 @@
 #!/usr/bin/env -S npx tsx
 
+import { getPackages } from "@manypkg/get-packages";
 import fs from "fs";
-import { createRequire } from "node:module";
 import path from "path";
 
-const require = createRequire(import.meta.url);
 const log = (...args: unknown[]) => console.log("packup:", ...args);
 
 // ✅ Allowed output file extensions
@@ -15,9 +14,19 @@ const DIST_DIR = "./dist";
 
 log("packing up...");
 
+// --- Get workspace packages ---
+const { packages } = await getPackages(process.cwd());
+const packageVersionMap = new Map<string, string>();
+
+for (const pkg of packages) {
+  packageVersionMap.set(pkg.packageJson.name, pkg.packageJson.version);
+}
+
 // --- Copy files from build to dist ---
 function copyDirWithFilter(src: string, dest: string) {
-  if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
+  if (!fs.existsSync(dest)) {
+    fs.mkdirSync(dest, { recursive: true });
+  }
 
   for (const entry of fs.readdirSync(src)) {
     const srcPath = path.join(src, entry);
@@ -37,6 +46,7 @@ log(`copied build → dist (${ALLOWED_EXTENSIONS.join(", ")} only)`);
 
 // --- Load and clean package.json ---
 const packageJson = JSON.parse(fs.readFileSync("./package.json", "utf8"));
+
 delete packageJson.scripts;
 delete packageJson.devDependencies;
 packageJson.main = "index.js";
@@ -48,15 +58,14 @@ function freezeVersions(deps?: Record<string, string>) {
 
   for (const [name, version] of Object.entries(deps)) {
     if (version === "*" || version.startsWith("workspace:")) {
-      try {
-        const resolvedPath = require.resolve(`${name}/package.json`);
-        const actualVersion = JSON.parse(
-          fs.readFileSync(resolvedPath, "utf8")
-        ).version;
+      const actualVersion = packageVersionMap.get(name);
+      if (actualVersion) {
         deps[name] = actualVersion;
-        console.log(`froze ${name} to ${actualVersion}`);
-      } catch {
-        console.warn(`⚠️ could not resolve version for ${name}`);
+        log(`froze ${name} to ${actualVersion}`);
+      } else {
+        throw new Error(
+          `Could not find version for package: ${name}. Please ensure it is defined in package.json.`
+        );
       }
     }
   }

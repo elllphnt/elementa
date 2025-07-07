@@ -2,10 +2,10 @@
   "props": [],
   "fragments": [
     {
-      "id": "pvf22txq",
+      "id": "dfnh1o9f",
       "content": [
         {
-          "id": "qam60gyv",
+          "id": "lg47or47",
           "type": "container",
           "tag": "footer",
           "name": "root",
@@ -24,7 +24,7 @@
           },
           "content": [
             {
-              "id": "jcuf9ywd",
+              "id": "jvzzwe9f",
               "type": "container",
               "tag": "div",
               "name": "container",
@@ -42,7 +42,7 @@
               },
               "content": [
                 {
-                  "id": "mmzpmlfc",
+                  "id": "dfjk6e1t",
                   "type": "container",
                   "tag": "div",
                   "name": "footer-content",
@@ -67,7 +67,7 @@
                   },
                   "content": [
                     {
-                      "id": "exs1umwe",
+                      "id": "mnk5s0pg",
                       "type": "container",
                       "tag": "div",
                       "name": "company-info",
@@ -77,7 +77,7 @@
                       },
                       "content": [
                         {
-                          "id": "rsiau7a2",
+                          "id": "f6qvhipe",
                           "type": "text",
                           "tag": "h3",
                           "name": "company-name",
@@ -98,7 +98,7 @@
                           "marks": []
                         },
                         {
-                          "id": "y6nlegae",
+                          "id": "rihgrm05",
                           "type": "text",
                           "tag": "p",
                           "name": "company-description",
@@ -118,7 +118,7 @@
                       ]
                     },
                     {
-                      "id": "gppa99yv",
+                      "id": "c7ukprg8",
                       "type": "container",
                       "tag": "div",
                       "name": "contact-info",
@@ -128,7 +128,7 @@
                       },
                       "content": [
                         {
-                          "id": "zukk0ccu",
+                          "id": "j1dz9f4a",
                           "type": "text",
                           "tag": "h4",
                           "name": "contact-title",
@@ -148,7 +148,7 @@
                           "marks": []
                         },
                         {
-                          "id": "hlte20xi",
+                          "id": "eirts3uy",
                           "type": "text",
                           "tag": "p",
                           "name": "contact-email",
@@ -167,7 +167,7 @@
                           "marks": []
                         },
                         {
-                          "id": "u3bv3og8",
+                          "id": "dx36xazl",
                           "type": "text",
                           "tag": "p",
                           "name": "contact-phone",
@@ -188,7 +188,7 @@
                       ]
                     },
                     {
-                      "id": "pwhfmq0v",
+                      "id": "b2xbkko4",
                       "type": "container",
                       "tag": "div",
                       "name": "social-links",
@@ -198,7 +198,7 @@
                       },
                       "content": [
                         {
-                          "id": "hwwjqe6y",
+                          "id": "kzytjgh2",
                           "type": "text",
                           "tag": "h4",
                           "name": "social-title",
@@ -218,7 +218,7 @@
                           "marks": []
                         },
                         {
-                          "id": "yf3eobpc",
+                          "id": "hudt8fo7",
                           "type": "container",
                           "tag": "div",
                           "name": "social-icons",
@@ -240,7 +240,7 @@
                           },
                           "content": [
                             {
-                              "id": "f7fsvk35",
+                              "id": "pi55nagt",
                               "type": "text",
                               "text": "Twitter",
                               "link": {
@@ -249,7 +249,7 @@
                               }
                             },
                             {
-                              "id": "zuuc9lv6",
+                              "id": "h961krhf",
                               "type": "text",
                               "text": "Instagram",
                               "link": {
@@ -258,7 +258,7 @@
                               }
                             },
                             {
-                              "id": "bt0bsz3x",
+                              "id": "h6lk999w",
                               "type": "text",
                               "text": "LinkedIn",
                               "link": {
@@ -273,7 +273,7 @@
                   ]
                 },
                 {
-                  "id": "nslqo2ji",
+                  "id": "k4o7foc8",
                   "type": "container",
                   "tag": "div",
                   "name": "copyright",
@@ -291,7 +291,7 @@
                   },
                   "content": [
                     {
-                      "id": "rrxgh39o",
+                      "id": "ydbsc92h",
                       "type": "text",
                       "tag": "p",
                       "name": "copyright-text",
@@ -320,12 +320,14 @@
       "varName": "fragment_1"
     }
   ],
-  "template": {
-    "id": "qy24gzdn",
-    "type": "fragment",
-    "fragmentId": "pvf22txq",
-    "params": {}
-  },
+  "content": [
+    {
+      "id": "bqc3d2hj",
+      "type": "fragment",
+      "fragmentId": "dfnh1o9f",
+      "params": {}
+    }
+  ],
   "editors": {
     "preview": {
       "content": {
@@ -336,7 +338,7 @@
     "stage": {
       "frames": [
         {
-          "id": "ofkrvhj6mn",
+          "id": "s90zv0nuae",
           "content": {
             "type": "component",
             "componentUrl": "host"
@@ -345,10 +347,10 @@
           "y": 0
         },
         {
-          "id": "cip0ceo3gw",
+          "id": "v0p6fwmq07",
           "content": {
             "type": "fragment",
-            "fragmentId": "pvf22txq"
+            "fragmentId": "dfnh1o9f"
           },
           "x": 1000,
           "y": 0

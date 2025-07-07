@@ -2,7 +2,7 @@
   "props": [],
   "fragments": [
     {
-      "id": "cd3vt0j5",
+      "id": "rm582aln",
       "params": [
         {
           "name": "services",
@@ -12,12 +12,12 @@
       ],
       "content": [
         {
-          "id": "h66udlih",
+          "id": "h0tf690w",
           "type": "component",
           "componentUrl": "<<REF:../../components/layout/layout.component.js>>",
           "content": [
             {
-              "id": "dsxpmn56",
+              "id": "pwwonbln",
               "type": "container",
               "tag": "div",
               "name": "root",
@@ -33,7 +33,7 @@
               },
               "content": [
                 {
-                  "id": "aaeh21cb",
+                  "id": "cpe34smd",
                   "type": "container",
                   "tag": "section",
                   "name": "hero",
@@ -52,7 +52,7 @@
                   },
                   "content": [
                     {
-                      "id": "ov80efcq",
+                      "id": "njeu6uy7",
                       "type": "container",
                       "tag": "div",
                       "name": "hero-container",
@@ -70,7 +70,7 @@
                       },
                       "content": [
                         {
-                          "id": "hm22s81v",
+                          "id": "dyveqer1",
                           "type": "text",
                           "tag": "h1",
                           "name": "hero-title",
@@ -95,7 +95,7 @@
                           "marks": []
                         },
                         {
-                          "id": "lr2jaqp0",
+                          "id": "ln1a5s92",
                           "type": "text",
                           "tag": "p",
                           "name": "hero-subtitle",
@@ -119,7 +119,7 @@
                   ]
                 },
                 {
-                  "id": "gtd5llsb",
+                  "id": "xewkybi2",
                   "type": "container",
                   "tag": "section",
                   "name": "services-section",
@@ -136,7 +136,7 @@
                   },
                   "content": [
                     {
-                      "id": "cmwugf7m",
+                      "id": "mj0fsugi",
                       "type": "container",
                       "tag": "div",
                       "name": "services-container",
@@ -156,7 +156,7 @@
                       },
                       "content": [
                         {
-                          "id": "lgjv0nx5",
+                          "id": "nga06zbc",
                           "type": "expression",
                           "expression": "services.map(service => fragments.fragment_3({\n  service\n}))"
                         }
@@ -165,7 +165,7 @@
                   ]
                 },
                 {
-                  "id": "z7kcgo21",
+                  "id": "z1ewuwj0",
                   "type": "container",
                   "tag": "section",
                   "name": "process",
@@ -182,7 +182,7 @@
                   },
                   "content": [
                     {
-                      "id": "y8bhp187",
+                      "id": "sciiseh5",
                       "type": "container",
                       "tag": "div",
                       "name": "process-container",
@@ -200,7 +200,7 @@
                       },
                       "content": [
                         {
-                          "id": "wqzl9pwu",
+                          "id": "d75390om",
                           "type": "text",
                           "tag": "h2",
                           "name": "process-title",
@@ -227,7 +227,7 @@
                           "marks": []
                         },
                         {
-                          "id": "dsswxtar",
+                          "id": "p4b16t08",
                           "type": "container",
                           "tag": "div",
                           "name": "process-steps",
@@ -245,7 +245,7 @@
                           },
                           "content": [
                             {
-                              "id": "whz26lqr",
+                              "id": "pjomyqzf",
                               "type": "container",
                               "tag": "div",
                               "name": "process-step",
@@ -262,7 +262,7 @@
                               },
                               "content": [
                                 {
-                                  "id": "bi1shxk6",
+                                  "id": "h0z2zgzo",
                                   "type": "container",
                                   "tag": "div",
                                   "name": "step-number",
@@ -288,14 +288,14 @@
                                   },
                                   "content": [
                                     {
-                                      "id": "jots3hdu",
+                                      "id": "zi3vgut7",
                                       "type": "text",
                                       "text": "1"
                                     }
                                   ]
                                 },
                                 {
-                                  "id": "eihpenfq",
+                                  "id": "f5tux0ii",
                                   "type": "text",
                                   "tag": "h3",
                                   "name": "step-title",
@@ -316,7 +316,7 @@
                                   "marks": []
                                 },
                                 {
-                                  "id": "hxfbtsq8",
+                                  "id": "xlehi7wa",
                                   "type": "text",
                                   "tag": "p",
                                   "name": "step-description",
@@ -337,7 +337,7 @@
                               ]
                             },
                             {
-                              "id": "z6miajjh",
+                              "id": "su1ursdk",
                               "type": "container",
                               "tag": "div",
                               "name": "process-step",
@@ -354,7 +354,7 @@
                               },
                               "content": [
                                 {
-                                  "id": "qz4p6tel",
+                                  "id": "zsum3otc",
                                   "type": "container",
                                   "tag": "div",
                                   "name": "step-number",
@@ -380,14 +380,14 @@
                                   },
                                   "content": [
                                     {
-                                      "id": "pvqfi3yd",
+                                      "id": "f2py7qzr",
                                       "type": "text",
                                       "text": "2"
                                     }
                                   ]
                                 },
                                 {
-                                  "id": "kdjdu8mo",
+                                  "id": "zcx2suis",
                                   "type": "text",
                                   "tag": "h3",
                                   "name": "step-title",
@@ -408,7 +408,7 @@
                                   "marks": []
                                 },
                                 {
-                                  "id": "h1mxk6ew",
+                                  "id": "uwi6hclr",
                                   "type": "text",
                                   "tag": "p",
                                   "name": "step-description",
@@ -429,7 +429,7 @@
                               ]
                             },
                             {
-                              "id": "zwljycjh",
+                              "id": "kwmxd4r8",
                               "type": "container",
                               "tag": "div",
                               "name": "process-step",
@@ -446,7 +446,7 @@
                               },
                               "content": [
                                 {
-                                  "id": "mwghaqgq",
+                                  "id": "fk9ztkel",
                                   "type": "container",
                                   "tag": "div",
                                   "name": "step-number",
@@ -472,14 +472,14 @@
                                   },
                                   "content": [
                                     {
-                                      "id": "tpwmhanr",
+                                      "id": "z6celcff",
                                       "type": "text",
                                       "text": "3"
                                     }
                                   ]
                                 },
                                 {
-                                  "id": "mfegqj85",
+                                  "id": "vn3elwuh",
                                   "type": "text",
                                   "tag": "h3",
                                   "name": "step-title",
@@ -500,7 +500,7 @@
                                   "marks": []
                                 },
                                 {
-                                  "id": "b9ad3dby",
+                                  "id": "c88kk3tu",
                                   "type": "text",
                                   "tag": "p",
                                   "name": "step-description",
@@ -521,7 +521,7 @@
                               ]
                             },
                             {
-                              "id": "i0szqcib",
+                              "id": "c46o3wuk",
                               "type": "container",
                               "tag": "div",
                               "name": "process-step",
@@ -538,7 +538,7 @@
                               },
                               "content": [
                                 {
-                                  "id": "j4hc6t3l",
+                                  "id": "cddgkww1",
                                   "type": "container",
                                   "tag": "div",
                                   "name": "step-number",
@@ -564,14 +564,14 @@
                                   },
                                   "content": [
                                     {
-                                      "id": "ahegqas6",
+                                      "id": "equ8g2j8",
                                       "type": "text",
                                       "text": "4"
                                     }
                                   ]
                                 },
                                 {
-                                  "id": "ji4im1j4",
+                                  "id": "j71gde7y",
                                   "type": "text",
                                   "tag": "h3",
                                   "name": "step-title",
@@ -592,7 +592,7 @@
                                   "marks": []
                                 },
                                 {
-                                  "id": "umabkvk1",
+                                  "id": "ng8tso9h",
                                   "type": "text",
                                   "tag": "p",
                                   "name": "step-description",
@@ -613,7 +613,7 @@
                               ]
                             },
                             {
-                              "id": "pimzy1ro",
+                              "id": "hypgq1fk",
                               "type": "container",
                               "tag": "div",
                               "name": "process-step",
@@ -630,7 +630,7 @@
                               },
                               "content": [
                                 {
-                                  "id": "jihbbjvl",
+                                  "id": "tskdnowv",
                                   "type": "container",
                                   "tag": "div",
                                   "name": "step-number",
@@ -656,14 +656,14 @@
                                   },
                                   "content": [
                                     {
-                                      "id": "ydkhsdl3",
+                                      "id": "u5otcagb",
                                       "type": "text",
                                       "text": "5"
                                     }
                                   ]
                                 },
                                 {
-                                  "id": "ssb6btn7",
+                                  "id": "zbcwo2xn",
                                   "type": "text",
                                   "tag": "h3",
                                   "name": "step-title",
@@ -684,7 +684,7 @@
                                   "marks": []
                                 },
                                 {
-                                  "id": "ebyh3l5s",
+                                  "id": "yi3nvipj",
                                   "type": "text",
                                   "tag": "p",
                                   "name": "step-description",
@@ -719,7 +719,7 @@
       "varName": "fragment_4"
     },
     {
-      "id": "b0xhaick",
+      "id": "d2a39ern",
       "params": [
         {
           "name": "service",
@@ -729,7 +729,7 @@
       ],
       "content": [
         {
-          "id": "yfwa9tkh",
+          "id": "ng5rfwmv",
           "type": "container",
           "tag": "div",
           "name": "service-card",
@@ -760,7 +760,7 @@
           },
           "content": [
             {
-              "id": "dpmy6ov2",
+              "id": "r8vjbp1b",
               "type": "container",
               "tag": "div",
               "name": "service-icon",
@@ -789,14 +789,14 @@
               },
               "content": [
                 {
-                  "id": "i6yp5q9o",
+                  "id": "bkh12sgt",
                   "type": "expression",
                   "expression": "service.icon"
                 }
               ]
             },
             {
-              "id": "i4yuhy1d",
+              "id": "owh2qyzl",
               "type": "container",
               "tag": "div",
               "name": "service-content",
@@ -812,7 +812,7 @@
               },
               "content": [
                 {
-                  "id": "gun3algd",
+                  "id": "ci7r9he0",
                   "type": "text",
                   "tag": "h2",
                   "name": "service-title",
@@ -833,7 +833,7 @@
                   "marks": []
                 },
                 {
-                  "id": "wkq6rh5i",
+                  "id": "e75yzoxr",
                   "type": "text",
                   "tag": "p",
                   "name": "service-description",
@@ -853,7 +853,7 @@
                   "marks": []
                 },
                 {
-                  "id": "gd3fypge",
+                  "id": "ep6jv7nq",
                   "type": "container",
                   "tag": "ul",
                   "name": "service-features",
@@ -879,14 +879,14 @@
                   },
                   "content": [
                     {
-                      "id": "y9k72nxq",
+                      "id": "xhg14wmf",
                       "type": "expression",
                       "expression": "service.features.map((feature, index) => fragments.fragment_2({\n  index,\n  feature\n}))"
                     }
                   ]
                 },
                 {
-                  "id": "pd4fo6p3",
+                  "id": "zcko0xuj",
                   "type": "container",
                   "tag": "div",
                   "name": "service-pricing",
@@ -904,7 +904,7 @@
                   },
                   "content": [
                     {
-                      "id": "bzyslgz1",
+                      "id": "kqy1b6ni",
                       "type": "text",
                       "tag": "span",
                       "name": "price-label",
@@ -923,7 +923,7 @@
                       "marks": []
                     },
                     {
-                      "id": "kjnljgcx",
+                      "id": "wtutj44g",
                       "type": "text",
                       "tag": "span",
                       "name": "price",
@@ -953,7 +953,7 @@
       "varName": "fragment_3"
     },
     {
-      "id": "m3vbz35m",
+      "id": "yaunnjbi",
       "params": [
         {
           "name": "index",
@@ -968,7 +968,7 @@
       ],
       "content": [
         {
-          "id": "e46owipy",
+          "id": "zi0egs35",
           "type": "container",
           "tag": "li",
           "name": "service-feature",
@@ -987,7 +987,7 @@
           },
           "content": [
             {
-              "id": "r63bm4fo",
+              "id": "zudd380y",
               "type": "expression",
               "expression": "feature"
             }
@@ -998,15 +998,15 @@
       "varName": "fragment_2"
     },
     {
-      "id": "tta3um99",
+      "id": "krk8n20z",
       "content": [
         {
-          "id": "ajk765be",
+          "id": "zxy7bp71",
           "type": "component",
           "componentUrl": "<<REF:../../components/layout/layout.component.js>>",
           "content": [
             {
-              "id": "dhwdvrqa",
+              "id": "qgx0c3j0",
               "type": "container",
               "tag": "div",
               "name": "loading",
@@ -1025,7 +1025,7 @@
               },
               "content": [
                 {
-                  "id": "pbbtkuw1",
+                  "id": "j1byz76v",
                   "type": "container",
                   "tag": "div",
                   "name": "spinner",
@@ -1057,7 +1057,7 @@
   ],
   "states": [
     {
-      "id": "kvgfvdis",
+      "id": "cjogvnqa",
       "name": "state_1",
       "varName": "state_1",
       "type": "hook",
@@ -1066,18 +1066,20 @@
       "hookUrl": "<<REF:../../hooks/useServices.hook.js>>"
     },
     {
-      "id": "t7yrljqt",
+      "id": "w1674ggw",
       "name": "state_2",
       "varName": "state_2",
       "type": "inline",
       "script": "if (state_1.isLoading) {\n  return (\n    fragments.fragment_1()\n  );\n}\nreturn (\n  fragments.fragment_4({ services: state_1.services })\n);"
     }
   ],
-  "template": {
-    "id": "uiqp9sog",
-    "type": "expression",
-    "expression": "state_2"
-  },
+  "content": [
+    {
+      "id": "lq0try4s",
+      "type": "expression",
+      "expression": "state_2"
+    }
+  ],
   "editors": {
     "preview": {
       "content": {
@@ -1088,7 +1090,7 @@
     "stage": {
       "frames": [
         {
-          "id": "tw5jd1vn5h",
+          "id": "vpskjrd1oy",
           "content": {
             "type": "component",
             "componentUrl": "host"
@@ -1097,37 +1099,37 @@
           "y": 0
         },
         {
-          "id": "psa5d4ldx6",
+          "id": "qd6k126jhx",
           "content": {
             "type": "fragment",
-            "fragmentId": "cd3vt0j5"
+            "fragmentId": "rm582aln"
           },
           "x": 1000,
           "y": 0
         },
         {
-          "id": "i44mtx0ng8",
+          "id": "xdxref9f15",
           "content": {
             "type": "fragment",
-            "fragmentId": "b0xhaick"
+            "fragmentId": "d2a39ern"
           },
           "x": 2000,
           "y": 0
         },
         {
-          "id": "oupsel8ivd",
+          "id": "bv7allvrgt",
           "content": {
             "type": "fragment",
-            "fragmentId": "m3vbz35m"
+            "fragmentId": "yaunnjbi"
           },
           "x": 3000,
           "y": 0
         },
         {
-          "id": "ajr1sg4sso",
+          "id": "v45ve6k268",
           "content": {
             "type": "fragment",
-            "fragmentId": "tta3um99"
+            "fragmentId": "krk8n20z"
           },
           "x": 4000,
           "y": 0

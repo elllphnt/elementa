@@ -1,30 +1,30 @@
 {
   "routes": [
     {
-      "id": "rgl45gv9",
+      "id": "tlfdvuyy",
       "path": "/",
       "loaderUrl": "<<REF:~/views/home/home.loader.ts>>",
       "mainViewUrl": "<<REF:~/views/home/home.component.tsx>>"
     },
     {
-      "id": "fiaf59zu",
+      "id": "zavf2r4b",
       "path": "/about",
       "mainViewUrl": "<<REF:~/views/about/about.component.tsx>>"
     },
     {
-      "id": "k6dts1c1",
+      "id": "qzpk5i6a",
       "path": "/services",
       "loaderUrl": "<<REF:~/views/services/services.loader.ts>>",
       "mainViewUrl": "<<REF:~/views/services/services.component.tsx>>"
     },
     {
-      "id": "xxd0bmfh",
+      "id": "vt3oro0e",
       "path": "/portfolio",
       "loaderUrl": "<<REF:~/views/portfolio/portfolio.loader.ts>>",
       "mainViewUrl": "<<REF:~/views/portfolio/portfolio.component.tsx>>"
     },
     {
-      "id": "wp4gap47",
+      "id": "ul8bxn1j",
       "path": "/contact",
       "handlerUrl": "<<REF:~/views/contact/contact.handler.ts>>",
       "mainViewUrl": "<<REF:~/views/contact/contact.component.tsx>>"

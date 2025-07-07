@@ -2,10 +2,10 @@
   "props": [],
   "fragments": [
     {
-      "id": "j5zkrod3",
+      "id": "f9skn1dv",
       "content": [
         {
-          "id": "rca9y2g0",
+          "id": "nlgu9aji",
           "type": "container",
           "tag": "header",
           "name": "root",
@@ -26,7 +26,7 @@
           },
           "content": [
             {
-              "id": "tfe8tsck",
+              "id": "sv5og5r5",
               "type": "container",
               "tag": "div",
               "name": "container",
@@ -53,7 +53,7 @@
               },
               "content": [
                 {
-                  "id": "a0mxs18k",
+                  "id": "chnae7io",
                   "type": "container",
                   "tag": "div",
                   "name": "logo",
@@ -63,7 +63,7 @@
                   },
                   "content": [
                     {
-                      "id": "qalfttmj",
+                      "id": "d2wrtq0g",
                       "type": "text",
                       "tag": "h1",
                       "name": "logo-text",
@@ -91,7 +91,7 @@
                   ]
                 },
                 {
-                  "id": "atxjq2qt",
+                  "id": "pxr3wrgi",
                   "type": "component",
                   "componentUrl": "<<REF:~/components/navigation/navigation.component.js>>",
                   "content": []
@@ -105,12 +105,14 @@
       "varName": "fragment_1"
     }
   ],
-  "template": {
-    "id": "j26zwsew",
-    "type": "fragment",
-    "fragmentId": "j5zkrod3",
-    "params": {}
-  },
+  "content": [
+    {
+      "id": "zsvhzv2z",
+      "type": "fragment",
+      "fragmentId": "f9skn1dv",
+      "params": {}
+    }
+  ],
   "editors": {
     "preview": {
       "content": {
@@ -121,7 +123,7 @@
     "stage": {
       "frames": [
         {
-          "id": "fgjh3szxel",
+          "id": "bbst1m74ma",
           "content": {
             "type": "component",
             "componentUrl": "host"
@@ -130,10 +132,10 @@
           "y": 0
         },
         {
-          "id": "wzfob68gwn",
+          "id": "ankq2vr9ex",
           "content": {
             "type": "fragment",
-            "fragmentId": "j5zkrod3"
+            "fragmentId": "f9skn1dv"
           },
           "x": 1000,
           "y": 0

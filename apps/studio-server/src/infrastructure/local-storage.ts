@@ -1,8 +1,8 @@
-import { replaceReferences } from "@elllphnt/elementa-react-parser";
+import { replaceReferences } from "@elllphnt/elementa-parser";
 import * as fsSync from "fs";
 import * as fs from "fs/promises";
 import nodepath, * as path from "path";
-import { FileData, Infrastructure, ProjectData } from "../types";
+import type { FileData, Infrastructure, ProjectData } from "../types";
 
 export const getFileTypeFromPath = (filePath: string) => {
   const fileName = path.basename(filePath);

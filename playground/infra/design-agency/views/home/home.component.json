@@ -2,7 +2,7 @@
   "props": [],
   "fragments": [
     {
-      "id": "k1w7vwn9",
+      "id": "kgijwlue",
       "params": [
         {
           "name": "hero",
@@ -18,16 +18,21 @@
           "name": "portfolio",
           "varName": "portfolio",
           "required": true
+        },
+        {
+          "name": "isLoading",
+          "varName": "isLoading",
+          "required": true
         }
       ],
       "content": [
         {
-          "id": "fxg1v96z",
+          "id": "rw8hio4a",
           "type": "component",
           "componentUrl": "<<REF:../../components/layout/layout.component.js>>",
           "content": [
             {
-              "id": "a3betfj5",
+              "id": "b3cmzfei",
               "type": "container",
               "tag": "div",
               "name": "root",
@@ -43,27 +48,22 @@
               },
               "content": [
                 {
-                  "id": "c33z0b0k",
+                  "id": "s609zqw1",
                   "type": "component",
                   "componentUrl": "<<REF:../../components/hero/hero.component.js>>",
                   "content": []
                 },
                 {
-                  "id": "n6xixcja",
+                  "id": "brmrg7rb",
+                  "type": "text",
+                  "tag": "pre",
+                  "text": "{{ JSON.stringify({\n  hero,\n  services,\n  portfolio,\n  isLoading\n}, null, 2) }}",
+                  "marks": []
+                },
+                {
+                  "id": "i0cob3jz",
                   "type": "component",
                   "componentUrl": "<<REF:../../components/service-preview/service-preview.component.js>>",
-                  "content": []
-                },
-                {
-                  "id": "w90pi9xl",
-                  "type": "component",
-                  "componentUrl": "<<REF:../../components/portfolio-preview/portfolio-preview.component.js>>",
-                  "content": []
-                },
-                {
-                  "id": "go3n2u3a",
-                  "type": "component",
-                  "componentUrl": "<<REF:../../components/call-to-action/call-to-action.component.js>>",
                   "content": []
                 }
               ]
@@ -75,15 +75,15 @@
       "varName": "fragment_2"
     },
     {
-      "id": "ufjx1ryo",
+      "id": "m5o9fkuh",
       "content": [
         {
-          "id": "e4pp0kgs",
+          "id": "fvyeoyr1",
           "type": "component",
           "componentUrl": "<<REF:../../components/layout/layout.component.js>>",
           "content": [
             {
-              "id": "ofmmbbzd",
+              "id": "d2sqtcxr",
               "type": "container",
               "tag": "div",
               "name": "loading",
@@ -102,7 +102,7 @@
               },
               "content": [
                 {
-                  "id": "ga9ck5ye",
+                  "id": "i3aosdwx",
                   "type": "container",
                   "tag": "div",
                   "name": "spinner",
@@ -134,7 +134,7 @@
   ],
   "states": [
     {
-      "id": "ynwgpkpg",
+      "id": "i250d944",
       "name": "state_1",
       "varName": "state_1",
       "type": "hook",
@@ -143,18 +143,20 @@
       "hookUrl": "<<REF:../../hooks/useHomeData.hook.js>>"
     },
     {
-      "id": "iqrum1c3",
+      "id": "p9qwoacg",
       "name": "state_2",
       "varName": "state_2",
       "type": "inline",
-      "script": "if (state_1.isLoading) {\n  return (\n    fragments.fragment_1()\n  );\n}\nreturn (\n  fragments.fragment_2({ hero: state_1.hero, services: state_1.services, portfolio: state_1.portfolio })\n);"
+      "script": "if (state_1.isLoading) {\n  return (\n    fragments.fragment_1()\n  );\n}\nreturn (\n  fragments.fragment_2({ hero: state_1.hero, services: state_1.services, portfolio: state_1.portfolio, isLoading: state_1.isLoading })\n);"
     }
   ],
-  "template": {
-    "id": "ax4qi8jh",
-    "type": "expression",
-    "expression": "state_2"
-  },
+  "content": [
+    {
+      "id": "o6o9bzes",
+      "type": "expression",
+      "expression": "state_2"
+    }
+  ],
   "editors": {
     "preview": {
       "content": {
@@ -165,7 +167,7 @@
     "stage": {
       "frames": [
         {
-          "id": "l65ut58h62",
+          "id": "cxf7c4oksn",
           "content": {
             "type": "component",
             "componentUrl": "host"
@@ -174,19 +176,19 @@
           "y": 0
         },
         {
-          "id": "q0gpl5sy9q",
+          "id": "sijws1sg99",
           "content": {
             "type": "fragment",
-            "fragmentId": "k1w7vwn9"
+            "fragmentId": "kgijwlue"
           },
           "x": 1000,
           "y": 0
         },
         {
-          "id": "gzexpbsbsq",
+          "id": "hz5o7dp9z3",
           "content": {
             "type": "fragment",
-            "fragmentId": "ufjx1ryo"
+            "fragmentId": "m5o9fkuh"
           },
           "x": 2000,
           "y": 0

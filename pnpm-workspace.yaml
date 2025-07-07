@@ -1,10 +1,11 @@
 packages:
   - apps/*
+  - packages/transformers/*
+  - packages/transformers/tests/*
   - packages/engine/*
   - packages/engine/backends/*
   - packages/engine/tests/*
   - packages/schema/*
-  - packages/tools/*
   - packages/utils/*
   - workflows/*
   - playground

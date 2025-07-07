@@ -2,10 +2,10 @@
   "props": [],
   "fragments": [
     {
-      "id": "vwmgayzu",
+      "id": "dg59lxr1",
       "content": [
         {
-          "id": "l7buu7br",
+          "id": "ya2363ka",
           "type": "container",
           "tag": "section",
           "name": "root",
@@ -22,7 +22,7 @@
           },
           "content": [
             {
-              "id": "kskt8jj4",
+              "id": "haizntqn",
               "type": "container",
               "tag": "div",
               "name": "container",
@@ -40,7 +40,7 @@
               },
               "content": [
                 {
-                  "id": "kviuuaig",
+                  "id": "omsyr4hd",
                   "type": "container",
                   "tag": "div",
                   "name": "header",
@@ -57,7 +57,7 @@
                   },
                   "content": [
                     {
-                      "id": "uyxawoe7",
+                      "id": "skyntul4",
                       "type": "text",
                       "tag": "h2",
                       "name": "section-title",
@@ -83,7 +83,7 @@
                       "marks": []
                     },
                     {
-                      "id": "i8a73iea",
+                      "id": "joqm20ut",
                       "type": "text",
                       "tag": "p",
                       "name": "section-subtitle",
@@ -107,7 +107,7 @@
                   ]
                 },
                 {
-                  "id": "tjlzdw7p",
+                  "id": "p9v7nfjj",
                   "type": "container",
                   "tag": "div",
                   "name": "portfolio-grid",
@@ -131,14 +131,14 @@
                   },
                   "content": [
                     {
-                      "id": "ai2ukf35",
+                      "id": "qcfp1am3",
                       "type": "expression",
                       "expression": "props.portfolio.map(item => fragments.fragment_1({\n  item\n}))"
                     }
                   ]
                 },
                 {
-                  "id": "pjfpo2f4",
+                  "id": "kmk28q8m",
                   "type": "container",
                   "tag": "div",
                   "name": "view-all",
@@ -154,7 +154,7 @@
                   },
                   "content": [
                     {
-                      "id": "irdy8pxz",
+                      "id": "yn5gg20h",
                       "type": "text",
                       "text": "View All Projects",
                       "link": {
@@ -173,7 +173,7 @@
       "varName": "fragment_2"
     },
     {
-      "id": "wisb8kmy",
+      "id": "z1e7s31x",
       "params": [
         {
           "name": "item",
@@ -183,7 +183,7 @@
       ],
       "content": [
         {
-          "id": "djt4z82c",
+          "id": "r8xs1tlo",
           "type": "container",
           "tag": "div",
           "name": "portfolio-card",
@@ -204,7 +204,7 @@
           },
           "content": [
             {
-              "id": "fk8zq4sj",
+              "id": "aiagtedl",
               "type": "container",
               "tag": "div",
               "name": "portfolio-image",
@@ -223,7 +223,7 @@
               },
               "content": [
                 {
-                  "id": "otra6ijb",
+                  "id": "b3fg8i3u",
                   "type": "container",
                   "tag": "div",
                   "name": "image-placeholder",
@@ -248,7 +248,7 @@
                   },
                   "content": [
                     {
-                      "id": "hez0lctv",
+                      "id": "i5nawtsp",
                       "type": "expression",
                       "expression": "item.category"
                     }
@@ -257,7 +257,7 @@
               ]
             },
             {
-              "id": "uonopibv",
+              "id": "rpxy1hly",
               "type": "container",
               "tag": "div",
               "name": "portfolio-content",
@@ -273,7 +273,7 @@
               },
               "content": [
                 {
-                  "id": "f544wgls",
+                  "id": "r3j648g3",
                   "type": "text",
                   "tag": "span",
                   "name": "portfolio-category",
@@ -298,7 +298,7 @@
                   "marks": []
                 },
                 {
-                  "id": "wr6dshxm",
+                  "id": "w79i00w6",
                   "type": "text",
                   "tag": "h3",
                   "name": "portfolio-title",
@@ -319,7 +319,7 @@
                   "marks": []
                 },
                 {
-                  "id": "uu9i1fao",
+                  "id": "dsx4fapj",
                   "type": "text",
                   "tag": "p",
                   "name": "portfolio-description",
@@ -346,12 +346,14 @@
       "varName": "fragment_1"
     }
   ],
-  "template": {
-    "id": "br3yno8q",
-    "type": "fragment",
-    "fragmentId": "vwmgayzu",
-    "params": {}
-  },
+  "content": [
+    {
+      "id": "dsqd9jo0",
+      "type": "fragment",
+      "fragmentId": "dg59lxr1",
+      "params": {}
+    }
+  ],
   "editors": {
     "preview": {
       "content": {
@@ -362,7 +364,7 @@
     "stage": {
       "frames": [
         {
-          "id": "uhhnfy76b1",
+          "id": "ej4fmt1qkl",
           "content": {
             "type": "component",
             "componentUrl": "host"
@@ -371,19 +373,19 @@
           "y": 0
         },
         {
-          "id": "tjygxl22ne",
+          "id": "pfvktdze94",
           "content": {
             "type": "fragment",
-            "fragmentId": "vwmgayzu"
+            "fragmentId": "dg59lxr1"
           },
           "x": 1000,
           "y": 0
         },
         {
-          "id": "yz418dmuew",
+          "id": "cbz1l6rt8e",
           "content": {
             "type": "fragment",
-            "fragmentId": "wisb8kmy"
+            "fragmentId": "z1e7s31x"
           },
           "x": 2000,
           "y": 0

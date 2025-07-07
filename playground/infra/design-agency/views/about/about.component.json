@@ -2,15 +2,15 @@
   "props": [],
   "fragments": [
     {
-      "id": "elnjkjog",
+      "id": "t4ehuaif",
       "content": [
         {
-          "id": "r5vwmynt",
+          "id": "cjn0y3lq",
           "type": "component",
           "componentUrl": "<<REF:../../components/layout/layout.component.js>>",
           "content": [
             {
-              "id": "vz7xg0s9",
+              "id": "qfehv5br",
               "type": "container",
               "tag": "div",
               "name": "root",
@@ -26,7 +26,7 @@
               },
               "content": [
                 {
-                  "id": "z6an99za",
+                  "id": "pxsf3kp4",
                   "type": "container",
                   "tag": "section",
                   "name": "hero",
@@ -45,7 +45,7 @@
                   },
                   "content": [
                     {
-                      "id": "kbg0g9xj",
+                      "id": "em1o4rgy",
                       "type": "container",
                       "tag": "div",
                       "name": "hero-container",
@@ -63,7 +63,7 @@
                       },
                       "content": [
                         {
-                          "id": "t1w8jq95",
+                          "id": "e6kb248g",
                           "type": "text",
                           "tag": "h1",
                           "name": "hero-title",
@@ -88,7 +88,7 @@
                           "marks": []
                         },
                         {
-                          "id": "ujx6gmko",
+                          "id": "ojgq0pm7",
                           "type": "text",
                           "tag": "p",
                           "name": "hero-subtitle",
@@ -112,7 +112,7 @@
                   ]
                 },
                 {
-                  "id": "y7dnvjoh",
+                  "id": "pdhgsrit",
                   "type": "container",
                   "tag": "section",
                   "name": "story",
@@ -129,7 +129,7 @@
                   },
                   "content": [
                     {
-                      "id": "e4izs8jf",
+                      "id": "m81w9v4u",
                       "type": "container",
                       "tag": "div",
                       "name": "story-container",
@@ -157,7 +157,7 @@
                       },
                       "content": [
                         {
-                          "id": "mjetaebg",
+                          "id": "oxr8u5sh",
                           "type": "container",
                           "tag": "div",
                           "name": "story-content",
@@ -167,7 +167,7 @@
                           },
                           "content": [
                             {
-                              "id": "idx5qhv2",
+                              "id": "vyvgpi3u",
                               "type": "text",
                               "tag": "h2",
                               "name": "story-title",
@@ -193,7 +193,7 @@
                               "marks": []
                             },
                             {
-                              "id": "oyquxv2j",
+                              "id": "bmd1tpmc",
                               "type": "text",
                               "tag": "p",
                               "name": "story-text",
@@ -214,7 +214,7 @@
                               "marks": []
                             },
                             {
-                              "id": "cn25oj3n",
+                              "id": "dhh7x30e",
                               "type": "text",
                               "tag": "p",
                               "name": "story-text",
@@ -237,7 +237,7 @@
                           ]
                         },
                         {
-                          "id": "nrpitm93",
+                          "id": "ss07fq6s",
                           "type": "container",
                           "tag": "div",
                           "name": "story-visual",
@@ -254,7 +254,7 @@
                           },
                           "content": [
                             {
-                              "id": "ulanwcwp",
+                              "id": "vm8f9ddq",
                               "type": "container",
                               "tag": "div",
                               "name": "story-graphic",
@@ -287,7 +287,7 @@
                   ]
                 },
                 {
-                  "id": "l1f4j15p",
+                  "id": "jncau6dr",
                   "type": "container",
                   "tag": "section",
                   "name": "values",
@@ -304,7 +304,7 @@
                   },
                   "content": [
                     {
-                      "id": "dnpikhf9",
+                      "id": "ufhxb7c4",
                       "type": "container",
                       "tag": "div",
                       "name": "values-container",
@@ -322,7 +322,7 @@
                       },
                       "content": [
                         {
-                          "id": "b7044ova",
+                          "id": "sgi51jlt",
                           "type": "text",
                           "tag": "h2",
                           "name": "values-title",
@@ -349,7 +349,7 @@
                           "marks": []
                         },
                         {
-                          "id": "d93tc2qo",
+                          "id": "iaxs8z1w",
                           "type": "container",
                           "tag": "div",
                           "name": "values-grid",
@@ -367,7 +367,7 @@
                           },
                           "content": [
                             {
-                              "id": "yzy6cqfc",
+                              "id": "etq19n5r",
                               "type": "container",
                               "tag": "div",
                               "name": "value-card",
@@ -384,7 +384,7 @@
                               },
                               "content": [
                                 {
-                                  "id": "byrr8waj",
+                                  "id": "ir9l3j02",
                                   "type": "container",
                                   "tag": "div",
                                   "name": "value-icon",
@@ -401,14 +401,14 @@
                                   },
                                   "content": [
                                     {
-                                      "id": "gzyewnaf",
+                                      "id": "g7aemdxk",
                                       "type": "text",
                                       "text": "🎯"
                                     }
                                   ]
                                 },
                                 {
-                                  "id": "rnni6y8y",
+                                  "id": "o0xs5c7i",
                                   "type": "text",
                                   "tag": "h3",
                                   "name": "value-title",
@@ -429,7 +429,7 @@
                                   "marks": []
                                 },
                                 {
-                                  "id": "v93zmxoa",
+                                  "id": "ivp5pwev",
                                   "type": "text",
                                   "tag": "p",
                                   "name": "value-description",
@@ -450,7 +450,7 @@
                               ]
                             },
                             {
-                              "id": "g5yeadjq",
+                              "id": "tp799ewp",
                               "type": "container",
                               "tag": "div",
                               "name": "value-card",
@@ -467,7 +467,7 @@
                               },
                               "content": [
                                 {
-                                  "id": "gnji9rm9",
+                                  "id": "xsnp8980",
                                   "type": "container",
                                   "tag": "div",
                                   "name": "value-icon",
@@ -484,14 +484,14 @@
                                   },
                                   "content": [
                                     {
-                                      "id": "ajhtuoo7",
+                                      "id": "b82ygogv",
                                       "type": "text",
                                       "text": "🤝"
                                     }
                                   ]
                                 },
                                 {
-                                  "id": "y0sfv7j4",
+                                  "id": "km85gmgm",
                                   "type": "text",
                                   "tag": "h3",
                                   "name": "value-title",
@@ -512,7 +512,7 @@
                                   "marks": []
                                 },
                                 {
-                                  "id": "irydn7hh",
+                                  "id": "j9b5k8we",
                                   "type": "text",
                                   "tag": "p",
                                   "name": "value-description",
@@ -533,7 +533,7 @@
                               ]
                             },
                             {
-                              "id": "fxif356f",
+                              "id": "mhcnsaz7",
                               "type": "container",
                               "tag": "div",
                               "name": "value-card",
@@ -550,7 +550,7 @@
                               },
                               "content": [
                                 {
-                                  "id": "r0ywqqxi",
+                                  "id": "h7ex5clh",
                                   "type": "container",
                                   "tag": "div",
                                   "name": "value-icon",
@@ -567,14 +567,14 @@
                                   },
                                   "content": [
                                     {
-                                      "id": "es1xnil5",
+                                      "id": "rgvylpjw",
                                       "type": "text",
                                       "text": "🚀"
                                     }
                                   ]
                                 },
                                 {
-                                  "id": "s4c4977r",
+                                  "id": "vs6s8v8e",
                                   "type": "text",
                                   "tag": "h3",
                                   "name": "value-title",
@@ -595,7 +595,7 @@
                                   "marks": []
                                 },
                                 {
-                                  "id": "devhiwsk",
+                                  "id": "haljnudy",
                                   "type": "text",
                                   "tag": "p",
                                   "name": "value-description",
@@ -616,7 +616,7 @@
                               ]
                             },
                             {
-                              "id": "wgtppmmc",
+                              "id": "mtpa0iko",
                               "type": "container",
                               "tag": "div",
                               "name": "value-card",
@@ -633,7 +633,7 @@
                               },
                               "content": [
                                 {
-                                  "id": "kqnbliax",
+                                  "id": "zigy5am8",
                                   "type": "container",
                                   "tag": "div",
                                   "name": "value-icon",
@@ -650,14 +650,14 @@
                                   },
                                   "content": [
                                     {
-                                      "id": "k7qcbxvn",
+                                      "id": "xx9en7uf",
                                       "type": "text",
                                       "text": "✨"
                                     }
                                   ]
                                 },
                                 {
-                                  "id": "v48buwhu",
+                                  "id": "cc7fyvef",
                                   "type": "text",
                                   "tag": "h3",
                                   "name": "value-title",
@@ -678,7 +678,7 @@
                                   "marks": []
                                 },
                                 {
-                                  "id": "uwmhvxjy",
+                                  "id": "dy7bir2v",
                                   "type": "text",
                                   "tag": "p",
                                   "name": "value-description",
@@ -705,7 +705,7 @@
                   ]
                 },
                 {
-                  "id": "ce3hsd21",
+                  "id": "zzml2eyx",
                   "type": "container",
                   "tag": "section",
                   "name": "team",
@@ -722,7 +722,7 @@
                   },
                   "content": [
                     {
-                      "id": "xo8ts658",
+                      "id": "hoith8n2",
                       "type": "container",
                       "tag": "div",
                       "name": "team-container",
@@ -740,7 +740,7 @@
                       },
                       "content": [
                         {
-                          "id": "e6h458xs",
+                          "id": "gzf2sert",
                           "type": "text",
                           "tag": "h2",
                           "name": "team-title",
@@ -767,7 +767,7 @@
                           "marks": []
                         },
                         {
-                          "id": "wb2r2cpf",
+                          "id": "nzb20y1q",
                           "type": "container",
                           "tag": "div",
                           "name": "team-grid",
@@ -785,7 +785,7 @@
                           },
                           "content": [
                             {
-                              "id": "cztzryij",
+                              "id": "t9b95lck",
                               "type": "container",
                               "tag": "div",
                               "name": "team-member",
@@ -805,7 +805,7 @@
                               },
                               "content": [
                                 {
-                                  "id": "c35i00je",
+                                  "id": "i1vp0wgt",
                                   "type": "container",
                                   "tag": "div",
                                   "name": "member-photo",
@@ -826,7 +826,7 @@
                                   "content": []
                                 },
                                 {
-                                  "id": "cszditxo",
+                                  "id": "i2xq05dz",
                                   "type": "text",
                                   "tag": "h3",
                                   "name": "member-name",
@@ -847,7 +847,7 @@
                                   "marks": []
                                 },
                                 {
-                                  "id": "le8j850t",
+                                  "id": "m4b10cej",
                                   "type": "text",
                                   "tag": "p",
                                   "name": "member-role",
@@ -867,7 +867,7 @@
                                   "marks": []
                                 },
                                 {
-                                  "id": "rxc0sony",
+                                  "id": "qx4spa78",
                                   "type": "text",
                                   "tag": "p",
                                   "name": "member-bio",
@@ -889,7 +889,7 @@
                               ]
                             },
                             {
-                              "id": "lpcp1xgh",
+                              "id": "aobmkka9",
                               "type": "container",
                               "tag": "div",
                               "name": "team-member",
@@ -909,7 +909,7 @@
                               },
                               "content": [
                                 {
-                                  "id": "bdto00np",
+                                  "id": "w9agcx0z",
                                   "type": "container",
                                   "tag": "div",
                                   "name": "member-photo",
@@ -930,7 +930,7 @@
                                   "content": []
                                 },
                                 {
-                                  "id": "n4wm0yvi",
+                                  "id": "cmp8lciv",
                                   "type": "text",
                                   "tag": "h3",
                                   "name": "member-name",
@@ -951,7 +951,7 @@
                                   "marks": []
                                 },
                                 {
-                                  "id": "xc1yl7ry",
+                                  "id": "dwqicbr0",
                                   "type": "text",
                                   "tag": "p",
                                   "name": "member-role",
@@ -971,7 +971,7 @@
                                   "marks": []
                                 },
                                 {
-                                  "id": "okizidsn",
+                                  "id": "vd5xrkgb",
                                   "type": "text",
                                   "tag": "p",
                                   "name": "member-bio",
@@ -993,7 +993,7 @@
                               ]
                             },
                             {
-                              "id": "jf51wfje",
+                              "id": "oyogzdfp",
                               "type": "container",
                               "tag": "div",
                               "name": "team-member",
@@ -1013,7 +1013,7 @@
                               },
                               "content": [
                                 {
-                                  "id": "yql48zae",
+                                  "id": "uw5kz120",
                                   "type": "container",
                                   "tag": "div",
                                   "name": "member-photo",
@@ -1034,7 +1034,7 @@
                                   "content": []
                                 },
                                 {
-                                  "id": "h7l9s032",
+                                  "id": "vkmcm6dl",
                                   "type": "text",
                                   "tag": "h3",
                                   "name": "member-name",
@@ -1055,7 +1055,7 @@
                                   "marks": []
                                 },
                                 {
-                                  "id": "soo9erxt",
+                                  "id": "xkpais60",
                                   "type": "text",
                                   "tag": "p",
                                   "name": "member-role",
@@ -1075,7 +1075,7 @@
                                   "marks": []
                                 },
                                 {
-                                  "id": "um3e9jyv",
+                                  "id": "swn6udco",
                                   "type": "text",
                                   "tag": "p",
                                   "name": "member-bio",
@@ -1111,12 +1111,14 @@
       "varName": "fragment_1"
     }
   ],
-  "template": {
-    "id": "thpbpoob",
-    "type": "fragment",
-    "fragmentId": "elnjkjog",
-    "params": {}
-  },
+  "content": [
+    {
+      "id": "ocxpbq97",
+      "type": "fragment",
+      "fragmentId": "t4ehuaif",
+      "params": {}
+    }
+  ],
   "editors": {
     "preview": {
       "content": {
@@ -1127,7 +1129,7 @@
     "stage": {
       "frames": [
         {
-          "id": "ao4fiufe9x",
+          "id": "ki47qh3cal",
           "content": {
             "type": "component",
             "componentUrl": "host"
@@ -1136,10 +1138,10 @@
           "y": 0
         },
         {
-          "id": "sceyyd7lmh",
+          "id": "z911xaj3bd",
           "content": {
             "type": "fragment",
-            "fragmentId": "elnjkjog"
+            "fragmentId": "t4ehuaif"
           },
           "x": 1000,
           "y": 0

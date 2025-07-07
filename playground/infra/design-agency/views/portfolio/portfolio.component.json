@@ -2,7 +2,7 @@
   "props": [],
   "fragments": [
     {
-      "id": "wpwpcjc3",
+      "id": "vfd89uj3",
       "params": [
         {
           "name": "categories",
@@ -27,12 +27,12 @@
       ],
       "content": [
         {
-          "id": "a1z8r8ca",
+          "id": "k72bneu8",
           "type": "component",
           "componentUrl": "<<REF:../../components/layout/layout.component.js>>",
           "content": [
             {
-              "id": "tfpowyqx",
+              "id": "f5pu1f8q",
               "type": "container",
               "tag": "div",
               "name": "root",
@@ -48,7 +48,7 @@
               },
               "content": [
                 {
-                  "id": "nvgs8jko",
+                  "id": "nk1bwdvd",
                   "type": "container",
                   "tag": "section",
                   "name": "hero",
@@ -67,7 +67,7 @@
                   },
                   "content": [
                     {
-                      "id": "tuvpr73z",
+                      "id": "bapt1690",
                       "type": "container",
                       "tag": "div",
                       "name": "hero-container",
@@ -85,7 +85,7 @@
                       },
                       "content": [
                         {
-                          "id": "zohu5lva",
+                          "id": "deu3hcu1",
                           "type": "text",
                           "tag": "h1",
                           "name": "hero-title",
@@ -110,7 +110,7 @@
                           "marks": []
                         },
                         {
-                          "id": "q3jy2pr9",
+                          "id": "dg9vqdii",
                           "type": "text",
                           "tag": "p",
                           "name": "hero-subtitle",
@@ -134,7 +134,7 @@
                   ]
                 },
                 {
-                  "id": "k64dydl3",
+                  "id": "m1hzz3xn",
                   "type": "container",
                   "tag": "section",
                   "name": "portfolio-section",
@@ -151,7 +151,7 @@
                   },
                   "content": [
                     {
-                      "id": "b52eo9cx",
+                      "id": "m7j92pxi",
                       "type": "container",
                       "tag": "div",
                       "name": "portfolio-container",
@@ -169,7 +169,7 @@
                       },
                       "content": [
                         {
-                          "id": "es2jo3cf",
+                          "id": "l50r9df1",
                           "type": "container",
                           "tag": "div",
                           "name": "filter-tabs",
@@ -194,14 +194,14 @@
                           },
                           "content": [
                             {
-                              "id": "p9lywcgk",
+                              "id": "w6p430td",
                               "type": "expression",
                               "expression": "categories.map(category => fragments.fragment_2({\n  category,\n  selectedCategory,\n  setSelectedCategory\n}))"
                             }
                           ]
                         },
                         {
-                          "id": "m6qurg37",
+                          "id": "r0twmr13",
                           "type": "container",
                           "tag": "div",
                           "name": "portfolio-grid",
@@ -224,7 +224,7 @@
                           },
                           "content": [
                             {
-                              "id": "o6mnyagu",
+                              "id": "grkp5xmp",
                               "type": "expression",
                               "expression": "portfolio.map(item => fragments.fragment_4({\n  item\n}))"
                             }
@@ -243,7 +243,7 @@
       "varName": "fragment_5"
     },
     {
-      "id": "t412iswq",
+      "id": "wz86zhvs",
       "params": [
         {
           "name": "item",
@@ -253,7 +253,7 @@
       ],
       "content": [
         {
-          "id": "c1eoixhq",
+          "id": "q0vrf6fz",
           "type": "container",
           "tag": "div",
           "name": "portfolio-item",
@@ -273,7 +273,7 @@
           },
           "content": [
             {
-              "id": "koz4gl0z",
+              "id": "v06ce9qr",
               "type": "container",
               "tag": "div",
               "name": "portfolio-image",
@@ -292,7 +292,7 @@
               },
               "content": [
                 {
-                  "id": "rumpq0wr",
+                  "id": "n9av3mnl",
                   "type": "container",
                   "tag": "div",
                   "name": "image-placeholder",
@@ -317,14 +317,14 @@
                   },
                   "content": [
                     {
-                      "id": "o5svywno",
+                      "id": "f4hkgi27",
                       "type": "expression",
                       "expression": "item.category"
                     }
                   ]
                 },
                 {
-                  "id": "cgkhc0kf",
+                  "id": "twu1372e",
                   "type": "container",
                   "tag": "div",
                   "name": "portfolio-overlay",
@@ -354,7 +354,7 @@
                   },
                   "content": [
                     {
-                      "id": "s9thmpai",
+                      "id": "yhrn512e",
                       "type": "text",
                       "tag": "h3",
                       "name": "portfolio-item-title",
@@ -374,7 +374,7 @@
                       "marks": []
                     },
                     {
-                      "id": "aac1k16l",
+                      "id": "ufwuozla",
                       "type": "text",
                       "tag": "p",
                       "name": "portfolio-item-category",
@@ -396,7 +396,7 @@
                       "marks": []
                     },
                     {
-                      "id": "o06hfs8a",
+                      "id": "zc4ywzpm",
                       "type": "container",
                       "tag": "button",
                       "name": "view-project",
@@ -419,7 +419,7 @@
                       },
                       "content": [
                         {
-                          "id": "nmvlijwz",
+                          "id": "wt6lowis",
                           "type": "text",
                           "text": "View Project"
                         }
@@ -430,7 +430,7 @@
               ]
             },
             {
-              "id": "h21awh9b",
+              "id": "ded3ton4",
               "type": "container",
               "tag": "div",
               "name": "portfolio-info",
@@ -446,7 +446,7 @@
               },
               "content": [
                 {
-                  "id": "lo5vgoli",
+                  "id": "kl0da3zf",
                   "type": "text",
                   "tag": "h3",
                   "name": "portfolio-title",
@@ -467,7 +467,7 @@
                   "marks": []
                 },
                 {
-                  "id": "ohyigpoq",
+                  "id": "ik357uz3",
                   "type": "text",
                   "tag": "p",
                   "name": "portfolio-description",
@@ -488,7 +488,7 @@
                   "marks": []
                 },
                 {
-                  "id": "icnou3i7",
+                  "id": "xljq5os5",
                   "type": "container",
                   "tag": "div",
                   "name": "portfolio-tags",
@@ -506,7 +506,7 @@
                   },
                   "content": [
                     {
-                      "id": "ojdgne77",
+                      "id": "klz3re0l",
                       "type": "expression",
                       "expression": "item.tags.map(tag => fragments.fragment_3({\n  tag\n}))"
                     }
@@ -521,7 +521,7 @@
       "varName": "fragment_4"
     },
     {
-      "id": "qonayaxz",
+      "id": "kcwkn9rs",
       "params": [
         {
           "name": "tag",
@@ -531,7 +531,7 @@
       ],
       "content": [
         {
-          "id": "n3xu9urk",
+          "id": "hil845nm",
           "type": "text",
           "tag": "span",
           "name": "portfolio-tag",
@@ -560,7 +560,7 @@
       "varName": "fragment_3"
     },
     {
-      "id": "iyly9az2",
+      "id": "ohwkqqv5",
       "params": [
         {
           "name": "category",
@@ -580,7 +580,7 @@
       ],
       "content": [
         {
-          "id": "i1c3cvoe",
+          "id": "eraw3f9k",
           "type": "container",
           "tag": "button",
           "interactions": {
@@ -590,7 +590,7 @@
           },
           "content": [
             {
-              "id": "rp5hpqf8",
+              "id": "pomn9on1",
               "type": "expression",
               "expression": "category"
             }
@@ -601,15 +601,15 @@
       "varName": "fragment_2"
     },
     {
-      "id": "cul08hwd",
+      "id": "tdgbo9hv",
       "content": [
         {
-          "id": "p4zeeg80",
+          "id": "zvymcb72",
           "type": "component",
           "componentUrl": "<<REF:../../components/layout/layout.component.js>>",
           "content": [
             {
-              "id": "rchukoh0",
+              "id": "g0pi9q8m",
               "type": "container",
               "tag": "div",
               "name": "loading",
@@ -628,7 +628,7 @@
               },
               "content": [
                 {
-                  "id": "v89dwod5",
+                  "id": "e6uh2x0m",
                   "type": "container",
                   "tag": "div",
                   "name": "spinner",
@@ -660,7 +660,7 @@
   ],
   "states": [
     {
-      "id": "ixies8lq",
+      "id": "oosnp781",
       "name": "state_1",
       "varName": "state_1",
       "type": "hook",
@@ -669,18 +669,20 @@
       "hookUrl": "<<REF:../../hooks/usePortfolio.hook.js>>"
     },
     {
-      "id": "k8xfxmaz",
+      "id": "i2yemlok",
       "name": "state_2",
       "varName": "state_2",
       "type": "inline",
       "script": "if (state_1.isLoading) {\n  return (\n    fragments.fragment_1()\n  );\n}\nreturn (\n  fragments.fragment_5({ categories: state_1.categories, selectedCategory: state_1.selectedCategory, setSelectedCategory: state_1.setSelectedCategory, portfolio: state_1.portfolio })\n);"
     }
   ],
-  "template": {
-    "id": "so5qwtgw",
-    "type": "expression",
-    "expression": "state_2"
-  },
+  "content": [
+    {
+      "id": "y0teay4c",
+      "type": "expression",
+      "expression": "state_2"
+    }
+  ],
   "editors": {
     "preview": {
       "content": {
@@ -691,7 +693,7 @@
     "stage": {
       "frames": [
         {
-          "id": "xzwhqv9ugd",
+          "id": "rlr8mg287p",
           "content": {
             "type": "component",
             "componentUrl": "host"
@@ -700,46 +702,46 @@
           "y": 0
         },
         {
-          "id": "pc92kkzair",
+          "id": "l6nmx9kmc8",
           "content": {
             "type": "fragment",
-            "fragmentId": "wpwpcjc3"
+            "fragmentId": "vfd89uj3"
           },
           "x": 1000,
           "y": 0
         },
         {
-          "id": "zgnpxfpes5",
+          "id": "cdshlqulmx",
           "content": {
             "type": "fragment",
-            "fragmentId": "t412iswq"
+            "fragmentId": "wz86zhvs"
           },
           "x": 2000,
           "y": 0
         },
         {
-          "id": "hey9du0lvz",
+          "id": "fi7uihnr5y",
           "content": {
             "type": "fragment",
-            "fragmentId": "qonayaxz"
+            "fragmentId": "kcwkn9rs"
           },
           "x": 3000,
           "y": 0
         },
         {
-          "id": "b7qzovl255",
+          "id": "wemzingylg",
           "content": {
             "type": "fragment",
-            "fragmentId": "iyly9az2"
+            "fragmentId": "ohwkqqv5"
           },
           "x": 4000,
           "y": 0
         },
         {
-          "id": "nxvfdp3bgt",
+          "id": "frna3ux9lf",
           "content": {
             "type": "fragment",
-            "fragmentId": "cul08hwd"
+            "fragmentId": "tdgbo9hv"
           },
           "x": 5000,
           "y": 0

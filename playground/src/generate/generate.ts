@@ -3,7 +3,7 @@ import {
   createLocalFsInfrastructure,
   generateJsApp,
   makeLocalFsFileUrl,
-} from "@elllphnt/elementa-generator";
+} from "@elllphnt/elementa-assembler";
 
 export async function generateApp({
   srcDir,
