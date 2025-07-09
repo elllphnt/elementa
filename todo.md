@@ -1,4 +1,0 @@
-- [ ] Elementa Performance Improvements
-- [ ] Interactions
-- [ ] Keyboard
-- [ ] Drag and Drop
