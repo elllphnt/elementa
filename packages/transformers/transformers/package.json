@@ -1,0 +1,35 @@
+{
+  "name": "@elllphnt/elementa-parser",
+  "type": "module",
+  "version": "0.1.11",
+  "private": true,
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "clean": "rm -rf dist build",
+    "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json --verbose",
+    "build:dist": "tsc -p tsconfig.build.json --sourceMap false --declarationMap false && tsc-alias -p tsconfig.build.json --verbose",
+    "build:watch": "tsc -p tsconfig.build.json --watch",
+    "alias:watch": "tsc-alias -p tsconfig.build.json --watch",
+    "watch": "concurrently \"npm run build:watch\" \"npm run alias:watch\"",
+    "packup": "tsx scripts/packup.ts",
+    "pub": "npm run clean && npm run build:dist && npm run packup && cd dist && npm publish",
+    "test": "vitest --run"
+  },
+  "dependencies": {
+    "@babel/generator": "^7.27.3",
+    "@babel/parser": "^7.27.3",
+    "@babel/traverse": "^7.27.3",
+    "@babel/types": "^7.27.3",
+    "@elllphnt/elementa-base": "workspace:*",
+    "@elllphnt/elementa-transformer-primitives": "workspace:*",
+    "@paralleldrive/cuid2": "^2.2.2",
+    "postcss": "^8.5.4",
+    "ts-morph": "^26.0.0"
+  },
+  "devDependencies": {
+    "@types/babel__generator": "^7.27.0",
+    "@types/babel__traverse": "^7.20.7",
+    "deepmerge": "^4.3.1"
+  }
+}
