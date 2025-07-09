@@ -2,7 +2,7 @@ import type { ElementData } from "@elllphnt/elementa-base";
 import type {
   TranspilerContext,
   TranspilerResult,
-} from "../../types/transpiler.js";
+} from "../types/transpiler.js";
 import type { TranspileElementOptions } from "./_base.js";
 import { applyConditionToTranspiledElement } from "./_common/condition.js";
 import { applyLinkToTranspiledElement } from "./_common/link/_link.js";

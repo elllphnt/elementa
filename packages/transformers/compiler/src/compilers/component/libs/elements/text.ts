@@ -1,9 +1,9 @@
 import type { TextElementData } from "@elllphnt/elementa-base";
+import { transpileDynamic } from "../../dynamic.js";
 import type {
   TranspilerContext,
   TranspilerResult,
-} from "../../types/transpiler.js";
-import { transpileDynamic } from "../dynamic.js";
+} from "../types/transpiler.js";
 import type { TranspileElementOptions } from "./_base.js";
 import { transpileBaseElement } from "./_base.js";
 

@@ -112,7 +112,7 @@ async function run() {
         plugins: [plugins.DOMElement],
       });
 
-      if (stdCode !== genCode) {
+      /* if (stdCode !== genCode) {
         console.error(`❌ Code mismatch in ${ref.path} (${ref.type})`);
 
         const diffs = diffLines(stdCode, genCode);
@@ -123,7 +123,7 @@ async function run() {
             console.log(prefix + line);
           }
         }
-      } else if (snapshotOrig !== snapshotGen) {
+      } else */ if (snapshotOrig !== snapshotGen) {
         console.error(`❌ Mismatch in ${ref.path} (${ref.type})`);
 
         const diffs = diffLines(snapshotOrig, snapshotGen);

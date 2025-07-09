@@ -634,6 +634,15 @@ importers:
       '@elllphnt/elementa-css':
         specifier: workspace:*
         version: link:../../schema/css
+      '@elllphnt/elementa-transformer-primitives':
+        specifier: workspace:*
+        version: link:../primitives
+      ts-morph:
+        specifier: ^26.0.0
+        version: 26.0.0
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
 
   packages/transformers/parser:
     dependencies:

@@ -1,7 +1,10 @@
 import type { HookStateData } from "@elllphnt/elementa-base";
 import { TranspilerDiagnosticLevel } from "~/types/diagnostic.js";
-import type { TranspilerContext, TranspilerResult } from "../../types/transpiler.js";
 import { transpileDynamic } from "../dynamic.js";
+import type {
+  TranspilerContext,
+  TranspilerResult,
+} from "../types/transpiler.js";
 
 export function transpileHookState(
   data: HookStateData,

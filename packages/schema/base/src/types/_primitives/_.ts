@@ -3,3 +3,4 @@ export * from "./dynamic/_.js";
 export * from "./error.js";
 export * from "./geometry.js";
 export * from "./style/_.js";
+export * from "./ts_type.js";

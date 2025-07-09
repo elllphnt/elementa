@@ -4,9 +4,12 @@ import type {
   VideoMediaData,
 } from "@elllphnt/elementa-base";
 import { TranspilerDiagnosticLevel } from "~/types/diagnostic.js";
-import type { TranspilerContext, TranspilerResult } from "~/types/transpiler.js";
-import { transpileDynamic } from "../dynamic.js";
-import type { TranspileElementOptions} from "./_base.js";
+import type {
+  TranspilerContext,
+  TranspilerResult,
+} from "~/types/transpiler.js";
+import { transpileDynamic } from "../../dynamic.js";
+import type { TranspileElementOptions } from "./_base.js";
 import { transpileBaseElement } from "./_base.js";
 
 export function transpileMediaElement(

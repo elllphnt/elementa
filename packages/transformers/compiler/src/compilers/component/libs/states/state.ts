@@ -1,5 +1,8 @@
 import type { StateData } from "@elllphnt/elementa-base";
-import type { TranspilerContext, TranspilerResult } from "../../types/transpiler.js";
+import type {
+  TranspilerContext,
+  TranspilerResult,
+} from "../types/transpiler.js";
 import { transpileHookState } from "./hook.js";
 import { transpileInlineState } from "./inline.js";
 import { transpileValueState } from "./value.js";

@@ -1,13 +1,15 @@
 import type {
   InteractionEvent,
   PrimitiveElementData,
-  PrimitiveSubElementData} from "@elllphnt/elementa-base";
-import {
-  reactInteractionEventMap,
+  PrimitiveSubElementData,
 } from "@elllphnt/elementa-base";
+import { reactInteractionEventMap } from "@elllphnt/elementa-base";
 import { TranspilerDiagnosticLevel } from "~/types/diagnostic.js";
-import type { TranspilerContext, TranspilerResult } from "~/types/transpiler.js";
-import { transpileDynamic } from "../dynamic.js";
+import type {
+  TranspilerContext,
+  TranspilerResult,
+} from "~/types/transpiler.js";
+import { transpileDynamic } from "../../dynamic.js";
 import type { TranspileElementOptions } from "./_base.js";
 import { transpileBaseElement } from "./_base.js";
 import { transpileStyleSheet } from "./_common/stylesheet.js";

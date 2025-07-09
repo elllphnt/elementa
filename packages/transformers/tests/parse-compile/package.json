@@ -5,7 +5,7 @@
     "type": "module",
     "scripts": {
         "test": "tsx src/index.tsx",
-        "watch": "tsx -w src/index.tsx"
+        "watch": "tsx --watch src/index.tsx"
     },
     "dependencies": {
         "@elllphnt/elementa-base": "workspace:*",

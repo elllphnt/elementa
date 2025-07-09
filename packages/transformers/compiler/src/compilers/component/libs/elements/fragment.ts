@@ -3,7 +3,7 @@ import type {
   TranspilerContext,
   TranspilerResult,
 } from "~/types/transpiler.js";
-import { transpileDynamic } from "../dynamic.js";
+import { transpileDynamic } from "../../dynamic.js";
 import type { TranspileElementOptions } from "./_base.js";
 
 export function transpileFragmentElement(

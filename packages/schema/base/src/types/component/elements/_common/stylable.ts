@@ -1,11 +1,10 @@
 import { z } from "zod";
-import type { StyleSheetData} from "../../../style/_.js";
 import { styleSheetDataSchema } from "../../../style/_.js";
 
 // Types
 
 export type StylableData = {
-  stylesheet?: StyleSheetData;
+  classNames?: (string | [string, string])[];
 };
 
 // Schemas

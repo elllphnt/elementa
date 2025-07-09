@@ -18,6 +18,9 @@
   },
   "dependencies": {
     "@elllphnt/elementa-base": "workspace:*",
-    "@elllphnt/elementa-css": "workspace:*"
+    "@elllphnt/elementa-css": "workspace:*",
+    "@elllphnt/elementa-transformer-primitives": "workspace:*",
+    "ts-morph": "^26.0.0",
+    "typescript": "^5.8.3"
   }
 }

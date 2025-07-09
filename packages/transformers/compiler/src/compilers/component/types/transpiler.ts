@@ -1,5 +1,5 @@
 import type { StaticReference, StyleSheetData } from "@elllphnt/elementa-base";
-import type { NameOptions } from "../libs/_.js";
+import type { NameOptions } from "../_.js";
 import type { TranspilerDiagnostic } from "./diagnostic.js";
 import type { Environment } from "./environment.js";
 import type { Module } from "./module.js";

@@ -4,7 +4,7 @@ import type {
   ResolvableOrEvaluable,
   StyleSheetData,
 } from "@elllphnt/elementa-base";
-import { genId } from "../utils.js";
+import { genId } from "@elllphnt/elementa-base";
 import { generate } from "./utils/generate.js";
 
 export type GetStylesheet = (

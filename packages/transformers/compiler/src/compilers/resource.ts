@@ -1,5 +1,5 @@
 import type { FileContentTypeMap, FileType } from "@elllphnt/elementa-base";
-import { compileComponent } from "./component/libs/component.js";
+import { compileComponent } from "./component/component.js";
 
 export function compileResource<T extends FileType>(
   type: T,

@@ -1,6 +1,6 @@
 import * as t from "@babel/types";
 import type { ElementData, ElementRepeatData } from "@elllphnt/elementa-base";
-import { genId } from "../utils.js";
+import { genId } from "@elllphnt/elementa-base";
 import type { CreateFragment } from "./_types.js";
 import type { GetStylesheet } from "./base_element.js";
 import { extractElementsFromNode } from "./element.js";

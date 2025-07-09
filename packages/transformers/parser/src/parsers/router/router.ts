@@ -1,6 +1,9 @@
-import type { RouterData, RouteTreeData } from "@elllphnt/elementa-base";
-import { createReferenceString } from "../../references.js";
-import { genId } from "./parsers/_.js";
+import {
+  genId,
+  type RouterData,
+  type RouteTreeData,
+} from "@elllphnt/elementa-base";
+import { createRefMarkup } from "@elllphnt/elementa-transformer-primitives";
 
 export type ReactRouteData = {
   path?: string;
@@ -25,22 +28,22 @@ export function transformRoute(route: ReactRouteData): RouteTreeData {
     data.path = route.path;
   }
   if (route.loader) {
-    data.loaderUrl = createReferenceString(route.loader);
+    data.loaderUrl = createRefMarkup(route.loader);
   }
   if (route.handler) {
-    data.handlerUrl = createReferenceString(route.handler);
+    data.handlerUrl = createRefMarkup(route.handler);
   }
   if (route.component) {
-    data.mainViewUrl = createReferenceString(route.component);
+    data.mainViewUrl = createRefMarkup(route.component);
   }
   if (route.errorComponent) {
-    data.errorViewUrl = createReferenceString(route.errorComponent);
+    data.errorViewUrl = createRefMarkup(route.errorComponent);
   }
   if (route.pendingComponent) {
-    data.pendingViewUrl = createReferenceString(route.pendingComponent);
+    data.pendingViewUrl = createRefMarkup(route.pendingComponent);
   }
   if (route.notFoundComponent) {
-    data.notFoundViewUrl = createReferenceString(route.notFoundComponent);
+    data.notFoundViewUrl = createRefMarkup(route.notFoundComponent);
   }
   if (route.children && route.children.length > 0) {
     data.children = route.children.map(transformRoute);

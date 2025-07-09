@@ -1,7 +1,10 @@
 import type { FragmentData } from "@elllphnt/elementa-base";
-import type { TranspilerContext, TranspilerResult } from "../types/transpiler.js";
 import { transpileElement } from "./elements/element.js";
 import { transpileProvider } from "./providers/provider.js";
+import type {
+  TranspilerContext,
+  TranspilerResult,
+} from "./types/transpiler.js";
 
 export function transpileFragment(
   data: FragmentData,

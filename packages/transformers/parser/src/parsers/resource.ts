@@ -1,5 +1,5 @@
 import type { FileContentTypeMap, FileType } from "@elllphnt/elementa-base";
-import { parseComponent } from "./component/parser.js";
+import { parseComponentModule } from "./component/module.js";
 
 export function parseResource<T extends FileType>(
   type: T,
@@ -7,7 +7,7 @@ export function parseResource<T extends FileType>(
 ): FileContentTypeMap[T] {
   switch (type) {
     case "component":
-      return parseComponent(content) as FileContentTypeMap[T];
+      return parseComponentModule(content) as FileContentTypeMap[T];
     default:
       throw new Error(`Unsupported resource type: ${type}`);
   }
