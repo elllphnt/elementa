@@ -109,7 +109,7 @@ export function isIdentifierDeclaration(identifier: Identifier): boolean {
   return false;
 }
 export function findNearestIdentifierDeclaration(
-  identifier: Identifier
+  identifier: Identifier,
 ): Identifier | undefined {
   const name = identifier.getText();
   let current: Node | undefined = identifier.getParent();
@@ -249,7 +249,7 @@ export function findNearestIdentifierDeclaration(
             const id = nameNode
               .getDescendantsOfKind(SyntaxKind.Identifier)
               .find(
-                (id) => isIdentifierDeclaration(id) && id.getText() === name
+                (id) => isIdentifierDeclaration(id) && id.getText() === name,
               );
             if (id) {
               return id;
@@ -269,12 +269,13 @@ export function findNearestIdentifierDeclaration(
 
   return undefined;
 }
-export function findAllIdentifierReferences(
-  identifier: Identifier
+export function findAllIdentifierReferencesInNode(
+  node: Node,
+  identifier: Identifier | string,
 ): Identifier[] {
-  const block = getEnclosingBlock(identifier);
-  const name = identifier.getText();
-  return block
+  const name =
+    typeof identifier === "string" ? identifier : identifier.getText();
+  return node
     .getDescendantsOfKind(SyntaxKind.Identifier)
     .filter((ident: Identifier) => {
       // Check if the identifier matches the name
@@ -282,14 +283,21 @@ export function findAllIdentifierReferences(
       // Check if it's a reference, not a declaration
       if (isIdentifierDeclaration(ident)) return false;
       // Ensure the nearest declaration is the same as the given identifier
+      if (typeof identifier === "string") return true;
       const nearest = findNearestIdentifierDeclaration(ident);
       return nearest === identifier;
     });
 }
+export function findAllIdentifierReferences(
+  identifier: Identifier,
+): Identifier[] {
+  const block = getEnclosingBlock(identifier);
+  return findAllIdentifierReferencesInNode(block, identifier);
+}
 
 export function rewriteIdentifier(
   identifier: Identifier,
-  newName: string
+  newName: string,
 ): void {
   const parent = identifier.getParent();
   // if is shorthand property access (e.g. `obj.prop`), rewrite the name
@@ -303,7 +311,7 @@ export function rewriteIdentifier(
 }
 export function rewriteIdentifierReferences(
   identifier: Identifier,
-  newName: string
+  newName: string,
 ): void {
   const block = getEnclosingBlock(identifier);
   const name = identifier.getText();
@@ -322,7 +330,7 @@ export function rewriteIdentifierReferences(
 export function getUniqueNameInScope(
   scope: Block | SourceFile,
   baseName: string,
-  initCounter?: number
+  initCounter?: number,
 ): string {
   let uniqueName =
     initCounter !== undefined ? baseName + `_${initCounter}` : baseName;
@@ -341,7 +349,7 @@ export function getUniqueNameInScope(
 export function freeNameInScope(
   scope: Block | SourceFile,
   name: string,
-  newBaseName?: string
+  newBaseName?: string,
 ) {
   const identifiers = scope
     .getDescendantsOfKind(SyntaxKind.Identifier)
@@ -351,4 +359,92 @@ export function freeNameInScope(
     rewriteIdentifierReferences(identifier, newName);
     rewriteIdentifier(identifier, newName);
   }
+}
+export function freeNameInScopeWithOmit({
+  scope,
+  name,
+  newBaseName,
+  omitNode,
+}: {
+  scope: Block | SourceFile;
+  name: string;
+  newBaseName?: string;
+  omitNode?: Node;
+}) {
+  const identifiers = scope
+    .getDescendantsOfKind(SyntaxKind.Identifier)
+    .filter((id) => {
+      if (omitNode && isInNode(id, omitNode)) {
+        // If the identifier is inside the omitNode, skip it
+        return false;
+      }
+      return id.getText() === name && isIdentifierDeclaration(id);
+    });
+  for (const identifier of identifiers) {
+    const newName = getUniqueNameInScope(scope, newBaseName || name + "_");
+    rewriteIdentifierReferences(identifier, newName);
+    rewriteIdentifier(identifier, newName);
+  }
+}
+
+/**
+ * Recursively collect all Identifier nodes from a binding pattern or identifier node.
+ */
+function collectBindingIdentifiers(nameNode: Node): Identifier[] {
+  if (Node.isIdentifier(nameNode)) {
+    return [nameNode];
+  }
+  if (
+    Node.isObjectBindingPattern(nameNode) ||
+    Node.isArrayBindingPattern(nameNode)
+  ) {
+    return nameNode.getElements().flatMap((elem) => {
+      if (Node.isBindingElement(elem)) {
+        return collectBindingIdentifiers(elem.getNameNode());
+      } else {
+        return [];
+      }
+    });
+  }
+  return [];
+}
+
+/**
+ * Returns all top-level Identifier nodes declared in the given block.
+ * Only inspects Variable, Function, Class, Enum, TypeAlias, Interface, and Module declarations
+ * that appear immediately in the block (no nested blocks).
+ */
+export function getBlockIdentifiersDeclarations(block: Block): Identifier[] {
+  const ids: Identifier[] = [];
+
+  for (const stmt of block.getStatements()) {
+    // const/let/var declarations (including destructuring)
+    if (Node.isVariableStatement(stmt)) {
+      for (const decl of stmt.getDeclarationList().getDeclarations()) {
+        ids.push(...collectBindingIdentifiers(decl.getNameNode()));
+      }
+    }
+    // function foo() {}
+    else if (Node.isFunctionDeclaration(stmt) && stmt.getNameNode()) {
+      ids.push(stmt.getNameNode()!);
+    }
+    // class A {}
+    else if (Node.isClassDeclaration(stmt) && stmt.getNameNode()) {
+      ids.push(stmt.getNameNode()!);
+    }
+    // enum E {}
+    else if (Node.isEnumDeclaration(stmt) && stmt.getNameNode()) {
+      ids.push(stmt.getNameNode()!);
+    }
+    // type A = ...
+    else if (Node.isTypeAliasDeclaration(stmt) && stmt.getNameNode()) {
+      ids.push(stmt.getNameNode()!);
+    }
+    // interface A {}
+    else if (Node.isInterfaceDeclaration(stmt) && stmt.getNameNode()) {
+      ids.push(stmt.getNameNode()!);
+    }
+  }
+
+  return ids;
 }

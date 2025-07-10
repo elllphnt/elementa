@@ -60,7 +60,12 @@ export function getValueFromNode(node: Node): ResolvedValueNode | undefined {
     }
   }
   // expressions
-  else if (Node.isExpression(node)) {
+  else if (Node.isParenthesizedExpression(node)) {
+    const inner = node.getExpression();
+    if (inner) {
+      return getValueFromNode(inner);
+    }
+  } else if (Node.isExpression(node)) {
     return { names: [], node };
   }
 

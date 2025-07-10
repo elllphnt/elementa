@@ -1,12 +1,4 @@
-import type {
-  ArrowFunction,
-  Block,
-  CallExpression,
-  Expression,
-  FunctionExpression,
-  Identifier,
-  SourceFile,
-} from "ts-morph";
+import type { Block, Expression, Identifier, SourceFile } from "ts-morph";
 import { Node, SyntaxKind } from "ts-morph";
 import {
   findNearestIdentifierDeclaration,
@@ -25,6 +17,39 @@ export function extractExpressionAsFunction({
 }: {
   name?: string;
   callee: string;
+  expression: Expression;
+  targetScope: Block | SourceFile;
+  isolated?: boolean;
+  namedParameters?: boolean; // If true, parameters will be extracted as named parameters
+}) {
+  const {
+    parameters: parametersCode,
+    expression: expressionCode,
+    args: argsCode,
+  } = extractExpressionAsFunctionParts({
+    expression,
+    targetScope,
+    isolated,
+    namedParameters,
+  });
+
+  const functionCode = `function ${
+    name || ""
+  }(${parametersCode}) { return ${expressionCode}; }`;
+  const referenceCode = `${callee}(${argsCode})`;
+
+  return {
+    functionCode,
+    referenceCode,
+  };
+}
+
+export function extractExpressionAsFunctionParts({
+  expression,
+  targetScope,
+  isolated,
+  namedParameters = false,
+}: {
   expression: Expression;
   targetScope: Block | SourceFile;
   isolated?: boolean;
@@ -62,24 +87,39 @@ export function extractExpressionAsFunction({
             );
           }
         })
-        .map((d) => d.getText())
+        .map((identifier) => {
+          const type = identifier.getType();
+          return [identifier.getText(), type.getText()];
+        }),
     ),
   ];
 
-  let parametersCode = dependencies.length
-    ? `${dependencies.map((i) => i).join(", ")}`
-    : "";
-  if (namedParameters && parametersCode) {
-    parametersCode = `{${parametersCode}}`;
+  let parameters = "";
+  let args = "";
+
+  if (dependencies.length) {
+    if (namedParameters) {
+      const paramParts = dependencies.map(([name]) => `${name}`).join(", ");
+      const typeParts = dependencies
+        .map(([name, type]) => `${name}: ${type}`)
+        .join(", ");
+
+      parameters = `{${paramParts}}:{${typeParts}}`;
+      args = `{${paramParts}}`;
+    } else {
+      const paramParts = dependencies
+        .map(([name, type]) => `${name}: ${type}`)
+        .join(", ");
+      const argsParts = dependencies.map(([name]) => name).join(", ");
+      parameters = paramParts;
+      args = argsParts;
+    }
   }
-  const functionCode = `function ${
-    name || ""
-  }(${parametersCode}) { return ${expression.getText()}; }`;
-  const referenceCode = `${callee}(${parametersCode})`;
 
   return {
-    functionCode,
-    referenceCode,
+    parameters,
+    args,
+    expression: expression.getText(),
   };
 }
 
@@ -131,8 +171,8 @@ export function extractStatementsAsIIFE({
                 })(i);
                 // check if any reference is not in the statements
                 return references.some((ref) => !isInStatements(ref));
-              })
-          )
+              }),
+          ),
         ),
       ];
 
@@ -208,8 +248,8 @@ export function extractStatementsAsFunction({
                 isInNode(declaration, containingStatement)
               );
             }
-          })
-      ) as Identifier[]
+          }),
+      ) as Identifier[],
     ),
   ];
 
@@ -243,8 +283,8 @@ export function extractStatementsAsFunction({
                 })(i);
                 // check if any reference is not in the statements
                 return references.some((ref) => !isInStatements(ref));
-              })
-          )
+              }),
+          ),
         ),
       ];
 
@@ -276,55 +316,4 @@ export function extractStatementsAsFunction({
     functionCode,
     referenceCode,
   };
-}
-
-/**
- * Release statements from IIFE back to inline statements.
- * This is the reverse operation of extractStatementsAsIIFE.
- */
-export function releaseIIFEStatements(
-  callExpression: CallExpression
-): string[] | null {
-  // Extract the IIFE function
-  const callee = callExpression.getExpression();
-  let iifeFunction: ArrowFunction | FunctionExpression | undefined;
-
-  if (Node.isParenthesizedExpression(callee)) {
-    const inner = callee.getExpression();
-    if (Node.isArrowFunction(inner) || Node.isFunctionExpression(inner)) {
-      iifeFunction = inner;
-    }
-  }
-
-  if (!iifeFunction) {
-    return null; // Not a valid IIFE
-  }
-
-  const body = iifeFunction.getBody();
-  if (!Node.isBlock(body)) {
-    // Handle expression-bodied functions
-    const returnStatement = `return ${body.getText()};`;
-    return [returnStatement];
-  }
-
-  const statements = body.getStatements();
-  const statementTexts: string[] = [];
-
-  // Process each statement, excluding the final return statement if it returns an object literal
-  for (let i = 0; i < statements.length; i++) {
-    const stmt = statements[i];
-
-    // Check if this is the last statement and it's a return statement with an object literal
-    if (i === statements.length - 1 && Node.isReturnStatement(stmt)) {
-      const returnExpr = stmt.getExpression();
-      if (returnExpr && Node.isObjectLiteralExpression(returnExpr)) {
-        // This is a return statement that returns dependencies, skip it
-        continue;
-      }
-    }
-
-    statementTexts.push(stmt.getText());
-  }
-
-  return statementTexts;
 }

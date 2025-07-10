@@ -1,5 +1,5 @@
 {
-  "name": "@elllphnt/elementa-parser",
+  "name": "@elllphnt/elementa-transformers",
   "type": "module",
   "version": "0.1.11",
   "private": true,
@@ -25,11 +25,16 @@
     "@elllphnt/elementa-transformer-primitives": "workspace:*",
     "@paralleldrive/cuid2": "^2.2.2",
     "postcss": "^8.5.4",
+    "prettier": "^3.6.2",
     "ts-morph": "^26.0.0"
   },
   "devDependencies": {
     "@types/babel__generator": "^7.27.0",
     "@types/babel__traverse": "^7.20.7",
-    "deepmerge": "^4.3.1"
+    "@types/diff": "^5.2.3",
+    "@types/seedrandom": "^3.0.8",
+    "deepmerge": "^4.3.1",
+    "diff": "^7.0.0",
+    "seedrandom": "^3.0.5"
   }
 }

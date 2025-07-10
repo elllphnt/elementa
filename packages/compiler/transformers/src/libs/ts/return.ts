@@ -1,4 +1,20 @@
+import type { ReturnStatement } from "ts-morph";
 import { Node } from "ts-morph";
+
+export function getReturnBranches(node: Node): ReturnStatement[] {
+  if (Node.isReturnStatement(node)) {
+    return [node];
+  } else if (
+    Node.isExpression(node) ||
+    Node.isFunctionDeclaration(node) ||
+    Node.isClassDeclaration(node) ||
+    Node.isEnumDeclaration(node)
+  ) {
+    return [];
+  } else {
+    return node.getChildren().flatMap(getReturnBranches);
+  }
+}
 
 /**
  * Recursively checks if `node` (or any of its descendant statements)
