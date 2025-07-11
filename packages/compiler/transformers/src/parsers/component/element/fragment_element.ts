@@ -1,26 +1,31 @@
-import type * as t from "@babel/types";
 import type { ElementData } from "@elllphnt/elementa-base";
-import type { CreateFragment } from "./_types.js";
-import type { GetStylesheet } from "./base/base_element.js";
+import type { JsxFragment } from "ts-morph";
+import { Node } from "ts-morph";
+import { parseElementsFromNode } from "./element.js";
+import type { ParseElementContext } from "./utils/types.js";
 
 export function parseFragmentElementNode({
   node,
-  getStylesheet,
-  createFragment,
+  context,
 }: {
-  node: t.JSXFragment;
-  getStylesheet: GetStylesheet;
-  createFragment: CreateFragment;
+  node: JsxFragment;
+  context: ParseElementContext;
 }): ElementData[] {
   const results: ElementData[] = [];
-  node.children.forEach((child) => {
-    results.push(
-      ...extractElementsFromNode({
-        node: child as t.Node,
-        getStylesheet,
-        createFragment,
-      }),
-    );
+  const children = node.getJsxChildren();
+  children.forEach((child) => {
+    if (
+      Node.isJsxElement(child) ||
+      Node.isJsxFragment(child) ||
+      Node.isJsxSelfClosingElement(child)
+    ) {
+      results.push(
+        ...parseElementsFromNode({
+          node: child,
+          context,
+        }),
+      );
+    }
   });
   return results;
 }

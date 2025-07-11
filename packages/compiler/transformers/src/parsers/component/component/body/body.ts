@@ -7,8 +7,8 @@ import type {
 import { Node } from "ts-morph";
 import { isHookName } from "~/libs/ts/code.js";
 import { getDeepExpression } from "~/libs/ts/expression.js";
-import type { ParseElementContext } from "../../element/_.js";
-import { parseElementsFromNode } from "../../element/_.js";
+import { parseElementsFromNode } from "../../element/element.js";
+import type { ParseElementContext } from "../../element/utils/types.js";
 import { parseFragmentDefinition } from "./fragments.js";
 import { parseInlineStateExpression, parseStateExpression } from "./states.js";
 
@@ -31,6 +31,7 @@ export function parseComponentFunctionBody({
       id: genId(),
       content,
     }),
+    scope: node,
   };
 
   for (const statement of body.getStatements()) {

@@ -1,16 +1,13 @@
-import type * as t from "@babel/types";
 import type { ElementData } from "@elllphnt/elementa-base";
 import { genId } from "@elllphnt/elementa-base";
-import type { GetStylesheet } from "./base/base_element.js";
-import { generate } from "./utils/generate.js";
+import type { JsxExpression } from "ts-morph";
 
 export function parseExpressionContainerNode({
   node,
 }: {
-  node: t.JSXExpressionContainer;
-  getStylesheet: GetStylesheet;
+  node: JsxExpression;
 }): ElementData {
-  const expression = generate(node.expression).code;
+  const expression = node.getExpression()?.getText() || "";
 
   return {
     id: genId(),

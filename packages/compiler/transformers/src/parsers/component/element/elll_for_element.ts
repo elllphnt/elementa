@@ -1,70 +1,76 @@
-import * as t from "@babel/types";
 import type { ElementData, ElementRepeatData } from "@elllphnt/elementa-base";
 import { genId } from "@elllphnt/elementa-base";
-import type { CreateFragment } from "./_types.js";
-import type { GetStylesheet } from "./base/base_element.js";
-import { generateExpressionSource } from "./utils/generate.js";
+import type { JsxElement } from "ts-morph";
+import { Node } from "ts-morph";
+import { parseElementsFromNode } from "./element.js";
+import type { ParseElementContext } from "./utils/types.js";
 
 export function parseElllForElementNode({
   node,
-  getStylesheet,
-  createFragment,
+  context,
 }: {
-  node: t.JSXElement;
-  getStylesheet: GetStylesheet;
-  createFragment: CreateFragment;
+  node: JsxElement;
+  context: ParseElementContext;
 }): ElementData | undefined {
   // Build our repeat payload by reading "data", "as", and optional "index".
   const repeatData: ElementRepeatData = {};
   let asVar: string | undefined;
   let indexVar: string | undefined;
 
-  node.openingElement.attributes.forEach((attr) => {
-    if (!t.isJSXAttribute(attr)) return;
-    const attrName = attr.name.name as string;
+  const attributes = node.getOpeningElement().getAttributes();
+  attributes.forEach((attr) => {
+    if (!Node.isJsxAttribute(attr)) return;
+    const nameNode = attr.getNameNode();
+    if (!Node.isIdentifier(nameNode)) return;
+    const attrName = nameNode.getText();
 
     // <elll-for data={items} ...>
-    if (attrName === "data" && attr.value) {
-      if (t.isStringLiteral(attr.value)) {
+    if (attrName === "data") {
+      const value = attr.getInitializer();
+      if (value && Node.isStringLiteral(value)) {
         try {
           // Try parsing a JSON literal
-          const parsed = JSON.parse(attr.value.value);
+          const parsed = JSON.parse(value.getLiteralValue());
           repeatData.dataset =
             parsed as unknown as ElementRepeatData["dataset"];
         } catch {
           // Fallback: treat raw string as an expression container later
           repeatData.dataset = {
-            __expression: attr.value.value,
+            __expression: value.getLiteralValue(),
           } as unknown as ElementRepeatData["dataset"];
         }
-      } else if (t.isJSXExpressionContainer(attr.value)) {
-        const expr = attr.value.expression;
-        repeatData.dataset = {
-          __expression: generateExpressionSource(expr),
-        } as unknown as ElementRepeatData["dataset"];
+      } else if (value && Node.isJsxExpression(value)) {
+        const expr = value.getExpression();
+        if (expr) {
+          repeatData.dataset = {
+            __expression: expr.getText(),
+          } as unknown as ElementRepeatData["dataset"];
+        }
       }
     }
 
     // <elll-for as="item" ...>
-    if (attrName === "as" && attr.value) {
-      if (t.isStringLiteral(attr.value)) {
-        asVar = attr.value.value;
-      } else if (t.isJSXExpressionContainer(attr.value)) {
-        const expr = attr.value.expression;
-        if (t.isStringLiteral(expr)) {
-          asVar = expr.value;
+    if (attrName === "as") {
+      const value = attr.getInitializer();
+      if (value && Node.isStringLiteral(value)) {
+        asVar = value.getLiteralValue();
+      } else if (value && Node.isJsxExpression(value)) {
+        const expr = value.getExpression();
+        if (expr && Node.isStringLiteral(expr)) {
+          asVar = expr.getLiteralValue();
         }
       }
     }
 
     // <elll-for index="i" ...> (optional)
-    if (attrName === "index" && attr.value) {
-      if (t.isStringLiteral(attr.value)) {
-        indexVar = attr.value.value;
-      } else if (t.isJSXExpressionContainer(attr.value)) {
-        const expr = attr.value.expression;
-        if (t.isStringLiteral(expr)) {
-          indexVar = expr.value;
+    if (attrName === "index") {
+      const value = attr.getInitializer();
+      if (value && Node.isStringLiteral(value)) {
+        indexVar = value.getLiteralValue();
+      } else if (value && Node.isJsxExpression(value)) {
+        const expr = value.getExpression();
+        if (expr && Node.isStringLiteral(expr)) {
+          indexVar = expr.getLiteralValue();
         }
       }
     }
@@ -80,12 +86,16 @@ export function parseElllForElementNode({
 
   // Extract all child elements (flattening fragments as needed).
   const childrenElements: ElementData[] = [];
-  node.children.forEach((child) => {
-    if (t.isJSXElement(child) || t.isJSXFragment(child)) {
-      const parsedChildren = extractElementsFromNode({
-        node: child as t.Node,
-        getStylesheet,
-        createFragment,
+  const children = node.getJsxChildren();
+  children.forEach((child) => {
+    if (
+      Node.isJsxElement(child) ||
+      Node.isJsxFragment(child) ||
+      Node.isJsxSelfClosingElement(child)
+    ) {
+      const parsedChildren = parseElementsFromNode({
+        node: child,
+        context,
       });
       parsedChildren.forEach((el) => childrenElements.push(el));
     }
@@ -102,7 +112,7 @@ export function parseElllForElementNode({
 
   // If multiple children, wrap them in a fragment, then attach repeat to that fragment.
   if (childrenElements.length > 1) {
-    const fragment = createFragment({ content: childrenElements });
+    const fragment = context.createFragment({ content: childrenElements });
     // The returned fragment element should accept a "repeat" field.
     return {
       id: genId(),

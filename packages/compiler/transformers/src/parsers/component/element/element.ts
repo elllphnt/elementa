@@ -1,11 +1,17 @@
 import { type ElementData } from "@elllphnt/elementa-base";
 import type { JsxElement, JsxFragment, JsxSelfClosingElement } from "ts-morph";
 import { Node } from "ts-morph";
-import type { ElementAttributeEntry, ParseElementContext } from "./_types.js";
+import { parseComponentElementNode } from "./component_element.js";
+import { parseContainerElementNode } from "./container_element.js";
+import { parseFragmentElementNode } from "./fragment_element.js";
+import { parseMediaElementNode } from "./media_element.js";
 import { parseTextElementNode } from "./text_element.js";
 import { mediaTags, nativeTags, textTags } from "./utils/html_tags.js";
-export { parseClassExpression } from "./utils/class_expression.js";
-export { extractInnerTextFromElementNode } from "./utils/extract_text.js";
+import type {
+  ElementAttributeEntry,
+  ParseElementContext,
+} from "./utils/types.js";
+import { parseVectorElementNode } from "./vector_element.js";
 
 function parseElementsFromJsxElement({
   node,
@@ -50,39 +56,34 @@ function parseElementsFromJsxElement({
       ];
     }
     if (mediaTags.has(tagName)) {
-      return [parseMediaElementNode({ node, getStylesheet })];
+      return [parseMediaElementNode({ node, context })];
     }
     if (tagName === "svg") {
-      return [parseVectorElementNode({ node, getStylesheet })];
+      return [parseVectorElementNode({ node, context })];
     }
     if (tagName === "a") {
-      const element = parseLinkElementNode({
-        node,
-        getStylesheet,
-        createFragment,
-      });
-      return element ? [element] : [];
+      // For now, treat anchor tags as container elements
+      // Link functionality is handled via the link attribute in base elements
+      return [parseContainerElementNode({ node, context })];
     }
     if (nativeTags.has(tagName)) {
-      return [
-        parseContainerElementNode({ node, getStylesheet, createFragment }),
-      ];
+      return [parseContainerElementNode({ node, context })];
     }
     return [
       parseComponentElementNode({
         name: tagName,
         node,
-        getStylesheet,
-        createFragment,
+        context,
       }),
     ];
   } else {
+    // Handle complex tag names (like member expressions)
+    const tagName = tagNameNode.getText();
     return [
       parseComponentElementNode({
         name: tagName,
         node,
-        getStylesheet,
-        createFragment,
+        context,
       }),
     ];
   }
@@ -92,21 +93,76 @@ function parseElementsFromJsxFragment({
   node,
   context,
 }: {
-  node: Node;
+  node: JsxFragment;
   context: ParseElementContext;
 }): ElementData[] {
-  // return parseFragmentElementNode({ node, getStylesheet, createFragment });
-  return [];
+  return parseFragmentElementNode({ node, context });
 }
 
 function parseElementsFromJsxSelfClosingElement({
   node,
   context,
 }: {
-  node: Node;
+  node: JsxSelfClosingElement;
   context: ParseElementContext;
 }): ElementData[] {
-  return [];
+  const tagNameNode = node.getTagNameNode();
+
+  // Create an adapter to make self-closing element look like regular element
+  const createJsxElementAdapter = (): JsxElement =>
+    ({
+      getOpeningElement: () => ({
+        getTagNameNode: () => tagNameNode,
+        getAttributes: () => node.getAttributes(),
+      }),
+      getJsxChildren: () => [],
+    }) as any as JsxElement;
+
+  if (Node.isIdentifier(tagNameNode)) {
+    const tagName = tagNameNode.getText();
+
+    if (mediaTags.has(tagName)) {
+      return [
+        parseMediaElementNode({
+          node: createJsxElementAdapter(),
+          context,
+        }),
+      ];
+    }
+    if (tagName === "svg") {
+      return [
+        parseVectorElementNode({
+          node: createJsxElementAdapter(),
+          context,
+        }),
+      ];
+    }
+    if (nativeTags.has(tagName)) {
+      return [
+        parseContainerElementNode({
+          node: createJsxElementAdapter(),
+          context,
+        }),
+      ];
+    }
+    return [
+      parseComponentElementNode({
+        name: tagName,
+        node: createJsxElementAdapter(),
+        context,
+      }),
+    ];
+  } else {
+    // Handle complex tag names
+    const tagName = tagNameNode.getText();
+    return [
+      parseComponentElementNode({
+        name: tagName,
+        node: createJsxElementAdapter(),
+        context,
+      }),
+    ];
+  }
 }
 
 export function parseElementsFromNode({
@@ -123,12 +179,12 @@ export function parseElementsFromNode({
     });
   } else if (Node.isJsxFragment(node)) {
     return parseElementsFromJsxFragment({
-      node,
+      node: node as JsxFragment,
       context,
     });
   } else if (Node.isJsxSelfClosingElement(node)) {
     return parseElementsFromJsxSelfClosingElement({
-      node,
+      node: node as JsxSelfClosingElement,
       context,
     });
   } else {

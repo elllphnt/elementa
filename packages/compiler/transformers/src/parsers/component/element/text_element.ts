@@ -4,45 +4,12 @@ import type {
   TextMarkData,
 } from "@elllphnt/elementa-base";
 import type { JsxChild } from "ts-morph";
-import type { ElementAttributeEntry, ParseElementContext } from "./_types.js";
 import { parseBaseElementNode } from "./base/base_element.js";
-
-export function extractTextFromNode(node: t.Node): string {
-  if (t.isJSXText(node)) {
-    return node.value;
-  }
-  if (t.isJSXExpressionContainer(node)) {
-    const inner = node.expression;
-    if (t.isStringLiteral(inner)) {
-      return inner.value;
-    } else {
-      return `{{ ${generateExpressionSource(inner).trim()} }}`;
-    }
-  }
-  if (t.isJSXSpreadChild(node)) {
-    const spreadExpr = node.expression;
-    return `{{ ...${generateExpressionSource(spreadExpr).trim()} }}`;
-  }
-  if (t.isJSXElement(node)) {
-    return extractInnerTextFromElementNode(node);
-  }
-  if (t.isJSXFragment(node)) {
-    let fragText = "";
-    node.children.forEach((child) => {
-      fragText += extractTextFromNode(child as t.Node);
-    });
-    return fragText;
-  }
-  return "";
-}
-
-export function extractInnerTextFromElementNode(node: t.JSXElement): string {
-  let result = "";
-  node.children.forEach((child) => {
-    result += extractTextFromNode(child as t.Node);
-  });
-  return result;
-}
+import { extractTextFromNode } from "./utils/extract_text.js";
+import type {
+  ElementAttributeEntry,
+  ParseElementContext,
+} from "./utils/types.js";
 
 export function parseTextElementNode({
   tag,
@@ -62,7 +29,11 @@ export function parseTextElementNode({
     context,
   });
 
-  const rawText = extractInnerTextFromElementNode(node).trim();
+  // Extract text from children
+  const rawText = children
+    .map((child) => extractTextFromNode(child))
+    .join("")
+    .trim();
   const textField: ResolvableOrEvaluable<string> = rawText;
   const marks: TextMarkData[] = [];
 

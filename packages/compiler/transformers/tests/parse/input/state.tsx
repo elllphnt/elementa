@@ -14,8 +14,15 @@ function StateComponent(props: { hey: string; useUser: () => User }) {
   };
   return (
     <div>
-      <div>name: {name}</div>
-      <div>state: {state}</div>
+      <div className="div">name: {name}</div>
+      <div
+        className={{
+          button: true,
+          active: state === "updated",
+        }}
+      >
+        state: {state}
+      </div>
       {
         <>
           <button onClick={updateState}>Update State</button>

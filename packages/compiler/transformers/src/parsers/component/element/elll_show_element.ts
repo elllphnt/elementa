@@ -1,43 +1,45 @@
-import * as t from "@babel/types";
 import type {
   ConditionalData,
   ElementData,
   ResolvableOrEvaluable,
 } from "@elllphnt/elementa-base";
 import { genId } from "@elllphnt/elementa-base";
-import type { CreateFragment } from "./_types.js";
-import type { GetStylesheet } from "./base/base_element.js";
-import { generateExpressionSource } from "./utils/generate.js";
+import type { JsxElement } from "ts-morph";
+import { Node } from "ts-morph";
+import { parseElementsFromNode } from "./element.js";
+import type { ParseElementContext } from "./utils/types.js";
 
 export function parseElllShowElementNode({
   node,
-  getStylesheet,
-  createFragment,
+  context,
 }: {
-  node: t.JSXElement;
-  getStylesheet: GetStylesheet;
-  createFragment: CreateFragment;
+  node: JsxElement;
+  context: ParseElementContext;
 }): ElementData | undefined {
   // Build our conditional payload by reading "when"
   const condData: ConditionalData = {};
-  node.openingElement.attributes.forEach((attr) => {
-    if (!t.isJSXAttribute(attr)) return;
-    const attrName = attr.name.name as string;
+  const attributes = node.getOpeningElement().getAttributes();
+  attributes.forEach((attr) => {
+    if (!Node.isJsxAttribute(attr)) return;
+    const nameNode = attr.getNameNode();
+    if (!Node.isIdentifier(nameNode)) return;
+    const attrName = nameNode.getText();
 
     // <elll-show when={...}>
-    if (attrName === "when" && attr.value) {
-      if (t.isStringLiteral(attr.value)) {
-        const val = attr.value.value.trim().toLowerCase();
+    if (attrName === "when") {
+      const value = attr.getInitializer();
+      if (value && Node.isStringLiteral(value)) {
+        const val = value.getLiteralValue().trim().toLowerCase();
         if (val === "true" || val === "false") {
           condData.condition = val === "true";
         }
-      } else if (t.isJSXExpressionContainer(attr.value)) {
-        const expr = attr.value.expression;
-        if (t.isBooleanLiteral(expr)) {
-          condData.condition = expr.value;
-        } else {
+      } else if (value && Node.isJsxExpression(value)) {
+        const expr = value.getExpression();
+        if (expr && Node.isBooleanKeyword(expr)) {
+          condData.condition = expr.getText() === "true";
+        } else if (expr) {
           condData.condition = {
-            __expression: generateExpressionSource(expr),
+            __expression: (expr as any).getText(),
           };
         }
       }
@@ -46,12 +48,16 @@ export function parseElllShowElementNode({
 
   // Extract all child elements (flattening fragments as needed).
   const childrenElements: ElementData[] = [];
-  node.children.forEach((child) => {
-    if (t.isJSXElement(child) || t.isJSXFragment(child)) {
-      const parsedChildren = extractElementsFromNode({
-        node: child as t.Node,
-        getStylesheet,
-        createFragment,
+  const children = node.getJsxChildren();
+  children.forEach((child) => {
+    if (
+      Node.isJsxElement(child) ||
+      Node.isJsxFragment(child) ||
+      Node.isJsxSelfClosingElement(child)
+    ) {
+      const parsedChildren = parseElementsFromNode({
+        node: child,
+        context,
       });
       parsedChildren.forEach((el) => childrenElements.push(el));
     }
@@ -68,7 +74,7 @@ export function parseElllShowElementNode({
 
   // If multiple children, wrap them in a fragment, then attach condition to that fragment.
   if (childrenElements.length > 1) {
-    const fragment = createFragment({ content: childrenElements });
+    const fragment = context.createFragment({ content: childrenElements });
     // The returned fragment element should accept a "repeat" field.
     return {
       id: genId(),

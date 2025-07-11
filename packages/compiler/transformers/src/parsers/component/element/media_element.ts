@@ -1,220 +1,208 @@
-import * as t from "@babel/types";
 import type {
-  Evaluable,
   ImageMediaData,
   MediaElementData,
   VideoMediaData,
 } from "@elllphnt/elementa-base";
-import type { GetStylesheet } from "./base/base_element.js";
+import type { JsxElement } from "ts-morph";
+import { Node } from "ts-morph";
 import { parseBaseElementNode } from "./base/base_element.js";
-import { generateExpressionSource } from "./utils/generate.js";
+import type {
+  ElementAttributeEntry,
+  ParseElementContext,
+} from "./utils/types.js";
 
 export function parseMediaElementNode({
   node,
-  getStylesheet,
+  context,
 }: {
-  node: t.JSXElement;
-  getStylesheet: GetStylesheet;
+  node: JsxElement;
+  context: ParseElementContext;
 }): MediaElementData {
+  const tagNameNode = node.getOpeningElement().getTagNameNode();
+  const tag = tagNameNode.getText();
+  const attributes: ElementAttributeEntry[] = node
+    .getOpeningElement()
+    .getAttributes()
+    .map((attr) => {
+      if (Node.isJsxAttribute(attr)) {
+        const nameNode = attr.getNameNode();
+        if (Node.isIdentifier(nameNode)) {
+          const value = attr.getInitializer();
+          return [nameNode.getText(), value] as const;
+        } else {
+          throw new Error(
+            `Expected identifier for attribute name, got ${nameNode.getKindName()}`,
+          );
+        }
+      } else {
+        return attr.getExpression();
+      }
+    });
+
   // Parse the base <media> element
   const base = parseBaseElementNode({
     type: "media",
-    node,
-    getStylesheet,
+    tag,
+    attributes,
+    context,
   });
 
-  // Prepare to collect media attributes
-  let mediaType: "image" | "video" = "image";
-  let srcValue: string | { __expression: string } | undefined;
-  let altValue: string | { __expression: string } | undefined;
-  let posterValue: string | { __expression: string } | undefined;
-  let autoplayValue: string | { __expression: string } | undefined;
-  let loopValue: string | { __expression: string } | undefined;
-  let mutedValue: string | { __expression: string } | undefined;
-  let controlsValue: string | { __expression: string } | undefined;
-  let fitValue: string | { __expression: string } | undefined;
-  let posXValue: string | { __expression: string } | undefined;
-  let posYValue: string | { __expression: string } | undefined;
+  // Parse media-specific attributes
+  let mediaData: ImageMediaData | VideoMediaData | undefined;
+  let fit: MediaElementData["fit"];
+  let position: MediaElementData["position"];
 
-  node.openingElement.attributes.forEach((attr) => {
-    if (!t.isJSXAttribute(attr)) return;
-    const name = attr.name.name as string;
-    const valueNode = attr.value;
+  // Determine media type from tag or attributes
+  const isVideo =
+    tag === "video" ||
+    attributes.some(
+      (attr) =>
+        Array.isArray(attr) &&
+        (attr[0] === "autoplay" ||
+          attr[0] === "controls" ||
+          attr[0] === "loop" ||
+          attr[0] === "muted"),
+    );
 
-    // Determine media type: <elll-media type="video" ...>
-    if (name === "type" && valueNode) {
-      if (t.isStringLiteral(valueNode)) {
-        if (valueNode.value === "video") {
-          mediaType = "video";
-        }
-      } else if (t.isJSXExpressionContainer(valueNode)) {
-        const expr = valueNode.expression;
-        if (t.isStringLiteral(expr) && expr.value === "video") {
-          mediaType = "video";
-        }
-      }
-      return;
-    }
-
-    // src attribute
-    if (name === "src" && valueNode) {
-      if (t.isStringLiteral(valueNode)) {
-        srcValue = valueNode.value;
-      } else if (t.isJSXExpressionContainer(valueNode)) {
-        srcValue = {
-          __expression: generateExpressionSource(valueNode.expression),
-        };
-      }
-      return;
-    }
-
-    // alt attribute (only relevant if image)
-    if (name === "alt" && valueNode) {
-      if (t.isStringLiteral(valueNode)) {
-        altValue = valueNode.value;
-      } else if (t.isJSXExpressionContainer(valueNode)) {
-        altValue = {
-          __expression: generateExpressionSource(valueNode.expression),
-        };
-      }
-      return;
-    }
-
-    // poster attribute (only relevant if video)
-    if (name === "poster" && valueNode) {
-      if (t.isStringLiteral(valueNode)) {
-        posterValue = valueNode.value;
-      } else if (t.isJSXExpressionContainer(valueNode)) {
-        posterValue = {
-          __expression: generateExpressionSource(valueNode.expression),
-        };
-      }
-      return;
-    }
-
-    // autoplay (video)
-    if (name === "autoplay" && valueNode) {
-      if (t.isStringLiteral(valueNode)) {
-        autoplayValue = valueNode.value;
-      } else if (t.isJSXExpressionContainer(valueNode)) {
-        autoplayValue = {
-          __expression: generateExpressionSource(valueNode.expression),
-        };
-      }
-      return;
-    }
-
-    // loop (video)
-    if (name === "loop" && valueNode) {
-      if (t.isStringLiteral(valueNode)) {
-        loopValue = valueNode.value;
-      } else if (t.isJSXExpressionContainer(valueNode)) {
-        loopValue = {
-          __expression: generateExpressionSource(valueNode.expression),
-        };
-      }
-      return;
-    }
-
-    // muted (video)
-    if (name === "muted" && valueNode) {
-      if (t.isStringLiteral(valueNode)) {
-        mutedValue = valueNode.value;
-      } else if (t.isJSXExpressionContainer(valueNode)) {
-        mutedValue = {
-          __expression: generateExpressionSource(valueNode.expression),
-        };
-      }
-      return;
-    }
-
-    // controls (video)
-    if (name === "controls" && valueNode) {
-      if (t.isStringLiteral(valueNode)) {
-        controlsValue = valueNode.value;
-      } else if (t.isJSXExpressionContainer(valueNode)) {
-        controlsValue = {
-          __expression: generateExpressionSource(valueNode.expression),
-        };
-      }
-      return;
-    }
-
-    // fit (object-fit style)
-    if (name === "fit" && valueNode) {
-      if (t.isStringLiteral(valueNode)) {
-        fitValue = valueNode.value;
-      } else if (t.isJSXExpressionContainer(valueNode)) {
-        fitValue = {
-          __expression: generateExpressionSource(valueNode.expression),
-        };
-      }
-      return;
-    }
-
-    // positionX
-    if ((name === "positionX" || name === "posX") && valueNode) {
-      if (t.isStringLiteral(valueNode)) {
-        posXValue = valueNode.value;
-      } else if (t.isJSXExpressionContainer(valueNode)) {
-        posXValue = {
-          __expression: generateExpressionSource(valueNode.expression),
-        };
-      }
-      return;
-    }
-
-    // positionY
-    if ((name === "positionY" || name === "posY") && valueNode) {
-      if (t.isStringLiteral(valueNode)) {
-        posYValue = valueNode.value;
-      } else if (t.isJSXExpressionContainer(valueNode)) {
-        posYValue = {
-          __expression: generateExpressionSource(valueNode.expression),
-        };
-      }
-      return;
-    }
-  });
-
-  // Build the media-specific object
-  let mediaData: ImageMediaData | VideoMediaData;
-  if ((mediaType as any) === "video") {
-    mediaData = {
-      type: "video",
-      src: srcValue as Evaluable<string> | undefined,
-      poster: posterValue as Evaluable<string> | undefined,
-      autoplay: autoplayValue as Evaluable<string> | undefined,
-      loop: loopValue as Evaluable<string> | undefined,
-      muted: mutedValue as Evaluable<string> | undefined,
-      controls: controlsValue as Evaluable<string> | undefined,
+  if (isVideo) {
+    const videoData: VideoMediaData = {
+      type: "video" as const,
     };
+
+    // Parse video-specific attributes
+    attributes.forEach((attr) => {
+      if (Array.isArray(attr)) {
+        const [name, value] = attr;
+        switch (name) {
+          case "src":
+            if (value && Node.isStringLiteral(value)) {
+              videoData.src = value.getLiteralValue();
+            } else if (value && Node.isJsxExpression(value)) {
+              const expr = value.getExpression();
+              if (expr && Node.isStringLiteral(expr)) {
+                videoData.src = expr.getLiteralValue();
+              } else if (expr) {
+                videoData.src = {
+                  __expression: expr.getText(),
+                };
+              }
+            }
+            break;
+          case "autoplay":
+            if (value) {
+              videoData.autoplay = {
+                __expression: value.getText(),
+              };
+            }
+            break;
+          case "controls":
+            if (value) {
+              videoData.controls = {
+                __expression: value.getText(),
+              };
+            }
+            break;
+          case "loop":
+            if (value) {
+              videoData.loop = {
+                __expression: value.getText(),
+              };
+            }
+            break;
+          case "muted":
+            if (value) {
+              videoData.muted = {
+                __expression: value.getText(),
+              };
+            }
+            break;
+          case "poster":
+            if (value && Node.isStringLiteral(value)) {
+              videoData.poster = value.getLiteralValue();
+            } else if (value && Node.isJsxExpression(value)) {
+              const expr = value.getExpression();
+              if (expr && Node.isStringLiteral(expr)) {
+                videoData.poster = expr.getLiteralValue();
+              } else if (expr) {
+                videoData.poster = {
+                  __expression: expr.getText(),
+                };
+              }
+            }
+            break;
+        }
+      }
+    });
+
+    mediaData = videoData;
   } else {
-    mediaData = {
-      type: "image",
-      src: srcValue as Evaluable<string> | undefined,
-      alt: altValue as Evaluable<string> | undefined,
+    // Default to image
+    const imageData: ImageMediaData = {
+      type: "image" as const,
     };
+
+    // Parse image-specific attributes
+    attributes.forEach((attr) => {
+      if (Array.isArray(attr)) {
+        const [name, value] = attr;
+        switch (name) {
+          case "src":
+            if (value && Node.isStringLiteral(value)) {
+              imageData.src = value.getLiteralValue();
+            } else if (value && Node.isJsxExpression(value)) {
+              const expr = value.getExpression();
+              if (expr && Node.isStringLiteral(expr)) {
+                imageData.src = expr.getLiteralValue();
+              } else if (expr) {
+                imageData.src = {
+                  __expression: expr.getText(),
+                };
+              }
+            }
+            break;
+          case "alt":
+            if (value) {
+              imageData.alt = {
+                __expression: value.getText(),
+              };
+            }
+            break;
+        }
+      }
+    });
+
+    mediaData = imageData;
   }
 
-  // Attach fit and position if provided
-  const positionObj: {
-    x?: Evaluable<any>;
-    y?: Evaluable<any>;
-  } = {};
-  if (posXValue !== undefined) {
-    positionObj.x = posXValue as Evaluable<string>;
-  }
-  if (posYValue !== undefined) {
-    positionObj.y = posYValue as Evaluable<string>;
-  }
+  // Parse container-level media attributes
+  attributes.forEach((attr) => {
+    if (Array.isArray(attr)) {
+      const [name, value] = attr;
+      switch (name) {
+        case "fit":
+          if (value) {
+            fit = {
+              __expression: value.getText(),
+            };
+          }
+          break;
+        case "position":
+          if (value) {
+            // TODO: Parse position object properly
+            position = {
+              x: { __expression: value.getText() },
+              y: { __expression: value.getText() },
+            };
+          }
+          break;
+      }
+    }
+  });
 
   return {
     ...base,
-    fit: fitValue as
-      | Evaluable<"contain" | "cover" | "fill" | "none" | "scale-down">
-      | undefined,
-    position: Object.keys(positionObj).length ? positionObj : undefined,
     media: mediaData,
-  };
+    fit,
+    position,
+  } as MediaElementData;
 }
