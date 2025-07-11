@@ -1,8 +1,8 @@
 import * as t from "@babel/types";
 import type { ElementData, SlotElementData } from "@elllphnt/elementa-base";
 import type { CreateFragment } from "./_types.js";
-import type { GetStylesheet } from "./base_element.js";
-import { parseBaseElementNode } from "./base_element.js";
+import type { GetStylesheet } from "./base/base_element.js";
+import { parseBaseElementNode } from "./base/base_element.js";
 
 export function parseSlotElementNode({
   node,

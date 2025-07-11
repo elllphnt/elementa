@@ -5,8 +5,8 @@ import type {
   MediaElementData,
   VideoMediaData,
 } from "@elllphnt/elementa-base";
-import type { GetStylesheet} from "./base_element.js";
-import { parseBaseElementNode } from "./base_element.js";
+import type { GetStylesheet } from "./base/base_element.js";
+import { parseBaseElementNode } from "./base/base_element.js";
 import { generateExpressionSource } from "./utils/generate.js";
 
 export function parseMediaElementNode({
