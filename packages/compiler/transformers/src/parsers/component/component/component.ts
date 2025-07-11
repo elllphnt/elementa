@@ -6,7 +6,6 @@ import type {
 } from "ts-morph";
 import { Node } from "ts-morph";
 import { isComponentNode } from "../../../libs/ts/code.js";
-import { standardizeComponentFunction } from "../standardize.js";
 import { parseComponentFunctionBody } from "./body.js";
 import { parseComponentFunctionParams } from "./params.js";
 
@@ -17,9 +16,6 @@ export function parseComponentFunction({
   node: ArrowFunction | FunctionExpression | FunctionDeclaration;
   init?: ComponentData;
 }): ComponentData {
-  standardizeComponentFunction(node);
-  console.log("Parsing component function:", node.getText());
-
   const componentData: ComponentData = { ...init };
   parseComponentFunctionParams({ node, componentData });
   parseComponentFunctionBody({ node, componentData });

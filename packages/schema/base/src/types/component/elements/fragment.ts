@@ -1,12 +1,13 @@
 import { z } from "zod";
-import type { BaseElementData} from "./_base.js";
+import type { ResolvableOrEvaluable } from "../../_primitives/_.js";
+import type { BaseElementData } from "./_base.js";
 import { baseElementDataSchema } from "./_base.js";
 
 // Types
 
 export type FragmentElementData = BaseElementData<"fragment"> & {
   fragmentId?: string;
-  params?: Record<string, any>;
+  params?: ResolvableOrEvaluable;
 };
 
 // Schemas

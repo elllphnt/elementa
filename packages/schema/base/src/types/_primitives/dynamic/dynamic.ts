@@ -1,12 +1,12 @@
 import { z } from "zod";
-import type { Evaluable} from "./evaluable.js";
+import type { Evaluable } from "./evaluable.js";
 import { expressionSchema } from "./evaluable.js";
-import type { Resolvable} from "./resolvable.js";
+import type { Resolvable } from "./resolvable.js";
 import { staticReferenceSchema } from "./resolvable.js";
 
 // Types
 
-export type ResolvableOrEvaluable<T> = Resolvable<T> | Evaluable<T>;
+export type ResolvableOrEvaluable<T = any> = Resolvable<T> | Evaluable<T>;
 
 // Schemas
 

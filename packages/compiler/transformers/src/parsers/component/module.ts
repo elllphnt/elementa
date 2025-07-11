@@ -13,9 +13,11 @@ import { resolveExportValueNodes } from "../../libs/ts/export.js";
 import { createSingleFileProject } from "../../libs/ts/source_file.js";
 import { parseComponentNode } from "./component/component.js";
 import { parseStyleSheet } from "./css/css.js";
+import { normalizeComponentModule } from "./normalization/module.js";
 
 export function parseComponentModule(sourceCode: string): ComponentData {
-  const { sourceFile } = createSingleFileProject(sourceCode, {
+  const normalizedCode = normalizeComponentModule(sourceCode);
+  const { sourceFile } = createSingleFileProject(normalizedCode, {
     name: "module.tsx",
   });
 
@@ -85,7 +87,7 @@ export function parseComponentModule(sourceCode: string): ComponentData {
   const componentName = defaultExport.names[defaultExport.names.length - 1];
   const componentData = parseComponentNode({
     node: defaultExport.node,
-    init: { name: componentName, types, stylesheet },
+    init: { name: componentName, stylesheet },
   });
 
   return componentData;
@@ -98,7 +100,7 @@ function extractCssTextFromValueNode(node: Node): string {
     return node.getLiteralText();
   } else {
     throw new Error(
-      `Styles export is not a string literal or template literal. Found: ${node.getText()}.`
+      `Styles export is not a string literal or template literal. Found: ${node.getText()}.`,
     );
   }
 }

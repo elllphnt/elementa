@@ -1,5 +1,5 @@
 import { join } from "path";
-import { normalizeComponentFunction } from "../../src/parsers/component/normalization/normalize.js";
+import { normalizeComponentFunction } from "../../src/parsers/component/normalization/component/component.js";
 import {
   createTestProject,
   formatCode,

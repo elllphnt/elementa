@@ -1,8 +1,4 @@
-import type {
-  TsEnumDeclaration,
-  TsInterfaceDeclaration,
-  TsType,
-} from "@elllphnt/elementa-base";
+import type { Type, TypeProperty } from "@elllphnt/elementa-base";
 import * as ts from "typescript";
 
 export function parseTypeNode(typeStr: string): ts.TypeNode {
@@ -36,7 +32,7 @@ export function printTypeNode(typeNode: ts.TypeNode): string {
   return printer.printNode(ts.EmitHint.Unspecified, typeNode, dummySource);
 }
 
-export function tsTypeToTypeNode(type: TsType): ts.TypeNode {
+export function tsTypeToTypeNode(type: Type): ts.TypeNode {
   switch (type.kind) {
     case "primitive": {
       switch (type.name) {
@@ -298,7 +294,18 @@ export function tsTypeToTypeNode(type: TsType): ts.TypeNode {
     }
   }
 }
-export function tsTypeFromTypeNode(node: ts.TypeNode): TsType {
+
+export function tsTypeFromTypeNode({
+  node,
+  checker,
+  args = {},
+  stack = [],
+}: {
+  node: ts.TypeNode;
+  checker: ts.TypeChecker;
+  args: Record<string, Type>;
+  stack: string[];
+}): Type {
   switch (node.kind) {
     case ts.SyntaxKind.StringKeyword:
       return { kind: "primitive", name: "string" };
@@ -322,7 +329,6 @@ export function tsTypeFromTypeNode(node: ts.TypeNode): TsType {
       return { kind: "undefined" };
     case ts.SyntaxKind.NullKeyword:
       return { kind: "null" };
-
     case ts.SyntaxKind.LiteralType: {
       const literalNode = node as ts.LiteralTypeNode;
       const literal = literalNode.literal;
@@ -343,138 +349,45 @@ export function tsTypeFromTypeNode(node: ts.TypeNode): TsType {
         );
       }
     }
-
     case ts.SyntaxKind.ArrayType: {
       const arrayNode = node as ts.ArrayTypeNode;
       return {
         kind: "array",
-        elementType: tsTypeFromTypeNode(arrayNode.elementType),
+        elementType: tsTypeFromTypeNode({
+          node: arrayNode.elementType,
+          checker,
+          args,
+          stack,
+        }),
       };
     }
-
     case ts.SyntaxKind.TupleType: {
       const tupleNode = node as ts.TupleTypeNode;
       return {
         kind: "tuple",
         elements: tupleNode.elements.map((element) =>
-          tsTypeFromTypeNode(element)
+          tsTypeFromTypeNode({ node: element, checker, args, stack })
         ),
       };
     }
-
     case ts.SyntaxKind.UnionType: {
       const unionNode = node as ts.UnionTypeNode;
       return {
         kind: "union",
-        types: unionNode.types.map((type) => tsTypeFromTypeNode(type)),
+        types: unionNode.types.map((type) =>
+          tsTypeFromTypeNode({ node: type, checker, args, stack })
+        ),
       };
     }
-
     case ts.SyntaxKind.IntersectionType: {
       const intersectionNode = node as ts.IntersectionTypeNode;
       return {
         kind: "intersection",
-        types: intersectionNode.types.map((type) => tsTypeFromTypeNode(type)),
-      };
-    }
-
-    case ts.SyntaxKind.TypeReference: {
-      const typeRefNode = node as ts.TypeReferenceNode;
-      const typeName = ts.isIdentifier(typeRefNode.typeName)
-        ? typeRefNode.typeName.text
-        : typeRefNode.typeName.getText();
-
-      return {
-        kind: "typeReference",
-        name: typeName,
-        typeArguments: typeRefNode.typeArguments?.map((arg) =>
-          tsTypeFromTypeNode(arg)
+        types: intersectionNode.types.map((type) =>
+          tsTypeFromTypeNode({ node: type, checker, args, stack })
         ),
       };
     }
-
-    case ts.SyntaxKind.TypeLiteral: {
-      const typeLiteralNode = node as ts.TypeLiteralNode;
-      const members: any[] = [];
-      let indexSignature: any = undefined;
-
-      for (const member of typeLiteralNode.members) {
-        if (ts.isPropertySignature(member)) {
-          const name = ts.isIdentifier(member.name)
-            ? member.name.text
-            : member.name?.getText() || "";
-
-          members.push({
-            kind: "property",
-            name,
-            type: member.type
-              ? tsTypeFromTypeNode(member.type)
-              : ({ kind: "any" } as TsType),
-            optional: !!member.questionToken,
-          });
-        } else if (ts.isCallSignatureDeclaration(member)) {
-          const parameters = member.parameters.map((param) => ({
-            name: ts.isIdentifier(param.name)
-              ? param.name.text
-              : param.name.getText(),
-            type: param.type
-              ? tsTypeFromTypeNode(param.type)
-              : ({ kind: "any" } as TsType),
-            optional: !!param.questionToken,
-          }));
-
-          const typeParameters = member.typeParameters?.map((typeParam) => ({
-            name: typeParam.name.text,
-            constraint: typeParam.constraint
-              ? tsTypeFromTypeNode(typeParam.constraint)
-              : undefined,
-            default: typeParam.default
-              ? tsTypeFromTypeNode(typeParam.default)
-              : undefined,
-          }));
-
-          members.push({
-            kind: "callSignature",
-            parameters,
-            returnType: member.type
-              ? tsTypeFromTypeNode(member.type)
-              : ({ kind: "void" } as TsType),
-            typeParameters,
-          });
-        } else if (ts.isIndexSignatureDeclaration(member)) {
-          const keyParam = member.parameters[0];
-          const keyType =
-            keyParam.type?.kind === ts.SyntaxKind.StringKeyword
-              ? "string"
-              : "number";
-
-          indexSignature = {
-            keyType,
-            valueType: member.type
-              ? tsTypeFromTypeNode(member.type)
-              : ({ kind: "any" } as TsType),
-          };
-        }
-      }
-
-      // Check if this is an object type (has properties) or type literal (has members)
-      const hasProperties = members.some((m) => m.kind === "property");
-      const hasCallSignatures = members.some((m) => m.kind === "callSignature");
-
-      if (hasProperties && !hasCallSignatures) {
-        return {
-          kind: "object",
-          properties: members.filter((m) => m.kind === "property"),
-          indexSignature,
-        };
-      } else {
-        return {
-          kind: "typeLiteral",
-          members,
-        };
-      }
-    }
-
     case ts.SyntaxKind.FunctionType: {
       const functionNode = node as ts.FunctionTypeNode;
 
@@ -483,95 +396,124 @@ export function tsTypeFromTypeNode(node: ts.TypeNode): TsType {
           ? param.name.text
           : param.name.getText(),
         type: param.type
-          ? tsTypeFromTypeNode(param.type)
-          : ({ kind: "any" } as TsType),
+          ? tsTypeFromTypeNode({ node: param.type, checker, args, stack })
+          : ({ kind: "any" } as Type),
         optional: !!param.questionToken,
-      }));
-
-      const typeParameters = functionNode.typeParameters?.map((typeParam) => ({
-        name: typeParam.name.text,
-        constraint: typeParam.constraint
-          ? tsTypeFromTypeNode(typeParam.constraint)
-          : undefined,
-        default: typeParam.default
-          ? tsTypeFromTypeNode(typeParam.default)
-          : undefined,
       }));
 
       return {
         kind: "function",
         parameters,
-        returnType: tsTypeFromTypeNode(functionNode.type),
-        typeParameters,
+        returnType: tsTypeFromTypeNode({
+          node: functionNode.type,
+          checker,
+          args,
+          stack,
+        }),
       };
     }
-
-    case ts.SyntaxKind.ConditionalType: {
-      const conditionalNode = node as ts.ConditionalTypeNode;
-      return {
-        kind: "conditional",
-        checkType: tsTypeFromTypeNode(conditionalNode.checkType),
-        extendsType: tsTypeFromTypeNode(conditionalNode.extendsType),
-        trueType: tsTypeFromTypeNode(conditionalNode.trueType),
-        falseType: tsTypeFromTypeNode(conditionalNode.falseType),
-      };
-    }
-
-    case ts.SyntaxKind.MappedType: {
-      const mappedNode = node as ts.MappedTypeNode;
-
-      const readonlyModifier = mappedNode.readonlyToken
-        ? mappedNode.readonlyToken.kind === ts.SyntaxKind.MinusToken
-          ? "-"
-          : "+"
-        : undefined;
-
-      const optionalModifier = mappedNode.questionToken
-        ? mappedNode.questionToken.kind === ts.SyntaxKind.MinusToken
-          ? "-"
-          : "+"
-        : undefined;
-
-      return {
-        kind: "mapped",
-        parameter: mappedNode.typeParameter.name.text,
-        constraint: mappedNode.typeParameter.constraint
-          ? tsTypeFromTypeNode(mappedNode.typeParameter.constraint)
-          : undefined,
-        nameType: mappedNode.nameType
-          ? tsTypeFromTypeNode(mappedNode.nameType)
-          : undefined,
-        valueType: mappedNode.type
-          ? tsTypeFromTypeNode(mappedNode.type)
-          : ({ kind: "any" } as TsType),
-        optionalModifier,
-        readonlyModifier,
-      };
-    }
-
-    case ts.SyntaxKind.InferType: {
-      const inferNode = node as ts.InferTypeNode;
-      return {
-        kind: "infer",
-        name: inferNode.typeParameter.name.text,
-      };
-    }
-
     case ts.SyntaxKind.TemplateLiteralType: {
-      const templateNode = node as ts.TemplateLiteralTypeNode;
-
-      const spans = templateNode.templateSpans.map((span) => ({
-        type: tsTypeFromTypeNode(span.type),
-        literal: span.literal.text,
-      }));
-
       return {
-        kind: "templateLiteral",
-        head: templateNode.head.text,
-        spans,
+        kind: "primitive",
+        name: "string",
       };
     }
+    case ts.SyntaxKind.TypeLiteral: {
+      const typeLiteralNode = node as ts.TypeLiteralNode;
 
+      const properties: TypeProperty[] = [];
+      let index:
+        | {
+            keyType?: Type;
+            valueType?: Type;
+          }
+        | undefined;
+
+      for (const member of typeLiteralNode.members) {
+        if (ts.isPropertySignature(member)) {
+          const name = ts.isIdentifier(member.name)
+            ? member.name.text
+            : member.name?.getText() || "";
+
+          properties.push({
+            kind: "property",
+            name,
+            type: member.type
+              ? tsTypeFromTypeNode({ node: member.type, checker, args, stack })
+              : ({ kind: "any" } as Type),
+            optional: !!member.questionToken,
+          });
+        } else if (ts.isIndexSignatureDeclaration(member)) {
+          if (!index) {
+            index = {};
+          }
+
+          if (member.parameters.length > 0) {
+            const param = member.parameters[0];
+            if (param.type) {
+              index.keyType = tsTypeFromTypeNode({
+                node: param.type,
+                checker,
+                args,
+                stack,
+              });
+            }
+          }
+
+          if (member.type) {
+            index.valueType = tsTypeFromTypeNode({
+              node: member.type,
+              checker,
+              args,
+              stack,
+            });
+          }
+        }
+      }
+
+      return {
+        kind: "object",
+        properties,
+        index,
+      };
+    }
+    case ts.SyntaxKind.TypeReference: {
+      const typeRefNode = node as ts.TypeReferenceNode;
+      const typeNameNode = typeRefNode.typeName;
+      const typeName = typeNameNode.getText();
+      const typeArgs = typeRefNode.typeArguments?.map((arg) =>
+        tsTypeFromTypeNode({ node: arg, checker, args, stack })
+      );
+
+      const symbol = checker.getSymbolAtLocation(typeNameNode);
+
+      if (symbol) {
+        return typeFromSymbol({
+          symbol,
+          checker,
+          sourceFile: node.getSourceFile(),
+          args: Object.fromEntries(
+            (
+              symbol.getDeclarations()?.[0] as
+                | ts.TypeAliasDeclaration
+                | ts.InterfaceDeclaration
+            )?.typeParameters?.map((param, i) => [
+              param.name.text,
+              typeArgs?.[i] ?? { kind: "any" },
+            ]) ?? []
+          ),
+          stack,
+        });
+      }
+
+      // If no symbol, return unresolved reference
+      return {
+        kind: "reference",
+        url: node.getSourceFile().fileName,
+        specifier: typeName,
+        args: typeArgs,
+      };
+    }
     default: {
       return {
         kind: "raw",
@@ -581,238 +523,173 @@ export function tsTypeFromTypeNode(node: ts.TypeNode): TsType {
   }
 }
 
-export function tsInterfaceDeclarationToNode(
-  type: TsInterfaceDeclaration
-): ts.InterfaceDeclaration {
-  const typeParameters = type.typeParameters?.map((typeParam) =>
-    ts.factory.createTypeParameterDeclaration(
-      undefined,
-      ts.factory.createIdentifier(typeParam.name),
-      typeParam.constraint ? tsTypeToTypeNode(typeParam.constraint) : undefined,
-      typeParam.default ? tsTypeToTypeNode(typeParam.default) : undefined
-    )
+export function typeFromSymbol({
+  symbol,
+  checker,
+  sourceFile,
+  args = {},
+  stack: incomingStack = [],
+}: {
+  symbol: ts.Symbol;
+  checker: ts.TypeChecker;
+  sourceFile: ts.SourceFile;
+  args?: Record<string, Type>;
+  stack: string[];
+}): Type {
+  const symbolName = symbol.getName();
+
+  // Circular ref guard
+  if (incomingStack.includes(symbolName)) {
+    return {
+      kind: "reference",
+      url: sourceFile.fileName,
+      specifier: symbolName,
+      args: Object.values(args),
+    };
+  }
+  const stack = [...incomingStack, symbolName];
+
+  const declarations = symbol.getDeclarations();
+  if (!declarations || declarations.length === 0) {
+    return { kind: "unknown" };
+  }
+
+  // Check if at least one declaration is in the current source file
+  const isLocal = declarations.some(
+    (decl) => decl.getSourceFile().fileName === sourceFile.fileName
   );
 
-  const heritageClause = type.extends?.length
-    ? ts.factory.createHeritageClause(ts.SyntaxKind.ExtendsKeyword, [
-        ...type.extends.map((extendType) =>
-          ts.factory.createExpressionWithTypeArguments(
-            ts.factory.createIdentifier(extendType),
-            undefined
-          )
-        ),
-      ])
-    : undefined;
+  if (!isLocal) {
+    return {
+      kind: "reference",
+      url: declarations[0].getSourceFile().fileName,
+      specifier: symbol.getName(),
+      args: Object.values(args),
+    };
+  }
 
-  const members = type.members.map((member) => {
-    if (member.kind === "property") {
-      return ts.factory.createPropertySignature(
-        undefined,
-        ts.factory.createIdentifier(member.name),
-        member.optional
-          ? ts.factory.createToken(ts.SyntaxKind.QuestionToken)
-          : undefined,
-        tsTypeToTypeNode(member.type)
-      );
-    } else if (member.kind === "callSignature") {
-      const parameters = member.parameters.map((param) =>
-        ts.factory.createParameterDeclaration(
-          undefined,
-          undefined,
-          ts.factory.createIdentifier(param.name),
-          param.optional
-            ? ts.factory.createToken(ts.SyntaxKind.QuestionToken)
-            : undefined,
-          tsTypeToTypeNode(param.type)
-        )
-      );
+  const decl = declarations[0];
 
-      const callTypeParameters = member.typeParameters?.map((typeParam) =>
-        ts.factory.createTypeParameterDeclaration(
-          undefined,
-          ts.factory.createIdentifier(typeParam.name),
-          typeParam.constraint
-            ? tsTypeToTypeNode(typeParam.constraint)
-            : undefined,
-          typeParam.default ? tsTypeToTypeNode(typeParam.default) : undefined
-        )
-      );
+  if (ts.isTypeAliasDeclaration(decl)) {
+    return tsTypeFromTypeNode({ node: decl.type, checker, args, stack });
+  }
 
-      return ts.factory.createCallSignature(
-        callTypeParameters,
-        parameters,
-        tsTypeToTypeNode(member.returnType)
-      );
-    } else {
-      throw new Error(`Unsupported member kind: ${(member as any).kind}`);
-    }
-  });
+  if (ts.isInterfaceDeclaration(decl)) {
+    return tsTypeFromInterfaceDeclaration({
+      node: decl,
+      checker,
+      args,
+      stack,
+    });
+  }
 
-  return ts.factory.createInterfaceDeclaration(
-    undefined,
-    ts.factory.createIdentifier(type.name),
-    typeParameters,
-    heritageClause ? [heritageClause] : undefined,
-    members
-  );
-}
-
-export function tsInterfaceDeclarationFromNode(
-  node: ts.InterfaceDeclaration
-): TsInterfaceDeclaration {
-  const typeParameters = node.typeParameters?.map((typeParam) => ({
-    name: typeParam.name.text,
-    constraint: typeParam.constraint
-      ? tsTypeFromTypeNode(typeParam.constraint)
-      : undefined,
-    default: typeParam.default
-      ? tsTypeFromTypeNode(typeParam.default)
-      : undefined,
-  }));
-
-  const extendsClause = node.heritageClauses?.find(
-    (clause) => clause.token === ts.SyntaxKind.ExtendsKeyword
-  );
-
-  const extendsTypes = extendsClause?.types.map((type) => {
-    if (ts.isIdentifier(type.expression)) {
-      return type.expression.text;
-    } else {
-      return type.expression.getText();
-    }
-  });
-
-  const members = node.members.map((member) => {
-    if (ts.isPropertySignature(member)) {
-      const name = ts.isIdentifier(member.name)
-        ? member.name.text
-        : member.name?.getText() || "";
-
+  if (ts.isEnumDeclaration(decl)) {
+    const types: Type[] = decl.members.map((member) => {
+      const name = member.name.getText();
+      const value = checker.getConstantValue(member);
       return {
-        kind: "property" as const,
-        name,
-        type: member.type
-          ? tsTypeFromTypeNode(member.type)
-          : ({ kind: "any" } as TsType),
-        optional: !!member.questionToken,
+        kind: "literal",
+        value: typeof value !== "undefined" ? value : name,
       };
-    } else if (ts.isCallSignatureDeclaration(member)) {
-      const parameters = member.parameters.map((param) => ({
-        name: ts.isIdentifier(param.name)
-          ? param.name.text
-          : param.name.getText(),
-        type: param.type
-          ? tsTypeFromTypeNode(param.type)
-          : ({ kind: "any" } as TsType),
-        optional: !!param.questionToken,
-      }));
+    });
 
-      const typeParameters = member.typeParameters?.map((typeParam) => ({
-        name: typeParam.name.text,
-        constraint: typeParam.constraint
-          ? tsTypeFromTypeNode(typeParam.constraint)
-          : undefined,
-        default: typeParam.default
-          ? tsTypeFromTypeNode(typeParam.default)
-          : undefined,
-      }));
-
-      return {
-        kind: "callSignature" as const,
-        parameters,
-        returnType: member.type
-          ? tsTypeFromTypeNode(member.type)
-          : ({ kind: "void" } as TsType),
-        typeParameters,
-      };
-    } else {
-      throw new Error(`Unsupported member kind: ${ts.SyntaxKind[member.kind]}`);
-    }
-  });
+    return {
+      kind: "union",
+      types,
+    };
+  }
 
   return {
-    kind: "interface",
-    name: node.name.text,
-    typeParameters,
-    extends: extendsTypes,
-    members,
+    kind: "raw",
+    text: checker.symbolToString(symbol),
   };
 }
 
-export function tsEnumDeclarationToNode(
-  type: TsEnumDeclaration
-): ts.EnumDeclaration {
-  const members = type.members.map((member) => {
-    if (member.value !== undefined) {
-      let initializer: ts.Expression;
-      if (typeof member.value === "string") {
-        initializer = ts.factory.createStringLiteral(member.value);
-      } else if (typeof member.value === "number") {
-        initializer = ts.factory.createNumericLiteral(member.value);
-      } else {
-        throw new Error(
-          `Unsupported enum member value type: ${typeof member.value}`
-        );
-      }
+export function tsTypeFromInterfaceDeclaration({
+  node,
+  checker,
+  args,
+  stack,
+}: {
+  node: ts.InterfaceDeclaration;
+  checker: ts.TypeChecker;
+  args: Record<string, Type>;
+  stack: string[];
+}): Type {
+  // Extract own properties
+  const properties: TypeProperty[] = [];
+  for (const member of node.members) {
+    if (ts.isPropertySignature(member)) {
+      const name = ts.isIdentifier(member.name)
+        ? member.name.text
+        : member.name.getText();
+      const typeAnnotation = member.type;
+      properties.push({
+        kind: "property",
+        name,
+        type: typeAnnotation
+          ? tsTypeFromTypeNode({ node: typeAnnotation, checker, args, stack })
+          : { kind: "any" },
+        optional: Boolean(member.questionToken),
+      });
+    }
+  }
 
-      return ts.factory.createEnumMember(
-        ts.factory.createIdentifier(member.name),
-        initializer
-      );
-    } else {
-      return ts.factory.createEnumMember(
-        ts.factory.createIdentifier(member.name),
-        undefined
-      );
+  // Resolve local extended interfaces
+  const extendedTypes: Type[] = [];
+  node.heritageClauses?.forEach((clause) => {
+    if (clause.token === ts.SyntaxKind.ExtendsKeyword) {
+      clause.types.forEach((exprWithTypeArgs) => {
+        const expr = exprWithTypeArgs.expression;
+        const symbol = checker.getSymbolAtLocation(expr);
+        const decl = symbol?.getDeclarations()?.[0];
+        if (
+          decl &&
+          ts.isInterfaceDeclaration(decl) &&
+          decl.getSourceFile().fileName === node.getSourceFile().fileName
+        ) {
+          // Map type arguments for the extended interface
+          const typeArgMap: Record<string, Type> = {};
+          if (exprWithTypeArgs.typeArguments && decl.typeParameters) {
+            decl.typeParameters.forEach((param, idx) => {
+              const argNode = exprWithTypeArgs.typeArguments![idx];
+              typeArgMap[param.name.text] = tsTypeFromTypeNode({
+                node: argNode,
+                checker,
+                args,
+                stack,
+              });
+            });
+          }
+          extendedTypes.push(
+            tsTypeFromInterfaceDeclaration({
+              node: decl,
+              checker,
+              args: typeArgMap,
+              stack,
+            })
+          );
+        }
+      });
     }
   });
 
-  const modifiers = type.const
-    ? [ts.factory.createModifier(ts.SyntaxKind.ConstKeyword)]
-    : undefined;
-
-  return ts.factory.createEnumDeclaration(
-    modifiers,
-    ts.factory.createIdentifier(type.name),
-    members
-  );
-}
-
-export function tsEnumDeclarationFromNode(
-  node: ts.EnumDeclaration
-): TsEnumDeclaration {
-  const members = node.members.map((member) => {
-    const name = ts.isIdentifier(member.name)
-      ? member.name.text
-      : member.name.getText();
-
-    let value: string | number | undefined;
-    if (member.initializer) {
-      if (ts.isStringLiteral(member.initializer)) {
-        value = member.initializer.text;
-      } else if (ts.isNumericLiteral(member.initializer)) {
-        value = Number(member.initializer.text);
-      } else {
-        // For complex initializers, we could evaluate them or store as raw text
-        // For now, we'll leave them undefined
-        value = undefined;
-      }
-    }
-
+  // Merge extended types via intersection, or return a simple object
+  if (extendedTypes.length > 0) {
     return {
-      name,
-      value,
+      kind: "intersection",
+      types: [
+        ...extendedTypes,
+        {
+          kind: "object",
+          properties,
+        },
+      ],
     };
-  });
-
-  const isConst = node.modifiers?.some(
-    (modifier) => modifier.kind === ts.SyntaxKind.ConstKeyword
-  );
+  }
 
   return {
-    kind: "enum",
-    name: node.name.text,
-    members,
-    const: isConst,
+    kind: "object",
+    properties,
   };
 }

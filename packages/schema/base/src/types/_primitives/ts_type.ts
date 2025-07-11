@@ -1,226 +1,109 @@
-export type TsType =
-  | TsPrimitiveType
-  | TsLiteralType
-  | TsArrayType
-  | TsTupleType
-  | TsUnionType
-  | TsIntersectionType
-  | TsObjectType
-  | TsFunctionType
-  | TsConditionalType
-  | TsMappedType
-  | TsInferType
-  | TsUnknownType
-  | TsAnyType
-  | TsVoidType
-  | TsNeverType
-  | TsNullType
-  | TsUndefinedType
-  | TsTemplateLiteralType
-  | TsTypeLiteral
-  | TsTypeReference
-  | TsRawType;
+export type Type =
+  | PrimitiveType
+  | LiteralType
+  | ArrayType
+  | TupleType
+  | UnionType
+  | IntersectionType
+  | ObjectType
+  | FunctionType
+  | UnknownType
+  | AnyType
+  | VoidType
+  | NeverType
+  | NullType
+  | UndefinedType
+  | TypeReference
+  | RawType;
 
-// Core Types
-export interface TsPrimitiveType {
+export interface PrimitiveType {
   kind: "primitive";
   name: "string" | "number" | "boolean" | "symbol" | "bigint";
 }
 
-export interface TsLiteralType {
+export interface LiteralType {
   kind: "literal";
   value: string | number | boolean | null;
 }
 
-export interface TsArrayType {
+export interface ArrayType {
   kind: "array";
-  elementType: TsType;
+  elementType: Type;
 }
 
-export interface TsTupleType {
+export interface TupleType {
   kind: "tuple";
-  elements: TsType[];
+  elements: Type[];
 }
 
-export interface TsUnionType {
+export interface UnionType {
   kind: "union";
-  types: TsType[];
+  types: Type[];
 }
 
-export interface TsIntersectionType {
+export interface IntersectionType {
   kind: "intersection";
-  types: TsType[];
+  types: Type[];
 }
 
-export interface TsObjectType {
+export interface ObjectType {
   kind: "object";
-  properties: TsProperty[];
-  indexSignature?: TsIndexSignature;
+  properties: TypeProperty[];
+  index?: {
+    keyType?: Type;
+    valueType?: Type;
+  };
 }
 
-export interface TsFunctionType {
+export interface FunctionType {
   kind: "function";
-  parameters: TsParameter[];
-  returnType: TsType;
-  typeParameters?: TsTypeParameter[];
+  parameters: TypeParameter[];
+  returnType: Type;
 }
 
-export interface TsTypeReference {
-  kind: "typeReference";
-  name: string;
-  typeArguments?: TsType[];
+export interface TypeReference {
+  kind: "reference";
+  url: string;
+  specifier?: string;
+  args?: Type[];
 }
 
-export interface TsTypeLiteral {
-  kind: "typeLiteral";
-  members: TsTypeLiteralMember[];
-}
-
-export interface TsProperty extends TsModifiers {
+export interface TypeProperty {
   kind: "property";
   name: string;
-  type: TsType;
-  decorators?: TsDecorator[];
+  type: Type;
+  optional?: boolean;
 }
 
-export interface TsParameter extends TsModifiers {
+export interface TypeParameter {
   name: string;
-  type: TsType;
+  type: Type;
+  optional?: boolean;
 }
-
-export interface TsIndexSignature {
-  keyType: "string" | "number";
-  valueType: TsType;
-}
-
-export type TsTypeLiteralMember = TsProperty | TsCallSignature;
-
-export interface TsCallSignature {
-  kind: "callSignature";
-  parameters: TsParameter[];
-  returnType: TsType;
-  typeParameters?: TsTypeParameter[];
-}
-
-export interface TsTypeParameter {
-  name: string;
-  constraint?: TsType;
-  default?: TsType;
-}
-
-// Advanced Types
-export interface TsConditionalType {
-  kind: "conditional";
-  checkType: TsType;
-  extendsType: TsType;
-  trueType: TsType;
-  falseType: TsType;
-}
-
-export interface TsMappedType {
-  kind: "mapped";
-  parameter: string;
-  constraint?: TsType;
-  nameType?: TsType;
-  valueType: TsType;
-  optionalModifier?: "+" | "-";
-  readonlyModifier?: "+" | "-";
-}
-
-export interface TsInferType {
-  kind: "infer";
-  name: string;
-}
-
-export interface TsTemplateLiteralType {
-  kind: "templateLiteral";
-  head: string;
-  spans: TsTemplateSpan[];
-}
-
-export interface TsTemplateSpan {
-  type: TsType;
-  literal: string;
-}
-
-// Special Atomic Types
-export interface TsUnknownType {
+export interface UnknownType {
   kind: "unknown";
 }
-
-export interface TsAnyType {
+export interface AnyType {
   kind: "any";
 }
 
-export interface TsVoidType {
+export interface VoidType {
   kind: "void";
 }
 
-export interface TsNeverType {
+export interface NeverType {
   kind: "never";
 }
 
-export interface TsNullType {
+export interface NullType {
   kind: "null";
 }
 
-export interface TsUndefinedType {
+export interface UndefinedType {
   kind: "undefined";
 }
 
-// Modifiers & Decorators
-export interface TsModifiers {
-  optional?: boolean;
-  readonly?: boolean;
-}
-
-export interface TsDecorator {
-  name: string;
-  arguments?: any[];
-}
-
-export interface TsRawType {
+export interface RawType {
   kind: "raw";
   text: string;
 }
-
-// Alias
-
-export type TsTypeAlias = {
-  kind: "alias";
-  name: string;
-  type: TsType;
-  typeParameters?: {
-    name: string;
-    constraint?: TsType;
-    default?: TsType;
-  }[];
-};
-
-// Interface
-
-export type TsInterfaceDeclaration = {
-  kind: "interface";
-  name: string;
-  typeParameters?: {
-    name: string;
-    constraint?: TsType;
-    default?: TsType;
-  }[];
-  extends?: string[]; // Could be upgraded to TsTypeReference[] if needed
-  members: TsTypeLiteralMember[];
-};
-
-// Enums
-
-export type TsEnumDeclaration = {
-  kind: "enum";
-  name: string;
-  members: { name: string; value?: string | number }[];
-  const?: boolean; // Optional, to track `const enum`
-};
-
-export type TsTypeDeclarationLike =
-  | TsTypeAlias
-  | TsInterfaceDeclaration
-  | TsEnumDeclaration;

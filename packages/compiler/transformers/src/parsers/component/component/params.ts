@@ -1,6 +1,6 @@
 import type { ComponentData } from "@elllphnt/elementa-base";
+import { tsTypeFromTypeNode } from "@elllphnt/elementa-transformer-primitives";
 import {
-  Node,
   type ArrowFunction,
   type FunctionDeclaration,
   type FunctionExpression,
@@ -19,16 +19,9 @@ export function parseComponentFunctionParams({
     return;
   } else {
     const p = params[0];
-    const propNode = p.getTypeNode();
-    if (!propNode) {
-      return;
-    } else if (Node.isTypeReference(propNode)) {
-      const typeName = propNode.getTypeName().getText();
-      componentData.propsName = typeName;
-    } else {
-      throw new Error(
-        `Unexpected type node for component props: ${propNode.getText()}`
-      );
+    const typenode = p.getTypeNode();
+    if (typenode) {
+      componentData.props = tsTypeFromTypeNode(typenode.compilerNode);
     }
   }
 }

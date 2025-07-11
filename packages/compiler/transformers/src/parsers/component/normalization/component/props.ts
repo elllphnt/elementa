@@ -25,6 +25,21 @@ export function normalizeComponentProps(node: ParameterDeclaration) {
       `Unexpected node ${node.getKindName()} as props parameter: ${node.getText()}`,
     );
   }
+
+  // extract type if not an identifier
+  // const typeNode = node.getTypeNode();
+  // if (typeNode && !Node.isIdentifier(typeNode)) {
+  //   const typeText = typeNode.getText();
+  //   const typeName = "Props";
+  //   const sourceFile = node.getSourceFile();
+  //   freeNameInScope(sourceFile, typeName);
+  //   sourceFile.addTypeAlias({
+  //     name: typeName,
+  //     isExported: true,
+  //     type: typeText,
+  //   });
+  //   typeNode.replaceWithText(typeName);
+  // }
 }
 export function normalizeComponentLegacyRef(node: ParameterDeclaration) {
   const nameNode = node.getNameNode();

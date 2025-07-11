@@ -1,18 +1,12 @@
 import { z } from "zod";
 import { type ResolvableOrEvaluable } from "../../_primitives/_.js";
-import type { BaseElementData} from "./_base.js";
+import type { BaseElementData } from "./_base.js";
 import { baseElementDataSchema } from "./_base.js";
-import type {
-  ElementContainerData} from "./_common/container.js";
-import {
-  elementContainerDataSchema,
-} from "./_common/container.js";
-import type {
-  InteractiveData} from "./_common/interactive.js";
-import {
-  interactiveDataSchema,
-} from "./_common/interactive.js";
-import type { StylableData} from "./_common/stylable.js";
+import type { ElementContainerData } from "./_common/container.js";
+import { elementContainerDataSchema } from "./_common/container.js";
+import type { InteractiveData } from "./_common/interactive.js";
+import { interactiveDataSchema } from "./_common/interactive.js";
+import type { StylableData } from "./_common/stylable.js";
 import { stylableDataSchema } from "./_common/stylable.js";
 
 // Types
@@ -24,8 +18,8 @@ export type SlotFillData = StylableData &
 export type ComponentElementData = BaseElementData<"component"> &
   ElementContainerData & {
     componentUrl?: string;
-    props?: Record<string, ResolvableOrEvaluable<any>>;
     fills?: Record<string, SlotFillData>;
+    props?: ResolvableOrEvaluable;
   };
 
 // Schemas
