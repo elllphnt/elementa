@@ -1,5 +1,5 @@
 import type { ComponentData } from "@elllphnt/elementa-base";
-import { tsTypeFromTypeNode } from "@elllphnt/elementa-transformer-primitives";
+import { typeFromTypeNode } from "@elllphnt/elementa-transformer-primitives";
 import {
   type ArrowFunction,
   type FunctionDeclaration,
@@ -21,7 +21,10 @@ export function parseComponentFunctionParams({
     const p = params[0];
     const typenode = p.getTypeNode();
     if (typenode) {
-      componentData.props = tsTypeFromTypeNode(typenode.compilerNode);
+      componentData.props = typeFromTypeNode({
+        node: typenode.compilerNode,
+        checker: typenode.getProject().getTypeChecker().compilerObject,
+      });
     }
   }
 }

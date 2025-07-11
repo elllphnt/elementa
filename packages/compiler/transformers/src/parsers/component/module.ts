@@ -1,12 +1,4 @@
-import type {
-  ComponentData,
-  TsTypeDeclarationLike,
-} from "@elllphnt/elementa-base";
-import {
-  tsEnumDeclarationFromNode,
-  tsInterfaceDeclarationFromNode,
-  tsTypeFromTypeNode,
-} from "@elllphnt/elementa-transformer-primitives";
+import type { ComponentData } from "@elllphnt/elementa-base";
 import { Node } from "ts-morph";
 import type { ResolvedExportNode } from "../../libs/ts/export.js";
 import { resolveExportValueNodes } from "../../libs/ts/export.js";
@@ -37,40 +29,6 @@ export function parseComponentModule(sourceCode: string): ComponentData {
     if (exportName === "styles" || exportName === "css") {
       stylesNode = exprt;
     }
-  }
-
-  // types
-
-  const types: TsTypeDeclarationLike[] = [];
-  for (const type of sourceFile.getTypeAliases()) {
-    const name = type.getName();
-    const typeNode = type.getTypeNodeOrThrow().compilerNode;
-    types.push({
-      kind: "alias",
-      name,
-      type: tsTypeFromTypeNode(typeNode),
-      typeParameters: type.getTypeParameters().map((tp) => {
-        const constraint = tp.getConstraint();
-        const defaultType = tp.getDefault();
-        return {
-          name: tp.getName(),
-          constraint: constraint
-            ? tsTypeFromTypeNode(constraint.compilerNode)
-            : undefined,
-          default: defaultType
-            ? tsTypeFromTypeNode(defaultType.compilerNode)
-            : undefined,
-        };
-      }),
-    });
-  }
-  for (const interfaceDecl of sourceFile.getInterfaces()) {
-    const typeNode = interfaceDecl.compilerNode;
-    types.push(tsInterfaceDeclarationFromNode(typeNode));
-  }
-  for (const enumDecl of sourceFile.getEnums()) {
-    const typeNode = enumDecl.compilerNode;
-    types.push(tsEnumDeclarationFromNode(typeNode));
   }
 
   if (!defaultExport) {

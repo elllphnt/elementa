@@ -6,7 +6,7 @@ import type {
 } from "ts-morph";
 import { Node } from "ts-morph";
 import { isComponentNode } from "../../../libs/ts/code.js";
-import { parseComponentFunctionBody } from "./body.js";
+import { parseComponentFunctionBody } from "./body/body.js";
 import { parseComponentFunctionParams } from "./params.js";
 
 export function parseComponentFunction({

@@ -5,7 +5,7 @@ import type {
 } from "@elllphnt/elementa-base";
 import {
   printTypeNode,
-  tsTypeToTypeNode,
+  typeToTypeNode,
 } from "@elllphnt/elementa-transformer-primitives";
 import { Project, VariableDeclarationKind } from "ts-morph";
 
@@ -17,7 +17,7 @@ export function compileState(state: StateData): string {
       const initValue = state.init ? compileInitValue(state.init) : "undefined";
       const typeAnnotation = state.tsType ? `<${state.tsType}>` : "";
       return `const [${varName}, set${capitalize(
-        varName
+        varName,
       )}] = useState${typeAnnotation}(${initValue});`;
     }
 
@@ -53,7 +53,7 @@ function compileInitValue(init: any): string {
 
 function compileHookArgs(
   args: Record<string, any>,
-  argMode: "positional" | "named"
+  argMode: "positional" | "named",
 ): string {
   const entries = Object.entries(args);
 
@@ -134,7 +134,7 @@ function compileElement(element: ElementData): string {
         ? Object.entries(element.props)
             .map(
               ([key, value]) =>
-                `${key}={${compileResolvableOrEvaluable(value)}}`
+                `${key}={${compileResolvableOrEvaluable(value)}}`,
             )
             .join(" ")
         : "";
@@ -154,7 +154,7 @@ function compileElement(element: ElementData): string {
         ? Object.entries(element.props)
             .map(
               ([key, value]) =>
-                `${key}={${compileResolvableOrEvaluable(value)}}`
+                `${key}={${compileResolvableOrEvaluable(value)}}`,
             )
             .join(" ")
         : "";
@@ -231,12 +231,12 @@ function compileBaseElementProps(element: ElementData): string {
   // Accessibility props
   if (element.ariaLabel) {
     props.push(
-      `aria-label={${compileResolvableOrEvaluable(element.ariaLabel)}}`
+      `aria-label={${compileResolvableOrEvaluable(element.ariaLabel)}}`,
     );
   }
   if (element.ariaHidden) {
     props.push(
-      `aria-hidden={${compileResolvableOrEvaluable(element.ariaHidden)}}`
+      `aria-hidden={${compileResolvableOrEvaluable(element.ariaHidden)}}`,
     );
   }
   if (element.ariaRole) {
@@ -351,7 +351,7 @@ function compileVectorProps(element: any): string {
   }
   if (element.preserveAspectRatio) {
     props.push(
-      `preserveAspectRatio={${compileEvaluable(element.preserveAspectRatio)}}`
+      `preserveAspectRatio={${compileEvaluable(element.preserveAspectRatio)}}`,
     );
   }
 
@@ -386,11 +386,11 @@ export function compileComponent(data: ComponentData): string {
   const componentName = data.name || "Component";
   const propsTypeName = `${componentName}Props`;
 
-  const propsType = tsTypeToTypeNode(
+  const propsType = typeToTypeNode(
     data.props?.type || {
       kind: "typeLiteral",
       members: [],
-    }
+    },
   );
 
   const states: string[] =

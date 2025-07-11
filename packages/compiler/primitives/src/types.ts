@@ -32,7 +32,7 @@ export function printTypeNode(typeNode: ts.TypeNode): string {
   return printer.printNode(ts.EmitHint.Unspecified, typeNode, dummySource);
 }
 
-export function tsTypeToTypeNode(type: Type): ts.TypeNode {
+export function typeToTypeNode(type: Type): ts.TypeNode {
   switch (type.kind) {
     case "primitive": {
       switch (type.name) {
@@ -72,21 +72,21 @@ export function tsTypeToTypeNode(type: Type): ts.TypeNode {
       }
     }
     case "array": {
-      return ts.factory.createArrayTypeNode(tsTypeToTypeNode(type.elementType));
+      return ts.factory.createArrayTypeNode(typeToTypeNode(type.elementType));
     }
     case "tuple": {
       return ts.factory.createTupleTypeNode(
-        type.elements.map((element) => tsTypeToTypeNode(element))
+        type.elements.map((element) => typeToTypeNode(element))
       );
     }
     case "union": {
       return ts.factory.createUnionTypeNode(
-        type.types.map((unionType) => tsTypeToTypeNode(unionType))
+        type.types.map((unionType) => typeToTypeNode(unionType))
       );
     }
     case "intersection": {
       return ts.factory.createIntersectionTypeNode(
-        type.types.map((intersectionType) => tsTypeToTypeNode(intersectionType))
+        type.types.map((intersectionType) => typeToTypeNode(intersectionType))
       );
     }
     case "object": {
@@ -97,12 +97,12 @@ export function tsTypeToTypeNode(type: Type): ts.TypeNode {
           prop.optional
             ? ts.factory.createToken(ts.SyntaxKind.QuestionToken)
             : undefined,
-          tsTypeToTypeNode(prop.type)
+          typeToTypeNode(prop.type)
         );
         return signature;
       });
 
-      const indexSignature = type.indexSignature
+      const indexSignature = type.index
         ? ts.factory.createIndexSignature(
             undefined,
             [
@@ -111,16 +111,16 @@ export function tsTypeToTypeNode(type: Type): ts.TypeNode {
                 undefined,
                 ts.factory.createIdentifier("key"),
                 undefined,
-                type.indexSignature.keyType === "string"
-                  ? ts.factory.createKeywordTypeNode(
-                      ts.SyntaxKind.StringKeyword
-                    )
+                type.index.keyType
+                  ? typeToTypeNode(type.index.keyType)
                   : ts.factory.createKeywordTypeNode(
-                      ts.SyntaxKind.NumberKeyword
+                      ts.SyntaxKind.StringKeyword
                     )
               ),
             ],
-            tsTypeToTypeNode(type.indexSignature.valueType)
+            type.index.valueType
+              ? typeToTypeNode(type.index.valueType)
+              : ts.factory.createKeywordTypeNode(ts.SyntaxKind.AnyKeyword)
           )
         : undefined;
 
@@ -138,134 +138,21 @@ export function tsTypeToTypeNode(type: Type): ts.TypeNode {
           param.optional
             ? ts.factory.createToken(ts.SyntaxKind.QuestionToken)
             : undefined,
-          tsTypeToTypeNode(param.type)
-        )
-      );
-
-      const typeParameters = type.typeParameters?.map((typeParam) =>
-        ts.factory.createTypeParameterDeclaration(
-          undefined,
-          ts.factory.createIdentifier(typeParam.name),
-          typeParam.constraint
-            ? tsTypeToTypeNode(typeParam.constraint)
-            : undefined,
-          typeParam.default ? tsTypeToTypeNode(typeParam.default) : undefined
+          typeToTypeNode(param.type)
         )
       );
 
       return ts.factory.createFunctionTypeNode(
-        typeParameters,
+        undefined,
         parameters,
-        tsTypeToTypeNode(type.returnType)
+        typeToTypeNode(type.returnType)
       );
     }
-    case "typeReference": {
-      const typeArguments = type.typeArguments?.map((arg) =>
-        tsTypeToTypeNode(arg)
-      );
+    case "reference": {
+      const typeArguments = type.args?.map((arg) => typeToTypeNode(arg));
       return ts.factory.createTypeReferenceNode(
-        ts.factory.createIdentifier(type.name),
+        ts.factory.createIdentifier(type.specifier || "UnknownReference"),
         typeArguments
-      );
-    }
-    case "typeLiteral": {
-      const literalMembers = type.members.map((member) => {
-        if (member.kind === "property") {
-          return ts.factory.createPropertySignature(
-            undefined,
-            ts.factory.createIdentifier(member.name),
-            member.optional
-              ? ts.factory.createToken(ts.SyntaxKind.QuestionToken)
-              : undefined,
-            tsTypeToTypeNode(member.type)
-          );
-        } else if (member.kind === "callSignature") {
-          const callParameters = member.parameters.map((param) =>
-            ts.factory.createParameterDeclaration(
-              undefined,
-              undefined,
-              ts.factory.createIdentifier(param.name),
-              param.optional
-                ? ts.factory.createToken(ts.SyntaxKind.QuestionToken)
-                : undefined,
-              tsTypeToTypeNode(param.type)
-            )
-          );
-
-          const callTypeParameters = member.typeParameters?.map((typeParam) =>
-            ts.factory.createTypeParameterDeclaration(
-              undefined,
-              ts.factory.createIdentifier(typeParam.name),
-              typeParam.constraint
-                ? tsTypeToTypeNode(typeParam.constraint)
-                : undefined,
-              typeParam.default
-                ? tsTypeToTypeNode(typeParam.default)
-                : undefined
-            )
-          );
-
-          return ts.factory.createCallSignature(
-            callTypeParameters,
-            callParameters,
-            tsTypeToTypeNode(member.returnType)
-          );
-        } else {
-          throw new Error(`Unsupported member kind: ${(member as any).kind}`);
-        }
-      });
-
-      return ts.factory.createTypeLiteralNode(literalMembers);
-    }
-    case "conditional": {
-      return ts.factory.createConditionalTypeNode(
-        tsTypeToTypeNode(type.checkType),
-        tsTypeToTypeNode(type.extendsType),
-        tsTypeToTypeNode(type.trueType),
-        tsTypeToTypeNode(type.falseType)
-      );
-    }
-    case "mapped": {
-      return ts.factory.createMappedTypeNode(
-        type.readonlyModifier === "+"
-          ? ts.factory.createToken(ts.SyntaxKind.ReadonlyKeyword)
-          : type.readonlyModifier === "-"
-          ? ts.factory.createToken(ts.SyntaxKind.MinusToken)
-          : undefined,
-        ts.factory.createTypeParameterDeclaration(
-          undefined,
-          ts.factory.createIdentifier(type.parameter),
-          type.constraint ? tsTypeToTypeNode(type.constraint) : undefined
-        ),
-        type.nameType ? tsTypeToTypeNode(type.nameType) : undefined,
-        type.optionalModifier === "+"
-          ? ts.factory.createToken(ts.SyntaxKind.QuestionToken)
-          : type.optionalModifier === "-"
-          ? ts.factory.createToken(ts.SyntaxKind.MinusToken)
-          : undefined,
-        tsTypeToTypeNode(type.valueType),
-        undefined
-      );
-    }
-    case "infer": {
-      return ts.factory.createInferTypeNode(
-        ts.factory.createTypeParameterDeclaration(
-          undefined,
-          ts.factory.createIdentifier(type.name)
-        )
-      );
-    }
-    case "templateLiteral": {
-      const spans = type.spans.map((span) =>
-        ts.factory.createTemplateLiteralTypeSpan(
-          tsTypeToTypeNode(span.type),
-          ts.factory.createTemplateMiddle(span.literal)
-        )
-      );
-
-      return ts.factory.createTemplateLiteralType(
-        ts.factory.createTemplateHead(type.head),
-        spans
       );
     }
     case "unknown": {
@@ -295,7 +182,7 @@ export function tsTypeToTypeNode(type: Type): ts.TypeNode {
   }
 }
 
-export function tsTypeFromTypeNode({
+export function typeFromTypeNode({
   node,
   checker,
   args = {},
@@ -303,8 +190,8 @@ export function tsTypeFromTypeNode({
 }: {
   node: ts.TypeNode;
   checker: ts.TypeChecker;
-  args: Record<string, Type>;
-  stack: string[];
+  args?: Record<string, Type>;
+  stack?: string[];
 }): Type {
   switch (node.kind) {
     case ts.SyntaxKind.StringKeyword:
@@ -353,7 +240,7 @@ export function tsTypeFromTypeNode({
       const arrayNode = node as ts.ArrayTypeNode;
       return {
         kind: "array",
-        elementType: tsTypeFromTypeNode({
+        elementType: typeFromTypeNode({
           node: arrayNode.elementType,
           checker,
           args,
@@ -366,7 +253,7 @@ export function tsTypeFromTypeNode({
       return {
         kind: "tuple",
         elements: tupleNode.elements.map((element) =>
-          tsTypeFromTypeNode({ node: element, checker, args, stack })
+          typeFromTypeNode({ node: element, checker, args, stack })
         ),
       };
     }
@@ -375,7 +262,7 @@ export function tsTypeFromTypeNode({
       return {
         kind: "union",
         types: unionNode.types.map((type) =>
-          tsTypeFromTypeNode({ node: type, checker, args, stack })
+          typeFromTypeNode({ node: type, checker, args, stack })
         ),
       };
     }
@@ -384,7 +271,7 @@ export function tsTypeFromTypeNode({
       return {
         kind: "intersection",
         types: intersectionNode.types.map((type) =>
-          tsTypeFromTypeNode({ node: type, checker, args, stack })
+          typeFromTypeNode({ node: type, checker, args, stack })
         ),
       };
     }
@@ -396,7 +283,7 @@ export function tsTypeFromTypeNode({
           ? param.name.text
           : param.name.getText(),
         type: param.type
-          ? tsTypeFromTypeNode({ node: param.type, checker, args, stack })
+          ? typeFromTypeNode({ node: param.type, checker, args, stack })
           : ({ kind: "any" } as Type),
         optional: !!param.questionToken,
       }));
@@ -404,7 +291,7 @@ export function tsTypeFromTypeNode({
       return {
         kind: "function",
         parameters,
-        returnType: tsTypeFromTypeNode({
+        returnType: typeFromTypeNode({
           node: functionNode.type,
           checker,
           args,
@@ -439,7 +326,7 @@ export function tsTypeFromTypeNode({
             kind: "property",
             name,
             type: member.type
-              ? tsTypeFromTypeNode({ node: member.type, checker, args, stack })
+              ? typeFromTypeNode({ node: member.type, checker, args, stack })
               : ({ kind: "any" } as Type),
             optional: !!member.questionToken,
           });
@@ -451,7 +338,7 @@ export function tsTypeFromTypeNode({
           if (member.parameters.length > 0) {
             const param = member.parameters[0];
             if (param.type) {
-              index.keyType = tsTypeFromTypeNode({
+              index.keyType = typeFromTypeNode({
                 node: param.type,
                 checker,
                 args,
@@ -461,7 +348,7 @@ export function tsTypeFromTypeNode({
           }
 
           if (member.type) {
-            index.valueType = tsTypeFromTypeNode({
+            index.valueType = typeFromTypeNode({
               node: member.type,
               checker,
               args,
@@ -482,7 +369,7 @@ export function tsTypeFromTypeNode({
       const typeNameNode = typeRefNode.typeName;
       const typeName = typeNameNode.getText();
       const typeArgs = typeRefNode.typeArguments?.map((arg) =>
-        tsTypeFromTypeNode({ node: arg, checker, args, stack })
+        typeFromTypeNode({ node: arg, checker, args, stack })
       );
 
       const symbol = checker.getSymbolAtLocation(typeNameNode);
@@ -571,11 +458,11 @@ export function typeFromSymbol({
   const decl = declarations[0];
 
   if (ts.isTypeAliasDeclaration(decl)) {
-    return tsTypeFromTypeNode({ node: decl.type, checker, args, stack });
+    return typeFromTypeNode({ node: decl.type, checker, args, stack });
   }
 
   if (ts.isInterfaceDeclaration(decl)) {
-    return tsTypeFromInterfaceDeclaration({
+    return typeFromInterfaceDeclaration({
       node: decl,
       checker,
       args,
@@ -599,13 +486,26 @@ export function typeFromSymbol({
     };
   }
 
+  if (ts.isImportSpecifier(decl)) {
+    const specifier = decl.propertyName || decl.name;
+    const importClause = decl.parent.parent;
+    const moduleSpecifier = importClause.parent.moduleSpecifier.getText();
+    const moduleName = moduleSpecifier.replace(/['"]/g, ""); // Remove quotes
+    return {
+      kind: "reference",
+      url: moduleName,
+      specifier: specifier.getText(),
+      args: Object.values(args),
+    };
+  }
+
   return {
     kind: "raw",
     text: checker.symbolToString(symbol),
   };
 }
 
-export function tsTypeFromInterfaceDeclaration({
+export function typeFromInterfaceDeclaration({
   node,
   checker,
   args,
@@ -628,7 +528,7 @@ export function tsTypeFromInterfaceDeclaration({
         kind: "property",
         name,
         type: typeAnnotation
-          ? tsTypeFromTypeNode({ node: typeAnnotation, checker, args, stack })
+          ? typeFromTypeNode({ node: typeAnnotation, checker, args, stack })
           : { kind: "any" },
         optional: Boolean(member.questionToken),
       });
@@ -653,7 +553,7 @@ export function tsTypeFromInterfaceDeclaration({
           if (exprWithTypeArgs.typeArguments && decl.typeParameters) {
             decl.typeParameters.forEach((param, idx) => {
               const argNode = exprWithTypeArgs.typeArguments![idx];
-              typeArgMap[param.name.text] = tsTypeFromTypeNode({
+              typeArgMap[param.name.text] = typeFromTypeNode({
                 node: argNode,
                 checker,
                 args,
@@ -662,7 +562,7 @@ export function tsTypeFromInterfaceDeclaration({
             });
           }
           extendedTypes.push(
-            tsTypeFromInterfaceDeclaration({
+            typeFromInterfaceDeclaration({
               node: decl,
               checker,
               args: typeArgMap,

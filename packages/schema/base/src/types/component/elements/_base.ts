@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { Evaluable } from "../../_primitives/_.js";
 import {
   type IdentifiableData,
   identifiableDataSchema,
@@ -9,7 +10,8 @@ import type {
   InteractiveData,
   LinkableData,
   RepeatableData,
-  StylableData} from "./_common/_.js";
+  StylableData,
+} from "./_common/_.js";
 import {
   accessibleDataSchema,
   conditionalDataSchema,
@@ -21,7 +23,9 @@ import {
 
 // Types
 
-export type BaseElementData<T extends string> = IdentifiableData &
+export type ElementRawAttribute = [string, Evaluable | undefined] | Evaluable;
+
+export type BaseElementData<T extends string = string> = IdentifiableData &
   StylableData &
   RepeatableData &
   ConditionalData &
@@ -31,6 +35,7 @@ export type BaseElementData<T extends string> = IdentifiableData &
     type: T;
     name?: string;
     tag?: string;
+    raw?: ElementRawAttribute[];
   };
 
 // Schemas

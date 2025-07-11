@@ -7,7 +7,6 @@ import type {
 import { genId } from "@elllphnt/elementa-base";
 import type { CreateFragment } from "./_types.js";
 import type { GetStylesheet } from "./base_element.js";
-import { extractElementsFromNode } from "./element.js";
 import { generateExpressionSource } from "./utils/generate.js";
 
 export function parseElllShowElementNode({
