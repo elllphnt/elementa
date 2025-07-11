@@ -1,6 +1,7 @@
 import { genId, type ComponentData } from "@elllphnt/elementa-base";
 import type {
   ArrowFunction,
+  Expression,
   FunctionDeclaration,
   FunctionExpression,
 } from "ts-morph";
@@ -78,10 +79,19 @@ export function parseComponentFunctionBody({
     } else if (Node.isExpressionStatement(statement)) {
       const expression = statement.getExpression();
       if (Node.isCallExpression(expression)) {
-        const callee = expression.getExpression();
+        let callee: Expression = expression.getExpression();
+        while (Node.isParenthesizedExpression(callee)) {
+          callee = callee.getExpression();
+        }
+
         const calleeName = callee?.getText();
 
-        if (calleeName && isHookName(calleeName)) {
+        if (Node.isArrowFunction(callee) || Node.isFunctionExpression(callee)) {
+          const state = parseInlineStateExpression({
+            fn: callee,
+          });
+          componentData.states = [...(componentData.states || []), state];
+        } else if (calleeName && isHookName(calleeName)) {
           // Handle state_x(...)
           const state = parseStateExpression({
             call: expression,

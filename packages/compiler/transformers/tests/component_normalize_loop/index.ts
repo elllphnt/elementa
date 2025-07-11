@@ -1,7 +1,7 @@
 import { useGenId } from "@elllphnt/elementa-base";
 import * as diff from "diff";
 import { join } from "path";
-import { denormalizeComponentFunction } from "~/compilers/denormalization/denormalize.js";
+import { denormalizeComponentFunction } from "~/compilers/component/denormalization/denormalize.js";
 import { normalizeComponentFunction } from "../../src/parsers/component/normalization/component/component.js";
 import {
   createTestProject,

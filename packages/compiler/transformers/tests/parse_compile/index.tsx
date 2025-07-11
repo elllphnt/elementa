@@ -1,7 +1,4 @@
 import { isValidFileType } from "@elllphnt/elementa-base";
-import { compileResource } from "@elllphnt/elementa-compiler";
-import { parseResource } from "@elllphnt/elementa-parser";
-import { standardizeResource } from "@elllphnt/elementa-standardizer";
 import {
   elementaFileRefFromPosixPath,
   getFileExtensions,
@@ -12,14 +9,17 @@ import { diffLines } from "diff"; // ⬅️ Add this
 import fs from "fs/promises";
 import path from "path";
 import { format, plugins } from "pretty-format";
+import { compileResource, parseResource } from "~/index.js";
+import { getDirname } from "../utils/test.js";
 import { setupEnv } from "./setup.js";
 
 setupEnv();
 
+const __dirname = getDirname(import.meta.url);
+
 // Directories
-const baseDir = path.resolve("stages");
+const baseDir = path.resolve(__dirname, "stages");
 const inputDir = path.join(baseDir, "input");
-const stdDir = path.join(baseDir, "standardized");
 const parsedDir = path.join(baseDir, "parsed");
 const genDir = path.join(baseDir, "generated");
 
@@ -36,7 +36,7 @@ async function ensureDir(dirPath: string) {
 async function writeFileWithDirs(
   filePath: string,
   content: string,
-  encoding: BufferEncoding = "utf8"
+  encoding: BufferEncoding = "utf8",
 ) {
   const dir = path.dirname(filePath);
   await ensureDir(dir);
@@ -76,27 +76,35 @@ async function run() {
       const extension = getFileExtensions(type)[0];
       const parseExtension = getParsedFileExtensions(type)[0];
 
-      const stdPath = path.join(stdDir, `${ref.path}${extension}`);
-      const parsedPath = path.join(parsedDir, `${ref.path}${parseExtension}`);
-      const genPath = path.join(genDir, `${ref.path}${extension}`);
+      const parsedPath1 = path.join(
+        parsedDir,
+        `${ref.path}.1${parseExtension}`,
+      );
+      const parsedPath2 = path.join(
+        parsedDir,
+        `${ref.path}.2${parseExtension}`,
+      );
+      const genPath1 = path.join(genDir, `${ref.path}.1${extension}`);
+      const genPath2 = path.join(genDir, `${ref.path}.2${extension}`);
 
-      // 1. Read & standardize
       const inputCode = await fs.readFile(inputPath, "utf8");
-      const stdCode = standardizeResource(type, inputCode).trim();
-      await writeFileWithDirs(stdPath, serializeData(stdCode));
 
-      // 2. Parse standardized code
-      const parsed = parseResource(type, stdCode);
-      await writeFileWithDirs(parsedPath, serializeData(parsed));
+      const parsed1 = parseResource(type, inputCode);
+      await writeFileWithDirs(parsedPath1, serializeData(parsed1));
 
-      // 3. Generate TSX from parsed
-      const genCode = compileResource(type, parsed).trim();
-      await writeFileWithDirs(genPath, genCode);
+      const genCode1 = compileResource(type, parsed1).trim();
+      await writeFileWithDirs(genPath1, genCode1);
+
+      const parsed2 = parseResource(type, genCode1);
+      await writeFileWithDirs(parsedPath2, serializeData(parsed2));
+
+      const genCode2 = compileResource(type, parsed2).trim();
+      await writeFileWithDirs(genPath2, genCode2);
 
       // 4. Dynamically import and render both versions
       const [origMod, genMod] = await Promise.all([
-        import(inputPath),
-        import(genPath),
+        import(genPath1),
+        import(genPath2),
       ]);
 
       const OrigComp = origMod.default;
@@ -112,18 +120,7 @@ async function run() {
         plugins: [plugins.DOMElement],
       });
 
-      /* if (stdCode !== genCode) {
-        console.error(`❌ Code mismatch in ${ref.path} (${ref.type})`);
-
-        const diffs = diffLines(stdCode, genCode);
-        for (const part of diffs) {
-          const prefix = part.added ? "+" : part.removed ? "-" : " ";
-          const lines = part.value.split("\n").filter(Boolean);
-          for (const line of lines) {
-            console.log(prefix + line);
-          }
-        }
-      } else */ if (snapshotOrig !== snapshotGen) {
+      if (snapshotOrig !== snapshotGen) {
         console.error(`❌ Mismatch in ${ref.path} (${ref.type})`);
 
         const diffs = diffLines(snapshotOrig, snapshotGen);
