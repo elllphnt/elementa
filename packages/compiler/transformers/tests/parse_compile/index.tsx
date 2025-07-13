@@ -1,15 +1,16 @@
 import { isValidFileType } from "@elllphnt/elementa-base";
-import {
-  elementaFileRefFromPosixPath,
-  getFileExtensions,
-  getParsedFileExtensions,
-} from "@elllphnt/elementa-transformer-primitives";
 import { render } from "@testing-library/react";
-import { diffLines } from "diff"; // ⬅️ Add this
+import { diffLines } from "diff";
 import fs from "fs/promises";
 import path from "path";
 import { format, plugins } from "pretty-format";
-import { compileResource, parseResource } from "~/index.js";
+import {
+  compileResource,
+  elementaFileRefFromPosixPath,
+  getFileExtensions,
+  getParsedFileExtensions,
+  parseResource,
+} from "~/index.js";
 import { getDirname } from "../utils/test.js";
 import { setupEnv } from "./setup.js";
 

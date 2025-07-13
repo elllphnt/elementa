@@ -1,9 +1,6 @@
 import type { FragmentData } from "@elllphnt/elementa-base";
-import {
-  printTypeNode,
-  typeToTypeNode,
-} from "@elllphnt/elementa-transformer-primitives";
 import type { GeneratorContext } from "~/generators/component/types.js";
+import { printTypeNode, typeToTypeNode } from "~/libs/types.js";
 import { generateElement } from "../../element/element.js";
 import { applyProvider } from "../../providers/provider.js";
 

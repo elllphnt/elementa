@@ -1,10 +1,10 @@
 import type { ComponentData } from "@elllphnt/elementa-base";
-import { typeFromTypeNode } from "@elllphnt/elementa-transformer-primitives";
 import {
   type ArrowFunction,
   type FunctionDeclaration,
   type FunctionExpression,
 } from "ts-morph";
+import { typeFromTypeNode } from "~/libs/types.js";
 
 export function parseComponentFunctionParams({
   node,

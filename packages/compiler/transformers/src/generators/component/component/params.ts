@@ -1,10 +1,7 @@
 import type { ComponentData } from "@elllphnt/elementa-base";
-import {
-  printTypeNode,
-  typeToTypeNode,
-} from "@elllphnt/elementa-transformer-primitives";
 import type { FunctionDeclaration } from "ts-morph";
 import type { GeneratorContext } from "~/generators/component/types.js";
+import { printTypeNode, typeToTypeNode } from "~/libs/types.js";
 
 export function generateComponentFunctionParams({
   node,

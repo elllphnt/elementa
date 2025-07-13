@@ -1,8 +1,8 @@
 import type { FragmentData } from "@elllphnt/elementa-base";
-import { typeFromTypeNode } from "@elllphnt/elementa-transformer-primitives";
 import type { ArrowFunction, CallExpression } from "ts-morph";
 import { Node } from "ts-morph";
 import { getDeepExpression } from "~/libs/ts/expression.js";
+import { typeFromTypeNode } from "~/libs/types.js";
 import { parseElementsFromNode } from "../../element/element.js";
 import type { ParseElementContext } from "../../element/utils/types.js";
 
