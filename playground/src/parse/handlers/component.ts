@@ -4,7 +4,7 @@ import type {
   ElementaStageData,
 } from "@elllphnt/elementa-base";
 import { genId } from "@elllphnt/elementa-base";
-import { compileComponentToElll } from "@elllphnt/elementa-parser";
+import { compileComponentToElll } from "@elllphnt/elementa-transformers";
 import nodepath from "path";
 import type { Handler } from "../_types.js";
 import { readFile } from "../_utils.js";

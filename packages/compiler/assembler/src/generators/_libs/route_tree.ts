@@ -1,4 +1,4 @@
-import type { RouteTreeData} from "@elllphnt/elementa-base";
+import type { RouteTreeData } from "@elllphnt/elementa-base";
 import { toAbsoluteFileUrl } from "@elllphnt/elementa-base";
 import { joinPaths } from "../../_utils/path.js";
 import type { GeneratorContext } from "../../context/context.js";
@@ -64,11 +64,11 @@ export async function flattenRouteTree({
   const absolutePath =
     "/" + joinPaths(parentAbsolutePath, routeTree.path || "");
 
-  if (routeTree.handlerUrl) {
-    result.resources.push(routeTree.handlerUrl);
+  if (routeTree.handler) {
+    result.resources.push(routeTree.handler.__import.module);
     const absoluteUrl = toAbsoluteFileUrl({
       projectId,
-      url: routeTree.handlerUrl,
+      url: routeTree.handler.__import.module,
     });
 
     const file = await context.infra.getFile(absoluteUrl);
@@ -99,11 +99,11 @@ export async function flattenRouteTree({
     // Prepare file fetching operations
     const fileOps: Array<Promise<void>> = [];
 
-    if (routeTree.loaderUrl) {
-      result.resources.push(routeTree.loaderUrl);
+    if (routeTree.loader) {
+      result.resources.push(routeTree.loader.__import.module);
       const absoluteLoaderUrl = toAbsoluteFileUrl({
         projectId,
-        url: routeTree.loaderUrl,
+        url: routeTree.loader.__import.module,
       });
       fileOps.push(
         context.infra.getFile(absoluteLoaderUrl).then((file) => {
@@ -120,11 +120,11 @@ export async function flattenRouteTree({
       );
     }
 
-    if (routeTree.mainViewUrl) {
-      result.resources.push(routeTree.mainViewUrl);
+    if (routeTree.mainView) {
+      result.resources.push(routeTree.mainView.__import.module);
       const absoluteMainViewUrl = toAbsoluteFileUrl({
         projectId,
-        url: routeTree.mainViewUrl,
+        url: routeTree.mainView.__import.module,
       });
       fileOps.push(
         context.infra.getFile(absoluteMainViewUrl).then((file) => {
@@ -141,11 +141,11 @@ export async function flattenRouteTree({
       );
     }
 
-    if (routeTree.errorViewUrl) {
-      result.resources.push(routeTree.errorViewUrl);
+    if (routeTree.errorView) {
+      result.resources.push(routeTree.errorView.__import.module);
       const absoluteErrorViewUrl = toAbsoluteFileUrl({
         projectId,
-        url: routeTree.errorViewUrl,
+        url: routeTree.errorView.__import.module,
       });
       fileOps.push(
         context.infra.getFile(absoluteErrorViewUrl).then((file) => {
@@ -162,11 +162,11 @@ export async function flattenRouteTree({
       );
     }
 
-    if (routeTree.pendingViewUrl) {
-      result.resources.push(routeTree.pendingViewUrl);
+    if (routeTree.pendingView) {
+      result.resources.push(routeTree.pendingView.__import.module);
       const absolutePendingViewUrl = toAbsoluteFileUrl({
         projectId,
-        url: routeTree.pendingViewUrl,
+        url: routeTree.pendingView.__import.module,
       });
       fileOps.push(
         context.infra.getFile(absolutePendingViewUrl).then((file) => {
@@ -183,11 +183,11 @@ export async function flattenRouteTree({
       );
     }
 
-    if (routeTree.notFoundViewUrl) {
-      result.resources.push(routeTree.notFoundViewUrl);
+    if (routeTree.notFoundView) {
+      result.resources.push(routeTree.notFoundView.__import.module);
       const absoluteNotFoundViewUrl = toAbsoluteFileUrl({
         projectId,
-        url: routeTree.notFoundViewUrl,
+        url: routeTree.notFoundView.__import.module,
       });
       fileOps.push(
         context.infra.getFile(absoluteNotFoundViewUrl).then((file) => {

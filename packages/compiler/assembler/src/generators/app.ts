@@ -1,7 +1,8 @@
 import type {
   AppData,
   PackageSheetData,
-  RouterData} from "@elllphnt/elementa-base";
+  RouterData,
+} from "@elllphnt/elementa-base";
 import {
   appSchema,
   elementaStandardPaths,
@@ -39,12 +40,12 @@ export async function generateJsApp({
   ) as AppData;
   context.log("debug", "Retrieved app data.");
 
-  if (!app.routerUrl) {
-    throw new Error(`App at ${url} does not have a routerUrl defined.`);
+  if (!app.router?.__import.module) {
+    throw new Error(`App at ${url} does not have a router defined.`);
   }
 
   const routerAbsoluteUrl = toAbsoluteFileUrl({
-    url: app.routerUrl,
+    url: app.router?.__import.module,
     projectId,
   });
   const routerFile = await context.infra.read(routerAbsoluteUrl);

@@ -3,20 +3,7 @@ import {
   type RouterData,
   type RouteTreeData,
 } from "@elllphnt/elementa-base";
-
-export type ReactRouteData = {
-  path?: string;
-  loader?: string;
-  handler?: string;
-  component?: string;
-  errorComponent?: string;
-  pendingComponent?: string;
-  notFoundComponent?: string;
-  children?: ReactRouteData[];
-};
-export type ReactRouterData = {
-  routes?: ReactRouteData[];
-};
+import type { ReactRouteData, ReactRouterData } from "~/types/router.js";
 
 export function transformRoute(route: ReactRouteData): RouteTreeData {
   const data: RouteTreeData = {

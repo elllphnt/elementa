@@ -1,5 +1,5 @@
 import type { ElementaPreviewData } from "@elllphnt/elementa-base";
-import { transformRouter } from "@elllphnt/elementa-parser";
+import { transformRouter } from "@elllphnt/elementa-transformers";
 import type { Handler } from "../_types.js";
 
 export const transpileRouter: Handler = async (path, content) => {

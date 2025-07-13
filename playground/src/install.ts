@@ -1,4 +1,4 @@
-import { replaceReferences } from "@elllphnt/elementa-parser";
+import { replaceReferences } from "@elllphnt/elementa-transformers";
 import { createClientCredentialsTokenManager } from "@elllphnt/elll-client";
 import { Fabric } from "@elllphnt/elll-fabric";
 import { parseFileId } from "@elllphnt/primitives";
