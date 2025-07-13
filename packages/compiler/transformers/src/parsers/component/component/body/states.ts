@@ -6,6 +6,7 @@ import type {
   FunctionExpression,
 } from "ts-morph";
 import { Node } from "ts-morph";
+import { resolveImportFromSymbol } from "~/libs/import.js";
 import { parseExpression } from "../../misc/expression.js";
 
 export function parseCallArguments(call: CallExpression, scope: Node): any {
@@ -50,15 +51,41 @@ export function parseStateExpression({
   call: CallExpression;
   scope: Node;
 }): StateData {
-  const callee = call.getFirstChild()?.getText();
+  const callee = call.getExpression();
+  if (!Node.isIdentifier(callee)) {
+    throw new Error(
+      "Expected call expression to have an identifier as the callee.",
+    );
+  }
+  const symbol = callee
+    .getProject()
+    .getTypeChecker()
+    .getSymbolAtLocation(callee);
+  if (!symbol) {
+    throw new Error(
+      "Symbol not found for the identifier in the call expression.",
+    );
+  }
+  const sourceFile = callee.getSourceFile();
+
+  const importData = resolveImportFromSymbol({
+    symbol: symbol.compilerSymbol,
+    sourceFile: sourceFile.compilerNode,
+  });
+  if (!importData) {
+    throw new Error(
+      "Could not resolve import data for the state call expression.",
+    );
+  }
+
   const stateData: StateData = {
     id: genId(),
     name,
     type: "hook",
     args: parseCallArguments(call, scope),
-    hookUrl: {
-      __dependency: callee,
-    } as any,
+    hook: {
+      __import: importData,
+    },
   };
   return stateData;
 }

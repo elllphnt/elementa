@@ -1,5 +1,5 @@
 import type { VectorElementData } from "@elllphnt/elementa-base";
-import type { JsxElement } from "ts-morph";
+import type { Identifier, JsxChild } from "ts-morph";
 import { Node } from "ts-morph";
 import { parseBaseElementNode } from "./base/base_element.js";
 import type {
@@ -8,33 +8,17 @@ import type {
 } from "./utils/types.js";
 
 export function parseVectorElementNode({
-  node,
+  tag: tagNode,
+  attributes,
+  children,
   context,
 }: {
-  node: JsxElement;
+  tag: Identifier;
+  attributes: ElementAttributeEntry[];
+  children: JsxChild[];
   context: ParseElementContext;
 }): VectorElementData {
-  const tagNameNode = node.getOpeningElement().getTagNameNode();
-  const tag = tagNameNode.getText();
-  const attributes: ElementAttributeEntry[] = node
-    .getOpeningElement()
-    .getAttributes()
-    .map((attr) => {
-      if (Node.isJsxAttribute(attr)) {
-        const nameNode = attr.getNameNode();
-        if (Node.isIdentifier(nameNode)) {
-          const value = attr.getInitializer();
-          return [nameNode.getText(), value] as const;
-        } else {
-          throw new Error(
-            `Expected identifier for attribute name, got ${nameNode.getKindName()}`,
-          );
-        }
-      } else {
-        return attr.getExpression();
-      }
-    });
-
+  const tag = tagNode.getText();
   const base = parseBaseElementNode({
     type: "vector",
     tag,
@@ -90,7 +74,6 @@ export function parseVectorElementNode({
   });
 
   // Parse children for SVG content
-  const children = node.getJsxChildren();
   if (children.length > 0) {
     // TODO: Implement proper SVG content parsing
     // For now, just create a simple text node for any text content

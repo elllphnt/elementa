@@ -1,4 +1,8 @@
 import { z } from "zod";
+import {
+  importedValueSchema,
+  type ImportedValue,
+} from "../../../_primitives/_.js";
 import type { SlotFillData } from "../../elements/_.js";
 
 export type BaseRenderableContentData<T extends string> = {
@@ -12,13 +16,13 @@ export type FragmentRenderableContentData =
   };
 export type ComponentRenderableContentData =
   BaseRenderableContentData<"component"> & {
-    componentUrl?: string;
+    component?: ImportedValue;
     props?: Record<string, any>;
     fills?: Record<string, SlotFillData>;
   };
 export type RouterRenderableContentData =
   BaseRenderableContentData<"router"> & {
-    routerUrl?: string;
+    router?: ImportedValue;
     variables?: Record<string, any>;
   };
 
@@ -39,13 +43,13 @@ export const fragmentRenderableContentDataSchema =
 export const componentRenderableContentDataSchema =
   baseRenderableContentDataSchema.extend({
     type: z.literal("component"),
-    componentUrl: z.string().optional(),
+    component: importedValueSchema.optional(),
     props: z.record(z.any()).optional(),
   });
 export const routerRenderableContentDataSchema =
   baseRenderableContentDataSchema.extend({
     type: z.literal("router"),
-    appUrl: z.string().optional(),
+    router: importedValueSchema.optional(),
     variables: z.record(z.any()).optional(),
   });
 

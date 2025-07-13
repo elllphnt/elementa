@@ -1,3 +1,5 @@
+import type { ImportedValue } from "./import.js";
+
 export type Type =
   | PrimitiveType
   | LiteralType
@@ -63,8 +65,7 @@ export interface FunctionType {
 
 export interface TypeReference {
   kind: "reference";
-  url: string;
-  specifier?: string;
+  type: ImportedValue;
   args?: Type[];
 }
 

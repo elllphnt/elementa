@@ -1,4 +1,4 @@
-import type { Type, TypeProperty } from "@elllphnt/elementa-base";
+import type { ImportData, Type, TypeProperty } from "@elllphnt/elementa-base";
 import * as ts from "typescript";
 
 export function parseTypeNode(typeStr: string): ts.TypeNode {
@@ -32,7 +32,13 @@ export function printTypeNode(typeNode: ts.TypeNode): string {
   return printer.printNode(ts.EmitHint.Unspecified, typeNode, dummySource);
 }
 
-export function typeToTypeNode(type: Type): ts.TypeNode {
+export function typeToTypeNode({
+  type,
+  useImport,
+}: {
+  type: Type;
+  useImport: (data: ImportData) => string;
+}): ts.TypeNode {
   switch (type.kind) {
     case "primitive": {
       switch (type.name) {
@@ -72,21 +78,29 @@ export function typeToTypeNode(type: Type): ts.TypeNode {
       }
     }
     case "array": {
-      return ts.factory.createArrayTypeNode(typeToTypeNode(type.elementType));
+      return ts.factory.createArrayTypeNode(
+        typeToTypeNode({ type: type.elementType, useImport })
+      );
     }
     case "tuple": {
       return ts.factory.createTupleTypeNode(
-        type.elements.map((element) => typeToTypeNode(element))
+        type.elements.map((element) =>
+          typeToTypeNode({ type: element, useImport })
+        )
       );
     }
     case "union": {
       return ts.factory.createUnionTypeNode(
-        type.types.map((unionType) => typeToTypeNode(unionType))
+        type.types.map((unionType) =>
+          typeToTypeNode({ type: unionType, useImport })
+        )
       );
     }
     case "intersection": {
       return ts.factory.createIntersectionTypeNode(
-        type.types.map((intersectionType) => typeToTypeNode(intersectionType))
+        type.types.map((intersectionType) =>
+          typeToTypeNode({ type: intersectionType, useImport })
+        )
       );
     }
     case "object": {
@@ -97,7 +111,7 @@ export function typeToTypeNode(type: Type): ts.TypeNode {
           prop.optional
             ? ts.factory.createToken(ts.SyntaxKind.QuestionToken)
             : undefined,
-          typeToTypeNode(prop.type)
+          typeToTypeNode({ type: prop.type, useImport })
         );
         return signature;
       });
@@ -112,14 +126,14 @@ export function typeToTypeNode(type: Type): ts.TypeNode {
                 ts.factory.createIdentifier("key"),
                 undefined,
                 type.index.keyType
-                  ? typeToTypeNode(type.index.keyType)
+                  ? typeToTypeNode({ type: type.index.keyType, useImport })
                   : ts.factory.createKeywordTypeNode(
                       ts.SyntaxKind.StringKeyword
                     )
               ),
             ],
             type.index.valueType
-              ? typeToTypeNode(type.index.valueType)
+              ? typeToTypeNode({ type: type.index.valueType, useImport })
               : ts.factory.createKeywordTypeNode(ts.SyntaxKind.AnyKeyword)
           )
         : undefined;
@@ -138,20 +152,23 @@ export function typeToTypeNode(type: Type): ts.TypeNode {
           param.optional
             ? ts.factory.createToken(ts.SyntaxKind.QuestionToken)
             : undefined,
-          typeToTypeNode(param.type)
+          typeToTypeNode({ type: param.type, useImport })
         )
       );
 
       return ts.factory.createFunctionTypeNode(
         undefined,
         parameters,
-        typeToTypeNode(type.returnType)
+        typeToTypeNode({ type: type.returnType, useImport })
       );
     }
     case "reference": {
-      const typeArguments = type.args?.map((arg) => typeToTypeNode(arg));
+      const typeArguments = type.args?.map((arg) =>
+        typeToTypeNode({ type: arg, useImport })
+      );
+      const name = useImport(type.type.__import);
       return ts.factory.createTypeReferenceNode(
-        ts.factory.createIdentifier(type.specifier || "UnknownReference"),
+        ts.factory.createIdentifier(name),
         typeArguments
       );
     }
@@ -396,8 +413,12 @@ export function typeFromTypeNode({
       // If no symbol, return unresolved reference
       return {
         kind: "reference",
-        url: node.getSourceFile().fileName,
-        specifier: typeName,
+        type: {
+          __import: {
+            module: node.getSourceFile().fileName,
+            name: typeName,
+          },
+        },
         args: typeArgs,
       };
     }
@@ -429,8 +450,12 @@ export function typeFromSymbol({
   if (incomingStack.includes(symbolName)) {
     return {
       kind: "reference",
-      url: sourceFile.fileName,
-      specifier: symbolName,
+      type: {
+        __import: {
+          module: sourceFile.fileName,
+          name: symbolName,
+        },
+      },
       args: Object.values(args),
     };
   }
@@ -449,8 +474,12 @@ export function typeFromSymbol({
   if (!isLocal) {
     return {
       kind: "reference",
-      url: declarations[0].getSourceFile().fileName,
-      specifier: symbol.getName(),
+      type: {
+        __import: {
+          module: declarations[0].getSourceFile().fileName,
+          name: symbol.getName(),
+        },
+      },
       args: Object.values(args),
     };
   }
@@ -487,14 +516,18 @@ export function typeFromSymbol({
   }
 
   if (ts.isImportSpecifier(decl)) {
-    const specifier = decl.propertyName || decl.name;
+    const name = decl.propertyName || decl.name;
     const importClause = decl.parent.parent;
     const moduleSpecifier = importClause.parent.moduleSpecifier.getText();
-    const moduleName = moduleSpecifier.replace(/['"]/g, ""); // Remove quotes
+    const module = moduleSpecifier.replace(/['"]/g, ""); // Remove quotes
     return {
       kind: "reference",
-      url: moduleName,
-      specifier: specifier.getText(),
+      type: {
+        __import: {
+          module: module,
+          name: name.getText(),
+        },
+      },
       args: Object.values(args),
     };
   }

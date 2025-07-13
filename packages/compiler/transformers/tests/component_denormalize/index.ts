@@ -1,5 +1,5 @@
 import { join } from "path";
-import { denormalizeComponentFunction } from "~/compilers/component/denormalization/denormalize.js";
+import { denormalizeComponentFunction } from "~/generators/component/denormalization/denormalize.js";
 import {
   createTestProject,
   formatCode,

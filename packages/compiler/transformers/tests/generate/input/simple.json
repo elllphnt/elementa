@@ -1,0 +1,32 @@
+{
+  "name": "Component",
+  "stylesheet": {
+    "classes": [],
+    "keyframeSets": []
+  },
+  "props": {
+    "kind": "object",
+    "properties": [
+      {
+        "kind": "property",
+        "name": "name",
+        "type": {
+          "kind": "primitive",
+          "name": "string"
+        },
+        "optional": false
+      }
+    ]
+  },
+  "content": [
+    {
+      "id": "gdzl79usu5",
+      "type": "container",
+      "tag": "div",
+      "classNames": [],
+      "interactions": {},
+      "raw": [],
+      "content": []
+    }
+  ]
+}

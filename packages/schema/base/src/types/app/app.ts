@@ -1,9 +1,10 @@
 import { z } from "zod";
+import { importedValueSchema, type ImportedValue } from "../_primitives/_.js";
 
 export type AppData = {
-  routerUrl?: string;
+  router?: ImportedValue;
 };
 
 export const appSchema = z.object({
-  routerUrl: z.string().optional(),
+  router: importedValueSchema.optional(),
 });

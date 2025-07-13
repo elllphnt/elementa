@@ -343,6 +343,9 @@ importers:
       '@elllphnt/elementa-base':
         specifier: workspace:*
         version: link:../../schema/base
+      '@elllphnt/elementa-css':
+        specifier: workspace:*
+        version: link:../../schema/css
       '@elllphnt/elementa-transformer-primitives':
         specifier: workspace:*
         version: link:../primitives

@@ -3,7 +3,6 @@ import {
   type RouterData,
   type RouteTreeData,
 } from "@elllphnt/elementa-base";
-import { createRefMarkup } from "@elllphnt/elementa-transformer-primitives";
 
 export type ReactRouteData = {
   path?: string;
@@ -28,22 +27,58 @@ export function transformRoute(route: ReactRouteData): RouteTreeData {
     data.path = route.path;
   }
   if (route.loader) {
-    data.loaderUrl = createRefMarkup(route.loader);
+    data.loader = route.loader
+      ? {
+          __import: {
+            module: route.loader,
+          },
+        }
+      : undefined;
   }
   if (route.handler) {
-    data.handlerUrl = createRefMarkup(route.handler);
+    data.handler = route.handler
+      ? {
+          __import: {
+            module: route.handler,
+          },
+        }
+      : undefined;
   }
   if (route.component) {
-    data.mainViewUrl = createRefMarkup(route.component);
+    data.mainView = route.component
+      ? {
+          __import: {
+            module: route.component,
+          },
+        }
+      : undefined;
   }
   if (route.errorComponent) {
-    data.errorViewUrl = createRefMarkup(route.errorComponent);
+    data.errorView = route.errorComponent
+      ? {
+          __import: {
+            module: route.errorComponent,
+          },
+        }
+      : undefined;
   }
   if (route.pendingComponent) {
-    data.pendingViewUrl = createRefMarkup(route.pendingComponent);
+    data.pendingView = route.pendingComponent
+      ? {
+          __import: {
+            module: route.pendingComponent,
+          },
+        }
+      : undefined;
   }
   if (route.notFoundComponent) {
-    data.notFoundViewUrl = createRefMarkup(route.notFoundComponent);
+    data.notFoundView = route.notFoundComponent
+      ? {
+          __import: {
+            module: route.notFoundComponent,
+          },
+        }
+      : undefined;
   }
   if (route.children && route.children.length > 0) {
     data.children = route.children.map(transformRoute);

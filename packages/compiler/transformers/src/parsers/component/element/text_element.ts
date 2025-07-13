@@ -3,7 +3,7 @@ import type {
   TextElementData,
   TextMarkData,
 } from "@elllphnt/elementa-base";
-import type { JsxChild } from "ts-morph";
+import type { Identifier, JsxChild } from "ts-morph";
 import { parseBaseElementNode } from "./base/base_element.js";
 import { extractTextFromNode } from "./utils/extract_text.js";
 import type {
@@ -12,16 +12,17 @@ import type {
 } from "./utils/types.js";
 
 export function parseTextElementNode({
-  tag,
+  tag: tagNode,
   attributes,
   children,
   context,
 }: {
-  tag: string;
+  tag: Identifier;
   attributes: ElementAttributeEntry[];
   children: JsxChild[];
   context: ParseElementContext;
 }): TextElementData {
+  const tag = tagNode.getText();
   const base = parseBaseElementNode({
     type: "text",
     tag,

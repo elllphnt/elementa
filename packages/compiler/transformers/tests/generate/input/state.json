@@ -1,0 +1,206 @@
+{
+  "name": "StateComponent",
+  "stylesheet": {
+    "classes": [
+      {
+        "name": "div",
+        "styles": {
+          "__base__": {
+            "__raw": {
+              "color": "red"
+            }
+          }
+        },
+        "fragments": []
+      },
+      {
+        "name": "button",
+        "styles": {
+          "__base__": {
+            "__raw": {
+              "background-color": "blue",
+              "color": "white"
+            }
+          }
+        },
+        "fragments": []
+      }
+    ],
+    "keyframeSets": []
+  },
+  "props": {
+    "kind": "object",
+    "properties": [
+      {
+        "kind": "property",
+        "name": "hey",
+        "type": {
+          "kind": "primitive",
+          "name": "string"
+        },
+        "optional": false
+      },
+      {
+        "kind": "property",
+        "name": "useUser",
+        "type": {
+          "kind": "function",
+          "parameters": [],
+          "returnType": {
+            "kind": "object",
+            "properties": [
+              {
+                "kind": "property",
+                "name": "name",
+                "type": {
+                  "kind": "primitive",
+                  "name": "string"
+                },
+                "optional": false
+              },
+              {
+                "kind": "property",
+                "name": "picture",
+                "type": {
+                  "kind": "reference",
+                  "url": "../image",
+                  "specifier": "KO",
+                  "args": []
+                },
+                "optional": false
+              }
+            ]
+          }
+        },
+        "optional": false
+      }
+    ]
+  },
+  "fragments": [
+    {
+      "id": "trnehzxrhm",
+      "params": {
+        "kind": "object",
+        "properties": [
+          {
+            "kind": "property",
+            "name": "updateState",
+            "type": {
+              "kind": "function",
+              "parameters": [],
+              "returnType": {
+                "kind": "void"
+              }
+            },
+            "optional": false
+          }
+        ]
+      },
+      "content": [
+        {
+          "id": "ow1mbk5o3b",
+          "type": "container",
+          "tag": "button",
+          "classNames": [],
+          "interactions": {
+            "click": {
+              "__expression": "updateState"
+            }
+          },
+          "raw": [],
+          "content": []
+        }
+      ]
+    }
+  ],
+  "states": [
+    {
+      "id": "s7i6j5vuio",
+      "name": "state_1",
+      "type": "hook",
+      "args": [
+        "color"
+      ],
+      "hookUrl": {
+        "__dependency": "useUser"
+      }
+    },
+    {
+      "id": "kcugaljeta",
+      "name": "state_2",
+      "type": "inline",
+      "script": "const [state, setState] = useState(\"initial\");\nconst updateState = () => {\n  setState(\"updated\");\n};\nreturn { state, updateState };"
+    }
+  ],
+  "content": [
+    {
+      "id": "x3dst1w35g",
+      "type": "container",
+      "tag": "div",
+      "classNames": [],
+      "interactions": {},
+      "raw": [],
+      "content": [
+        {
+          "id": "a8n9pzeoii",
+          "type": "container",
+          "tag": "div",
+          "classNames": [
+            "div"
+          ],
+          "interactions": {},
+          "raw": [],
+          "content": []
+        },
+        {
+          "id": "vp8ylqrvy9",
+          "type": "container",
+          "tag": "div",
+          "classNames": [
+            [
+              "button",
+              "true"
+            ],
+            [
+              "active",
+              "state_2.state === \"updated\""
+            ]
+          ],
+          "interactions": {},
+          "raw": [],
+          "content": []
+        },
+        {
+          "id": "cxquyc9uie",
+          "type": "container",
+          "tag": "button",
+          "classNames": [],
+          "interactions": {
+            "click": {
+              "__expression": "state_2.updateState"
+            }
+          },
+          "raw": [],
+          "content": []
+        },
+        {
+          "id": "s30af7ctmf",
+          "type": "media",
+          "tag": "img",
+          "classNames": [],
+          "interactions": {},
+          "raw": [],
+          "media": {
+            "type": "image",
+            "src": {
+              "__expression": "state_1.picture"
+            },
+            "alt": {
+              "__expression": "\"User Picture\""
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

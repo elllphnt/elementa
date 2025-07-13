@@ -5,7 +5,6 @@ import type {
 import { genId, reactInteractionEventMap } from "@elllphnt/elementa-base";
 import { Node } from "ts-morph";
 import { parseExpression } from "../../misc/expression.js";
-import { parseLinkData } from "../link_element.js";
 import type {
   ElementAttributeEntry,
   ParseElementContext,
@@ -19,7 +18,7 @@ export function parseBaseElementNode<T extends string>({
   context,
 }: {
   type: T;
-  tag: string;
+  tag?: string;
   attributes: ElementAttributeEntry[];
   context: ParseElementContext;
 }): BaseElementData<T> {
@@ -27,7 +26,6 @@ export function parseBaseElementNode<T extends string>({
   const classNames: BaseElementData["classNames"] = [];
   const interactions: BaseElementData["interactions"] = {};
   const raw: BaseElementData["raw"] = [];
-  let link: BaseElementData["link"];
 
   // Accessibility properties
   let ariaLabel: BaseElementData["ariaLabel"];
@@ -65,8 +63,6 @@ export function parseBaseElementNode<T extends string>({
         if (value) ariaRole = parseExpression(value, context.scope);
       } else if (attrName === "tabIndex") {
         if (value) tabIndex = parseExpression(value, context.scope);
-      } else if (attrName === "link") {
-        if (value) link = parseLinkData(value, context.scope);
       }
     } else {
       raw.push({
@@ -89,7 +85,6 @@ export function parseBaseElementNode<T extends string>({
   if (ariaHidden !== undefined) baseElement.ariaHidden = ariaHidden;
   if (ariaRole !== undefined) baseElement.ariaRole = ariaRole;
   if (tabIndex !== undefined) baseElement.tabIndex = tabIndex;
-  if (link !== undefined) baseElement.link = link;
 
   return baseElement;
 }

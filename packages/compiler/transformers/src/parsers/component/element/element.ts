@@ -1,9 +1,15 @@
-import { type ElementData } from "@elllphnt/elementa-base";
-import type { JsxElement, JsxFragment, JsxSelfClosingElement } from "ts-morph";
+import { genId, type ElementData } from "@elllphnt/elementa-base";
+import type {
+  Identifier,
+  JsxChild,
+  JsxElement,
+  JsxFragment,
+  JsxSelfClosingElement,
+} from "ts-morph";
 import { Node } from "ts-morph";
 import { parseComponentElementNode } from "./component_element.js";
 import { parseContainerElementNode } from "./container_element.js";
-import { parseFragmentElementNode } from "./fragment_element.js";
+import { parseLinkElementNode } from "./link_element.js";
 import { parseMediaElementNode } from "./media_element.js";
 import { parseTextElementNode } from "./text_element.js";
 import { mediaTags, nativeTags, textTags } from "./utils/html_tags.js";
@@ -12,6 +18,65 @@ import type {
   ParseElementContext,
 } from "./utils/types.js";
 import { parseVectorElementNode } from "./vector_element.js";
+
+function parseElement({
+  tag: tagNode,
+  attributes,
+  children,
+  context,
+}: {
+  tag: Identifier;
+  attributes: ElementAttributeEntry[];
+  children: JsxChild[];
+  context: ParseElementContext;
+}): ElementData {
+  const tagName = tagNode.getText();
+
+  if (textTags.has(tagName)) {
+    return parseTextElementNode({
+      tag: tagNode,
+      attributes,
+      children,
+      context,
+    });
+  }
+  if (mediaTags.has(tagName)) {
+    return parseMediaElementNode({
+      tag: tagNode,
+      attributes,
+      context,
+    });
+  }
+  if (tagName === "svg") {
+    return parseVectorElementNode({
+      tag: tagNode,
+      attributes,
+      children,
+      context,
+    });
+  }
+  if (tagName === "link" || tagName === "a") {
+    return parseLinkElementNode({
+      attributes,
+      children,
+      context,
+    });
+  }
+  if (nativeTags.has(tagName)) {
+    return parseContainerElementNode({
+      tag: tagNode,
+      attributes,
+      children,
+      context,
+    });
+  }
+  return parseComponentElementNode({
+    tag: tagNode,
+    attributes,
+    children,
+    context,
+  });
+}
 
 function parseElementsFromJsxElement({
   node,
@@ -26,9 +91,9 @@ function parseElementsFromJsxElement({
     .getAttributes()
     .map((attr) => {
       if (Node.isJsxAttribute(attr)) {
-        const name = attr.getNameNode(); // ✅ safe now
+        const name = attr.getNameNode();
         if (Node.isIdentifier(name)) {
-          const initializer = attr.getInitializer(); // ✅ safe now
+          const initializer = attr.getInitializer();
           return [name.getText(), initializer] as const;
         } else {
           throw new Error(
@@ -43,49 +108,18 @@ function parseElementsFromJsxElement({
   const children = node.getJsxChildren();
 
   if (Node.isIdentifier(tagNameNode)) {
-    const tagName = tagNameNode.getText();
-
-    if (textTags.has(tagName)) {
-      return [
-        parseTextElementNode({
-          tag: tagName,
-          attributes,
-          children,
-          context,
-        }),
-      ];
-    }
-    if (mediaTags.has(tagName)) {
-      return [parseMediaElementNode({ node, context })];
-    }
-    if (tagName === "svg") {
-      return [parseVectorElementNode({ node, context })];
-    }
-    if (tagName === "a") {
-      // For now, treat anchor tags as container elements
-      // Link functionality is handled via the link attribute in base elements
-      return [parseContainerElementNode({ node, context })];
-    }
-    if (nativeTags.has(tagName)) {
-      return [parseContainerElementNode({ node, context })];
-    }
     return [
-      parseComponentElementNode({
-        name: tagName,
-        node,
+      parseElement({
+        tag: tagNameNode,
+        attributes,
+        children,
         context,
       }),
     ];
   } else {
-    // Handle complex tag names (like member expressions)
-    const tagName = tagNameNode.getText();
-    return [
-      parseComponentElementNode({
-        name: tagName,
-        node,
-        context,
-      }),
-    ];
+    throw new Error(
+      `Expected identifier for tag name, got ${tagNameNode.getKindName()}`,
+    );
   }
 }
 
@@ -96,7 +130,13 @@ function parseElementsFromJsxFragment({
   node: JsxFragment;
   context: ParseElementContext;
 }): ElementData[] {
-  return parseFragmentElementNode({ node, context });
+  const children = node.getJsxChildren();
+  return children.flatMap((child) => {
+    return parseElementsFromNode({
+      node: child,
+      context,
+    });
+  });
 }
 
 function parseElementsFromJsxSelfClosingElement({
@@ -107,61 +147,38 @@ function parseElementsFromJsxSelfClosingElement({
   context: ParseElementContext;
 }): ElementData[] {
   const tagNameNode = node.getTagNameNode();
-
-  // Create an adapter to make self-closing element look like regular element
-  const createJsxElementAdapter = (): JsxElement =>
-    ({
-      getOpeningElement: () => ({
-        getTagNameNode: () => tagNameNode,
-        getAttributes: () => node.getAttributes(),
-      }),
-      getJsxChildren: () => [],
-    }) as any as JsxElement;
+  const attributes: ElementAttributeEntry[] = node
+    .getAttributes()
+    .map((attr) => {
+      if (Node.isJsxAttribute(attr)) {
+        const name = attr.getNameNode();
+        if (Node.isIdentifier(name)) {
+          const initializer = attr.getInitializer();
+          return [name.getText(), initializer] as const;
+        } else {
+          throw new Error(
+            `Expected identifier for attribute name, got ${name.getKindName()}`,
+          );
+        }
+      } else {
+        const expression = attr.getExpression();
+        return expression;
+      }
+    });
 
   if (Node.isIdentifier(tagNameNode)) {
-    const tagName = tagNameNode.getText();
-
-    if (mediaTags.has(tagName)) {
-      return [
-        parseMediaElementNode({
-          node: createJsxElementAdapter(),
-          context,
-        }),
-      ];
-    }
-    if (tagName === "svg") {
-      return [
-        parseVectorElementNode({
-          node: createJsxElementAdapter(),
-          context,
-        }),
-      ];
-    }
-    if (nativeTags.has(tagName)) {
-      return [
-        parseContainerElementNode({
-          node: createJsxElementAdapter(),
-          context,
-        }),
-      ];
-    }
     return [
-      parseComponentElementNode({
-        name: tagName,
-        node: createJsxElementAdapter(),
+      parseElement({
+        tag: tagNameNode,
+        attributes,
+        children: [],
         context,
       }),
     ];
   } else {
-    // Handle complex tag names
-    const tagName = tagNameNode.getText();
-    return [
-      parseComponentElementNode({
-        name: tagName,
-        node: createJsxElementAdapter(),
-        context,
-      }),
-    ];
+    throw new Error(
+      `Expected identifier for tag name, got ${tagNameNode.getKindName()}`,
+    );
   }
 }
 
@@ -169,7 +186,7 @@ export function parseElementsFromNode({
   node,
   context,
 }: {
-  node: JsxElement | JsxFragment | JsxSelfClosingElement;
+  node: JsxChild;
   context: ParseElementContext;
 }): ElementData[] {
   if (Node.isJsxElement(node)) {
@@ -187,6 +204,32 @@ export function parseElementsFromNode({
       node: node as JsxSelfClosingElement,
       context,
     });
+  } else if (Node.isJsxText(node)) {
+    const text = node.getText();
+    if (!text) {
+      return [
+        {
+          id: genId(),
+          type: "text",
+          text: node.getText(),
+        },
+      ];
+    } else {
+      return [];
+    }
+  } else if (Node.isJsxExpression(node)) {
+    const expr = node.getExpression();
+    if (expr) {
+      return [
+        {
+          id: genId(),
+          type: "expression",
+          expression: expr.getText(),
+        },
+      ];
+    } else {
+      return [];
+    }
   } else {
     throw new Error(
       `Unsupported JSX node type: ${(node as any).getKindName()}. Expected JsxElement, JsxFragment, or JsxSelfClosingElement.`,

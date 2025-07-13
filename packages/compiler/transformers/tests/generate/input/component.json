@@ -1,0 +1,48 @@
+{
+  "name": "Component",
+  "types": [
+    {
+      "kind": "alias",
+      "name": "Props",
+      "type": {
+        "kind": "object",
+        "properties": [
+          {
+            "kind": "property",
+            "name": "name",
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "optional": false
+          }
+        ]
+      },
+      "typeParameters": []
+    }
+  ],
+  "stylesheet": {
+    "classes": [],
+    "keyframeSets": []
+  },
+  "propsName": "Props",
+  "content": [
+    {
+      "id": "ep5ra6yt26",
+      "type": "container",
+      "tag": "div",
+      "content": [
+        {
+          "id": "kl95b3f0ul",
+          "type": "text",
+          "text": "name:"
+        },
+        {
+          "id": "alpbovk44u",
+          "type": "expression",
+          "expression": "props.name"
+        }
+      ]
+    }
+  ]
+}
