@@ -1,5 +1,11 @@
 # @elllphnt/elementa-studio-server
 
+## 1.0.4
+
+### Patch Changes
+
+- Checkpoint
+
 ## 1.0.3
 
 ### Patch Changes

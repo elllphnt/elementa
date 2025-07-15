@@ -1,5 +1,15 @@
 # @elllphnt/elementa
 
+## 0.0.7
+
+### Patch Changes
+
+- Checkpoint
+- Updated dependencies
+  - @elllphnt/elementa-models@0.3.7
+  - @elllphnt/elementa-runtime@0.1.11
+  - @elllphnt/elementa-scene@0.1.18
+
 ## 0.0.6
 
 ### Patch Changes

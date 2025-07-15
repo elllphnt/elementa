@@ -1,5 +1,13 @@
 # @repo/playground
 
+## 1.0.4
+
+### Patch Changes
+
+- Checkpoint
+- Updated dependencies
+  - @elllphnt/elementa-base@0.1.20
+
 ## 1.0.3
 
 ### Patch Changes
