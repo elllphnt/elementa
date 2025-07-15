@@ -1,7 +1,5 @@
-import { replaceReferences } from "@elllphnt/elementa-parser";
-import * as fsSync from "fs";
 import * as fs from "fs/promises";
-import nodepath, * as path from "path";
+import * as path from "path";
 import type { FileData, Infrastructure, ProjectData } from "../types";
 
 export const getFileTypeFromPath = (filePath: string) => {
@@ -117,53 +115,53 @@ export class LocalStorageInfrastructure implements Infrastructure {
       const content = await fs.readFile(fullPath, "utf-8");
       const dirPath = path.dirname(fullPath);
 
-      const updatedContent = await replaceReferences(content, (ref) => {
-        let path: string;
-        if (ref.startsWith(".")) {
-          path = nodepath.resolve(dirPath, ref);
-        } else if (ref.startsWith("~/")) {
-          path = nodepath.resolve(projectDir, ref.slice(2));
-        } else {
-          // package reference
-          return ref;
-        }
+      // const updatedContent = await replaceReferences(content, (ref) => {
+      //   let path: string;
+      //   if (ref.startsWith(".")) {
+      //     path = nodepath.resolve(dirPath, ref);
+      //   } else if (ref.startsWith("~/")) {
+      //     path = nodepath.resolve(projectDir, ref.slice(2));
+      //   } else {
+      //     // package reference
+      //     return ref;
+      //   }
 
-        if (path.endsWith(".js")) {
-          path = path.slice(0, -3); // Remove .js extension
-        } else if (path.endsWith(".ts")) {
-          path = path.slice(0, -3); // Remove .ts extension
-        } else if (path.endsWith(".tsx")) {
-          path = path.slice(0, -4); // Remove .tsx extension
-        } else if (path.endsWith(".jsx")) {
-          path = path.slice(0, -4); // Remove .jsx extension
-        }
+      //   if (path.endsWith(".js")) {
+      //     path = path.slice(0, -3); // Remove .js extension
+      //   } else if (path.endsWith(".ts")) {
+      //     path = path.slice(0, -3); // Remove .ts extension
+      //   } else if (path.endsWith(".tsx")) {
+      //     path = path.slice(0, -4); // Remove .tsx extension
+      //   } else if (path.endsWith(".jsx")) {
+      //     path = path.slice(0, -4); // Remove .jsx extension
+      //   }
 
-        let filePath: string | undefined;
-        for (const ext of ["", ".json", ".ts", ".tsx", ".js", ".jsx"]) {
-          const candidatePath = path + ext;
-          if (fsSync.existsSync(path + ext)) {
-            filePath = candidatePath;
-            break;
-          }
-        }
+      //   let filePath: string | undefined;
+      //   for (const ext of ["", ".json", ".ts", ".tsx", ".js", ".jsx"]) {
+      //     const candidatePath = path + ext;
+      //     if (fsSync.existsSync(path + ext)) {
+      //       filePath = candidatePath;
+      //       break;
+      //     }
+      //   }
 
-        if (!filePath) {
-          console.error(`File not found for reference: ${ref}`, {
-            ref,
-            projectDir,
-            dirPath,
-            fullPath,
-          });
-          throw new Error(`Failed to resolve reference: ${ref}`);
-        }
+      //   if (!filePath) {
+      //     console.error(`File not found for reference: ${ref}`, {
+      //       ref,
+      //       projectDir,
+      //       dirPath,
+      //       fullPath,
+      //     });
+      //     throw new Error(`Failed to resolve reference: ${ref}`);
+      //   }
 
-        const relativePath = nodepath.relative(projectDir, filePath);
-        return `file:${encodeURIComponent(projectName)}/${encodeURIComponent(
-          relativePath
-        )}`;
-      });
+      //   const relativePath = nodepath.relative(projectDir, filePath);
+      //   return `file:${encodeURIComponent(projectName)}/${encodeURIComponent(
+      //     relativePath
+      //   )}`;
+      // });
 
-      return updatedContent;
+      return content;
     } catch (error) {
       console.error("Error getting file content:", error);
       return null;

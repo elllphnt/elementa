@@ -3,7 +3,7 @@ import { BehaviorSubject } from "rxjs";
 import type { ElementaInteractor } from "~/interactor.js";
 import type { Handle } from "../handle.js";
 import type { LayoutUpdatePropagation } from "../handle_rect.js";
-import { createElementHandle, type ElementHandle } from "./element/element.js";
+import { type ElementHandle } from "./element/element.js";
 import { RenderableHandle } from "./renderable.js";
 
 export class ComponentHandle extends RenderableHandle<ComponentRenderable> {
@@ -34,26 +34,26 @@ export class ComponentHandle extends RenderableHandle<ComponentRenderable> {
       parent,
     });
 
-    const templateSubscription = this.renderable.template$.subscribe(
-      (template) => {
-        const prev = this.template;
-        if (template) {
-          this._template$.next(
-            createElementHandle({
-              interactor: this.interactor,
-              renderable: template,
-              parent: this,
-            })
-          );
-        } else {
-          this._template$.next(undefined);
-        }
-        prev?.dispose();
-      }
-    );
+    // const templateSubscription = this.renderable.template$.subscribe(
+    //   (template) => {
+    //     const prev = this.template;
+    //     if (template) {
+    //       this._template$.next(
+    //         createElementHandle({
+    //           interactor: this.interactor,
+    //           renderable: template,
+    //           parent: this,
+    //         })
+    //       );
+    //     } else {
+    //       this._template$.next(undefined);
+    //     }
+    //     prev?.dispose();
+    //   }
+    // );
 
     this.addDisposer(() => {
-      templateSubscription.unsubscribe();
+      // templateSubscription.unsubscribe();
     });
   }
 
