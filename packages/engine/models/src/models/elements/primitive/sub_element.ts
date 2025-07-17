@@ -1,19 +1,22 @@
-import type { Expression, PrimitiveSubElementData } from "@elllphnt/elementa-base";
+import type {
+  Expression,
+  PrimitiveSubElementData,
+} from "@elllphnt/elementa-base";
 import type { RecordState } from "@elllphnt/elementa-kernel";
 import { Model } from "@elllphnt/elementa-kernel";
 import type { Observable } from "rxjs";
 import { map } from "rxjs";
-import { StylesheetCssStyleSheet } from "~/css/stylesheets/stylesheet/stylesheet.js";
-import { Stylesheet } from "../../style/stylesheet/stylesheet.js";
+import { StyleClassCssStyleSheet } from "~/css/stylesheets/stylesheet/stylesheet.js";
+import { StyleClass } from "~/models/style/stylesheet/styleclass.js";
 import type { ElementEnvironment } from "../_environment.js";
 
 export class PrimitiveSubElement extends Model<
   RecordState<PrimitiveSubElementData>
 > {
   readonly environment: ElementEnvironment;
-  readonly cssStyleSheet: StylesheetCssStyleSheet;
+  readonly cssStyleSheet: StyleClassCssStyleSheet;
 
-  private _stylesheet: Stylesheet;
+  private _styleClass: StyleClass;
 
   get interactions(): Record<string, Expression> | undefined {
     return this.state.entry("interactions");
@@ -38,23 +41,23 @@ export class PrimitiveSubElement extends Model<
 
     this.environment = environment;
 
-    this._stylesheet = new Stylesheet({
-      state: state.getRecordState("stylesheet"),
+    this._styleClass = new StyleClass({
+      state: state.getRecordState("styleClass"),
       project: environment.project,
       initialized,
     });
 
-    this.cssStyleSheet = new StylesheetCssStyleSheet({
+    this.cssStyleSheet = new StyleClassCssStyleSheet({
       target: cssStyleSheetTarget ?? "TODO", // TODO: Generate proper key
-      stylesheet: this._stylesheet,
+      styleClass: this._styleClass,
     });
 
     this.addInitializer(() => {
-      this._stylesheet.initialize();
+      this._styleClass.initialize();
       this.cssStyleSheet.initialize();
 
       this.addDisposer(() => {
-        this._stylesheet.dispose();
+        this._styleClass.dispose();
         this.cssStyleSheet.dispose();
       });
     });

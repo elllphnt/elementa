@@ -1,0 +1,47 @@
+import { useState } from "react";
+import type { KO as Image } from "../image.js";
+
+type User = {
+  name: string;
+  picture: Image;
+};
+
+function StateComponent(props: { hey: string; useUser: () => User }) {
+  const { name, picture } = useUser("color");
+  const [state, setState] = useState("initial");
+  const updateState = () => {
+    setState("updated");
+  };
+  return (
+    <div>
+      <div className="div">name: {name}</div>
+      <div
+        className={{
+          button: true,
+          active: state === "updated",
+        }}
+      >
+        state: {state}
+      </div>
+      {
+        <>
+          <button onClick={updateState}>Update State</button>
+        </>
+      }
+      <button onClick={updateState}>Update State</button>
+      <img src={picture} alt="User Picture" />
+    </div>
+  );
+}
+
+export const css = `
+.div {
+  color: red;
+}
+.button {
+  background-color: blue;
+  color: white;
+}
+`;
+
+export default StateComponent;

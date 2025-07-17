@@ -1,5 +1,5 @@
 {
-  "name": "@repo/packup",
+  "name": "@repo/scripts",
   "private": true,
   "version": "1.0.1",
   "keywords": [],
@@ -7,6 +7,7 @@
   "type": "module",
   "license": "ISC",
   "bin": {
-    "packup": "./index.ts"
+    "packup": "./packup.ts",
+    "publish": "./publish.ts"
   }
 }

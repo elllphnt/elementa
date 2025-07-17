@@ -1,6 +1,5 @@
 import type {
   ComponentData,
-  DataInputData,
   ElementData,
   FragmentData,
   StateData,
@@ -18,7 +17,6 @@ import type { Element } from "../elements/_element.js";
 import { createElement } from "../elements/_element.js";
 import type { ElementEnvironment } from "../elements/_environment.js";
 import { Fragment } from "../fragment/fragment.js";
-import { DataInput } from "../primitives/data_input.js";
 import { ProjectModel } from "../project.js";
 import type { State } from "../states/_state.js";
 import { createState } from "../states/_state.js";
@@ -91,7 +89,6 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
   readonly url: string;
 
   private _content: AggregatedModelList<RecordState<ElementData>, Element>;
-  private _props: AggregatedModelList<RecordState<DataInputData>, DataInput>;
   private _states: AggregatedModelList<RecordState<StateData>, State>;
   private _fragments: AggregatedModelList<RecordState<FragmentData>, Fragment>;
   private _fragmentById$ = new BehaviorSubject<
@@ -170,10 +167,6 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
         });
       },
     });
-    this._props = new AggregatedModelList({
-      state: state.getListOfRecordStates("props"),
-      create: (state) => new DataInput({ state }),
-    });
     this._fragments = new AggregatedModelList({
       state: state.getListOfRecordStates("fragments"),
       create: (state) =>
@@ -195,7 +188,6 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
     this.addLifecycle(this.stage);
     this.addLifecycle(this.preview);
     this.addLifecycle(this._content);
-    this.addLifecycle(this._props);
     this.addLifecycle(this._fragments);
     this.addLifecycle(this._states);
 
@@ -223,13 +215,6 @@ export class Component extends ProjectModel<RecordState<ComponentData>> {
   }
   get slotIds$() {
     return this.elementEnvironment.slotIds$;
-  }
-
-  get props(): DataInput[] {
-    return this._props.models;
-  }
-  get props$(): Observable<DataInput[]> {
-    return this._props.models$;
   }
 
   get fragmentsById$(): Observable<Record<string, Fragment | undefined>> {

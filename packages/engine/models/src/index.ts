@@ -85,6 +85,7 @@ export * from "./models/elementa/renderable_content/router.js";
 // Style exports
 export * from "./models/style/stylesheet/style.js";
 export * from "./models/style/stylesheet/style_fragment_registry.js";
+export * from "./models/style/stylesheet/styleclass.js";
 export * from "./models/style/stylesheet/stylesheet.js";
 
 // Style variables exports
@@ -93,9 +94,8 @@ export * from "./models/style/style_variables/style_variable_set.js";
 export * from "./models/style/style_variables/style_variable_sheet.js";
 
 // Keyframes exports
-export * from "./models/style/keyframes/keyframe.js";
-export * from "./models/style/keyframes/keyframe_set.js";
-export * from "./models/style/keyframes/keyframe_sheet.js";
+export * from "./models/style/stylesheet/keyframes/keyframe.js";
+export * from "./models/style/stylesheet/keyframes/keyframe_set.js";
 
 // Typefaces exports
 export * from "./models/style/typefaces/typeface.js";

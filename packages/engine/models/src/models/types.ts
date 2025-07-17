@@ -2,7 +2,6 @@ import type { App } from "./app/app.js";
 import type { Component } from "./component/component.js";
 import type { PackageSheet } from "./packages/package_sheet.js";
 import type { Router } from "./router/router.js";
-import type { KeyframeSheet } from "./style/keyframes/keyframe_sheet.js";
 import type { StyleModifierSheet } from "./style/style_modifiers/style_modifier_sheet.js";
 import type { StyleSystem } from "./style/style_system/style_system.js";
 import type { StyleVariableSheet } from "./style/style_variables/style_variable_sheet.js";
@@ -18,7 +17,6 @@ export const fileModelTypes = {
   styleSystem: "style-system",
   styleVariableSheet: "variable-sheet",
   styleModifierSheet: "style-modifier-sheet",
-  keyframeSheet: "keyframe-sheet",
   typefaceSheet: "typeface-sheet",
 } as const;
 
@@ -34,7 +32,6 @@ export type FileModelTypeMap = {
   [fileModelTypes.styleSystem]: StyleSystem;
   [fileModelTypes.styleVariableSheet]: StyleVariableSheet;
   [fileModelTypes.styleModifierSheet]: StyleModifierSheet;
-  [fileModelTypes.keyframeSheet]: KeyframeSheet;
   [fileModelTypes.typefaceSheet]: TypefaceSheet;
 };
 

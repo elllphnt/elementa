@@ -11,11 +11,10 @@ import {
   stringifyStyleModifier,
 } from "@elllphnt/elementa-base";
 import { elllSelectorToCssSelector } from "@elllphnt/elementa-css";
-import { Lifecycle, reconcileList } from "@elllphnt/elementa-kernel";
+import { Lifecycle } from "@elllphnt/elementa-kernel";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 import type { Observable } from "rxjs";
 import { BehaviorSubject, combineLatest, map, of, switchMap } from "rxjs";
-import { StylesheetCssStyleSheet } from "~/css/stylesheets/stylesheet/stylesheet.js";
 import type { Stylesheet } from "~/models/style/stylesheet/stylesheet.js";
 import type { Project } from "../project.js";
 import { generateClassName } from "./_utils.js";
@@ -84,9 +83,6 @@ export class StyleManager extends Lifecycle {
   private _modifiersByName$ = new BehaviorSubject<
     Record<string, StyleModifierDefinitionData>
   >({});
-  private _systemCssStylesheets = new BehaviorSubject<
-    StylesheetCssStyleSheet[]
-  >([]);
 
   // Stylesheets
 
@@ -116,10 +112,15 @@ export class StyleManager extends Lifecycle {
   }
 
   get cssStylesheets() {
-    return this._systemCssStylesheets.value;
+    return this.systemStylesheets.flatMap((s) => s.cssStylesheets || []);
   }
   get cssStylesheets$() {
-    return this._systemCssStylesheets.asObservable();
+    return this.systemStylesheets$.pipe(
+      switchMap((sheets) =>
+        combineLatestOrEmpty(sheets.map((s) => s.cssStylesheets$ || []))
+      ),
+      map((stylesheets) => stylesheets.flat())
+    );
   }
 
   // Variable Values
@@ -232,28 +233,9 @@ export class StyleManager extends Lifecycle {
           this._modifiersByName$.next(newModifiersByName);
         }
       );
-      const systemCssStylesheetsSubscription =
-        this.systemStylesheets$.subscribe((stylesheets) => {
-          const [nextStylesheets, removed] = reconcileList({
-            sources: stylesheets,
-            targets: this._systemCssStylesheets.value,
-            sourceRef: (s) => s,
-            targetRef: (s) => s.stylesheet,
-            create: (stylesheet) =>
-              new StylesheetCssStyleSheet({
-                target: "style-system",
-                stylesheet,
-              }),
-          });
-
-          this._systemCssStylesheets.next(nextStylesheets);
-          removed.forEach((r) => r.dispose());
-        });
 
       this.addDisposer(() => {
         modifiersByNameSubscription.unsubscribe();
-        systemCssStylesheetsSubscription.unsubscribe();
-
         this.colorSchemeManager.dispose();
         this.viewportManager.dispose();
       });
@@ -262,7 +244,6 @@ export class StyleManager extends Lifecycle {
     this.addDisposer(() => {
       this._variableValues$.complete();
       this._modifiersByName$.complete();
-      this._systemCssStylesheets.complete();
       this.colorSchemeManager.dispose();
       this.viewportManager.dispose();
     });

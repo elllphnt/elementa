@@ -3,7 +3,7 @@ import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
 import type { Observable } from "rxjs";
 import { combineLatest, map, switchMap, tap } from "rxjs";
 import type { Style } from "~/models/style/stylesheet/style.js";
-import type { Stylesheet } from "~/models/style/stylesheet/stylesheet.js";
+import type { StyleClass } from "~/models/style/stylesheet/styleclass.js";
 import { CssStyleRule } from "../../lib/rule/stylerule.js";
 
 /**
@@ -14,16 +14,16 @@ import { CssStyleRule } from "../../lib/rule/stylerule.js";
  * get converted to the appropriate CSS selectors. and that the style CSS properties are correctly
  * extracted from the `Style` object.
  */
-export class StylesheetCssStyleRule extends CssStyleRule {
+export class StyleClassCssStyleRule extends CssStyleRule {
   readonly layer?: string;
-  readonly stylesheet: Stylesheet;
+  readonly styleClass: StyleClass;
   readonly selector: string;
 
   get style(): Style {
-    return this.stylesheet.style(this.selector, true);
+    return this.styleClass.style(this.selector, true);
   }
   get style$(): Observable<Style> {
-    return this.stylesheet.style$(this.selector, true);
+    return this.styleClass.style$(this.selector, true);
   }
 
   get intrinsicSelector(): CssSelector {
@@ -50,12 +50,12 @@ export class StylesheetCssStyleRule extends CssStyleRule {
   }
 
   get modifiers() {
-    return this.stylesheet.project.styleManager.elllSelectorFromString(
+    return this.styleClass.project.styleManager.elllSelectorFromString(
       this.selector
     );
   }
   get modifiers$() {
-    return this.stylesheet.project.styleManager.elllSelectorFromString$(
+    return this.styleClass.project.styleManager.elllSelectorFromString$(
       this.selector
     );
   }
@@ -67,10 +67,10 @@ export class StylesheetCssStyleRule extends CssStyleRule {
       // Applied in stage
       [
         "@layer content",
-        `.${this.stylesheet.className}`,
+        `.${this.styleClass.className}`,
         this.modifiers
           .map((modifier) =>
-            this.stylesheet.project.styleManager.modifierToClassName(modifier)
+            this.styleClass.project.styleManager.modifierToClassName(modifier)
           )
           .map((c) => `.${c}`)
           .join(" "),
@@ -79,8 +79,8 @@ export class StylesheetCssStyleRule extends CssStyleRule {
       [
         "@layer content",
         ".elementa-root-preview",
-        `.${this.stylesheet.className}`,
-        ...this.stylesheet.project.styleManager.elllSelectorToCss(
+        `.${this.styleClass.className}`,
+        ...this.styleClass.project.styleManager.elllSelectorToCss(
           this.modifiers
         ),
       ],
@@ -96,7 +96,7 @@ export class StylesheetCssStyleRule extends CssStyleRule {
           combineLatest(
             modifiers
               .map((modifier) =>
-                this.stylesheet.project.styleManager.modifierToClassName$(
+                this.styleClass.project.styleManager.modifierToClassName$(
                   modifier
                 )
               )
@@ -107,7 +107,7 @@ export class StylesheetCssStyleRule extends CssStyleRule {
           [
             "@layer content",
             ".elementa-root-stage",
-            `.${this.stylesheet.className}`,
+            `.${this.styleClass.className}`,
             classNames.map((c) => `.${c}$`).join(" "),
           ].filter(Boolean)
         )
@@ -115,13 +115,13 @@ export class StylesheetCssStyleRule extends CssStyleRule {
       // Applied in preview/production
       this.modifiers$.pipe(
         switchMap((modifiers) =>
-          this.stylesheet.project.styleManager
+          this.styleClass.project.styleManager
             .elllSelectorToCss$(modifiers)
             .pipe(
               map((selector) => [
                 "@layer content",
                 ".elementa-root-preview",
-                `.${this.stylesheet.className}`,
+                `.${this.styleClass.className}`,
                 ...selector,
               ])
             )
@@ -132,7 +132,7 @@ export class StylesheetCssStyleRule extends CssStyleRule {
       tap((selectors) => {
         console.log(
           "Selectors for StylesheetCssStyleRule:",
-          this.stylesheet.className,
+          this.styleClass.className,
           selectors
         );
       })
@@ -140,17 +140,17 @@ export class StylesheetCssStyleRule extends CssStyleRule {
   }
 
   constructor({
-    stylesheet,
+    styleClass,
     selector,
     layer,
   }: {
-    stylesheet: Stylesheet;
+    styleClass: StyleClass;
     selector: string;
     layer?: string;
   }) {
     super();
     this.layer = layer;
     this.selector = selector;
-    this.stylesheet = stylesheet;
+    this.styleClass = styleClass;
   }
 }

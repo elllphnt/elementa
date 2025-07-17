@@ -5,7 +5,7 @@ import type { Style } from "@elllphnt/elementa-models";
 import type { Observable } from "rxjs";
 import { combineLatest, map, of, switchMap } from "rxjs";
 import { ElementaInstanceType, Instance } from "../instance.js";
-import type { StyleSheetInstance } from "./stylesheet.js";
+import type { StyleClassInstance } from "./stylesheet.js";
 
 /**
  * Represents a runtime live wrapper around a Style.
@@ -13,13 +13,13 @@ import type { StyleSheetInstance } from "./stylesheet.js";
  */
 export class StyleInstance extends Instance {
   readonly selector: string;
-  readonly stylesheetInstance: StyleSheetInstance;
+  readonly stylesheetInstance: StyleClassInstance;
 
   get style(): Style {
-    return this.stylesheetInstance.stylesheet.style(this.selector, true);
+    return this.stylesheetInstance.styleClass.style(this.selector, true);
   }
   get style$(): Observable<Style> {
-    return this.stylesheetInstance.stylesheet.style$(this.selector, true);
+    return this.stylesheetInstance.styleClass.style$(this.selector, true);
   }
 
   private _propertyConfig(property: StylePropertyName) {
@@ -95,7 +95,7 @@ export class StyleInstance extends Instance {
     stylesheet,
   }: {
     selector: string;
-    stylesheet: StyleSheetInstance;
+    stylesheet: StyleClassInstance;
   }) {
     super({
       type: ElementaInstanceType.Style,

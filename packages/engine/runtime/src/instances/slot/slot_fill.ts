@@ -9,12 +9,12 @@ import type { ElementRuntimeEnvironment } from "../elements/_environment/environ
 import type { Instance } from "../instance.js";
 import { ElementaInstanceType } from "../instance.js";
 import { ModelInstance } from "../model.js";
-import { StyleSheetInstance } from "../stylesheet/stylesheet.js";
+import { StyleClassInstance } from "../stylesheet/stylesheet.js";
 
 export class SlotFillInstance extends ModelInstance<SlotFill> {
   readonly environment: ElementRuntimeEnvironment;
   readonly slotId: string;
-  readonly stylesheet: StyleSheetInstance;
+  readonly stylesheet: StyleClassInstance;
 
   private _content$ = new BehaviorSubject<ElementInstance[]>([]);
 
@@ -75,8 +75,8 @@ export class SlotFillInstance extends ModelInstance<SlotFill> {
     });
     this.environment = environment;
 
-    this.stylesheet = new StyleSheetInstance({
-      stylesheet: model.cssStyleSheet.stylesheet,
+    this.stylesheet = new StyleClassInstance({
+      styleClass: model.cssStyleSheet.styleClass,
       runtime: environment.runtime,
       cascadeResolver: {
         getParentStylesheetInstance: () => undefined,

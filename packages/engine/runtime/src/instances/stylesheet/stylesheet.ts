@@ -1,5 +1,5 @@
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import type { Stylesheet } from "@elllphnt/elementa-models";
+import type { StyleClass } from "@elllphnt/elementa-models";
 import type { Observable } from "rxjs";
 import { BehaviorSubject, combineLatest, map, of, switchMap } from "rxjs";
 import type { Runtime } from "../../runtime/runtime.js";
@@ -7,13 +7,13 @@ import { ElementaInstanceType, Instance } from "../instance.js";
 import type { StyleCascadeResolver } from "./cascade.js";
 import { StyleInstance } from "./style.js";
 
-export class StyleSheetInstance extends Instance {
-  readonly stylesheet: Stylesheet;
+export class StyleClassInstance extends Instance {
+  readonly styleClass: StyleClass;
   readonly cascadeResolver: StyleCascadeResolver;
 
   private _styles$ = new BehaviorSubject<Record<string, StyleInstance>>({});
 
-  get parentStylesheetInstance(): StyleSheetInstance | undefined {
+  get parentStylesheetInstance(): StyleClassInstance | undefined {
     return this.cascadeResolver.getParentStylesheetInstance();
   }
 
@@ -63,12 +63,12 @@ export class StyleSheetInstance extends Instance {
   }
 
   constructor({
-    stylesheet,
+    styleClass,
     cascadeResolver,
     parent,
     runtime,
   }: {
-    stylesheet: Stylesheet;
+    styleClass: StyleClass;
     cascadeResolver: StyleCascadeResolver;
     runtime: Runtime;
     parent?: Instance;
@@ -78,7 +78,7 @@ export class StyleSheetInstance extends Instance {
       runtime,
       parent,
     });
-    this.stylesheet = stylesheet;
+    this.styleClass = styleClass;
     this.cascadeResolver = cascadeResolver;
 
     this.addDisposer(() => {

@@ -1,8 +1,8 @@
-import type { StyleSheetInstance } from "./stylesheet.js";
+import type { StyleClassInstance } from "./stylesheet.js";
 
 /**
  * Resolves the parent StyleSheetInstance for cascade inheritance.
  */
 export interface StyleCascadeResolver {
-  getParentStylesheetInstance(): StyleSheetInstance | undefined;
+  getParentStylesheetInstance(): StyleClassInstance | undefined;
 }

@@ -1,5 +1,5 @@
 import type { RouteTree } from "@elllphnt/elementa-models";
-import type { Observable} from "rxjs";
+import type { Observable } from "rxjs";
 import { combineLatest, map, of, switchMap } from "rxjs";
 import type { ElementRuntimeEnvironment } from "~/instances/elements/_environment/environment.js";
 import type { Instance } from "../../../instance.js";
@@ -9,18 +9,20 @@ export class FunctionRouteHandler extends BaseRouteHandler<"function"> {
   readonly route: RouteTree;
 
   get handlerModule() {
-    return this.route.handlerUrl
+    return this.route.handlerRef
       ? this.runtime.moduleManager.module(
-          this.route.project.absoluteFileUrl(this.route.handlerUrl)
+          this.route.project.absoluteFileUrl(
+            this.route.handlerRef.__import.module
+          )
         )
       : undefined;
   }
   get handlerModule$() {
-    return this.route.handlerUrl$.pipe(
+    return this.route.handlerRef$.pipe(
       map((url) => {
         return url
           ? this.runtime.moduleManager.module(
-              this.route.project.absoluteFileUrl(url)
+              this.route.project.absoluteFileUrl(url.__import.module)
             )
           : undefined;
       })

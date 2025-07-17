@@ -1,34 +1,23 @@
 import type { HookStateData } from "@elllphnt/elementa-base";
 import type { RecordState } from "@elllphnt/elementa-kernel";
-import type { Observable} from "rxjs";
 import { map } from "rxjs";
 import type { Component } from "../component/component.js";
 import { BaseState } from "./_base.js";
 
 export class HookState extends BaseState<HookStateData> {
-  get hookUrl(): string | undefined {
-    return this.state.entry("hookUrl");
+  get hookRef() {
+    return this.state.entry("hookRef");
   }
 
-  get hookUrl$(): Observable<string | undefined> {
-    return this.state.entry$("hookUrl");
+  get hookRef$() {
+    return this.state.entry$("hookRef");
   }
 
-  get argMode(): "positional" | "named" {
-    return this.state.entry("argMode") || "named";
-  }
-
-  get argMode$(): Observable<"positional" | "named"> {
-    return this.state
-      .entry$("argMode")
-      .pipe(map((argMode) => argMode || "named"));
-  }
-
-  get args(): Record<string, any> {
+  get args() {
     return this.state.entry("args") || {};
   }
 
-  get args$(): Observable<Record<string, any>> {
+  get args$() {
     return this.state.entry$("args").pipe(map((args) => args || {}));
   }
 
@@ -40,13 +29,5 @@ export class HookState extends BaseState<HookStateData> {
     component: Component;
   }) {
     super({ state, type: "hook", component });
-  }
-
-  arg(key: string): any {
-    return this.args?.[key];
-  }
-
-  arg$(key: string): Observable<any> {
-    return this.args$.pipe(map((args) => args?.[key]));
   }
 }

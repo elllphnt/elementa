@@ -1,4 +1,4 @@
-import type { RouteTreeData } from "@elllphnt/elementa-base";
+import type { ImportReference, RouteTreeData } from "@elllphnt/elementa-base";
 import type { RecordState } from "@elllphnt/elementa-kernel";
 import { AggregatedModelList } from "@elllphnt/elementa-kernel";
 import type { Observable } from "rxjs";
@@ -55,63 +55,63 @@ export class RouteTree extends Identifiable<RouteTreeData> {
     return this.state.entry$("path");
   }
 
-  get mainViewUrl() {
-    return this.state.entry("mainViewUrl");
+  get mainViewRef() {
+    return this.state.entry("mainViewRef");
   }
-  get mainViewUrl$() {
-    return this.state.entry$("mainViewUrl");
-  }
-
-  get errorViewUrl() {
-    return this.state.entry("errorViewUrl");
-  }
-  get errorViewUrl$() {
-    return this.state.entry$("errorViewUrl");
+  get mainViewRef$() {
+    return this.state.entry$("mainViewRef");
   }
 
-  get pendingViewUrl() {
-    return this.state.entry("pendingViewUrl");
+  get errorViewRef() {
+    return this.state.entry("errorViewRef");
   }
-  get pendingViewUrl$() {
-    return this.state.entry$("pendingViewUrl");
-  }
-
-  get notFoundViewUrl() {
-    return this.state.entry("notFoundViewUrl");
-  }
-  get notFoundViewUrl$() {
-    return this.state.entry$("notFoundViewUrl");
+  get errorViewRef$() {
+    return this.state.entry$("errorViewRef");
   }
 
-  get loaderUrl() {
-    return this.state.entry("loaderUrl");
+  get pendingViewRef() {
+    return this.state.entry("pendingViewRef");
   }
-  get loaderUrl$() {
-    return this.state.entry$("loaderUrl");
+  get pendingViewRef$() {
+    return this.state.entry$("pendingViewRef");
   }
 
-  get handlerUrl() {
-    return this.state.entry("handlerUrl");
+  get notFoundViewRef() {
+    return this.state.entry("notFoundViewRef");
   }
-  get handlerUrl$() {
-    return this.state.entry$("handlerUrl");
+  get notFoundViewRef$() {
+    return this.state.entry$("notFoundViewRef");
+  }
+
+  get loaderRef() {
+    return this.state.entry("loaderRef");
+  }
+  get loaderRef$() {
+    return this.state.entry$("loaderRef");
+  }
+
+  get handlerRef() {
+    return this.state.entry("handlerRef");
+  }
+  get handlerRef$() {
+    return this.state.entry$("handlerRef");
   }
 
   get mainViewComponent() {
-    const url = this.mainViewUrl;
-    return url
+    const ref = this.mainViewRef;
+    return ref
       ? this.router.project.infrastructure.component(
-          this.router.project.absoluteFileUrl(url)
+          this.router.project.absoluteFileUrl(ref.__import.module)
         )
       : undefined;
   }
 
   get mainViewComponent$() {
-    return this.mainViewUrl$.pipe(
-      map((url) =>
-        url
+    return this.mainViewRef$.pipe(
+      map((ref) =>
+        ref
           ? this.router.project.infrastructure.component(
-              this.router.project.absoluteFileUrl(url)
+              this.router.project.absoluteFileUrl(ref.__import.module)
             )
           : undefined
       )
@@ -119,20 +119,20 @@ export class RouteTree extends Identifiable<RouteTreeData> {
   }
 
   get errorViewComponent() {
-    const url = this.errorViewUrl;
-    return url
+    const ref = this.errorViewRef;
+    return ref
       ? this.router.project.infrastructure.component(
-          this.router.project.absoluteFileUrl(url)
+          this.router.project.absoluteFileUrl(ref.__import.module)
         )
       : undefined;
   }
 
   get errorViewComponent$() {
-    return this.errorViewUrl$.pipe(
-      map((url) =>
-        url
+    return this.errorViewRef$.pipe(
+      map((ref) =>
+        ref
           ? this.router.project.infrastructure.component(
-              this.router.project.absoluteFileUrl(url)
+              this.router.project.absoluteFileUrl(ref.__import.module)
             )
           : undefined
       )
@@ -140,20 +140,20 @@ export class RouteTree extends Identifiable<RouteTreeData> {
   }
 
   get pendingViewComponent() {
-    const url = this.pendingViewUrl;
-    return url
+    const ref = this.pendingViewRef;
+    return ref
       ? this.router.project.infrastructure.component(
-          this.router.project.absoluteFileUrl(url)
+          this.router.project.absoluteFileUrl(ref.__import.module)
         )
       : undefined;
   }
 
   get pendingViewComponent$() {
-    return this.pendingViewUrl$.pipe(
-      map((url) =>
-        url
+    return this.pendingViewRef$.pipe(
+      map((ref) =>
+        ref
           ? this.router.project.infrastructure.component(
-              this.router.project.absoluteFileUrl(url)
+              this.router.project.absoluteFileUrl(ref.__import.module)
             )
           : undefined
       )
@@ -161,20 +161,20 @@ export class RouteTree extends Identifiable<RouteTreeData> {
   }
 
   get notFoundViewComponent() {
-    const url = this.notFoundViewUrl;
-    return url
+    const ref = this.notFoundViewRef;
+    return ref
       ? this.router.project.infrastructure.component(
-          this.router.project.absoluteFileUrl(url)
+          this.router.project.absoluteFileUrl(ref.__import.module)
         )
       : undefined;
   }
 
   get notFoundViewComponent$() {
-    return this.notFoundViewUrl$.pipe(
-      map((url) =>
-        url
+    return this.notFoundViewRef$.pipe(
+      map((ref) =>
+        ref
           ? this.router.project.infrastructure.component(
-              this.router.project.absoluteFileUrl(url)
+              this.router.project.absoluteFileUrl(ref.__import.module)
             )
           : undefined
       )
@@ -185,28 +185,28 @@ export class RouteTree extends Identifiable<RouteTreeData> {
     this.state.set("path", value);
   }
 
-  setMainViewUrl(url: string | undefined): void {
-    this.state.set("mainViewUrl", url);
+  setMainViewRef(ref: ImportReference | undefined): void {
+    this.state.set("mainViewRef", ref);
   }
 
-  setErrorViewUrl(url: string | undefined): void {
-    this.state.set("errorViewUrl", url);
+  setErrorViewRef(ref: ImportReference | undefined): void {
+    this.state.set("errorViewRef", ref);
   }
 
-  setPendingViewUrl(url: string | undefined): void {
-    this.state.set("pendingViewUrl", url);
+  setPendingViewRef(ref: ImportReference | undefined): void {
+    this.state.set("pendingViewRef", ref);
   }
 
-  setNotFoundViewUrl(url: string | undefined): void {
-    this.state.set("notFoundViewUrl", url);
+  setNotFoundViewRef(ref: ImportReference | undefined): void {
+    this.state.set("notFoundViewRef", ref);
   }
 
-  setLoaderUrl(url: string | undefined): void {
-    this.state.set("loaderUrl", url);
+  setLoaderRef(ref: ImportReference | undefined): void {
+    this.state.set("loaderRef", ref);
   }
 
-  setHandlerUrl(url: string | undefined): void {
-    this.state.set("handlerUrl", url);
+  setHandlerRef(ref: ImportReference | undefined): void {
+    this.state.set("handlerRef", ref);
   }
 
   setParentId(id: string | undefined): void {

@@ -1,0 +1,32 @@
+{
+    "name": "@elllphnt/elementa-jsx",
+    "version": "0.1.0",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./build/index.d.ts",
+            "import": "./build/index.js"
+        },
+        "./jsx-runtime": {
+            "types": "./build/index.d.ts",
+            "import": "./build/index.js"
+        }
+    },
+    "scripts": {
+        "clean": "rm -rf build && rm -rf dist",
+        "build": "npm run lint && tsc -p tsconfig.build.json",
+        "watch": "tsc -w -p tsconfig.build.json",
+        "pub": "npm run clean && npm run build && packup && cd dist && npm publish",
+        "lint": "eslint src",
+        "test": "vitest",
+        "test:run": "vitest --run",
+        "types": "tsc src/index.ts --declaration --emitDeclarationOnly --outFile schema/index.d.ts"
+    },
+    "dependencies": {
+        "@tanstack/react-router": "^1.121.27",
+        "react": "^19.1.0"
+    },
+    "devDependencies": {
+        "@repo/scripts": "workspace:*"
+    }
+}

@@ -1,0 +1,20 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "component": "./components/Login/LoginPage.component.js"
+    },
+    {
+      "path": "/login",
+      "component": "./components/Login/LoginPage.component.js"
+    },
+    {
+      "path": "/forgot-password",
+      "component": "./components/Signup/PasswordPage.component.js"
+    },
+    {
+      "path": "/signup",
+      "component": "./components/Signup/SignupPage.component.js"
+    }
+  ]
+}

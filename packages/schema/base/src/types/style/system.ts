@@ -1,5 +1,8 @@
 import { z } from "zod";
-import { importedValueSchema, type ImportedValue } from "../_primitives/_.js";
+import {
+  importReferenceSchema,
+  type ImportReference,
+} from "../_primitives/_.js";
 import type { CrdtAtomic } from "../_shared/_.js";
 import { crdtAtomicSchema } from "../_shared/_.js";
 import type { StyleModifierData } from "./modifier.js";
@@ -36,7 +39,7 @@ export type ViewportSetData = CrdtAtomic<["definitions[*]"]> & {
 export type StyleSystemData = {
   colorSchemes?: ColorSchemeSetData;
   viewports?: ViewportSetData;
-  stylesheets?: ImportedValue[];
+  stylesheetRefs?: ImportReference[];
 };
 
 // Schema
@@ -79,5 +82,5 @@ export const viewportSetDataSchema = crdtAtomicSchema([
 export const StyleSystemSchema = z.object({
   colorSchemes: colorSchemeSetDataSchema.optional(),
   viewports: viewportSetDataSchema.optional(),
-  stylesheets: z.array(importedValueSchema).optional(),
+  stylesheets: z.array(importReferenceSchema).optional(),
 });

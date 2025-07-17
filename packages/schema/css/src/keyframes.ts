@@ -1,9 +1,12 @@
-import type { KeyframeSetData, StyleFragmentData } from "@elllphnt/elementa-base";
+import type {
+  KeyframeSetData,
+  StyleFragmentData,
+} from "@elllphnt/elementa-base";
 import type { StyleToCssContext } from "./style/style.js";
 import { styleToCss } from "./style/style.js";
 
 export function keyFrameSetToCss(data: KeyframeSetData): string {
-  if (!data.keyframes || !data.name) {
+  if (!data.groups || !data.name) {
     return "";
   }
 
@@ -20,10 +23,10 @@ export function keyFrameSetToCss(data: KeyframeSetData): string {
       }
     },
   };
-  const keyframes: [number, string][] = [];
+  const keyframes: [number[], string][] = [];
 
-  for (const keyframe of data.keyframes ?? []) {
-    if (keyframe.offset === undefined || !keyframe.style) {
+  for (const keyframe of data.groups ?? []) {
+    if (keyframe.offsets === undefined || !keyframe.style) {
       continue;
     }
 
@@ -32,13 +35,12 @@ export function keyFrameSetToCss(data: KeyframeSetData): string {
       .map(([key, value]) => `${key}: ${value};`)
       .join("\n");
 
-    keyframes.push([keyframe.offset, css]);
+    keyframes.push([keyframe.offsets, css]);
   }
 
-  keyframes.sort((a, b) => a[0] - b[0]);
-
-  const keyframesCss = keyframes.map(([offset, style]) => {
-    return `${offset * 100}% { ${style} }`;
+  const keyframesCss = keyframes.map(([offsets, style]) => {
+    const selector = offsets.map((offset) => `${offset * 100}%`).join(", ");
+    return `  ${selector} {\n${style}\n  }`;
   });
 
   return [`@keyframes ${data.name} {`, ...keyframesCss, `}`].join("\n");

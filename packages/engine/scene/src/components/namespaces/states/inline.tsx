@@ -65,14 +65,14 @@ export function InlineStateNamespaceProvider({
   state: InlineStateInstance;
 }>) {
   const script = useObservable(state.model.script$, state.model.script);
-  const varName = useObservable(state.model.varName$, state.model.varName);
+  const name = useObservable(state.model.name$, state.model.name);
 
   renderingLogger.debug(
-    `InlineStateNamespaceProvider ${varName} (${state.model.id})`,
+    `InlineStateNamespaceProvider ${name} (${state.model.id})`,
     {
       state,
       script,
-      varName,
+      name,
     }
   );
 
@@ -83,7 +83,7 @@ export function InlineStateNamespaceProvider({
       <InnerInlineStateNamespaceProvider
         key={script}
         script={script}
-        varName={varName}
+        varName={name}
         state={state}
       >
         {children}

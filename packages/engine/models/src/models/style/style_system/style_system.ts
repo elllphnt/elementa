@@ -1,4 +1,4 @@
-import type { StyleSystemData } from "@elllphnt/elementa-base";
+import type { ImportReference, StyleSystemData } from "@elllphnt/elementa-base";
 import type { RecordState } from "@elllphnt/elementa-kernel";
 import type { Observable } from "rxjs";
 import { map } from "rxjs";
@@ -12,23 +12,25 @@ export class StyleSystem extends ProjectModel<RecordState<StyleSystemData>> {
   colorSchemes: ColorSchemeSet;
   viewports: ViewportSet;
 
-  get stylesheetUrls(): string[] {
-    return this.state.entry("stylesheetUrls") || [];
+  get stylesheetRefs(): ImportReference[] {
+    return this.state.entry("stylesheetRefs") || [];
   }
-  get stylesheetUrls$(): Observable<string[]> {
-    return this.state.entry$("stylesheetUrls").pipe(map((urls) => urls || []));
+  get stylesheetRefs$(): Observable<ImportReference[]> {
+    return this.state.entry$("stylesheetRefs").pipe(map((urls) => urls || []));
   }
 
   get stylesheets(): FileModelAdaptor<"stylesheet", File>[] {
-    return this.stylesheetUrls.map((url) =>
-      this.project.stylesheet(this.project.absoluteFileUrl(url))
+    return this.stylesheetRefs.map((ref) =>
+      this.project.stylesheet(this.project.absoluteFileUrl(ref.__import.module))
     );
   }
   get stylesheets$(): Observable<FileModelAdaptor<"stylesheet", File>[]> {
-    return this.stylesheetUrls$.pipe(
-      map((urls) =>
-        urls.map((url) =>
-          this.project.stylesheet(this.project.absoluteFileUrl(url))
+    return this.stylesheetRefs$.pipe(
+      map((refs) =>
+        refs.map((ref) =>
+          this.project.stylesheet(
+            this.project.absoluteFileUrl(ref.__import.module)
+          )
         )
       )
     );
@@ -63,16 +65,19 @@ export class StyleSystem extends ProjectModel<RecordState<StyleSystemData>> {
     });
   }
 
-  addStylesheet(url: string): void {
-    const stylesheets = this.stylesheetUrls;
-    if (!stylesheets.includes(url)) {
-      this.state.set("stylesheetUrls", [...stylesheets, url]);
-    }
+  addStylesheet(ref: ImportReference): void {
+    const stylesheets = this.stylesheetRefs;
+    this.state.set("stylesheetRefs", [...stylesheets, ref]);
   }
 
-  removeStylesheet(url: string): void {
-    const stylesheets = this.stylesheetUrls;
-    const filteredStylesheets = stylesheets.filter((s) => s !== url);
-    this.state.set("stylesheetUrls", filteredStylesheets);
+  removeStylesheet(ref: ImportReference): void {
+    const stylesheets = this.stylesheetRefs;
+    const filteredStylesheets = stylesheets.filter((s) => {
+      return (
+        s.__import.module !== ref.__import.module ||
+        s.__import.name !== ref.__import.name
+      );
+    });
+    this.state.set("stylesheetRefs", filteredStylesheets);
   }
 }

@@ -5,7 +5,6 @@ import { App } from "~/models/app/app.js";
 import { Component } from "~/models/component/component.js";
 import { PackageSheet } from "~/models/packages/package_sheet.js";
 import { Router } from "~/models/router/router.js";
-import { KeyframeSheet } from "~/models/style/keyframes/keyframe_sheet.js";
 import { StyleModifierSheet } from "~/models/style/style_modifiers/style_modifier_sheet.js";
 import { StyleSystem } from "~/models/style/style_system/style_system.js";
 import { StyleVariableSheet } from "~/models/style/style_variables/style_variable_sheet.js";
@@ -47,10 +46,12 @@ export abstract class FileModelAdaptor<
         const previousModel = this.model;
         if (!state) {
           this._model$.next(undefined);
+          this.setStatus(AsyncResourceStatus.Pending);
         } else {
           const nextModel = this.createModel(state);
           this._model$.next(nextModel);
           this.addLifecycle(nextModel);
+          this.setStatus(AsyncResourceStatus.Resolved);
         }
         if (previousModel) {
           previousModel.dispose();
@@ -124,13 +125,6 @@ export abstract class FileModelAdaptor<
       case fileModelTypes.styleModifierSheet: {
         return new StyleModifierSheet({
           state: state as FileModelType<"style-modifier-sheet">["state"],
-          project: this.file.project,
-          initialized: true,
-        }) as FileModelType<N>;
-      }
-      case fileModelTypes.keyframeSheet: {
-        return new KeyframeSheet({
-          state: state as FileModelType<"keyframe-sheet">["state"],
           project: this.file.project,
           initialized: true,
         }) as FileModelType<N>;

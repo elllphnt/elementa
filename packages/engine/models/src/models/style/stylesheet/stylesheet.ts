@@ -1,26 +1,46 @@
-import type { StyleData, StyleSheetData } from "@elllphnt/elementa-base";
-import { baseSelector } from "@elllphnt/elementa-base";
+import type {
+  KeyframeSetData,
+  StyleClassData,
+  StyleSheetData,
+} from "@elllphnt/elementa-base";
 import type { RecordState } from "@elllphnt/elementa-kernel";
-import { AggregatedModelRecord } from "@elllphnt/elementa-kernel";
-import type { Observable } from "rxjs";
-import { filter, map, tap } from "rxjs";
+import { AggregatedModelList, reconcileList } from "@elllphnt/elementa-kernel";
+import { BehaviorSubject, type Observable } from "rxjs";
+import { StyleClassCssStyleSheet } from "~/css/stylesheets/stylesheet/stylesheet.js";
 import { ProjectModel } from "~/models/project.js";
 import type { Project } from "~/project/project.js";
-import { Style } from "./style.js";
-import { StyleFragmentRegistry } from "./style_fragment_registry.js";
+import { KeyframeSet } from "./keyframes/keyframe_set.js";
+import type { StyleFragmentRegistry } from "./style_fragment_registry.js";
+import { StyleClass } from "./styleclass.js";
 
 export class Stylesheet extends ProjectModel<RecordState<StyleSheetData>> {
   readonly fragmentRegistry: StyleFragmentRegistry;
 
-  private _styles: AggregatedModelRecord<RecordState<StyleData>, Style>;
+  private _classes: AggregatedModelList<
+    RecordState<StyleClassData>,
+    StyleClass
+  >;
+  private _keyframeSets: AggregatedModelList<
+    RecordState<KeyframeSetData>,
+    KeyframeSet
+  >;
+  private _cssStylesheets$ = new BehaviorSubject<StyleClassCssStyleSheet[]>([]);
 
   get className(): string {
     return this.key;
   }
 
+  get cssStylesheets() {
+    return this._cssStylesheets$.value;
+  }
+  get cssStylesheets$() {
+    return this._cssStylesheets$.asObservable();
+  }
+
   constructor({
     state,
     project,
+    initialized,
   }: {
     state: RecordState<StyleSheetData>;
     project: Project;
@@ -28,146 +48,69 @@ export class Stylesheet extends ProjectModel<RecordState<StyleSheetData>> {
   }) {
     super({ state, project });
 
-    this.fragmentRegistry = new StyleFragmentRegistry<"fragments">({
-      state,
-      propertyKey: "fragments",
-    });
-
-    this._styles = new AggregatedModelRecord({
-      state: state.getRecordOfRecordStates("styles"),
-      create: (state, key) =>
-        new Style({
+    this._classes = new AggregatedModelList({
+      state: state.getListOfRecordStates("classes"),
+      create: (state, init) =>
+        new StyleClass({
           state,
           project: this.project,
-          selector: key,
-          fragmentRegistry: this.fragmentRegistry,
+          initialized: init && initialized,
+        }),
+    });
+    this._keyframeSets = new AggregatedModelList({
+      state: state.getListOfRecordStates("keyframeSets"),
+      create: (state, init) =>
+        new KeyframeSet({
+          state,
+          project: this.project,
+          initialized: init && initialized,
         }),
     });
 
     this.addInitializer(() => {
-      this.fragmentRegistry.initialize();
-      this._styles.initialize();
-
-      this.addDisposer(() => {
-        this._styles.dispose();
-        this.fragmentRegistry.dispose();
-      });
-    });
-  }
-
-  get styles(): Record<string, Style | undefined> {
-    return this._styles.models;
-  }
-
-  get styles$(): Observable<Record<string, Style | undefined>> {
-    return this._styles.models$;
-  }
-
-  style(selector: string): Style | undefined;
-  style(selector: string, create: true): Style;
-  style(selector: string, create?: true): Style | undefined {
-    let style = this._styles.models[selector];
-
-    if (!style && create) {
-      const state = this.state.backend.createRecordState<StyleData>();
-      style = new Style({
-        state,
-        project: this.project,
-        selector,
-        fragmentRegistry: this.fragmentRegistry,
-      });
-
-      this._styles.set(selector, style);
-    }
-
-    return style;
-  }
-
-  style$(selector: string): Observable<Style | undefined>;
-  style$(selector: string, create: true): Observable<Style>;
-  style$(selector: string, create?: true): Observable<Style | undefined> {
-    return this._styles.models$.pipe(
-      map((record) => record[selector]),
-      tap((style) => {
-        if (!style && create) {
-          const state = this.state.backend.createRecordState<StyleData>();
-          const newStyle = new Style({
-            state,
-            project: this.project,
-            selector,
-            fragmentRegistry: this.fragmentRegistry,
+      const systemCssStylesheetsSubscription = this._classes.models$.subscribe(
+        (styleClasses) => {
+          const [nextStylesheets, removed] = reconcileList({
+            sources: styleClasses,
+            targets: this.cssStylesheets,
+            sourceRef: (s) => s,
+            targetRef: (s) => s.styleClass,
+            create: (stylesheet) =>
+              new StyleClassCssStyleSheet({
+                target: "style-system",
+                styleClass: stylesheet,
+              }),
           });
 
-          this._styles.set(selector, newStyle);
+          this._cssStylesheets$.next(nextStylesheets);
+          removed.forEach((r) => r.dispose());
         }
-      }),
-      filter((style) => !create || !!style)
-    );
-  }
+      );
 
-  get conditions(): Record<string, string> | undefined {
-    return this.state.entry("conditions") || {};
-  }
-
-  get conditions$(): Observable<Record<string, string> | undefined> {
-    return this.state.entry$("conditions");
-  }
-
-  condition(id: string): string | undefined {
-    return this.conditions?.[id];
-  }
-
-  condition$(id: string): Observable<string | undefined> {
-    return this.conditions$.pipe(map((conditions) => conditions?.[id]));
-  }
-
-  get selectors(): string[] {
-    return Object.keys(this._styles.models);
-  }
-
-  get selectors$(): Observable<string[]> {
-    return this._styles.models$.pipe(map((record) => Object.keys(record)));
-  }
-
-  baseStyle(): Style | undefined;
-  baseStyle(create: true): Style;
-  baseStyle(create?: true): Style | undefined {
-    return this.style(baseSelector, create as any);
-  }
-
-  baseStyle$(): Observable<Style | undefined>;
-  baseStyle$(create: true): Observable<Style>;
-  baseStyle$(create?: true): Observable<Style | undefined> {
-    return this.style$(baseSelector, create as any);
-  }
-
-  addStyle(selector: string): void {
-    if (!this._styles.models[selector]) {
-      const state = this.state.backend.createRecordState<StyleData>();
-      const style = new Style({
-        state,
-        project: this.project,
-        selector,
-        fragmentRegistry: this.fragmentRegistry,
+      this.addDisposer(() => {
+        systemCssStylesheetsSubscription.unsubscribe();
       });
+    });
 
-      this._styles.set(selector, style);
-    }
+    this.addLifecycle(this._classes);
+    this.addLifecycle(this._keyframeSets);
+
+    this.addDisposer(() => {
+      this._cssStylesheets$.complete();
+    })
   }
 
-  removeStyle(selector: string): void {
-    this._styles.remove(selector);
+  get classes(): StyleClass[] {
+    return this._classes.models;
+  }
+  get classes$(): Observable<StyleClass[]> {
+    return this._classes.models$;
   }
 
-  setCondition(id: string, expression: string): void {
-    const conditions = { ...this.conditions };
-    conditions[id] = expression;
-    this.state.set("conditions", conditions);
+  get keyframeSets(): KeyframeSet[] {
+    return this._keyframeSets.models;
   }
-
-  removeCondition(id: string): void {
-    const conditions = { ...this.conditions };
-    delete conditions[id];
-    this.state.set("conditions", conditions);
+  get keyframeSets$(): Observable<KeyframeSet[]> {
+    return this._keyframeSets.models$;
   }
 }

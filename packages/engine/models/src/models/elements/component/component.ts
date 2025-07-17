@@ -1,5 +1,6 @@
 import type {
   ComponentElementData,
+  ImportReference,
   ResolvableOrEvaluable,
 } from "@elllphnt/elementa-base";
 import type { RecordState } from "@elllphnt/elementa-kernel";
@@ -22,26 +23,28 @@ export class ComponentElement extends BaseElement<ComponentElementData> {
   private _fills: AggregatedModelRecord<RecordState<any>, SlotFill>;
   private _content: AggregatedModelList<RecordState<any>, Element>;
 
-  get componentUrl(): string | undefined {
-    return this.state.entry("componentUrl");
+  get componentRef(): ImportReference | undefined {
+    return this.state.entry("componentRef");
   }
-  get componentUrl$(): Observable<string | undefined> {
-    return this.state.entry$("componentUrl");
+  get componentRef$(): Observable<ImportReference | undefined> {
+    return this.state.entry$("componentRef");
   }
 
   get component(): FileModelAdaptor<"component"> | undefined {
-    return this.componentUrl
+    return this.componentRef
       ? this.environment.project.infrastructure.component(
-          this.environment.project.absoluteFileUrl(this.componentUrl)
+          this.environment.project.absoluteFileUrl(
+            this.componentRef.__import.module
+          )
         )
       : undefined;
   }
   get component$(): Observable<FileModelAdaptor<"component"> | undefined> {
-    return this.componentUrl$.pipe(
-      map((url) =>
-        url
+    return this.componentRef$.pipe(
+      map((ref) =>
+        ref
           ? this.environment.project.infrastructure.component(
-              this.environment.project.absoluteFileUrl(url)
+              this.environment.project.absoluteFileUrl(ref.__import.module)
             )
           : undefined
       )
@@ -148,16 +151,9 @@ export class ComponentElement extends BaseElement<ComponentElementData> {
     return `component-element-${this.id}-fill-${key}`;
   }
 
-  prop(key: string): any {
-    return this.props?.[key];
-  }
-
-  prop$(key: string): Observable<any> {
-    return this.props$.pipe(map((props) => props?.[key]));
-  }
-
   fill(id: string): SlotFill | undefined;
   fill(id: string, create: true): SlotFill;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   fill(id: string, create?: true): SlotFill | undefined {
     // TODO: Implement with new AggregatedModelRecord pattern
     return this._fills.models[id];
@@ -165,6 +161,7 @@ export class ComponentElement extends BaseElement<ComponentElementData> {
 
   fill$(id: string): Observable<SlotFill | undefined>;
   fill$(id: string, create: true): Observable<SlotFill>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   fill$(id: string, create?: true): Observable<SlotFill | undefined> {
     // TODO: Implement with new AggregatedModelRecord pattern
     return this._fills.models$.pipe(map((record) => record[id]));
@@ -182,7 +179,7 @@ export class ComponentElement extends BaseElement<ComponentElementData> {
     this.state.set("props", props);
   }
 
-  setComponentUrl(url: string | undefined): void {
-    this.state.set("componentUrl", url);
+  setComponentRef(ref: ImportReference | undefined): void {
+    this.state.set("componentRef", ref);
   }
 }

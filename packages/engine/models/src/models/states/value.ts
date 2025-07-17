@@ -13,14 +13,6 @@ export class ValueState extends BaseState<ValueStateData> {
     return this.state.entry$("init");
   }
 
-  get tsType(): string | undefined {
-    return this.state.entry("tsType");
-  }
-
-  get tsType$(): Observable<string | undefined> {
-    return this.state.entry$("tsType");
-  }
-
   constructor({
     state,
     component,

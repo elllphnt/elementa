@@ -1,4 +1,5 @@
 import type {
+  ImportReference,
   PrimitiveElementData,
   ResolvableOrEvaluable,
 } from "@elllphnt/elementa-base";
@@ -64,12 +65,12 @@ export class PrimitiveElement extends BaseElement<PrimitiveElementData> {
     );
   }
 
-  get primitiveUrl(): string | undefined {
-    return this.state.entry("primitiveUrl");
+  get primitiveRef(): ImportReference | undefined {
+    return this.state.entry("primitiveRef");
   }
 
-  get primitiveUrl$(): Observable<string | undefined> {
-    return this.state.entry$("primitiveUrl");
+  get primitiveRef$(): Observable<ImportReference | undefined> {
+    return this.state.entry$("primitiveRef");
   }
 
   get props(): Record<string, any> | undefined {
@@ -141,8 +142,8 @@ export class PrimitiveElement extends BaseElement<PrimitiveElementData> {
     return this.props$.pipe(map((props) => props?.[key]));
   }
 
-  setPrimitiveUrl(url: string | undefined): void {
-    this.state.set("primitiveUrl", url);
+  setPrimitiveRef(Ref: ImportReference | undefined): void {
+    this.state.set("primitiveRef", Ref);
   }
 
   setProp(key: string, value: ResolvableOrEvaluable<any> | undefined): void {

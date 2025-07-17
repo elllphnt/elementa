@@ -1,0 +1,20 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "component": "./A.component.js"
+    },
+    {
+      "path": "/a",
+      "component": "./A.component.js"
+    },
+    {
+      "path": "/b",
+      "component": "./B.component.js"
+    },
+    {
+      "path": "/c",
+      "component": "./C.component.js"
+    }
+  ]
+}

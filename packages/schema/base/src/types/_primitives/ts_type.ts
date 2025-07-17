@@ -1,4 +1,4 @@
-import type { ImportedValue } from "./import.js";
+import type { ImportReference } from "./import.js";
 
 export type Type =
   | PrimitiveType
@@ -65,7 +65,7 @@ export interface FunctionType {
 
 export interface TypeReference {
   kind: "reference";
-  type: ImportedValue;
+  ref: ImportReference;
   args?: Type[];
 }
 

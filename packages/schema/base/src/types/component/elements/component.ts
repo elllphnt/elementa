@@ -1,7 +1,7 @@
 import { z } from "zod";
-import type { ImportedValue } from "../../_primitives/_.js";
+import type { ImportReference } from "../../_primitives/_.js";
 import {
-  importedValueSchema,
+  importReferenceSchema,
   type ResolvableOrEvaluable,
 } from "../../_primitives/_.js";
 import type { BaseElementData } from "./_base.js";
@@ -21,7 +21,7 @@ export type SlotFillData = StylableData &
 
 export type ComponentElementData = BaseElementData<"component"> &
   ElementContainerData & {
-    component?: ImportedValue;
+    componentRef?: ImportReference;
     fills?: Record<string, SlotFillData>;
     props?: ResolvableOrEvaluable;
   };
@@ -34,7 +34,7 @@ export const slotFillDataSchema = stylableDataSchema
 
 export const componentElementDataSchema = baseElementDataSchema.extend({
   type: z.literal("component"),
-  component: importedValueSchema.optional(),
+  component: importReferenceSchema.optional(),
   props: z.record(z.any()).optional(),
   fills: z.record(slotFillDataSchema).optional(),
 });

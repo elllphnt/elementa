@@ -90,7 +90,7 @@ export class RouteTreeInstance extends ModelInstance<RouteTree> {
       });
     });
 
-    const handlerSubscription = this.model.handlerUrl$
+    const handlerSubscription = this.model.handlerRef$
       .pipe(
         map((handlerUrl) => Boolean(handlerUrl)),
         distinctUntilChanged()

@@ -27,17 +27,19 @@ export class PrimitiveElementInstance extends BaseElementInstance<PrimitiveEleme
   }
 
   get module(): Module | undefined {
-    return this.element.primitiveUrl
+    return this.element.primitiveRef
       ? this.runtime.moduleManager.module(
           this.element.environment.project.absoluteFileUrl(
-            this.element.primitiveUrl
+            this.element.primitiveRef.__import.module
           )
         )
       : undefined;
   }
   get module$(): Observable<Module | undefined> {
-    return this.element.primitiveUrl$.pipe(
-      map((url) => (url ? this.runtime.moduleManager.module(url) : undefined))
+    return this.element.primitiveRef$.pipe(
+      map((url) =>
+        url ? this.runtime.moduleManager.module(url.__import.module) : undefined
+      )
     );
   }
 

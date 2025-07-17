@@ -1,4 +1,4 @@
-import type { Expression} from "@elllphnt/elementa-base";
+import type { Expression } from "@elllphnt/elementa-base";
 import { isExpression } from "@elllphnt/elementa-base";
 import { get, set } from "./utils.js";
 
@@ -29,8 +29,9 @@ export function evaluateExpressionSafely(
   const code = `
     "use strict";
     ${contextLine}
+    const __fragment = (id, params) => context.fragments?.[id]?.(params) || null;
     return (${expression});
-  `;
+    `;
 
   try {
     const fn = new Function("context", code);

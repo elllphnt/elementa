@@ -3,7 +3,7 @@ packages:
   - playground
   - apps/*
   - packages/schema/*
-  - packages/compiler/*
+  - packages/framework/*
   - packages/utils/*
   - packages/engine/*
   - packages/engine/backends/*

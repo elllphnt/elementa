@@ -2,7 +2,7 @@ import fs from "fs";
 import { globby } from "globby";
 import path from "path";
 import { IncrementalCache } from "./_cache.js";
-import { HandlerConfig } from "./_types.js";
+import type { HandlerConfig } from "./_types.js";
 import { writeFile } from "./_utils.js";
 import { transpileComponent } from "./handlers/component.js";
 import { copyFile } from "./handlers/copy.js";
@@ -65,6 +65,8 @@ export async function parseAll({
       } else {
         skippedCount++;
       }
+
+      console.log(`Parsed file: ${file}`);
     } catch (error) {
       console.error(`Error parsing file ${file}:`, error);
     }
@@ -90,9 +92,6 @@ export async function parseFile({
   filePath: string;
   cache?: IncrementalCache;
 }): Promise<boolean> {
-  console.log(`🔍 Parsing file: ${filePath}`);
-  console.log(`📂 Source directory: ${srcDir}`);
-  console.log(`📁 Output directory: ${outDir}`);
   const relativePath = path.relative(srcDir, filePath);
 
   // Find matching handler
@@ -106,8 +105,6 @@ export async function parseFile({
     // console.log(`⏭️  Skipping: ${relativePath} (unchanged)`);
     return false;
   }
-
-  console.log(`→ Building: ${relativePath}`);
 
   const content = fs.readFileSync(filePath, "utf-8");
 

@@ -5,11 +5,11 @@ export type ImportData = {
   name?: string;
   alias?: string;
 };
-export type ImportedValue = {
+export type ImportReference = {
   __import: ImportData;
 };
 
-export const importedValueSchema = z.object({
+export const importReferenceSchema = z.object({
   __import: z.object({
     module: z.string(),
     name: z.string().optional(),

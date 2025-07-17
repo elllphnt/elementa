@@ -55,11 +55,11 @@ export class ComponentInstance extends ModelInstance<Component> {
     return this._slotFills$.asObservable().pipe(map((s) => s[id]));
   }
 
-  propValue(varName: string) {
-    return this.inputResolver.propValue(varName);
+  get props(): any {
+    return this.inputResolver.props;
   }
-  propValue$(varName: string) {
-    return this.inputResolver.propValue$(varName);
+  get props$(): Observable<any> {
+    return this.inputResolver.props$;
   }
 
   get states(): StateInstance[] {

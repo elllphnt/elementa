@@ -7,6 +7,7 @@ interface BuilderConfig {
   projectsDir: string;
   infraDir: string;
   appsDir?: string;
+  buildEnabled?: boolean;
   filter?: {
     include?: string | string[];
     exclude?: string | string[];
@@ -130,7 +131,7 @@ async function main() {
   run({
     projectsDir: config.projectsDir,
     infraDir: config.infraDir,
-    appsDir: config.appsDir,
+    appsDir: config.buildEnabled ? config.appsDir : undefined,
     watch,
     filter,
   });

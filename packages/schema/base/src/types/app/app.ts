@@ -1,10 +1,13 @@
 import { z } from "zod";
-import { importedValueSchema, type ImportedValue } from "../_primitives/_.js";
+import {
+  importReferenceSchema,
+  type ImportReference,
+} from "../_primitives/_.js";
 
 export type AppData = {
-  router?: ImportedValue;
+  routerRef?: ImportReference;
 };
 
 export const appSchema = z.object({
-  router: importedValueSchema.optional(),
+  router: importReferenceSchema.optional(),
 });

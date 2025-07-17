@@ -13,6 +13,7 @@
     "start": "node dist/server.js"
   },
   "dependencies": {
+    "@elllphnt/elementa-transformers": "workspace:*",
     "chokidar": "^3.6.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",

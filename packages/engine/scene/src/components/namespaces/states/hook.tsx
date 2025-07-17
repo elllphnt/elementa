@@ -14,28 +14,14 @@ function UseHookStateNamespaceProvider({
   use?: (...args: unknown[]) => unknown;
 }>) {
   const args = useObservable(state.model.args$, state.model.args);
-  const argMode = useObservable(state.model.argMode$, state.model.argMode);
-  const varName = useObservable(state.model.varName$, state.model.varName);
+  const name = useObservable(state.model.name$, state.model.name);
   const namespace = useNamespace({ clone: true });
 
   let value: unknown;
 
   try {
-    if (argMode === "named") {
-      const resolvedArgs = {} as Record<string, any>;
-      for (const [key, value] of Object.entries(args)) {
-        resolvedArgs[key] = namespace.resolveValue(value);
-      }
-      value = use?.(resolvedArgs);
-    } else {
-      const resolvedArgs = [] as any[];
-      for (const [, value] of Object.entries(args).sort((a, b) => {
-        return a[0].localeCompare(b[0]);
-      })) {
-        resolvedArgs.push(namespace.resolveValue(value));
-      }
-      value = use?.(...resolvedArgs);
-    }
+    const resolvedArgs = namespace.resolveValue(value) as any[];
+    value = use?.(...(resolvedArgs || []));
   } catch (e) {
     renderingLogger.error(
       "UseHookStateNamespaceProvider: Hook execution failed",
@@ -46,19 +32,18 @@ function UseHookStateNamespaceProvider({
   }
 
   namespace.set(state.namespaceKey, value);
-  if (varName) {
-    namespace.set([varName], value);
+  if (name) {
+    namespace.set([name], value);
   }
 
   renderingLogger.debug(
-    `UseHookStateNamespaceProvider ${varName} (${state.model.id})`,
+    `UseHookStateNamespaceProvider ${name} (${state.model.id})`,
     {
       children,
       state,
       use,
       args,
-      argMode,
-      varName,
+      name,
       namespace,
       value,
     }
@@ -83,6 +68,10 @@ export function HookStateNamespaceProvider({
     use,
     state,
   });
+
+  if (!use) {
+    return <>Loading Hook State...</>;
+  }
 
   return (
     <UseHookStateNamespaceProvider

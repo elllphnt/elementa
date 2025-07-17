@@ -1,23 +1,23 @@
 import { BehaviorSubject, map } from "rxjs";
-import type { Stylesheet } from "~/models/style/stylesheet/stylesheet.js";
+import type { StyleClass } from "~/models/style/stylesheet/styleclass.js";
 import { RuleCssStyleSheet } from "../../lib/rule/rule.js";
-import { StylesheetCssStyleRule } from "./rule.js";
+import { StyleClassCssStyleRule } from "./rule.js";
 
 /**
  * Represents a CSS stylesheet that is composed of CSS style rules.
  * This class extends RuleCssStyleSheet and provides reactive management
  * of CSS rules.
  */
-export class StylesheetCssStyleSheet extends RuleCssStyleSheet {
+export class StyleClassCssStyleSheet extends RuleCssStyleSheet {
   readonly target: string;
-  readonly stylesheet: Stylesheet;
+  readonly styleClass: StyleClass;
   readonly layer?: string;
-  private _rules$ = new BehaviorSubject<Record<string, StylesheetCssStyleRule>>(
+  private _rules$ = new BehaviorSubject<Record<string, StyleClassCssStyleRule>>(
     {}
   );
 
   get className() {
-    return this.stylesheet.className;
+    return this.styleClass.className;
   }
 
   get rules() {
@@ -46,30 +46,30 @@ export class StylesheetCssStyleSheet extends RuleCssStyleSheet {
 
   constructor({
     target,
-    stylesheet,
+    styleClass,
     layer,
   }: {
     target: string;
-    stylesheet: Stylesheet;
+    styleClass: StyleClass;
     layer?: string;
   }) {
     super();
     this.target = target;
-    this.stylesheet = stylesheet;
+    this.styleClass = styleClass;
     this.layer = layer;
 
-    const rulesSubscription = this.stylesheet.styles$.subscribe((styles) => {
+    const rulesSubscription = this.styleClass.styles$.subscribe((styles) => {
       const toRemove = { ...this._rules$.value };
-      const newRules: Record<string, StylesheetCssStyleRule> = {};
+      const newRules: Record<string, StyleClassCssStyleRule> = {};
 
       for (const selector in styles) {
         if (toRemove[selector]) {
           newRules[selector] = toRemove[selector];
           delete toRemove[selector];
         } else {
-          const rule = new StylesheetCssStyleRule({
+          const rule = new StyleClassCssStyleRule({
             layer: this.layer,
-            stylesheet: this.stylesheet,
+            styleClass: this.styleClass,
             selector,
           });
           newRules[selector] = rule;

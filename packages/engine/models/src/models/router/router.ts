@@ -148,23 +148,23 @@ export class Router extends ProjectModel<RecordState<any>> {
     if (init.path != undefined) {
       state.set("path", init.path);
     }
-    if (init.mainViewUrl != undefined) {
-      state.set("mainViewUrl", init.mainViewUrl);
+    if (init.mainViewRef != undefined) {
+      state.set("mainViewRef", init.mainViewRef);
     }
-    if (init.errorViewUrl != undefined) {
-      state.set("errorViewUrl", init.errorViewUrl);
+    if (init.errorViewRef != undefined) {
+      state.set("errorViewRef", init.errorViewRef);
     }
-    if (init.pendingViewUrl != undefined) {
-      state.set("pendingViewUrl", init.pendingViewUrl);
+    if (init.pendingViewRef != undefined) {
+      state.set("pendingViewRef", init.pendingViewRef);
     }
-    if (init.notFoundViewUrl != undefined) {
-      state.set("notFoundViewUrl", init.notFoundViewUrl);
+    if (init.notFoundViewRef != undefined) {
+      state.set("notFoundViewRef", init.notFoundViewRef);
     }
-    if (init.loaderUrl != undefined) {
-      state.set("loaderUrl", init.loaderUrl);
+    if (init.loaderRef != undefined) {
+      state.set("loaderRef", init.loaderRef);
     }
-    if (init.handlerUrl != undefined) {
-      state.set("handlerUrl", init.handlerUrl);
+    if (init.handlerRef != undefined) {
+      state.set("handlerRef", init.handlerRef);
     }
 
     return new RouteTree({ state, router: this, initialized: true });

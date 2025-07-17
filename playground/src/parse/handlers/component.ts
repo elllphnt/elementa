@@ -3,18 +3,51 @@ import type {
   ElementaPreviewData,
   ElementaStageData,
 } from "@elllphnt/elementa-base";
-import { genId } from "@elllphnt/elementa-base";
-import { parseComponentModule } from "@elllphnt/elementa-transformers";
+import { genId, isImportReference } from "@elllphnt/elementa-base";
+import {
+  createMarkup,
+  markupTypes,
+  parseComponentModule,
+} from "@elllphnt/elementa-transformers";
 import type { Handler } from "../_types.js";
+
+export function traverseObject(
+  obj: any,
+  handler: (value: any) => boolean | void
+): void {
+  const handled = handler(obj);
+  if (handled) return;
+
+  if (Array.isArray(obj)) {
+    for (const item of obj) {
+      traverseObject(item, handler);
+    }
+  } else if (typeof obj === "object" && obj !== null) {
+    for (const key in obj) {
+      traverseObject(obj[key], handler);
+    }
+  }
+}
 
 export const transpileComponent: Handler = async (path, content) => {
   const outPath = path.replace(/\.tsx$/, ".json");
 
   const componentData = parseComponentModule(content);
+
+  // replace imports paths with ref strings
+  traverseObject(componentData, (value) => {
+    if (isImportReference(value)) {
+      value.__import.module = createMarkup(
+        markupTypes.fileRef,
+        value.__import.module
+      );
+    }
+  });
+
   const preview: ElementaPreviewData = {
     content: {
       type: "component",
-      component: {
+      componentRef: {
         __import: {
           module: "host",
         },
@@ -27,7 +60,7 @@ export const transpileComponent: Handler = async (path, content) => {
         id: genId(),
         content: {
           type: "component",
-          component: {
+          componentRef: {
             __import: {
               module: "host",
             },

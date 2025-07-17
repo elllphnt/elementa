@@ -1,0 +1,16 @@
+{
+  "routes": [
+    {
+      "path": "/products",
+      "component": "/views/product/product-list.component.tsx",
+      "loader": "/views/product/product-list.loader.ts",
+      "children": [
+        {
+          "path": ":productId",
+          "component": "/views/product/product.component.tsx",
+          "loader": "/views/product/product.loader.ts"
+        }
+      ]
+    }
+  ]
+}

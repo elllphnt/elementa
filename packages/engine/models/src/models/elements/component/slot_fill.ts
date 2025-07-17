@@ -1,26 +1,26 @@
-import type { ElementData, Expression, SlotFillData } from "@elllphnt/elementa-base";
 import type {
-  RecordState} from "@elllphnt/elementa-kernel";
-import {
-  AggregatedModelList,
-  Model
-} from "@elllphnt/elementa-kernel";
+  ElementData,
+  Expression,
+  SlotFillData,
+} from "@elllphnt/elementa-base";
+import type { RecordState } from "@elllphnt/elementa-kernel";
+import { AggregatedModelList, Model } from "@elllphnt/elementa-kernel";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
-import type { Observable} from "rxjs";
+import type { Observable } from "rxjs";
 import { combineLatest, map, of, switchMap } from "rxjs";
 import type { CssStyleSheet } from "~/css/lib/stylesheet.js";
-import { StylesheetCssStyleSheet } from "~/css/stylesheets/stylesheet/stylesheet.js";
+import { StyleClassCssStyleSheet } from "~/css/stylesheets/stylesheet/stylesheet.js";
+import { StyleClass } from "~/models/style/stylesheet/styleclass.js";
 import type { Project } from "~/project/project.js";
-import { Stylesheet } from "../../style/stylesheet/stylesheet.js";
 import type { Element } from "../_element.js";
 import { createElement } from "../_element.js";
 import type { ElementEnvironment } from "../_environment.js";
 
 export class SlotFill extends Model<RecordState<SlotFillData>> {
   readonly environment: ElementEnvironment;
-  readonly cssStyleSheet: StylesheetCssStyleSheet;
+  readonly cssStyleSheet: StyleClassCssStyleSheet;
 
-  private _stylesheet: Stylesheet;
+  private _styleClass: StyleClass;
   private _content: AggregatedModelList<RecordState<ElementData>, Element>;
 
   // getters
@@ -75,14 +75,14 @@ export class SlotFill extends Model<RecordState<SlotFillData>> {
 
     this.environment = environment;
 
-    this._stylesheet = new Stylesheet({
-      state: state.getRecordState("stylesheet"),
+    this._styleClass = new StyleClass({
+      state: state.getRecordState("styleClass"),
       project: environment.project,
     });
 
-    this.cssStyleSheet = new StylesheetCssStyleSheet({
+    this.cssStyleSheet = new StyleClassCssStyleSheet({
       target: cssStyleSheetTarget || this.key,
-      stylesheet: this._stylesheet,
+      styleClass: this._styleClass,
     });
 
     this._content = new AggregatedModelList<RecordState<ElementData>, Element>({
@@ -96,11 +96,11 @@ export class SlotFill extends Model<RecordState<SlotFillData>> {
     });
 
     this.addInitializer(() => {
-      this._stylesheet.initialize();
+      this._styleClass.initialize();
       this._content.initialize();
 
       this.addDisposer(() => {
-        this._stylesheet.dispose();
+        this._styleClass.dispose();
         this.cssStyleSheet.dispose();
         this._content.dispose();
       });

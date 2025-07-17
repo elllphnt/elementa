@@ -1,7 +1,7 @@
 import { z } from "zod";
 import {
-  importedValueSchema,
-  type ImportedValue,
+  importReferenceSchema,
+  type ImportReference,
   type ResolvableOrEvaluable,
 } from "../../_primitives/_.js";
 import type { BaseElementData } from "./_base.js";
@@ -15,7 +15,7 @@ export type PrimitiveSubElementData = StylableData & InteractiveData & {};
 
 export type PrimitiveElementData = BaseElementData<"primitive"> &
   ElementContainerData & {
-    primitive?: ImportedValue;
+    primitiveRef?: ImportReference;
     elements?: Record<string, PrimitiveSubElementData>;
     props?: ResolvableOrEvaluable;
   };
@@ -30,7 +30,7 @@ export const primitiveElementDataSchema = baseElementDataSchema
   .merge(elementContainerDataSchema)
   .extend({
     type: z.literal("primitive"),
-    primitive: importedValueSchema.optional(),
+    primitive: importReferenceSchema.optional(),
     props: z.record(z.any()).optional(),
     elements: z.record(primitiveSubElementDataSchema).optional(),
   });

@@ -7,17 +7,17 @@ import type { ElementaEnvironment } from "../environment.js";
 import { BaseRenderableContent } from "./_base.js";
 
 export class ComponentRenderableContent extends BaseRenderableContent<ComponentRenderableContentData> {
-  get componentUrl(): string | undefined {
-    return this.state.entry("componentUrl");
+  get componentRef() {
+    return this.state.entry("componentRef");
   }
 
-  get componentUrl$(): Observable<string | undefined> {
-    return this.state.entry$("componentUrl");
+  get componentRef$() {
+    return this.state.entry$("componentRef");
   }
 
   get component(): FileModelAdaptor<"component"> | undefined {
-    let resolvedUrl: string | undefined = this.componentUrl;
-    if (this.componentUrl === "host") {
+    let resolvedUrl = this.componentRef?.__import.module;
+    if (resolvedUrl === "host") {
       resolvedUrl = this.environment.hostUrl;
     }
     return resolvedUrl
@@ -28,10 +28,10 @@ export class ComponentRenderableContent extends BaseRenderableContent<ComponentR
   }
 
   get component$(): Observable<FileModelAdaptor<"component"> | undefined> {
-    return this.componentUrl$.pipe(
+    return this.componentRef$.pipe(
       map((url) => {
-        let resolvedUrl: string | undefined = url;
-        if (url === "host") {
+        let resolvedUrl = url?.__import.module;
+        if (resolvedUrl === "host") {
           resolvedUrl = this.environment.hostUrl;
         }
         return resolvedUrl
@@ -49,14 +49,6 @@ export class ComponentRenderableContent extends BaseRenderableContent<ComponentR
 
   get props$(): Observable<Record<string, any> | undefined> {
     return this.state.entry$("props");
-  }
-
-  propValue(name: string): any | undefined {
-    return this.state.entry("props")?.[name];
-  }
-
-  propValue$(name: string): Observable<any | undefined> {
-    return this.state.entry$("props").pipe(map((props) => props?.[name]));
   }
 
   constructor({

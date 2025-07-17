@@ -8,11 +8,11 @@ export class StaticComponentInputResolver extends ComponentInputResolver {
   private _props: { [key: string]: unknown };
   private _slotFills: { [key: string]: SlotFill | undefined };
 
-  propValue(varName: string): unknown {
-    return this._props[varName];
+  get props() {
+    return this._props;
   }
-  propValue$(varName: string): Observable<unknown> {
-    return of(this._props[varName]);
+  get props$() {
+    return of(this._props);
   }
   slotFill(id: string): SlotFill | undefined {
     return this._slotFills[id];

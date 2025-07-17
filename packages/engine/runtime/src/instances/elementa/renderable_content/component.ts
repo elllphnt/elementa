@@ -23,12 +23,12 @@ export class ComponentRenderableContentInputResolver extends ComponentInputResol
     this.renderableContent = renderableContent;
   }
 
-  propValue(name: string): unknown {
-    return this.renderableContent.propValue(name);
+  get props() {
+    return this.renderableContent.props;
   }
 
-  propValue$(name: string): Observable<unknown> {
-    return this.renderableContent.propValue$(name);
+  get props$() {
+    return this.renderableContent.props$;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -2,9 +2,10 @@
     "projectsDir": "/home/krvnsvlcy/repos/elllphnt/elementa/playground/projects",
     "infraDir": "/home/krvnsvlcy/repos/elllphnt/elementa/playground/infra",
     "appsDir": "/home/krvnsvlcy/repos/elllphnt/elll-platform/playground/apps",
+    "buildEnabled": true,
     "filter": {
         "include": [
-            "design-agency"
+            "test-7"
         ]
     }
 }

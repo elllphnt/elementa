@@ -14,11 +14,11 @@ import type { Instance } from "../../../instance.js";
 import { BaseRouteHandler } from "./_base.js";
 
 export class RouteComponentPropResolver extends ComponentInputResolver {
-  propValue() {
-    return undefined;
+  get props() {
+    return {};
   }
-  propValue$() {
-    return of(undefined);
+  get props$() {
+    return of({});
   }
   slotFill(): SlotFill | undefined {
     return undefined;
@@ -145,18 +145,20 @@ export class PageRouteHandler extends BaseRouteHandler<"page"> {
   }
 
   get loaderModule() {
-    return this.route.loaderUrl
+    return this.route.loaderRef
       ? this.runtime.moduleManager.module(
-          this.route.project.absoluteFileUrl(this.route.loaderUrl)
+          this.route.project.absoluteFileUrl(
+            this.route.loaderRef.__import.module
+          )
         )
       : undefined;
   }
   get loaderModule$() {
-    return this.route.loaderUrl$.pipe(
+    return this.route.loaderRef$.pipe(
       map((url) => {
         return url
           ? this.runtime.moduleManager.module(
-              this.route.project.absoluteFileUrl(url)
+              this.route.project.absoluteFileUrl(url.__import.module)
             )
           : undefined;
       })

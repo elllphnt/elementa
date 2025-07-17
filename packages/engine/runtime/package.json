@@ -4,6 +4,7 @@
     "type": "module",
     "main": "build/index.js",
     "types": "build/index.d.ts",
+    "private": true,
     "scripts": {
         "clean": "rm -rf dist build",
         "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json --verbose",

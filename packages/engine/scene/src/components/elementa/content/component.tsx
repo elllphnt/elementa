@@ -13,6 +13,11 @@ export function ComponentRenderableContentComponent({
     content.componentContent
   );
 
+  console.log("ComponentRenderableContentComponent", {
+    component,
+    content,
+  });
+
   if (!component) {
     return <div>Component not found</div>;
   } else {

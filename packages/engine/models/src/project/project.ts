@@ -63,14 +63,6 @@ export abstract class Project<F extends File = File> extends Lifecycle {
     modelType: fileModelTypes.styleVariableSheet,
   });
 
-  keyframeSheet = new FileReferenceModelAdaptor({
-    fileReference: new FileReference({
-      project: this,
-      path: elementaStandardPaths.keyframes,
-    }),
-    modelType: fileModelTypes.keyframeSheet,
-  });
-
   packageSheet = new FileReferenceModelAdaptor({
     fileReference: new FileReference({
       project: this,
@@ -122,7 +114,6 @@ export abstract class Project<F extends File = File> extends Lifecycle {
       this.modifierSheet.fileReference.initialize();
       this.typefaceSheet.fileReference.initialize();
       this.variableSheet.fileReference.initialize();
-      this.keyframeSheet.fileReference.initialize();
       this.packageSheet.fileReference.initialize();
 
       this.app.initialize();
@@ -130,7 +121,6 @@ export abstract class Project<F extends File = File> extends Lifecycle {
       this.modifierSheet.initialize();
       this.typefaceSheet.initialize();
       this.variableSheet.initialize();
-      this.keyframeSheet.initialize();
       this.packageSheet.initialize();
 
       this.addDisposer(() => {
@@ -142,7 +132,6 @@ export abstract class Project<F extends File = File> extends Lifecycle {
         this.modifierSheet.fileReference.dispose();
         this.typefaceSheet.fileReference.dispose();
         this.variableSheet.fileReference.dispose();
-        this.keyframeSheet.fileReference.dispose();
         this.packageSheet.fileReference.dispose();
 
         this.app.dispose();
@@ -150,7 +139,6 @@ export abstract class Project<F extends File = File> extends Lifecycle {
         this.modifierSheet.dispose();
         this.typefaceSheet.dispose();
         this.variableSheet.dispose();
-        this.keyframeSheet.dispose();
         this.packageSheet.dispose();
       });
     });

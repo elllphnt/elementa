@@ -10,9 +10,9 @@ import type { RecordState } from "@elllphnt/elementa-kernel";
 import type { Observable } from "rxjs";
 import { of, Subject } from "rxjs";
 import type { CssStyleSheet } from "~/css/lib/stylesheet.js";
-import { StylesheetCssStyleSheet } from "~/css/stylesheets/stylesheet/stylesheet.js";
+import { StyleClassCssStyleSheet } from "~/css/stylesheets/stylesheet/stylesheet.js";
 import { Identifiable } from "../identifiable.js";
-import { Stylesheet } from "../style/stylesheet/stylesheet.js";
+import { StyleClass } from "../style/stylesheet/styleclass.js";
 import type { ElementEnvironment } from "./_environment.js";
 
 export abstract class BaseElement<
@@ -20,9 +20,9 @@ export abstract class BaseElement<
 > extends Identifiable<T> {
   readonly type: T["type"];
   readonly environment: ElementEnvironment;
-  readonly cssStyleSheet: StylesheetCssStyleSheet;
+  readonly cssStyleSheet: StyleClassCssStyleSheet;
 
-  private _stylesheet: Stylesheet;
+  private _styleClass: StyleClass;
   private _updated$ = new Subject();
 
   get allCssStylesheets(): CssStyleSheet[] {
@@ -149,17 +149,17 @@ export abstract class BaseElement<
       this.state.set("type" as keyof T, type as T[keyof T]);
     }
 
-    this._stylesheet = new Stylesheet({
-      state: state.getRecordState("stylesheet" as any),
+    this._styleClass = new StyleClass({
+      state: state.getRecordState("styleClass" as any),
       project: environment.project,
     });
 
-    this.cssStyleSheet = new StylesheetCssStyleSheet({
+    this.cssStyleSheet = new StyleClassCssStyleSheet({
       target: `element-${this.id}`,
-      stylesheet: this._stylesheet,
+      styleClass: this._styleClass,
     });
 
-    this.addLifecycle(this._stylesheet);
+    this.addLifecycle(this._styleClass);
     this.addLifecycle(this.cssStyleSheet);
 
     this.addInitializer(() => {

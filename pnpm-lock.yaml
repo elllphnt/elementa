@@ -241,6 +241,9 @@ importers:
 
   apps/studio-server:
     dependencies:
+      '@elllphnt/elementa-transformers':
+        specifier: workspace:*
+        version: link:../../packages/compiler/transformers
       chokidar:
         specifier: ^3.6.0
         version: 3.6.0
@@ -306,7 +309,7 @@ importers:
         specifier: ^3.25.67
         version: 3.25.67
     devDependencies:
-      '@repo/packup':
+      '@repo/scripts':
         specifier: workspace:^
         version: link:../../../scripts
       '@types/babel__generator':
@@ -318,6 +321,19 @@ importers:
       deepmerge:
         specifier: ^4.3.1
         version: 4.3.1
+
+  packages/compiler/jsx:
+    dependencies:
+      '@tanstack/react-router':
+        specifier: ^1.121.27
+        version: 1.121.27(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react:
+        specifier: ^19.1.0
+        version: 19.1.0
+    devDependencies:
+      '@repo/scripts':
+        specifier: workspace:*
+        version: link:../../../scripts
 
   packages/compiler/transformers:
     dependencies:
@@ -340,6 +356,9 @@ importers:
         specifier: ^26.0.0
         version: 26.0.0
     devDependencies:
+      '@repo/scripts':
+        specifier: workspace:^
+        version: link:../../../scripts
       '@types/diff':
         specifier: ^5.2.3
         version: 5.2.3
@@ -685,6 +704,9 @@ importers:
       '@elllphnt/elementa-base':
         specifier: workspace:*
         version: link:../packages/schema/base
+      '@elllphnt/elementa-jsx':
+        specifier: workspace:*
+        version: link:../packages/compiler/jsx
       '@elllphnt/elementa-transformers':
         specifier: workspace:*
         version: link:../packages/compiler/transformers

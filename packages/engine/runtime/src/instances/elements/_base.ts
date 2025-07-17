@@ -4,7 +4,7 @@ import { combineLatest, map } from "rxjs";
 import type { Instance } from "../instance.js";
 import { ElementaInstanceType } from "../instance.js";
 import { ModelInstance } from "../model.js";
-import { StyleSheetInstance } from "../stylesheet/stylesheet.js";
+import { StyleClassInstance } from "../stylesheet/stylesheet.js";
 import type { ElementInstance } from "./_element.js";
 import type { ElementRuntimeEnvironment } from "./_environment/environment.js";
 
@@ -13,7 +13,7 @@ export abstract class BaseElementInstance<
 > extends ModelInstance<E> {
   readonly environment: ElementRuntimeEnvironment;
   readonly element: E;
-  readonly stylesheet: StyleSheetInstance;
+  readonly stylesheet: StyleClassInstance;
 
   get parentElement(): ElementInstance | undefined {
     return this.parent?.type === ElementaInstanceType.Element
@@ -50,8 +50,8 @@ export abstract class BaseElementInstance<
 
     this.environment = environment;
     this.element = element;
-    this.stylesheet = new StyleSheetInstance({
-      stylesheet: element.cssStyleSheet.stylesheet,
+    this.stylesheet = new StyleClassInstance({
+      styleClass: element.cssStyleSheet.styleClass,
       runtime: environment.runtime,
       cascadeResolver: {
         getParentStylesheetInstance: () => this.parentElement?.stylesheet,

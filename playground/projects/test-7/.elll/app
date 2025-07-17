@@ -1,0 +1,7 @@
+{
+    "routerRef": {
+        "__import": {
+            "module": "<<FILE_REF:~/router.json>>"
+        }
+    }
+}

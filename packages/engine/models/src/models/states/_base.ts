@@ -21,13 +21,6 @@ export abstract class BaseState<T extends BaseStateData<string>> extends Model<
     return this.state.entry$("name");
   }
 
-  get varName(): string | undefined {
-    return this.state.entry("varName");
-  }
-  get varName$(): Observable<string | undefined> {
-    return this.state.entry$("varName");
-  }
-
   constructor({
     state,
     type,

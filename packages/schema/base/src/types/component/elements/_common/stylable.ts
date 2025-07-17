@@ -1,14 +1,16 @@
 import { z } from "zod";
-import { styleSheetDataSchema } from "../../../style/_.js";
+import type { StyleClassData } from "../../../style/_.js";
+import { styleClassDataSchema } from "../../../style/_.js";
 
 // Types
 
 export type StylableData = {
-  classNames?: (string | [string, string])[];
+  styleClass?: StyleClassData;
+  styleClassNames?: (string | [string, string])[];
 };
 
 // Schemas
 
 export const stylableDataSchema = z.object({
-  stylesheet: styleSheetDataSchema.optional(),
+  stylesheet: styleClassDataSchema.optional(),
 });

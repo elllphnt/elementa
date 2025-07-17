@@ -10,11 +10,11 @@ import type { ComponentElementInstance } from "./component.js";
 export class ComponentElementComponentPropResolver extends ComponentInputResolver {
   readonly componentElementInstance: ComponentElementInstance;
 
-  propValue(varName: string) {
-    return this.componentElementInstance.element.prop(varName);
+  get props() {
+    return this.componentElementInstance.element.props;
   }
-  propValue$(varName: string) {
-    return this.componentElementInstance.element.prop$(varName);
+  get props$() {
+    return this.componentElementInstance.element.props$;
   }
 
   slotFill(id: string): SlotFill | undefined {

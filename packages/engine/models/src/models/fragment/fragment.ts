@@ -1,8 +1,4 @@
-import type {
-  DataInputData,
-  ElementData,
-  FragmentData,
-} from "@elllphnt/elementa-base";
+import type { ElementData, FragmentData } from "@elllphnt/elementa-base";
 import type { RecordState } from "@elllphnt/elementa-kernel";
 import { AggregatedModelList } from "@elllphnt/elementa-kernel";
 import { combineLatestOrEmpty } from "@elllphnt/elementa-lang-utils";
@@ -12,13 +8,11 @@ import type { Element } from "../elements/_element.js";
 import { createElement } from "../elements/_element.js";
 import type { ElementEnvironment } from "../elements/_environment.js";
 import { Identifiable } from "../identifiable.js";
-import { DataInput } from "../primitives/data_input.js";
 
 export class Fragment extends Identifiable<FragmentData> {
   environment: ElementEnvironment;
 
   private _content: AggregatedModelList<RecordState<ElementData>, Element>;
-  private _params: AggregatedModelList<RecordState<DataInputData>, DataInput>;
 
   // properties
 
@@ -29,25 +23,11 @@ export class Fragment extends Identifiable<FragmentData> {
     return this.state.entry$("name");
   }
 
-  get varName(): string | undefined {
-    return this.state.entry("varName");
-  }
-  get varName$(): Observable<string | undefined> {
-    return this.state.entry$("varName");
-  }
-
   get content() {
     return this._content.models;
   }
   get content$() {
     return this._content.models$;
-  }
-
-  get params() {
-    return this._params.models;
-  }
-  get params$() {
-    return this._params.models$;
   }
 
   get allCssStylesheets() {
@@ -94,24 +74,7 @@ export class Fragment extends Identifiable<FragmentData> {
         return createElement({ state, environment, initialized: true });
       },
     });
-    this._params = new AggregatedModelList<
-      RecordState<DataInputData>,
-      DataInput
-    >({
-      state: state.getListOfRecordStates("params"),
-      create: (state) => {
-        return new DataInput({ state });
-      },
-    });
 
-    this.addInitializer(() => {
-      this._content.initialize();
-      this._params.initialize();
-
-      this.addDisposer(() => {
-        this._content.dispose();
-        this._params.dispose();
-      });
-    });
+    this.addLifecycle(this._content);
   }
 }

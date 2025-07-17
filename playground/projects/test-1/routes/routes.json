@@ -1,0 +1,28 @@
+[
+  {
+    "path": "/",
+    "component": "/views/home/home.component.tsx"
+  },
+  {
+    "path": "/courses",
+    "component": "/views/courses/courses.component.tsx"
+  },
+  {
+    "path": "/courses/:courseId",
+    "component": "/views/courseDetail/courseDetail.component.tsx",
+    "children": [
+      {
+        "path": "lessons/:lessonId",
+        "component": "/views/lessonView/lessonView.component.tsx"
+      }
+    ]
+  },
+  {
+    "path": "/profile",
+    "component": "/views/profile/profile.component.tsx"
+  },
+  {
+    "path": "/about",
+    "component": "/views/about/about.component.tsx"
+  }
+]

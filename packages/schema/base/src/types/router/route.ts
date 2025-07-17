@@ -1,5 +1,8 @@
 import { z } from "zod";
-import { importedValueSchema, type ImportedValue } from "../_primitives/_.js";
+import {
+  importReferenceSchema,
+  type ImportReference,
+} from "../_primitives/_.js";
 import type { IdentifiableData } from "../_shared/_.js";
 
 // Types
@@ -7,12 +10,12 @@ import type { IdentifiableData } from "../_shared/_.js";
 export type RouteData = IdentifiableData & {
   path?: string;
   parentId?: string;
-  loader?: ImportedValue;
-  handler?: ImportedValue;
-  mainView?: ImportedValue;
-  errorView?: ImportedValue;
-  pendingView?: ImportedValue;
-  notFoundView?: ImportedValue;
+  loaderRef?: ImportReference;
+  handlerRef?: ImportReference;
+  mainViewRef?: ImportReference;
+  errorViewRef?: ImportReference;
+  pendingViewRef?: ImportReference;
+  notFoundViewRef?: ImportReference;
 };
 
 export type RouteTreeData = RouteData & {
@@ -25,12 +28,12 @@ export const routeDataSchema = z.object({
   id: z.string(),
   path: z.string().optional(),
   parentId: z.string().optional(),
-  loader: importedValueSchema.optional(),
-  handler: importedValueSchema.optional(),
-  mainView: importedValueSchema.optional(),
-  errorView: importedValueSchema.optional(),
-  pendingView: importedValueSchema.optional(),
-  notFoundView: importedValueSchema.optional(),
+  loader: importReferenceSchema.optional(),
+  handler: importReferenceSchema.optional(),
+  mainView: importReferenceSchema.optional(),
+  errorView: importReferenceSchema.optional(),
+  pendingView: importReferenceSchema.optional(),
+  notFoundView: importReferenceSchema.optional(),
 });
 
 export const routeTreeDataSchema: z.ZodType<RouteTreeData> =

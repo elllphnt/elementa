@@ -17,12 +17,12 @@ export abstract class ComponentInputResolver {
   /**
    * Resolve the current value of a named prop.
    */
-  abstract propValue(varName: string): unknown;
+  abstract get props(): unknown;
 
   /**
    * Observable stream for reactivity based on a named prop.
    */
-  abstract propValue$(varName: string): Observable<unknown>;
+  abstract get props$(): Observable<unknown>;
 
   /**
    * Resolve the current slot fill for a given slot ID.

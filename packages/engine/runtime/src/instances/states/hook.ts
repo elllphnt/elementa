@@ -1,17 +1,32 @@
 import type { HookConfig } from "@elllphnt/elementa-base";
 import type { HookState } from "@elllphnt/elementa-models";
-import { map, of } from "rxjs";
+import { map, of, switchMap } from "rxjs";
 import type { Runtime } from "../../runtime/runtime.js";
 import type { Instance } from "../instance.js";
 import { BaseStateInstance } from "./_base.js";
 
 export class HookStateInstance extends BaseStateInstance<HookState> {
   get module() {
-    return this.model.hookUrl
+    return this.model.hookRef
       ? this.runtime.moduleManager.module(
-          this.model.component.project.absoluteFileUrl(this.model.hookUrl)
+          this.model.component.project.absoluteFileUrl(
+            this.model.hookRef.__import.module
+          )
         )
       : undefined;
+  }
+  get module$() {
+    return this.model.hookRef$.pipe(
+      map((hookRef) => {
+        return hookRef
+          ? this.runtime.moduleManager.module(
+              this.model.component.project.absoluteFileUrl(
+                hookRef.__import.module
+              )
+            )
+          : undefined;
+      })
+    );
   }
 
   get use() {
@@ -19,9 +34,11 @@ export class HookStateInstance extends BaseStateInstance<HookState> {
   }
   get use$() {
     return (
-      this.module?.value$.pipe(
-        map((module) => {
-          return module?.default;
+      this.module$.pipe(
+        switchMap((module) => {
+          return module?.value$.pipe(
+            map((value) => value?.default)
+          ) ?? of(undefined);
         })
       ) ?? of(undefined)
     );

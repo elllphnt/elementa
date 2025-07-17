@@ -14,7 +14,7 @@
         "packages/schema/*",
         "packages/tools/*",
         "packages/utils/*",
-        "workflows/*",
+        "scripts",
         "playground"
     ],
     "devDependencies": {

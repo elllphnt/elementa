@@ -1,6 +1,6 @@
-import type { AppData } from "@elllphnt/elementa-base";
+import type { AppData, ImportReference } from "@elllphnt/elementa-base";
 import type { RecordState } from "@elllphnt/elementa-kernel";
-import { map, type Observable } from "rxjs";
+import { map } from "rxjs";
 import type { Project } from "~/project/project.js";
 import { ProjectModel } from "../project.js";
 
@@ -16,33 +16,33 @@ export class App extends ProjectModel<RecordState<AppData>> {
     super({ state, project });
   }
 
-  get routerUrl(): string | undefined {
-    return this.state.entry("routerUrl");
+  get routerRef() {
+    return this.state.entry("routerRef");
   }
-  get routerUrl$(): Observable<string | undefined> {
-    return this.state.entry$("routerUrl");
+  get routerRef$() {
+    return this.state.entry$("routerRef");
   }
 
   get router() {
-    return this.routerUrl
+    return this.routerRef
       ? this.project.infrastructure.router(
-          this.project.absoluteFileUrl(this.routerUrl)
+          this.project.absoluteFileUrl(this.routerRef.__import.module)
         )
       : undefined;
   }
   get router$() {
-    return this.routerUrl$.pipe(
+    return this.routerRef$.pipe(
       map((url) =>
         url
           ? this.project.infrastructure.router(
-              this.project.absoluteFileUrl(url)
+              this.project.absoluteFileUrl(url.__import.module)
             )
           : undefined
       )
     );
   }
 
-  setRouterUrl(url: string | undefined): void {
-    this.state.set("routerUrl", url);
+  setRouterRef(ref: ImportReference | undefined): void {
+    this.state.set("routerRef", ref);
   }
 }
