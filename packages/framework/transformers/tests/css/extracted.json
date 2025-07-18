@@ -1,0 +1,101 @@
+[
+  {
+    "id": "root",
+    "classes": [
+      "active",
+      [
+        "active",
+        "if(active)"
+      ],
+      [
+        "ko",
+        "if(ko)"
+      ]
+    ],
+    "styleClass": {
+      "styles": {
+        "condition-[x9n8ysj7mm]": {
+          "__raw": {
+            "color": "green"
+          }
+        },
+        "raw-[%26%20.nested.active]:condition-[x9n8ysj7mm]:condition-[hhgtiip248]": {
+          "__raw": {
+            "color": "purple"
+          }
+        },
+        "condition-[x9n8ysj7mm]:condition-[hhgtiip248]": {
+          "__raw": {
+            "color": "pink"
+          }
+        },
+        "__base__": {
+          "__raw": {
+            "color": "red"
+          }
+        }
+      },
+      "conditions": {
+        "x9n8ysj7mm": "if(active)",
+        "hhgtiip248": "if(ko)"
+      }
+    }
+  },
+  {
+    "classes": [
+      "a_link",
+      "active"
+    ],
+    "styleClass": {
+      "styles": {
+        "raw-[.active]": {
+          "__raw": {
+            "color": "yellow"
+          }
+        },
+        "__base__": {
+          "__raw": {
+            "color": "blue"
+          }
+        }
+      },
+      "conditions": {}
+    }
+  },
+  {
+    "id": "root",
+    "classes": [
+      "a_link"
+    ],
+    "styleClass": {
+      "styles": {
+        "raw-[%26.active]": {
+          "__raw": {
+            "color": "green"
+          }
+        },
+        "raw-[%26.ko.active%20.nested.active]": {
+          "__raw": {
+            "color": "purple"
+          }
+        },
+        "raw-[%26.ko.active]": {
+          "__raw": {
+            "color": "pink"
+          }
+        },
+        "__base__": {
+          "__raw": {
+            "color": "blue"
+          }
+        },
+        "raw-[.active]": {
+          "__raw": {
+            "color": "yellow"
+          }
+        }
+      },
+      "conditions": {}
+    }
+  }
+]

@@ -100,8 +100,12 @@ export function parseLinkElementNode({
     }
   });
 
+  const styleClass = context.getStyleClass({
+    classes: styleClassNames,
+  });
+
   const link: LinkData = {
-    styleClassNames,
+    styleClass,
     interactions,
     raw,
     href,

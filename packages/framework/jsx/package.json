@@ -23,7 +23,6 @@
         "types": "tsc src/index.ts --declaration --emitDeclarationOnly --outFile schema/index.d.ts"
     },
     "dependencies": {
-        "@tanstack/react-router": "^1.121.27",
         "react": "^19.1.0"
     },
     "devDependencies": {

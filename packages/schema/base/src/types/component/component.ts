@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { Type } from "../_primitives/ts_type.js";
 import { dataInputDataSchema } from "../_shared/data_input.js";
-import type { StyleSheetData } from "../style/_.js";
+import type { KeyframeSetData } from "../style/_.js";
 import type { ElementContainerData } from "./elements/_.js";
 import { elementContainerDataSchema } from "./elements/_.js";
 import type { FragmentData } from "./fragment.js";
@@ -15,7 +15,7 @@ export type ComponentData = ElementContainerData & {
   init?: Record<string, any>;
   fragments?: FragmentData[];
   states?: StateData[];
-  stylesheet?: StyleSheetData;
+  keyframes?: KeyframeSetData[];
   editors?: Record<string, Record<string, any>>;
 };
 

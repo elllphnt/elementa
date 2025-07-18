@@ -1,15 +1,19 @@
 {
-    "name": "@elllphnt/elementa-jsx",
+    "name": "@elllphnt/elementa-framework",
     "version": "0.1.0",
     "type": "module",
     "exports": {
-        ".": {
-            "types": "./build/index.d.ts",
-            "import": "./build/index.js"
+        "./start": {
+            "types": "./build/start/index.d.ts",
+            "import": "./build/start/index.js"
+        },
+        "./navigation": {
+            "types": "./build/navigation.d.ts",
+            "import": "./build/navigation.js"
         },
         "./jsx-runtime": {
-            "types": "./build/index.d.ts",
-            "import": "./build/index.js"
+            "types": "./build/jsx-runtime.d.ts",
+            "import": "./build/jsx-runtime.js"
         }
     },
     "scripts": {
@@ -24,6 +28,7 @@
     },
     "dependencies": {
         "@tanstack/react-router": "^1.121.27",
+        "@elllphnt/elementa-jsx": "workspace:*",
         "react": "^19.1.0"
     },
     "devDependencies": {

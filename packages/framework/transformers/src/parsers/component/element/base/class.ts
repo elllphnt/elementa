@@ -92,10 +92,21 @@ export function parseClassExpression(
 
     for (const prop of expr.getProperties()) {
       if (Node.isPropertyAssignment(prop)) {
-        const name = prop.getName();
+        let name: string | undefined;
         const valueExpr = prop.getInitializer();
 
-        if (valueExpr) {
+        const nameNode = prop.getNameNode();
+        if (Node.isIdentifier(nameNode)) {
+          name = nameNode.getText();
+        } else if (Node.isStringLiteral(nameNode)) {
+          name = nameNode.getLiteralText();
+        } else {
+          throw new Error(
+            `Unexpected property name type: ${nameNode.getKindName()}`,
+          );
+        }
+
+        if (valueExpr && name) {
           result.push([name, valueExpr.getText()]);
         }
       }

@@ -13,6 +13,7 @@ import { parseLinkElementNode } from "./link_element.js";
 import { parseMediaElementNode } from "./media_element.js";
 import { parseTextElementNode } from "./text_element.js";
 import { mediaTags, nativeTags, textTags } from "./utils/html_tags.js";
+import { trimHtmlText } from "./utils/text.js";
 import type {
   ElementAttributeEntry,
   ParseElementContext,
@@ -211,7 +212,7 @@ export function parseElementsFromNode({
         {
           id: genId(),
           type: "text",
-          text,
+          text: trimHtmlText(text),
         },
       ];
     } else {

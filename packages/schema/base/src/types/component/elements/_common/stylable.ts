@@ -6,7 +6,6 @@ import { styleClassDataSchema } from "../../../style/_.js";
 
 export type StylableData = {
   styleClass?: StyleClassData;
-  styleClassNames?: (string | [string, string])[];
 };
 
 // Schemas

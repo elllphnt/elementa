@@ -10,7 +10,6 @@ import type {
   ParseElementContext,
 } from "../utils/types.js";
 import { parseClassExpression } from "./class.js";
-import { parseCssExpression } from "./css.js";
 
 export function parseBaseElementNode<T extends string>({
   type,
@@ -24,8 +23,7 @@ export function parseBaseElementNode<T extends string>({
   context: ParseElementContext;
 }): BaseElementData<T> {
   let id: string | undefined;
-  let styleClass: BaseElementData["styleClass"] = {};
-  const styleClassNames: BaseElementData["styleClassNames"] = [];
+  const classes: (string | [string, string])[] = [];
   const interactions: BaseElementData["interactions"] = {};
   const raw: BaseElementData["raw"] = [];
 
@@ -49,9 +47,7 @@ export function parseBaseElementNode<T extends string>({
           }
         }
       } else if (attrName === "className") {
-        if (value) styleClassNames.push(...parseClassExpression(value));
-      } else if (attrName === "css") {
-        if (value) styleClass = parseCssExpression(value);
+        if (value) classes.push(...parseClassExpression(value));
       } else if (attrName.startsWith("on")) {
         const event = Object.entries(reactInteractionEventMap).find(
           ([, event]) => event === attrName,
@@ -75,12 +71,16 @@ export function parseBaseElementNode<T extends string>({
     }
   });
 
+  const styleClass = context.getStyleClass({
+    id,
+    classes,
+  });
+
   const baseElement: BaseElementData<T> = {
     id: id || genId(),
     type,
     tag,
     styleClass,
-    styleClassNames,
     interactions,
     raw,
   };

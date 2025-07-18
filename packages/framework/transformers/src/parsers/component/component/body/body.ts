@@ -10,15 +10,18 @@ import { isHookName } from "~/libs/ts/code.js";
 import { getDeepExpression } from "~/libs/ts/expression.js";
 import { parseElementsFromNode } from "../../element/element.js";
 import type { ParseElementContext } from "../../element/utils/types.js";
+import type { ParseComponentContext } from "../type.js";
 import { parseFragmentDefinition } from "./fragments.js";
 import { parseInlineStateExpression, parseStateExpression } from "./states.js";
 
 export function parseComponentFunctionBody({
   node,
   componentData,
+  context,
 }: {
   node: ArrowFunction | FunctionExpression | FunctionDeclaration;
   componentData: ComponentData;
+  context: ParseComponentContext;
 }) {
   const body = node.getBody();
   if (!Node.isBlock(body)) {
@@ -33,6 +36,7 @@ export function parseComponentFunctionBody({
       content,
     }),
     scope: node,
+    getStyleClass: context.getStyleClass,
   };
 
   for (const statement of body.getStatements()) {

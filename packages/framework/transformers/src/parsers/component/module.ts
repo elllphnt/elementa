@@ -4,7 +4,11 @@ import type { ResolvedExportNode } from "../../libs/ts/export.js";
 import { resolveExportValueNodes } from "../../libs/ts/export.js";
 import { createSingleFileProject } from "../../libs/ts/source_file.js";
 import { parseComponentNode } from "./component/component.js";
-import { parseStyleSheet } from "./css/css.js";
+import {
+  getKeyframesFromCssModule,
+  getStyleClassFromCssModule,
+} from "./css/css.js";
+import { parseCssModule } from "./css/module.js";
 import { normalizeComponentModule } from "./normalization/module.js";
 
 export function parseComponentModule(sourceCode: string): ComponentData {
@@ -39,13 +43,28 @@ export function parseComponentModule(sourceCode: string): ComponentData {
   const cssText = stylesNode
     ? extractCssTextFromValueNode(stylesNode.node)
     : "";
-  const stylesheet = parseStyleSheet(cssText);
+  const cssModule = parseCssModule(cssText);
 
   // component
   const componentName = defaultExport.names[defaultExport.names.length - 1];
   const componentData = parseComponentNode({
     node: defaultExport.node,
-    init: { name: componentName, stylesheet },
+    init: {
+      name: componentName,
+      keyframes: getKeyframesFromCssModule(cssModule),
+    },
+    context: {
+      getStyleClass: ({ id, classes }) => {
+        return getStyleClassFromCssModule({
+          id,
+          classes,
+          module: cssModule,
+          getModifierDefinition: () => {
+            return undefined;
+          },
+        });
+      },
+    },
   });
 
   return componentData;

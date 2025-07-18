@@ -1,9 +1,12 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 /* eslint-disable @typescript-eslint/no-namespace */
 
-import { Link } from "@tanstack/react-router";
 import type * as React from "react";
 import * as ReactJsx from "react/jsx-runtime";
+
+export type NestedCssStyles = React.CSSProperties & {
+  [K: `&${string}` | `@${string}`]: NestedCssStyles;
+};
 
 export namespace JSX {
   export type ElementType = React.JSX.ElementType;
@@ -18,12 +21,11 @@ export namespace JSX {
   export interface IntrinsicAttributes extends React.JSX.IntrinsicAttributes {}
   export interface IntrinsicClassAttributes<T>
     extends React.JSX.IntrinsicClassAttributes<T> {}
-  export interface IntrinsicElements extends React.JSX.IntrinsicElements {
-    navlink: React.JSX.IntrinsicElements["a"] & {
-      to?: string; // Allow `to` prop for navigation links
-      href?: string; // Allow `href` prop for compatibility
+  export type IntrinsicElements = {
+    [K in keyof React.JSX.IntrinsicElements]: React.JSX.IntrinsicElements[K] & {
+      css?: NestedCssStyles;
     };
-  }
+  };
 }
 
 export type ElementType<
@@ -33,39 +35,16 @@ export type ElementType<
   | { [K in Tag]: P extends JSX.IntrinsicElements[K] ? K : never }[Tag]
   | React.ComponentType<P>;
 
-function transformNavlink(
-  props: any = {},
-  key?: React.Key
-): [type: React.ElementType, props: unknown, key?: React.Key] {
-  return [
-    Link,
-    {
-      ...props,
-      to: props.to || props.href, // Support both `to` and `href` for compatibility
-    },
-    key,
-  ];
-}
-
-function transformElement(
-  type: ElementType,
-  props: unknown,
-  key?: React.Key
-): [type: React.ElementType, props: unknown, key?: React.Key] {
-  switch (type) {
-    case "navlink":
-      return transformNavlink(props, key);
-    default:
-      return [type, props, key];
-  }
+function processProps(props?: unknown): unknown {
+  return props;
 }
 
 export function jsx(type: React.ElementType, props: unknown, key?: React.Key) {
-  return ReactJsx.jsx(...transformElement(type, props, key));
+  return ReactJsx.jsx(type, processProps(props), key);
 }
 
 export function jsxs(type: React.ElementType, props: unknown, key?: React.Key) {
-  return ReactJsx.jsxs(...transformElement(type, props, key));
+  return ReactJsx.jsxs(type, processProps(props), key);
 }
 
 export const Fragment = ReactJsx.Fragment;

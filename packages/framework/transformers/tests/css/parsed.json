@@ -1,0 +1,130 @@
+{
+  "ids": [
+    {
+      "name": "root",
+      "rules": [
+        {
+          "selector": [
+            "&.active"
+          ],
+          "style": {
+            "color": "green"
+          }
+        },
+        {
+          "selector": [
+            "&.ko.active",
+            ".nested.active"
+          ],
+          "style": {
+            "color": "purple"
+          }
+        },
+        {
+          "selector": [
+            "&.ko.active"
+          ],
+          "style": {
+            "color": "pink"
+          }
+        },
+        {
+          "selector": [
+            "@media (max-width: 600px)"
+          ],
+          "style": {
+            "color": "red"
+          }
+        },
+        {
+          "selector": [],
+          "style": {
+            "color": "red"
+          }
+        }
+      ]
+    },
+    {
+      "name": "nested_id",
+      "rules": [
+        {
+          "selector": [],
+          "style": {
+            "color": "orange"
+          }
+        }
+      ]
+    },
+    {
+      "name": "nested_id_2",
+      "rules": [
+        {
+          "selector": [],
+          "style": {
+            "color": "orange"
+          }
+        }
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "name": "a_link",
+      "rules": [
+        {
+          "selector": [
+            ".active"
+          ],
+          "style": {
+            "color": "yellow"
+          }
+        },
+        {
+          "selector": [
+            "@media (max-width: 600px)"
+          ],
+          "style": {
+            "color": "red"
+          }
+        },
+        {
+          "selector": [
+            "@container (color: red)"
+          ],
+          "style": {
+            "color": "green"
+          }
+        },
+        {
+          "selector": [],
+          "style": {
+            "color": "blue"
+          }
+        }
+      ]
+    }
+  ],
+  "keyframes": [
+    {
+      "name": "fadeIn",
+      "steps": [
+        {
+          "selector": [
+            "from"
+          ],
+          "style": {
+            "opacity": "0"
+          }
+        },
+        {
+          "selector": [
+            "to"
+          ],
+          "style": {
+            "opacity": "1"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -4,6 +4,8 @@ export * from "./generators/router/router.js";
 export * from "./libs/files/extensions.js";
 export * from "./libs/files/reference.js";
 export * from "./libs/markups/markup.js";
+export * from "./parsers/component/css/css.js";
+export * from "./parsers/component/css/module.js";
 export * from "./parsers/component/module.js";
 export * from "./parsers/resource.js";
 export * from "./parsers/router/router.js";

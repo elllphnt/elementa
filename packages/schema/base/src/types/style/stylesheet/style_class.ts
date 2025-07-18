@@ -1,20 +1,14 @@
 import { z } from "zod";
 import type { StyleFragmentData } from "./fragments/fragment.js";
 import { styleFragmentDataSchema } from "./fragments/fragment.js";
-import type { KeyframeSetData } from "./keyframes.js";
 import type { StyleData } from "./style/_.js";
 
 // Types
 
 export type StyleClassData = {
-  name?: string;
   styles?: Record<string, StyleData>;
   fragments?: StyleFragmentData[];
-};
-
-export type StyleSheetData = {
-  classes?: StyleClassData[];
-  keyframeSets?: KeyframeSetData[];
+  conditions?: Record<string, string>;
 };
 
 // Schemas
