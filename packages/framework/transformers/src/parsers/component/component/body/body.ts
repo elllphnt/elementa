@@ -31,12 +31,12 @@ export function parseComponentFunctionBody({
   }
 
   const elementContext: ParseElementContext = {
+    ...context,
     createFragment: ({ content }) => ({
       id: genId(),
       content,
     }),
     scope: node,
-    getStyleClass: context.getStyleClass,
   };
 
   for (const statement of body.getStatements()) {

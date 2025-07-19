@@ -4,20 +4,29 @@ import type {
 } from "@elllphnt/elementa-base";
 import { reactInteractionEventMap } from "@elllphnt/elementa-base";
 import { generateDynamic } from "../misc/dynamic.js";
-import { generateClassNames } from "./_common/classname.js";
+import type { GeneratorContext } from "../types.js";
 
 export function generatorBaseElement({
-  tag,
+  tag: upstreamTag,
   props: upstreamProps = {},
   content = [],
   data,
+  context,
 }: {
   tag?: string;
   props?: Record<string, string>;
   content?: string[];
   data: BaseElementData<string>;
+  context: GeneratorContext;
 }) {
+  const tag = data.tag || upstreamTag || "div";
+  const [id, cssId] = context.useElementMetadata({
+    id: data.id,
+    name: data.name,
+    tag,
+  });
   const props: Record<string, string> = {
+    id,
     ...upstreamProps,
   };
 
@@ -38,8 +47,11 @@ export function generatorBaseElement({
   }
 
   // 3. Base className from stylesheet
-  if (data.styleClassNames) {
-    props["className"] = generateClassNames(data.styleClassNames);
+  if (data.styleClass) {
+    const className = context.useStyleClass(cssId, data.styleClass);
+    if (className) {
+      props["className"] = className;
+    }
   }
 
   // 4. Generate props code

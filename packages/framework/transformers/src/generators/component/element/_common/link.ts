@@ -1,18 +1,33 @@
 import type { LinkData } from "@elllphnt/elementa-base";
 import { generateDynamic } from "~/generators/component/misc/dynamic.js";
-import { generateClassNames } from "./classname.js";
+import type { GeneratorContext } from "../../types.js";
 
 export function applyLink({
   link,
   content,
+  context,
 }: {
   link: LinkData;
   content: string;
+  context: GeneratorContext;
 }): string {
-  const props: Record<string, string> = {};
+  const [id, cssId] = context.useElementMetadata({
+    tag: "link",
+  });
+  const props: Record<string, string> = {
+    id,
+  };
 
-  if (link.styleClassNames?.length) {
-    props["className"] = generateClassNames(link.styleClassNames);
+  const component = context.useImport({
+    module: context.getSystemModule("navigation"),
+    name: "Link",
+  });
+
+  if (link.styleClass) {
+    const className = context.useStyleClass(cssId, link.styleClass);
+    if (className) {
+      props["className"] = className;
+    }
   }
   if (link.href) {
     props["href"] = generateDynamic(link.href);
@@ -58,5 +73,5 @@ export function applyLink({
     .map(([key, val]) => `${key}={${val}}`)
     .join(" ");
 
-  return `<navlink ${propsCode}>${content}</navlink>`;
+  return `<${component} ${propsCode}>${content}</${component}>`;
 }

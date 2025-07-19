@@ -4,7 +4,6 @@ import type {
 } from "@elllphnt/elementa-base";
 import type { GeneratorContext } from "~/generators/component/types.js";
 import { generateDynamic } from "../misc/dynamic.js";
-import { generateClassNames } from "./_common/classname.js";
 import { generatorBaseElement } from "./base.js";
 import { generateElement } from "./element.js";
 
@@ -12,9 +11,10 @@ function generateSlotFill(
   data: SlotFillData,
   context: GeneratorContext,
 ): string {
-  const className = data.styleClassNames
-    ? generateClassNames(data.styleClassNames)
-    : "";
+  let className: string | undefined;
+  if (data.styleClass) {
+    className = context.useStyleClass("slot", data.styleClass);
+  }
   const content =
     data.content?.map((data) => generateElement({ data, context })) ?? [];
 
@@ -27,7 +27,19 @@ function generateSlotFill(
     contentCode = [`<>`, ...content, `</>`].join("\n");
   }
 
-  return `{className: "${className}", content: ${contentCode}}`;
+  const props: Record<string, string> = {
+    content: contentCode,
+  };
+
+  if (className) {
+    props["className"] = className;
+  }
+
+  const propsCode = Object.entries(props)
+    .map(([key, val]) => `${key}={${val}}`)
+    .join(" ");
+
+  return `{${propsCode}}`;
 }
 
 export function generatorComponentElement(
@@ -62,5 +74,6 @@ export function generatorComponentElement(
     tag: componentName,
     props,
     data,
+    context,
   });
 }

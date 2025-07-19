@@ -26,15 +26,15 @@ export function generateElementVariant({
     case "component":
       return generatorComponentElement(data, context);
     case "slot":
-      return generatorSlotElement(data);
+      return generatorSlotElement({ data, context });
     case "primitive":
       return generatorPrimitiveElement(data, context);
     case "text":
-      return generatorTextElement(data);
+      return generatorTextElement({ data, context });
     case "media":
-      return generatorMediaElement(data);
+      return generatorMediaElement({ data, context });
     case "vector":
-      return generatorVectorElement(data);
+      return generatorVectorElement({ data, context });
     case "fragment":
       return generatorFragmentElement(data);
     case "expression":
@@ -57,6 +57,7 @@ export function generateElement({
     element = applyLink({
       link: data.link,
       content: element,
+      context,
     });
   }
   if (data.repeat) {

@@ -1,5 +1,3 @@
-import type { ComponentData } from "@elllphnt/elementa-base";
-import { componentSchema } from "@elllphnt/elementa-base";
 import { generateComponentModule } from "@elllphnt/elementa-transformers";
 import type { GeneratorContext } from "../../context/context.js";
 import { jsAppPaths } from "../../js_app/paths.js";
@@ -22,9 +20,10 @@ export async function generateComponent({
     throw new Error(`Component not found: ${url}`);
   }
 
-  const component = componentSchema.parse(
-    JSON.parse(componentContent)
-  ) as ComponentData;
+  // const component = componentSchema.parse(
+  //   JSON.parse(componentContent)
+  // ) as ComponentData;
+  const component = JSON.parse(componentContent);
   const code = generateComponentModule(component);
 
   await context.out.write(jsAppPaths.resource(url), code);

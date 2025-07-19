@@ -5,13 +5,7 @@ import {
 } from "@elllphnt/elementa-base";
 import type { ObjectLiteralExpression } from "ts-morph";
 import { Node, type Expression } from "ts-morph";
-
-export function toKebabCase(str: string): string {
-  return str
-    .replace(/([a-z])([A-Z])/g, "$1-$2") // fooBar -> foo-Bar
-    .replace(/[\s_]+/g, "-") // foo_bar -> foo-bar (optional: supports underscores)
-    .toLowerCase();
-}
+import { kebabCase } from "~/libs/identifier.js";
 
 export function parseCssExpression(expr: Expression): StyleClassData {
   const styles: Record<string, StyleData> = {};
@@ -44,7 +38,7 @@ export function parseCssExpression(expr: Expression): StyleClassData {
         }
 
         if (Node.isStringLiteral(initializer)) {
-          const propertyName = toKebabCase(name);
+          const propertyName = kebabCase(name);
           console.log(propertyName);
           __raw[propertyName] = initializer.getLiteralText();
         } else if (Node.isObjectLiteralExpression(initializer)) {

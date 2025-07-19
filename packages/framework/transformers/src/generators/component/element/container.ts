@@ -15,5 +15,6 @@ export function generatorContainerElement(
     tag: "div",
     content: children,
     data,
+    context,
   });
 }

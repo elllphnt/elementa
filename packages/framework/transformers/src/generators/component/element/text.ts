@@ -1,5 +1,6 @@
 import type { TextElementData } from "@elllphnt/elementa-base";
 import { generateDynamic } from "../misc/dynamic.js";
+import type { GeneratorContext } from "../types.js";
 import { generatorBaseElement } from "./base.js";
 
 const expressionRegex = /\{\{([^}]*\}?[^}]*)\}\}/;
@@ -13,7 +14,13 @@ export function compileString(str: string): string {
   return result.replace(/\\{/g, "{'{'}").replace(/\\}/g, "{'}'}");
 }
 
-export function generatorTextElement(data: TextElementData): string {
+export function generatorTextElement({
+  data,
+  context,
+}: {
+  data: TextElementData;
+  context: GeneratorContext;
+}): string {
   const compiledText = compileString(generateDynamic(data.text));
   const content = [`{${compiledText}}`];
 
@@ -21,5 +28,6 @@ export function generatorTextElement(data: TextElementData): string {
     tag: "span",
     content,
     data,
+    context,
   });
 }

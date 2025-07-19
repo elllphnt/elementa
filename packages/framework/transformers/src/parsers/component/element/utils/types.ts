@@ -1,9 +1,6 @@
-import type {
-  ElementData,
-  FragmentData,
-  StyleClassData,
-} from "@elllphnt/elementa-base";
+import type { ElementData, FragmentData } from "@elllphnt/elementa-base";
 import type { Expression, Node } from "ts-morph";
+import type { ParseComponentContext } from "../../component/type.js";
 
 export type CreateFragment = ({
   content,
@@ -11,15 +8,8 @@ export type CreateFragment = ({
   content: ElementData[];
 }) => FragmentData;
 
-export type ParseElementContext = {
+export type ParseElementContext = ParseComponentContext & {
   createFragment: CreateFragment;
-  getStyleClass: ({
-    id,
-    classes,
-  }: {
-    id?: string;
-    classes?: (string | [string, string])[];
-  }) => StyleClassData;
   scope: Node;
 };
 

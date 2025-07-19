@@ -3,6 +3,7 @@ import type {
   VectorNodeData,
 } from "@elllphnt/elementa-base";
 import { generateDynamic } from "../misc/dynamic.js";
+import type { GeneratorContext } from "../types.js";
 import { generatorBaseElement } from "./base.js";
 
 function generateVectorNode(node: VectorNodeData): string {
@@ -29,7 +30,13 @@ function generateVectorNode(node: VectorNodeData): string {
   }
 }
 
-export function generatorVectorElement(data: VectorElementData): string {
+export function generatorVectorElement({
+  data,
+  context,
+}: {
+  data: VectorElementData;
+  context: GeneratorContext;
+}): string {
   const props: Record<string, string> = {};
 
   if (data.width) {
@@ -53,5 +60,6 @@ export function generatorVectorElement(data: VectorElementData): string {
     props,
     content: children,
     data,
+    context,
   });
 }

@@ -5,43 +5,41 @@ import type {
 import type { StyleToCssContext } from "./style/style.js";
 import { styleToCss } from "./style/style.js";
 
+/** Format a keyframes block in clean, minimal CSS. */
 export function keyFrameSetToCss(data: KeyframeSetData): string {
-  if (!data.groups || !data.name) {
-    return "";
-  }
+  if (!data.groups || !data.name) return "";
 
+  // Build a map for quick fragment lookup
   const fragmentMap: Record<string, StyleFragmentData> = Object.fromEntries(
     (data.styleFragments ?? []).map((fragment) => [fragment.id, fragment])
   );
   const styleContext: StyleToCssContext = {
     getFragment: (type, id) => {
       const fragment = fragmentMap[id];
-      if (fragment && fragment.type === type) {
-        return fragment as StyleFragmentData<typeof type>;
-      } else {
-        return undefined;
-      }
+      return fragment && fragment.type === type ? fragment : undefined;
     },
   };
-  const keyframes: [number[], string][] = [];
 
-  for (const keyframe of data.groups ?? []) {
-    if (keyframe.offsets === undefined || !keyframe.style) {
-      continue;
-    }
+  // Each keyframe group: offsets (array), style (object)
+  const keyframes: string[] = [];
 
-    const style = styleToCss(keyframe.style, styleContext);
-    const css = Object.entries(style)
-      .map(([key, value]) => `${key}: ${value};`)
+  for (const group of data.groups) {
+    if (!group.offsets || !group.style) continue;
+    const [style, _] = styleToCss(group.style, styleContext);
+    if (!style || Object.keys(style).length === 0) continue;
+
+    // Format offsets: [0,1] => "0%, 100%"
+    const selector = group.offsets.map((o) => `${o * 100}%`).join(", ");
+
+    // Consistent 2-space indentation for properties
+    const props = Object.entries(style)
+      .map(([k, v]) => `    ${k}: ${v};`)
       .join("\n");
 
-    keyframes.push([keyframe.offsets, css]);
+    keyframes.push(`  ${selector} {\n${props}\n  }`);
   }
 
-  const keyframesCss = keyframes.map(([offsets, style]) => {
-    const selector = offsets.map((offset) => `${offset * 100}%`).join(", ");
-    return `  ${selector} {\n${style}\n  }`;
-  });
+  if (keyframes.length === 0) return "";
 
-  return [`@keyframes ${data.name} {`, ...keyframesCss, `}`].join("\n");
+  return [`@keyframes ${data.name} {`, ...keyframes, `}`].join("\n");
 }

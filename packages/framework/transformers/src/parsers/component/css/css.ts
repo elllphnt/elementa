@@ -42,7 +42,7 @@ export function extractConditionsFromSelector({
   conditions,
 }: {
   selector: string;
-  conditions: Record<string, string>; // className -> condition id
+  conditions: string[];
 }): [StyleModifierData[], string | undefined] {
   const match = selector.search(/[>+~\s]/);
   let root: string, suffix: string;
@@ -58,16 +58,14 @@ export function extractConditionsFromSelector({
   const mods: StyleModifierData[] = [];
 
   if (root.includes("&")) {
-    for (const [className, conditionId] of Object.entries(conditions)) {
+    for (const className of conditions) {
       // only match ".className" in the root part
       const re = genBaseSelectorRegex(`.${className}`);
       root = root.replace(re, () => {
-        // record that we need a [condition:<conditionId>] modifier
         mods.push({
           name: systemModifiers.condition.name,
-          args: [conditionId],
+          args: [className],
         });
-        // strip it out of the root
         return "";
       });
     }
@@ -88,7 +86,7 @@ function cssSelectorToElllSelector({
 }: {
   selector: string[];
   getModifierDefinition: GetModifierDefinition;
-  conditions: Record<string, string>; // className -> condition id
+  conditions: string[];
 }): string {
   const atRules: string[] = [];
   const styleRules: string[] = [];
@@ -173,18 +171,21 @@ export function getStyleClassFromCssModule({
 }): StyleClassData {
   const styles: Record<string, StyleData> = {};
   const conditionExpressionMap: Record<string, string> = {};
-  const classNameConditionMap: Record<string, string> = {};
   const classList: string[] = [];
 
   // Process classes
   for (const cls of classes) {
     if (Array.isArray(cls)) {
-      const conditionId = genId();
       const className = cls[0];
       const expression = cls[1];
       classList.push(className);
-      conditionExpressionMap[conditionId] = expression;
-      classNameConditionMap[className] = conditionId;
+      if (className in conditionExpressionMap) {
+        const currentExpression = conditionExpressionMap[className];
+        const newExpression = `(${currentExpression}) && (${expression})`;
+        conditionExpressionMap[className] = newExpression;
+      } else {
+        conditionExpressionMap[className] = expression;
+      }
     } else {
       classList.push(cls);
     }
@@ -198,7 +199,7 @@ export function getStyleClassFromCssModule({
         const sel = cssSelectorToElllSelector({
           selector: rule.selector,
           getModifierDefinition,
-          conditions: classNameConditionMap,
+          conditions: Object.keys(conditionExpressionMap),
         });
         styles[sel || baseSelector] = { __raw: rule.style };
       }
@@ -213,7 +214,7 @@ export function getStyleClassFromCssModule({
       const sel = cssSelectorToElllSelector({
         selector: [`&.${cls}`, ...rule.selector],
         getModifierDefinition,
-        conditions: classNameConditionMap,
+        conditions: Object.keys(conditionExpressionMap),
       });
 
       const selector = sel || baseSelector;

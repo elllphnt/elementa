@@ -1,9 +1,10 @@
-import type { ComponentElementData } from "@elllphnt/elementa-base";
+import type { ElementData } from "@elllphnt/elementa-base";
 import type { Identifier, JsxChild } from "ts-morph";
 import { Node } from "ts-morph";
 import { resolveImportFromSymbol } from "~/libs/import.js";
 import { parseBaseElementNode } from "./base/base_element.js";
 import { parseElementsFromNode } from "./element.js";
+import { parseLinkElementNode } from "./link_element.js";
 import type {
   ElementAttributeEntry,
   ParseElementContext,
@@ -19,27 +20,7 @@ export function parseComponentElementNode({
   attributes: ElementAttributeEntry[];
   children: JsxChild[];
   context: ParseElementContext;
-}): ComponentElementData {
-  const base = parseBaseElementNode({
-    type: "component",
-    attributes,
-    context,
-  });
-
-  const content = children.flatMap((child) => {
-    if (
-      Node.isJsxElement(child) ||
-      Node.isJsxFragment(child) ||
-      Node.isJsxSelfClosingElement(child)
-    ) {
-      return parseElementsFromNode({
-        node: child,
-        context,
-      });
-    }
-    return [];
-  });
-
+}): ElementData {
   const symbol = tag
     .getProject()
     .getTypeChecker()
@@ -57,12 +38,39 @@ export function parseComponentElementNode({
     throw new Error(`Import data not found for symbol: ${symbol.name}`);
   }
 
-  return {
-    ...base,
-    componentRef: {
-      __import: importData,
-    },
-    content,
-    tag: undefined,
-  };
+  if (
+    context.isSystemModule(importData.module, "navigation") &&
+    importData.name === "Link"
+  ) {
+    return parseLinkElementNode({ attributes, children, context });
+  } else {
+    const base = parseBaseElementNode({
+      type: "component",
+      attributes,
+      context,
+    });
+
+    const content = children.flatMap((child) => {
+      if (
+        Node.isJsxElement(child) ||
+        Node.isJsxFragment(child) ||
+        Node.isJsxSelfClosingElement(child)
+      ) {
+        return parseElementsFromNode({
+          node: child,
+          context,
+        });
+      }
+      return [];
+    });
+
+    return {
+      ...base,
+      componentRef: {
+        __import: importData,
+      },
+      content,
+      tag: undefined,
+    };
+  }
 }

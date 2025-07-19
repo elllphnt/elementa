@@ -1,4 +1,4 @@
-import { Link } from "@elllphnt/elementa-framework/navigation";
+import { Link } from "elll/navigation";
 
 export const css = `
   #root {
@@ -22,15 +22,18 @@ export const css = `
       opacity: 1;
     } 
   }
+  #text_34 {
+    font-size: 20px;
+  }
 `;
 
-export default function A() {
+export default function A(props: { user: string }) {
   return (
     <div id="root">
-      This is Page B.
+      This is Page B. {props.user}
       <br />
       <Link id="a_link" to="/a" className={{ "link-active": true }}>
-        <span>Go to Page A</span>
+        <span id="text_34">Go to Page A</span>
       </Link>
       <br />
       <Link
@@ -46,22 +49,33 @@ export default function A() {
   );
 }
 
-export const stage = {
-  showInViewport: true,
-  variants: [
-    {
-      name: "default",
-      props: {},
+/**
+ * Editor information for the elements in this component.
+ * This is used to provide metadata for the editor.
+ */
+export const metadata = {
+  name: "A",
+  description: "Main screen for XYZ flow",
+  elements: {
+    a_link: {
+      id: "345f67",
+      name: "Link to Page A",
     },
-  ],
+    c_link: {
+      id: "678f90",
+      name: "Link to Page C",
+    },
+    root: {
+      id: "123f45",
+      name: "Root Element",
+    },
+    text_34: {
+      id: "234f56",
+      name: "Text Element",
+    },
+  },
+  stage: {
+    showInViewport: true,
+    variants: [{ name: "default", props: {} }],
+  },
 };
-
-/*
-The following is for internal use only.
-DO NOT MODIFY.
-__ID_MAP_START__
-a_link: 45g564
-c_link: 78h789
-root: 12a345
-__ID_MAP_END__
-*/

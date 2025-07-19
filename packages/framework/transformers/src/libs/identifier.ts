@@ -31,3 +31,17 @@ export function pascalCase(str: string): string {
     .map((word) => word[0].toUpperCase() + word.slice(1))
     .join("");
 }
+
+export function kebabCase(str: string): string {
+  return str
+    .replace(/([a-z])([A-Z])/g, "$1-$2") // fooBar -> foo-Bar
+    .replace(/[\s_]+/g, "-") // foo_bar -> foo-bar (optional: supports underscores)
+    .toLowerCase();
+}
+
+export function snakeCase(str: string): string {
+  return str
+    .replace(/([a-z])([A-Z])/g, "$1_$2") // fooBar -> foo_Bar
+    .replace(/[\s-]+/g, "_") // foo-bar -> foo_bar (optional: supports hyphens)
+    .toLowerCase();
+}

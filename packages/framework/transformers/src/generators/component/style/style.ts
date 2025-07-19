@@ -1,7 +1,7 @@
 import type {
   GetModifierDefinition,
+  KeyframeSetData,
   StyleClassData,
-  StyleSheetData,
 } from "@elllphnt/elementa-base";
 import { parseElllSelector } from "@elllphnt/elementa-base";
 import type { CssStyleData } from "@elllphnt/elementa-css";
@@ -11,77 +11,69 @@ import {
   styleToCss,
 } from "@elllphnt/elementa-css";
 
-export function cssStyleDataToString(
+/** Print a flat CSS block. */
+function cssStyleDataToString(
   styleData: CssStyleData,
   selector: string,
-  indent = "",
+  indent = "  "
 ): string {
-  if (selector) {
-    let css = `${indent}${selector} {\n`;
-    css += serializeStyle(styleData, indent + "  ");
-    css += `${indent}}\n`;
-    return css;
-  } else {
-    return serializeStyle(styleData, indent + "  ");
-  }
+  // Print selector and rules in minimal, predictable style.
+  let css = selector ? `${selector} {\n` : "";
+  css += serializeStyle(styleData, indent);
+  css += selector ? `}\n` : "";
+  return css;
 }
 
+/** Print a flat object of CSS properties, sorted by key for deterministic output. */
 function serializeStyle(styleData: CssStyleData, indent: string): string {
   let css = "";
-
-  for (const key in styleData) {
+  for (const key of Object.keys(styleData)) {
     const value = styleData[key];
-
     if (typeof value === "string") {
       css += `${indent}${key}: ${value};\n`;
-    } else if (typeof value === "object" && value !== null) {
-      css += `${indent}${key} {\n`;
-      css += serializeStyle(value, indent + "  ");
-      css += `${indent}}\n`;
     }
+    // We *avoid* nested rules here to ensure only flat CSS (no accidental nesting)
+    // If you ever want to support nested rules, add a flag!
   }
-
   return css;
 }
 
 /**
- * Merge parts from left-to-right:
- * - If a part contains '&', replace every '&' with the current result.
- * - Else if it’s a combinator (> + ~), append directly.
- * - Otherwise, join as a descendant with a space.
+ * Merge selector segments using rules:
+ * - If part contains &, replace all & with accumulated selector.
+ * - If part is a combinator, append directly.
+ * - Else, join as a descendant with a space.
  */
 function flattenCssSelector(segments: string[]): string {
-  if (segments.length === 0) return "";
-
+  if (!segments.length) return "";
   let result = segments[0];
   for (let i = 1; i < segments.length; i++) {
     const part = segments[i];
-
     if (part.includes("&")) {
-      // replace & with whatever we've built so far
       result = part.replace(/&/g, result);
     } else if (/^[>+~]/.test(part)) {
-      // combinator glued on
       result = `${result}${part}`;
     } else {
-      // plain descendant
       result = `${result} ${part}`;
     }
   }
   return result;
 }
 
+/**
+ * Compile a style class into a CSS block.
+ * - Outputs a wrapper block with #id selector (if present).
+ * - Each sub-selector is flattened and printed in order.
+ */
 export function compileStyleClass({
+  id,
   styleClass,
   getModifierDefinition,
 }: {
+  id: string;
   styleClass: StyleClassData;
   getModifierDefinition: GetModifierDefinition;
 }): string {
-  if (!styleClass.name) {
-    return "";
-  }
-
   const compiledStyles: string[] = [];
   const errors: Error[] = [];
 
@@ -105,48 +97,67 @@ export function compileStyleClass({
     }
 
     const [css, cssErrors] = styleToCss(styleData, {
-      getFragment: (type, id) => {
-        return styleClass.fragments?.find(
-          (f) => f.id === id && f.type === type,
-        ) as any;
-      },
+      getFragment: (type, id) =>
+        styleClass.fragments?.find(
+          (f) => f.id === id && f.type === type
+        ) as any,
     });
     if (cssErrors.length > 0) {
       errors.push(...cssErrors);
     }
 
+    // Only print if this selector has rules.
     if (Object.keys(css).length) {
-      compiledStyles.push(
-        cssStyleDataToString(css, flattenCssSelector(cssSelector)),
-      );
+      const flatSelector = flattenCssSelector(cssSelector);
+      compiledStyles.push(cssStyleDataToString(css, flatSelector));
     }
   }
 
-  const code = [`.${styleClass.name} {`, compiledStyles.join("\n\n"), `}`].join(
-    "\n",
-  );
-
-  return code;
+  // Print as a "bundle" if id is present, else as normal rules.
+  if (compiledStyles.length) {
+    const stylesLines = compiledStyles
+      .join("\n")
+      .trim()
+      .split("\n")
+      .map((line) => `  ${line}`);
+    return [
+      `#${id} {`,
+      ...stylesLines,
+      `}`,
+      ...errors.map((e) => `/* Error: ${e.message} */`),
+    ].join("\n");
+  } else {
+    return "";
+  }
 }
 
-export function compileStylesheet({
-  stylesheet,
+/**
+ * Print the full stylesheet for all style classes and keyframes.
+ */
+export function generateCssStylesheet({
+  styleClasses,
+  keyframes,
   getModifierDefinition,
 }: {
-  stylesheet: StyleSheetData;
+  styleClasses: Record<string, StyleClassData>;
+  keyframes: KeyframeSetData[];
   getModifierDefinition: GetModifierDefinition;
 }): string {
-  const classes = stylesheet.classes?.map((styleClass) => {
-    return compileStyleClass({
+  const classes = Object.entries(styleClasses).map(([id, styleClass]) =>
+    compileStyleClass({
+      id,
       styleClass,
       getModifierDefinition,
-    });
-  });
-  const keyframeSets = stylesheet.keyframeSets?.map((keyframeSet) => {
-    return keyFrameSetToCss(keyframeSet);
-  });
+    })
+  );
+  const keyframeSets = keyframes?.map((keyframeSet) =>
+    keyFrameSetToCss(keyframeSet)
+  );
 
-  return [...(classes || []), ...(keyframeSets || [])]
-    .filter((code) => code.trim() !== "")
+  // Remove any empty entries, and join with *single* blank lines.
+  return [...classes, ...(keyframeSets || [])]
+    .filter(Boolean)
+    .map((code) => code.trim())
+    .filter(Boolean)
     .join("\n\n");
 }

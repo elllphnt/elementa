@@ -3,8 +3,10 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "@elllphnt/elementa-jsx",
+    "baseUrl": ".",
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
+      "elll/*": ["@elllphnt/elementa-framework/*"]
     }
   },
   "exclude": ["node_modules", "dist", "build"]

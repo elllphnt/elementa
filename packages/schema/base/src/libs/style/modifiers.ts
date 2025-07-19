@@ -1,11 +1,9 @@
 import type {
   ElllSelectorData,
   StyleModifierData,
-  StyleModifierDefinitionData} from "../../types/_.js";
-import {
-  StyleDataType,
-  StyleModifierType,
+  StyleModifierDefinitionData,
 } from "../../types/_.js";
+import { StyleDataType, StyleModifierType } from "../../types/_.js";
 import type { ErrorTupple } from "../../types/_primitives/error.js";
 import { parseStyleData, stringifyStyleData } from "./datatypes/_.js";
 import { baseSelector } from "./selectors.js";
@@ -16,7 +14,7 @@ export const systemModifiers = {
     name: "condition",
     type: StyleModifierType.Element,
     signature: [StyleDataType.String],
-    selector: [".elll-condition-$1"],
+    selector: ["&.$1"],
     __crdtAtomic: ["signature", "selector"],
   },
   raw: {

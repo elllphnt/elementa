@@ -4,9 +4,16 @@ import type {
   VideoMediaData,
 } from "@elllphnt/elementa-base";
 import { generateDynamic } from "../misc/dynamic.js";
+import type { GeneratorContext } from "../types.js";
 import { generatorBaseElement } from "./base.js";
 
-export function generatorMediaElement(data: MediaElementData): string {
+export function generatorMediaElement({
+  data,
+  context,
+}: {
+  data: MediaElementData;
+  context: GeneratorContext;
+}): string {
   const media = data.media;
 
   if (!media) {
@@ -74,5 +81,6 @@ export function generatorMediaElement(data: MediaElementData): string {
     tag,
     props,
     data,
+    context,
   });
 }

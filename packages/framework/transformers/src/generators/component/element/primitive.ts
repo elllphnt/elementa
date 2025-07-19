@@ -6,12 +6,16 @@ import type {
 import { reactInteractionEventMap } from "@elllphnt/elementa-base";
 import type { GeneratorContext } from "~/generators/component/types.js";
 import { generateDynamic } from "../misc/dynamic.js";
-import { generateClassNames } from "./_common/classname.js";
 import { generatorBaseElement } from "./base.js";
 import { generateElement } from "./element.js";
 
-function generatePrimitiveSubElement(data: PrimitiveSubElementData): string {
-  const classNames: string[] = [];
+function generatePrimitiveSubElement({
+  data,
+  context,
+}: {
+  data: PrimitiveSubElementData;
+  context: GeneratorContext;
+}): string {
   const props: string[] = [];
 
   // Interaction handlers
@@ -28,13 +32,11 @@ function generatePrimitiveSubElement(data: PrimitiveSubElementData): string {
   }
 
   // ClassName from stylesheet
-  if (data.styleClassNames) {
-    classNames.push(generateClassNames(data.styleClassNames));
-  }
-
-  // Add className prop
-  if (classNames.length) {
-    props.push(`className: "${classNames.join(" ")}"`);
+  if (data.styleClass) {
+    const className = context.useStyleClass("primitive", data.styleClass);
+    if (className) {
+      props.push(`className: ${className}`);
+    }
   }
 
   return `{${props.join(",\n")}}`;
@@ -58,7 +60,10 @@ export function generatorPrimitiveElement(
   // Sub-elements (__elements)
   const subElements = Object.entries(data.elements ?? {}).map(
     ([name, element]) => {
-      return `${name}: ${generatePrimitiveSubElement(element)}`;
+      return `${name}: ${generatePrimitiveSubElement({
+        data: element,
+        context,
+      })}`;
     },
   );
 
@@ -76,5 +81,6 @@ export function generatorPrimitiveElement(
     props,
     content: children,
     data,
+    context,
   });
 }

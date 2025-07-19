@@ -1,3 +1,3 @@
-export function styleConditionToClassName(conditionId: string): string {
-  return `elll-condition-${conditionId}`;
+export function styleConditionToClassName(conditionName: string): string {
+  return `elll-condition-${conditionName}`;
 }

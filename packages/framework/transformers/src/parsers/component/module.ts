@@ -1,5 +1,8 @@
-import type { ComponentData } from "@elllphnt/elementa-base";
+import { type ComponentData } from "@elllphnt/elementa-base";
+import type { Expression } from "ts-morph";
 import { Node } from "ts-morph";
+import { parseLiteral } from "~/libs/ts/literal.js";
+import { componentMetadataSchema } from "../../libs/component/metadata.js";
 import type { ResolvedExportNode } from "../../libs/ts/export.js";
 import { resolveExportValueNodes } from "../../libs/ts/export.js";
 import { createSingleFileProject } from "../../libs/ts/source_file.js";
@@ -21,6 +24,7 @@ export function parseComponentModule(sourceCode: string): ComponentData {
 
   let defaultExport: ResolvedExportNode | undefined = undefined;
   let stylesNode: ResolvedExportNode | undefined = undefined;
+  let metadataNode: ResolvedExportNode | undefined = undefined;
 
   // exports
 
@@ -33,11 +37,20 @@ export function parseComponentModule(sourceCode: string): ComponentData {
     if (exportName === "styles" || exportName === "css") {
       stylesNode = exprt;
     }
+    if (exportName === "metadata") {
+      metadataNode = exprt;
+    }
   }
 
   if (!defaultExport) {
     throw new Error("No default export found in component module.");
   }
+
+  const metadata = metadataNode
+    ? componentMetadataSchema.parse(
+        parseLiteral(metadataNode.node as Expression),
+      )
+    : {};
 
   // styles
   const cssText = stylesNode
@@ -63,6 +76,13 @@ export function parseComponentModule(sourceCode: string): ComponentData {
             return undefined;
           },
         });
+      },
+      getElementMeta: (id) => {
+        return id ? metadata.elements?.[id] || {} : {};
+      },
+      isSystemModule: (module, name) => {
+        console.log({ module, name });
+        return module.endsWith(`/${name}`);
       },
     },
   });

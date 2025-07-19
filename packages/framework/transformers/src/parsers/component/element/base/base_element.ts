@@ -76,8 +76,11 @@ export function parseBaseElementNode<T extends string>({
     classes,
   });
 
+  const meta = context.getElementMeta(id);
+
   const baseElement: BaseElementData<T> = {
-    id: id || genId(),
+    id: meta.id || genId(),
+    name: meta.name,
     type,
     tag,
     styleClass,
