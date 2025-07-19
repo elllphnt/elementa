@@ -28,7 +28,9 @@
     },
     "dependencies": {
         "@tanstack/react-router": "^1.121.27",
-        "@elllphnt/elementa-jsx": "workspace:*",
+        "@elllphnt/elementa-jsx": "workspace:*"
+    },
+    "peerDependencies": {
         "react": "^19.1.0"
     },
     "devDependencies": {

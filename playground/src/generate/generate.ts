@@ -32,6 +32,7 @@ export async function generateApp({
         console.log(`[${timestamp}] [${level}] ${message}`, meta);
       },
       out,
+      systemPackageName: "elll",
     },
   });
 }

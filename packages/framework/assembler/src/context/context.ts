@@ -6,4 +6,5 @@ export type GeneratorContext = {
   infra: ElementaInfrastructure;
   out: FileSystem;
   log: Logger;
+  systemPackageName: string;
 };

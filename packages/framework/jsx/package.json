@@ -22,7 +22,7 @@
         "test:run": "vitest --run",
         "types": "tsc src/index.ts --declaration --emitDeclarationOnly --outFile schema/index.d.ts"
     },
-    "dependencies": {
+    "peerDependencies": {
         "react": "^19.1.0"
     },
     "devDependencies": {

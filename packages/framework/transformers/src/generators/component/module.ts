@@ -11,7 +11,13 @@ import { sanitizeNode } from "./sanitize.js";
 import { generateCssStylesheet } from "./style/style.js";
 import type { UseElementMetadata, UseImport, UseStyleClass } from "./types.js";
 
-export function generateComponentModule(data: ComponentData): string {
+export function generateComponentModule({
+  data,
+  systemPackage,
+}: {
+  data: ComponentData;
+  systemPackage: string;
+}): string {
   const project = new Project();
 
   const sourceFile = project.createSourceFile("component.tsx", "");
@@ -102,7 +108,7 @@ export function generateComponentModule(data: ComponentData): string {
       useImport,
       useElementMetadata,
       useStyleClass,
-      getSystemModule: (name) => `elll/${name}`,
+      getSystemModule: (name) => `${systemPackage}/${name}`,
     },
   });
 

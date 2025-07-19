@@ -4,7 +4,7 @@ export function generateServerEntryScript({
   routerPath: string;
 }): string {
   return [
-    `import { render } from '@elllphnt/elll-runtime-server';`,
+    `import { render } from 'elll/server';`,
     `import { createRouter } from '${routerPath}';`,
     ``,
     `export default async function(request) {`,

@@ -4,7 +4,7 @@ export function generateClientEntryScript({
   routerPath: string;
 }): string {
   return [
-    `import { startClient } from '@elllphnt/elll-runtime-client';`,
+    `import { startClient } from 'elll/client';`,
     `import { createRouter } from '${routerPath}';`,
     ``,
     `const router = createRouter();`,

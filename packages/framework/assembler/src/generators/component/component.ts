@@ -24,7 +24,10 @@ export async function generateComponent({
   //   JSON.parse(componentContent)
   // ) as ComponentData;
   const component = JSON.parse(componentContent);
-  const code = generateComponentModule(component);
+  const code = generateComponentModule({
+    data: component,
+    systemPackage: context.systemPackageName,
+  });
 
   await context.out.write(jsAppPaths.resource(url), code);
 }
