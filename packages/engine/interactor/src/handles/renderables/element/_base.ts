@@ -1,6 +1,6 @@
 import type { EdgeName } from "@elllphnt/elementa-base";
-import type { StylesheetCssStyleSheet } from "@elllphnt/elementa-models";
-import type { StyleSheetInstance } from "@elllphnt/elementa-runtime";
+import type { StyleClassCssStyleSheet } from "@elllphnt/elementa-models";
+import type { StyleClassInstance } from "@elllphnt/elementa-runtime";
 import type { ElementRenderable } from "@elllphnt/elementa-scene";
 import { Renderable } from "@elllphnt/elementa-scene";
 import type { Observable } from "rxjs";
@@ -16,7 +16,7 @@ export abstract class BaseElementHandle<
 > extends StylableHandle<R> {
   readonly fragment: FragmentHandle;
 
-  get stylesheetInstance(): StyleSheetInstance {
+  get stylesheetInstance(): StyleClassInstance {
     return this.renderable.instance.stylesheet;
   }
 
@@ -36,10 +36,10 @@ export abstract class BaseElementHandle<
     );
   }
 
-  get cssStyleSheet(): StylesheetCssStyleSheet | undefined {
+  get cssStyleSheet(): StyleClassCssStyleSheet | undefined {
     return this.renderable.instance.element.cssStyleSheet;
   }
-  get cssStyleSheet$(): Observable<StylesheetCssStyleSheet | undefined> {
+  get cssStyleSheet$(): Observable<StyleClassCssStyleSheet | undefined> {
     return of(this.renderable.instance.element.cssStyleSheet);
   }
 

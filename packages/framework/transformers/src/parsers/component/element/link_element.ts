@@ -1,4 +1,8 @@
-import type { InteractionEvent, LinkData } from "@elllphnt/elementa-base";
+import type {
+  ContainerElementData,
+  InteractionEvent,
+  LinkData,
+} from "@elllphnt/elementa-base";
 import {
   genId,
   reactInteractionEventMap,
@@ -130,18 +134,32 @@ export function parseLinkElementNode({
     });
   });
 
-  if (content.length === 1) {
+  // A bare `<a href>Label</a>` just attaches the link to its only child.
+  const isStylable = id !== undefined || styleClassNames.length > 0;
+  if (content.length === 1 && !isStylable) {
     return {
       ...content[0],
       link,
     };
-  } else {
-    const fragment = context.createFragment({ content });
-    return {
-      id: id || genId(),
-      type: "fragment",
-      fragmentId: fragment.id,
-      link,
-    };
   }
+
+  // Otherwise the anchor needs its own box: a styled button-like link
+  // (`<a id="cta">`) or several children (`<a><Icon/><span/></a>`). Model it
+  // as a container that carries both the element's styles (resolved by its
+  // id, like any element) and the link; the scene wraps it in the anchor.
+  const meta = context.getElementMeta(id);
+  const container: ContainerElementData = {
+    id: meta.id || genId(),
+    name: meta.name,
+    type: "container",
+    tag: "span",
+    styleClass: context.getStyleClass({ id, classes: styleClassNames }),
+    interactions,
+    raw,
+    content,
+  };
+  return {
+    ...container,
+    link: { ...link, styleClass: {}, interactions: {}, raw: [] },
+  };
 }

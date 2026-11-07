@@ -13,8 +13,8 @@ import {
   pairwiseOrEmpty,
 } from "@elllphnt/elementa-lang-utils";
 import type { PointData, RectData } from "@elllphnt/elementa-math-utils";
-import type { StylesheetCssStyleSheet } from "@elllphnt/elementa-models";
-import type { StyleSheetInstance } from "@elllphnt/elementa-runtime";
+import type { StyleClassCssStyleSheet } from "@elllphnt/elementa-models";
+import type { StyleClassInstance } from "@elllphnt/elementa-runtime";
 import type {
   Renderable,
   RuleDomStyleSheetAdaptor,
@@ -74,9 +74,9 @@ export abstract class StylableHandle<
     );
   }
 
-  abstract get stylesheetInstance(): StyleSheetInstance;
+  abstract get stylesheetInstance(): StyleClassInstance;
   abstract get cssStyleSheet$(): Observable<
-    StylesheetCssStyleSheet | undefined
+    StyleClassCssStyleSheet | undefined
   >;
 
   get style() {
@@ -129,7 +129,7 @@ export abstract class StylableHandle<
   get derivedActiveSelectors() {
     const active = this.activeSelector;
     return active
-      ? this.stylesheetInstance.stylesheet.selectors.filter((selector) =>
+      ? this.stylesheetInstance.styleClass.selectors.filter((selector) =>
           matchElllSelector(active, selector)
         ) ?? []
       : [];
@@ -137,7 +137,7 @@ export abstract class StylableHandle<
   get derivedActiveSelectors$() {
     return combineLatestOrEmpty([
       this.activeSelector$,
-      this.stylesheetInstance.stylesheet.selectors$,
+      this.stylesheetInstance.styleClass.selectors$,
     ]).pipe(
       map(([active, selectors]) =>
         active
@@ -149,7 +149,7 @@ export abstract class StylableHandle<
 
   get derivedActiveStyles() {
     return this.derivedActiveSelectors.map((selector) =>
-      this.stylesheetInstance.stylesheet.style(selector, true)
+      this.stylesheetInstance.styleClass.style(selector, true)
     );
   }
   get derivedActiveStyles$() {
@@ -157,7 +157,7 @@ export abstract class StylableHandle<
       switchMap((selectors) =>
         combineLatestOrEmpty(
           selectors.map((selector) =>
-            this.stylesheetInstance.stylesheet.style$(selector, true)
+            this.stylesheetInstance.styleClass.style$(selector, true)
           )
         )
       )

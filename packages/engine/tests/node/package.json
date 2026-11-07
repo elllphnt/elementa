@@ -4,7 +4,9 @@
     "version": "0.1.0",
     "type": "module",
     "scripts": {
-        "test": "vitest --run"
+        "test": "vitest --run",
+        "test:all": "ELEMENTA_RUN_ALL_TESTS=1 vitest --run",
+        "test:run": "vitest --run"
     },
     "dependencies": {
         "@elllphnt/elementa-base": "workspace:*",

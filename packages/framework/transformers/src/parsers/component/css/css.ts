@@ -98,7 +98,9 @@ function cssSelectorToElllSelector({
     }
   }
   const flat = flattenSelectorSegments(styleRules).trim();
-  if (!flat) return baseSelector;
+  // Only the base selector if there is truly nothing to qualify it: a rule
+  // inside `@media (…)` with no extra selector must keep its at-rule.
+  if (!flat && atRules.length === 0) return baseSelector;
 
   const [conditionModifiers, rawSelector] = extractConditionsFromSelector({
     selector: flat,
@@ -201,7 +203,17 @@ export function getStyleClassFromCssModule({
           getModifierDefinition,
           conditions: Object.keys(conditionExpressionMap),
         });
-        styles[sel || baseSelector] = { __raw: rule.style };
+        const selector = sel || baseSelector;
+        // Several rules can resolve to the same selector (e.g. two `#root`
+        // blocks). Merge them in source order so later declarations win,
+        // as in the CSS cascade, instead of replacing earlier rules.
+        styles[selector] = {
+          ...styles[selector],
+          __raw: {
+            ...styles[selector]?.__raw,
+            ...rule.style,
+          },
+        };
       }
     }
   }

@@ -1,5 +1,5 @@
 import { logger } from "@elllphnt/elementa-kernel";
-import { useManyObservables } from "@elllphnt/elementa-react-utils";
+import { useObservable } from "@elllphnt/elementa-react-utils";
 import type { ComponentInstance } from "@elllphnt/elementa-runtime";
 import { Namespace } from "@elllphnt/elementa-runtime";
 import type { PropsWithChildren } from "react";
@@ -19,7 +19,7 @@ export function PropsNamespaceProvider({
   const upstreamNamespace = useNamespace();
   const downstreamNamespace = new Namespace();
 
-  const propsValue = useManyObservables(component.props$, component.props);
+  const propsValue = useObservable(component.props$, component.props);
   const propResolvedValues = upstreamNamespace.resolveValue(propsValue);
   downstreamNamespace.set(["props"], propResolvedValues);
 

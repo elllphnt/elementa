@@ -9,7 +9,7 @@ import type { StyleClassInstance } from "./stylesheet.js";
 
 /**
  * Represents a runtime live wrapper around a Style.
- * Attached to a selector inside a StyleSheetInstance.
+ * Attached to a selector inside a StyleClassInstance.
  */
 export class StyleInstance extends Instance {
   readonly selector: string;

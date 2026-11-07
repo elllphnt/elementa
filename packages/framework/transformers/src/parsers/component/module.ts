@@ -14,7 +14,38 @@ import {
 import { parseCssModule } from "./css/module.js";
 import { normalizeComponentModule } from "./normalization/module.js";
 
-export function parseComponentModule(sourceCode: string): ComponentData {
+export type ParseComponentModuleOptions = {
+  /**
+   * Resolves a side-effect stylesheet import (`import "./x.css"`) to its CSS
+   * text. Without it, only the inline `styles`/`css` export is used.
+   */
+  readStyleImport?: (specifier: string) => string | undefined;
+};
+
+/** Side-effect imports of stylesheets, e.g. `import "./hero.component.css"`. */
+export function getStyleImportSpecifiers(sourceCode: string): string[] {
+  const { sourceFile } = createSingleFileProject(sourceCode, {
+    name: "imports.tsx",
+  });
+  return sourceFile
+    .getImportDeclarations()
+    .filter((decl) => !decl.getImportClause())
+    .map((decl) => decl.getModuleSpecifierValue())
+    .filter((specifier) => specifier.endsWith(".css"));
+}
+
+export function parseComponentModule(
+  sourceCode: string,
+  { readStyleImport }: ParseComponentModuleOptions = {},
+): ComponentData {
+  // Read stylesheet imports from the original source, before normalization
+  // has a chance to rewrite or drop them.
+  const importedCss = readStyleImport
+    ? getStyleImportSpecifiers(sourceCode)
+        .map((specifier) => readStyleImport(specifier) ?? "")
+        .join("\n")
+    : "";
+
   const normalizedCode = normalizeComponentModule(sourceCode);
   const { sourceFile } = createSingleFileProject(normalizedCode, {
     name: "module.tsx",
@@ -53,10 +84,12 @@ export function parseComponentModule(sourceCode: string): ComponentData {
     : {};
 
   // styles
-  const cssText = stylesNode
+  const inlineCss = stylesNode
     ? extractCssTextFromValueNode(stylesNode.node)
     : "";
-  const cssModule = parseCssModule(cssText);
+  // Imported sheets come first so the co-located `styles` export can
+  // override them, matching source order in a bundler.
+  const cssModule = parseCssModule([importedCss, inlineCss].join("\n"));
 
   // component
   const componentName = defaultExport.names[defaultExport.names.length - 1];

@@ -129,7 +129,16 @@ export function parseComponentFunctionBody({
       }
       returnExpr = getDeepExpression(returnExpr);
 
-      if (Node.isCallExpression(returnExpr)) {
+      if (
+        Node.isCallExpression(returnExpr) ||
+        // The normalizer turns early returns into an inline state
+        // (`const state_1 = (() => {…})(); return state_1;`), so a returned
+        // identifier, like other plain expressions, is rendered from scope.
+        Node.isIdentifier(returnExpr) ||
+        Node.isConditionalExpression(returnExpr) ||
+        Node.isBinaryExpression(returnExpr) ||
+        Node.isPropertyAccessExpression(returnExpr)
+      ) {
         componentData.content = [
           {
             id: genId(),

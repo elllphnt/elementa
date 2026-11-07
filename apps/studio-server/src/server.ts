@@ -1,6 +1,7 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express, { Application, Request, Response } from "express";
+import path from "path";
 import { initializeInfrastructure } from "./infrastructure/factory";
 import { createProjectRoutes } from "./routes/projects";
 import { createSSERoutes } from "./routes/sse";
@@ -11,12 +12,11 @@ dotenv.config();
 
 const app: Application = express();
 const port = process.env.PORT || 3000;
-const infrastructureUrl = process.env.INFRASTRUCTURE_URL;
-
-if (!infrastructureUrl) {
-  console.error("INFRASTRUCTURE_URL environment variable is required");
-  process.exit(1);
-}
+// Default to the sample projects compiled by `pnpm compile:playground`, so
+// `pnpm studio` works out of the box. Override with INFRASTRUCTURE_URL.
+const infrastructureUrl =
+  process.env.INFRASTRUCTURE_URL ||
+  `local:${path.resolve(process.cwd(), "../../playground/infra")}`;
 
 // Middleware
 app.use(express.json());

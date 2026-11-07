@@ -68,3 +68,6 @@ out/
 
 local/
 config.json
+# Playwright
+test-results/
+playwright-report/

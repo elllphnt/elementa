@@ -11,7 +11,8 @@
         "watch": "concurrently \"npm run build:watch\" \"npm run alias:watch\"",
         "packup": "tsx scripts/packup.ts",
         "pub": "npm run test && npm run clean && npm run build:dist && npm run packup && cd dist && npm publish",
-        "test": "vitest --run"
+        "test": "vitest --run",
+        "test:run": "vitest --run"
     },
     "dependencies": {
         "@elllphnt/elementa-lang-utils": "workspace:*",

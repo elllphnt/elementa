@@ -109,7 +109,13 @@ export function parseCssModule(css: string): ParsedCssModule {
           }
         }
 
-        const upstreamChain = mId ? [] : selectorChain || [];
+        // An ID starts a new scope, so ancestor *selectors* are dropped, but
+        // enclosing at-rules (@media, @supports, …) still apply to it.
+        // Dropping those would turn `@media (…) { #root {…} }` into an
+        // unconditional `#root {…}` that overrides the base style.
+        const upstreamChain = mId
+          ? (selectorChain || []).filter((part) => part.startsWith("@"))
+          : selectorChain || [];
         const newChain =
           sel !== "&" ? [...(upstreamChain || []), sel] : upstreamChain || [];
         const style: Record<string, string> = {};

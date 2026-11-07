@@ -1,4 +1,5 @@
 import React from "react";
+import "./header.component.css";
 import Navigation from "~/components/navigation/navigation.component.js";
 
 const Header: React.FC = () => {

@@ -25,6 +25,10 @@ export abstract class BaseElement<
   private _styleClass: StyleClass;
   private _updated$ = new Subject();
 
+  get styleClass(): StyleClass {
+    return this._styleClass;
+  }
+
   get allCssStylesheets(): CssStyleSheet[] {
     return [this.cssStyleSheet];
   }

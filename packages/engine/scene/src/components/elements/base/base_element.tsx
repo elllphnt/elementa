@@ -24,9 +24,22 @@ export function BaseElementComponent() {
     element.instance.element.interactions
   );
 
+  const styleClass = element.instance.element.styleClass;
+  const conditions = useObservable(
+    styleClass.conditions$,
+    styleClass.conditions
+  );
+  // `className={{ "is-active": expr }}`: apply each conditional class whose
+  // expression is truthy in this element's scope (props, state, …).
+  const conditionClassNames = Object.entries(conditions)
+    .filter(([, expression]) =>
+      Boolean(namespace.resolveExpression({ __expression: expression }))
+    )
+    .map(([conditionClassName]) => conditionClassName);
+
   const Component: any = tag || component || ("div" as any);
   const props: Record<string, any> = {
-    className: cx(styleSheetClassName, className),
+    className: cx(styleSheetClassName, conditionClassNames, className),
     children,
   };
 

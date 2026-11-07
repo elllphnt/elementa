@@ -11,7 +11,7 @@
     "pub": "npm run clean && npm run build && packup && cd dist && npm publish",
     "lint": "eslint src",
     "test": "vitest",
-    "test:run": "vitest --run",
+    "test:run": "vitest --run --passWithNoTests",
     "types": "tsc src/index.ts --declaration --emitDeclarationOnly --outFile schema/index.d.ts"
   },
   "dependencies": {

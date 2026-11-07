@@ -1,8 +1,4 @@
-import type {
-  KeyframeSetData,
-  StyleClassData,
-  StyleSheetData,
-} from "@elllphnt/elementa-base";
+import type { KeyframeSetData, StyleClassData } from "@elllphnt/elementa-base";
 import type { RecordState } from "@elllphnt/elementa-kernel";
 import { AggregatedModelList, reconcileList } from "@elllphnt/elementa-kernel";
 import { BehaviorSubject, type Observable } from "rxjs";
@@ -12,6 +8,16 @@ import type { Project } from "~/project/project.js";
 import { KeyframeSet } from "./keyframes/keyframe_set.js";
 import type { StyleFragmentRegistry } from "./style_fragment_registry.js";
 import { StyleClass } from "./styleclass.js";
+
+/**
+ * Shape of a standalone stylesheet file. `@elllphnt/elementa-base` no longer
+ * exports this (components now carry per-element `styleClass` + `keyframes`),
+ * but stylesheet files still use it.
+ */
+export type StyleSheetData = {
+  classes?: StyleClassData[];
+  keyframeSets?: KeyframeSetData[];
+};
 
 export class Stylesheet extends ProjectModel<RecordState<StyleSheetData>> {
   readonly fragmentRegistry: StyleFragmentRegistry;

@@ -1,3 +1,5 @@
+import fs from "fs";
+import nodePath from "path";
 import type {
   ElementaFrameData,
   ElementaPreviewData,
@@ -29,10 +31,19 @@ export function traverseObject(
   }
 }
 
-export const transpileComponent: Handler = async (path, content) => {
+export const transpileComponent: Handler = async (path, content, context) => {
   const outPath = path.replace(/\.tsx$/, ".json");
 
-  const componentData = parseComponentModule(content);
+  // Resolve `import "./x.css"` relative to the component file.
+  const componentDir = nodePath.dirname(nodePath.join(context.srcRoot, path));
+  const componentData = parseComponentModule(content, {
+    readStyleImport: (specifier) => {
+      const cssPath = nodePath.resolve(componentDir, specifier);
+      return fs.existsSync(cssPath)
+        ? fs.readFileSync(cssPath, "utf-8")
+        : undefined;
+    },
+  });
 
   // replace imports paths with ref strings
   traverseObject(componentData, (value) => {
@@ -68,6 +79,8 @@ export const transpileComponent: Handler = async (path, content) => {
         },
         x: 0,
         y: 0,
+        // Pages get a desktop-width frame; smaller components size to content.
+        ...(path.startsWith("views/") ? { width: 1280 } : {}),
       },
       ...(componentData.fragments ?? []).map((fragment, index) => {
         const frame: ElementaFrameData = {

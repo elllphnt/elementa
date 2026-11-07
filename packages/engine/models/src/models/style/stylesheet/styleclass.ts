@@ -55,6 +55,21 @@ export class StyleClass extends ProjectModel<RecordState<StyleClassData>> {
     });
   }
 
+  /**
+   * Conditional class names mapped to the expression that switches them on,
+   * e.g. `{ "accent-cyan": 'props.accent === "cyan"' }` from
+   * `className={{ "accent-cyan": accent === "cyan" }}`.
+   */
+  get conditions(): Record<string, string> {
+    return this.state.entry("conditions") ?? {};
+  }
+
+  get conditions$(): Observable<Record<string, string>> {
+    return this.state
+      .entry$("conditions")
+      .pipe(map((conditions) => conditions ?? {}));
+  }
+
   get styles(): Record<string, Style | undefined> {
     return this._styles.models;
   }

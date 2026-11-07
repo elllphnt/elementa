@@ -6,10 +6,10 @@
   "author": "",
   "type": "module",
   "license": "ISC",
-  "description": "",
+  "description": "Compiles the sample projects in ./projects (TSX source) into Elementa models in ./infra",
   "scripts": {
     "dev": "tsx --watch ./src/index.ts -w",
-    "inst": "tsx ./src/install.ts"
+    "compile": "tsx ./src/index.ts"
   },
   "dependencies": {
     "@elllphnt/elementa-base": "workspace:*",
@@ -17,12 +17,7 @@
     "@elllphnt/elementa-transformers": "workspace:*",
     "@elllphnt/elementa-jsx": "workspace:*",
     "@elllphnt/elementa-framework": "workspace:*",
-    "@elllphnt/elll-client": "^0.1.5",
-    "@elllphnt/elll-fabric": "^0.1.3",
-    "@elllphnt/primitives": "^0.1.3",
-    "@elllphnt/utils": "^0.9.12",
     "chokidar": "^3.6.0",
-    "dotenv": "^16.5.0",
     "globby": "^14.1.0",
     "lodash.debounce": "^4.0.8"
   },

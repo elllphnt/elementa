@@ -1,4 +1,4 @@
-import { getOrCreateYArray, getOrCreateYMap } from "@elllphnt/crdt";
+import { getOrCreateYArray, getOrCreateYMap } from "./utils.js";
 import type {
   AggregatedStateList,
   ListState,
@@ -15,7 +15,7 @@ import * as y from "yjs";
 import type {
   PickArrayKeys,
   PickObjectKeys,
-} from "../../../../utils/lang/build/types.js";
+} from "@elllphnt/elementa-lang-utils";
 import { CrdtRecordState } from "./record.js";
 import { AggregatedCrdtStateList } from "./state_list.js";
 import { CrdtValueState } from "./value.js";

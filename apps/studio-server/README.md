@@ -31,7 +31,7 @@ INFRASTRUCTURE_URL=local:/path/to/your/local/directory
 ### Environment Variables
 
 - `PORT`: The port on which the server will run (default: 3000)
-- `INFRASTRUCTURE_URL`: The base URL of the Elementa Infrastructure (required)
+- `INFRASTRUCTURE_URL`: The base URL of the Elementa Infrastructure (optional — defaults to `local:../../playground/infra`, the output of `pnpm compile:playground`)
 
 ### Infrastructure URL Format
 

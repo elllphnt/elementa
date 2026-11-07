@@ -1,4 +1,5 @@
 import React from "react";
+import "./call-to-action.component.css";
 
 const CallToAction: React.FC = () => {
   return (

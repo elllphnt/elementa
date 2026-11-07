@@ -94,6 +94,18 @@ export async function parseFile({
 }): Promise<boolean> {
   const relativePath = path.relative(srcDir, filePath);
 
+  // A side-car stylesheet (`x.component.css`) is compiled into its component
+  // (`x.component.tsx`), so a change to it rebuilds the component.
+  if (relativePath.endsWith(".component.css")) {
+    const componentPath = filePath.replace(/\.css$/, ".tsx");
+    if (!fs.existsSync(componentPath)) return false;
+    if (cache && !cache.shouldRebuild(filePath)) return false;
+    // No cache for the component itself: its own source may be unchanged.
+    const built = await parseFile({ srcDir, outDir, filePath: componentPath });
+    cache?.updateCache(filePath);
+    return built;
+  }
+
   // Find matching handler
   const handler = handlers.find((h) => h.test(relativePath));
   if (!handler) {

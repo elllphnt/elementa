@@ -1,5 +1,6 @@
 import type {
   KeyframeSetData,
+  StyleFragmentType,
   StyleFragmentData,
 } from "@elllphnt/elementa-base";
 import type { StyleToCssContext } from "./style/style.js";
@@ -14,9 +15,12 @@ export function keyFrameSetToCss(data: KeyframeSetData): string {
     (data.styleFragments ?? []).map((fragment) => [fragment.id, fragment])
   );
   const styleContext: StyleToCssContext = {
-    getFragment: (type, id) => {
+    getFragment: <T extends StyleFragmentType>(type: T, id: string) => {
       const fragment = fragmentMap[id];
-      return fragment && fragment.type === type ? fragment : undefined;
+      // `fragment.type === type` guarantees the shape, but TS can't narrow a generic.
+      return fragment && fragment.type === type
+        ? (fragment as StyleFragmentData<T>)
+        : undefined;
     },
   };
 

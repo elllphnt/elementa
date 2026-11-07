@@ -15,8 +15,8 @@
         "test": "vitest --run"
     },
     "dependencies": {
-        "@elllphnt/crdt": "^0.1.3",
         "@elllphnt/elementa-kernel": "workspace:*",
+        "@elllphnt/elementa-lang-utils": "workspace:*",
         "rxjs": "^7.8.2",
         "yjs": "^13.6.27"
     },
